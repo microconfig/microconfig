@@ -1,0 +1,6 @@
+dependencies {
+    implementation project(':jdeployment:utils:util'),
+            lib.maven_resolver
+
+    compile lib.maven_resolver_api
+}

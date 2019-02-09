@@ -1,0 +1,7 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+    implementation project(':jdeployment:mgmt:mgmt-core'),
+            project(':jdeployment:mgmt:console-api-exposer'),
+            project(':jdeployment:utils:util')
+}

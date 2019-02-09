@@ -1,0 +1,8 @@
+dependencies {
+    implementation project(':jdeployment:configs'),
+            project(':jdeployment:mgmt:nexus-resolver'),
+            project(':jdeployment:utils:util'),
+            project(':jdeployment:mgmt:console-api-exposer'),
+            lib.jasypt,
+            'org.slf4j:slf4j-log4j12'
+}

@@ -1,0 +1,10 @@
+{
+  include: {
+    env: "test-component-exclude1"
+  },
+  fnd1: {
+    exclude: [
+      "th-cache-node2"
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+{
+  fnd: {
+    components: [
+      "th-cache-node7"
+    ]
+  }
+}

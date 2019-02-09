@@ -1,0 +1,16 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: black;
+}
+
+.log_textarea {
+    white-space: pre-wrap;
+    font-family: Courier New, Courier, Lucida Sans Typewriter, Lucida Typewriter, monospace;
+    color: #BBBBBB;
+    padding: 10px;
+}
+
+.log_textarea:focus {
+    outline: 0 solid transparent;
+}

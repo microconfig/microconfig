@@ -1,0 +1,13 @@
+rootProject.name = 'jdeployment-root'
+
+include ':jdeployment:configs'
+
+include ':jdeployment:mgmt:mgmt-starter',
+        ':jdeployment:mgmt:mgmt-core',
+        ':jdeployment:mgmt:nexus-resolver',
+        ':jdeployment:mgmt:console-api-exposer'
+
+include ':jdeployment:dashboard'
+
+include ':jdeployment:utils:util',        
+        ':jdeployment:utils:dependency-uploader'

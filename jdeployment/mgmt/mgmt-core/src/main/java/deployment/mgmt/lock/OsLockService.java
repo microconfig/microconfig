@@ -1,0 +1,62 @@
+package deployment.mgmt.lock;
+
+import deployment.mgmt.configs.filestructure.DeployFileStructure;
+import lombok.RequiredArgsConstructor;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+
+import static deployment.util.ConsoleColor.yellow;
+import static deployment.util.IoUtils.readNullableFirstLine;
+import static deployment.util.Logger.*;
+import static deployment.util.LoggerUtils.oneLineInfo;
+import static deployment.util.ThreadUtils.sleepSec;
+import static deployment.util.TimeUtils.secAfter;
+import static java.lang.ProcessHandle.current;
+import static java.lang.String.valueOf;
+import static java.lang.System.currentTimeMillis;
+import static java.nio.ByteBuffer.wrap;
+
+@RequiredArgsConstructor
+public class OsLockService implements LockService {
+    private final DeployFileStructure deployFileStructure;
+
+    @Override
+    public void lockAndExecute(Runnable task) {
+        try (FileLock lock = lock(deployFileStructure.deploy().getLockFile())) {
+            writeCurrentPid(lock);
+            task.run();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private FileLock lock(File file) throws IOException {
+        FileChannel channel = new RandomAccessFile(file, "rwd").getChannel();
+        FileLock lock = channel.tryLock();
+        if (lock != null) return lock;
+
+        warn("Another instance of mgmt has been running for " + secAfter(file.lastModified()) + "...");
+        warn("You can kill it manually by pid or with 'mgmt kill-all-java'.");
+
+        long waitStartTime = currentTimeMillis();
+        while (true) {
+            oneLineInfo(yellow("Waiting completion of mgmt process with pid " + readNullableFirstLine(file) + "... " + secAfter(waitStartTime)));
+            sleepSec(1);
+
+            if ((lock = channel.tryLock()) != null) {
+                logLineBreak();
+                return lock;
+            }
+        }
+    }
+
+    private static void writeCurrentPid(FileLock lock) throws IOException {
+        lock.channel()
+                .position(0)
+                .write(wrap(align(valueOf(current().pid()), 20).getBytes()));
+    }
+}

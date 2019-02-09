@@ -1,0 +1,108 @@
+apply from: 'lib.gradle'
+version = "${major}.${minor}.${patch}${versionPostfix}"
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.1.2.RELEASE'
+    }
+}
+
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
+
+    group = 'jdeployment'
+    version = rootProject.version
+    sourceCompatibility = 10
+
+    if (recordCoverage) {
+        apply plugin: 'jacoco'
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    publishing {
+        repositories {            
+        }
+    }
+
+    dependencies {
+        implementation platform("org.springframework.boot:spring-boot-dependencies:2.1.1.RELEASE")
+
+        compileOnly 'org.projectlombok:lombok:1.18.4'
+        annotationProcessor "org.projectlombok:lombok:1.18.4"
+
+        testImplementation 'junit:junit',
+                'org.mockito:mockito-core'
+    }
+
+    test {
+        exclude '**/*IT.class'
+    }
+
+    task sourceJar(type: Jar) {
+        from sourceSets.main.allJava
+    }
+
+    publishing {
+        publications {
+            nexus(MavenPublication) {
+                from components.java
+
+                artifact sourceJar {
+                    classifier "sources"
+                }
+            }
+        }
+    }
+}
+
+task('nextMajor') {
+    doLast {
+        def newMajor = "$major".toInteger() + 1
+        ant.propertyfile(file: "gradle.properties") {
+            entry(key: "major", value: newMajor)
+            entry(key: "minor", value: "0")
+            entry(key: "patch", value: "0")
+        }
+        new File('version').text = "$newMajor.0.0"
+    }
+}
+
+task('nextMinor') {
+    doLast {
+        def newMinor = "$minor".toInteger() + 1
+        ant.propertyfile(file: "gradle.properties") {
+            entry(key: "minor", value: newMinor)
+            entry(key: "patch", value: "0")
+        }
+        new File('version').text = "$major.$newMinor.0"
+    }
+}
+
+task('nextPatch') {
+    doLast {
+        def newPatch = "$patch".toInteger() + 1
+        ant.propertyfile(file: "gradle.properties") {
+            entry(key: "patch", value: newPatch)
+        }
+        new File('version').text = "$major.$minor.$newPatch"
+    }
+}
+
+println("Building version '$version'")
+task printVersion {
+    doLast {
+        println "Version: $version"
+        new File('effective_version').text = version
+    }
+}

@@ -1,0 +1,25 @@
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+li {
+    list-style: none;
+}
+
+#loading_icon {
+    margin-left: 10px;
+    display: none;
+    height: 18px;
+}
+
+.right_link {
+    color: #4e96f3;
+    float: right;
+    cursor: pointer;
+    margin-right: 10px;
+}
