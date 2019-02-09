@@ -1,5 +1,3 @@
-enableFeaturePreview('IMPROVED_POM_SUPPORT')
-
 rootProject.name = 'jdeployment-root'
 
 include ':jdeployment:configs'

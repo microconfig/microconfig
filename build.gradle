@@ -36,7 +36,7 @@ allprojects {
     }
 
     dependencies {
-        implementation ("org.springframework.boot:spring-boot-dependencies:2.1.1.RELEASE")
+        implementation platform("org.springframework.boot:spring-boot-dependencies:2.1.2.RELEASE")
 
         compileOnly 'org.projectlombok:lombok:1.18.4'
         annotationProcessor "org.projectlombok:lombok:1.18.4"
@@ -77,7 +77,7 @@ task codeCoverageReport(type: JacocoReport) {
         xml.enabled true
         html.enabled false
         csv.enabled false
-        xml.destination "${buildDir}/reports/jacoco/report.xml"
+        xml.setDestination(file("${buildDir}/reports/jacoco/report.xml"))
     }
 }
 
