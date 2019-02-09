@@ -1,3 +1,3 @@
 # extconfig
 
-https://travis-ci.com/extconfig/extconfig.svg?branch=master
+[![Build Status](https://travis-ci.com/extconfig/extconfig.svg?branch=master)](https://travis-ci.com/extconfig/extconfig)
