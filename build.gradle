@@ -1,5 +1,4 @@
 apply from: 'lib.gradle'
-version = "${major}.${minor}.${patch}${versionPostfix}"
 
 buildscript {
     repositories {
@@ -15,6 +14,7 @@ buildscript {
 allprojects {
     apply plugin: 'java'
     apply plugin: 'maven'
+    apply plugin: 'jacoco'
     apply plugin: 'maven-publish'
 
     group = 'jdeployment'
@@ -64,45 +64,22 @@ allprojects {
             }
         }
     }
-}
 
-task('nextMajor') {
-    doLast {
-        def newMajor = "$major".toInteger() + 1
-        ant.propertyfile(file: "gradle.properties") {
-            entry(key: "major", value: newMajor)
-            entry(key: "minor", value: "0")
-            entry(key: "patch", value: "0")
+    task codeCoverageReport(type: JacocoReport) {
+        executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+        subprojects.each {
+            sourceSets it.sourceSets.main
         }
-        new File('version').text = "$newMajor.0.0"
-    }
-}
 
-task('nextMinor') {
-    doLast {
-        def newMinor = "$minor".toInteger() + 1
-        ant.propertyfile(file: "gradle.properties") {
-            entry(key: "minor", value: newMinor)
-            entry(key: "patch", value: "0")
+        reports {
+            xml.enabled true            
+            html.enabled false
+            csv.enabled false
         }
-        new File('version').text = "$major.$newMinor.0"
     }
-}
 
-task('nextPatch') {
-    doLast {
-        def newPatch = "$patch".toInteger() + 1
-        ant.propertyfile(file: "gradle.properties") {
-            entry(key: "patch", value: newPatch)
-        }
-        new File('version').text = "$major.$minor.$newPatch"
-    }
-}
-
-println("Building version '$version'")
-task printVersion {
-    doLast {
-        println "Version: $version"
-        new File('effective_version').text = version
+    codeCoverageReport.dependsOn {
+        subprojects*.test
     }
 }

@@ -21,5 +21,6 @@ secret/
 target/
 /components/
 build/
+.gradle/
 classes/
 out/
