@@ -1,2 +1,0 @@
-/home/rpbin/jdk-10.0.2/bin/java -jar -DonlyJar=false -DdownloadNexus=http://172.30.162.1/nexus -DuploadNexus=https://sbtatlas.sigma.sbrf.ru/nexus -DuploadRepository=RiskPlatform_thirdparty -DuploadAuthentication=RiskPlatform-build:RiskPlatformbuild dependency-uploader-*.jar \
-com.oracle.jdbc:xmlparserv2:12.2.0.1 com.oracle.jdbc:xdb6:12.2.0.1
