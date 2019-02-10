@@ -4,20 +4,20 @@ import deployment.configs.command.BuildPropertiesCommand;
 import deployment.configs.command.PropertiesPostProcessor;
 import deployment.configs.environment.EnvironmentProvider;
 import deployment.configs.environment.filebased.FileBasedEnvironmentProvider;
-import deployment.configs.environment.filebased.JsonEnvironmentParser;
+import deployment.configs.environment.filebased.EnvironmentParserImpl;
 import deployment.configs.properties.PropertiesProvider;
-import deployment.configs.properties.resolver.PropertyResolver;
-import deployment.configs.properties.serializer.PropertySerializer;
 import deployment.configs.properties.files.parser.FileComponentParser;
 import deployment.configs.properties.files.provider.ComponentTree;
 import deployment.configs.properties.files.provider.ComponentTreeCache;
 import deployment.configs.properties.files.provider.FileBasedPropertiesProvider;
-import deployment.configs.properties.resolver.placeholder.PlaceholderResolver;
 import deployment.configs.properties.resolver.PropertyFetcherImpl;
+import deployment.configs.properties.resolver.PropertyResolver;
 import deployment.configs.properties.resolver.ResolvedPropertiesProvider;
+import deployment.configs.properties.resolver.placeholder.PlaceholderResolver;
+import deployment.configs.properties.resolver.specific.EnvSpecificPropertiesProvider;
 import deployment.configs.properties.resolver.spel.SpelExpressionResolver;
 import deployment.configs.properties.serializer.PropertiesSerializerImpl;
-import deployment.configs.properties.resolver.specific.EnvSpecificPropertiesProvider;
+import deployment.configs.properties.serializer.PropertySerializer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -42,7 +42,7 @@ public class BuildCommands {
     }
 
     public static EnvironmentProvider newEnvProvider(File repoDir) {
-        return cache(new FileBasedEnvironmentProvider(new File(repoDir, "envs"), "json", new JsonEnvironmentParser()));
+        return cache(new FileBasedEnvironmentProvider(new File(repoDir, "envs"), new EnvironmentParserImpl()));
     }
 
     public BuildPropertiesCommand newBuildCommand(PropertyType type) {

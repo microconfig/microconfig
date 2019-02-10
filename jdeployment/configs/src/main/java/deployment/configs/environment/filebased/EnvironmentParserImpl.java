@@ -9,7 +9,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Optional.*;
 import static java.util.stream.Collectors.toList;
 
-public class JsonEnvironmentParser implements EnvironmentParser<String> {
+public class EnvironmentParserImpl implements EnvironmentParser<String> {
     private static final String IP = "ip";
     private static final String PORT_OFFSET = "portOffset";
     private static final String INCLUDE = "include";

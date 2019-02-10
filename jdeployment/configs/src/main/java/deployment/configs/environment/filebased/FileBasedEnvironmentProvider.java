@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static deployment.util.CollectionUtils.singleValue;
@@ -24,12 +25,11 @@ import static java.util.stream.Collectors.toSet;
 @RequiredArgsConstructor
 public class FileBasedEnvironmentProvider implements EnvironmentProvider {
     private final File rootDirectory;
-    private final String extension;
     private final EnvironmentParser<String> environmentParser;
 
     @Override
     public Set<String> getEnvironmentNames() {
-        try (Stream<File> envStream = getEnvStream(empty())) {
+        try (Stream<File> envStream = envFiles(empty())) {
             return envStream
                     .map(f -> f.getName().split("\\.")[0])
                     .collect(toSet());
@@ -46,7 +46,7 @@ public class FileBasedEnvironmentProvider implements EnvironmentProvider {
 
     private File getEnvFile(String name) {
         List<File> files;
-        try (Stream<File> envStream = getEnvStream(of(name))) {
+        try (Stream<File> envStream = envFiles(of(name))) {
             files = envStream.collect(toList());
         }
 
@@ -59,14 +59,16 @@ public class FileBasedEnvironmentProvider implements EnvironmentProvider {
         return singleValue(files);
     }
 
-    private Stream<File> getEnvStream(Optional<String> envName) {
+    private Stream<File> envFiles(Optional<String> envName) {
+        String jsonExt = ".json";
+        String yamlExt = ".yaml";
+
+        Predicate<File> fileNamePredicate = envName.isPresent() ?
+                f -> f.getName().equals(envName.get() + jsonExt) || f.getName().equals(envName.get() + yamlExt)
+                : f -> f.getName().endsWith(jsonExt) || f.getName().endsWith(yamlExt);
+
         return walk(rootDirectory.toPath())
                 .map(Path::toFile)
-                .filter(f -> {
-                    String ext = "." + extension;
-                    return envName.isPresent() ?
-                            f.getName().equals(envName.get() + ext)
-                            : f.getName().endsWith(ext);
-                });
+                .filter(fileNamePredicate);
     }
 }
