@@ -31,6 +31,7 @@ public class EnvSpecificPropertiesProvider implements PropertiesProvider {
     private static final String USER_HOME = "userHome";
     private static final String CONFIG_DIR = "configDir";
     private static final String SERVICE_DIR = "serviceDir";
+    private static final String FOLDER = "folder"; //alias for service_dir
 
     private final PropertiesProvider propertiesProvider;
     private final EnvironmentProvider environmentProvider;
@@ -86,7 +87,10 @@ public class EnvSpecificPropertiesProvider implements PropertiesProvider {
         int componentOrder = 1 + componentGroup.get().getComponentNames().indexOf(component.getName());
         doAdd(ORDER, String.valueOf(componentOrder), properties, environment, true);
         doAdd(GROUP, componentGroup.get().getName(), properties, environment, true);
-        doAdd(SERVICE_DIR, new File(componentsDir, component.getName()).getAbsolutePath(), properties, environment, true);
+
+        String folder = new File(componentsDir, component.getName()).getAbsolutePath();
+        doAdd(SERVICE_DIR, folder, properties, environment, true);
+        doAdd(FOLDER, folder, properties, environment, true);
     }
 
     private void addConfigDir(Map<String, Property> properties, Environment environment) {
