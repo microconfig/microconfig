@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 
 import static io.microconfig.configs.environment.Component.byType;
 import static io.microconfig.configs.properties.resolver.specific.EnvSpecificPropertiesProvider.isEnvSpecificProperty;
+import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -30,7 +31,7 @@ public class PlaceholderResolver implements PropertyResolver {
 
     @Override
     public String resolve(Property sourceOfPlaceholders, RootComponent root) {
-        return doResolve(sourceOfPlaceholders, root, unmodifiableSet(new LinkedHashSet<>()));
+        return doResolve(sourceOfPlaceholders, root, emptySet());
     }
 
     private String doResolve(Property sourceOfPlaceholders, RootComponent root, Set<Placeholder> visited) {

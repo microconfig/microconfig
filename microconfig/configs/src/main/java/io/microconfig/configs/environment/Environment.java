@@ -89,9 +89,9 @@ public class Environment {
     }
 
     public Environment processInclude(EnvironmentProvider environmentProvider) {
-        if (!include.isPresent()) return this;
+        return !include.isPresent() ? this
+                : include.get().includeTo(this, environmentProvider);
 
-        return include.get().includeTo(this, environmentProvider);
     }
 
     @Override
