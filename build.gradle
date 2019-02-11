@@ -3,8 +3,8 @@ apply from: 'lib.gradle'
 buildscript {
     repositories {
         mavenLocal()
-//        mavenCentral()
-        maven { url "http://172.30.162.1/nexus/content/groups/public" }
+        mavenCentral()
+//        maven { url "http://172.30.162.1/nexus/content/groups/public" }
     }
 
     dependencies {
@@ -20,7 +20,7 @@ allprojects {
 
     group = 'microconfig'
     version = rootProject.version
-    sourceCompatibility = 10
+    sourceCompatibility = 9
 
     if (recordCoverage) {
         apply plugin: 'jacoco'
@@ -28,8 +28,8 @@ allprojects {
 
     repositories {
         mavenLocal()
-//        mavenCentral()
-        maven { url "http://172.30.162.1/nexus/content/groups/public" }
+        mavenCentral()
+//        maven { url "http://172.30.162.1/nexus/content/groups/public" }
     }
 
     publishing {
