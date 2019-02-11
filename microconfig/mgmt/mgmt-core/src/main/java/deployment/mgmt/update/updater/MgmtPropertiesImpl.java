@@ -1,10 +1,10 @@
 package deployment.mgmt.update.updater;
 
-import io.microconfig.configs.command.factory.BuildCommands;
-import io.microconfig.configs.command.factory.PropertyType;
-import io.microconfig.configs.environment.EnvironmentProvider;
-import io.microconfig.configs.properties.PropertiesProvider;
-import io.microconfig.configs.properties.Property;
+import io.microconfig.command.factory.BuildCommands;
+import io.microconfig.command.factory.PropertyType;
+import io.microconfig.environment.EnvironmentProvider;
+import io.microconfig.properties.PropertiesProvider;
+import io.microconfig.properties.Property;
 import deployment.mgmt.configs.componentgroup.ComponentGroupService;
 import deployment.mgmt.configs.componentgroup.GroupDescription;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
@@ -15,9 +15,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
 
-import static io.microconfig.configs.command.factory.PropertyType.PROCESS;
-import static io.microconfig.configs.environment.Component.byType;
-import static io.microconfig.configs.properties.Property.withoutTempValues;
+import static io.microconfig.command.factory.PropertyType.PROCESS;
+import static io.microconfig.environment.Component.byType;
+import static io.microconfig.properties.Property.withoutTempValues;
 import static deployment.util.Logger.info;
 
 @RequiredArgsConstructor

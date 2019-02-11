@@ -1,6 +1,6 @@
 package deployment.mgmt.update.scriptgenerator;
 
-import io.microconfig.configs.environment.ComponentGroup;
+import io.microconfig.environment.ComponentGroup;
 import deployment.mgmt.api.console.Mgmt;
 import deployment.mgmt.api.json.MgmtJsonApi;
 import deployment.mgmt.configs.componentgroup.ComponentGroupService;

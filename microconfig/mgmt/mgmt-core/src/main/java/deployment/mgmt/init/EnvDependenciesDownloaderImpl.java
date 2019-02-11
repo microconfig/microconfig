@@ -1,7 +1,7 @@
 package deployment.mgmt.init;
 
-import io.microconfig.configs.environment.Component;
-import io.microconfig.configs.properties.PropertiesProvider;
+import io.microconfig.environment.Component;
+import io.microconfig.properties.PropertiesProvider;
 import deployment.mgmt.atrifacts.Artifact;
 import deployment.mgmt.atrifacts.nexusclient.NexusClient;
 import deployment.mgmt.configs.componentgroup.ComponentGroupService;
@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static io.microconfig.configs.command.factory.PropertyType.DEPENDENCIES;
-import static io.microconfig.configs.properties.Property.withoutTempValues;
+import static io.microconfig.command.factory.PropertyType.DEPENDENCIES;
+import static io.microconfig.properties.Property.withoutTempValues;
 import static deployment.mgmt.atrifacts.Artifact.fromMavenString;
 import static deployment.util.Logger.*;
 import static deployment.util.OsUtil.isWindows;
