@@ -2,7 +2,6 @@ package io.microconfig.environments.filebased;
 
 import io.microconfig.environments.Environment;
 import io.microconfig.environments.EnvironmentNotExistException;
-import io.microconfig.environments.EnvironmentParser;
 import io.microconfig.environments.EnvironmentProvider;
 
 import java.io.File;
