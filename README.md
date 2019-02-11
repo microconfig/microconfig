@@ -12,6 +12,7 @@ If your project consists of tens or hundreds services you have to:
 * Some configuration properties must be dynamic (calculated using expression language) using other properties.
 
 Microconfig implements best practices for managing configuration.
+
 Microconfig is written in Java, but it used only to build you configuration from specific format to plain *.properties (or *.yaml) , so it can be used with systems written in any language. 
 
 Configuration can be built during deploy phase and result plain config files can be copied to filesystem, where your services can access it directly, or you can distribute result files using any config servers (like Spring Cloud Config server)
