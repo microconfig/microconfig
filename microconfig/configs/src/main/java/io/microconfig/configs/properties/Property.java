@@ -64,13 +64,9 @@ public class Property {
         return new Property(key, resolvedValue, envContext, source, temp);
     }
 
-    public String asPropertyString() {
-        return source.isSystem() ? "#" + toString() : toString();
-    }
-
     @Override
     public String toString() {
-        return key + "=" + value + (temp ? " #var" : "");
+        return (source.isSystem() ? "#" : "") + key + "=" + value;
     }
 
     @Getter

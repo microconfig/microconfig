@@ -8,9 +8,9 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static io.microconfig.configs.properties.serializer.PropertiesSerializerImpl.OutputFormat.PROPERTIES;
 import static deployment.util.FileUtils.delete;
 import static deployment.util.FileUtils.write;
+import static io.microconfig.configs.properties.serializer.PropertiesSerializerImpl.OutputFormat.PROPERTIES;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.joining;
@@ -49,7 +49,7 @@ public class PropertiesSerializerImpl implements PropertySerializer {
                 Function<Boolean, String> toString = system -> properties.stream()
                         .filter(p -> !p.isTemp())
                         .filter(p -> p.getSource().isSystem() == system)
-                        .map(Property::asPropertyString)
+                        .map(Property::toString)
                         .collect(joining(LINE_SEPARATOR, "", LINE_SEPARATOR));
 
                 return toString.apply(true) + LINE_SEPARATOR + toString.apply(false);
