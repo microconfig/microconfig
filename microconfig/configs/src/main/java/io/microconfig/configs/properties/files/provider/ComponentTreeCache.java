@@ -16,6 +16,8 @@ import static deployment.util.IoUtils.walk;
 import static io.microconfig.configs.command.factory.PropertyType.PROCESS;
 import static io.microconfig.configs.command.factory.PropertyType.SERVICE;
 import static java.util.Collections.emptyList;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.stream.Collectors.groupingBy;
 
 @RequiredArgsConstructor
@@ -53,6 +55,6 @@ public class ComponentTreeCache implements ComponentTree {
     @Override
     public Optional<File> getFolder(String component) {
         List<File> files = foldersByComponentType.getOrDefault(component, emptyList());
-        return files.isEmpty() ? Optional.empty() : Optional.of(files.get(0));
+        return files.isEmpty() ? empty() : of(files.get(0));
     }
 }

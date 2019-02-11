@@ -3,6 +3,7 @@ package io.microconfig.configs.properties.files.parser;
 import deployment.util.StringUtils;
 import io.microconfig.configs.properties.Property;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -18,9 +19,11 @@ import static java.util.Optional.ofNullable;
  */
 @EqualsAndHashCode(of = {"componentName", "env"})
 public class Include {
-    public final static Pattern PATTERN = Pattern.compile("[#@][iI]nclude\\s+(?<comp>[\\w\\d\\s_-]+)(\\[(?<env>.+)])?(\\s*@without:(?<without>.+))?");
+    final static Pattern PATTERN = Pattern.compile("[#@][iI]nclude\\s+(?<comp>[\\w\\d\\s_-]+)(\\[(?<env>.+)])?(\\s*@without:(?<without>.+))?");
 
+    @Getter
     private final String componentName;
+    @Getter
     private final String env;
     private final Optional<String> without;
 
@@ -28,7 +31,7 @@ public class Include {
         return new Include(line, defaultEnv);
     }
 
-    public static boolean isInclude(String line) {
+    static boolean isInclude(String line) {
         String lower = line.toLowerCase();
         return lower.startsWith("#include") || lower.startsWith("#@include");
     }
@@ -42,14 +45,6 @@ public class Include {
         this.componentName = requireNonNull(matcher.group("comp")).trim();
         this.env = requireNonNull(ofNullable(matcher.group("env")).orElse(defaultEnv)).trim();
         this.without = ofNullable(matcher.group("without"));
-    }
-
-    public String getComponentName() {
-        return componentName;
-    }
-
-    public String getEnv() {
-        return env;
     }
 
     public Map<String, Property> removeExcluded(Map<String, Property> includedProperties) {

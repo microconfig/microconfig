@@ -33,7 +33,6 @@ public class EnvSpecificPropertiesProvider implements PropertiesProvider {
     private final PropertiesProvider propertiesProvider;
     private final EnvironmentProvider environmentProvider;
     private final ComponentTree componentTree;
-    private final File configDir;
     private final File componentsDir;
 
     @Override
@@ -92,7 +91,8 @@ public class EnvSpecificPropertiesProvider implements PropertiesProvider {
     }
 
     private void addConfigDir(Map<String, Property> properties, Environment environment) {
-        doAdd(CONFIG_DIR, unixLikePath(configDir.getAbsolutePath()), properties, environment, true);
+        String configDir = componentTree.getRepoDirRoot().getParentFile().getAbsolutePath();
+        doAdd(CONFIG_DIR, unixLikePath(configDir), properties, environment, true);
     }
 
     private void addUserHome(Map<String, Property> properties, Environment environment) {

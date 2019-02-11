@@ -60,13 +60,13 @@ public class FileBasedPropertiesProvider implements PropertiesProvider {
     private Map<String, Property> processIncludes(ComponentProperties componentProperties, Set<Include> processedInclude) {
         Map<String, Property> propByKey = new HashMap<>();
 
-        componentProperties.getIncludes().forEach(include -> {
-            if (!processedInclude.add(include)) return;
+        for (Include include : componentProperties.getIncludes()) {
+            if (!processedInclude.add(include)) continue;
 
             Map<String, Property> includedProperties = getPropertiesByKey(Component.byType(include.getComponentName()), include.getEnv(), processedInclude);
             Map<String, Property> clean = include.removeExcluded(includedProperties);
             propByKey.putAll(clean);
-        });
+        }
 
         return propByKey;
     }

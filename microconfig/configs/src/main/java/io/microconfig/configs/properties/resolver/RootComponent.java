@@ -2,9 +2,11 @@ package io.microconfig.configs.properties.resolver;
 
 import io.microconfig.configs.environment.Component;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 import static java.util.Objects.requireNonNull;
 
+@Getter
 @EqualsAndHashCode
 public class RootComponent {
     private final Component rootComponent;
@@ -13,14 +15,6 @@ public class RootComponent {
     public RootComponent(Component rootComponent, String rootComponentEnv) {
         this.rootComponent = requireNonNull(rootComponent);
         this.rootComponentEnv = requireNonNull(rootComponentEnv);
-    }
-
-    public Component getRootComponent() {
-        return rootComponent;
-    }
-
-    public String getRootComponentEnv() {
-        return rootComponentEnv;
     }
 
     @Override

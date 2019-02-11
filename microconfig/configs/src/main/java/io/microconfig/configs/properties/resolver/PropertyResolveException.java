@@ -10,7 +10,7 @@ public class PropertyResolveException extends RuntimeException {
         super(message);
     }
 
-    public PropertyResolveException(String message, Throwable cause) {
+    private PropertyResolveException(String message, Throwable cause) {
         super(message, cause);
     }
 

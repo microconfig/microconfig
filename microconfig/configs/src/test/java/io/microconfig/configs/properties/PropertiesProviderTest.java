@@ -1,16 +1,17 @@
 package io.microconfig.configs.properties;
 
 import io.microconfig.configs.environment.EnvironmentProvider;
-import io.microconfig.configs.properties.files.provider.ComponentTree;
-import io.microconfig.configs.properties.resolver.PropertyResolver;
 import io.microconfig.configs.properties.files.parser.FileComponentParser;
+import io.microconfig.configs.properties.files.provider.ComponentTree;
 import io.microconfig.configs.properties.files.provider.ComponentTreeCache;
 import io.microconfig.configs.properties.files.provider.FileBasedPropertiesProvider;
-import io.microconfig.configs.properties.resolver.*;
+import io.microconfig.configs.properties.resolver.PropertyFetcherImpl;
+import io.microconfig.configs.properties.resolver.PropertyResolveException;
+import io.microconfig.configs.properties.resolver.PropertyResolver;
 import io.microconfig.configs.properties.resolver.ResolvedPropertiesProvider;
 import io.microconfig.configs.properties.resolver.placeholder.PlaceholderResolver;
-import io.microconfig.configs.properties.resolver.spel.SpelExpressionResolver;
 import io.microconfig.configs.properties.resolver.specific.EnvSpecificPropertiesProvider;
+import io.microconfig.configs.properties.resolver.spel.SpelExpressionResolver;
 import org.junit.Test;
 
 import java.io.File;
@@ -18,10 +19,10 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static io.microconfig.configs.utils.EnvFactory.newEnvironmentProvider;
-import static io.microconfig.configs.utils.TestUtils.getFile;
 import static io.microconfig.configs.environment.Component.byNameAndType;
 import static io.microconfig.configs.environment.Component.byType;
+import static io.microconfig.configs.utils.EnvFactory.newEnvironmentProvider;
+import static io.microconfig.configs.utils.TestUtils.getFile;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -34,7 +35,7 @@ public class PropertiesProviderTest {
     private static final PropertiesProvider envBasedPropertiesProvider = new EnvSpecificPropertiesProvider(fileBasedPropertiesProvider,
             environmentProvider,
             tree,
-            new File("home", "user/repo"), new File("home", "components"));
+            new File("home", "components"));
     private static final PropertyResolver placeholderResolver = new SpelExpressionResolver(new PlaceholderResolver(environmentProvider, new PropertyFetcherImpl(envBasedPropertiesProvider)));
     private static final PropertiesProvider resolvedPropertiesProvider = new ResolvedPropertiesProvider(envBasedPropertiesProvider, placeholderResolver);
 
