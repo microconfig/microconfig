@@ -3,9 +3,9 @@ package io.microconfig.configs.command;
 import java.io.File;
 import java.util.List;
 
-import static io.microconfig.configs.command.factory.BuildAllCommandFactory.newBuildPropertiesCommand;
 import static deployment.util.Logger.announce;
 import static deployment.util.TimeUtils.msAfter;
+import static io.microconfig.configs.command.factory.BuildAllCommandFactory.newBuildPropertiesCommand;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.System.getProperty;
 import static java.util.Arrays.asList;

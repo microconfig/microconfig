@@ -1,7 +1,7 @@
 package io.microconfig.configs.properties.files.parser;
 
-import io.microconfig.configs.properties.Property;
 import deployment.util.StringUtils;
+import io.microconfig.configs.properties.Property;
 import lombok.EqualsAndHashCode;
 
 import java.util.LinkedHashMap;

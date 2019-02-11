@@ -3,8 +3,8 @@ package io.microconfig.configs.command.factory;
 import io.microconfig.configs.command.BuildPropertiesCommand;
 import io.microconfig.configs.command.PropertiesPostProcessor;
 import io.microconfig.configs.environment.EnvironmentProvider;
-import io.microconfig.configs.environment.filebased.FileBasedEnvironmentProvider;
 import io.microconfig.configs.environment.filebased.EnvironmentParserImpl;
+import io.microconfig.configs.environment.filebased.FileBasedEnvironmentProvider;
 import io.microconfig.configs.properties.PropertiesProvider;
 import io.microconfig.configs.properties.files.parser.FileComponentParser;
 import io.microconfig.configs.properties.files.provider.ComponentTree;
@@ -23,8 +23,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
-import static io.microconfig.configs.command.PropertiesPostProcessor.emptyPostProcessor;
 import static deployment.util.CacheFactory.cache;
+import static io.microconfig.configs.command.PropertiesPostProcessor.emptyPostProcessor;
 
 @Getter
 @RequiredArgsConstructor

@@ -8,13 +8,13 @@ import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static io.microconfig.configs.command.factory.PropertyType.SECRET;
-import static io.microconfig.configs.properties.Property.withoutTempValues;
 import static deployment.util.FileUtils.delete;
 import static deployment.util.FileUtils.userHome;
 import static deployment.util.Logger.announce;
 import static deployment.util.PropertiesUtils.append;
 import static deployment.util.PropertiesUtils.loadPropertiesAsMap;
+import static io.microconfig.configs.command.factory.PropertyType.SECRET;
+import static io.microconfig.configs.properties.Property.withoutTempValues;
 
 @RequiredArgsConstructor
 public class SecretPropertiesPostProcessor implements PropertiesPostProcessor {

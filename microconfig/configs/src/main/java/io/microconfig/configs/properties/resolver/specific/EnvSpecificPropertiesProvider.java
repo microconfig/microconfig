@@ -1,10 +1,6 @@
 package io.microconfig.configs.properties.resolver.specific;
 
-import io.microconfig.configs.environment.Component;
-import io.microconfig.configs.environment.ComponentGroup;
-import io.microconfig.configs.environment.Environment;
-import io.microconfig.configs.environment.EnvironmentProvider;
-import io.microconfig.configs.environment.EnvironmentNotExistException;
+import io.microconfig.configs.environment.*;
 import io.microconfig.configs.properties.PropertiesProvider;
 import io.microconfig.configs.properties.Property;
 import io.microconfig.configs.properties.files.provider.ComponentTree;
@@ -14,8 +10,8 @@ import java.io.File;
 import java.util.Map;
 import java.util.Optional;
 
-import static io.microconfig.configs.properties.Property.Source.SYSTEM;
 import static deployment.util.StringUtils.unixLikePath;
+import static io.microconfig.configs.properties.Property.Source.SYSTEM;
 import static java.lang.System.getProperty;
 import static java.util.Arrays.asList;
 
