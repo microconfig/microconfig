@@ -3,8 +3,8 @@ apply from: 'lib.gradle'
 buildscript {
     repositories {
         mavenLocal()
-        mavenCentral()
 //        maven { url "http://172.30.162.1/nexus/content/groups/public" }
+        mavenCentral()
     }
 
     dependencies {
@@ -22,14 +22,10 @@ allprojects {
     version = rootProject.version
     sourceCompatibility = 9
 
-    if (recordCoverage) {
-        apply plugin: 'jacoco'
-    }
-
     repositories {
         mavenLocal()
-        mavenCentral()
 //        maven { url "http://172.30.162.1/nexus/content/groups/public" }
+        mavenCentral()
     }
 
     publishing {
