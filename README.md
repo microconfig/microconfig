@@ -10,3 +10,9 @@ If your project consists of tens or hundreds services you have to:
 * Configuration for different services can have common and specific parts. Also configuration for the same service on different environments can have common and specific parts as well.
 * Common part for different services (or for one service on different environments) should not be copy-pasted and must be easy to reuse.
 * Some configuration properties must be dynamic (calculated using expression language) using other properties.
+
+Microconfig implements best practices for managing configuration.
+Microconfig is written in Java, but it used only to build you configuration from specific format to plain *.properties (or *.yaml) , so it can be used with systems written in any language. 
+
+Configuration can be built during deploy phase and result plain config files can be copied to filesystem, where your services can access it directly, or you can distribute result files using any config servers (like Spring Cloud Config server)
+
