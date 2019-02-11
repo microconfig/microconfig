@@ -22,10 +22,17 @@ import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
-@RequiredArgsConstructor
 public class FileBasedEnvironmentProvider implements EnvironmentProvider {
     private final File rootDirectory;
     private final EnvironmentParser<String> environmentParser;
+
+    public FileBasedEnvironmentProvider(File rootDirectory, EnvironmentParser<String> environmentParser) {
+        if (!rootDirectory.exists()) {
+            throw new IllegalArgumentException("Can't find env directory '" + rootDirectory + "'. Maybe -Droot directory is incorrect.");
+        }
+        this.rootDirectory = rootDirectory;
+        this.environmentParser = environmentParser;
+    }
 
     @Override
     public Set<String> getEnvironmentNames() {
