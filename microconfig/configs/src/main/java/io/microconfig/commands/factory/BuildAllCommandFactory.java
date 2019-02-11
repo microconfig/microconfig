@@ -1,18 +1,18 @@
-package io.microconfig.command.factory;
+package io.microconfig.commands.factory;
 
-import io.microconfig.command.Command;
-import io.microconfig.command.CompositeCommand;
-import io.microconfig.command.GenerateCListCommand;
-import io.microconfig.command.GenerateHelpCommand;
-import io.microconfig.command.postprocessors.SecretPropertiesPostProcessor;
-import io.microconfig.command.postprocessors.WebappPostProcessor;
+import io.microconfig.commands.Command;
+import io.microconfig.commands.CompositeCommand;
+import io.microconfig.commands.GenerateCListCommand;
+import io.microconfig.commands.GenerateHelpCommand;
+import io.microconfig.commands.postprocessors.SecretPropertiesPostProcessor;
+import io.microconfig.commands.postprocessors.WebappPostProcessor;
 import io.microconfig.properties.serializer.PropertiesDiffWriter;
 import io.microconfig.properties.serializer.PropertiesSerializerImpl;
 
 import java.io.File;
 import java.util.List;
 
-import static io.microconfig.command.factory.PropertyType.*;
+import static io.microconfig.commands.factory.PropertyType.*;
 
 //todo2 environment mapping cr-psi->uat-sbrf
 public class BuildAllCommandFactory {

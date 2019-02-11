@@ -1,4 +1,4 @@
-package io.microconfig.command;
+package io.microconfig.commands;
 
 import io.microconfig.environment.EnvironmentProvider;
 import lombok.RequiredArgsConstructor;

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static io.microconfig.command.factory.PropertyType.DEPENDENCIES;
+import static io.microconfig.commands.factory.PropertyType.DEPENDENCIES;
 import static io.microconfig.properties.Property.withoutTempValues;
 import static deployment.mgmt.atrifacts.Artifact.fromMavenString;
 import static deployment.util.Logger.*;

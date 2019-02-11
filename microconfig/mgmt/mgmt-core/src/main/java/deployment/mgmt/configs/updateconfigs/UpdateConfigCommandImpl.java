@@ -1,6 +1,6 @@
 package deployment.mgmt.configs.updateconfigs;
 
-import io.microconfig.command.BuildConfigMain;
+import io.microconfig.commands.BuildConfigMain;
 import deployment.mgmt.configs.componentgroup.ComponentGroupService;
 import deployment.mgmt.configs.componentgroup.GroupDescription;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;

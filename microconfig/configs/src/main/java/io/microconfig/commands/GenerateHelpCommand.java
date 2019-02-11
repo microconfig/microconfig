@@ -1,4 +1,4 @@
-package io.microconfig.command;
+package io.microconfig.commands;
 
 import io.microconfig.environment.Component;
 import io.microconfig.environment.Environment;

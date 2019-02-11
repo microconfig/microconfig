@@ -1,6 +1,6 @@
-package io.microconfig.command.postprocessors;
+package io.microconfig.commands.postprocessors;
 
-import io.microconfig.command.PropertiesPostProcessor;
+import io.microconfig.commands.PropertiesPostProcessor;
 import io.microconfig.properties.Property;
 
 import java.io.File;

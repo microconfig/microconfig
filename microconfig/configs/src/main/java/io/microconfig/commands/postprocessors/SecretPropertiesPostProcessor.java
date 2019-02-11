@@ -1,6 +1,6 @@
-package io.microconfig.command.postprocessors;
+package io.microconfig.commands.postprocessors;
 
-import io.microconfig.command.PropertiesPostProcessor;
+import io.microconfig.commands.PropertiesPostProcessor;
 import io.microconfig.properties.Property;
 import lombok.RequiredArgsConstructor;
 
@@ -13,7 +13,7 @@ import static deployment.util.FileUtils.userHome;
 import static deployment.util.Logger.announce;
 import static deployment.util.PropertiesUtils.append;
 import static deployment.util.PropertiesUtils.loadPropertiesAsMap;
-import static io.microconfig.command.factory.PropertyType.SECRET;
+import static io.microconfig.commands.factory.PropertyType.SECRET;
 import static io.microconfig.properties.Property.withoutTempValues;
 
 @RequiredArgsConstructor

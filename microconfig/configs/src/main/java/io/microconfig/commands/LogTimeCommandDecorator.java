@@ -1,4 +1,4 @@
-package io.microconfig.command;
+package io.microconfig.commands;
 
 import static deployment.util.Logger.announce;
 import static java.lang.System.currentTimeMillis;

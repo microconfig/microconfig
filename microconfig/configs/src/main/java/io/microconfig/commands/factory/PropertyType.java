@@ -1,4 +1,4 @@
-package io.microconfig.command.factory;
+package io.microconfig.commands.factory;
 
 import lombok.Getter;
 

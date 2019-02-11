@@ -1,7 +1,7 @@
-package io.microconfig.command.factory;
+package io.microconfig.commands.factory;
 
-import io.microconfig.command.BuildPropertiesCommand;
-import io.microconfig.command.PropertiesPostProcessor;
+import io.microconfig.commands.BuildPropertiesCommand;
+import io.microconfig.commands.PropertiesPostProcessor;
 import io.microconfig.environment.EnvironmentProvider;
 import io.microconfig.environment.filebased.EnvironmentParserImpl;
 import io.microconfig.environment.filebased.FileBasedEnvironmentProvider;
@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 
 import static deployment.util.CacheFactory.cache;
-import static io.microconfig.command.PropertiesPostProcessor.emptyPostProcessor;
+import static io.microconfig.commands.PropertiesPostProcessor.emptyPostProcessor;
 
 @Getter
 @RequiredArgsConstructor
