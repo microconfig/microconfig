@@ -1,6 +1,6 @@
 package deployment.mgmt.ssh;
 
-import deployment.configs.environment.ComponentGroup;
+import io.microconfig.configs.environment.ComponentGroup;
 
 import java.util.List;
 import java.util.function.BiFunction;

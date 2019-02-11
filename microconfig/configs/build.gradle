@@ -1,4 +1,4 @@
 dependencies {
-    implementation project(':microconfig:utils:util'),
+    implementation project(':microconfig:utils'),
             'org.springframework:spring-expression'            
 }

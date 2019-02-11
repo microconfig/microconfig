@@ -1,7 +1,7 @@
 dependencies {
     implementation project(':microconfig:configs'),
             project(':microconfig:mgmt:nexus-resolver'),
-            project(':microconfig:utils:util'),
+            project(':microconfig:utils'),
             project(':microconfig:mgmt:console-api-exposer'),
             lib.jasypt,
             'org.slf4j:slf4j-log4j12'

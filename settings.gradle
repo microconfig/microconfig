@@ -9,5 +9,4 @@ include ':microconfig:mgmt:mgmt-starter',
 
 include ':microconfig:dashboard'
 
-include ':microconfig:utils:util',        
-        ':microconfig:utils:dependency-uploader'
+include ':microconfig:utils'

@@ -1,8 +1,8 @@
 package deployment.mgmt.update.updater;
 
-import deployment.configs.command.factory.PropertyType;
-import deployment.configs.environment.EnvironmentProvider;
-import deployment.configs.properties.PropertiesProvider;
+import io.microconfig.configs.command.factory.PropertyType;
+import io.microconfig.configs.environment.EnvironmentProvider;
+import io.microconfig.configs.properties.PropertiesProvider;
 import deployment.mgmt.configs.service.properties.NexusRepository;
 
 import java.util.List;

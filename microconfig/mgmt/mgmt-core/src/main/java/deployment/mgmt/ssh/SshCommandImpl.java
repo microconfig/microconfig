@@ -1,6 +1,6 @@
 package deployment.mgmt.ssh;
 
-import deployment.configs.environment.ComponentGroup;
+import io.microconfig.configs.environment.ComponentGroup;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.update.updater.MgmtProperties;
 import lombok.RequiredArgsConstructor;

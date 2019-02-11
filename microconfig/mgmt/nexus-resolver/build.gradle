@@ -1,5 +1,5 @@
 dependencies {
-    implementation project(':microconfig:utils:util'),
+    implementation project(':microconfig:utils'),
             lib.maven_resolver
 
     compile lib.maven_resolver_api

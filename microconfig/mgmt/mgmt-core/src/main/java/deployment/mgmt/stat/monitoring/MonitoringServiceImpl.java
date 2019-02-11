@@ -1,6 +1,6 @@
 package deployment.mgmt.stat.monitoring;
 
-import deployment.configs.environment.ComponentGroup;
+import io.microconfig.configs.environment.ComponentGroup;
 import deployment.mgmt.configs.componentgroup.ComponentGroupService;
 import deployment.mgmt.process.status.ServiceStatus;
 import deployment.mgmt.process.status.StatusCommand;
