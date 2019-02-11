@@ -4,14 +4,12 @@ import deployment.mgmt.atrifacts.Artifact;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 import static deployment.mgmt.atrifacts.Artifact.fromMavenString;
 import static deployment.mgmt.atrifacts.ArtifactType.JAR;
-import static java.util.List.of;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class ArtifactTest {
     @Test

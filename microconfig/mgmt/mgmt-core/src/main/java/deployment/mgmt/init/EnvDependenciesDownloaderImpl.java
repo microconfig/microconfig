@@ -1,13 +1,13 @@
 package deployment.mgmt.init;
 
-import io.microconfig.environment.Component;
-import io.microconfig.properties.PropertiesProvider;
 import deployment.mgmt.atrifacts.Artifact;
 import deployment.mgmt.atrifacts.nexusclient.NexusClient;
 import deployment.mgmt.configs.componentgroup.ComponentGroupService;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.service.properties.NexusRepository;
 import deployment.mgmt.update.updater.MgmtProperties;
+import io.microconfig.environment.Component;
+import io.microconfig.properties.PropertiesProvider;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -15,14 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static io.microconfig.commands.factory.PropertyType.DEPENDENCIES;
-import static io.microconfig.properties.Property.withoutTempValues;
 import static deployment.mgmt.atrifacts.Artifact.fromMavenString;
 import static deployment.util.Logger.*;
 import static deployment.util.OsUtil.isWindows;
 import static deployment.util.ProcessUtil.executeScript;
 import static deployment.util.TimeUtils.secAfter;
 import static deployment.util.ZipUtils.unzip;
+import static io.microconfig.commands.factory.PropertyType.DEPENDENCIES;
+import static io.microconfig.properties.Property.withoutTempValues;
 import static java.lang.System.currentTimeMillis;
 
 @RequiredArgsConstructor

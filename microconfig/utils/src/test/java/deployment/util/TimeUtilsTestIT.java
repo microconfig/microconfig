@@ -17,7 +17,7 @@ public class TimeUtilsTestIT {
         String h = formatTimeAfter(currentTimeMillis() - (5 * 3600 * 1010));
         System.out.println(h);
 
-        String d = formatTimeAfter(currentTimeMillis() - (10 * 25 * 3600 * 1000 ));
+        String d = formatTimeAfter(currentTimeMillis() - (10 * 25 * 3600 * 1000));
         System.out.println(d);
     }
 }

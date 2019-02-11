@@ -1,24 +1,24 @@
 package deployment.mgmt.update.updater;
 
-import io.microconfig.commands.factory.BuildCommands;
-import io.microconfig.commands.factory.PropertyType;
-import io.microconfig.environment.EnvironmentProvider;
-import io.microconfig.properties.PropertiesProvider;
-import io.microconfig.properties.Property;
 import deployment.mgmt.configs.componentgroup.ComponentGroupService;
 import deployment.mgmt.configs.componentgroup.GroupDescription;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.service.properties.NexusRepository;
 import deployment.mgmt.configs.service.properties.impl.ProcessPropertiesImpl;
+import io.microconfig.commands.factory.BuildCommands;
+import io.microconfig.commands.factory.PropertyType;
+import io.microconfig.environment.EnvironmentProvider;
+import io.microconfig.properties.PropertiesProvider;
+import io.microconfig.properties.Property;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
 
+import static deployment.util.Logger.info;
 import static io.microconfig.commands.factory.PropertyType.PROCESS;
 import static io.microconfig.environment.Component.byType;
 import static io.microconfig.properties.Property.withoutTempValues;
-import static deployment.util.Logger.info;
 
 @RequiredArgsConstructor
 public class MgmtPropertiesImpl implements MgmtProperties {

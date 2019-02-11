@@ -83,6 +83,7 @@ public class MgmtLockDecorator implements Mgmt {
     public void updateOnEveryNode(String minVersion) {
         mgmt.updateOnEveryNode(minVersion);
     }
+
     @Override
     public void fetchConfigs() {
         mgmt.fetchConfigs();

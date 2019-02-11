@@ -11,7 +11,7 @@ public class LogMessageWaiterTestIT {
         File log = new File("c:/temp/log.txt");
         log.delete();
 
-        new Thread(() -> new LogMessageWaiter(ProcessHandle.current(),  log, Set.of("line60", "failure marker"), System.currentTimeMillis(), 10).await()).start();
+        new Thread(() -> new LogMessageWaiter(ProcessHandle.current(), log, Set.of("line60", "failure marker"), System.currentTimeMillis(), 10).await()).start();
 
         ThreadUtils.sleepSec(2);
 

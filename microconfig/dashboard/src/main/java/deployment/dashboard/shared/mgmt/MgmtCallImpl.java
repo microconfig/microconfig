@@ -1,8 +1,6 @@
 package deployment.dashboard.shared.mgmt;
 
 import deployment.dashboard.shared.ssh.SshClient;
-import deployment.util.Logger;
-import deployment.util.LoggerUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

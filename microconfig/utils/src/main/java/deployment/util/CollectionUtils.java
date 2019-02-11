@@ -6,9 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.counting;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.*;
 
 public class CollectionUtils {
     public static <K, V> Map<K, V> join(Map<? extends K, ? extends V> first, Map<? extends K, ? extends V> second, Map<K, V> destination) {

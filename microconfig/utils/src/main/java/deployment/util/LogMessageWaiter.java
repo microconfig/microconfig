@@ -10,7 +10,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import static deployment.util.ConsoleColor.yellow;
-import static deployment.util.Logger.info;
 import static deployment.util.Logger.logLineBreak;
 import static deployment.util.LoggerUtils.oneLineInfo;
 import static deployment.util.ThreadUtils.sleepSec;

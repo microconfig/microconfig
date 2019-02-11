@@ -9,7 +9,6 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
-import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -24,16 +23,15 @@ import java.util.zip.ZipOutputStream;
 
 import static deployment.util.FileUtils.createDir;
 import static deployment.util.FileUtils.delete;
-import static deployment.util.IoUtils.readAllBytes;
 import static deployment.util.OsUtil.isWindows;
 import static java.nio.file.Files.setPosixFilePermissions;
 import static java.nio.file.attribute.PosixFilePermission.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.Set.of;
 import static java.util.stream.Collectors.toSet;
-import static org.apache.commons.compress.archivers.dump.DumpArchiveEntry.PERMISSION.*;
 import static org.apache.commons.compress.archivers.dump.DumpArchiveEntry.PERMISSION.GROUP_READ;
 import static org.apache.commons.compress.archivers.dump.DumpArchiveEntry.PERMISSION.GROUP_WRITE;
+import static org.apache.commons.compress.archivers.dump.DumpArchiveEntry.PERMISSION.*;
 import static org.apache.commons.io.IOUtils.copy;
 import static org.apache.commons.io.IOUtils.toByteArray;
 
@@ -81,7 +79,7 @@ public class ZipUtils {
         try (ZipOutputStream zipStream = new ZipOutputStream(new FileOutputStream(destinationZip))) {
             for (File source : sources) {
                 zipStream.putNextEntry(new ZipEntry(source.getName()));
-                try(InputStream stream = new FileInputStream(source)) {
+                try (InputStream stream = new FileInputStream(source)) {
                     copy(stream, zipStream);
                 }
             }

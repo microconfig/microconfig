@@ -1,11 +1,11 @@
 package deployment.mgmt.configs.updateconfigs;
 
-import io.microconfig.commands.BuildConfigMain;
 import deployment.mgmt.configs.componentgroup.ComponentGroupService;
 import deployment.mgmt.configs.componentgroup.GroupDescription;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.process.stop.StopCommand;
 import deployment.mgmt.update.scriptgenerator.MgmtScriptGenerator;
+import io.microconfig.commands.BuildConfigMain;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

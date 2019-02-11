@@ -1,10 +1,10 @@
 package deployment.mgmt.stat.monitoring;
 
-import io.microconfig.environment.ComponentGroup;
 import deployment.mgmt.configs.componentgroup.ComponentGroupService;
 import deployment.mgmt.process.status.ServiceStatus;
 import deployment.mgmt.process.status.StatusCommand;
 import deployment.mgmt.ssh.SshCommand;
+import io.microconfig.environment.ComponentGroup;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Comparator;
