@@ -6,7 +6,7 @@ import deployment.mgmt.configs.componentgroup.ComponentGroupService;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.service.properties.NexusRepository;
 import deployment.mgmt.update.updater.MgmtProperties;
-import io.microconfig.environment.Component;
+import io.microconfig.environments.Component;
 import io.microconfig.properties.PropertiesProvider;
 import lombok.RequiredArgsConstructor;
 

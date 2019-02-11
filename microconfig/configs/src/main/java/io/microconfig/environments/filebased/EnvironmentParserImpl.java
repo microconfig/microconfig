@@ -1,7 +1,7 @@
-package io.microconfig.environment.filebased;
+package io.microconfig.environments.filebased;
 
 import deployment.util.JsonUtil;
-import io.microconfig.environment.*;
+import io.microconfig.environments.*;
 
 import java.util.*;
 

@@ -1,6 +1,6 @@
 package io.microconfig.properties.files.provider;
 
-import io.microconfig.environment.Component;
+import io.microconfig.environments.Component;
 import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.Property;
 import io.microconfig.properties.files.parser.ComponentParser;

@@ -1,8 +1,8 @@
 package io.microconfig.utils;
 
-import io.microconfig.environment.EnvironmentProvider;
-import io.microconfig.environment.filebased.FileBasedEnvironmentProvider;
-import io.microconfig.environment.filebased.EnvironmentParserImpl;
+import io.microconfig.environments.EnvironmentProvider;
+import io.microconfig.environments.filebased.FileBasedEnvironmentProvider;
+import io.microconfig.environments.filebased.EnvironmentParserImpl;
 
 import java.io.File;
 

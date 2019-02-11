@@ -4,7 +4,7 @@ import deployment.mgmt.api.console.Mgmt;
 import deployment.mgmt.api.json.MgmtJsonApi;
 import deployment.mgmt.configs.componentgroup.ComponentGroupService;
 import deployment.mgmt.update.updater.MgmtProperties;
-import io.microconfig.environment.ComponentGroup;
+import io.microconfig.environments.ComponentGroup;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

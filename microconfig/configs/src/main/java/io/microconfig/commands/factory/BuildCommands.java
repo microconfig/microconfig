@@ -2,9 +2,9 @@ package io.microconfig.commands.factory;
 
 import io.microconfig.commands.BuildPropertiesCommand;
 import io.microconfig.commands.PropertiesPostProcessor;
-import io.microconfig.environment.EnvironmentProvider;
-import io.microconfig.environment.filebased.EnvironmentParserImpl;
-import io.microconfig.environment.filebased.FileBasedEnvironmentProvider;
+import io.microconfig.environments.EnvironmentProvider;
+import io.microconfig.environments.filebased.EnvironmentParserImpl;
+import io.microconfig.environments.filebased.FileBasedEnvironmentProvider;
 import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.files.parser.FileComponentParser;
 import io.microconfig.properties.files.provider.ComponentTree;

@@ -1,8 +1,8 @@
 package io.microconfig.properties.resolver.placeholder;
 
-import io.microconfig.environment.Component;
-import io.microconfig.environment.EnvironmentNotExistException;
-import io.microconfig.environment.EnvironmentProvider;
+import io.microconfig.environments.Component;
+import io.microconfig.environments.EnvironmentNotExistException;
+import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.properties.Property;
 import io.microconfig.properties.resolver.PropertyFetcher;
 import io.microconfig.properties.resolver.PropertyResolveException;
@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 
-import static io.microconfig.environment.Component.byType;
+import static io.microconfig.environments.Component.byType;
 import static io.microconfig.properties.resolver.specific.EnvSpecificPropertiesProvider.isEnvSpecificProperty;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;

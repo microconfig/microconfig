@@ -1,9 +1,9 @@
-package io.microconfig.environment.filebased;
+package io.microconfig.environments.filebased;
 
-import io.microconfig.environment.Environment;
-import io.microconfig.environment.EnvironmentNotExistException;
-import io.microconfig.environment.EnvironmentParser;
-import io.microconfig.environment.EnvironmentProvider;
+import io.microconfig.environments.Environment;
+import io.microconfig.environments.EnvironmentNotExistException;
+import io.microconfig.environments.EnvironmentParser;
+import io.microconfig.environments.EnvironmentProvider;
 
 import java.io.File;
 import java.nio.file.Path;

@@ -1,4 +1,4 @@
-package io.microconfig.environment;
+package io.microconfig.environments;
 
 import org.junit.Test;
 

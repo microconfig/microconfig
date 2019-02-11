@@ -1,4 +1,4 @@
-package io.microconfig.environment;
+package io.microconfig.environments;
 
 import lombok.Getter;
 
@@ -91,7 +91,6 @@ public class Environment {
     public Environment processInclude(EnvironmentProvider environmentProvider) {
         return !include.isPresent() ? this
                 : include.get().includeTo(this, environmentProvider);
-
     }
 
     @Override

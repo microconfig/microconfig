@@ -1,4 +1,4 @@
-package io.microconfig.environment;
+package io.microconfig.environments;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

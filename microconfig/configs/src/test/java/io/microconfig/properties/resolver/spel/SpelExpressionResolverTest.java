@@ -1,6 +1,6 @@
 package io.microconfig.properties.resolver.spel;
 
-import io.microconfig.environment.Component;
+import io.microconfig.environments.Component;
 import io.microconfig.properties.Property;
 import io.microconfig.properties.resolver.PropertyResolver;
 import io.microconfig.properties.resolver.RootComponent;

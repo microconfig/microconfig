@@ -1,6 +1,6 @@
 package io.microconfig.properties.resolver.specific;
 
-import io.microconfig.environment.*;
+import io.microconfig.environments.*;
 import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.Property;
 import io.microconfig.properties.files.provider.ComponentTree;

@@ -1,6 +1,6 @@
 package io.microconfig.commands;
 
-import io.microconfig.environment.EnvironmentProvider;
+import io.microconfig.environments.EnvironmentProvider;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

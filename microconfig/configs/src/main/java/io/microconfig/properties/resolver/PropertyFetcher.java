@@ -1,6 +1,6 @@
 package io.microconfig.properties.resolver;
 
-import io.microconfig.environment.Component;
+import io.microconfig.environments.Component;
 import io.microconfig.properties.Property;
 
 import java.util.Optional;

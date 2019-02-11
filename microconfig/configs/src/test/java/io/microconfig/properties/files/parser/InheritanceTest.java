@@ -1,7 +1,7 @@
 package io.microconfig.properties.files.parser;
 
-import io.microconfig.environment.Environment;
-import io.microconfig.environment.EnvironmentProvider;
+import io.microconfig.environments.Environment;
+import io.microconfig.environments.EnvironmentProvider;
 import org.junit.Test;
 
 import java.util.List;

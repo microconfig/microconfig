@@ -2,7 +2,7 @@ package deployment.mgmt.ssh;
 
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.update.updater.MgmtProperties;
-import io.microconfig.environment.ComponentGroup;
+import io.microconfig.environments.ComponentGroup;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;

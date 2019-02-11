@@ -7,7 +7,7 @@ import deployment.mgmt.configs.service.properties.NexusRepository;
 import deployment.mgmt.configs.service.properties.impl.ProcessPropertiesImpl;
 import io.microconfig.commands.factory.BuildCommands;
 import io.microconfig.commands.factory.PropertyType;
-import io.microconfig.environment.EnvironmentProvider;
+import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.Property;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.Map;
 
 import static deployment.util.Logger.info;
 import static io.microconfig.commands.factory.PropertyType.PROCESS;
-import static io.microconfig.environment.Component.byType;
+import static io.microconfig.environments.Component.byType;
 import static io.microconfig.properties.Property.withoutTempValues;
 
 @RequiredArgsConstructor

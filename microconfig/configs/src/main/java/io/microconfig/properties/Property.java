@@ -1,6 +1,6 @@
 package io.microconfig.properties;
 
-import io.microconfig.environment.Component;
+import io.microconfig.environments.Component;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

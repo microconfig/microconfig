@@ -1,6 +1,6 @@
 package io.microconfig.properties;
 
-import io.microconfig.environment.EnvironmentProvider;
+import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.properties.files.parser.FileComponentParser;
 import io.microconfig.properties.files.provider.ComponentTree;
 import io.microconfig.properties.files.provider.ComponentTreeCache;
@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static io.microconfig.environment.Component.byNameAndType;
-import static io.microconfig.environment.Component.byType;
+import static io.microconfig.environments.Component.byNameAndType;
+import static io.microconfig.environments.Component.byType;
 import static io.microconfig.utils.EnvFactory.newEnvironmentProvider;
 import static io.microconfig.utils.TestUtils.getFile;
 import static java.util.Arrays.asList;

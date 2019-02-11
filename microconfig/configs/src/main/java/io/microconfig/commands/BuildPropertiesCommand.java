@@ -1,8 +1,8 @@
 package io.microconfig.commands;
 
-import io.microconfig.environment.Component;
-import io.microconfig.environment.Environment;
-import io.microconfig.environment.EnvironmentProvider;
+import io.microconfig.environments.Component;
+import io.microconfig.environments.Environment;
+import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.Property;
 import io.microconfig.properties.serializer.PropertySerializer;
