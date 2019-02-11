@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/Microconfig/microconfig.svg?branch=master)](https://travis-ci.com/Microconfig/microconfig)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-This project is intended to make it easy and convenient to manage configuration for microservices(or just for big amount of services) and reuse common part.
+This project is intended to make it easy and convenient to manage configuration for microservices (or just for big amount of services) and reuse common part.
 
 If your project consists of tens or hundreds services you have to:
 * To be able to keep configuration for each service, ideally separately from code.
