@@ -1,6 +1,6 @@
 # Micro-config
 
-[![Build Status](https://travis-ci.com/extconfig/extconfig.svg?branch=master)](https://travis-ci.com/extconfig/extconfig)
+[![Build Status](https://travis-ci.com/Microconfig/microconfig.svg?branch=master)](https://travis-ci.com/Microconfig/microconfig)
 
 License
-Extconfig is Open Source software released under the Apache 2.0 license.
+Microconfig is Open Source software released under the Apache 2.0 license.
