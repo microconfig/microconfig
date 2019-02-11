@@ -92,9 +92,7 @@ public class EnvSpecificPropertiesProvider implements PropertiesProvider {
 
         doAdd(SERVICE_DIR, new File(componentsDir, component.getName()).getAbsolutePath(), properties, environment, true);
         Optional<File> folder = componentTree.getFolder(component.getType());
-        if (folder.isPresent()) {
-            doAdd(FOLDER, folder.get().getAbsolutePath(), properties, environment, true);
-        }
+        folder.ifPresent(file -> doAdd(FOLDER, file.getAbsolutePath(), properties, environment, true));
     }
 
     private void addConfigDir(Map<String, Property> properties, Environment environment) {
