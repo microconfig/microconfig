@@ -1,9 +1,11 @@
 package deployment.configs.properties.resolver.placeholder;
 
+import deployment.configs.properties.Property;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.io.File;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,6 +46,10 @@ public class Placeholder {
     }
 
     public Placeholder changeComponent(String component, String environment) {
+        return new Placeholder(component, environment, value, defaultValue);
+    }
+
+    public Placeholder changeValue(String value) {
         return new Placeholder(component, environment, value, defaultValue);
     }
 

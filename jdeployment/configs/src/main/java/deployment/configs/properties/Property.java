@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.io.File;
 import java.util.Map;
 
 import static deployment.util.StreamUtils.toLinkedMap;
@@ -71,6 +72,10 @@ public class Property {
     @Override
     public String toString() {
         return key + "=" + value + (temp ? " #var" : "");
+    }
+
+    public String getComponentFolder() {
+        return new File(source.getSourceOfProperty()).getParent();
     }
 
     @Getter

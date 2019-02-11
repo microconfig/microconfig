@@ -1,8 +1,7 @@
 package deployment.configs.properties;
 
 import deployment.configs.environment.EnvironmentProvider;
-import deployment.configs.properties.PropertiesProvider;
-import deployment.configs.properties.Property;
+import deployment.configs.properties.files.provider.ComponentTree;
 import deployment.configs.properties.resolver.PropertyResolver;
 import deployment.configs.properties.files.parser.FileComponentParser;
 import deployment.configs.properties.files.provider.ComponentTreeCache;
@@ -30,15 +29,19 @@ import static org.junit.Assert.assertFalse;
 public class PropertiesProviderTest {
     private static final EnvironmentProvider environmentProvider = newEnvironmentProvider();
     private static final File rootDir = new File(getFile("test-props"), "components");
-    private static final PropertiesProvider fileBasedPropertiesProvider = new FileBasedPropertiesProvider(ComponentTreeCache.build(rootDir), "properties", new FileComponentParser("components"));
-    private static final PropertiesProvider envBasedPropertiesProvider = new EnvSpecificPropertiesProvider(fileBasedPropertiesProvider, environmentProvider, new File("home", "user/repo"), new File("home", "components"));
+    private static final ComponentTree tree = ComponentTreeCache.build(rootDir);
+    private static final PropertiesProvider fileBasedPropertiesProvider = new FileBasedPropertiesProvider(tree, "properties", new FileComponentParser("components"));
+    private static final PropertiesProvider envBasedPropertiesProvider = new EnvSpecificPropertiesProvider(fileBasedPropertiesProvider,
+            environmentProvider,
+            tree,
+            new File("home", "user/repo"), new File("home", "components"));
     private static final PropertyResolver placeholderResolver = new SpelExpressionResolver(new PlaceholderResolver(environmentProvider, new PropertyFetcherImpl(envBasedPropertiesProvider)));
     private static final PropertiesProvider resolvedPropertiesProvider = new ResolvedPropertiesProvider(envBasedPropertiesProvider, placeholderResolver);
 
     @Test
     public void testLoadsProperties() {
         Map<String, Property> props = resolvedPropertiesProvider.getProperties(byType("th-client"), "uat");
-        assertEquals("Incorrect property count", 24, props.size());
+        assertEquals("Incorrect property count", 25, props.size());
         assertEquals("th-common-value", props.get("th-client.property.common").getValue());
         assertEquals("th-common-value", props.get("th-client.defaultValue").getValue());
         assertEquals("th-uat-value", props.get("th-client.property.from.uat").getValue());
