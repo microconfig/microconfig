@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static io.microconfig.configs.command.factory.PropertyType.SECRET;
-import static io.microconfig.configs.properties.Property.notTempValues;
+import static io.microconfig.configs.properties.Property.withoutTempValues;
 import static deployment.util.FileUtils.delete;
 import static deployment.util.FileUtils.userHome;
 import static deployment.util.Logger.announce;
@@ -26,7 +26,7 @@ public class SecretPropertiesPostProcessor implements PropertiesPostProcessor {
 
     @Override
     public void process(File serviceDir, String serviceName, Map<String, Property> properties) {
-        Map<String, String> props = notTempValues(properties);
+        Map<String, String> props = withoutTempValues(properties);
         if (props.isEmpty()) return;
 
         doMerge(serviceName, new LinkedHashMap<>(props));

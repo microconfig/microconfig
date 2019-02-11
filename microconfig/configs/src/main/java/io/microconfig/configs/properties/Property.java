@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.io.File;
 import java.util.Map;
 
 import static deployment.util.StreamUtils.toLinkedMap;
@@ -21,14 +20,6 @@ public class Property {
 
     private final Source source;
     private final boolean temp;
-
-    public static boolean isTempProperty(String line) {
-        return line.startsWith("#var") || line.startsWith("#var");
-    }
-
-    public static boolean isComment(String line) {
-        return line.startsWith("#");
-    }
 
     public static Property parse(String keyValue, String envContext, Source source) {
         int indexOfSeparator = keyValue.indexOf('=');
@@ -54,7 +45,15 @@ public class Property {
         this.temp = temp;
     }
 
-    public static Map<String, String> notTempValues(Map<String, Property> properties) {
+    public static boolean isComment(String line) {
+        return line.startsWith("#");
+    }
+
+    public static boolean isTempProperty(String line) {
+        return line.startsWith("#var");
+    }
+
+    public static Map<String, String> withoutTempValues(Map<String, Property> properties) {
         return unmodifiableMap(properties.entrySet().stream()
                 .filter(e -> !e.getValue().isTemp())
                 .filter(e -> !e.getValue().getSource().isSystem())
@@ -72,10 +71,6 @@ public class Property {
     @Override
     public String toString() {
         return key + "=" + value + (temp ? " #var" : "");
-    }
-
-    public String getComponentFolder() {
-        return new File(source.getSourceOfProperty()).getParent();
     }
 
     @Getter

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import static io.microconfig.configs.command.factory.PropertyType.DEPENDENCIES;
-import static io.microconfig.configs.properties.Property.notTempValues;
+import static io.microconfig.configs.properties.Property.withoutTempValues;
 import static deployment.mgmt.atrifacts.Artifact.fromMavenString;
 import static deployment.util.Logger.*;
 import static deployment.util.OsUtil.isWindows;
@@ -37,7 +37,7 @@ public class EnvDependenciesDownloaderImpl implements EnvDependenciesDownloader 
         if (isWindows()) return;
 
         PropertiesProvider propertiesProvider = mgmtProperties.getPropertyProvider(DEPENDENCIES);
-        Map<String, String> dependencies = notTempValues(propertiesProvider.getProperties(Component.byType(DEPENDENCIES.name().toLowerCase()), componentGroup.getEnv()));
+        Map<String, String> dependencies = withoutTempValues(propertiesProvider.getProperties(Component.byType(DEPENDENCIES.name().toLowerCase()), componentGroup.getEnv()));
 
         List<NexusRepository> nexusRepositories = new ArrayList<>();
         dependencies.forEach((name, artifactLine) -> {

@@ -17,7 +17,7 @@ import java.util.Map;
 
 import static io.microconfig.configs.command.factory.PropertyType.PROCESS;
 import static io.microconfig.configs.environment.Component.byType;
-import static io.microconfig.configs.properties.Property.notTempValues;
+import static io.microconfig.configs.properties.Property.withoutTempValues;
 import static deployment.util.Logger.info;
 
 @RequiredArgsConstructor
@@ -56,7 +56,7 @@ public class MgmtPropertiesImpl implements MgmtProperties {
             throw new IllegalArgumentException("Can't resolver process properties for " + serviceName);
         }
 
-        return new ProcessPropertiesImpl(notTempValues(properties), null).getMavenSettings().getNexusRepositories();
+        return new ProcessPropertiesImpl(withoutTempValues(properties), null).getMavenSettings().getNexusRepositories();
     }
 
     private String anyServiceFromCurrentGroup(EnvironmentProvider environmentProvider) {
