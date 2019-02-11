@@ -2,7 +2,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web',
             'org.springframework.boot:spring-boot-starter-thymeleaf',
             lib.jsch,
-            project(':jdeployment:utils:util'),            
+            project(':microconfig:utils:util'),            
             lib.guava
 
     runtimeOnly 'org.springframework.boot:spring-boot-devtools'

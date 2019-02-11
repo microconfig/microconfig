@@ -18,7 +18,7 @@ allprojects {
     apply plugin: 'jacoco'
     apply plugin: 'maven-publish'
 
-    group = 'jdeployment'
+    group = 'microconfig'
     version = rootProject.version
     sourceCompatibility = 10
 

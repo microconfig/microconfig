@@ -1,0 +1,6 @@
+//apply plugin: 'org.springframework.boot'
+
+dependencies {
+    implementation project(':microconfig:mgmt:mgmt-core'),
+            project(':microconfig:utils:util')
+}

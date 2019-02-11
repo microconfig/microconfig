@@ -1,4 +1,4 @@
-package jdeployment;
+package microconfig;
 
 import deployment.mgmt.atrifacts.Artifact;
 import deployment.mgmt.atrifacts.ArtifactType;

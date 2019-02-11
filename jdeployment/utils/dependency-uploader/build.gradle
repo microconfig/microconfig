@@ -1,6 +1,0 @@
-//apply plugin: 'org.springframework.boot'
-
-dependencies {
-    implementation project(':jdeployment:mgmt:mgmt-core'),
-            project(':jdeployment:utils:util')
-}

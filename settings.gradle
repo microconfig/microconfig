@@ -1,13 +1,13 @@
-rootProject.name = 'jdeployment-root'
+rootProject.name = 'microconfig-root'
 
-include ':jdeployment:configs'
+include ':microconfig:configs'
 
-include ':jdeployment:mgmt:mgmt-starter',
-        ':jdeployment:mgmt:mgmt-core',
-        ':jdeployment:mgmt:nexus-resolver',
-        ':jdeployment:mgmt:console-api-exposer'
+include ':microconfig:mgmt:mgmt-starter',
+        ':microconfig:mgmt:mgmt-core',
+        ':microconfig:mgmt:nexus-resolver',
+        ':microconfig:mgmt:console-api-exposer'
 
-include ':jdeployment:dashboard'
+include ':microconfig:dashboard'
 
-include ':jdeployment:utils:util',        
-        ':jdeployment:utils:dependency-uploader'
+include ':microconfig:utils:util',        
+        ':microconfig:utils:dependency-uploader'
