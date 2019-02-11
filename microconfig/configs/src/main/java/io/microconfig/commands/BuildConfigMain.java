@@ -15,7 +15,7 @@ import static java.util.Optional.of;
 
 /**
  * VM params example
- * -Droot=C:\Users\amatorin\Desktop\microconfig\configs-layout-example\repo -Ddest=C:\Users\amatorin\Desktop\microconfig\configs -Denv=dev -Xverify:none -XX:TieredStopAtLevel=1
+ * -Droot=C:/microconfig/configs-layout-example/repo -Ddest=C:/microconfig/configs -Denv=dev -Xverify:none -XX:TieredStopAtLevel=1
  */
 public class BuildConfigMain {
     private static final String ENV = "env";
