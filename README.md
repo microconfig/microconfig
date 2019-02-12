@@ -60,13 +60,13 @@ Lets create basic application configuration files for each service. Microconfig 
 repo
 └───core  
 │    └───orders
-│        └───application.properties
+│    │   └───application.properties
 │    └───payments
 │        └───application.properties
 │	
 └───infra
     └───service-discovery
-        └───application.properties
+    │   └───application.properties
     └───api-gateway
         └───application.properties
 ```
