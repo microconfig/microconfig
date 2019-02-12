@@ -24,7 +24,7 @@ So the best way to follow this principle is to have dedicated repository for con
 Note, you must not store in VCS any sensitive information, like passwords. In VCS you can store references(keys) to passwords, and keep password in special secured stores.
 
 # Basic folder layout
-Let’s see folder layout that you can keep in dedicated repository.
+Let’s see basic folder layout that you can keep in dedicated repository.
 
 For every service you have to create dedicated folder with unique name(name of the service). In service directory we will keep common and env specific configuration.
 
