@@ -11,7 +11,7 @@ If your project consists of tens or hundreds services you have to:
 * Common part for different services (or for one service on different environments) should not be copy-pasted and must be easy to reuse.
 * Some configuration properties must be dynamic (calculated using expression language) using other properties.
 
-Microconfig is written in Java, but it desing to be used with systems written in any language. Microconfig just describes format of based configuration, syntax for placeholders, syntax for include, exclude, override, expression language for dynamic properties and engine than can build it to plain *.properties or *yaml.
+Microconfig is written in Java, but it desing to be used with systems written in any language. Microconfig just describes format of base configuration, syntax for placeholders, syntax for include, exclude, override, expression language for dynamic properties and engine than can build it to plain *.properties or *yaml.
 
 Configuration can be built during deploy phase and result plain config files can be copied to filesystem, where your services can access it directly(for instance, Spring Boot can read configuration from *.properties), or you can distribute result files using any config servers (like [Spring cloud config server](https://spring.io/projects/spring-cloud-config))
 
