@@ -138,3 +138,6 @@ Let's see how application properties can look like. In comments we note what can
     eureka.server.eviction-interval-timer-in-ms=15000 # difficult to read. how long in min ?
     eureka.server.enable-self-preservation=false    
 ```
+
+
+The first bad thing - application files contain duplication. Also you have to spend some time to understand application’s dependencies or it structure. For instance, payments service contains settings for 1) service-discovery client,  2)for oracle db and 3)application specific. Of course you can separate group of settings by empty line. But we can do it more readable and understandable.
