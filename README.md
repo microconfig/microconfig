@@ -53,20 +53,26 @@ It convenient to have different kinds of configuration and keep it in different 
 
 Inside service folder you can create configuration in key=value format. 
 
-Lets create basic application configuration files for each service. Microconfig treats *.properties like application properties. You can spit configuration among several files, but for simplity we will create sigle application.properties for eaech service.
-(note result config file after build will be single dispite amount of base sourse files)
+Let’s create basic application and process configuration files for each service. 
+Microconfig treats *.properties like application properties and *.proc like process properties.
+You can spit configuration among several files, but for simplity we will create single application.properties and process.proc for each service. Anyway after configuration build for each service for each config type a single result file will be generated despite amount of base source files.
+
 
 ```
 repo
 └───core  
 │    └───orders
 │    │   └───application.properties
+│    │   └───process.proc
 │    └───payments
-│        └───application.properties
+│       └───application.properties
+│       └───process.proc
 │	
 └───infra
     └───service-discovery
     │   └───application.properties
+    │   └───process.proc
     └───api-gateway
         └───application.properties
+        └───process.proc
 ```
