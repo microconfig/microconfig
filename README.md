@@ -16,3 +16,16 @@ Microconfig is written in Java, but it designed to be used with systems written 
 Configuration can be built during deploy phase and result plain config files can be copied to filesystem, where your services can access it directly(for instance, Spring Boot can read configuration from *.properties), or you can distribute result configuration using any config servers (like [Spring cloud config server](https://spring.io/projects/spring-cloud-config))
 
 
+
+It’s a good practice to keep service configuration separated from code. It allows not to rebuild your services any time configuration is changed and use the same service artifact (for instance, *.jar) for all environments, because it doesn’t contain any env specific configuration.
+So the best way to follow this principle is to have dedicated repository for configuration in your favorite version control system.  You can store configuration for all microservices in one repository to make it easy to reuse common part, so you can be sure common part for services is consistent. 
+Let’s see folder layout that you can keep in dedicated repository.
+For every service you have to create dedicated folder with unique name(name of the service). In service directory we will keep common and env specific configuration.
+So let’s image we have 4 microservices: order service, payment service,  service-discovery and api-gateway. We make it easy to manage we can group services by layers. Let’s create infra (for infrastructure services) and core (for our business domain services).  The result layout will look like:
+repo
+--core
+----orders
+----payment
+--infra
+----service-discovery
+----api-gateway
