@@ -53,7 +53,7 @@ public class MgmtPropertiesImpl implements MgmtProperties {
         info("Resolving nexus repositories");
         Map<String, Property> properties = propertiesProvider.getProperties(byType(serviceName), componentGroupService.getEnv());
         if (properties.isEmpty()) {
-            throw new IllegalArgumentException("Can't resolver process properties for " + serviceName);
+            throw new IllegalArgumentException("Can't resolve process properties for " + serviceName);
         }
 
         return new ProcessPropertiesImpl(withoutTempValues(properties), null).getMavenSettings().getNexusRepositories();

@@ -31,7 +31,7 @@ public class MavenSettingsImpl implements MavenSettings {
 
     @Override
     public boolean resolveSingleArtifact() {
-        return processProperties.hasTrueValue("maven.resolver.single.artifact");
+        return processProperties.hasTrueValue("maven.resolve.single.artifact");
     }
 
     @Override
