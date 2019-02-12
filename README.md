@@ -21,12 +21,14 @@ It’s a good practice to keep service configuration separated from code. It all
 
 So the best way to follow this principle is to have dedicated repository for configuration in your favorite version control system.  You can store configuration for all microservices in one repository to make it easy to reuse common part and be sure common part for services is consistent. 
 
+Note, you must not store in VCS any sensitive information, like passwords. In VCS you can store references(keys) to passwords, and keep password in special stores.
+
 # Basic folder layout
 Let’s see folder layout that you can keep in dedicated repository.
 
 For every service you have to create dedicated folder with unique name(name of the service). In service directory we will keep common and env specific configuration.
 
-So let’s image we have 4 microservices: order service, payment service,  service-discovery and api-gateway. We make it easy to manage we can group services by layers. Let’s create infra (for infrastructure services) and core (for our business domain services).  The result layout will look like:
+So let’s image we have 4 microservices: order service, payment service,  service-discovery and api-gateway. To make it easy to manage we can group services by layers 'infra' (for infrastructure services) and 'core' (for our business domain services).  The result layout will look like:
 
 repo
 --core
