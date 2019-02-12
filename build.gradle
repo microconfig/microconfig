@@ -1,4 +1,5 @@
 apply from: 'lib.gradle'
+version = "${major}.${minor}.${patch}${versionPostfix}"
 
 buildscript {
     repositories {
