@@ -65,8 +65,8 @@ repo
 │    │   └───application.properties
 │    │   └───process.proc
 │    └───payments
-│       └───application.properties
-│       └───process.proc
+│        └───application.properties
+│        └───process.proc
 │	
 └───infra
     └───service-discovery
@@ -76,3 +76,26 @@ repo
         └───application.properties
         └───process.proc
 ```
+
+Inside process.proc we will store configuration that describe what is your service and how to run it.
+
+**orders process.proc:**
+```*.properties
+    artifact=org.example:orders:19.4.2 # artifact in maven format groupId:artifactId:version
+    java.main=org.example.orders.OrdersStarter # main class to run
+    java.opts.mem=-Xmx2048M # vm params
+```
+**payments process.proc:**
+```*.properties
+    artifact=org.example:payments:19.4.2
+    java.main=org.example.payments.PaymentStarter
+    java.opts.mem=-Xmx2048M
+```
+**service-discovery process.proc:**
+```*.properties
+    artifact=org.example.discovery:eureka:19.4.2
+    java.main=org.example.discovery.EurekaSterter
+    java.opts.mem=-Xms1024M -Xmx1024M    
+```
+
+
