@@ -133,7 +133,7 @@ Let's see how application properties can look like. In comments we note what can
 **service-discovery application.properties:**
 ```*.properties
     server.port=6781
-    application.name=eureka # better to get name from folder
+    application.name=eureka
     eureka.client.fetchRegistry=false
     eureka.server.eviction-interval-timer-in-ms=15000 # how long in sec ?
     eureka.server.enable-self-preservation=false    
