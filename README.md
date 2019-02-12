@@ -30,10 +30,13 @@ For every service you have to create dedicated folder with unique name(name of t
 
 So let’s image we have 4 microservices: order service, payment service,  service-discovery and api-gateway. To make it easy to manage we can group services by layers 'infra' (for infrastructure services) and 'core' (for our business domain services).  The result layout will look like:
 
+```
 repo
---core
-----orders
-----payment
---infra
-----service-discovery
-----api-gateway
+└───core  
+│   └───orders
+│	└───payments
+│	
+└───infra
+	└───service-discovery
+	└───api-gateway
+```
