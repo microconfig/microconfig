@@ -1,6 +1,6 @@
 # Microconfig overview and features
 
-[![Build Status](https://travis-ci.com/Microconfig/microconfig.svg?branch=master)](https://travis-ci.com/Microconfig/microconfig)
+[![Build Status](https://travis-ci.com/microconfig/microconfig.svg?branch=master)](https://travis-ci.com/microconfig/microconfig)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Microconfig is intended to make it easy and convenient to manage configuration for microservices (or just for big amount of services) and reuse common part.
