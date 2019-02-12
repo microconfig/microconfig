@@ -1,6 +1,6 @@
 rootProject.name = 'microconfig-root'
 
-include ':microconfig:configs',
+include ':microconfig:microconfig-core',
         ':microconfig:utils'
 
 include 'mgmt:mgmt-starter',
