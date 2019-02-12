@@ -47,4 +47,4 @@ It convenient to have different kinds of configuration and keep it in different 
 * Process configuration (configuration that is used to start your service, like memory limit, VM params, etc)
 * Application configuration (configuration that you service reads after startup and use in runtime)
 * OS ENV variables
-* Special templates (for instance, your logger specific descriptor (logback.xml))
+* Special templates with placeholders (for instance, your logger specific descriptor (logback.xml), kafka.conf, cassandra.yaml, etc)
