@@ -30,6 +30,7 @@ public class OsLockService implements LockService {
         try {
             currentLock = lock(deployFileStructure.deploy().getLockFile());
             writeCurrentPid();
+            task.run();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
