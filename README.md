@@ -23,11 +23,11 @@ So the best way to follow this principle is to have dedicated repository for con
 Note, you must not store in VCS any sensitive information, like passwords. In VCS you can store references(keys) to passwords, and keep password in special secured stores.
 
 # Basic folder layout
-Let’s see basic folder layout that you can keep in dedicated repository.
+Let’s see basic folder layout that you can keep in a dedicated repository.
 
-For every service you have to create dedicated folder with unique name(name of the service). In service directory we will keep common and env specific configuration.
+For every service you have to create folder with unique name(name of the service). In service directory we will keep common and env specific configuration.
 
-So let’s image we have 4 microservices: order service, payment service,  service-discovery and api-gateway. To make it easy to manage we can group services by layers 'infra' (for infrastructure services) and 'core' (for our business domain services).  The result layout will look like:
+So let’s image we have 4 microservices: order service, payment service,  service-discovery and api-gateway. To make it easy to manage we can group services by layers: 'infra' for infrastructure services and 'core' for our business domain services. The result layout will look like:
 
 ```
 repo
