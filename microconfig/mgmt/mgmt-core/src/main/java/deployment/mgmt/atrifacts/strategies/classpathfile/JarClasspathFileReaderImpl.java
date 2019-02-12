@@ -20,10 +20,8 @@ public class JarClasspathFileReaderImpl implements JarClasspathReader {
         String classpath = new String(readInnerFile(artifactFile, CLASSPATH_FILE));
 
         return stream(classpath.split(", "))
-//                .peek(Logger::info)
                 .map(path -> toArtifact(path, artifact.getVersion()))
                 .filter(Objects::nonNull)
-//                .peek(a -> Logger.info(a.getMavenFormatString()))
                 .collect(toList());
     }
 
@@ -34,18 +32,7 @@ public class JarClasspathFileReaderImpl implements JarClasspathReader {
                 .filter(this::containsGradlePath)
                 .map(this::removeGradleDir)
                 .map(this::toArtifactFromPath)
-                .orElseGet(() -> {
-                    String cleanPath = path.replace("/build/libs/", "/");
-                    int versionIndex = cleanPath.indexOf(parentVersion);
-                    if (versionIndex < 0) {
-                        throw new IllegalArgumentException("Cant' convert path to dependency " + path);
-                    }
-
-                    File filePath = new File(cleanPath.substring(0, versionIndex - 1));
-                    String artifactId = filePath.getName();
-                    String groupIdPart = filePath.getParentFile().getParentFile().getName();
-                    return Artifact.fromMavenString(UNKNOWN_GROUP_ID + groupIdPart + ":" + artifactId + ":" + parentVersion);
-                });
+                .orElseGet(() -> toUnknownGroupIdArtifact(path, parentVersion));
     }
 
     private boolean containsGradlePath(String path) {
@@ -65,5 +52,18 @@ public class JarClasspathFileReaderImpl implements JarClasspathReader {
     private String removeHashDirAndFileName(String artifact) {
         int beforeLast = artifact.lastIndexOf('/', artifact.lastIndexOf('/') - 1);
         return artifact.substring(0, beforeLast);
+    }
+
+    private Artifact toUnknownGroupIdArtifact(String path, String parentVersion) {
+        String cleanPath = path.replace("/build/libs/", "/");
+        int versionIndex = cleanPath.indexOf(parentVersion);
+        if (versionIndex < 0) {
+            throw new IllegalArgumentException("Cant' convert path to dependency " + path);
+        }
+
+        File filePath = new File(cleanPath.substring(0, versionIndex - 1));
+        String artifactId = filePath.getName();
+        String groupIdPart = filePath.getParentFile().getParentFile().getName();
+        return Artifact.fromMavenString(UNKNOWN_GROUP_ID + groupIdPart + ":" + artifactId + ":" + parentVersion);
     }
 }
