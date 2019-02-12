@@ -38,8 +38,7 @@ repo
     └───api-gateway
 ```
 
-# Service configuration format
-Inside service folder you can create configuration in key=value format. 
+# Service configuration types
 
 It convenient to have different kinds of configuration and keep it in different files:
 * Process configuration (configuration that is used to start your service, like memory limit, VM params, etc)
@@ -47,3 +46,9 @@ It convenient to have different kinds of configuration and keep it in different 
 * OS ENV variables
 * Special templates with placeholders (for instance, your logger specific descriptor (logback.xml), kafka.conf, cassandra.yaml, etc)
 * Secrets configuration (Note, you must not store in VCS any sensitive information, like passwords. In VCS you can store references(keys) to passwords, and keep password in special secured stores.)
+
+# Service configuration 
+
+Inside service folder you can create configuration in key=value format. 
+
+Lets create basic application configuration files for each service.
