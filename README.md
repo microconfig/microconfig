@@ -46,7 +46,7 @@ It convenient to have different kinds of configuration and keep it in different 
 * OS ENV variables
 * Lib specific templates (for instance, your logger specific descriptor (logback.xml), kafka.conf, cassandra.yaml, etc)
 * Static files/scripts to run before/after you service start
-* Secrets configuration (Note, you must not store in VCS any sensitive information, like passwords. In VCS you can store references(keys) to passwords, and keep password in special secured stores.)
+* Secrets configuration (Note, you should not store in VCS any sensitive information, like passwords. In VCS you can store references(keys) to passwords, and keep password in special secured stores(like Vault) or at least in encrypted files on env machines)
 
 # Service configuration 
 
