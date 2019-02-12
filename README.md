@@ -77,26 +77,26 @@ repo
         └───process.proc
 ```
 
-Inside process.proc we will store configuration that describe what is your service and how to run it.
+Inside process.proc we will store configuration that describe what is your service and how to run it (You config files can have other proprties).
 
 **orders process.proc:**
 ```*.properties
     artifact=org.example:orders:19.4.2 # artifact in maven format groupId:artifactId:version
     java.main=org.example.orders.OrdersStarter # main class to run
-    java.opts.mem=-Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log # vm params
+    java.opts.mem=-Xms1024M -Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log # vm params
 ```
 **payments process.proc:**
 ```*.properties
-    artifact=org.example:payments:19.4.2
+    artifact=org.example:payments:19.4.2 # partial duplication
     java.main=org.example.payments.PaymentStarter
-    java.opts.mem=-Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log
+    java.opts.mem=-Xms1024M -Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log # duplication
     instance.count=2
 ```
 **service-discovery process.proc:**
 ```*.properties
     artifact=org.example.discovery:eureka:19.4.2
     java.main=org.example.discovery.EurekaSterter
-    java.opts.mem=-Xms1024M -Xmx1024M        
+    java.opts.mem=-Xms1024M -Xmx2048M # partial duplication         
 ```
 
 As you can see we already have some small copy-paste (all services have 19.4.2 version, two of them have the same java.ops params).  Configuration duplication as bad as code one. We will see father how to do it better.
