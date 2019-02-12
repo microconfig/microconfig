@@ -90,13 +90,45 @@ Inside process.proc we will store configuration that describe what is your servi
     artifact=org.example:payments:19.4.2
     java.main=org.example.payments.PaymentStarter
     java.opts.mem=-Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log
+    instance.count=2
 ```
 **service-discovery process.proc:**
 ```*.properties
     artifact=org.example.discovery:eureka:19.4.2
     java.main=org.example.discovery.EurekaSterter
-    java.opts.mem=-Xms1024M -Xmx1024M    
-    instance.count=2
+    java.opts.mem=-Xms1024M -Xmx1024M        
 ```
 
 As you can see we already have some small copy-paste (all services have 19.4.2 version, two of them have the same java.ops params).  Configuration duplication as bad as code one. We will see father how to do it better.
+
+Application properties can look like:
+**orders application.properties:**
+```*.properties
+    service-discovery.url=http://10.12.172.11:6781
+    eureka.instance.prefer-ip-address=true
+    server.port=9000
+    application.name=orders
+    datasource.minimum-pool-size=2
+    datasource.maximum-pool-size=10    
+    datasource.url=oracle.jdbc.url=jdbc:oracle:thin:@172.30.162.3:$1521:ARMSDEV
+    jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
+```
+**payments application.properties:**
+```*.properties
+    service-discovery.url=http://10.12.172.11:6781
+    eureka.instance.prefer-ip-address=true    
+    server.port=8080
+    application.name=payments
+    datasource.minimum-pool-size=2
+    datasource.maximum-pool-size=5    
+    datasource.url=oracle.jdbc.url=jdbc:oracle:thin:@172.30.162.3:1521:ARMSDEV
+    jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
+```
+**service-discovery application.properties:**
+```*.properties
+    server.port=6781
+    eureka.client.fetchRegistry=false
+    eureka.server.eviction-interval-timer-in-ms=10000
+    eureka.server.enable-self-preservation=false
+    application.name=eureka
+```
