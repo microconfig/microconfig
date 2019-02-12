@@ -49,7 +49,7 @@ It convenient to have different kinds of configuration and keep it in different 
 * Static files/scripts to run before/after you service start
 * Secrets configuration (Note, you should not store in VCS any sensitive information, like passwords. In VCS you can store references(keys) to passwords, and keep password in special secured stores(like Vault) or at least in encrypted files on env machines)
 
-# Service configuration 
+# Service configuration files
 
 Inside service folder you can create configuration in key=value format. 
 
