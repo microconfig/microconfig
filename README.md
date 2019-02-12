@@ -55,6 +55,7 @@ Inside service folder you can create configuration in key=value format.
 Lets create basic application configuration files for each service. Microconfig treats *.properties like application properties. You can spit configuration among several files, but for simplity we will create sigle service.properties for eaech service.
 (note result config file after build will be single dispite amount of base sourse files)
 
+```
 repo
 └───core  
 │    └───orders
@@ -67,4 +68,4 @@ repo
         └───application.properties
     └───api-gateway
         └───application.properties
-
+```
