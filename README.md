@@ -9,6 +9,7 @@ If your project consists of tens or hundreds services you have to:
 * Keep configuration for each service, ideally separately from code.
 * Configuration for different services can have common and specific parts. Also configuration for the same service on different environments can have common and specific parts as well.
 * Common part for different services (or for one service on different environments) should not be copy-pasted and must be easy to reuse.
+* It must be easy to understand how result file is generated and based on what placeholders are resolved. 
 * Some configuration properties must be dynamic (calculated using expression language) using other properties.
 
 Microconfig is written in Java, but it designed to be used with systems written in any language. Microconfig just describes format of base configuration, syntax for placeholders, includes, excludes, overrides, expression language for dynamic properties and engine than can build it to plain *.properties or *.yaml. Also it can resolve placeholders in arbitrary template files.
@@ -52,7 +53,7 @@ It convenient to have different kinds of configuration and keep it in different 
 
 Inside service folder you can create configuration in key=value format. 
 
-Lets create basic application configuration files for each service. Microconfig treats *.properties like application properties. You can spit configuration among several files, but for simplity we will create sigle service.properties for eaech service.
+Lets create basic application configuration files for each service. Microconfig treats *.properties like application properties. You can spit configuration among several files, but for simplity we will create sigle application.properties for eaech service.
 (note result config file after build will be single dispite amount of base sourse files)
 
 ```
