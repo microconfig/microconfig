@@ -20,8 +20,6 @@ It’s a good practice to keep service configuration separated from code. It all
 
 So the best way to follow this principle is to have dedicated repository for configuration in your favorite version control system.  You can store configuration for all microservices in one repository to make it easy to reuse common part and be sure common part for services is consistent. 
 
-Note, you must not store in VCS any sensitive information, like passwords. In VCS you can store references(keys) to passwords, and keep password in special secured stores.
-
 # Basic folder layout
 Let’s see basic folder layout that you can keep in a dedicated repository.
 
@@ -48,3 +46,4 @@ It convenient to have different kinds of configuration and keep it in different 
 * Application configuration (configuration that you service reads after startup and use in runtime)
 * OS ENV variables
 * Special templates with placeholders (for instance, your logger specific descriptor (logback.xml), kafka.conf, cassandra.yaml, etc)
+* Secrets configuration (Note, you must not store in VCS any sensitive information, like passwords. In VCS you can store references(keys) to passwords, and keep password in special secured stores.)
