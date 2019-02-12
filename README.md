@@ -32,11 +32,11 @@ So let’s image we have 4 microservices: order service, payment service,  servi
 
 ```
 repo
- └───core  
- │    └───orders
- │    └───payments
- │	
- └───infra
-      └───service-discovery
-      └───api-gateway
+└───core  
+│    └───orders
+│    └───payments
+│	
+└───infra
+    └───service-discovery
+    └───api-gateway
 ```
