@@ -83,13 +83,13 @@ Inside process.proc we will store configuration that describe what is your servi
 ```*.properties
     artifact=org.example:orders:19.4.2 # artifact in maven format groupId:artifactId:version
     java.main=org.example.orders.OrdersStarter # main class to run
-    java.opts.mem=-Xmx2048M -XX\:+PrintGCDetails -Xloggc\:logs/gc.log # vm params
+    java.opts.mem=-Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log # vm params
 ```
 **payments process.proc:**
 ```*.properties
     artifact=org.example:payments:19.4.2
     java.main=org.example.payments.PaymentStarter
-    java.opts.mem=-Xmx2048M -XX\:+PrintGCDetails -Xloggc\:logs/gc.log
+    java.opts.mem=-Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log
 ```
 **service-discovery process.proc:**
 ```*.properties
