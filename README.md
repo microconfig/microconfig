@@ -13,6 +13,6 @@ If your project consists of tens or hundreds services you have to:
 
 Microconfig is written in Java, but it desing to be used with systems written in any language. Microconfig just describes format of base configuration, syntax for placeholders, syntax for include, exclude, override, expression language for dynamic properties and engine than can build it to plain *.properties or *.yaml.
 
-Configuration can be built during deploy phase and result plain config files can be copied to filesystem, where your services can access it directly(for instance, Spring Boot can read configuration from *.properties), or you can distribute result files using any config servers (like [Spring cloud config server](https://spring.io/projects/spring-cloud-config))
+Configuration can be built during deploy phase and result plain config files can be copied to filesystem, where your services can access it directly(for instance, Spring Boot can read configuration from *.properties), or you can distribute result configuration using any config servers (like [Spring cloud config server](https://spring.io/projects/spring-cloud-config))
 
 
