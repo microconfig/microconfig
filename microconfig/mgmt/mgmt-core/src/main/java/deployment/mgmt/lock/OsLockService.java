@@ -23,14 +23,31 @@ import static java.nio.ByteBuffer.wrap;
 @RequiredArgsConstructor
 public class OsLockService implements LockService {
     private final DeployFileStructure deployFileStructure;
+    private volatile FileLock currentLock;
 
     @Override
     public void lockAndExecute(Runnable task) {
-        try (FileLock lock = lock(deployFileStructure.deploy().getLockFile())) {
-            writeCurrentPid(lock);
-            task.run();
+        try {
+            currentLock = lock(deployFileStructure.deploy().getLockFile());
+            writeCurrentPid();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } finally {
+            unlock();
+        }
+    }
+
+    @Override
+    public synchronized void unlock() {
+        try {
+            FileLock lock = this.currentLock;
+            if (lock == null) return;
+            if (lock.channel().isOpen()) {
+                lock.release();
+            }
+            this.currentLock = null;
+        } catch (IOException e) {
+            throw new RuntimeException("Exception during mgmt lock release");
         }
     }
 
@@ -54,7 +71,9 @@ public class OsLockService implements LockService {
         }
     }
 
-    private static void writeCurrentPid(FileLock lock) throws IOException {
+    private synchronized void writeCurrentPid() throws IOException {
+        FileLock lock = this.currentLock;
+        if (lock == null) return;
         lock.channel()
                 .position(0)
                 .write(wrap(align(valueOf(current().pid()), 20).getBytes()));

@@ -42,6 +42,7 @@ import deployment.mgmt.configs.updateconfigs.UpdateConfigCommandImpl;
 import deployment.mgmt.configs.updateconfigs.templates.CopyTemplatesService;
 import deployment.mgmt.configs.updateconfigs.templates.OldConfigsRelativePathResolver;
 import deployment.mgmt.init.*;
+import deployment.mgmt.lock.LockService;
 import deployment.mgmt.lock.OsLockService;
 import deployment.mgmt.process.log.LessLogCommand;
 import deployment.mgmt.process.runner.ScriptRunner;
@@ -81,6 +82,7 @@ import static java.util.List.of;
 @Getter
 public class MgmtFactory {
     private final DeployFileStructure deployFileStructure;
+    private final LockService lockService;
     private final ComponentGroupService componentGroupService;
     private final PropertyService propertyService;
     private final MetadataProvider metadataProvider;
@@ -104,6 +106,7 @@ public class MgmtFactory {
 
     public MgmtFactory() {
         this.deployFileStructure = DeployFileStructureImpl.init();
+        this.lockService = new OsLockService(deployFileStructure);
         this.propertyService = new PropertyServiceImpl(deployFileStructure);
         this.metadataProvider = new MetadataProviderImpl(deployFileStructure);
         this.componentGroupService = new ComponentGroupServiceImpl(deployFileStructure, propertyService);
@@ -126,7 +129,7 @@ public class MgmtFactory {
                 deploySettings,
                 deployFileStructure,
                 nexusClient,
-                new RestarterImpl()
+                new RestarterImpl(lockService)
         );
         this.stopCommand = new StopCommandImpl(propertyService, metadataProvider);
         this.killCommand = new KillCommandImpl(deployFileStructure);
@@ -166,8 +169,7 @@ public class MgmtFactory {
                 new MgmtServiceNameResolverDecorator(
                         mgmt(),
                         new ServiceNameResolverImpl(deploySettings, componentGroupService, propertyService)
-                ),
-                new OsLockService(deployFileStructure)
+                ), lockService
         );
     }
 

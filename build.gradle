@@ -4,8 +4,8 @@ version = "${major}.${minor}.${patch}${versionPostfix}"
 buildscript {
     repositories {
         mavenLocal()
-//        maven { url "http://172.30.162.1/nexus/content/groups/public" }
-        mavenCentral()
+        maven { url "http://172.30.162.1/nexus/content/groups/public" }
+//        mavenCentral()
     }
 
     dependencies {
@@ -21,12 +21,12 @@ allprojects {
 
     group = 'microconfig'
     version = rootProject.version
-    sourceCompatibility = 9
+    sourceCompatibility = 10
 
     repositories {
         mavenLocal()
-//        maven { url "http://172.30.162.1/nexus/content/groups/public" }
-        mavenCentral()
+        maven { url "http://172.30.162.1/nexus/content/groups/public" }
+//        mavenCentral()
     }
 
     publishing {

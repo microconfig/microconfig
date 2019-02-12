@@ -1,5 +1,8 @@
 package deployment.mgmt.update.restarter;
 
+import deployment.mgmt.lock.LockService;
+import lombok.RequiredArgsConstructor;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,9 +13,12 @@ import static deployment.util.ProcessUtil.currentJavaPath;
 import static deployment.util.ProcessUtil.startAndWait;
 import static java.util.Arrays.asList;
 
+@RequiredArgsConstructor
 public class RestarterImpl implements Restarter {
     public static final String UPDATE = "upgrade";
+    private final LockService lockService;
     private volatile String[] registeredCommand;
+
 
     public void restart(File jar, String[] command) {
         command = chooseCommand(command);
@@ -28,6 +34,7 @@ public class RestarterImpl implements Restarter {
             args.addAll(asList(command));
         }
 
+        lockService.unlock();
         System.exit(startAndWait(new ProcessBuilder(args).inheritIO()));
     }
 
