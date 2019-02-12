@@ -34,9 +34,9 @@ So let’s image we have 4 microservices: order service, payment service,  servi
 repo
 └───core  
 │   └───orders
-│	└───payments
+│   └───payments
 │	
 └───infra
-	└───service-discovery
-	└───api-gateway
+    └───service-discovery
+    └───api-gateway
 ```
