@@ -55,7 +55,7 @@ Inside service folder you can create configuration in key=value format.
 
 Let’s create basic application and process configuration files for each service. 
 Microconfig treats *.properties like application properties and *.proc like process properties.
-You can spit configuration among several files, but for simplity we will create single application.properties and process.proc for each service. Anyway after configuration build for each service for each config type a single result file will be generated despite amount of base source files.
+You can split configuration among several files, but for simplity we will create single application.properties and process.proc for each service. Anyway after configuration build for each service for each config type a single result file will be generated despite amount of base source files.
 
 
 ```
