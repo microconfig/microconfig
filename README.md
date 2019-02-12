@@ -77,7 +77,7 @@ repo
         └───process.proc
 ```
 
-Inside process.proc we will store configuration that describe what is your service and how to run it (You config files can have other properties, so don't pay attention on concrete values).
+Inside process.proc we will store configuration that describes what is your service and how to run it (Your config files can have other properties, so don't pay attention on concrete values).
 
 **orders process.proc:**
 ```*.properties
@@ -95,11 +95,11 @@ Inside process.proc we will store configuration that describe what is your servi
 **service-discovery process.proc:**
 ```*.properties
     artifact=org.example.discovery:eureka:19.4.2 # partial duplication         
-    java.main=org.example.discovery.EurekaSterter
+    java.main=org.example.discovery.EurekaStarter
     java.opts.mem=-Xms1024M -Xmx2048M # partial duplication         
 ```
 
-As you can see we already have some small copy-paste (all services have 19.4.2 version, two of them have the same java.ops params).  Configuration duplication as bad as code one. We will see father how to do it better.
+As you can see we already have some small copy-paste (all services have 19.4.2 version, two of them have the same java.ops params).  Configuration duplication as bad as code one. We will see further how to do it better.
 
 Let's see how application properties can look like. In comments we note what can be improved.
 
