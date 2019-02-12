@@ -101,7 +101,7 @@ Inside process.proc we will store configuration that describe what is your servi
 
 As you can see we already have some small copy-paste (all services have 19.4.2 version, two of them have the same java.ops params).  Configuration duplication as bad as code one. We will see father how to do it better.
 
-Application properties can look like:
+Let's see how application properties can look like. In comments we note what can be improved
 
 **orders application.properties:**
 ```*.properties
