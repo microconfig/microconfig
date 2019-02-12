@@ -113,7 +113,7 @@ Let's see how application properties can look like. In comments we note what can
     eureka.instance.prefer-ip-address=true  # duplication        
     datasource.minimum-pool-size=2  # duplication
     datasource.maximum-pool-size=10    
-    datasource.url=oracle.jdbc.url=jdbc:oracle:thin:@172.30.162.4:$1521:ARMSDEV  # partial duplication
+    datasource.url=jdbc:oracle:thin:@172.30.162.4:$1521:ARMSDEV  # partial duplication
     jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true  # duplication
 ```
 **payments application.properties:**
@@ -127,7 +127,7 @@ Let's see how application properties can look like. In comments we note what can
     eureka.instance.prefer-ip-address=true  # duplication            
     datasource.minimum-pool-size=2  # duplication
     datasource.maximum-pool-size=5    
-    datasource.url=oracle.jdbc.url=jdbc:oracle:thin:@172.30.162.3:1521:ARMSDEV  # partial duplication
+    datasource.url=jdbc:oracle:thin:@172.30.162.3:1521:ARMSDEV  # partial duplication
     jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true # duplication
 ```
 **service-discovery application.properties:**
