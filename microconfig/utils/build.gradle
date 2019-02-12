@@ -1,5 +1,3 @@
 dependencies {
-    implementation lib.commons_io,
-            lib.commons_compress,
-            'com.google.code.gson:gson'
+    implementation lib.commons_io                        
 }

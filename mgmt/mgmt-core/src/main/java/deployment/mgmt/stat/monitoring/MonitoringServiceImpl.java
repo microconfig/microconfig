@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static deployment.mgmt.process.status.ExecutionStatus.RUNNING;
 import static deployment.mgmt.stat.monitoring.MemoryUsage.statFor;
-import static deployment.util.JsonUtil.parse;
+import static deployment.mgmt.utils.JsonUtil.parse;
 import static deployment.util.ProcessUtil.executeAndReadOutput;
 import static java.lang.Integer.parseInt;
 import static java.util.Comparator.comparing;

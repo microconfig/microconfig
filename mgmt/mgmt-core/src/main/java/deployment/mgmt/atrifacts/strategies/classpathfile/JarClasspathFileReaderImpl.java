@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static deployment.mgmt.atrifacts.Artifact.UNKNOWN_GROUP_ID;
-import static deployment.util.ZipUtils.readInnerFile;
+import static deployment.mgmt.utils.ZipUtils.readInnerFile;
 import static java.util.Arrays.stream;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;

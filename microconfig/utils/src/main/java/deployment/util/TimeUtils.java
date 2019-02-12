@@ -14,7 +14,7 @@ public class TimeUtils {
         return (int) MILLISECONDS.toSeconds(calcMsFrom(startTimeMs));
     }
 
-    public static long calcMsFrom(long startTimeMs) {
+    private static long calcMsFrom(long startTimeMs) {
         return currentTimeMillis() - startTimeMs;
     }
 

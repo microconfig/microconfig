@@ -1,4 +1,5 @@
 dependencies {
     implementation project(':microconfig:utils'),
-            'org.springframework:spring-expression'            
+            'org.springframework:spring-expression',
+            'com.google.code.gson:gson'
 }

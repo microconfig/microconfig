@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static deployment.util.ConsoleColor.green;
-import static deployment.util.JsonUtil.toJson;
+import static deployment.mgmt.utils.JsonUtil.toJson;
 import static deployment.util.Logger.align;
 import static java.util.Collections.emptyList;
 import static lombok.AccessLevel.PRIVATE;

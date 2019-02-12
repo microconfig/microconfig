@@ -1,7 +1,7 @@
 package deployment.mgmt.monitoring;
 
 import deployment.mgmt.stat.monitoring.MemoryUsage;
-import deployment.util.JsonUtil;
+import deployment.mgmt.utils.JsonUtil;
 import org.junit.Test;
 
 public class MonitoringServiceImplTest {

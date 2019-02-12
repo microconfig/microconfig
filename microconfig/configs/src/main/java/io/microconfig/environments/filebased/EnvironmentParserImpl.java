@@ -1,7 +1,10 @@
 package io.microconfig.environments.filebased;
 
-import deployment.util.JsonUtil;
-import io.microconfig.environments.*;
+import com.google.gson.Gson;
+import io.microconfig.environments.Component;
+import io.microconfig.environments.ComponentGroup;
+import io.microconfig.environments.EnvInclude;
+import io.microconfig.environments.Environment;
 
 import java.util.*;
 
@@ -18,10 +21,12 @@ public class EnvironmentParserImpl implements EnvironmentParser<String> {
     private static final String APPEND = "append";
     private static final String COMPONENTS = "components";
 
+    private static final Gson gson = new Gson();
+
     @Override
     @SuppressWarnings("unchecked")
     public Environment parse(String name, String content) {
-        Map<String, Map<String, Object>> map = JsonUtil.parse(content, Map.class);
+        Map<String, Map<String, Object>> map = gson.fromJson(content, Map.class);
 
         Optional<EnvInclude> envInclude = parseInclude(map);
         Optional<Integer> portOffset = parsePortOffset(map);

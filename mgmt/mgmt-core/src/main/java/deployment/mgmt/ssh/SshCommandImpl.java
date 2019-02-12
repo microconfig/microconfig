@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static deployment.util.ExecutorUtils.executeInParallel;
+import static deployment.mgmt.utils.ExecutorUtils.executeInParallel;
 import static deployment.util.FileUtils.writeExecutable;
 import static deployment.util.IoUtils.lines;
 import static deployment.util.Logger.warn;

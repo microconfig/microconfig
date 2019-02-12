@@ -1,5 +1,6 @@
-package deployment.util;
+package deployment.mgmt.utils;
 
+import deployment.util.FileUtils;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
@@ -9,6 +10,7 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
+import org.apache.commons.compress.utils.IOUtils;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -29,9 +31,6 @@ import static java.nio.file.attribute.PosixFilePermission.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.Set.of;
 import static java.util.stream.Collectors.toSet;
-import static org.apache.commons.compress.archivers.dump.DumpArchiveEntry.PERMISSION.GROUP_READ;
-import static org.apache.commons.compress.archivers.dump.DumpArchiveEntry.PERMISSION.GROUP_WRITE;
-import static org.apache.commons.compress.archivers.dump.DumpArchiveEntry.PERMISSION.*;
 import static org.apache.commons.io.IOUtils.copy;
 import static org.apache.commons.io.IOUtils.toByteArray;
 
@@ -39,7 +38,7 @@ public class ZipUtils {
     public static byte[] readInnerFile(File zipArchive, String innerFile) {
         try (ZipInputStream in = newZipStream(zipArchive);) {
             ZipInputStream is = requireNonNull(findInnerFile(in, innerFile), () -> "Can't find " + innerFile + " inside " + zipArchive);
-            return toByteArray(is);
+            return IOUtils.toByteArray(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -80,7 +79,7 @@ public class ZipUtils {
             for (File source : sources) {
                 zipStream.putNextEntry(new ZipEntry(source.getName()));
                 try (InputStream stream = new FileInputStream(source)) {
-                    copy(stream, zipStream);
+                    IOUtils.copy(stream, zipStream);
                 }
             }
         } catch (IOException e) {
@@ -101,7 +100,7 @@ public class ZipUtils {
                 } else {
                     createDirWithPermissions(f.getParentFile());
                     try (OutputStream o = Files.newOutputStream(f.toPath())) {
-                        copy(i, o);
+                        IOUtils.copy(i, o);
                         copyPermissions(entry, f);
                     }
                 }
@@ -143,15 +142,15 @@ public class ZipUtils {
         int mode = permissionsMode.getAsInt();
 
         Map<PERMISSION, Set<PosixFilePermission>> map = Map.of(
-                USER_READ, of(OWNER_READ, PosixFilePermission.GROUP_READ),
-                USER_WRITE, of(OWNER_WRITE, PosixFilePermission.GROUP_WRITE),
-                USER_EXEC, of(OWNER_EXECUTE, GROUP_EXECUTE),
-                GROUP_READ, of(PosixFilePermission.GROUP_READ),
-                GROUP_WRITE, of(PosixFilePermission.GROUP_WRITE),
-                GROUP_EXEC, of(GROUP_EXECUTE),
-                WORLD_READ, of(OTHERS_READ),
-                WORLD_WRITE, of(OWNER_WRITE),
-                WORLD_EXEC, of(OTHERS_EXECUTE)
+                PERMISSION.USER_READ, of(OWNER_READ, GROUP_READ),
+                PERMISSION.USER_WRITE, of(OWNER_WRITE, GROUP_WRITE),
+                PERMISSION.USER_EXEC, of(OWNER_EXECUTE, GROUP_EXECUTE),
+                PERMISSION.GROUP_READ, of(GROUP_READ),
+                PERMISSION.GROUP_WRITE, of(GROUP_WRITE),
+                PERMISSION.GROUP_EXEC, of(GROUP_EXECUTE),
+                PERMISSION.WORLD_READ, of(OTHERS_READ),
+                PERMISSION.WORLD_WRITE, of(OWNER_WRITE),
+                PERMISSION.WORLD_EXEC, of(OTHERS_EXECUTE)
         );
 
         try {
@@ -164,7 +163,7 @@ public class ZipUtils {
     private static Set<PosixFilePermission> getPermissions(int mode, Map<PERMISSION, Set<PosixFilePermission>> map) {
         if (mode <= 0) return Set.of(
                 OWNER_READ, OWNER_WRITE, OWNER_EXECUTE,
-                PosixFilePermission.GROUP_READ, PosixFilePermission.GROUP_WRITE, GROUP_EXECUTE
+                GROUP_READ, GROUP_WRITE, GROUP_EXECUTE
         );
 
         return PERMISSION.find(mode).stream()

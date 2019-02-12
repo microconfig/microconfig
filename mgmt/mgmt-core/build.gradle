@@ -2,7 +2,11 @@ dependencies {
     implementation project(':microconfig:configs'),
             project(':microconfig:utils'),
             project(':mgmt:nexus-resolver'),
-            project(':mgmt:console-api-exposer'),                
+            project(':mgmt:console-api-exposer'),
             lib.jasypt,
-            'org.slf4j:slf4j-log4j12'
+            lib.commons_compress,
+            lib.commons_io,
+            'org.slf4j:slf4j-log4j12',
+            'com.google.code.gson:gson'
+            
 }

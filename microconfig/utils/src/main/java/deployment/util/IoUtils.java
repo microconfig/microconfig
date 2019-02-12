@@ -10,7 +10,7 @@ import java.util.function.ObjIntConsumer;
 import java.util.stream.Stream;
 
 public class IoUtils {
-    public static long copyWithFlush(InputStream input, OutputStream output) {
+    static long copyWithFlush(InputStream input, OutputStream output) {
         long count = 0;
         int n;
         byte[] buffer = new byte[10 * 1024];

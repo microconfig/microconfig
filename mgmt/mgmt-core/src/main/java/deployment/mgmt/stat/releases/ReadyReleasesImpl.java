@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static deployment.util.ConsoleColor.green;
-import static deployment.util.JsonUtil.toJson;
+import static deployment.mgmt.utils.JsonUtil.toJson;
 import static deployment.util.Logger.align;
 
 @RequiredArgsConstructor

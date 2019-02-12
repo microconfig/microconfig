@@ -11,7 +11,7 @@ import java.io.File;
 import java.util.List;
 
 import static deployment.util.Logger.announce;
-import static deployment.util.ZipUtils.unzip;
+import static deployment.mgmt.utils.ZipUtils.unzip;
 
 @RequiredArgsConstructor
 public class NexusConfigStrategy implements ConfigFetcherStrategy {

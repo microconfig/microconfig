@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
-import static deployment.util.CacheFactory.cache;
+import static io.microconfig.utils.CacheFactory.cache;
 import static io.microconfig.commands.PropertiesPostProcessor.emptyPostProcessor;
 
 @Getter

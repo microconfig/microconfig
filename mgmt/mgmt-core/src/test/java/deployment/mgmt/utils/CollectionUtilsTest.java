@@ -1,11 +1,12 @@
-package deployment.util;
+package deployment.mgmt.utils;
 
 import org.junit.Test;
 
 import java.util.List;
 import java.util.Set;
 
-import static deployment.util.CollectionUtils.findDuplicates;
+
+import static deployment.mgmt.utils.CollectionUtils.*;
 import static org.junit.Assert.assertEquals;
 
 public class CollectionUtilsTest {

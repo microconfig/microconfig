@@ -1,6 +1,7 @@
-package deployment.util;
+package io.microconfig.utils;
 
 import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -12,13 +13,10 @@ import java.util.concurrent.ConcurrentMap;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
+@RequiredArgsConstructor
 public class CacheFactory implements InvocationHandler {
     private final ConcurrentMap<Key, Object> cache = new ConcurrentHashMap<>(512, 0.75f);
     private final Object delegate;
-
-    public CacheFactory(Object delegate) {
-        this.delegate = delegate;
-    }
 
     @SuppressWarnings("unchecked")
     public static <T> T cache(T delegate) {

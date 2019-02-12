@@ -11,7 +11,7 @@ import java.util.Date;
 
 import static deployment.util.FileUtils.createFile;
 import static deployment.util.Logger.info;
-import static deployment.util.ZipUtils.zip;
+import static deployment.mgmt.utils.ZipUtils.zip;
 
 @RequiredArgsConstructor
 public class ArchiveLogs implements PreStartStep {

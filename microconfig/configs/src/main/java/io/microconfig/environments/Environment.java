@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static deployment.util.CollectionUtils.singleValue;
+import static io.microconfig.utils.CollectionUtils.singleValue;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;

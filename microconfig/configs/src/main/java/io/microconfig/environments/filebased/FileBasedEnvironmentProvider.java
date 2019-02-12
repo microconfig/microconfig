@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static deployment.util.CollectionUtils.singleValue;
+import static io.microconfig.utils.CollectionUtils.singleValue;
 import static deployment.util.IoUtils.readFully;
 import static deployment.util.IoUtils.walk;
 import static java.util.Optional.empty;

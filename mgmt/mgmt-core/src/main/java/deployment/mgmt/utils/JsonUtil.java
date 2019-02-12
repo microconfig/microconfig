@@ -1,4 +1,4 @@
-package deployment.util;
+package deployment.mgmt.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

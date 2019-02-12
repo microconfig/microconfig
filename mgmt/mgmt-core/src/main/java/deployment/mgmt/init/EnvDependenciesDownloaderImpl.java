@@ -20,7 +20,7 @@ import static deployment.util.Logger.*;
 import static deployment.util.OsUtil.isWindows;
 import static deployment.util.ProcessUtil.executeScript;
 import static deployment.util.TimeUtils.secAfter;
-import static deployment.util.ZipUtils.unzip;
+import static deployment.mgmt.utils.ZipUtils.unzip;
 import static io.microconfig.commands.factory.PropertyType.DEPENDENCIES;
 import static io.microconfig.properties.Property.withoutTempValues;
 import static java.lang.System.currentTimeMillis;

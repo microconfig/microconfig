@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 import java.util.*;
 
-import static deployment.util.CollectionUtils.join;
+import static io.microconfig.utils.CollectionUtils.join;
 import static java.util.stream.Collectors.toMap;
 
 @RequiredArgsConstructor

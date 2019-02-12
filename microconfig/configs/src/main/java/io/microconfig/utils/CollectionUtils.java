@@ -1,4 +1,4 @@
-package deployment.util;
+package io.microconfig.utils;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -9,14 +9,17 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
 
 public class CollectionUtils {
-    public static <K, V> Map<K, V> join(Map<? extends K, ? extends V> first, Map<? extends K, ? extends V> second, Map<K, V> destination) {
+    public static <K, V> Map<K, V> join(Map<? extends K, ? extends V> first,
+                                        Map<? extends K, ? extends V> second,
+                                        Map<K, V> destination) {
         destination.putAll(first);
         destination.putAll(second);
 
         return destination;
     }
 
-    public static <K, V> Map<K, V> join(Map<? extends K, ? extends V> first, Map<? extends K, ? extends V> second) {
+    public static <K, V> Map<K, V> join(Map<? extends K, ? extends V> first,
+                                        Map<? extends K, ? extends V> second) {
         return join(first, second, new LinkedHashMap<>());
 
     }
@@ -27,14 +30,5 @@ public class CollectionUtils {
         }
 
         return values.iterator().next();
-    }
-
-    public static <T> Set<T> findDuplicates(Collection<T> collection) {
-        return collection.stream()
-                .collect(groupingBy(identity(), counting()))
-                .entrySet()
-                .stream().filter(e -> e.getValue() > 1)
-                .map(Map.Entry::getKey)
-                .collect(toSet());
     }
 }

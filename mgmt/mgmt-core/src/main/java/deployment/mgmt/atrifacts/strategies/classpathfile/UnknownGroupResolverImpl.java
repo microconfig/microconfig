@@ -10,7 +10,7 @@ import java.util.*;
 
 import static deployment.mgmt.atrifacts.Artifact.UNKNOWN_GROUP_ID;
 import static deployment.mgmt.atrifacts.ArtifactType.POM;
-import static deployment.util.CollectionUtils.findDuplicates;
+import static deployment.mgmt.utils.CollectionUtils.findDuplicates;
 import static deployment.util.Logger.error;
 import static deployment.util.StreamUtils.filter;
 import static deployment.util.StreamUtils.map;
