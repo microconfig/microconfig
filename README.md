@@ -122,7 +122,7 @@ Let's see how application properties can look like. In comments we note what can
     application.name=payments # better to get name from folder
     payments.booktimeoutInSec=900 # how long in min ?
     payments.system.retries=3
-    consistency.validateConsistencyIntervalInMs=420000 # difficult to read. How long in min ?
+    consistency.validateConsistencyIntervalInMs=420000 # difficult to read. how long in min ?
     service-discovery.url=http://10.12.172.11:6781 # are you sure url is consistent with eureka configuration?
     eureka.instance.prefer-ip-address=true  # duplication            
     datasource.minimum-pool-size=2  # duplication
@@ -135,6 +135,6 @@ Let's see how application properties can look like. In comments we note what can
     server.port=6781
     application.name=eureka
     eureka.client.fetchRegistry=false
-    eureka.server.eviction-interval-timer-in-ms=15000 # how long in sec ?
+    eureka.server.eviction-interval-timer-in-ms=15000 # difficult to read. how long in min ?
     eureka.server.enable-self-preservation=false    
 ```
