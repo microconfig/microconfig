@@ -106,34 +106,35 @@ Application properties can look like:
 **orders application.properties:**
 ```*.properties
     server.port=9000
-    application.name=orders
+    application.name=orders # better to get name from folder
     orders.personalRecommendation=true
     statistics.enableExtendedStatistics=true
-    service-discovery.url=http://10.12.172.11:6781
-    eureka.instance.prefer-ip-address=true        
-    datasource.minimum-pool-size=2
+    service-discovery.url=http://10.12.172.11:6781 # duplication
+    eureka.instance.prefer-ip-address=true  # duplication        
+    datasource.minimum-pool-size=2  # duplication
     datasource.maximum-pool-size=10    
-    datasource.url=oracle.jdbc.url=jdbc:oracle:thin:@172.30.162.3:$1521:ARMSDEV
-    jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
+    datasource.url=oracle.jdbc.url=jdbc:oracle:thin:@172.30.162.4:$1521:ARMSDEV  # partial duplication
+    jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true  # duplication
 ```
 **payments application.properties:**
 ```*.properties
     server.port=8080
-    application.name=payments
-    payments.booktimeout=10m
-    payment.system.retries=3
-    service-discovery.url=http://10.12.172.11:6781
-    eureka.instance.prefer-ip-address=true            
-    datasource.minimum-pool-size=2
+    application.name=payments # better to get name from folder
+    payments.booktimeoutInSec=900 # how long in min ?
+    payments.system.retries=3
+    consistency.validateConsistencyIntervalInMs=420000 # how long in min ?
+    service-discovery.url=http://10.12.172.11:6781 # duplication
+    eureka.instance.prefer-ip-address=true  # duplication            
+    datasource.minimum-pool-size=2  # duplication
     datasource.maximum-pool-size=5    
-    datasource.url=oracle.jdbc.url=jdbc:oracle:thin:@172.30.162.3:1521:ARMSDEV
-    jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
+    datasource.url=oracle.jdbc.url=jdbc:oracle:thin:@172.30.162.3:1521:ARMSDEV  # partial duplication
+    jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true # duplication
 ```
 **service-discovery application.properties:**
 ```*.properties
     server.port=6781
-    application.name=eureka
+    application.name=eureka # better to get name from folder
     eureka.client.fetchRegistry=false
-    eureka.server.eviction-interval-timer-in-ms=10000
+    eureka.server.eviction-interval-timer-in-ms=15000 # how long in sec ?
     eureka.server.enable-self-preservation=false    
 ```
