@@ -2,6 +2,7 @@ package deployment.dashboard.shared.ssh;
 
 import com.jcraft.jsch.*;
 import lombok.extern.slf4j.Slf4j;
+import mgmt.utils.ThreadUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.function.Consumer;
 
-import static deployment.util.ThreadUtils.sleepMs;
 import static java.lang.String.join;
 
 @Slf4j
@@ -86,7 +86,7 @@ public class SshClientImpl implements SshClient {
                 break;
             }
 
-            sleepMs(100);
+            ThreadUtils.sleepMs(100);
         }
     }
 }

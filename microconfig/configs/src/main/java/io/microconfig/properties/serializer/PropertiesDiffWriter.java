@@ -8,10 +8,10 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-import static deployment.util.FileUtils.delete;
-import static deployment.util.FileUtils.write;
-import static deployment.util.Logger.warn;
-import static deployment.util.PropertiesUtils.readProperties;
+import static io.microconfig.utils.FileUtils.delete;
+import static io.microconfig.utils.FileUtils.write;
+import static io.microconfig.utils.Logger.warn;
+import static io.microconfig.utils.PropertiesUtils.readProperties;
 
 @RequiredArgsConstructor
 public class PropertiesDiffWriter implements PropertySerializer {

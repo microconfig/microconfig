@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static deployment.util.Logger.warn;
+import static io.microconfig.utils.Logger.warn;
 import static java.lang.System.exit;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;

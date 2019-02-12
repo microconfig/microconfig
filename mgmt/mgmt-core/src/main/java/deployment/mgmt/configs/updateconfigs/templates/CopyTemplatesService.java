@@ -7,11 +7,11 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static deployment.util.FileUtils.copyPermissions;
-import static deployment.util.FileUtils.write;
-import static deployment.util.IoUtils.readFully;
-import static deployment.util.Logger.*;
-import static deployment.util.StringUtils.unixLikePath;
+import static io.microconfig.utils.FileUtils.write;
+import static io.microconfig.utils.IoUtils.readFully;
+import static io.microconfig.utils.Logger.*;
+import static io.microconfig.utils.StringUtils.unixLikePath;
+import static mgmt.utils.FilePermissionUtils.copyPermissions;
 
 @RequiredArgsConstructor
 public class CopyTemplatesService {

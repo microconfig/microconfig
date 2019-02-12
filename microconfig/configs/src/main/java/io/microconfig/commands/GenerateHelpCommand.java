@@ -11,7 +11,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
-import static deployment.util.FileUtils.copy;
+import static io.microconfig.utils.FileUtils.copy;
 import static java.lang.System.getProperty;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;

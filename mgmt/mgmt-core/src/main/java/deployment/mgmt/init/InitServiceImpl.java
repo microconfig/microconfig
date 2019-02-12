@@ -12,8 +12,8 @@ import java.util.function.BiConsumer;
 
 import static deployment.mgmt.configs.updateconfigs.UpdateConfigOption.SKIP_CLASSPATH_BUILD_FOR_SNAPSHOT;
 import static deployment.mgmt.init.InitParams.*;
-import static deployment.util.Logger.announce;
-import static deployment.util.TimeUtils.secAfter;
+import static io.microconfig.utils.Logger.announce;
+import static io.microconfig.utils.TimeUtils.secAfter;
 import static java.lang.System.currentTimeMillis;
 
 @RequiredArgsConstructor

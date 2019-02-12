@@ -9,10 +9,10 @@ import java.io.File;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static deployment.util.ConsoleColor.*;
-import static deployment.util.IoUtils.readFully;
-import static deployment.util.Logger.*;
-import static deployment.util.PropertiesUtils.readProperties;
+import static io.microconfig.utils.ConsoleColor.*;
+import static io.microconfig.utils.IoUtils.readFully;
+import static io.microconfig.utils.Logger.*;
+import static io.microconfig.utils.PropertiesUtils.readProperties;
 import static java.util.stream.Stream.of;
 
 @RequiredArgsConstructor

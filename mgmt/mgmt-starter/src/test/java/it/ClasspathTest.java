@@ -20,8 +20,8 @@ import deployment.mgmt.configs.service.properties.impl.PropertyServiceImpl;
 import java.io.File;
 import java.util.List;
 
-import static deployment.util.Logger.announce;
-import static deployment.util.TimeUtils.secAfter;
+import static io.microconfig.utils.Logger.announce;
+import static io.microconfig.utils.TimeUtils.secAfter;
 import static java.util.Arrays.asList;
 
 public class ClasspathTest {

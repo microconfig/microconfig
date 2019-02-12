@@ -1,12 +1,12 @@
 package deployment.mgmt.init;
 
-import deployment.util.FileUtils;
+import io.microconfig.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.util.Set;
 
-import static deployment.util.FileUtils.userHome;
+import static io.microconfig.utils.FileUtils.userHome;
 import static java.util.stream.Stream.concat;
 
 @RequiredArgsConstructor

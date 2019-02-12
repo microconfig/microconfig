@@ -1,34 +1,22 @@
-package deployment.util;
+package io.microconfig.utils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.PosixFilePermission;
 import java.util.Collection;
-import java.util.Set;
 
-import static deployment.util.Logger.error;
-import static deployment.util.Logger.warn;
-import static deployment.util.OsUtil.isWindows;
-import static java.nio.file.Files.*;
+import static io.microconfig.utils.Logger.warn;
+import static java.nio.file.Files.createDirectories;
+import static java.nio.file.Files.exists;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.Arrays.stream;
 import static java.util.stream.Stream.of;
 
+
 public class FileUtils {
     public static File userHome() {
         return new File(System.getProperty("user.home"));
-    }
-
-    public static void copyPermissions(Path from, Path to) {
-        if (isWindows()) return;
-
-        try {
-            setPosixFilePermissions(to, Files.getPosixFilePermissions(from));
-        } catch (IOException e) {
-            error(String.format("Cannot copy file permissions from %s to %s", from, to), e);
-        }
     }
 
     public static void truncate(File dir) {
@@ -58,11 +46,6 @@ public class FileUtils {
             throw new RuntimeException(e);
         }
         return file;
-    }
-
-    public static void writeExecutable(File file, String content) {
-        write(file, content);
-        allowExecution(file.toPath());
     }
 
     public static void write(File file, String content) {
@@ -113,17 +96,6 @@ public class FileUtils {
         }
         return dir.delete();
     }
-
-    public static void allowExecution(Path file) {
-        if (isWindows()) return;
-
-        try {
-            setPosixFilePermissions(file, Set.of(PosixFilePermission.values()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 
     public static void copy(File from, File to) {
         copy(from.toPath(), to.toPath());

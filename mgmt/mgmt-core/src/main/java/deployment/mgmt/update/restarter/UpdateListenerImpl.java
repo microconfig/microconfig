@@ -9,9 +9,9 @@ import java.util.Set;
 import static deployment.mgmt.configs.deploysettings.ConfigSource.GIT;
 import static deployment.mgmt.configs.deploysettings.ConfigSource.NEXUS;
 import static deployment.mgmt.configs.service.properties.NexusRepository.RepositoryType.RELEASE;
-import static deployment.util.FileUtils.delete;
-import static deployment.util.FileUtils.write;
-import static deployment.util.Logger.info;
+import static io.microconfig.utils.FileUtils.delete;
+import static io.microconfig.utils.FileUtils.write;
+import static io.microconfig.utils.Logger.info;
 
 @RequiredArgsConstructor
 public class UpdateListenerImpl implements UpdateListener {

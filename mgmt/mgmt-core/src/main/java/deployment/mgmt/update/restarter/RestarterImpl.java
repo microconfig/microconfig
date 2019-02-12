@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static deployment.util.Logger.announce;
-import static deployment.util.ProcessUtil.currentJavaPath;
-import static deployment.util.ProcessUtil.startAndWait;
+import static io.microconfig.utils.Logger.announce;
 import static java.util.Arrays.asList;
+import static mgmt.utils.ProcessUtil.currentJavaPath;
+import static mgmt.utils.ProcessUtil.startAndWait;
 
 @RequiredArgsConstructor
 public class RestarterImpl implements Restarter {

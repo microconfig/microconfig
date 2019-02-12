@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 import java.util.Map;
 
 import static deployment.mgmt.configs.service.properties.ClasspathStrategyType.NEXUS;
-import static deployment.util.Logger.info;
-import static deployment.util.Logger.warn;
+import static io.microconfig.utils.Logger.info;
+import static io.microconfig.utils.Logger.warn;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;

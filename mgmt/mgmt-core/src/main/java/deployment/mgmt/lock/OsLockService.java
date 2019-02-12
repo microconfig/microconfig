@@ -9,16 +9,16 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 
-import static deployment.util.ConsoleColor.yellow;
-import static deployment.util.IoUtils.readNullableFirstLine;
-import static deployment.util.Logger.*;
-import static deployment.util.LoggerUtils.oneLineInfo;
-import static deployment.util.ThreadUtils.sleepSec;
-import static deployment.util.TimeUtils.secAfter;
+import static io.microconfig.utils.ConsoleColor.yellow;
+import static io.microconfig.utils.IoUtils.readNullableFirstLine;
+import static io.microconfig.utils.Logger.*;
+import static io.microconfig.utils.TimeUtils.secAfter;
 import static java.lang.ProcessHandle.current;
 import static java.lang.String.valueOf;
 import static java.lang.System.currentTimeMillis;
 import static java.nio.ByteBuffer.wrap;
+import static mgmt.utils.LoggerUtils.oneLineInfo;
+import static mgmt.utils.ThreadUtils.sleepSec;
 
 @RequiredArgsConstructor
 public class OsLockService implements LockService {

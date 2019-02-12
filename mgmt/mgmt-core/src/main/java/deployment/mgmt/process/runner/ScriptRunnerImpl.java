@@ -5,9 +5,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
-import static deployment.util.FileUtils.allowExecution;
-import static deployment.util.Logger.info;
-import static deployment.util.ProcessUtil.startAndWait;
+import static io.microconfig.utils.Logger.info;
+import static mgmt.utils.FilePermissionUtils.allowExecution;
+import static mgmt.utils.ProcessUtil.startAndWait;
 
 @RequiredArgsConstructor
 public class ScriptRunnerImpl implements ScriptRunner {

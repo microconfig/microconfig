@@ -5,8 +5,8 @@ import deployment.mgmt.factory.MgmtFactory;
 
 import static deployment.console.ConsoleApiExposerImpl.expose;
 import static deployment.mgmt.update.restarter.RestarterImpl.UPDATE;
-import static deployment.util.Logger.error;
-import static deployment.util.PropertiesUtils.hasSystemFlag;
+import static io.microconfig.utils.Logger.error;
+import static io.microconfig.utils.PropertiesUtils.hasSystemFlag;
 
 //todo2 ClassDataSharing. todo2 substrate vm
 /*todo2 speedup start*/

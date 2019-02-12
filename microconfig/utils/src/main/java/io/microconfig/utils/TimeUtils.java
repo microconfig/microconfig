@@ -1,10 +1,10 @@
-package deployment.util;
+package io.microconfig.utils;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
-import static deployment.util.Logger.warn;
+import static io.microconfig.utils.Logger.warn;
 import static java.lang.Math.min;
 import static java.lang.System.currentTimeMillis;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;

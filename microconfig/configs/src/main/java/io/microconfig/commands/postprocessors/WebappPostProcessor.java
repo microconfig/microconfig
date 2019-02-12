@@ -7,10 +7,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import static deployment.util.FileUtils.delete;
-import static deployment.util.FileUtils.write;
-import static deployment.util.Logger.error;
-import static deployment.util.PropertiesUtils.hasTrueValue;
+import static io.microconfig.utils.FileUtils.delete;
+import static io.microconfig.utils.FileUtils.write;
+import static io.microconfig.utils.Logger.error;
+import static io.microconfig.utils.PropertiesUtils.hasTrueValue;
 
 public class WebappPostProcessor implements PropertiesPostProcessor {
     private static final String WEBAPP_FILE = "mgmt.webapp";

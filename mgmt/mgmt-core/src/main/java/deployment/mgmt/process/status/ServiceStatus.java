@@ -1,7 +1,7 @@
 package deployment.mgmt.process.status;
 
 import deployment.mgmt.configs.componentgroup.ServiceDescription;
-import deployment.util.ConsoleColor;
+import io.microconfig.utils.ConsoleColor;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -12,9 +12,9 @@ import java.util.function.UnaryOperator;
 
 import static deployment.mgmt.process.status.ExecutionStatus.*;
 import static deployment.mgmt.process.status.ServiceType.TASK;
-import static deployment.util.Logger.align;
-import static deployment.util.StringUtils.isEmpty;
-import static deployment.util.TimeUtils.formatTimeAfter;
+import static io.microconfig.utils.Logger.align;
+import static io.microconfig.utils.StringUtils.isEmpty;
+import static io.microconfig.utils.TimeUtils.formatTimeAfter;
 
 @Data
 @AllArgsConstructor

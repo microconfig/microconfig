@@ -11,9 +11,9 @@ import java.util.*;
 import static deployment.mgmt.atrifacts.Artifact.UNKNOWN_GROUP_ID;
 import static deployment.mgmt.atrifacts.ArtifactType.POM;
 import static deployment.mgmt.utils.CollectionUtils.findDuplicates;
-import static deployment.util.Logger.error;
-import static deployment.util.StreamUtils.filter;
-import static deployment.util.StreamUtils.map;
+import static io.microconfig.utils.Logger.error;
+import static io.microconfig.utils.StreamUtils.filter;
+import static io.microconfig.utils.StreamUtils.map;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.concat;
 

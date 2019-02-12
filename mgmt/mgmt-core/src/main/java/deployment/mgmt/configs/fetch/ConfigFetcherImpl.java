@@ -9,10 +9,10 @@ import java.io.File;
 import java.util.List;
 
 import static deployment.mgmt.configs.deploysettings.ConfigSource.GIT;
-import static deployment.util.FileUtils.*;
-import static deployment.util.Logger.announce;
-import static deployment.util.PropertiesUtils.hasSystemFlag;
-import static deployment.util.TimeUtils.secAfter;
+import static io.microconfig.utils.FileUtils.*;
+import static io.microconfig.utils.Logger.announce;
+import static io.microconfig.utils.PropertiesUtils.hasSystemFlag;
+import static io.microconfig.utils.TimeUtils.secAfter;
 import static java.lang.System.currentTimeMillis;
 
 @RequiredArgsConstructor

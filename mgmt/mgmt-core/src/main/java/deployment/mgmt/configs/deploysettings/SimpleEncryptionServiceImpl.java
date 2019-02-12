@@ -2,8 +2,8 @@ package deployment.mgmt.configs.deploysettings;
 
 import deployment.mgmt.configs.encryption.PropertiesEncryptor;
 
-import static deployment.util.StringUtils.isEmpty;
-import static deployment.util.TimeUtils.printLongTime;
+import static io.microconfig.utils.StringUtils.isEmpty;
+import static io.microconfig.utils.TimeUtils.printLongTime;
 
 public class SimpleEncryptionServiceImpl implements EncryptionService {
     @Override

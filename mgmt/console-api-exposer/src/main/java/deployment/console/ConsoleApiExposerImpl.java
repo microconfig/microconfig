@@ -7,10 +7,10 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static deployment.util.ConsoleColor.green;
-import static deployment.util.ConsoleColor.yellow;
-import static deployment.util.Logger.*;
-import static deployment.util.StringUtils.toLowerHyphen;
+import static io.microconfig.utils.ConsoleColor.green;
+import static io.microconfig.utils.ConsoleColor.yellow;
+import static io.microconfig.utils.Logger.*;
+import static io.microconfig.utils.StringUtils.toLowerHyphen;
 import static java.lang.System.arraycopy;
 import static java.lang.System.exit;
 import static java.util.Arrays.copyOfRange;

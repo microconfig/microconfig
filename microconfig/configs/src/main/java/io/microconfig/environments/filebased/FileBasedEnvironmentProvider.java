@@ -13,8 +13,8 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static io.microconfig.utils.CollectionUtils.singleValue;
-import static deployment.util.IoUtils.readFully;
-import static deployment.util.IoUtils.walk;
+import static io.microconfig.utils.IoUtils.readFully;
+import static io.microconfig.utils.IoUtils.walk;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;

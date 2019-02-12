@@ -2,9 +2,9 @@ package deployment.mgmt.configs.filestructure;
 
 import java.io.File;
 
-import static deployment.util.FileUtils.createDir;
-import static deployment.util.FileUtils.userHome;
-import static deployment.util.OsUtil.isWindows;
+import static io.microconfig.utils.FileUtils.createDir;
+import static io.microconfig.utils.FileUtils.userHome;
+import static mgmt.utils.OsUtil.isWindows;
 
 public class DeployDirsImpl implements DeployDirs {
     @Override

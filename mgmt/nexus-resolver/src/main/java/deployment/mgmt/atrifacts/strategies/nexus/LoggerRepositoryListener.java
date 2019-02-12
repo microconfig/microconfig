@@ -1,7 +1,7 @@
 package deployment.mgmt.atrifacts.strategies.nexus;
 
-import deployment.util.FileLogger;
 import lombok.RequiredArgsConstructor;
+import mgmt.utils.FileLogger;
 import org.eclipse.aether.RepositoryEvent;
 import org.eclipse.aether.RepositoryListener;
 

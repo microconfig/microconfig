@@ -1,4 +1,4 @@
-package deployment.util;
+package io.microconfig.utils;
 
 import java.util.regex.Pattern;
 

@@ -4,15 +4,15 @@ import deployment.mgmt.configs.componentgroup.ServiceDescription;
 import deployment.mgmt.configs.service.metadata.MetadataProvider;
 import deployment.mgmt.configs.service.properties.ProcessProperties;
 import deployment.mgmt.configs.service.properties.PropertyService;
-import deployment.util.Logger;
+import io.microconfig.utils.Logger;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
 import static deployment.mgmt.process.status.ExecutionStatus.*;
 import static deployment.mgmt.process.status.ServiceType.*;
-import static deployment.util.ProcessUtil.belongsToCurrentUser;
 import static java.util.stream.Stream.of;
+import static mgmt.utils.ProcessUtil.belongsToCurrentUser;
 
 
 @RequiredArgsConstructor

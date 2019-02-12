@@ -1,4 +1,4 @@
-package deployment.util;
+package mgmt.utils;
 
 import java.util.Map;
 import java.util.function.UnaryOperator;

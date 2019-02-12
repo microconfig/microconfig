@@ -9,9 +9,9 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static deployment.util.FileUtils.createFile;
-import static deployment.util.Logger.info;
 import static deployment.mgmt.utils.ZipUtils.zip;
+import static io.microconfig.utils.FileUtils.createFile;
+import static io.microconfig.utils.Logger.info;
 
 @RequiredArgsConstructor
 public class ArchiveLogs implements PreStartStep {

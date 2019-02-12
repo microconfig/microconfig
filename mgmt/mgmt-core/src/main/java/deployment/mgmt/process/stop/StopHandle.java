@@ -1,17 +1,17 @@
 package deployment.mgmt.process.stop;
 
 import deployment.mgmt.configs.service.metadata.MetadataProvider;
-import deployment.util.ProcessUtil;
 import lombok.RequiredArgsConstructor;
+import mgmt.utils.ProcessUtil;
 
 import java.util.Optional;
 
-import static deployment.util.Logger.*;
-import static deployment.util.ProcessUtil.waitTermination;
-import static deployment.util.TimeUtils.secAfter;
+import static io.microconfig.utils.Logger.*;
+import static io.microconfig.utils.TimeUtils.secAfter;
 import static java.lang.System.currentTimeMillis;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.of;
+import static mgmt.utils.ProcessUtil.waitTermination;
 
 @RequiredArgsConstructor
 public class StopHandle {

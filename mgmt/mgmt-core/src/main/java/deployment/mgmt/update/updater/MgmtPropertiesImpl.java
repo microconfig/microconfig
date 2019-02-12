@@ -15,10 +15,10 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
 
-import static deployment.util.Logger.info;
 import static io.microconfig.commands.factory.PropertyType.PROCESS;
 import static io.microconfig.environments.Component.byType;
 import static io.microconfig.properties.Property.withoutTempValues;
+import static io.microconfig.utils.Logger.info;
 
 @RequiredArgsConstructor
 public class MgmtPropertiesImpl implements MgmtProperties {

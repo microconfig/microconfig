@@ -1,4 +1,4 @@
-package deployment.util;
+package mgmt.utils;
 
 import static java.lang.Math.max;
 

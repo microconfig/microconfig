@@ -1,4 +1,4 @@
-package deployment.util;
+package io.microconfig.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,10 +11,10 @@ import java.util.Properties;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
-import static deployment.util.FileUtils.createFile;
-import static deployment.util.IoUtils.lines;
-import static deployment.util.Logger.error;
-import static deployment.util.StreamUtils.toLinkedMap;
+import static io.microconfig.utils.FileUtils.createFile;
+import static io.microconfig.utils.IoUtils.lines;
+import static io.microconfig.utils.Logger.error;
+import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static java.lang.System.*;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.util.Collections.emptyMap;

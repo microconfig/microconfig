@@ -11,12 +11,12 @@ import java.util.Optional;
 import java.util.Set;
 
 import static deployment.mgmt.configs.service.properties.impl.ProcessPropertiesImpl.emptyProperties;
-import static deployment.util.Logger.announce;
-import static deployment.util.Logger.info;
-import static deployment.util.ProcessUtil.*;
-import static deployment.util.ThreadUtils.sleepSec;
-import static deployment.util.TimeUtils.calcSecFrom;
+import static io.microconfig.utils.Logger.announce;
+import static io.microconfig.utils.Logger.info;
+import static io.microconfig.utils.TimeUtils.calcSecFrom;
 import static java.lang.System.currentTimeMillis;
+import static mgmt.utils.ProcessUtil.*;
+import static mgmt.utils.ThreadUtils.sleepSec;
 
 @RequiredArgsConstructor
 public class StartHandleImpl implements StartHandle {

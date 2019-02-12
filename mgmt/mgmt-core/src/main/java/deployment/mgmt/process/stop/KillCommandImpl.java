@@ -1,13 +1,13 @@
 package deployment.mgmt.process.stop;
 
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
-import deployment.util.ProcessUtil;
 import lombok.RequiredArgsConstructor;
+import mgmt.utils.ProcessUtil;
 
 import java.util.Optional;
 
-import static deployment.util.Logger.announce;
-import static deployment.util.Logger.warn;
+import static io.microconfig.utils.Logger.announce;
+import static io.microconfig.utils.Logger.warn;
 import static java.lang.ProcessHandle.current;
 
 @RequiredArgsConstructor

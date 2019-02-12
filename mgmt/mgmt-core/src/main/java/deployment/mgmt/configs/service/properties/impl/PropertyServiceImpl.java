@@ -8,9 +8,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.Map;
 
 import static deployment.mgmt.configs.service.properties.impl.ProcessPropertiesImpl.fromFile;
-import static deployment.util.OsUtil.resolveEnvVariable;
-import static deployment.util.PropertiesUtils.readProperties;
+import static io.microconfig.utils.PropertiesUtils.readProperties;
 import static java.util.Collections.unmodifiableMap;
+import static mgmt.utils.OsUtil.resolveEnvVariable;
 
 
 @RequiredArgsConstructor

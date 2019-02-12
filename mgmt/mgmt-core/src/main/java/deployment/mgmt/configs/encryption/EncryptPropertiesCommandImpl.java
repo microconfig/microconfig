@@ -5,9 +5,9 @@ import lombok.RequiredArgsConstructor;
 
 import static deployment.mgmt.configs.encryption.PropertyEncryptionHelper.decryptProperty;
 import static deployment.mgmt.configs.encryption.PropertyEncryptionHelper.secureProperties;
-import static deployment.util.Logger.announce;
-import static deployment.util.TimeUtils.printLongTime;
-import static deployment.util.TimeUtils.secAfter;
+import static io.microconfig.utils.Logger.announce;
+import static io.microconfig.utils.TimeUtils.printLongTime;
+import static io.microconfig.utils.TimeUtils.secAfter;
 import static java.lang.System.currentTimeMillis;
 
 @RequiredArgsConstructor

@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static deployment.util.FileUtils.*;
-import static deployment.util.IoUtils.readNullableFirstLine;
-import static deployment.util.IoUtils.safeRead;
-import static deployment.util.Logger.warn;
-import static deployment.util.StringUtils.isEmpty;
+import static io.microconfig.utils.FileUtils.*;
+import static io.microconfig.utils.IoUtils.readNullableFirstLine;
+import static io.microconfig.utils.IoUtils.safeRead;
+import static io.microconfig.utils.Logger.warn;
+import static io.microconfig.utils.StringUtils.isEmpty;
 import static java.io.File.pathSeparator;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;

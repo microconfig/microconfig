@@ -6,7 +6,7 @@ import deployment.mgmt.configs.service.properties.ProcessProperties;
 import deployment.mgmt.process.start.PreStartStep;
 import lombok.RequiredArgsConstructor;
 
-import static deployment.util.Logger.announce;
+import static io.microconfig.utils.Logger.announce;
 
 @RequiredArgsConstructor
 public class ApplyAlteredVersion implements PreStartStep {

@@ -4,7 +4,7 @@ import deployment.mgmt.configs.componentgroup.ComponentGroupService;
 import deployment.mgmt.stat.monitoring.MonitoringService;
 import deployment.mgmt.stat.releases.ReadyReleasesService;
 import deployment.mgmt.stat.releases.ReleaseType;
-import deployment.util.Logger;
+import io.microconfig.utils.Logger;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

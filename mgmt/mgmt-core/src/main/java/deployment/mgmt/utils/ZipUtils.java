@@ -1,6 +1,6 @@
 package deployment.mgmt.utils;
 
-import deployment.util.FileUtils;
+import io.microconfig.utils.FileUtils;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
@@ -23,16 +23,14 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import static deployment.util.FileUtils.createDir;
-import static deployment.util.FileUtils.delete;
-import static deployment.util.OsUtil.isWindows;
+import static io.microconfig.utils.FileUtils.createDir;
+import static io.microconfig.utils.FileUtils.delete;
 import static java.nio.file.Files.setPosixFilePermissions;
 import static java.nio.file.attribute.PosixFilePermission.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.Set.of;
 import static java.util.stream.Collectors.toSet;
-import static org.apache.commons.io.IOUtils.copy;
-import static org.apache.commons.io.IOUtils.toByteArray;
+import static mgmt.utils.OsUtil.isWindows;
 
 public class ZipUtils {
     public static byte[] readInnerFile(File zipArchive, String innerFile) {

@@ -1,7 +1,7 @@
 package deployment.mgmt.configs.service.properties.impl;
 
 import deployment.mgmt.configs.service.properties.*;
-import deployment.util.PropertiesUtils;
+import io.microconfig.utils.PropertiesUtils;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -11,10 +11,10 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static deployment.mgmt.configs.service.properties.impl.StandardServiceGroup.*;
-import static deployment.util.PropertiesUtils.loadPropertiesAsMap;
-import static deployment.util.PropertiesUtils.writeProperties;
-import static deployment.util.StringUtils.isEmpty;
-import static deployment.util.StringUtils.replaceMultipleSpaces;
+import static io.microconfig.utils.PropertiesUtils.loadPropertiesAsMap;
+import static io.microconfig.utils.PropertiesUtils.writeProperties;
+import static io.microconfig.utils.StringUtils.isEmpty;
+import static io.microconfig.utils.StringUtils.replaceMultipleSpaces;
 import static java.util.Collections.*;
 import static java.util.Optional.ofNullable;
 import static java.util.Set.of;

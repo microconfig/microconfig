@@ -8,9 +8,9 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static deployment.util.FileUtils.delete;
-import static deployment.util.FileUtils.write;
 import static io.microconfig.properties.serializer.PropertiesSerializerImpl.OutputFormat.PROPERTIES;
+import static io.microconfig.utils.FileUtils.delete;
+import static io.microconfig.utils.FileUtils.write;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.joining;

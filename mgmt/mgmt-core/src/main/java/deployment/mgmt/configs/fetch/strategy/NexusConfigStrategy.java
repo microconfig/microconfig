@@ -10,8 +10,8 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 import java.util.List;
 
-import static deployment.util.Logger.announce;
 import static deployment.mgmt.utils.ZipUtils.unzip;
+import static io.microconfig.utils.Logger.announce;
 
 @RequiredArgsConstructor
 public class NexusConfigStrategy implements ConfigFetcherStrategy {

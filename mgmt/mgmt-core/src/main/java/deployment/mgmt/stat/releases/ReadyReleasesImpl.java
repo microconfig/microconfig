@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static deployment.util.ConsoleColor.green;
 import static deployment.mgmt.utils.JsonUtil.toJson;
-import static deployment.util.Logger.align;
+import static io.microconfig.utils.ConsoleColor.green;
+import static io.microconfig.utils.Logger.align;
 
 @RequiredArgsConstructor
 public class ReadyReleasesImpl implements ReadyReleases {

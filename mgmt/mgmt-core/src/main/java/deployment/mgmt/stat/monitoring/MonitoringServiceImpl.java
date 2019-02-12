@@ -15,12 +15,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import static deployment.mgmt.process.status.ExecutionStatus.RUNNING;
 import static deployment.mgmt.stat.monitoring.MemoryUsage.statFor;
 import static deployment.mgmt.utils.JsonUtil.parse;
-import static deployment.util.ProcessUtil.executeAndReadOutput;
 import static java.lang.Integer.parseInt;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
+import static mgmt.utils.ProcessUtil.executeAndReadOutput;
 
 @RequiredArgsConstructor
 public class MonitoringServiceImpl implements MonitoringService {

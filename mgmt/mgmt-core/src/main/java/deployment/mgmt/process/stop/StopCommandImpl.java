@@ -11,8 +11,8 @@ import java.util.TreeMap;
 import java.util.stream.Stream;
 
 import static deployment.mgmt.process.stop.StopHandle.create;
-import static deployment.util.Logger.announce;
-import static deployment.util.TimeUtils.secAfter;
+import static io.microconfig.utils.Logger.announce;
+import static io.microconfig.utils.TimeUtils.secAfter;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Optional.ofNullable;

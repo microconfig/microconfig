@@ -1,13 +1,13 @@
-package deployment.util;
+package mgmt.utils;
 
 import java.io.*;
 import java.util.Optional;
 import java.util.Set;
 
-import static deployment.util.IoUtils.copyWithFlush;
-import static deployment.util.ThreadUtils.sleepSec;
-import static deployment.util.TimeUtils.calcSecFrom;
+import static io.microconfig.utils.IoUtils.copyWithFlush;
+import static io.microconfig.utils.TimeUtils.calcSecFrom;
 import static java.util.Optional.of;
+import static mgmt.utils.ThreadUtils.sleepSec;
 
 public class ProcessUtil {
     public static void waitTermination(ProcessHandle processHandle, long startTime, int waitSec) {

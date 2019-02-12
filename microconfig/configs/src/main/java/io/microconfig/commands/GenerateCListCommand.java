@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
-import static deployment.util.FileUtils.write;
+import static io.microconfig.utils.FileUtils.write;
 
 @RequiredArgsConstructor
 public class GenerateCListCommand implements Command {

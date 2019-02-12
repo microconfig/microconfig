@@ -1,8 +1,8 @@
-package deployment.util;
+package mgmt.utils;
 
 import java.io.*;
 
-import static deployment.util.FileUtils.createFile;
+import static io.microconfig.utils.FileUtils.createFile;
 
 public class FileLogger implements AutoCloseable {
     private final PrintWriter writer;

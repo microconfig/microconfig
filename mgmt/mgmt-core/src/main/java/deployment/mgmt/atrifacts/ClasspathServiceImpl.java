@@ -14,12 +14,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import static deployment.util.Logger.error;
-import static deployment.util.Logger.logLineBreak;
-import static deployment.util.LoggerUtils.oneLineInfo;
-import static deployment.util.TimeUtils.msAfter;
+import static io.microconfig.utils.Logger.error;
+import static io.microconfig.utils.Logger.logLineBreak;
+import static io.microconfig.utils.TimeUtils.msAfter;
 import static java.lang.System.currentTimeMillis;
 import static lombok.AccessLevel.PRIVATE;
+import static mgmt.utils.LoggerUtils.oneLineInfo;
 
 @RequiredArgsConstructor
 public class ClasspathServiceImpl implements ClasspathService {

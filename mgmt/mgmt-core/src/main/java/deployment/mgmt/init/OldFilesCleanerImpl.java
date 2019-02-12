@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
-import static deployment.util.FileUtils.delete;
+import static io.microconfig.utils.FileUtils.delete;
 
 @RequiredArgsConstructor
 public class OldFilesCleanerImpl implements OldFilesCleaner {

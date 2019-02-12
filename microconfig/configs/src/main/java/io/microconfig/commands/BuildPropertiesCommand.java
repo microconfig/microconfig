@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static deployment.util.Logger.info;
-import static deployment.util.Logger.logLineBreak;
+import static io.microconfig.utils.Logger.info;
+import static io.microconfig.utils.Logger.logLineBreak;
 import static java.lang.System.getProperty;
 import static java.util.stream.Collectors.toList;
 

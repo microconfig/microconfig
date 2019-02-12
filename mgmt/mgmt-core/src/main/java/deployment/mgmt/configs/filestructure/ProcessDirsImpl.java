@@ -1,11 +1,11 @@
 package deployment.mgmt.configs.filestructure;
 
-import deployment.util.FileUtils;
+import io.microconfig.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
-import static deployment.util.FileUtils.createFile;
+import static io.microconfig.utils.FileUtils.createFile;
 
 @RequiredArgsConstructor
 public class ProcessDirsImpl implements ProcessDirs {

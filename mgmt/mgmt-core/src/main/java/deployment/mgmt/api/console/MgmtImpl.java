@@ -17,7 +17,7 @@ import deployment.mgmt.ssh.SshCommand;
 import deployment.mgmt.stat.monitoring.MonitoringService;
 import deployment.mgmt.stat.releases.ReadyReleasesService;
 import deployment.mgmt.update.updater.MgmtAutoUpdater;
-import deployment.util.Logger;
+import io.microconfig.utils.Logger;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
@@ -30,9 +30,9 @@ import static deployment.mgmt.configs.updateconfigs.UpdateConfigOption.SKIP_CLAS
 import static deployment.mgmt.init.InitParams.getConfigBranchOrTag;
 import static deployment.mgmt.init.InitParams.getProjectFullVersionOrPostfix;
 import static deployment.mgmt.process.status.ExecutionStatus.RUNNING;
-import static deployment.util.Logger.*;
-import static deployment.util.PropertiesUtils.hasSystemFlag;
-import static deployment.util.TimeUtils.secAfter;
+import static io.microconfig.utils.Logger.*;
+import static io.microconfig.utils.PropertiesUtils.hasSystemFlag;
+import static io.microconfig.utils.TimeUtils.secAfter;
 import static java.lang.String.join;
 import static java.lang.System.currentTimeMillis;
 import static java.util.List.of;

@@ -1,4 +1,4 @@
-package deployment.util;
+package io.microconfig.utils;
 
 import org.apache.commons.io.IOUtils;
 
@@ -10,7 +10,7 @@ import java.util.function.ObjIntConsumer;
 import java.util.stream.Stream;
 
 public class IoUtils {
-    static long copyWithFlush(InputStream input, OutputStream output) {
+    public static long copyWithFlush(InputStream input, OutputStream output) {
         long count = 0;
         int n;
         byte[] buffer = new byte[10 * 1024];

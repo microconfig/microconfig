@@ -1,6 +1,6 @@
 package deployment.mgmt.configs.deploysettings;
 
-import deployment.util.StringUtils;
+import io.microconfig.utils.StringUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

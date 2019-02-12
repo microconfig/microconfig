@@ -1,7 +1,7 @@
 package io.microconfig.properties.files.parser;
 
-import deployment.util.StringUtils;
 import io.microconfig.properties.Property;
+import io.microconfig.utils.StringUtils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 

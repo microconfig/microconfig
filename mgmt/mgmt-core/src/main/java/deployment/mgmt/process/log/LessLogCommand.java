@@ -7,10 +7,10 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
-import static deployment.util.FileUtils.writeExecutable;
-import static deployment.util.Logger.announce;
-import static deployment.util.Logger.warn;
-import static deployment.util.StringUtils.isEmpty;
+import static io.microconfig.utils.Logger.announce;
+import static io.microconfig.utils.Logger.warn;
+import static io.microconfig.utils.StringUtils.isEmpty;
+import static mgmt.utils.FilePermissionUtils.writeExecutable;
 
 @RequiredArgsConstructor
 public class LessLogCommand implements LogCommand {

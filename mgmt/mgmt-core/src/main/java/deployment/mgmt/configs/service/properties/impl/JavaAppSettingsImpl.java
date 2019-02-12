@@ -7,15 +7,15 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
 
-import static deployment.util.OsUtil.isWindows;
-import static deployment.util.ProcessUtil.currentJavaPath;
-import static deployment.util.StringUtils.isEmpty;
-import static deployment.util.StringUtils.replaceMultipleSpaces;
+import static io.microconfig.utils.StringUtils.isEmpty;
+import static io.microconfig.utils.StringUtils.replaceMultipleSpaces;
 import static java.io.File.pathSeparator;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
+import static mgmt.utils.OsUtil.isWindows;
+import static mgmt.utils.ProcessUtil.currentJavaPath;
 
 @RequiredArgsConstructor
 public class JavaAppSettingsImpl implements JavaAppSettings {

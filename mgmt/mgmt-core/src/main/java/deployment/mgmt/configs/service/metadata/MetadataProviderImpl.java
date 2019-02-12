@@ -1,8 +1,8 @@
 package deployment.mgmt.configs.service.metadata;
 
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
-import deployment.util.FileUtils;
-import deployment.util.IoUtils;
+import io.microconfig.utils.FileUtils;
+import io.microconfig.utils.IoUtils;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Optional;
 
-import static deployment.util.FileUtils.write;
+import static io.microconfig.utils.FileUtils.write;
 import static java.util.Optional.of;
 
 @RequiredArgsConstructor

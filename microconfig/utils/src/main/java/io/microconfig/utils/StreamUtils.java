@@ -1,4 +1,4 @@
-package deployment.util;
+package io.microconfig.utils;
 
 import java.util.*;
 import java.util.function.BinaryOperator;

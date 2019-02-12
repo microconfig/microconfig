@@ -2,7 +2,7 @@ package io.microconfig.environments;
 
 import java.util.*;
 
-import static deployment.util.StreamUtils.toLinkedMap;
+import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;

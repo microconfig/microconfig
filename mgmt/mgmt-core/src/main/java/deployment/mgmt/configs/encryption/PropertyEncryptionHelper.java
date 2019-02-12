@@ -3,10 +3,10 @@ package deployment.mgmt.configs.encryption;
 import java.io.File;
 import java.util.Properties;
 
-import static deployment.util.FileUtils.write;
-import static deployment.util.IoUtils.readFirstLine;
-import static deployment.util.PropertiesUtils.loadProperties;
-import static deployment.util.StringUtils.isEmpty;
+import static io.microconfig.utils.FileUtils.write;
+import static io.microconfig.utils.IoUtils.readFirstLine;
+import static io.microconfig.utils.PropertiesUtils.loadProperties;
+import static io.microconfig.utils.StringUtils.isEmpty;
 
 public class PropertyEncryptionHelper {
     private static final String DEFAULT_SECRET_PROPERTY_MATCHER = "^.*password.*$";

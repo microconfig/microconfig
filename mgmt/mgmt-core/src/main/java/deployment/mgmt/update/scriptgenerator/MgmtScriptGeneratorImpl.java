@@ -6,11 +6,13 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 import java.util.function.Supplier;
 
-import static deployment.util.FileUtils.*;
-import static deployment.util.IoUtils.readFully;
-import static deployment.util.Logger.info;
-import static deployment.util.OsUtil.isWindows;
-import static deployment.util.ProcessUtil.currentJavaPath;
+import static io.microconfig.utils.FileUtils.userHome;
+import static io.microconfig.utils.FileUtils.write;
+import static io.microconfig.utils.IoUtils.readFully;
+import static io.microconfig.utils.Logger.info;
+import static mgmt.utils.FilePermissionUtils.writeExecutable;
+import static mgmt.utils.OsUtil.isWindows;
+import static mgmt.utils.ProcessUtil.currentJavaPath;
 
 @RequiredArgsConstructor
 public class MgmtScriptGeneratorImpl implements MgmtScriptGenerator {

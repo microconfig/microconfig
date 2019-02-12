@@ -9,12 +9,12 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 import java.util.List;
 
-import static deployment.util.FileUtils.userHome;
-import static deployment.util.Logger.announce;
-import static deployment.util.ProcessUtil.executeAndReadOutput;
-import static deployment.util.ProcessUtil.startAndWait;
+import static io.microconfig.utils.FileUtils.userHome;
+import static io.microconfig.utils.Logger.announce;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.of;
+import static mgmt.utils.ProcessUtil.executeAndReadOutput;
+import static mgmt.utils.ProcessUtil.startAndWait;
 
 @RequiredArgsConstructor
 public class GitConfigStrategy implements ConfigFetcherStrategy {

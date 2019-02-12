@@ -1,6 +1,6 @@
 package deployment.mgmt.atrifacts.strategies.nexus;
 
-import deployment.util.FileLogger;
+import mgmt.utils.FileLogger;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
@@ -22,7 +22,7 @@ import org.eclipse.aether.util.graph.traverser.FatArtifactTraverser;
 
 import java.io.File;
 
-import static deployment.util.Logger.error;
+import static io.microconfig.utils.Logger.error;
 import static java.util.Arrays.asList;
 
 class RepositorySystemFactory {

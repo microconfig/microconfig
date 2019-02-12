@@ -3,8 +3,8 @@ package deployment.mgmt.configs.filestructure;
 import java.io.File;
 import java.util.function.Function;
 
-import static deployment.util.FileUtils.createDir;
-import static deployment.util.FileUtils.userHome;
+import static io.microconfig.utils.FileUtils.createDir;
+import static io.microconfig.utils.FileUtils.userHome;
 
 
 public class ConfigDirsImpl implements ConfigDirs {

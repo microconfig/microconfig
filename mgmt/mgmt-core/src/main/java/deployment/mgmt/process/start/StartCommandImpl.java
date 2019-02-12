@@ -10,10 +10,10 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static deployment.mgmt.process.start.StartHandleImpl.errorResult;
-import static deployment.util.ConsoleColor.green;
-import static deployment.util.Logger.*;
-import static deployment.util.PropertiesUtils.hasSystemFlag;
-import static deployment.util.StreamUtils.map;
+import static io.microconfig.utils.ConsoleColor.green;
+import static io.microconfig.utils.Logger.*;
+import static io.microconfig.utils.PropertiesUtils.hasSystemFlag;
+import static io.microconfig.utils.StreamUtils.map;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.groupingBy;

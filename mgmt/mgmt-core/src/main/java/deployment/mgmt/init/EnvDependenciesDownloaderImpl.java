@@ -16,14 +16,14 @@ import java.util.List;
 import java.util.Map;
 
 import static deployment.mgmt.atrifacts.Artifact.fromMavenString;
-import static deployment.util.Logger.*;
-import static deployment.util.OsUtil.isWindows;
-import static deployment.util.ProcessUtil.executeScript;
-import static deployment.util.TimeUtils.secAfter;
 import static deployment.mgmt.utils.ZipUtils.unzip;
 import static io.microconfig.commands.factory.PropertyType.DEPENDENCIES;
 import static io.microconfig.properties.Property.withoutTempValues;
+import static io.microconfig.utils.Logger.*;
+import static io.microconfig.utils.TimeUtils.secAfter;
 import static java.lang.System.currentTimeMillis;
+import static mgmt.utils.OsUtil.isWindows;
+import static mgmt.utils.ProcessUtil.executeScript;
 
 @RequiredArgsConstructor
 public class EnvDependenciesDownloaderImpl implements EnvDependenciesDownloader {

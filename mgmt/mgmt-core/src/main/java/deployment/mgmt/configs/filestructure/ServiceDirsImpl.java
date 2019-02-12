@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
-import static deployment.util.FileUtils.createDir;
-import static deployment.util.FileUtils.userHome;
+import static io.microconfig.utils.FileUtils.createDir;
+import static io.microconfig.utils.FileUtils.userHome;
 
 @RequiredArgsConstructor
 public class ServiceDirsImpl implements ServiceDirs {

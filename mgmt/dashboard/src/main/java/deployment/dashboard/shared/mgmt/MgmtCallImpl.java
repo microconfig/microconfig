@@ -8,9 +8,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import static deployment.util.Logger.align;
-import static deployment.util.OsUtil.isWindows;
-import static deployment.util.ProcessUtil.executeAndReadOutput;
+import static io.microconfig.utils.Logger.align;
+import static mgmt.utils.OsUtil.isWindows;
+import static mgmt.utils.ProcessUtil.executeAndReadOutput;
 
 @Service
 @RequiredArgsConstructor

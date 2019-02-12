@@ -8,9 +8,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static deployment.util.IoUtils.readAllLines;
 import static io.microconfig.properties.Property.isComment;
 import static io.microconfig.properties.Property.isTempProperty;
+import static io.microconfig.utils.IoUtils.readAllLines;
 import static java.util.Collections.emptyList;
 
 @RequiredArgsConstructor

@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
-import static deployment.util.Logger.*;
+import static io.microconfig.utils.Logger.*;
 
 @RequiredArgsConstructor
 public class MgmtAutoUpdaterImpl implements MgmtAutoUpdater {

@@ -14,8 +14,8 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static deployment.mgmt.configs.service.properties.impl.StandardServiceGroup.*;
-import static deployment.util.ConsoleColor.green;
-import static deployment.util.Logger.info;
+import static io.microconfig.utils.ConsoleColor.green;
+import static io.microconfig.utils.Logger.info;
 import static java.util.Map.entry;
 import static java.util.stream.Collectors.*;
 import static java.util.stream.Stream.concat;

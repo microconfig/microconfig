@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 
-import static deployment.util.StreamUtils.toSortedMap;
+import static io.microconfig.utils.StreamUtils.toSortedMap;
 import static java.util.function.Function.identity;
 
 @RequiredArgsConstructor

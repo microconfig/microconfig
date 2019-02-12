@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static deployment.util.ConsoleColor.green;
 import static deployment.mgmt.utils.JsonUtil.toJson;
-import static deployment.util.Logger.align;
+import static io.microconfig.utils.ConsoleColor.green;
+import static io.microconfig.utils.Logger.align;
 import static java.util.Collections.emptyList;
 import static lombok.AccessLevel.PRIVATE;
 

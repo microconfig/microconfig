@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 
-import static deployment.util.StreamUtils.toLinkedMap;
+import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 

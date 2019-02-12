@@ -13,13 +13,13 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static deployment.mgmt.utils.ExecutorUtils.executeInParallel;
-import static deployment.util.FileUtils.writeExecutable;
-import static deployment.util.IoUtils.lines;
-import static deployment.util.Logger.warn;
-import static deployment.util.ProcessUtil.executeAndReadOutput;
+import static io.microconfig.utils.IoUtils.lines;
+import static io.microconfig.utils.Logger.warn;
 import static java.lang.Math.min;
 import static java.lang.System.out;
 import static java.util.stream.Collectors.toList;
+import static mgmt.utils.FilePermissionUtils.writeExecutable;
+import static mgmt.utils.ProcessUtil.executeAndReadOutput;
 
 @RequiredArgsConstructor
 public class SshCommandImpl implements SshCommand {

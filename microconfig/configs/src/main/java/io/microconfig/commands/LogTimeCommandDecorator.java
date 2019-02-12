@@ -1,6 +1,6 @@
 package io.microconfig.commands;
 
-import static deployment.util.Logger.announce;
+import static io.microconfig.utils.Logger.announce;
 import static java.lang.System.currentTimeMillis;
 
 public class LogTimeCommandDecorator {

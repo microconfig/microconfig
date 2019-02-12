@@ -7,19 +7,19 @@ import deployment.mgmt.atrifacts.nexusclient.ArtifactRequestListener;
 import deployment.mgmt.atrifacts.nexusclient.NexusClient;
 import deployment.mgmt.configs.service.properties.ClasspathStrategyType;
 import deployment.mgmt.configs.service.properties.NexusRepository;
-import deployment.util.FileLogger;
-import deployment.util.Logger;
+import io.microconfig.utils.Logger;
 import lombok.RequiredArgsConstructor;
+import mgmt.utils.FileLogger;
 
 import java.io.File;
 import java.util.List;
 import java.util.function.Supplier;
 
 import static deployment.mgmt.configs.service.properties.ClasspathStrategyType.CLASSPATH_FILE;
-import static deployment.util.LoggerUtils.oneLineInfo;
-import static deployment.util.TimeUtils.percentProgress;
+import static io.microconfig.utils.TimeUtils.percentProgress;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
+import static mgmt.utils.LoggerUtils.oneLineInfo;
 
 @RequiredArgsConstructor
 public class ClasspathFileStrategy implements ClasspathStrategy {

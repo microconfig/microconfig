@@ -10,8 +10,8 @@ import java.io.File;
 import java.util.Map;
 import java.util.Optional;
 
-import static deployment.util.StringUtils.unixLikePath;
 import static io.microconfig.properties.Property.Source.SYSTEM;
+import static io.microconfig.utils.StringUtils.unixLikePath;
 import static java.lang.System.getProperty;
 import static java.util.Arrays.asList;
 

@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 import java.util.Map;
 
-import static deployment.util.FileUtils.allowExecution;
-import static deployment.util.FileUtils.write;
+import static io.microconfig.utils.FileUtils.write;
+import static mgmt.utils.FilePermissionUtils.allowExecution;
 
 @RequiredArgsConstructor
 public class AppStartStrategy implements StartStrategy {

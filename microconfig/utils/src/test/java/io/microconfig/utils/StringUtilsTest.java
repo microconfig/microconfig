@@ -1,9 +1,9 @@
-package deployment.util;
+package io.microconfig.utils;
 
 import org.junit.Test;
 
-import static deployment.util.StringUtils.like;
-import static deployment.util.StringUtils.toLowerHyphen;
+import static io.microconfig.utils.StringUtils.like;
+import static io.microconfig.utils.StringUtils.toLowerHyphen;
 import static org.junit.Assert.*;
 
 public class StringUtilsTest {

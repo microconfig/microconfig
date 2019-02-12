@@ -15,7 +15,7 @@ import java.util.function.UnaryOperator;
 
 import static deployment.mgmt.stat.releases.ReadyReleasesImpl.of;
 import static deployment.mgmt.stat.releases.ReleaseType.SERVICE;
-import static deployment.util.StreamUtils.toLinkedMap;
+import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static java.util.List.of;
 import static java.util.function.UnaryOperator.identity;
 import static java.util.stream.Collectors.*;

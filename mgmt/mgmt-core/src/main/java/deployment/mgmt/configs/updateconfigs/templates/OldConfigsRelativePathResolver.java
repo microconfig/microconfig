@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static deployment.util.Logger.warn;
+import static io.microconfig.utils.Logger.warn;
 
 @RequiredArgsConstructor
 public class OldConfigsRelativePathResolver implements RelativePathResolver {

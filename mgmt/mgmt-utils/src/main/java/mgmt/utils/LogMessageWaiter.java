@@ -1,5 +1,7 @@
-package deployment.util;
+package mgmt.utils;
 
+import io.microconfig.utils.ConsoleColor;
+import io.microconfig.utils.TimeUtils;
 import lombok.RequiredArgsConstructor;
 
 import java.io.BufferedReader;
@@ -9,12 +11,8 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 
-import static deployment.util.ConsoleColor.yellow;
-import static deployment.util.Logger.logLineBreak;
-import static deployment.util.LoggerUtils.oneLineInfo;
-import static deployment.util.ThreadUtils.sleepSec;
-import static deployment.util.TimeUtils.calcSecFrom;
-import static deployment.util.TimeUtils.secAfter;
+import static io.microconfig.utils.Logger.logLineBreak;
+import static mgmt.utils.ThreadUtils.sleepSec;
 
 @RequiredArgsConstructor
 public class LogMessageWaiter {
@@ -33,7 +31,7 @@ public class LogMessageWaiter {
 
     private void waitLogCreation() {
         while (!log.exists() && processHandle.isAlive() && !timeoutReached()) {
-            oneLineInfo("Waiting log creation '" + log.getName() + "'" + timeoutInfo(startTime));
+            LoggerUtils.oneLineInfo("Waiting log creation '" + log.getName() + "'" + timeoutInfo(startTime));
             sleepSec(2);
         }
     }
@@ -55,7 +53,7 @@ public class LogMessageWaiter {
                             .findFirst();
 
                     if (marker.isPresent()) {
-                        oneLineInfo("Found log marker '" + marker.orElseThrow() + "' in '" + log.getName() + "' after " + secAfter(startTime));
+                        LoggerUtils.oneLineInfo("Found log marker '" + marker.orElseThrow() + "' in '" + log.getName() + "' after " + TimeUtils.secAfter(startTime));
                         return;
                     }
 
@@ -63,7 +61,7 @@ public class LogMessageWaiter {
                 }
 
                 if (!processHandle.isAlive() || timeoutReached()) return;
-                oneLineInfo("Waiting log marker in '" + log.getName() + "'" + timeoutInfo(startTime));
+                LoggerUtils.oneLineInfo("Waiting log marker in '" + log.getName() + "'" + timeoutInfo(startTime));
                 sleepSec(1);
             }
         } catch (IOException e) {
@@ -80,14 +78,14 @@ public class LogMessageWaiter {
     }
 
     private boolean timeoutReached() {
-        boolean reached = calcSecFrom(startTime) > timeoutInSec;
+        boolean reached = TimeUtils.calcSecFrom(startTime) > timeoutInSec;
         if (reached) {
-            oneLineInfo(yellow("Ready markers have't been found. Service is still initializing..."));
+            LoggerUtils.oneLineInfo(ConsoleColor.yellow("Ready markers have't been found. Service is still initializing..."));
         }
         return reached;
     }
 
     private String timeoutInfo(long startTime) {
-        return " " + yellow("Timeout " + calcSecFrom(startTime) + "/" + timeoutInSec + " sec");
+        return " " + ConsoleColor.yellow("Timeout " + TimeUtils.calcSecFrom(startTime) + "/" + timeoutInSec + " sec");
     }
 }

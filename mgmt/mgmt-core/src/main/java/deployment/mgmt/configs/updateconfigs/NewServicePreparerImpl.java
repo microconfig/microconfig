@@ -13,8 +13,8 @@ import java.io.File;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static deployment.util.FileUtils.copy;
-import static deployment.util.Logger.error;
+import static io.microconfig.utils.FileUtils.copy;
+import static io.microconfig.utils.Logger.error;
 
 @RequiredArgsConstructor
 public class NewServicePreparerImpl implements NewServicePreparer {

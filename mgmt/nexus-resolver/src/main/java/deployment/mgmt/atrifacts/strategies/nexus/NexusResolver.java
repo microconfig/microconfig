@@ -1,6 +1,6 @@
 package deployment.mgmt.atrifacts.strategies.nexus;
 
-import deployment.util.FileLogger;
+import mgmt.utils.FileLogger;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.DefaultArtifact;

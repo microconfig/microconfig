@@ -3,7 +3,7 @@ package deployment.mgmt.atrifacts.nexusclient;
 import deployment.mgmt.atrifacts.Artifact;
 import deployment.mgmt.configs.service.properties.NexusRepository;
 import deployment.mgmt.configs.service.properties.NexusRepository.RepositoryType;
-import deployment.util.StreamUtils;
+import io.microconfig.utils.StreamUtils;
 import org.junit.Test;
 
 import java.util.List;

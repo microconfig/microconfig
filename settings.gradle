@@ -1,11 +1,12 @@
 rootProject.name = 'microconfig-root'
 
-include ':microconfig:configs'
+include ':microconfig:configs',
+        ':microconfig:utils'
 
 include 'mgmt:mgmt-starter',
         'mgmt:mgmt-core',
         'mgmt:nexus-resolver',
         'mgmt:console-api-exposer',
-        'mgmt:dashboard'
+        'mgmt:dashboard',
+        'mgmt:mgmt-utils'
 
-include ':microconfig:utils'

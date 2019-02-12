@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static deployment.util.FileUtils.write;
+import static io.microconfig.utils.FileUtils.write;
 import static java.lang.String.join;
 import static java.util.Collections.addAll;
 

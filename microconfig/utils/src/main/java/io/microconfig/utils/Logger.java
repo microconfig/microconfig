@@ -1,9 +1,9 @@
-package deployment.util;
+package io.microconfig.utils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import static deployment.util.ConsoleColor.*;
+import static io.microconfig.utils.ConsoleColor.*;
 
 public class Logger {
     public static void error(Throwable e) {

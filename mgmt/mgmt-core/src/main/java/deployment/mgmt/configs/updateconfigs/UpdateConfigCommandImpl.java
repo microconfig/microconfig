@@ -12,10 +12,10 @@ import java.io.File;
 import java.util.List;
 
 import static deployment.mgmt.configs.updateconfigs.UpdateConfigOption.*;
-import static deployment.util.FileUtils.delete;
-import static deployment.util.Logger.announce;
-import static deployment.util.Logger.info;
-import static deployment.util.PropertiesUtils.hasSystemFlag;
+import static io.microconfig.utils.FileUtils.delete;
+import static io.microconfig.utils.Logger.announce;
+import static io.microconfig.utils.Logger.info;
+import static io.microconfig.utils.PropertiesUtils.hasSystemFlag;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 

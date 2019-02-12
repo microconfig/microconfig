@@ -10,7 +10,7 @@ import java.io.File;
 import java.util.List;
 
 import static deployment.mgmt.configs.service.properties.ClasspathStrategyType.NEXUS;
-import static deployment.util.StreamUtils.map;
+import static io.microconfig.utils.StreamUtils.map;
 
 public class NexusClasspathStrategy implements ClasspathStrategy {
     private final NexusResolver nexusResolver = new NexusResolver();

@@ -5,10 +5,10 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
-import static deployment.util.FileUtils.write;
-import static deployment.util.IoUtils.readFirstLine;
-import static deployment.util.Logger.announce;
-import static deployment.util.StringUtils.isEmpty;
+import static io.microconfig.utils.FileUtils.write;
+import static io.microconfig.utils.IoUtils.readFirstLine;
+import static io.microconfig.utils.Logger.announce;
+import static io.microconfig.utils.StringUtils.isEmpty;
 
 @RequiredArgsConstructor
 public class PwdServiceImpl implements PwdService {

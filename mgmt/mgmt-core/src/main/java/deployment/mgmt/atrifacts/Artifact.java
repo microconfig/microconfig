@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 import static deployment.mgmt.atrifacts.ArtifactType.JAR;
 import static deployment.mgmt.atrifacts.ArtifactType.POM;
-import static deployment.util.FileUtils.userHome;
+import static io.microconfig.utils.FileUtils.userHome;
 import static java.lang.String.join;
 import static java.util.Arrays.asList;
 import static java.util.Collections.reverse;
