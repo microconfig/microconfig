@@ -104,10 +104,12 @@ As you can see we already have some small copy-paste (all services have 19.4.2 v
 Application properties can look like:
 **orders application.properties:**
 ```*.properties
-    service-discovery.url=http://10.12.172.11:6781
-    eureka.instance.prefer-ip-address=true
     server.port=9000
     application.name=orders
+    orders.personalRecommendation=true
+    statistics.enableExtendedStatistics=true
+    service-discovery.url=http://10.12.172.11:6781
+    eureka.instance.prefer-ip-address=true        
     datasource.minimum-pool-size=2
     datasource.maximum-pool-size=10    
     datasource.url=oracle.jdbc.url=jdbc:oracle:thin:@172.30.162.3:$1521:ARMSDEV
@@ -115,10 +117,12 @@ Application properties can look like:
 ```
 **payments application.properties:**
 ```*.properties
-    service-discovery.url=http://10.12.172.11:6781
-    eureka.instance.prefer-ip-address=true    
     server.port=8080
     application.name=payments
+    payments.booktimeout=10m
+    payment.system.retries=3
+    service-discovery.url=http://10.12.172.11:6781
+    eureka.instance.prefer-ip-address=true            
     datasource.minimum-pool-size=2
     datasource.maximum-pool-size=5    
     datasource.url=oracle.jdbc.url=jdbc:oracle:thin:@172.30.162.3:1521:ARMSDEV
@@ -127,8 +131,8 @@ Application properties can look like:
 **service-discovery application.properties:**
 ```*.properties
     server.port=6781
+    application.name=eureka
     eureka.client.fetchRegistry=false
     eureka.server.eviction-interval-timer-in-ms=10000
-    eureka.server.enable-self-preservation=false
-    application.name=eureka
+    eureka.server.enable-self-preservation=false    
 ```
