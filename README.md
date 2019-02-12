@@ -94,7 +94,7 @@ Inside process.proc we will store configuration that describe what is your servi
 ```
 **service-discovery process.proc:**
 ```*.properties
-    artifact=org.example.discovery:eureka:19.4.2
+    artifact=org.example.discovery:eureka:19.4.2 # partial duplication         
     java.main=org.example.discovery.EurekaSterter
     java.opts.mem=-Xms1024M -Xmx2048M # partial duplication         
 ```
