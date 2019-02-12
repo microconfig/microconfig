@@ -21,6 +21,7 @@ It’s a good practice to keep service configuration separated from code. It all
 
 So the best way to follow this principle is to have dedicated repository for configuration in your favorite version control system.  You can store configuration for all microservices in one repository to make it easy to reuse common part and be sure common part for services is consistent. 
 
+# Basic folder layout
 Let’s see folder layout that you can keep in dedicated repository.
 
 For every service you have to create dedicated folder with unique name(name of the service). In service directory we will keep common and env specific configuration.
