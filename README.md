@@ -61,7 +61,7 @@ repo
 │    └───orders
 │        └───application.properties
 │    └───payments
-         └───application.properties
+│        └───application.properties
 │	
 └───infra
     └───service-discovery
