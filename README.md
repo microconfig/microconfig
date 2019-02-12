@@ -101,7 +101,7 @@ Inside process.proc we will store configuration that describe what is your servi
 
 As you can see we already have some small copy-paste (all services have 19.4.2 version, two of them have the same java.ops params).  Configuration duplication as bad as code one. We will see father how to do it better.
 
-Let's see how application properties can look like. In comments we note what can be improved
+Let's see how application properties can look like. In comments we note what can be improved.
 
 **orders application.properties:**
 ```*.properties
@@ -122,7 +122,7 @@ Let's see how application properties can look like. In comments we note what can
     application.name=payments # better to get name from folder
     payments.booktimeoutInSec=900 # how long in min ?
     payments.system.retries=3
-    consistency.validateConsistencyIntervalInMs=420000 # how long in min ?
+    consistency.validateConsistencyIntervalInMs=420000 # Difficult to read. How long in min ?
     service-discovery.url=http://10.12.172.11:6781 # duplication
     eureka.instance.prefer-ip-address=true  # duplication            
     datasource.minimum-pool-size=2  # duplication
