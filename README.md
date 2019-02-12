@@ -109,7 +109,7 @@ Let's see how application properties can look like. In comments we note what can
     application.name=orders # better to get name from folder
     orders.personalRecommendation=true
     statistics.enableExtendedStatistics=true
-    service-discovery.url=http://10.12.172.11:6781 # duplication
+    service-discovery.url=http://10.12.172.11:6781 # duplication. Are you sure host and port is consistent with eureka configuration?
     eureka.instance.prefer-ip-address=true  # duplication        
     datasource.minimum-pool-size=2  # duplication
     datasource.maximum-pool-size=10    
@@ -122,8 +122,8 @@ Let's see how application properties can look like. In comments we note what can
     application.name=payments # better to get name from folder
     payments.booktimeoutInSec=900 # how long in min ?
     payments.system.retries=3
-    consistency.validateConsistencyIntervalInMs=420000 # Difficult to read. How long in min ?
-    service-discovery.url=http://10.12.172.11:6781 # duplication
+    consistency.validateConsistencyIntervalInMs=420000 # difficult to read. How long in min ?
+    service-discovery.url=http://10.12.172.11:6781 # duplication. Are you sure host and port is consistent with eureka configuration?
     eureka.instance.prefer-ip-address=true  # duplication            
     datasource.minimum-pool-size=2  # duplication
     datasource.maximum-pool-size=5    
