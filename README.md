@@ -43,9 +43,8 @@ repo
 # Service configuration format
 Inside service folder you can create configuration in key=value format. 
 
-It convinient to have different kinds of configuration and keep it in different files:
-* Process congiguration (configuration that is used to start your service, like memory limit, VM params, etc)
+It convenient to have different kinds of configuration and keep it in different files:
+* Process configuration (configuration that is used to start your service, like memory limit, VM params, etc)
 * Application configuration (configuration that you service reads after startup and use in runtime)
 * OS ENV variables
 * Special templates (for instance, your logger specific descriptor (logback.xml))
-
