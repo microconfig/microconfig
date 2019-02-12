@@ -1,0 +1,7 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+    implementation project(':mgmt:mgmt-core'),
+            project(':mgmt:console-api-exposer'),
+            project(':microconfig:utils')
+}
