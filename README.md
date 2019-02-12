@@ -77,7 +77,7 @@ repo
         └───process.proc
 ```
 
-Inside process.proc we will store configuration that describe what is your service and how to run it (You config files can have other proprties).
+Inside process.proc we will store configuration that describe what is your service and how to run it (You config files can have other properties, so don't pay attention on concrete properties).
 
 **orders process.proc:**
 ```*.properties
