@@ -42,7 +42,7 @@ repo
 # Service configuration types
 
 It convenient to have different kinds of configuration and keep it in different files:
-* Process configuration (configuration that is used to start your service, like memory limit, VM params, etc)
+* Process configuration (configuration that is used to start your service, like memory limit, VM params, etc. Deployment tools can read these files to start your services)
 * Application configuration (configuration that you service reads after startup and use in runtime)
 * OS ENV variables
 * Lib specific templates (for instance, your logger specific descriptor (logback.xml), kafka.conf, cassandra.yaml, etc)
