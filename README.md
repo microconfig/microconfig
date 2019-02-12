@@ -135,7 +135,7 @@ Let's see how application properties can look like. In comments we note what can
     server.port=6781
     application.name=eureka
     eureka.client.fetchRegistry=false
-    eureka.server.eviction-interval-timer-in-ms=15000 # difficult to read. how long in min ?
+    eureka.server.eviction-interval-timer-in-ms=15000 # difficult to read
     eureka.server.enable-self-preservation=false    
 ```
 
