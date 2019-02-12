@@ -65,7 +65,7 @@ public class MavenSettingsImpl implements MavenSettings {
 
     @Override
     public ClasspathStrategyType getClasspathResolveStrategy() {
-        String strategy = processProperties.get("mgmt.classpath.resolver.strategy");
+        String strategy = processProperties.get("mgmt.classpath.resolve.strategy");
         try {
             return strategy == null ? NEXUS : ClasspathStrategyType.valueOf(strategy.toUpperCase());
         } catch (IllegalArgumentException e) {
