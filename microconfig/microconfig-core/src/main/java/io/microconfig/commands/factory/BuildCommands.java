@@ -30,6 +30,8 @@ import static io.microconfig.utils.FileUtils.canonical;
 @Getter
 @RequiredArgsConstructor
 public class BuildCommands {
+    private static final String ENVS_DIR = "envs";
+
     private final ComponentTree componentTree;
     private final EnvironmentProvider environmentProvider;
     private final File componentsDir;
@@ -74,7 +76,7 @@ public class BuildCommands {
     }
 
     private static EnvironmentProvider newEnvProvider(File repoDir) {
-        return cache(new FileBasedEnvironmentProvider(new File(repoDir, "envs"), new EnvironmentParserImpl()));
+        return cache(new FileBasedEnvironmentProvider(new File(repoDir, ENVS_DIR), new EnvironmentParserImpl()));
     }
 
     private BuildPropertiesCommand newBuildCommand(PropertyType type, PropertySerializer propertySerializer, PropertiesPostProcessor propertiesPostProcessor) {
