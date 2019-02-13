@@ -30,8 +30,6 @@ allprojects {
     }
 
     publishing {
-        repositories {
-        }
     }
 
     dependencies {
