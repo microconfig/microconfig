@@ -42,10 +42,17 @@ public class BuildCommands {
     }
 
     public PropertiesProvider newPropertiesProvider(PropertyType propertyType) {
-        PropertiesProvider fileBasedPropertiesProvider = cache(new FileBasedPropertiesProvider(componentTree, propertyType.getExtension(), new FileComponentParser(componentTree.getRepoDirRoot())));
-        PropertiesProvider envSpecificPropertiesProvider = cache(new EnvSpecificPropertiesProvider(fileBasedPropertiesProvider, environmentProvider, componentTree, componentsDir));
-        PropertyResolver placeholderResolver = cache(new SpelExpressionResolver(cache(new PlaceholderResolver(environmentProvider, new PropertyFetcherImpl(envSpecificPropertiesProvider)))));
-
+        PropertiesProvider fileBasedPropertiesProvider = cache(
+                new FileBasedPropertiesProvider(componentTree, propertyType.getExtension(), new FileComponentParser(componentTree.getRepoDirRoot()))
+        );
+        PropertiesProvider envSpecificPropertiesProvider = cache(
+                new EnvSpecificPropertiesProvider(fileBasedPropertiesProvider, environmentProvider, componentTree, componentsDir)
+        );
+        PropertyResolver placeholderResolver = cache(
+                new SpelExpressionResolver(
+                        cache(new PlaceholderResolver(environmentProvider, new PropertyFetcherImpl(envSpecificPropertiesProvider)))
+                )
+        );
         return cache(new ResolvedPropertiesProvider(envSpecificPropertiesProvider, placeholderResolver));
     }
 
