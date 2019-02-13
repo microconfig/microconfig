@@ -56,14 +56,17 @@ public class BuildPropertiesCommand implements Command {
 
     private List<Component> toComponents(List<String> names, List<Component> allComponents, String env) {
         if (getProperty(SKIP_VALIDATION_PROPERTY) != null) {
-            return names.stream().map(Component::byType).collect(toList());
+            return names.stream()
+                    .map(Component::byType)
+                    .collect(toList());
         }
 
-        return names.stream().map(name -> allComponents
-                .stream()
-                .filter(c -> c.getName().equals(name))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Component '" + name + "' is not configured for " + env + " env"))).collect(toList());
+        return names.stream()
+                .map(name -> allComponents.stream()
+                        .filter(c -> c.getName().equals(name))
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalArgumentException("Component '" + name + "' is not configured for " + env + " env")))
+                .collect(toList());
     }
 
     private int processComponent(Component component, String env) {

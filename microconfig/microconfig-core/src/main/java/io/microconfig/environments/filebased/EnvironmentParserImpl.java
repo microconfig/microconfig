@@ -21,7 +21,7 @@ public class EnvironmentParserImpl implements EnvironmentParser<String> {
     private static final String APPEND = "append";
     private static final String COMPONENTS = "components";
 
-    private static final Gson gson = new Gson();
+    private final Gson gson = new Gson();
 
     @Override
     @SuppressWarnings("unchecked")
@@ -35,7 +35,7 @@ public class EnvironmentParserImpl implements EnvironmentParser<String> {
         List<ComponentGroup> componentGroups = map.entrySet().stream().map(componentGroupDeclaration -> {
             String componentGroupName = componentGroupDeclaration.getKey();
             Map<String, Object> properties = componentGroupDeclaration.getValue();
-            Optional<String> ip = Optional.ofNullable((String) properties.get(IP)).or(() -> envIp);
+            Optional<String> ip = ofNullable((String) properties.get(IP)).or(() -> envIp);
 
             List<Component> parsedComponents = fetchComponentsFromProperties(properties, COMPONENTS);
             List<Component> excludedComponents = fetchComponentsFromProperties(properties, EXCLUDE);
@@ -62,7 +62,7 @@ public class EnvironmentParserImpl implements EnvironmentParser<String> {
     }
 
     private Optional<Integer> parsePortOffset(Map<String, ?> map) {
-        return Optional.ofNullable(map.remove(PORT_OFFSET))
+        return ofNullable(map.remove(PORT_OFFSET))
                 .map(Double.class::cast)
                 .map(Double::intValue);
     }
