@@ -21,7 +21,7 @@ allprojects {
 
     group = 'microconfig'
     version = rootProject.version
-    sourceCompatibility = 10
+    sourceCompatibility = 11
 
     repositories {
         mavenLocal()

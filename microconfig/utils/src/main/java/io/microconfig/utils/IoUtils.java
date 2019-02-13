@@ -1,7 +1,5 @@
 package io.microconfig.utils;
 
-import org.apache.commons.io.IOUtils;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,20 +43,28 @@ public class IoUtils {
 
     public static String readFully(File file) {
         try {
-            return readFully(new FileInputStream(file));
+            return Files.readString(file.toPath());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static String readFully(InputStream inputStream) {
-        ByteArrayOutputStream result = new ByteArrayOutputStream();
-        try (inputStream) {
-            IOUtils.copy(inputStream, result);
+    public static String readFully(InputStream input) {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try (input) {
+            doCopy(input, output);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return result.toString();
+        return output.toString();
+    }
+
+    private static void doCopy(InputStream input, ByteArrayOutputStream output) throws IOException {
+        byte[] buffer = new byte[1024 * 4];
+        int n;
+        while (-1 != (n = input.read(buffer))) {
+            output.write(buffer, 0, n);
+        }
     }
 
     public static void readChunked(InputStream inputStream, ObjIntConsumer<byte[]> consumer) {

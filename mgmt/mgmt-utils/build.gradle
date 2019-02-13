@@ -1,4 +1,3 @@
 dependencies {
-    implementation lib.commons_io,
-            project(':microconfig:utils')
+    implementation project(':microconfig:utils')
 }
