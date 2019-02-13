@@ -5,8 +5,8 @@ import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.filestructure.ProcessDirs;
 import deployment.mgmt.configs.service.properties.ProcessProperties;
 import deployment.mgmt.configs.service.properties.PropertyService;
-import io.microconfig.templates.CopyTemplatesService;
 import deployment.mgmt.process.runner.ScriptRunner;
+import io.microconfig.templates.CopyTemplatesService;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -66,6 +66,9 @@ public class NewServicePreparerImpl implements NewServicePreparer {
     }
 
     private void copyTemplates(String service) {
-        copyTemplatesService.copyTemplates(deployFileStructure.service().getServiceDir(service), propertyService.getServiceProperties(service));
+        copyTemplatesService.copyTemplates(
+                deployFileStructure.service().getServiceDir(service),
+                propertyService.getServiceProperties(service)
+        );
     }
 }
