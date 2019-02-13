@@ -22,6 +22,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
+import java.io.IOException;
 
 import static io.microconfig.commands.PropertiesPostProcessor.emptyPostProcessor;
 import static io.microconfig.utils.CacheHandler.cache;
@@ -39,6 +40,12 @@ public class BuildCommands {
     }
 
     public static BuildCommands init(File repoDir, File componentsDir, String serviceInnerDir) {
+        try {
+            repoDir = repoDir.getCanonicalFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         ComponentTree componentTree = ComponentTreeCache.build(repoDir);
         EnvironmentProvider environmentProvider = newEnvProvider(repoDir);
         return new BuildCommands(componentTree, environmentProvider, componentsDir, serviceInnerDir);
