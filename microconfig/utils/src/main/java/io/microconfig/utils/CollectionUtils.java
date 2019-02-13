@@ -6,17 +6,12 @@ import java.util.Map;
 
 public class CollectionUtils {
     public static <K, V> Map<K, V> join(Map<? extends K, ? extends V> first,
-                                        Map<? extends K, ? extends V> second,
-                                        Map<K, V> destination) {
+                                        Map<? extends K, ? extends V> second) {
+        Map<K, V> destination = new LinkedHashMap<>();
         destination.putAll(first);
         destination.putAll(second);
 
         return destination;
-    }
-
-    public static <K, V> Map<K, V> join(Map<? extends K, ? extends V> first,
-                                        Map<? extends K, ? extends V> second) {
-        return join(first, second, new LinkedHashMap<>());
 
     }
 

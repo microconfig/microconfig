@@ -45,12 +45,11 @@ public class FileBasedPropertiesProvider implements PropertiesProvider {
     }
 
     private Map<String, Property> collectProperties(PropertyFilter filter, Component component, String env, Set<Include> processedInclude) {
-        Map<String, Property> propertyByKey = new TreeMap<>();
+        Map<String, Property> propertyByKey = new HashMap<>();
 
         componentTree.getPropertyFiles(component.getType(), filter)
                 .map(p -> parseComponentProperties(component, env, p))
-                .map(c -> processComponent(c, processedInclude))
-                .forEach(propertyByKey::putAll);
+                .forEach(c -> processComponent(c, processedInclude, propertyByKey));
 
         return propertyByKey;
     }
@@ -59,11 +58,12 @@ public class FileBasedPropertiesProvider implements PropertiesProvider {
         return componentParser.parse(file, component, env);
     }
 
-    private Map<String, Property> processComponent(ComponentProperties componentProperties, Set<Include> processedInclude) {
+    private void processComponent(ComponentProperties componentProperties, Set<Include> processedInclude, Map<String, Property> destination) {
         Map<String, Property> includes = processIncludes(componentProperties, processedInclude);
         Map<String, Property> componentProps = componentProperties.getProperties().stream().collect(toMap(Property::getKey, p -> p));
 
-        return join(includes, componentProps);
+        destination.putAll(includes);
+        destination.putAll(componentProps);
     }
 
     private Map<String, Property> processIncludes(ComponentProperties componentProperties, Set<Include> processedInclude) {
