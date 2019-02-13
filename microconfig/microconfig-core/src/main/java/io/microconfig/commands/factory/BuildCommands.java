@@ -49,15 +49,15 @@ public class BuildCommands {
         return cache(new ResolvedPropertiesProvider(envSpecificPropertiesProvider, placeholderResolver));
     }
 
-    BuildPropertiesCommand newBuildCommand(PropertyType type) {
+    public BuildPropertiesCommand newBuildCommand(PropertyType type) {
         return newBuildCommand(type, mgmtSerializer(type), emptyPostProcessor());
     }
 
-    BuildPropertiesCommand newBuildCommand(PropertyType type, PropertySerializer propertySerializer) {
+    public BuildPropertiesCommand newBuildCommand(PropertyType type, PropertySerializer propertySerializer) {
         return newBuildCommand(type, propertySerializer, emptyPostProcessor());
     }
 
-    BuildPropertiesCommand newBuildCommand(PropertyType type, PropertiesPostProcessor propertiesPostProcessor) {
+    public BuildPropertiesCommand newBuildCommand(PropertyType type, PropertiesPostProcessor propertiesPostProcessor) {
         return newBuildCommand(type, mgmtSerializer(type), propertiesPostProcessor);
     }
 

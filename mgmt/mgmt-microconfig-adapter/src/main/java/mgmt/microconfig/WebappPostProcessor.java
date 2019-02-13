@@ -1,38 +1,36 @@
-package io.microconfig.commands.postprocessors;
+package mgmt.microconfig;
 
 import io.microconfig.commands.PropertiesPostProcessor;
 import io.microconfig.properties.Property;
+import io.microconfig.utils.FileUtils;
+import io.microconfig.utils.Logger;
+import io.microconfig.utils.PropertiesUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import static io.microconfig.utils.FileUtils.delete;
-import static io.microconfig.utils.FileUtils.write;
-import static io.microconfig.utils.Logger.error;
-import static io.microconfig.utils.PropertiesUtils.hasTrueValue;
-
-public class WebappPostProcessor implements PropertiesPostProcessor {
+class WebappPostProcessor implements PropertiesPostProcessor {
     private static final String WEBAPP_FILE = "mgmt.webapp";
     private static final String DEPENDSON_FILE = "mgmt.dependson.list";
     private static final String FORCED_STATUS_FILE = "mgmt.forced.status";
 
     @Override
     public void process(File serviceDir, String serviceName, Map<String, Property> properties) {
-        delete(new File(serviceDir, WEBAPP_FILE));
+        FileUtils.delete(new File(serviceDir, WEBAPP_FILE));
 
-        if (!hasTrueValue("mgmt.tomcat.webapp.enabled", properties)) return;
+        if (!PropertiesUtils.hasTrueValue("mgmt.tomcat.webapp.enabled", properties)) return;
 
-        write(new File(serviceDir, WEBAPP_FILE), "");
-        delete(new File(serviceDir, DEPENDSON_FILE));
+        FileUtils.write(new File(serviceDir, WEBAPP_FILE), "");
+        FileUtils.delete(new File(serviceDir, DEPENDSON_FILE));
         Property container = properties.get("mgmt.webapp.container");
         if (container == null) {
-            error("No container for webapp " + serviceDir.getParentFile().getAbsolutePath());
+            Logger.error("No container for webapp " + serviceDir.getParentFile().getAbsolutePath());
             return;
         }
 
-        write(new File(serviceDir, DEPENDSON_FILE), container.getValue());
-        write(new File(serviceDir, FORCED_STATUS_FILE), "WebApp(" + container + ")");
+        FileUtils.write(new File(serviceDir, DEPENDSON_FILE), container.getValue());
+        FileUtils.write(new File(serviceDir, FORCED_STATUS_FILE), "WebApp(" + container + ")");
 
         File parentFile = canonical(serviceDir);
         String componentDirName = parentFile.getName();
@@ -40,7 +38,7 @@ public class WebappPostProcessor implements PropertiesPostProcessor {
         String contextFile = "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<Context path=\"/" + componentDirName + "\" docBase=\"" + parentFile.getAbsoluteFile() + "/webapp\" />";
 
-        write(new File(serviceDir, contextFileName), contextFile);
+        FileUtils.write(new File(serviceDir, contextFileName), contextFile);
     }
 
     private File canonical(File dir) {

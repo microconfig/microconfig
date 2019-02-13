@@ -5,6 +5,7 @@ include ':microconfig:microconfig-core',
 
 include 'mgmt:mgmt-starter',
         'mgmt:mgmt-core',
+        'mgmt:mgmt-microconfig-adapter',
         'mgmt:nexus-resolver',
         'mgmt:console-api-exposer',
         'mgmt:dashboard',

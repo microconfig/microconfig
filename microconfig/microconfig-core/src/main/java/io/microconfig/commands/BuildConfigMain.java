@@ -3,7 +3,7 @@ package io.microconfig.commands;
 import java.io.File;
 import java.util.List;
 
-import static io.microconfig.commands.factory.BuildAllCommandFactory.newBuildPropertiesCommand;
+import static io.microconfig.commands.factory.BuildPropertiesCommandFactory.newBuildPropertiesCommand;
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.TimeUtils.msAfter;
 import static java.lang.System.currentTimeMillis;
@@ -32,12 +32,12 @@ public class BuildConfigMain {
 
         List<String> components = args == null ? emptyList() : asList(args);
 
-        execute(env, groups, new File(root), new File(destinationDir), components);
+        Command command = newBuildPropertiesCommand(new File(root), new File(destinationDir));
+        execute(command, env, groups, components);
     }
 
-    public static void execute(String env, List<String> groups, File root, File componentsDir, List<String> components) {
+    public static void execute(Command command, String env, List<String> groups, List<String> components) {
         long t = currentTimeMillis();
-        Command command = newBuildPropertiesCommand(root, componentsDir);
 
         if (groups.isEmpty()) {
             command.execute(new CommandContext(env, components));

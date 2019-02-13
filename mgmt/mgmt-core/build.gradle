@@ -1,6 +1,7 @@
 dependencies {
-    implementation project(':microconfig:microconfig-core'),
+    implementation project(':mgmt:mgmt-microconfig-adapter'),
             project(':microconfig:utils'),
+            project(':microconfig:microconfig-core'),
             project(':mgmt:mgmt-utils'),
             project(':mgmt:nexus-resolver'),
             project(':mgmt:console-api-exposer'),

@@ -1,0 +1,5 @@
+dependencies {
+    implementation project(':microconfig:microconfig-core'),
+            project(':microconfig:utils')
+    
+}

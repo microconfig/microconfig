@@ -5,7 +5,7 @@ import deployment.mgmt.configs.componentgroup.GroupDescription;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.process.stop.StopCommand;
 import deployment.mgmt.update.scriptgenerator.MgmtScriptGenerator;
-import io.microconfig.commands.BuildConfigMain;
+import mgmt.microconfig.MgmtMicroConfigAdapter;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -59,7 +59,7 @@ public class UpdateConfigCommandImpl implements UpdateConfigCommand {
         File componentsDir = deployFileStructure.service().getComponentsDir();
         info("Source: " + repoDir + ". Destination: " + componentsDir);
 
-        BuildConfigMain.execute(
+        MgmtMicroConfigAdapter.execute(
                 groupDescription.getEnv(),
                 singletonList(groupDescription.getGroup()),
                 repoDir,

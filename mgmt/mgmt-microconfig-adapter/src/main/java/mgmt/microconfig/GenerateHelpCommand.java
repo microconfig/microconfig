@@ -1,5 +1,7 @@
-package io.microconfig.commands;
+package mgmt.microconfig;
 
+import io.microconfig.commands.Command;
+import io.microconfig.commands.CommandContext;
 import io.microconfig.environments.Component;
 import io.microconfig.environments.Environment;
 import io.microconfig.environments.EnvironmentProvider;
@@ -18,7 +20,7 @@ import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
-public class GenerateHelpCommand implements Command {
+class GenerateHelpCommand implements Command {
     private static final String SKIP_VALIDATION_PROPERTY = "skipValidation";
 
     private final EnvironmentProvider environmentProvider;

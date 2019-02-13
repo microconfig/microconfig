@@ -1,5 +1,7 @@
-package io.microconfig.commands;
+package mgmt.microconfig;
 
+import io.microconfig.commands.Command;
+import io.microconfig.commands.CommandContext;
 import io.microconfig.environments.EnvironmentProvider;
 import lombok.RequiredArgsConstructor;
 
@@ -8,7 +10,7 @@ import java.io.File;
 import static io.microconfig.utils.FileUtils.write;
 
 @RequiredArgsConstructor
-public class GenerateCListCommand implements Command {
+ class GenerateComponentListCommand implements Command {
     private final File serviceDir;
     private final EnvironmentProvider environmentProvider;
 
