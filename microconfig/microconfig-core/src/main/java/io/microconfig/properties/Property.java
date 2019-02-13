@@ -73,18 +73,22 @@ public class Property {
     @EqualsAndHashCode
     @RequiredArgsConstructor
     public static class Source {
-        public static final String SYSTEM = "SYSTEM";
+        private static final Source SYSTEM_SOURCE = new Source(Component.byType(""), "SYSTEM");
 
         private final Component component;
         private final String sourceOfProperty;
         private final int line;
+
+        public static Source systemSource() {
+            return SYSTEM_SOURCE;
+        }
 
         public Source(Component component, String sourceOfProperty) {
             this(component, sourceOfProperty, -1);
         }
 
         public boolean isSystem() {
-            return SYSTEM.equals(sourceOfProperty);
+            return this == SYSTEM_SOURCE;
         }
 
         @Override

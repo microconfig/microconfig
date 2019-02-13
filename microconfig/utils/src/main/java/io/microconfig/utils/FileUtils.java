@@ -16,7 +16,11 @@ import static java.util.stream.Stream.of;
 
 public class FileUtils {
     public static File userHome() {
-        return new File(System.getProperty("user.home"));
+        return new File(userHomeString());
+    }
+
+    public static String userHomeString() {
+        return System.getProperty("user.home");
     }
 
     public static void truncate(File dir) {

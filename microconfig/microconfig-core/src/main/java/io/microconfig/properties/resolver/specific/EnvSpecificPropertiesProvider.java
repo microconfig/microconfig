@@ -7,33 +7,36 @@ import io.microconfig.properties.files.provider.ComponentTree;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static io.microconfig.properties.Property.Source.SYSTEM;
+import static io.microconfig.properties.Property.Source.systemSource;
+import static io.microconfig.utils.FileUtils.userHomeString;
 import static io.microconfig.utils.StringUtils.unixLikePath;
-import static java.lang.System.getProperty;
-import static java.util.Arrays.asList;
 
 @RequiredArgsConstructor
 public class EnvSpecificPropertiesProvider implements PropertiesProvider {
     private static final String PORT_OFFSET = "portOffset";
     private static final String IP = "ip";
-
     private static final String ENV = "env";
     private static final String NAME = "name";
     private static final String GROUP = "group";
     private static final String ORDER = "order";
-
     private static final String USER_HOME = "userHome";
     private static final String CONFIG_DIR = "configDir";
     private static final String SERVICE_DIR = "serviceDir";
     private static final String FOLDER = "folder";
+    private static final List<String> ALL = List.of(PORT_OFFSET, IP, ENV, NAME, GROUP, USER_HOME, CONFIG_DIR, SERVICE_DIR, FOLDER);
 
     private final PropertiesProvider propertiesProvider;
     private final EnvironmentProvider environmentProvider;
     private final ComponentTree componentTree;
     private final File componentsDir;
+
+    public static boolean isEnvSpecificProperty(String name) {
+        return ALL.contains(name);
+    }
 
     @Override
     public Map<String, Property> getProperties(Component component, String environment) {
@@ -61,7 +64,7 @@ public class EnvSpecificPropertiesProvider implements PropertiesProvider {
 
     private void addPortOffset(Map<String, Property> properties, Environment environment) {
         environment.getPortOffset().ifPresent(p ->
-                properties.putIfAbsent(PORT_OFFSET, new Property(PORT_OFFSET, p.toString(), environment.getName(), getSystemSource(), true))
+                properties.putIfAbsent(PORT_OFFSET, new Property(PORT_OFFSET, p.toString(), environment.getName(), systemSource(), true))
         );
     }
 
@@ -96,18 +99,10 @@ public class EnvSpecificPropertiesProvider implements PropertiesProvider {
     }
 
     private void addUserHome(Map<String, Property> properties, Environment environment) {
-        doAdd(USER_HOME, unixLikePath(getProperty("user.home")), properties, environment, true);
+        doAdd(USER_HOME, unixLikePath(userHomeString()), properties, environment, true);
     }
 
     private void doAdd(String name, String value, Map<String, Property> properties, Environment environment, boolean temp) {
-        properties.put(name, new Property(name, value, environment.getName(), getSystemSource(), temp));
-    }
-
-    private Property.Source getSystemSource() {
-        return new Property.Source(Component.byType(""), SYSTEM);
-    }
-
-    public static boolean isEnvSpecificProperty(String name) {
-        return asList(ENV, NAME, PORT_OFFSET, IP, ORDER).contains(name);
+        properties.put(name, new Property(name, value, environment.getName(), systemSource(), temp));
     }
 }
