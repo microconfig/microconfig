@@ -22,7 +22,7 @@ import static io.microconfig.properties.Property.withoutTempValues;
 import static io.microconfig.utils.Logger.*;
 import static io.microconfig.utils.TimeUtils.secAfter;
 import static java.lang.System.currentTimeMillis;
-import static mgmt.utils.OsUtil.isWindows;
+import static io.microconfig.utils.OsUtil.isWindows;
 import static mgmt.utils.ProcessUtil.executeScript;
 
 @RequiredArgsConstructor

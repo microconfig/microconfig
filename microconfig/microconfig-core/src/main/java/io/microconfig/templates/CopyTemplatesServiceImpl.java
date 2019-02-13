@@ -1,4 +1,4 @@
-package deployment.mgmt.configs.updateconfigs.templates;
+package io.microconfig.templates;
 
 import lombok.RequiredArgsConstructor;
 
@@ -7,20 +7,21 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static io.microconfig.utils.FilePermissionUtils.copyPermissions;
 import static io.microconfig.utils.FileUtils.write;
 import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.Logger.*;
 import static io.microconfig.utils.StringUtils.unixLikePath;
-import static mgmt.utils.FilePermissionUtils.copyPermissions;
 
 @RequiredArgsConstructor
-public class CopyTemplatesService {
+public class CopyTemplatesServiceImpl implements CopyTemplatesService {
     private static final String TEMPLATE_PREFIX = "mgmt.template.";
     private static final String FROM_FILE_SUFFIX = ".fromFile";
     private static final String TO_FILE_SUFFIX = ".toFile";
 
     private final RelativePathResolver relativePathResolver;
 
+    @Override
     public void copyTemplates(File serviceDir, Map<String, String> serviceProperties) {
         collectTemplates(serviceProperties).forEach(def -> {
             try {

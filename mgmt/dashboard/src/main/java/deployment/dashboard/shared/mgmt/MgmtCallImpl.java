@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import static io.microconfig.utils.Logger.align;
-import static mgmt.utils.OsUtil.isWindows;
+import static io.microconfig.utils.OsUtil.isWindows;
 import static mgmt.utils.ProcessUtil.executeAndReadOutput;
 
 @Service

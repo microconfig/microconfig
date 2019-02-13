@@ -4,9 +4,9 @@ version = "${major}.${minor}.${patch}${versionPostfix}"
 buildscript {
     repositories {
         mavenLocal()
-//        maven { url "http://172.30.162.1/nexus/content/groups/public" }
-        mavenCentral()
-        jcenter()
+        maven { url "http://172.30.162.1/nexus/content/groups/public" }
+//        mavenCentral()
+//        jcenter()
     }
 
     dependencies {
@@ -27,8 +27,8 @@ allprojects {
 
     repositories {
         mavenLocal()
-//        maven { url "http://172.30.162.1/nexus/content/groups/public" }
-        mavenCentral()
+        maven { url "http://172.30.162.1/nexus/content/groups/public" }
+//        mavenCentral()
     }
 
     publishing {

@@ -5,7 +5,7 @@ import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.filestructure.ProcessDirs;
 import deployment.mgmt.configs.service.properties.ProcessProperties;
 import deployment.mgmt.configs.service.properties.PropertyService;
-import deployment.mgmt.configs.updateconfigs.templates.CopyTemplatesService;
+import io.microconfig.templates.CopyTemplatesService;
 import deployment.mgmt.process.runner.ScriptRunner;
 import lombok.RequiredArgsConstructor;
 

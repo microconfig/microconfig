@@ -1,5 +1,6 @@
 package deployment.mgmt.configs.updateconfigs.templates;
 
+import io.microconfig.templates.Template;
 import org.junit.Test;
 
 import static java.util.Map.of;

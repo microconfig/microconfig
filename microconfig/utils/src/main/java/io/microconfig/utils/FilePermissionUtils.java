@@ -1,20 +1,20 @@
-package mgmt.utils;
+package io.microconfig.utils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermission;
-import java.util.Set;
+import java.util.HashSet;
 
 import static io.microconfig.utils.FileUtils.write;
 import static io.microconfig.utils.Logger.error;
 import static java.nio.file.Files.setPosixFilePermissions;
-import static mgmt.utils.OsUtil.isWindows;
+import static java.util.Arrays.asList;
 
 public class FilePermissionUtils {
     public static void copyPermissions(Path from, Path to) {
-        if (isWindows()) return;
+        if (OsUtil.isWindows()) return;
 
         try {
             setPosixFilePermissions(to, Files.getPosixFilePermissions(from));
@@ -24,10 +24,10 @@ public class FilePermissionUtils {
     }
 
     public static void allowExecution(Path file) {
-        if (isWindows()) return;
+        if (OsUtil.isWindows()) return;
 
         try {
-            setPosixFilePermissions(file, Set.of(PosixFilePermission.values()));
+            setPosixFilePermissions(file, new HashSet<>(asList(PosixFilePermission.values())));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

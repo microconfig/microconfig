@@ -1,4 +1,4 @@
-package deployment.mgmt.configs.updateconfigs.templates;
+package io.microconfig.templates;
 
 import lombok.RequiredArgsConstructor;
 
@@ -11,14 +11,7 @@ import static java.util.regex.Pattern.compile;
 
 @RequiredArgsConstructor
 public class Template {
-    private static String PLACEHOLDER_PATTERN = "(?<escaped>\\\\)?"
-            + "(?<placeholder>"
-            + "\\$"
-            + "\\{"
-            + "(?<name>.+?)"
-            + "(?::(?<defvalue>.*?))??"
-            + "})";
-    private static final Pattern placeholderTemplate = compile(PLACEHOLDER_PATTERN);
+    private static final Pattern placeholderTemplate = compile("(?<escaped>\\\\)?(?<placeholder>\\$\\{(?<name>.+?)(?::(?<defvalue>.*?))??})");
 
     private static final String SYSPROP_PREFIX = "sysprop.";
     private static final String ENV_PREFIX = "env.";

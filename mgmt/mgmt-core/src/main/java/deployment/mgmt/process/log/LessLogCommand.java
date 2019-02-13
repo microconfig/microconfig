@@ -10,7 +10,7 @@ import java.io.File;
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.Logger.warn;
 import static io.microconfig.utils.StringUtils.isEmpty;
-import static mgmt.utils.FilePermissionUtils.writeExecutable;
+import static io.microconfig.utils.FilePermissionUtils.writeExecutable;
 
 @RequiredArgsConstructor
 public class LessLogCommand implements LogCommand {

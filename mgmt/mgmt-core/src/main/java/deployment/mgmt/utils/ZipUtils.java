@@ -30,7 +30,7 @@ import static java.nio.file.attribute.PosixFilePermission.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.Set.of;
 import static java.util.stream.Collectors.toSet;
-import static mgmt.utils.OsUtil.isWindows;
+import static io.microconfig.utils.OsUtil.isWindows;
 
 public class ZipUtils {
     public static byte[] readInnerFile(File zipArchive, String innerFile) {

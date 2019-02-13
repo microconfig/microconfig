@@ -1,7 +1,7 @@
 apply plugin: 'application'
 apply plugin: 'com.github.johnrengelman.shadow'
 mainClassName = 'io.microconfig.commands.BuildConfigMain'
-sourceCompatibility = 1.8
+sourceCompatibility = 1.9
 
 dependencies {
     implementation project(':microconfig:utils'),

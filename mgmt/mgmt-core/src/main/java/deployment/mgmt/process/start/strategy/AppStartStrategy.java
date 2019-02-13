@@ -12,7 +12,7 @@ import java.io.File;
 import java.util.Map;
 
 import static io.microconfig.utils.FileUtils.write;
-import static mgmt.utils.FilePermissionUtils.allowExecution;
+import static io.microconfig.utils.FilePermissionUtils.allowExecution;
 
 @RequiredArgsConstructor
 public class AppStartStrategy implements StartStrategy {

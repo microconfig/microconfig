@@ -14,7 +14,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
-import static mgmt.utils.OsUtil.isWindows;
+import static io.microconfig.utils.OsUtil.isWindows;
 import static mgmt.utils.ProcessUtil.currentJavaPath;
 
 @RequiredArgsConstructor

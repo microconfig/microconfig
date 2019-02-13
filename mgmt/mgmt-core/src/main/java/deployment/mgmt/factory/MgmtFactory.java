@@ -39,8 +39,7 @@ import deployment.mgmt.configs.servicenameresolver.ServiceNameResolverImpl;
 import deployment.mgmt.configs.updateconfigs.NewServicePreparerImpl;
 import deployment.mgmt.configs.updateconfigs.UpdateConfigCommand;
 import deployment.mgmt.configs.updateconfigs.UpdateConfigCommandImpl;
-import deployment.mgmt.configs.updateconfigs.templates.CopyTemplatesService;
-import deployment.mgmt.configs.updateconfigs.templates.OldConfigsRelativePathResolver;
+import deployment.mgmt.configs.updateconfigs.OldConfigsRelativePathResolver;
 import deployment.mgmt.init.*;
 import deployment.mgmt.lock.LockService;
 import deployment.mgmt.lock.OsLockService;
@@ -73,6 +72,7 @@ import deployment.mgmt.update.updater.MgmtAutoUpdater;
 import deployment.mgmt.update.updater.MgmtAutoUpdaterImpl;
 import deployment.mgmt.update.updater.MgmtProperties;
 import deployment.mgmt.update.updater.MgmtPropertiesImpl;
+import io.microconfig.templates.CopyTemplatesServiceImpl;
 import lombok.Getter;
 
 import static java.util.Arrays.asList;
@@ -146,7 +146,7 @@ public class MgmtFactory {
                         deployFileStructure,
                         propertyService,
                         scriptRunner,
-                        new CopyTemplatesService(new OldConfigsRelativePathResolver(deployFileStructure.configs().getConfigRepoRootDir()))
+                        new CopyTemplatesServiceImpl(new OldConfigsRelativePathResolver(deployFileStructure.configs().getConfigRepoRootDir()))
                 ),
                 mgmtScriptGenerator
         );
