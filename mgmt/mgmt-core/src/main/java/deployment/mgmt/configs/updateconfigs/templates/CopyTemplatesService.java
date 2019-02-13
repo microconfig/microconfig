@@ -92,7 +92,8 @@ public class CopyTemplatesService {
 
         private File absolute(File serviceDir, String file) {
             File path = relativePathResolver.overrideRelativePath(file,
-                    () -> "Overriding template path for " + serviceDir.getName() + " " + this + ". Use ${this@configDir} to placeholder to config repo dir");
+                    () -> "Overriding template path for " + serviceDir.getName() + " " + this +
+                            ". Use ${this@configDir}- resolves config repo root or ${component_name@folder} - resolves config folder of component");
             return path.isAbsolute() ? path : new File(serviceDir, path.getPath());
         }
 
