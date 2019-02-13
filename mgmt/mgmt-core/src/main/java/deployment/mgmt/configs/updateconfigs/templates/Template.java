@@ -11,12 +11,12 @@ import static java.util.regex.Pattern.compile;
 
 @RequiredArgsConstructor
 public class Template {
-    public static String PLACEHOLDER_PATTERN = "(?<escaped>\\\\)?"
+    private static String PLACEHOLDER_PATTERN = "(?<escaped>\\\\)?"
             + "(?<placeholder>"
             + "\\$"
             + "\\{"
             + "(?<name>.+?)"
-            + "(?:\\:(?<defvalue>.*?))??"
+            + "(?::(?<defvalue>.*?))??"
             + "})";
     private static final Pattern placeholderTemplate = compile(PLACEHOLDER_PATTERN);
 
