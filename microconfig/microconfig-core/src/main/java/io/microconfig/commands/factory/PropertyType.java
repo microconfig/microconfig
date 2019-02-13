@@ -21,7 +21,7 @@ public enum PropertyType {
     }
 
     PropertyType(String resultFile, String extension) {
-        this.extension = extension;
+        this.extension = "." + extension;
         this.resultFile = resultFile + ".properties";
     }
 }

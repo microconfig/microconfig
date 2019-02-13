@@ -31,7 +31,7 @@ public class PropertiesProviderTest {
     private static final EnvironmentProvider environmentProvider = newEnvironmentProvider();
     private static final File rootDir = new File(getFile("test-props"), "components");
     private static final ComponentTree tree = ComponentTreeCache.build(rootDir);
-    private static final PropertiesProvider fileBasedPropertiesProvider = new FileBasedPropertiesProvider(tree, "properties", new FileComponentParser("components"));
+    private static final PropertiesProvider fileBasedPropertiesProvider = new FileBasedPropertiesProvider(tree, ".properties", new FileComponentParser("components"));
     private static final PropertiesProvider envBasedPropertiesProvider = new EnvSpecificPropertiesProvider(fileBasedPropertiesProvider,
             environmentProvider,
             tree,

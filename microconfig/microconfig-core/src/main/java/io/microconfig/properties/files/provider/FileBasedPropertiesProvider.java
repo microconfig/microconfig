@@ -6,22 +6,29 @@ import io.microconfig.properties.Property;
 import io.microconfig.properties.files.parser.ComponentParser;
 import io.microconfig.properties.files.parser.ComponentProperties;
 import io.microconfig.properties.files.parser.Include;
-import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.util.*;
+import java.util.function.Function;
 
+import static io.microconfig.properties.files.provider.PropertyFilter.newDefaultComponentFilter;
+import static io.microconfig.properties.files.provider.PropertyFilter.newEnvComponentFilter;
 import static io.microconfig.utils.CollectionUtils.join;
 import static java.util.stream.Collectors.toMap;
 
-@RequiredArgsConstructor
 public class FileBasedPropertiesProvider implements PropertiesProvider {
-    private static final int TWO_PART_FILENAME = 2;
-    private static final int THREE_PART_FILENAME = 3;
-
     private final ComponentTree componentTree;
     private final String fileExtension;
     private final ComponentParser<File> componentParser;
+
+    public FileBasedPropertiesProvider(ComponentTree componentTree, String fileExtension, ComponentParser<File> componentParser) {
+        this.componentTree = componentTree;
+        this.fileExtension = fileExtension;
+        this.componentParser = componentParser;
+        if (fileExtension.charAt(0) != '.') {
+            throw new IllegalStateException("File extension must starts with .");
+        }
+    }
 
     @Override
     public Map<String, Property> getProperties(Component component, String environment) {
@@ -29,16 +36,18 @@ public class FileBasedPropertiesProvider implements PropertiesProvider {
     }
 
     private Map<String, Property> getPropertiesByKey(Component component, String environment, Set<Include> processedInclude) {
-        Map<String, Property> basicProperties = collectProperties(newComponentFilter(component.getType()), component, environment, processedInclude);
-        Map<String, Property> envSpecificProperties = collectProperties(newEnvComponentFilter(component.getType(), environment), component, environment, processedInclude);
+        Function<PropertyFilter, Map<String, Property>> collectProperties = filter -> collectProperties(filter, component, environment, processedInclude);
+
+        Map<String, Property> basicProperties = collectProperties.apply(newDefaultComponentFilter(fileExtension));
+        Map<String, Property> envSpecificProperties = collectProperties.apply(newEnvComponentFilter(environment, fileExtension));
 
         return join(basicProperties, envSpecificProperties);
     }
 
-    private Map<String, Property> collectProperties(PropertyFileNameFilter filter, Component component, String env, Set<Include> processedInclude) {
+    private Map<String, Property> collectProperties(PropertyFilter filter, Component component, String env, Set<Include> processedInclude) {
         Map<String, Property> propertyByKey = new TreeMap<>();
 
-        componentTree.getPropertyFiles(filter.getComponentType(), filter)
+        componentTree.getPropertyFiles(component.getType(), filter)
                 .map(p -> parseComponentProperties(component, env, p))
                 .map(c -> processComponent(c, processedInclude))
                 .forEach(propertyByKey::putAll);
@@ -69,13 +78,5 @@ public class FileBasedPropertiesProvider implements PropertiesProvider {
         }
 
         return propByKey;
-    }
-
-    private PropertyFileNameFilter newComponentFilter(String componentType) {
-        return new PropertyFileNameFilter(componentType, fileExtension, TWO_PART_FILENAME);
-    }
-
-    private PropertyFileNameFilter newEnvComponentFilter(String componentType, String environment) {
-        return new PropertyFileNameFilter(componentType, environment + "." + fileExtension, THREE_PART_FILENAME);
     }
 }
