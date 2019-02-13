@@ -25,7 +25,7 @@ public class BuildConfigMain {
 
     public static void main(String[] args) {
         String env = requireNonNull(getProperty(ENV), "set -Denv");
-        List<String> groups = getProperty(GROUP) == null ? emptyList() : List.of(getProperty(GROUP).trim().split(","));
+        List<String> groups = getProperty(GROUP) == null ? emptyList() : asList(getProperty(GROUP).trim().split(","));
 
         String root = requireNonNull(getProperty(ROOT), "set -Droot. -Folder with components and envs folders");
         String destinationDir = requireNonNull(getProperty(DEST), "set -Ddest. Folder of result property output");
