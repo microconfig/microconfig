@@ -1,5 +1,7 @@
 apply plugin: 'org.springframework.boot'
 
+group = 'jdeployment'
+
 dependencies {
     implementation project(':mgmt:mgmt-core'),
             project(':mgmt:console-api-exposer'),

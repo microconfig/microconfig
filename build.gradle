@@ -10,6 +10,7 @@ buildscript {
 
     dependencies {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.1.2.RELEASE'
+        classpath "com.github.jengelman.gradle.plugins:shadow:4.0.4"
     }
 }
 
@@ -30,15 +31,15 @@ allprojects {
     }
 
     publishing {
-        repositories {            
+        repositories {
         }
     }
 
     dependencies {
         implementation platform("org.springframework.boot:spring-boot-dependencies:2.1.2.RELEASE")
 
-        compileOnly 'org.projectlombok:lombok:1.18.4'
-        annotationProcessor "org.projectlombok:lombok:1.18.4"
+        compileOnly lib.lombok
+        annotationProcessor lib.lombok
 
         testImplementation 'junit:junit',
                 'org.mockito:mockito-core'
@@ -62,7 +63,7 @@ allprojects {
                 }
             }
         }
-    }  
+    }
 }
 
 task codeCoverageReport(type: JacocoReport) {
