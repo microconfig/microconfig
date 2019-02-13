@@ -7,7 +7,6 @@ import io.microconfig.properties.files.provider.ComponentTree;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

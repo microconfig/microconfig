@@ -6,8 +6,6 @@ import io.microconfig.properties.serializer.PropertiesDiffWriter;
 import io.microconfig.properties.serializer.PropertiesSerializerImpl;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 
 import static io.microconfig.commands.factory.PropertyType.*;
 import static java.util.Arrays.asList;

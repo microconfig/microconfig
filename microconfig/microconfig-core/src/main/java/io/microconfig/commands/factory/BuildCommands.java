@@ -22,7 +22,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
-import java.io.IOException;
 
 import static io.microconfig.commands.PropertiesPostProcessor.emptyPostProcessor;
 import static io.microconfig.utils.CacheHandler.cache;

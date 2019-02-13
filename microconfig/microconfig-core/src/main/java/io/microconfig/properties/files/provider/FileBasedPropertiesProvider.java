@@ -8,7 +8,10 @@ import io.microconfig.properties.files.parser.ComponentProperties;
 import io.microconfig.properties.files.parser.Include;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 import static io.microconfig.properties.files.provider.PropertyFilter.newDefaultComponentFilter;
