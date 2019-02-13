@@ -1,6 +1,15 @@
-apply plugin: 'org.springframework.boot'
-
+apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
+mainClassName = 'deployment.mgmt.MgmtMain'
 group = 'jdeployment'
+
+publishing {
+    publications {
+        shadow(MavenPublication) { publication ->
+            project.shadow.component(publication)
+        }
+    }
+}
 
 dependencies {
     implementation project(':mgmt:mgmt-core'),

@@ -9,7 +9,6 @@ buildscript {
     }
 
     dependencies {
-        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.1.2.RELEASE'
         classpath "com.github.jengelman.gradle.plugins:shadow:4.0.4"
     }
 }
@@ -41,8 +40,7 @@ allprojects {
         compileOnly lib.lombok
         annotationProcessor lib.lombok
 
-        testImplementation 'junit:junit',
-                'org.mockito:mockito-core'
+        testImplementation 'junit:junit', 'org.mockito:mockito-core'
     }
 
     test {

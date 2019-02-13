@@ -1,10 +1,9 @@
 apply plugin: 'application'
 apply plugin: 'com.github.johnrengelman.shadow'
+mainClassName = 'microconfig.commands.BuildConfigMain'
 
 dependencies {
     implementation project(':microconfig:utils'),
             'org.springframework:spring-expression',
             'com.google.code.gson:gson'
 }
-
-mainClassName = 'microconfig.commands.BuildConfigMain'
