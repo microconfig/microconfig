@@ -23,8 +23,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
-import static io.microconfig.utils.CacheFactory.cache;
 import static io.microconfig.commands.PropertiesPostProcessor.emptyPostProcessor;
+import static io.microconfig.utils.CacheFactory.cache;
 
 @Getter
 @RequiredArgsConstructor
@@ -41,32 +41,32 @@ public class BuildCommands {
         return new BuildCommands(componentTree, environmentProvider, componentsDir);
     }
 
-    public static EnvironmentProvider newEnvProvider(File repoDir) {
-        return cache(new FileBasedEnvironmentProvider(new File(repoDir, "envs"), new EnvironmentParserImpl()));
-    }
-
-    public BuildPropertiesCommand newBuildCommand(PropertyType type) {
-        return newBuildCommand(type, mgmtSerializer(type), emptyPostProcessor());
-    }
-
-    public BuildPropertiesCommand newBuildCommand(PropertyType type, PropertySerializer propertySerializer) {
-        return newBuildCommand(type, propertySerializer, emptyPostProcessor());
-    }
-
-    public BuildPropertiesCommand newBuildCommand(PropertyType type, PropertiesPostProcessor propertiesPostProcessor) {
-        return newBuildCommand(type, mgmtSerializer(type), propertiesPostProcessor);
-    }
-
-    public BuildPropertiesCommand newBuildCommand(PropertyType type, PropertySerializer propertySerializer, PropertiesPostProcessor propertiesPostProcessor) {
-        return new BuildPropertiesCommand(environmentProvider, newPropertiesProvider(type), propertySerializer, propertiesPostProcessor);
-    }
-
     public PropertiesProvider newPropertiesProvider(PropertyType propertyType) {
         PropertiesProvider fileBasedPropertiesProvider = cache(new FileBasedPropertiesProvider(componentTree, propertyType.getExtension(), new FileComponentParser(componentTree.getRepoDirRoot())));
         PropertiesProvider envSpecificPropertiesProvider = cache(new EnvSpecificPropertiesProvider(fileBasedPropertiesProvider, environmentProvider, componentTree, componentsDir));
         PropertyResolver placeholderResolver = cache(new SpelExpressionResolver(cache(new PlaceholderResolver(environmentProvider, new PropertyFetcherImpl(envSpecificPropertiesProvider)))));
 
         return cache(new ResolvedPropertiesProvider(envSpecificPropertiesProvider, placeholderResolver));
+    }
+
+    BuildPropertiesCommand newBuildCommand(PropertyType type) {
+        return newBuildCommand(type, mgmtSerializer(type), emptyPostProcessor());
+    }
+
+    BuildPropertiesCommand newBuildCommand(PropertyType type, PropertySerializer propertySerializer) {
+        return newBuildCommand(type, propertySerializer, emptyPostProcessor());
+    }
+
+    BuildPropertiesCommand newBuildCommand(PropertyType type, PropertiesPostProcessor propertiesPostProcessor) {
+        return newBuildCommand(type, mgmtSerializer(type), propertiesPostProcessor);
+    }
+
+    private static EnvironmentProvider newEnvProvider(File repoDir) {
+        return cache(new FileBasedEnvironmentProvider(new File(repoDir, "envs"), new EnvironmentParserImpl()));
+    }
+
+    private BuildPropertiesCommand newBuildCommand(PropertyType type, PropertySerializer propertySerializer, PropertiesPostProcessor propertiesPostProcessor) {
+        return new BuildPropertiesCommand(environmentProvider, newPropertiesProvider(type), propertySerializer, propertiesPostProcessor);
     }
 
     private PropertySerializer mgmtSerializer(PropertyType propertyType) {
