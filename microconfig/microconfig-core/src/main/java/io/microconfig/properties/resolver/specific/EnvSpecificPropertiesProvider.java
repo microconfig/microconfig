@@ -29,7 +29,7 @@ public class EnvSpecificPropertiesProvider implements PropertiesProvider {
     private static final String FOLDER = "folder";
     private static final List<String> ALL = List.of(PORT_OFFSET, IP, ENV, NAME, GROUP, USER_HOME, CONFIG_DIR, SERVICE_DIR, FOLDER);
 
-    private final PropertiesProvider propertiesProvider;
+    private final PropertiesProvider delegate;
     private final EnvironmentProvider environmentProvider;
     private final ComponentTree componentTree;
     private final File componentsDir;
@@ -40,18 +40,14 @@ public class EnvSpecificPropertiesProvider implements PropertiesProvider {
 
     @Override
     public Map<String, Property> getProperties(Component component, String environment) {
-        Map<String, Property> properties = propertiesProvider.getProperties(component, environment);
+        Map<String, Property> properties = delegate.getProperties(component, environment);
         addEnvSpecificProperties(component, environment, properties);
         return properties;
     }
 
     private void addEnvSpecificProperties(Component component, String envName, Map<String, Property> properties) {
-        Environment environment;
-        try {
-            environment = environmentProvider.getByName(envName);
-        } catch (EnvironmentNotExistException e) {
-            return;
-        }
+        Environment environment = getEnv(envName);
+        if (environment == null) return;
 
         addPortOffset(properties, environment);
         addIp(properties, component, environment);
@@ -104,5 +100,13 @@ public class EnvSpecificPropertiesProvider implements PropertiesProvider {
 
     private void doAdd(String name, String value, Map<String, Property> properties, Environment environment, boolean temp) {
         properties.put(name, new Property(name, value, environment.getName(), systemSource(), temp));
+    }
+
+    private Environment getEnv(String envName) {
+        try {
+            return environmentProvider.getByName(envName);
+        } catch (EnvironmentNotExistException e) {
+            return null;
+        }
     }
 }
