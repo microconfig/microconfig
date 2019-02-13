@@ -19,8 +19,12 @@ public class MgmtMicroConfigAdapter {
         BuildConfigMain.execute(command, env, groups, components);
     }
 
+    public static BuildCommands mgmtBuildCommands(File repoDir, File componentsDir) {
+        return BuildCommands.init(repoDir, componentsDir, ".mgmt");
+    }
+
     private static Command newBuildPropertiesCommand(File repoDir, File componentsDir) {
-        BuildCommands buildCommands = BuildCommands.init(repoDir, componentsDir);
+        BuildCommands buildCommands = mgmtBuildCommands(repoDir, componentsDir);
 
         return new CompositeCommand(List.of(
                 buildCommands.newBuildCommand(SERVICE, new PropertiesDiffWriter(new PropertiesSerializerImpl(componentsDir, SERVICE.getResultFile()))),

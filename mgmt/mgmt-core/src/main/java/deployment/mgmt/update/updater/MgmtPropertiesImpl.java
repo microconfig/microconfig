@@ -11,6 +11,7 @@ import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.Property;
 import lombok.RequiredArgsConstructor;
+import mgmt.microconfig.MgmtMicroConfigAdapter;
 
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class MgmtPropertiesImpl implements MgmtProperties {
     }
 
     private BuildCommands initBuildCommands() {
-        return BuildCommands.init(deployFileStructure.configs().getInnerRepoDir(), deployFileStructure.service().getComponentsDir());
+        return MgmtMicroConfigAdapter.mgmtBuildCommands(deployFileStructure.configs().getInnerRepoDir(), deployFileStructure.service().getComponentsDir());
     }
 
     private List<NexusRepository> resolveNexusUrlProperty(String serviceName, PropertiesProvider propertiesProvider) {

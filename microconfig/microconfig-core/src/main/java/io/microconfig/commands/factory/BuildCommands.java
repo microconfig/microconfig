@@ -29,16 +29,19 @@ import static io.microconfig.utils.CacheFactory.cache;
 @Getter
 @RequiredArgsConstructor
 public class BuildCommands {
-    private static final String MGMT_DIR = ".mgmt";
-
     private final ComponentTree componentTree;
     private final EnvironmentProvider environmentProvider;
     private final File componentsDir;
+    private final String serviceInnerDir;
 
     public static BuildCommands init(File repoDir, File componentsDir) {
+        return init(repoDir, componentsDir, "");
+    }
+
+    public static BuildCommands init(File repoDir, File componentsDir, String serviceInnerDir) {
         ComponentTree componentTree = ComponentTreeCache.build(repoDir);
         EnvironmentProvider environmentProvider = newEnvProvider(repoDir);
-        return new BuildCommands(componentTree, environmentProvider, componentsDir);
+        return new BuildCommands(componentTree, environmentProvider, componentsDir, serviceInnerDir);
     }
 
     public PropertiesProvider newPropertiesProvider(PropertyType propertyType) {
@@ -77,6 +80,6 @@ public class BuildCommands {
     }
 
     private PropertySerializer mgmtSerializer(PropertyType propertyType) {
-        return new PropertiesSerializerImpl(componentsDir, MGMT_DIR + "/" + propertyType.getResultFile());
+        return new PropertiesSerializerImpl(componentsDir, serviceInnerDir + "/" + propertyType.getResultFile());
     }
 }
