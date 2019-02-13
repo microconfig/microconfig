@@ -120,6 +120,14 @@ public class FileUtils {
         }
     }
 
+    public static File canonical(File repoDir) {
+        try {
+            return repoDir.getCanonicalFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static boolean dirNotEmpty(File destination, int minFileCount) {
         return destination.exists() && destination.list().length >= minFileCount;
     }

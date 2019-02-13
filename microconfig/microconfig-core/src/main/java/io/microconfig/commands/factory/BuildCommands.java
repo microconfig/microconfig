@@ -26,6 +26,7 @@ import java.io.IOException;
 
 import static io.microconfig.commands.PropertiesPostProcessor.emptyPostProcessor;
 import static io.microconfig.utils.CacheHandler.cache;
+import static io.microconfig.utils.FileUtils.canonical;
 
 @Getter
 @RequiredArgsConstructor
@@ -83,13 +84,5 @@ public class BuildCommands {
 
     private PropertySerializer mgmtSerializer(PropertyType propertyType) {
         return new PropertiesSerializerImpl(componentsDir, serviceInnerDir + "/" + propertyType.getResultFile());
-    }
-
-    private static File canonical(File repoDir) {
-        try {
-            return repoDir.getCanonicalFile();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
