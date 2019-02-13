@@ -15,6 +15,8 @@ import static java.util.stream.Stream.of;
 
 
 public class FileUtils {
+    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+
     public static File userHome() {
         return new File(userHomeString());
     }

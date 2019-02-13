@@ -9,16 +9,13 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static io.microconfig.properties.serializer.PropertiesSerializerImpl.OutputFormat.PROPERTIES;
-import static io.microconfig.utils.FileUtils.delete;
-import static io.microconfig.utils.FileUtils.write;
+import static io.microconfig.utils.FileUtils.*;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.joining;
 
 @RequiredArgsConstructor
 public class PropertiesSerializerImpl implements PropertySerializer {
-    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
-
     private final File componentsDir;
     private final String fileName;
     private final OutputFormat outputFormat = PROPERTIES;
