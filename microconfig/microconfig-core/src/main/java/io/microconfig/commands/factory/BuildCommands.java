@@ -40,12 +40,7 @@ public class BuildCommands {
     }
 
     public static BuildCommands init(File repoDir, File componentsDir, String serviceInnerDir) {
-        try {
-            repoDir = repoDir.getCanonicalFile();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        repoDir = canonical(repoDir);
         ComponentTree componentTree = ComponentTreeCache.build(repoDir);
         EnvironmentProvider environmentProvider = newEnvProvider(repoDir);
         return new BuildCommands(componentTree, environmentProvider, componentsDir, serviceInnerDir);
@@ -88,5 +83,13 @@ public class BuildCommands {
 
     private PropertySerializer mgmtSerializer(PropertyType propertyType) {
         return new PropertiesSerializerImpl(componentsDir, serviceInnerDir + "/" + propertyType.getResultFile());
+    }
+
+    private static File canonical(File repoDir) {
+        try {
+            return repoDir.getCanonicalFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
