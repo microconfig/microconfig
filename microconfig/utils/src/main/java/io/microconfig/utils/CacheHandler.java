@@ -14,13 +14,17 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
 @RequiredArgsConstructor
-public class CacheFactory implements InvocationHandler {
-    private final ConcurrentMap<Key, Object> cache = new ConcurrentHashMap<>(512, 0.75f);
+public class CacheHandler implements InvocationHandler {
+    private final ConcurrentMap<Key, Object> cache = new ConcurrentHashMap<>(512);
     private final Object delegate;
 
     @SuppressWarnings("unchecked")
     public static <T> T cache(T delegate) {
-        return (T) Proxy.newProxyInstance(delegate.getClass().getClassLoader(), delegate.getClass().getInterfaces(), new CacheFactory(delegate));
+        return (T) Proxy.newProxyInstance(
+                delegate.getClass().getClassLoader(),
+                delegate.getClass().getInterfaces(),
+                new CacheHandler(delegate)
+        );
     }
 
     @Override
@@ -36,15 +40,16 @@ public class CacheFactory implements InvocationHandler {
     }
 
     private void handleExceptionCause(Exception e) {
-        if (e.getCause() != null) {
-            if (e.getCause() instanceof RuntimeException) {
-                throw ((RuntimeException) e.getCause());
-            }
-            if (e.getCause() instanceof Error) {
-                throw ((Error) e.getCause());
-            }
-            throw new RuntimeException(e.getCause());
+        Throwable cause = e.getCause();
+        if (cause == null) return;
+
+        if (cause instanceof RuntimeException) {
+            throw ((RuntimeException) cause);
         }
+        if (cause instanceof Error) {
+            throw ((Error) cause);
+        }
+        throw new RuntimeException(cause);
     }
 
     @EqualsAndHashCode
