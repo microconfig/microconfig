@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.function.ObjIntConsumer;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
+
 public class IoUtils {
     public static long copyWithFlush(InputStream input, OutputStream output) {
         long count = 0;
@@ -43,15 +45,15 @@ public class IoUtils {
 
     public static String readFully(File file) {
         try {
-            return Files.readString(file.toPath());
+            return readFully(new FileInputStream(file));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static String readFully(InputStream input) {
+    public static String readFully(InputStream is) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        try (input) {
+        try (InputStream input = is) {
             doCopy(input, output);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -84,7 +86,7 @@ public class IoUtils {
     }
 
     public static List<String> readAllLines(File file) {
-        if (!file.exists()) return List.of();
+        if (!file.exists()) return emptyList();
 
         try {
             return Files.readAllLines(file.toPath());

@@ -7,6 +7,7 @@ import io.microconfig.properties.files.provider.ComponentTree;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import java.util.Optional;
 import static io.microconfig.properties.Property.Source.systemSource;
 import static io.microconfig.utils.FileUtils.userHomeString;
 import static io.microconfig.utils.StringUtils.unixLikePath;
+import static java.util.Arrays.asList;
 
 @RequiredArgsConstructor
 public class EnvSpecificPropertiesProvider implements PropertiesProvider {
@@ -27,7 +29,7 @@ public class EnvSpecificPropertiesProvider implements PropertiesProvider {
     private static final String CONFIG_DIR = "configDir";
     private static final String SERVICE_DIR = "serviceDir";
     private static final String FOLDER = "folder";
-    private static final List<String> ALL = List.of(PORT_OFFSET, IP, ENV, NAME, GROUP, USER_HOME, CONFIG_DIR, SERVICE_DIR, FOLDER);
+    private static final List<String> ALL = asList(PORT_OFFSET, IP, ENV, NAME, GROUP, USER_HOME, CONFIG_DIR, SERVICE_DIR, FOLDER);
 
     private final PropertiesProvider delegate;
     private final EnvironmentProvider environmentProvider;

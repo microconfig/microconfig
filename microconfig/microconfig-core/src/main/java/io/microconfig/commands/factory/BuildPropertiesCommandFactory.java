@@ -6,15 +6,17 @@ import io.microconfig.properties.serializer.PropertiesDiffWriter;
 import io.microconfig.properties.serializer.PropertiesSerializerImpl;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 import static io.microconfig.commands.factory.PropertyType.*;
+import static java.util.Arrays.asList;
 
 public class BuildPropertiesCommandFactory {
     public static Command newBuildPropertiesCommand(File repoDir, File componentsDir) {
         BuildCommands buildCommands = BuildCommands.init(repoDir, componentsDir);
 
-        return new CompositeCommand(List.of(
+        return new CompositeCommand(asList(
                 buildCommands.newBuildCommand(SERVICE, new PropertiesDiffWriter(new PropertiesSerializerImpl(componentsDir, SERVICE.getResultFile()))),
                 buildCommands.newBuildCommand(PROCESS),
                 buildCommands.newBuildCommand(ENV),

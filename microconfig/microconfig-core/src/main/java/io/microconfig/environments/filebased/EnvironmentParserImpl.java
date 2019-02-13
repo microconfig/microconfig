@@ -35,7 +35,7 @@ public class EnvironmentParserImpl implements EnvironmentParser<String> {
         List<ComponentGroup> componentGroups = map.entrySet().stream().map(componentGroupDeclaration -> {
             String componentGroupName = componentGroupDeclaration.getKey();
             Map<String, Object> properties = componentGroupDeclaration.getValue();
-            Optional<String> ip = ofNullable((String) properties.get(IP)).or(() -> envIp);
+            Optional<String> ip = ofNullable((String) properties.getOrDefault(IP, envIp.orElse(null)));
 
             List<Component> parsedComponents = fetchComponentsFromProperties(properties, COMPONENTS);
             List<Component> excludedComponents = fetchComponentsFromProperties(properties, EXCLUDE);
