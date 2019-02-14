@@ -11,15 +11,13 @@ import static java.util.regex.Pattern.compile;
 
 @RequiredArgsConstructor
 public class Template {
-    private static final Pattern placeholderTemplate = compile("(?<escaped>\\\\)?(?<placeholder>\\$\\{(?<name>.+?)(?::(?<defvalue>.*?))??})");
-
     private static final String SYSPROP_PREFIX = "sysprop.";
     private static final String ENV_PREFIX = "env.";
 
     private final String text;
 
-    public String resolvePlaceholders(Map<String, String> properties) {
-        Matcher m = placeholderTemplate.matcher(text);
+    public String resolvePlaceholders(Map<String, String> properties, TemplatePattern templatePattern) {
+        Matcher m = templatePattern.getPattern().matcher(text);
         if (!m.find()) return text;
 
         StringBuilder sb = new StringBuilder();

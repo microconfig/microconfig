@@ -15,11 +15,12 @@ import static io.microconfig.utils.StringUtils.unixLikePath;
 
 @RequiredArgsConstructor
 public class CopyTemplatesServiceImpl implements CopyTemplatesService {
-    private static final String TEMPLATE_PREFIX = "mgmt.template.";
-    private static final String FROM_FILE_SUFFIX = ".fromFile";
-    private static final String TO_FILE_SUFFIX = ".toFile";
-
+    private final TemplatePattern templatePattern;
     private final RelativePathResolver relativePathResolver;
+
+    public CopyTemplatesServiceImpl(RelativePathResolver relativePathResolver) {
+        this(TemplatePattern.defaultPattern(), relativePathResolver);
+    }
 
     @Override
     public void copyTemplates(File serviceDir, Map<String, String> serviceProperties) {
@@ -36,12 +37,12 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
         Map<String, TemplateDef> templateByName = new LinkedHashMap<>();
 
         serviceProperties.forEach((key, value) -> {
-            if (!key.startsWith(TEMPLATE_PREFIX)) return;
+            if (!key.startsWith(templatePattern.getTemplatePrefix())) return;
 
-            if (key.endsWith(FROM_FILE_SUFFIX)) {
-                getOrCreate(key, FROM_FILE_SUFFIX, templateByName).fromFile = value;
-            } else if (key.endsWith(TO_FILE_SUFFIX)) {
-                getOrCreate(key, TO_FILE_SUFFIX, templateByName).toFile = value;
+            if (key.endsWith(templatePattern.getFromFileSuffix())) {
+                getOrCreate(key, templatePattern.getFromFileSuffix(), templateByName).fromFile = value;
+            } else if (key.endsWith(templatePattern.getToFileSuffix())) {
+                getOrCreate(key, templatePattern.getToFileSuffix(), templateByName).toFile = value;
             }
         });
 
@@ -54,7 +55,7 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
 
     private String extractMiddle(String str, String suffix) {
         try {
-            return str.substring(TEMPLATE_PREFIX.length(), str.length() - suffix.length());
+            return str.substring(templatePattern.getTemplatePrefix().length(), str.length() - suffix.length());
         } catch (RuntimeException e) {
             throw new RuntimeException("Incorrect template: " + str);
         }
@@ -79,7 +80,7 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
             Template template = toTemplate(fromFile, serviceDir.getName());
             if (template == null) return;
 
-            String content = template.resolvePlaceholders(serviceProperties);
+            String content = template.resolvePlaceholders(serviceProperties, templatePattern);
             content = resolveSpecialsPlaceholders(content, serviceDir);
 
             write(toFile, content);
