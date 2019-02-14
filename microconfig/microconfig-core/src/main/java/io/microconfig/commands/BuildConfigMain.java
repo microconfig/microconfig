@@ -23,6 +23,7 @@ public class BuildConfigMain {
     private static final String GROUP = "group"; //optional param. values: fnd, mc, etc
     private static final String ROOT = "root";
     private static final String DEST = "dest";
+    private static final String SERVICES = "services";
 
     public static void main(String[] args) {
         CommandLineParams clp = CommandLineParams.parse(args);
@@ -30,10 +31,10 @@ public class BuildConfigMain {
         String env = clp.requiredValue(ENV, "set env=");
         List<String> groups = clp.value(GROUP) == null ? emptyList() : asList(clp.value(GROUP).trim().split(","));
 
-        String root = clp.requiredValue(ROOT, "set root=  param. -Folder with components and envs folders");
+        String root = clp.requiredValue(ROOT, "set root=  param. Folder with components and envs folders");
         String destinationDir = clp.requiredValue(DEST, "set dest= param. Folder of result property output");
 
-        List<String> components = clp.value("components") == null ? emptyList() : asList(clp.value("components").split(","));
+        List<String> components = clp.value(SERVICES) == null ? emptyList() : asList(clp.value("services").split(","));
 
         Command command = newBuildPropertiesCommand(new File(root), new File(destinationDir));
         execute(command, env, groups, components);
