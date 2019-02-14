@@ -33,8 +33,8 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
         });
     }
 
-    private Collection<TemplateDef> collectTemplates(Map<String, String> serviceProperties) {
-        Map<String, TemplateDef> templateByName = new LinkedHashMap<>();
+    private Collection<TemplateDefinition> collectTemplates(Map<String, String> serviceProperties) {
+        Map<String, TemplateDefinition> templateByName = new LinkedHashMap<>();
 
         serviceProperties.forEach((key, value) -> {
             if (!key.startsWith(templatePattern.getTemplatePrefix())) return;
@@ -49,8 +49,8 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
         return templateByName.values();
     }
 
-    private TemplateDef getOrCreate(String key, String suffix, Map<String, TemplateDef> templates) {
-        return templates.computeIfAbsent(extractMiddle(key, suffix), TemplateDef::new);
+    private TemplateDefinition getOrCreate(String key, String suffix, Map<String, TemplateDefinition> templates) {
+        return templates.computeIfAbsent(extractMiddle(key, suffix), TemplateDefinition::new);
     }
 
     private String extractMiddle(String str, String suffix) {
@@ -62,7 +62,7 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
     }
 
     @RequiredArgsConstructor
-    private class TemplateDef {
+    private class TemplateDefinition {
         private final String name;
 
         private String fromFile;

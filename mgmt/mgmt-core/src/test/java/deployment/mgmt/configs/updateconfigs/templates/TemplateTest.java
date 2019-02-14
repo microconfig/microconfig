@@ -4,6 +4,7 @@ import io.microconfig.templates.Template;
 import io.microconfig.templates.TemplatePattern;
 import org.junit.Test;
 
+import static io.microconfig.utils.OsUtil.currentUser;
 import static java.util.Map.of;
 import static org.junit.Assert.assertEquals;
 
@@ -36,5 +37,19 @@ public class TemplateTest {
         Template template = new Template("aaa${param}bbb\\${xxx}ccc${missing_param:---}ddd");
         String result = template.resolvePlaceholders(of("param", "***"), templatePattern);
         assertEquals("aaa***bbb${xxx}ccc---ddd", result);
+    }
+
+    @Test
+    public void testSystemProperties() {
+        Template template = new Template("${SYSTEM@user.name}");
+        String result = template.resolvePlaceholders(of(), templatePattern);
+        assertEquals(currentUser(), result);
+    }
+
+    @Test
+    public void testEnvProperties() {
+        Template template = new Template("${ENV@PATH}");
+        String result = template.resolvePlaceholders(of(), templatePattern);
+        assertEquals(System.getenv("PATH"), result);
     }
 }
