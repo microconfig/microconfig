@@ -18,10 +18,6 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
     private final TemplatePattern templatePattern;
     private final RelativePathResolver relativePathResolver;
 
-    public CopyTemplatesServiceImpl(RelativePathResolver relativePathResolver) {
-        this(TemplatePattern.defaultPattern(), relativePathResolver);
-    }
-
     @Override
     public void copyTemplates(File serviceDir, Map<String, String> serviceProperties) {
         collectTemplates(serviceProperties).forEach(def -> {
@@ -97,7 +93,7 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
         private File absolute(File serviceDir, String file) {
             File path = relativePathResolver.overrideRelativePath(file,
                     () -> "Overriding template path for " + serviceDir.getName() + " " + this +
-                            ". Use ${this@configDir}- resolves config repo root or ${component_name@folder} - resolves config folder of component");
+                            ". Use ${this@configDir}- resolves config repo root or ${component_name@folder} - resolves folder of config component");
             return path.isAbsolute() ? path : new File(serviceDir, path.getPath());
         }
 
