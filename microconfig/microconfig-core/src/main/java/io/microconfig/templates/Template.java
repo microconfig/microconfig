@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 
+import static java.util.regex.Matcher.quoteReplacement;
+
 @RequiredArgsConstructor
 public class Template {
     private final String text;
@@ -24,15 +26,15 @@ public class Template {
 
     private void substituteProperty(Map<String, String> properties, TemplatePattern templatePattern, Matcher m, StringBuilder sb) {
         if (m.group("escaped") != null) {
-            m.appendReplacement(sb, Matcher.quoteReplacement(m.group("placeholder")));
+            m.appendReplacement(sb, quoteReplacement(m.group("placeholder")));
             return;
         }
 
-        String replacement = findReplacement(properties, templatePattern, m.group("name"), m.group("defvalue"));
-        m.appendReplacement(sb, replacement == null ? "$0" : Matcher.quoteReplacement(replacement));
+        String value = resolve(properties, templatePattern, m.group("name"), m.group("defvalue"));
+        m.appendReplacement(sb, value == null ? "$0" : quoteReplacement(value));
     }
 
-    private String findReplacement(Map<String, String> properties, TemplatePattern templatePattern, String propertyName, String defaultValue) {
+    private String resolve(Map<String, String> properties, TemplatePattern templatePattern, String propertyName, String defaultValue) {
         String prop = properties.getOrDefault(propertyName, defaultValue);
         if (prop != null) return prop;
 

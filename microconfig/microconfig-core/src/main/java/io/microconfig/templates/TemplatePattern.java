@@ -13,6 +13,7 @@ public class TemplatePattern {
     private static final String DEFAULT_TO_FILE_SUFFIX = ".toFile";
     private static final String DEFAULT_SYSTEM_PROPERTIES_PREFIX = "SYSTEM@";
     private static final String DEFAULT_ENV_PREFIX = "ENV@";
+
     private static final String DEFAULT_PATTERN = "(?<escaped>\\\\)?(?<placeholder>\\$\\{(?<name>.+?)(?::(?<defvalue>.*?))??})";
 
     private final String templatePrefix;
