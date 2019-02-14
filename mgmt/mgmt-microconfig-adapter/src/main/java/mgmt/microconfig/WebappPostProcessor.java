@@ -10,6 +10,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+import static io.microconfig.utils.FileUtils.delete;
+import static io.microconfig.utils.FileUtils.write;
+
 class WebappPostProcessor implements PropertiesPostProcessor {
     private static final String WEBAPP_FILE = "mgmt.webapp";
     private static final String DEPENDSON_FILE = "mgmt.dependson.list";
@@ -17,20 +20,20 @@ class WebappPostProcessor implements PropertiesPostProcessor {
 
     @Override
     public void process(File serviceDir, String serviceName, Map<String, Property> properties) {
-        FileUtils.delete(new File(serviceDir, WEBAPP_FILE));
+        delete(new File(serviceDir, WEBAPP_FILE));
 
         if (!PropertiesUtils.hasTrueValue("mgmt.tomcat.webapp.enabled", properties)) return;
 
-        FileUtils.write(new File(serviceDir, WEBAPP_FILE), "");
-        FileUtils.delete(new File(serviceDir, DEPENDSON_FILE));
+        write(new File(serviceDir, WEBAPP_FILE), "");
+        delete(new File(serviceDir, DEPENDSON_FILE));
         Property container = properties.get("mgmt.webapp.container");
         if (container == null) {
             Logger.error("No container for webapp " + serviceDir.getParentFile().getAbsolutePath());
             return;
         }
 
-        FileUtils.write(new File(serviceDir, DEPENDSON_FILE), container.getValue());
-        FileUtils.write(new File(serviceDir, FORCED_STATUS_FILE), "WebApp(" + container + ")");
+        write(new File(serviceDir, DEPENDSON_FILE), container.getValue());
+        write(new File(serviceDir, FORCED_STATUS_FILE), "WebApp(" + container + ")");
 
         File parentFile = canonical(serviceDir);
         String componentDirName = parentFile.getName();
@@ -38,7 +41,7 @@ class WebappPostProcessor implements PropertiesPostProcessor {
         String contextFile = "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<Context path=\"/" + componentDirName + "\" docBase=\"" + parentFile.getAbsoluteFile() + "/webapp\" />";
 
-        FileUtils.write(new File(serviceDir, contextFileName), contextFile);
+        write(new File(serviceDir, contextFileName), contextFile);
     }
 
     private File canonical(File dir) {
