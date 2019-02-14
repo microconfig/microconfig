@@ -1,4 +1,4 @@
-package io.microconfig.commands.factory;
+package io.microconfig.commands.postprocessors;
 
 import io.microconfig.commands.PropertiesPostProcessor;
 import io.microconfig.properties.Property;

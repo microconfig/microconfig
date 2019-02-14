@@ -60,6 +60,11 @@ public class Property {
                 .collect(toLinkedMap(Map.Entry::getKey, e -> e.getValue().getValue())));
     }
 
+    public static Map<String, String> asStringMap(Map<String, Property> properties) {
+        return properties.entrySet().stream()
+                .collect(toLinkedMap(Map.Entry::getKey, e -> e.getValue().getValue()));
+    }
+
     public Property withNewValue(String resolvedValue) {
         return new Property(key, resolvedValue, envContext, source, temp);
     }

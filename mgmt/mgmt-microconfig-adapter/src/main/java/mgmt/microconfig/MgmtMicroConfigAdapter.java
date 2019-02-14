@@ -4,7 +4,7 @@ import io.microconfig.commands.BuildConfigMain;
 import io.microconfig.commands.Command;
 import io.microconfig.commands.CompositeCommand;
 import io.microconfig.commands.factory.BuildCommands;
-import io.microconfig.commands.factory.SecretPropertiesPostProcessor;
+import io.microconfig.commands.postprocessors.SecretPropertiesPostProcessor;
 import io.microconfig.properties.serializer.PropertiesDiffWriter;
 import io.microconfig.properties.serializer.PropertiesSerializerImpl;
 
