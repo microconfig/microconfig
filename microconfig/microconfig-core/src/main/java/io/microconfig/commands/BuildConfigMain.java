@@ -9,8 +9,6 @@ import static io.microconfig.commands.factory.BuildPropertiesCommandFactory.newB
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.TimeUtils.msAfter;
 import static java.lang.System.currentTimeMillis;
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static java.util.Optional.of;
 
 /**
@@ -28,15 +26,14 @@ public class BuildConfigMain {
     public static void main(String[] args) {
         CommandLineParams clp = CommandLineParams.parse(args);
 
-        String env = clp.requiredValue(ENV, "set env=");
-        List<String> groups = clp.value(GROUP) == null ? emptyList() : asList(clp.value(GROUP).trim().split(","));
-
         String root = clp.requiredValue(ROOT, "set root=  param. Folder with components and envs folders");
-        String destinationDir = clp.requiredValue(DEST, "set dest= param. Folder of result property output");
+        String destination = clp.requiredValue(DEST, "set dest= param. Folder of result property output");
 
-        List<String> components = clp.value(SERVICES) == null ? emptyList() : asList(clp.value("services").split(","));
+        String env = clp.requiredValue(ENV, "set env=");
+        List<String> groups = clp.listValue(GROUP);
+        List<String> components = clp.listValue(SERVICES);
 
-        Command command = newBuildPropertiesCommand(new File(root), new File(destinationDir));
+        Command command = newBuildPropertiesCommand(new File(root), new File(destination));
         execute(command, env, groups, components);
     }
 
