@@ -1,14 +1,14 @@
 package io.microconfig.templates;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.util.regex.Pattern;
 
 @Getter
-@RequiredArgsConstructor
+@Builder(toBuilder = true)
 public class TemplatePattern {
-    private static final String DEFAULT_TEMPLATE_PREFIX = "mgmt.template.";
+    private static final String DEFAULT_TEMPLATE_PREFIX = "template.";
     private static final String DEFAULT_FROM_FILE_SUFFIX = ".fromFile";
     private static final String DEFAULT_TO_FILE_SUFFIX = ".toFile";
     private static final String DEFAULT_SYSTEM_PROPERTIES_PREFIX = "SYSTEM@";
@@ -23,10 +23,13 @@ public class TemplatePattern {
     private final Pattern pattern;
 
     public static TemplatePattern defaultPattern() {
-        return new TemplatePattern(
-                DEFAULT_TEMPLATE_PREFIX, DEFAULT_FROM_FILE_SUFFIX, DEFAULT_TO_FILE_SUFFIX,
-                DEFAULT_SYSTEM_PROPERTIES_PREFIX, DEFAULT_ENV_PREFIX,
-                Pattern.compile(DEFAULT_PATTERN)
-        );
+        return TemplatePattern.builder()
+                .templatePrefix(DEFAULT_TEMPLATE_PREFIX)
+                .fromFileSuffix(DEFAULT_FROM_FILE_SUFFIX)
+                .toFileSuffix(DEFAULT_TO_FILE_SUFFIX)
+                .systemPropPrefix(DEFAULT_SYSTEM_PROPERTIES_PREFIX)
+                .envPropPrefix(DEFAULT_ENV_PREFIX)
+                .pattern(Pattern.compile(DEFAULT_PATTERN))
+                .build();
     }
 }
