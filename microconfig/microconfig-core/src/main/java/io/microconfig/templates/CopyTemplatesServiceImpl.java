@@ -7,8 +7,6 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static io.microconfig.templates.RelativePathResolver.empty;
-import static io.microconfig.templates.TemplatePattern.defaultPattern;
 import static io.microconfig.utils.FilePermissionUtils.copyPermissions;
 import static io.microconfig.utils.FileUtils.write;
 import static io.microconfig.utils.IoUtils.readFully;
