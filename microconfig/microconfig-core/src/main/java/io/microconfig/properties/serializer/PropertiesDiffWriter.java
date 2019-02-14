@@ -8,8 +8,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-import static io.microconfig.utils.FileUtils.delete;
-import static io.microconfig.utils.FileUtils.write;
+import static io.microconfig.utils.FileUtils.*;
 import static io.microconfig.utils.Logger.warn;
 import static io.microconfig.utils.PropertiesUtils.readProperties;
 
@@ -86,7 +85,7 @@ public class PropertiesDiffWriter implements PropertySerializer {
     }
 
     private void doWrite(String operation, String key, String value, StringBuilder content) {
-        content.append(operation).append(key).append("=").append(value).append("\n");
+        content.append(operation).append(key).append("=").append(value).append(LINE_SEPARATOR);
     }
 
     @Override
