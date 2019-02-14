@@ -16,32 +16,32 @@ public class Template {
         Matcher m = templatePattern.getPattern().matcher(text);
         if (!m.find()) return text;
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder result = new StringBuilder();
         do {
-            substituteProperty(properties, templatePattern, m, sb);
+            doResolve(properties, templatePattern, m, result);
         } while (m.find());
-        m.appendTail(sb);
-        return sb.toString();
+        m.appendTail(result);
+        return result.toString();
     }
 
-    private void substituteProperty(Map<String, String> properties, TemplatePattern templatePattern, Matcher m, StringBuilder sb) {
+    private void doResolve(Map<String, String> properties, TemplatePattern templatePattern, Matcher m, StringBuilder result) {
         if (m.group("escaped") != null) {
-            m.appendReplacement(sb, quoteReplacement(m.group("placeholder")));
+            m.appendReplacement(result, quoteReplacement(m.group("placeholder")));
             return;
         }
 
-        String value = resolve(properties, templatePattern, m.group("name"), m.group("defvalue"));
-        m.appendReplacement(sb, value == null ? "$0" : quoteReplacement(value));
+        String value = resolveValue(properties, m.group("name"), m.group("defvalue"), templatePattern);
+        m.appendReplacement(result, value == null ? "$0" : quoteReplacement(value));
     }
 
-    private String resolve(Map<String, String> properties, TemplatePattern templatePattern, String propertyName, String defaultValue) {
-        String prop = properties.getOrDefault(propertyName, defaultValue);
+    private String resolveValue(Map<String, String> properties, String key, String defaultValue, TemplatePattern templatePattern) {
+        String prop = properties.getOrDefault(key, defaultValue);
         if (prop != null) return prop;
 
-        String sys = fromPrefix(propertyName, templatePattern.getSystemPropPrefix(), System::getProperty);
+        String sys = fromPrefix(key, templatePattern.getSystemPropPrefix(), System::getProperty);
         if (sys != null) return sys;
 
-        String env = fromPrefix(propertyName, templatePattern.getEnvPropPrefix(), System::getenv);
+        String env = fromPrefix(key, templatePattern.getEnvPropPrefix(), System::getenv);
         if (env != null) return env;
 
         return null;
