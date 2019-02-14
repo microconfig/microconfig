@@ -36,15 +36,17 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
     private Collection<TemplateDefinition> collectTemplates(Map<String, String> serviceProperties) {
         Map<String, TemplateDefinition> templateByName = new LinkedHashMap<>();
 
-        serviceProperties.forEach((key, value) -> {
-            if (!key.startsWith(templatePattern.getTemplatePrefix())) return;
+        for (Map.Entry<String, String> entry : serviceProperties.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            if (!key.startsWith(templatePattern.getTemplatePrefix())) continue;
 
             if (key.endsWith(templatePattern.getFromFileSuffix())) {
                 getOrCreate(key, templatePattern.getFromFileSuffix(), templateByName).fromFile = value;
             } else if (key.endsWith(templatePattern.getToFileSuffix())) {
                 getOrCreate(key, templatePattern.getToFileSuffix(), templateByName).toFile = value;
             }
-        });
+        }
 
         return templateByName.values();
     }
