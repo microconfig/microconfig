@@ -1,12 +1,11 @@
 package io.microconfig.templates;
 
 import java.io.File;
-import java.util.function.Supplier;
 
 public interface RelativePathResolver {
-    File overrideRelativePath(String path, Supplier<String> warnMessage);
+    File overrideRelativePath(File serviceConfigDir, String path);
 
     static RelativePathResolver empty() {
-        return (path, supplier) -> new File(path);
+        return (serviceConfigDir, path) -> new File(path);
     }
 }

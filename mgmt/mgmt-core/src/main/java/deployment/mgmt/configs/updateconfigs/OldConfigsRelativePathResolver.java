@@ -15,7 +15,7 @@ public class OldConfigsRelativePathResolver implements RelativePathResolver {
     private final File configRepoDir;
 
     @Override
-    public File overrideRelativePath(String path, Supplier<String> warnMessage) {
+    public File overrideRelativePath(File serviceConfigDir, String path) {
         String prefix = "../../";
 
         Predicate<String> oldConfigPath = p -> {
@@ -26,10 +26,15 @@ public class OldConfigsRelativePathResolver implements RelativePathResolver {
         };
 
         if (oldConfigPath.test(path)) {
-            warn(warnMessage.get());
+            warn(warnMessage(serviceConfigDir));
             return new File(configRepoDir, path.substring(prefix.length()));
         }
 
         return new File(path);
+    }
+
+    private String warnMessage(File serviceDir) {
+        return "Overriding template path for " + serviceDir.getName() + " " + this +
+                ". Use ${this@configDir}- resolves config repo root or ${component_name@folder} - resolves folder of config component";
     }
 }
