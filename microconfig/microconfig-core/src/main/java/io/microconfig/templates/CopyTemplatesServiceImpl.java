@@ -19,11 +19,11 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
     private final RelativePathResolver relativePathResolver;
 
     @Override
-    public void copyTemplates(File serviceDir, Map<String, String> serviceProperties) {
+    public void copyTemplates(File destinationDir, Map<String, String> serviceProperties) {
         collectTemplates(serviceProperties).forEach(def -> {
             try {
-                def.resolveAndCopy(serviceDir, serviceProperties);
-            } catch (Exception e) {
+                def.resolveAndCopy(destinationDir, serviceProperties);
+            } catch (RuntimeException e) {
                 error("Template error " + def, e);
             }
         });
@@ -32,17 +32,17 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
     private Collection<TemplateDefinition> collectTemplates(Map<String, String> serviceProperties) {
         Map<String, TemplateDefinition> templateByName = new LinkedHashMap<>();
 
-        for (Map.Entry<String, String> entry : serviceProperties.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            if (!key.startsWith(templatePattern.getTemplatePrefix())) continue;
+        serviceProperties.forEach((key, value) -> {
+            if (!key.startsWith(templatePattern.getTemplatePrefix())) return;
 
-            if (key.endsWith(templatePattern.getFromFileSuffix())) {
-                getOrCreate(key, templatePattern.getFromFileSuffix(), templateByName).fromFile = value;
-            } else if (key.endsWith(templatePattern.getToFileSuffix())) {
-                getOrCreate(key, templatePattern.getToFileSuffix(), templateByName).toFile = value;
+            String fromFileSuffix = templatePattern.getFromFileSuffix();
+            String toFileSuffix = templatePattern.getToFileSuffix();
+            if (key.endsWith(fromFileSuffix)) {
+                getOrCreate(key, fromFileSuffix, templateByName).fromFile = value;
+            } else if (key.endsWith(toFileSuffix)) {
+                getOrCreate(key, toFileSuffix, templateByName).toFile = value;
             }
-        }
+        });
 
         return templateByName.values();
     }
@@ -66,28 +66,27 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
         private String fromFile;
         private String toFile;
 
-        private void resolveAndCopy(File serviceDir, Map<String, String> serviceProperties) {
+        private void resolveAndCopy(File destinationDir, Map<String, String> serviceProperties) {
             if (!isCorrect()) {
                 warn("Incomplete template def " + this);
                 return;
             }
 
-            File fromFile = absolute(serviceDir, this.fromFile);
-            File toFile = absolute(serviceDir, this.toFile);
+            File fromFile = absolute(destinationDir, this.fromFile);
+            File toFile = absolute(destinationDir, this.toFile);
 
-            Template template = toTemplate(fromFile, serviceDir.getName());
+            Template template = toTemplate(fromFile, destinationDir.getName());
             if (template == null) return;
 
-            String content = template.resolvePlaceholders(serviceProperties, templatePattern);
-            content = resolveSpecialsPlaceholders(content, serviceDir);
-
+            String content = doResolve(serviceProperties, template, destinationDir);
             write(toFile, content);
             copyPermissions(fromFile.toPath(), toFile.toPath());
+
             info("Copied template: " + fromFile + " -> " + toFile);
         }
 
-        private String resolveSpecialsPlaceholders(String content, File serviceDir) {
-            return content.replace("${serviceDir}", unixLikePath(serviceDir.getAbsolutePath()));
+        private boolean isCorrect() {
+            return fromFile != null && toFile != null;
         }
 
         private File absolute(File serviceDir, String file) {
@@ -95,10 +94,6 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
                     () -> "Overriding template path for " + serviceDir.getName() + " " + this +
                             ". Use ${this@configDir}- resolves config repo root or ${component_name@folder} - resolves folder of config component");
             return path.isAbsolute() ? path : new File(serviceDir, path.getPath());
-        }
-
-        private boolean isCorrect() {
-            return fromFile != null && toFile != null;
         }
 
         private Template toTemplate(File fromFile, String component) {
@@ -109,10 +104,19 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
 
             try {
                 return new Template(readFully(fromFile));
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 warn("Cannot read fromFile. " + this);
                 return null;
             }
+        }
+
+        private String doResolve(Map<String, String> serviceProperties, Template template, File serviceDir) {
+            String resolved = template.resolvePlaceholders(serviceProperties, templatePattern);
+            return resolveSpecialsPlaceholders(resolved, serviceDir);
+        }
+
+        private String resolveSpecialsPlaceholders(String content, File serviceDir) {
+            return content.replace("${serviceDir}", unixLikePath(serviceDir.getAbsolutePath()));
         }
 
         @Override

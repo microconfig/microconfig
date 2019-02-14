@@ -4,5 +4,5 @@ import java.io.File;
 import java.util.Map;
 
 public interface CopyTemplatesService {
-    void copyTemplates(File serviceDir, Map<String, String> serviceProperties);
+    void copyTemplates(File destinationDir, Map<String, String> serviceProperties);
 }
