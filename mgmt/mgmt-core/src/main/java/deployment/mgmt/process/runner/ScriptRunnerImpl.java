@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
-import static io.microconfig.utils.Logger.info;
 import static io.microconfig.utils.FilePermissionUtils.allowExecution;
+import static io.microconfig.utils.Logger.info;
 import static mgmt.utils.ProcessUtil.startAndWait;
 
 @RequiredArgsConstructor

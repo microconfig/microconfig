@@ -5,8 +5,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Set;
 
-
-import static deployment.mgmt.utils.CollectionUtils.*;
+import static deployment.mgmt.utils.CollectionUtils.findDuplicates;
 import static org.junit.Assert.assertEquals;
 
 public class CollectionUtilsTest {

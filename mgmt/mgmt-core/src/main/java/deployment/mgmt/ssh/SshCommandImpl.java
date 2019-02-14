@@ -13,12 +13,12 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static deployment.mgmt.utils.ExecutorUtils.executeInParallel;
+import static io.microconfig.utils.FilePermissionUtils.writeExecutable;
 import static io.microconfig.utils.IoUtils.lines;
 import static io.microconfig.utils.Logger.warn;
 import static java.lang.Math.min;
 import static java.lang.System.out;
 import static java.util.stream.Collectors.toList;
-import static io.microconfig.utils.FilePermissionUtils.writeExecutable;
 import static mgmt.utils.ProcessUtil.executeAndReadOutput;
 
 @RequiredArgsConstructor

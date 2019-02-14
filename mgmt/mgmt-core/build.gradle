@@ -6,8 +6,8 @@ dependencies {
             project(':mgmt:nexus-resolver'),
             project(':mgmt:console-api-exposer'),
             lib.jasypt,
-            lib.commons_compress,            
+            lib.commons_compress,
             'org.slf4j:slf4j-log4j12',
             'com.google.code.gson:gson'
-            
+
 }

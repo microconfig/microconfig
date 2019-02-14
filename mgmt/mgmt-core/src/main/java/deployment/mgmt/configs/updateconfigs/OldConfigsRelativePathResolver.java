@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import static io.microconfig.utils.Logger.warn;
 

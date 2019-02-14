@@ -25,12 +25,12 @@ import java.util.zip.ZipOutputStream;
 
 import static io.microconfig.utils.FileUtils.createDir;
 import static io.microconfig.utils.FileUtils.delete;
+import static io.microconfig.utils.OsUtil.isWindows;
 import static java.nio.file.Files.setPosixFilePermissions;
 import static java.nio.file.attribute.PosixFilePermission.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.Set.of;
 import static java.util.stream.Collectors.toSet;
-import static io.microconfig.utils.OsUtil.isWindows;
 
 public class ZipUtils {
     public static byte[] readInnerFile(File zipArchive, String innerFile) {

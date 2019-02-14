@@ -20,9 +20,9 @@ import static deployment.mgmt.utils.ZipUtils.unzip;
 import static io.microconfig.commands.factory.PropertyType.DEPENDENCIES;
 import static io.microconfig.properties.Property.withoutTempValues;
 import static io.microconfig.utils.Logger.*;
+import static io.microconfig.utils.OsUtil.isWindows;
 import static io.microconfig.utils.TimeUtils.secAfter;
 import static java.lang.System.currentTimeMillis;
-import static io.microconfig.utils.OsUtil.isWindows;
 import static mgmt.utils.ProcessUtil.executeScript;
 
 @RequiredArgsConstructor
