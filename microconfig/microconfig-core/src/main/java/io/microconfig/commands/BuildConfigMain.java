@@ -1,5 +1,7 @@
 package io.microconfig.commands;
 
+import io.microconfig.utils.CommandLineParams;
+
 import java.io.File;
 import java.util.List;
 
@@ -7,15 +9,14 @@ import static io.microconfig.commands.factory.BuildPropertiesCommandFactory.newB
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.TimeUtils.msAfter;
 import static java.lang.System.currentTimeMillis;
-import static java.lang.System.getProperty;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static java.util.Objects.requireNonNull;
 import static java.util.Optional.of;
 
 /**
- * VM params example
- * -Droot=C:/microconfig/configs-layout-example/repo -Ddest=C:/microconfig/configs -Denv=dev -Xverify:none -XX:TieredStopAtLevel=1
+ * Command line params example
+ * VM speedup params -Xverify:none -XX:TieredStopAtLevel=1
+ * root=C:/microconfig/configs-layout-example/repo dest=C:/microconfig/configs env=dev
  */
 public class BuildConfigMain {
     private static final String ENV = "env";
@@ -24,13 +25,15 @@ public class BuildConfigMain {
     private static final String DEST = "dest";
 
     public static void main(String[] args) {
-        String env = requireNonNull(getProperty(ENV), "set -Denv");
-        List<String> groups = getProperty(GROUP) == null ? emptyList() : asList(getProperty(GROUP).trim().split(","));
+        CommandLineParams clp = CommandLineParams.parse(args);
 
-        String root = requireNonNull(getProperty(ROOT), "set -Droot. -Folder with components and envs folders");
-        String destinationDir = requireNonNull(getProperty(DEST), "set -Ddest. Folder of result property output");
+        String env = clp.requiredValue(ENV, "set env=");
+        List<String> groups = clp.value(GROUP) == null ? emptyList() : asList(clp.value(GROUP).trim().split(","));
 
-        List<String> components = args == null ? emptyList() : asList(args);
+        String root = clp.requiredValue(ROOT, "set root=  param. -Folder with components and envs folders");
+        String destinationDir = clp.requiredValue(DEST, "set dest= param. Folder of result property output");
+
+        List<String> components = clp.value("components") == null ? emptyList() : asList(clp.value("components").split(","));
 
         Command command = newBuildPropertiesCommand(new File(root), new File(destinationDir));
         execute(command, env, groups, components);
