@@ -206,3 +206,15 @@ And replace explicit configs with includes
 ```
 
 One more time - this approach is better because it doesn't contain duplication and make it easy to understand service's dependencies.
+
+You can override any properties from your dependencies.
+Let's override order's connection pool size.
+
+**orders/application.properties**
+```*.properties    
+    ***
+    #include oracle-db-client
+    datasource.maximum-pool-size=10
+    ***    
+```
+
