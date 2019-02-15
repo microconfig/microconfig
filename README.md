@@ -186,18 +186,23 @@ And replace explicit configs with includes
 ```*.properties
     #include service-discovry-client
     #include oracle-db-client
+    
     server.port=9000
     application.name=orders # better to get name from folder
     orders.personalRecommendation=true
-    statistics.enableExtendedStatistics=true
-    
+    statistics.enableExtendedStatistics=true    
 ```
+
 **payments application.properties:**
 ```*.properties
     #include service-discovry-client
     #include oracle-db-client
+    
     server.port=8080
     application.name=payments # better to get name from folder
     payments.booktimeoutInSec=900 # how long in min ?
     payments.system.retries=3
     consistency.validateConsistencyIntervalInMs=420000 # difficult to read. how long in min ?    
+```
+
+One more time - this approach is better because it doesn't contain duplication and make it easy to understand service's dependencies.
