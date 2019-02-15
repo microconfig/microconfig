@@ -79,20 +79,20 @@ repo
 
 Inside process.proc we will store configuration that describes what is your service and how to run it (Your config files can have other properties, so don't pay attention on concrete values).
 
-**orders process.proc:**
+**orders/process.proc**
 ```*.properties
     artifact=org.example:orders:19.4.2 # artifact in maven format groupId:artifactId:version
     java.main=org.example.orders.OrdersStarter # main class to run
     java.opts.mem=-Xms1024M -Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log # vm params
 ```
-**payments process.proc:**
+**payments/process.proc**
 ```*.properties
     artifact=org.example:payments:19.4.2 # partial duplication
     java.main=org.example.payments.PaymentStarter
     java.opts.mem=-Xms1024M -Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log # duplication
     instance.count=2
 ```
-**service-discovery process.proc:**
+**service-discovery/process.proc**
 ```*.properties
     artifact=org.example.discovery:eureka:19.4.2 # partial duplication         
     java.main=org.example.discovery.EurekaStarter
@@ -103,7 +103,7 @@ As you can see we already have some small copy-paste (all services have 19.4.2 v
 
 Let's see how application properties can look like. In comments we note what can be improved.
 
-**orders application.properties:**
+**orders/application.properties**
 ```*.properties
     server.port=9000
     application.name=orders # better to get name from folder
@@ -116,7 +116,7 @@ Let's see how application properties can look like. In comments we note what can
     datasource.url=jdbc:oracle:thin:@172.30.162.4:$1521:ARMSDEV  # partial duplication
     jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true  # duplication
 ```
-**payments application.properties:**
+**payments/application.properties**
 ```*.properties
     server.port=8080
     application.name=payments # better to get name from folder
@@ -130,7 +130,7 @@ Let's see how application properties can look like. In comments we note what can
     datasource.url=jdbc:oracle:thin:@172.30.162.3:1521:ARMSDEV  # partial duplication
     jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true # duplication
 ```
-**service-discovery application.properties:**
+**service-discovery/application.properties**
 ```*.properties
     server.port=6781
     application.name=eureka
@@ -182,7 +182,7 @@ jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
 
 And replace explicit configs with includes
 
-**orders application.properties:**
+**orders/application.properties**
 ```*.properties
     #include service-discovry-client
     #include oracle-db-client
@@ -193,7 +193,7 @@ And replace explicit configs with includes
     statistics.enableExtendedStatistics=true    
 ```
 
-**payments application.properties:**
+**payments/application.properties**
 ```*.properties
     #include service-discovry-client
     #include oracle-db-client
