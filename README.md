@@ -144,15 +144,15 @@ The first bad thing - application files contain duplication. Also you have to sp
 
 
 # Better config structure
-Our services have common configuration for service-discovery and database. To make it easy to understand service's dependencies, let’s create folders for service-discovery-client and database and specify links to these dependencies from core services.
+Our services have common configuration for service-discovery and database. To make it easy to understand service's dependencies, let’s create folders for service-discovery-client and oracle-client and specify links to these dependencies from core services.
 
 ```
 repo
 └───common
 |    └───service-discovery-client 
-|    | 	└───application.properties
-|    └───oracle-db
-|	└───application.properties
+|    | 	 └───application.properties
+|    └───oracle-client
+|        └───application.properties
 |	
 └───core  
 │    └───orders
@@ -172,10 +172,32 @@ service-discovery.url=http://10.12.172.11:6781 # are you sure url is consistent 
 eureka.instance.prefer-ip-address=true 
 ```
 
-**oracle-db/application.properties**
+**oracle-client/application.properties**
 ```*.properties
 datasource.minimum-pool-size=2  
 datasource.maximum-pool-size=5    
 datasource.url=jdbc:oracle:thin:@172.30.162.4:$1521:ARMSDEV  
 jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
 ```
+
+And replace explicit configs with includes
+
+**orders application.properties:**
+```*.properties
+    #include service-discovry-client
+    #include oracle-db-client
+    server.port=9000
+    application.name=orders # better to get name from folder
+    orders.personalRecommendation=true
+    statistics.enableExtendedStatistics=true
+    
+```
+**payments application.properties:**
+```*.properties
+    #include service-discovry-client
+    #include oracle-db-client
+    server.port=8080
+    application.name=payments # better to get name from folder
+    payments.booktimeoutInSec=900 # how long in min ?
+    payments.system.retries=3
+    consistency.validateConsistencyIntervalInMs=420000 # difficult to read. how long in min ?    
