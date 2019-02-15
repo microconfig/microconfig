@@ -217,7 +217,7 @@ Let's override order's connection pool size.
     ***    
 ```
 
-Nice. But orders db have small part of its db configuration(pool-size), it not that bad, but we can make config semantically better.
+Nice. But order-service has small part of its db configuration(pool-size), it not that bad, but we can make config semantically better.
 Also as you could notice order and payment services have different ip for oracle.
 order: datasource.url=jdbc:oracle:thin:@172.30.162.3:1521:ARMSDEV  
 payment: datasource.url=jdbc:oracle:thin:@172.30.162.4:1521:ARMSDEV  
