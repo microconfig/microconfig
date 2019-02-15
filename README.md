@@ -156,19 +156,15 @@ repo
 |	
 └───core  
 │    └───orders
-│    │   └───application.properties
-│    │   └───process.proc
+│    │   ***
 │    └───payments
-│        └───application.properties
-│        └───process.proc
+│        ***
 │	
 └───infra
     └───service-discovery
-    │   └───application.properties
-    │   └───process.proc
+    │   ***
     └───api-gateway
-        └───application.properties
-        └───process.proc
+        ***
 ```
 **service-discovery-client/application.properties:**
 ```*.properties
