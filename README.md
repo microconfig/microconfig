@@ -113,7 +113,7 @@ Let's see how application properties can look like. In comments we note what can
     eureka.instance.prefer-ip-address=true  # duplication        
     datasource.minimum-pool-size=2  # duplication
     datasource.maximum-pool-size=10    
-    datasource.url=jdbc:oracle:thin:@172.30.162.3:1521:ARMSDEV  # partial duplication
+    datasource.url=jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV  # partial duplication
     jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true  # duplication
 ```
 **payments/application.properties**
@@ -127,7 +127,7 @@ Let's see how application properties can look like. In comments we note what can
     eureka.instance.prefer-ip-address=true  # duplication            
     datasource.minimum-pool-size=2  # duplication
     datasource.maximum-pool-size=5    
-    datasource.url=jdbc:oracle:thin:@172.30.162.4:1521:ARMSDEV  # partial duplication
+    datasource.url=jdbc:oracle:thin:@172.30.162.127:1521:ARMSDEV  # partial duplication
     jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true # duplication
 ```
 **service-discovery/application.properties**
@@ -176,7 +176,7 @@ eureka.instance.prefer-ip-address=true
 ```*.properties
 datasource.minimum-pool-size=2  
 datasource.maximum-pool-size=5    
-datasource.url=jdbc:oracle:thin:@172.30.162.3:1521:ARMSDEV  
+datasource.url=jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV  
 jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
 ```
 
@@ -219,9 +219,10 @@ Let's override order's connection pool size.
 
 Nice. But order-service has small part of its db configuration(pool-size), it not that bad, but we can make config semantically better.
 Also as you could notice order and payment services have different ip for oracle.
-order: datasource.url=jdbc:oracle:thin:@172.30.162.3:1521:ARMSDEV  
-payment: datasource.url=jdbc:oracle:thin:@172.30.162.4:1521:ARMSDEV  
-And oracle-client contains settings for .3.
+
+order: datasource.url=jdbc:oracle:thin:@172.30.162.<b>31</b>:1521:ARMSDEV  
+payment: datasource.url=jdbc:oracle:thin:@172.30.162.<b>127</b>:1521:ARMSDEV  
+And oracle-client contains settings for .31.
 
 Of course you can override datasource.url in payment/application.properties. But this overridden property will contain duplication of another part of jdbc url and you will get all standard copy-paste problems. 
 So we can override only part of property. Also it better to create dedicated configuration for order db and payment db. Both db configuration will include common-db config and override ip part of url.  Also we will migrate datasource.maximum-pool-size from orders service to order-db, because it semantically correct.
