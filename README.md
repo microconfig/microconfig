@@ -210,8 +210,7 @@ You can override any properties from your dependencies.
 Let's override order's connection pool size.
 
 **orders/application.properties**
-```*.properties    
-    ***
+```*.properties        
     #include oracle-db-client
     datasource.maximum-pool-size=10
     ***    
