@@ -141,3 +141,46 @@ Let's see how application properties can look like. In comments we note what can
 
 
 The first bad thing - application files contain duplication. Also you have to spend some time to understand application’s dependencies or it structure. For instance, payments service contains settings for 1) service-discovery client,  2)for oracle db and 3)application specific. Of course you can separate group of settings by empty line. But we can do it more readable and understandable.
+
+
+# Better config structure
+Our services have common configuration for service-discovery and database. To make it easy to understand service dependencies, let’s create folders service-discovery-client and database and specify link to these dependencies from core services.
+
+```
+repo
+└───common
+|    └───service-discovery-client 
+|    | 	└───application.properties
+|    └───oracle-db
+|	└───application.properties
+|	
+└───core  
+│    └───orders
+│    │   └───application.properties
+│    │   └───process.proc
+│    └───payments
+│        └───application.properties
+│        └───process.proc
+│	
+└───infra
+    └───service-discovery
+    │   └───application.properties
+    │   └───process.proc
+    └───api-gateway
+        └───application.properties
+        └───process.proc
+```
+**service-discovery-client/application.properties:**
+```*.properties
+service-discovery-client/application.properties
+service-discovery.url=http://10.12.172.11:6781 # are you sure url is consistent with eureka configuration?
+eureka.instance.prefer-ip-address=true 
+```
+
+**oracle-db/application.properties**
+```*.properties
+datasource.minimum-pool-size=2  
+datasource.maximum-pool-size=5    
+datasource.url=jdbc:oracle:thin:@172.30.162.4:$1521:ARMSDEV  # partial duplication
+jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
+```
