@@ -120,7 +120,7 @@ Let's see how application properties can look like. In comments we note what can
 ```*.properties
     server.port=8080
     application.name=payments # better to get name from folder
-    payments.booktimeoutInSec=900 # how long in min ?
+    payments.booktimeoutInMs=900000 # how long in min ?
     payments.system.retries=3
     consistency.validateConsistencyIntervalInMs=420000 # difficult to read. how long in min ?
     service-discovery.url=http://10.12.172.11:6781 # are you sure url is consistent with eureka configuration?
@@ -200,12 +200,11 @@ And replace explicit configs with includes
     
     server.port=8080
     application.name=payments # better to get name from folder
-    payments.booktimeoutInSec=900 # how long in min ?
+    payments.booktimeoutInMs=900000 # how long in min ?
     payments.system.retries=3
     consistency.validateConsistencyIntervalInMs=420000 # difficult to read. how long in min ?    
 ```
-
-One more time - this approach is better because it doesn't contain duplication and make it easy to understand service's dependencies.
+Some problems stil here, but we removed duplication and made it easy to understand service's dependencies.
 
 You can override any properties from your dependencies.
 Let's override order's connection pool size.
