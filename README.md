@@ -166,9 +166,8 @@ repo
     └───api-gateway
         ***
 ```
-**service-discovery-client/application.properties:**
+**service-discovery-client/application.properties**
 ```*.properties
-service-discovery-client/application.properties
 service-discovery.url=http://10.12.172.11:6781 # are you sure url is consistent with eureka configuration?
 eureka.instance.prefer-ip-address=true 
 ```
@@ -177,6 +176,6 @@ eureka.instance.prefer-ip-address=true
 ```*.properties
 datasource.minimum-pool-size=2  
 datasource.maximum-pool-size=5    
-datasource.url=jdbc:oracle:thin:@172.30.162.4:$1521:ARMSDEV  # partial duplication
+datasource.url=jdbc:oracle:thin:@172.30.162.4:$1521:ARMSDEV  
 jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
 ```
