@@ -270,4 +270,4 @@ jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
 ```
 
 # Profiles and env specific properties
-Microconfg allows specifying env specific properties (add/remove/override). For instance you want to increase connection-pool-size for dbs and increase amount of memory for services.
+Microconfg allows specifying env specific properties (add/remove/override). For instance you want to increase connection-pool-size for dbs and increase amount of memory for prod env.
