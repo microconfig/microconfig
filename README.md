@@ -144,7 +144,7 @@ The first bad thing - application files contain duplication. Also you have to sp
 
 
 # Better config structure
-Our services have common configuration for service-discovery and database. To make it easy to understand service dependencies, let’s create folders service-discovery-client and database and specify link to these dependencies from core services.
+Our services have common configuration for service-discovery and database. To make it easy to understand service's dependencies, let’s create folders for service-discovery-client and database and specify links to these dependencies from core services.
 
 ```
 repo
