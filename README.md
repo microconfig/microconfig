@@ -224,10 +224,51 @@ order: datasource.url=jdbc:oracle:thin:@172.30.162.<b>31</b>:1521:ARMSDEV
 payment: datasource.url=jdbc:oracle:thin:@172.30.162.<b>127</b>:1521:ARMSDEV  
 And oracle-client contains settings for .31.
 
-Of course you can override datasource.url in payment/application.properties. But this overridden property will contain duplication of another part of jdbc url and you will get all standard copy-paste problems. 
-So we can override only part of property. Also it better to create dedicated configuration for order db and payment db. Both db configuration will include common-db config and override ip part of url.  Also we will migrate datasource.maximum-pool-size from orders service to order-db, because it semantically correct.
+Of course you can override datasource.url in payment/application.properties. But this overridden property will contain duplication of another part of jdbc url and you will get all standard copy-paste problems. We would like to override only part of property. 
+
+Also it better to create dedicated configuration for order db and payment db. Both db configuration will include common-db config and override ip part of url.  After that we will migrate datasource.maximum-pool-size from orders service to order-db, so order service will contains only links to it dependecies and service specific configs.
 
 Let’s refactor.
+```
+repo
+└───common
+|    └───oracle
+|        └───oracle-common
+|        |   └───application.properties
+|        └───order-db
+|        |   └───application.properties
+|        └───payment-db
+|            └───application.properties
+```
+
+**oracle-common/application.properties**
+```*.properties
+datasource.minimum-pool-size=2  
+datasource.maximum-pool-size=5    
+jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
+```
+**orders-db/application.properties**
+```*.properties
+    #include oracle-common
+    datasource.maximum-pool-size=10
+    datasource.url=jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV #partial duplication
+```
+**payment-db/application.properties**
+```*.properties
+    #include oracle-common
+    datasource.url=jdbc:oracle:thin:@172.30.162.127:1521:ARMSDEV #partial duplication
+```
+
+**orders/application.properties**
+```*.properties
+    #include order-db
+    ***
+```
+
+**payments/application.properties**
+```*.properties
+    #include payment-db
+```
 
 # Profiles and env specific properties
 Microconfg allows specifying env specific properties (add/remove/override). For instance you want to increase connection-pool-size for dbs and increase amount of memory for services.
