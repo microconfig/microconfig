@@ -204,7 +204,7 @@ And replace explicit configs with includes
     payments.system.retries=3
     consistency.validateConsistencyIntervalInMs=420000 # difficult to read. how long in min ?    
 ```
-Some problems stil here, but we removed duplication and made it easy to understand service's dependencies.
+Some problems still here, but we removed duplication and made it easy to understand service's dependencies.
 
 You can override any properties from your dependencies.
 Let's override order's connection pool size.
