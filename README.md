@@ -452,7 +452,7 @@ There are some other env descriptor related properties, will will discuss them l
 * ${...@group}
 * ${...@order}
 
-Note, if you use special placeholders with ${this@...} than value will be context dependent. Lets's apply ${...@name} to see why it's useful.
+Note, if you use special placeholders with ${this@...} than value will be context dependent. Lets's apply ${this@name} to see why it's useful.
 
 Initial:
 
