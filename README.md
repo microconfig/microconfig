@@ -316,7 +316,8 @@ When you build properties for specific env(for example 'dev') Microconfig will c
 # Placeholders
 
 Instead of copy-paste value of some property Microconfig allows to placeholder to this value. 
-Let's refactor service-discovery-client config
+
+Let's refactor service-discovery-client config.
 
 Initial:
 **service-discovery-client/application.properties**
@@ -344,8 +345,7 @@ So if you change service-discovery port, all dependent services will get this up
 Microconfig syntax for placeholders ${**componentName**@**propertyName**}. Microconfig forces to specify component name(folder). This syntax match better than just prop name 
 (like ${serviceDiscoveryPortName}), because it makes it obvious based on what placeholder will be resolved and where to find initial placeholder value.
 
-
-Let's refactor oracle db config using placeholders and env specific configs.
+Let's refactor oracle db config using placeholders and env specific overrides.
 
 Initial:
 **oracle-common/application.properties**
