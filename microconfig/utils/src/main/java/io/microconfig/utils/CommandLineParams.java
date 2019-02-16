@@ -21,7 +21,8 @@ public class CommandLineParams {
                 .map(a -> a.split("="))
                 .peek(pair -> {
                     if (pair.length != 2) {
-                        throw new IllegalStateException("Incorrect command line param " + Arrays.toString(pair));
+                        error("Incorrect command line param " + Arrays.toString(pair));
+                        System.exit(-1);
                     }
                 }).collect(toMap(p -> p[0], p -> p[1]));
 
