@@ -343,6 +343,7 @@ ip=10.12.172.11
 ```
 
 So if you change service-discovery port, all dependent services will get this update.
+
 Microconfig has another approach to store service's ip. We will discuss it later. For now it better to set ip property inside service-discovery config file. 
 
 Microconfig syntax for placeholders ${**componentName**@**propertyName**}. Microconfig forces to specify component name(folder). This syntax match better than just prop name 
@@ -359,6 +360,7 @@ Initial:
 ```   
 
 Refactored:
+
 **oracle-common/application.properties**
 ```*.properties    
     datasource.maximum-pool-size=10
