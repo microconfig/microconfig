@@ -79,20 +79,20 @@ repo
 
 Inside process.proc we will store configuration that describes what is your service and how to run it (Your config files can have other properties, so don't pay attention on concrete values).
 
-**orders process.proc:**
+**orders/process.proc**
 ```*.properties
     artifact=org.example:orders:19.4.2 # artifact in maven format groupId:artifactId:version
     java.main=org.example.orders.OrdersStarter # main class to run
     java.opts.mem=-Xms1024M -Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log # vm params
 ```
-**payments process.proc:**
+**payments/process.proc**
 ```*.properties
     artifact=org.example:payments:19.4.2 # partial duplication
     java.main=org.example.payments.PaymentStarter
     java.opts.mem=-Xms1024M -Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log # duplication
     instance.count=2
 ```
-**service-discovery process.proc:**
+**service-discovery/process.proc**
 ```*.properties
     artifact=org.example.discovery:eureka:19.4.2 # partial duplication         
     java.main=org.example.discovery.EurekaStarter
@@ -103,7 +103,7 @@ As you can see we already have some small copy-paste (all services have 19.4.2 v
 
 Let's see how application properties can look like. In comments we note what can be improved.
 
-**orders application.properties:**
+**orders/application.properties**
 ```*.properties
     server.port=9000
     application.name=orders # better to get name from folder
@@ -113,24 +113,24 @@ Let's see how application properties can look like. In comments we note what can
     eureka.instance.prefer-ip-address=true  # duplication        
     datasource.minimum-pool-size=2  # duplication
     datasource.maximum-pool-size=10    
-    datasource.url=jdbc:oracle:thin:@172.30.162.4:$1521:ARMSDEV  # partial duplication
+    datasource.url=jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV  # partial duplication
     jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true  # duplication
 ```
-**payments application.properties:**
+**payments/application.properties**
 ```*.properties
     server.port=8080
     application.name=payments # better to get name from folder
-    payments.booktimeoutInSec=900 # how long in min ?
+    payments.booktimeoutInMs=900000 # how long in min ?
     payments.system.retries=3
     consistency.validateConsistencyIntervalInMs=420000 # difficult to read. how long in min ?
     service-discovery.url=http://10.12.172.11:6781 # are you sure url is consistent with eureka configuration?
     eureka.instance.prefer-ip-address=true  # duplication            
     datasource.minimum-pool-size=2  # duplication
     datasource.maximum-pool-size=5    
-    datasource.url=jdbc:oracle:thin:@172.30.162.3:1521:ARMSDEV  # partial duplication
+    datasource.url=jdbc:oracle:thin:@172.30.162.127:1521:ARMSDEV  # partial duplication
     jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true # duplication
 ```
-**service-discovery application.properties:**
+**service-discovery/application.properties**
 ```*.properties
     server.port=6781
     application.name=eureka
@@ -141,3 +141,133 @@ Let's see how application properties can look like. In comments we note what can
 
 
 The first bad thing - application files contain duplication. Also you have to spend some time to understand application’s dependencies or it structure. For instance, payments service contains settings for 1) service-discovery client,  2)for oracle db and 3)application specific. Of course you can separate group of settings by empty line. But we can do it more readable and understandable.
+
+
+# Better config structure using #include
+Our services have common configuration for service-discovery and database. To make it easy to understand service's dependencies, let’s create folders for service-discovery-client and oracle-client and specify links to these dependencies from core services.
+
+```
+repo
+└───common
+|    └───service-discovery-client 
+|    | 	 └───application.properties
+|    └───oracle-client
+|        └───application.properties
+|	
+└───core  
+│    └───orders
+│    │   ***
+│    └───payments
+│        ***
+│	
+└───infra
+    └───service-discovery
+    │   ***
+    └───api-gateway
+        ***
+```
+**service-discovery-client/application.properties**
+```*.properties
+service-discovery.url=http://10.12.172.11:6781 # are you sure url is consistent with eureka configuration?
+eureka.instance.prefer-ip-address=true 
+```
+
+**oracle-client/application.properties**
+```*.properties
+datasource.minimum-pool-size=2  
+datasource.maximum-pool-size=5    
+datasource.url=jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV  
+jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
+```
+
+And replace explicit configs with includes
+
+**orders/application.properties**
+```*.properties
+    #include service-discovry-client
+    #include oracle-db-client
+    
+    server.port=9000
+    application.name=orders # better to get name from folder
+    orders.personalRecommendation=true
+    statistics.enableExtendedStatistics=true    
+```
+
+**payments/application.properties**
+```*.properties
+    #include service-discovry-client
+    #include oracle-db-client
+    
+    server.port=8080
+    application.name=payments # better to get name from folder
+    payments.booktimeoutInMs=900000 # how long in min ?
+    payments.system.retries=3
+    consistency.validateConsistencyIntervalInMs=420000 # difficult to read. how long in min ?    
+```
+Some problems still here, but we removed duplication and made it easy to understand service's dependencies.
+
+You can override any properties from your dependencies.
+Let's override order's connection pool size.
+
+**orders/application.properties**
+```*.properties        
+    #include oracle-db-client
+    datasource.maximum-pool-size=10
+    ***    
+```
+
+Nice. But order-service has small part of its db configuration(pool-size), it not that bad, but we can make config semantically better.
+Also as you could notice order and payment services have different ip for oracle.
+
+order: datasource.url=jdbc:oracle:thin:@172.30.162.<b>31</b>:1521:ARMSDEV  
+payment: datasource.url=jdbc:oracle:thin:@172.30.162.<b>127</b>:1521:ARMSDEV  
+And oracle-client contains settings for .31.
+
+Of course you can override datasource.url in payment/application.properties. But this overridden property will contain duplication of another part of jdbc url and you will get all standard copy-paste problems. We would like to override only part of property. 
+
+Also it better to create dedicated configuration for order db and payment db. Both db configuration will include common-db config and override ip part of url.  After that we will migrate datasource.maximum-pool-size from orders service to order-db, so order service will contains only links to it dependecies and service specific configs.
+
+Let’s refactor.
+```
+repo
+└───common
+|    └───oracle
+|        └───oracle-common
+|        |   └───application.properties
+|        └───order-db
+|        |   └───application.properties
+|        └───payment-db
+|            └───application.properties
+```
+
+**oracle-common/application.properties**
+```*.properties
+datasource.minimum-pool-size=2  
+datasource.maximum-pool-size=5    
+jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
+```
+**orders-db/application.properties**
+```*.properties
+    #include oracle-common
+    datasource.maximum-pool-size=10
+    datasource.url=jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV #partial duplication
+```
+**payment-db/application.properties**
+```*.properties
+    #include oracle-common
+    datasource.url=jdbc:oracle:thin:@172.30.162.127:1521:ARMSDEV #partial duplication
+```
+
+**orders/application.properties**
+```*.properties
+    #include order-db
+    ***
+```
+
+**payments/application.properties**
+```*.properties
+    #include payment-db
+```
+
+# Profiles and env specific properties
+Microconfg allows specifying env specific properties (add/remove/override). For instance you want to increase connection-pool-size for dbs and increase amount of memory for prod env.
