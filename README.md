@@ -441,18 +441,19 @@ As we discussed syntax for placeholders looks like '${component@property}'.
 Microconfig has several special useful placeholders:
 * ${...@name} - returns current config folder name
 * ${...@env} - returns current env name 
-* ${...@folder} - returns full path of config dir 
+* ${...@folder} - returns full path of component's config dir 
 * ${...@configDir} - returns full path of root config dir   
-* ${...@serviceDir} - returns full path of destination service dir(result files will be put into this dir)
+* ${...@serviceDir} - returns full path of destination service dir (result files will be put into this dir)
 * ${...@userHome} - return full path of user home dir
 
-There are some other env descriptor related properties, will will discuss them later
+There are some other env descriptor related properties, will will discuss them later:
 * ${...@portOffset}
 * ${...@ip}
 * ${...@group}
 * ${...@order}
 
-Note, if you use special placeholders with ${this@...} than value will be context dependent. 
+Note, if you use special placeholders with ${this@...} than value will be context dependent.
+ 
 Lets's apply ${...@name}.
 
 Initial:
