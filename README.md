@@ -320,6 +320,7 @@ Instead of copy-paste value of some property Microconfig allows to placeholder t
 Let's refactor service-discovery-client config.
 
 Initial:
+
 **service-discovery-client/application.properties**
 ```*.properties
 service-discovery.url=http://10.12.172.11:6781 # are you sure host and port are consistent with SD configuration? 
@@ -330,6 +331,7 @@ server.port=6761
 ```
 
 Refactored:
+
 **service-discovery-client/application.properties**
 ```*.properties
 service-discovery.url=http://${service-discovery@ip}:${service-discovery@server.port} # are you sure host and port are consistent with SD configuration? 
