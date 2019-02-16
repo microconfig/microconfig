@@ -292,7 +292,7 @@ order-db
     datasource.maximum-pool-size=50    
 ```
 
-Also you can declare common properties for several environments on a single file.  You can use following file name pattern: application.**${ENV1.ENV2.ENV2}**.properties
+Also you can declare common properties for several environments on a single file.  You can use following file name pattern: application.**${ENV1.ENV2.ENV3...}**.properties
 Let's create common props for dev, dev2 and test envs.
 
 **orders-db/application.dev.dev2.test.properties**
