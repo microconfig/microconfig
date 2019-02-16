@@ -24,7 +24,9 @@ Comparing to Ansible:
 Ansible is powerful but too general engine for deployment management and doesnt't provide common and clean way to store configuration for microservices. And a lot of teams have to invent their own solutions based on Ansible.
 
 Microconfig does one thing and does it well. It provides approach, best practices and engine to keep configuration for big amount of services.
+
 Your can use Microconfig together with config server and deployment frameworks. Configuration can be built during deploy phase and result plain config files can be copied to filesystem, where your services can access it directly(for instance, Spring Boot can read configuration from *.properties), or you can distribute result configuration using any config servers.
+Also you can store not only application configuration but configuration how to run your services. And deployments frameworks can read configuration from Microconfig to start your services with right params and settings.    
 
 # Where to store configuration
 It’s a good practice to keep service configuration separated from code. It allows not to rebuild your services any time configuration is changed and use the same service artifacts (for instance, *.jar) for all environments, because it doesn’t contain any env specific configuration. Configuration can be updated even in runtime without service' source code changes.
