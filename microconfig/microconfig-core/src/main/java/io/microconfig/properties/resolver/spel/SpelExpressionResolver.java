@@ -1,11 +1,9 @@
 package io.microconfig.properties.resolver.spel;
 
 import io.microconfig.properties.Property;
-import io.microconfig.properties.resolver.PropertyResolveException;
 import io.microconfig.properties.resolver.PropertyResolver;
 import io.microconfig.properties.resolver.RootComponent;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
+import lombok.RequiredArgsConstructor;
 
 import java.util.regex.Matcher;
 
@@ -14,17 +12,13 @@ import java.util.regex.Matcher;
  *
  * @see SpelExpression
  */
+@RequiredArgsConstructor
 public class SpelExpressionResolver implements PropertyResolver {
-    private final ExpressionParser parser = new SpelExpressionParser();
-    private final PropertyResolver placeholderResolver;
-
-    public SpelExpressionResolver(PropertyResolver placeholderResolver) {
-        this.placeholderResolver = placeholderResolver;
-    }
+    private final PropertyResolver delegate;
 
     @Override
     public String resolve(Property property, RootComponent root) {
-        String resolvedPlaceholders = placeholderResolver.resolve(property, root);
+        String resolvedPlaceholders = delegate.resolve(property, root);
 
         StringBuilder currentValue = new StringBuilder(resolvedPlaceholders);
         while (true) {
@@ -32,18 +26,10 @@ public class SpelExpressionResolver implements PropertyResolver {
             if (!matcher.find()) break;
 
             SpelExpression expression = SpelExpression.parse(matcher.group());
-            String resolvedValue = resolveSpel(expression, root);
+            String resolvedValue = expression.resolve(root);
             currentValue.replace(matcher.start(), matcher.end(), resolvedValue);
         }
 
         return currentValue.toString();
-    }
-
-    private String resolveSpel(SpelExpression expression, RootComponent root) {
-        try {
-            return parser.parseExpression(expression.getValue()).getValue(String.class);
-        } catch (RuntimeException e) {
-            throw new PropertyResolveException(expression, root, e);
-        }
     }
 }
