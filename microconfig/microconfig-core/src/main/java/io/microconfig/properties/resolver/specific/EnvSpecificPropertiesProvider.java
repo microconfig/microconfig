@@ -20,14 +20,14 @@ import static java.util.Arrays.asList;
 public class EnvSpecificPropertiesProvider implements PropertiesProvider {
     private static final String PORT_OFFSET = "portOffset";
     private static final String IP = "ip";
-    private static final String ENV = "env";
-    private static final String NAME = "name";
     private static final String GROUP = "group";
     private static final String ORDER = "order";
+    private static final String NAME = "name";
+    private static final String ENV = "env";
+    private static final String FOLDER = "folder";
     private static final String USER_HOME = "userHome";
     private static final String CONFIG_DIR = "configDir";
     private static final String SERVICE_DIR = "serviceDir";
-    private static final String FOLDER = "folder";
     private static final List<String> ALL = asList(PORT_OFFSET, IP, ENV, NAME, GROUP, USER_HOME, CONFIG_DIR, SERVICE_DIR, FOLDER);
 
     private final PropertiesProvider delegate;

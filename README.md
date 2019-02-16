@@ -417,13 +417,68 @@ Lets' remove 'payments.system.retries' property for dev env:
 ```*.properties
     #var payments.system.retries=  // will not be included into result config        
 ```
+# Specials placeholders
+As we discussed syntax for placeholders looks like application.**${ENVNAME}**.properties.
+Microconfig has several special useful placeholders:
+* ${...@name} - returns current config folder name
+* ${...@env} - returns current env name 
+* ${...@folder} - returns full path of config folder 
+* ${...@configDir} - returns full path of root config dir   
+* ${...@serviceDir} - returns full path of destination service dir(result files will be put into this dir)
+* ${...@userHome} - return full path of user home dir
 
+There are some other env descriptor related properties, will will discuss them later
+* ${...@portOffset}
+* ${...@ip}
+* ${...@group}
+* ${...@order}
+
+Note, if you use these special placeholders with  ${this@...} they value will be context dependent. 
+Lets's apply ${...@name}.
+
+Initial:
+
+**orders/application.properties**
+```*.properties
+    #include service-discovery-client    
+    application.name=orders
+    
+```
+**payments/application.properties**
+```*.properties
+    #include service-discovery-client    
+    application.name=payments
+```
+
+Refactored:
+
+**orders/application.properties**
+```*.properties
+    #include service-discovery-client
+    
+```
+**payments/application.properties**
+```*.properties
+    #include service-discovery-client
+```
+**service-discovery-client/application.properties**
+```*.properties            
+    application.name=${this@name}
+```                 
+
+
+# Env variables and system properties 
+..todo write doc
 # Profiles and explicit env name for placeholders
 ..todo write doc
 # Expression language
 ..todo write doc
+# Grouping different types of configuration
+..todo write doc
 # Arbitrary template files
 ..todo write doc
+# Environment descriptor
+# Running config build
 # Post config build callbacks
 ..todo write doc
 # Viewing differences between config's versions
