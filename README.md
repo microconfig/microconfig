@@ -295,6 +295,14 @@ order-db
 Also you can declare common properties for several environments on a single file.  You can use following file name pattern: application.**${ENV1.ENV2.ENV3...}**.properties
 Let's create common props for dev, dev2 and test envs.
 
+```
+order-db
+└───application.properties
+└───application.dev.properties
+└───application.dev.dev2.test.properties
+└───application.prod.properties
+```
+
 **orders-db/application.dev.dev2.test.properties**
 ```*.properties   
     hibernate.show-sql=true    
