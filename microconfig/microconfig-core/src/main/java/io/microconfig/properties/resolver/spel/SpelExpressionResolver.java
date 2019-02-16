@@ -19,8 +19,11 @@ public class SpelExpressionResolver implements PropertyResolver {
     @Override
     public String resolve(Property property, RootComponent root) {
         String resolvedPlaceholders = delegate.resolve(property, root);
+        return resolveSpels(resolvedPlaceholders, root);
+    }
 
-        StringBuilder currentValue = new StringBuilder(resolvedPlaceholders);
+    private String resolveSpels(String placeholders, RootComponent root) {
+        StringBuilder currentValue = new StringBuilder(placeholders);
         while (true) {
             Matcher matcher = SpelExpression.PATTERN.matcher(currentValue.toString());
             if (!matcher.find()) break;
