@@ -1,7 +1,5 @@
 package io.microconfig.properties.resolver.spel;
 
-import io.microconfig.properties.resolver.PropertyResolveException;
-import io.microconfig.properties.resolver.RootComponent;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.expression.ExpressionParser;
@@ -33,12 +31,8 @@ public class SpelExpression {
         return new SpelExpression(matcher.group("value"));
     }
 
-    public String resolve(RootComponent root) {
-        try {
-            return parser.parseExpression(value).getValue(String.class);
-        } catch (RuntimeException e) {
-            throw new PropertyResolveException(this, root, e);
-        }
+    public String resolve() {
+        return parser.parseExpression(value).getValue(String.class);
     }
 
     @Override
