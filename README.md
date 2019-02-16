@@ -403,3 +403,5 @@ In the example below after build datasource.url=jdbc:oracle:thin:@**100.30.162.8
      #include oracle-common    
      #var oracle.host=100.30.162.80                 
 ```  
+
+# Profiles and explicit env name for placeholders
