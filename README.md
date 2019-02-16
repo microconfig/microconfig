@@ -269,5 +269,44 @@ jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
     #include payment-db
 ```
 
-# Profiles and env specific properties
+# Env specific properties
 Microconfg allows specifying env specific properties (add/remove/override). For instance you want to increase connection-pool-size for dbs and increase amount of memory for prod env.
+To add/remove/override properties for env, you can create application.**${ENVNAME}**.properties file in config folder. 
+
+Let's override connection pool connection size for dev and prod and add one new param for dev. 
+
+```
+order-db
+└───application.properties
+└───application.dev.properties
+└───application.prod.properties
+```
+
+**orders-db/application.dev.properties**
+```*.properties   
+    datasource.maximum-pool-size=15    
+```
+
+**orders-db/application.prod.properties**
+```*.properties   
+    datasource.maximum-pool-size=50    
+```
+
+Also you can declare common properties for several environments on a single file.  You can following file name pattern: application.**${ENV1.ENV2.ENV2}**.properties
+Lets create common props for dev and test env.
+
+**orders-db/application.dev.test.properties**
+```*.properties   
+    hibernate.show-sql=true    
+```
+
+When you build properties for specific env(for example 'prod') Microconfig will collect properties from
+* application.properties 
+* then add/override properties from application.prod.{anotherEnv}.properties.
+* then add/override properties from application.prod.properties.
+
+
+hibernate.show-sql=true    
+
+
+# Placeholders

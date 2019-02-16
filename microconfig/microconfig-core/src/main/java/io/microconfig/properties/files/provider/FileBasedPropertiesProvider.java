@@ -13,10 +13,9 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
-import static io.microconfig.properties.files.provider.PropertyFilter.newDefaultComponentFilter;
-import static io.microconfig.properties.files.provider.PropertyFilter.newEnvComponentFilter;
-import static io.microconfig.utils.CollectionUtils.join;
+import static io.microconfig.properties.files.provider.PropertyFilters.*;
 import static java.util.stream.Collectors.toMap;
 
 public class FileBasedPropertiesProvider implements PropertiesProvider {
@@ -39,15 +38,18 @@ public class FileBasedPropertiesProvider implements PropertiesProvider {
     }
 
     private Map<String, Property> getPropertiesByKey(Component component, String environment, Set<Include> processedInclude) {
-        Function<PropertyFilter, Map<String, Property>> collectProperties = filter -> collectProperties(filter, component, environment, processedInclude);
+        Function<Predicate<File>, Map<String, Property>> collectProperties = filter -> collectProperties(filter, component, environment, processedInclude);
 
-        Map<String, Property> basicProperties = collectProperties.apply(newDefaultComponentFilter(fileExtension));
-        Map<String, Property> envSpecificProperties = collectProperties.apply(newEnvComponentFilter(environment, fileExtension));
+        Map<String, Property> basicProperties = collectProperties.apply(defaultComponentFilter(fileExtension));
+        Map<String, Property> envSharedProperties = collectProperties.apply(envSharedFilter(fileExtension, environment));
+        Map<String, Property> envSpecificProperties = collectProperties.apply(envFilter(fileExtension, environment));
 
-        return join(basicProperties, envSpecificProperties);
+        basicProperties.putAll(envSharedProperties);
+        basicProperties.putAll(envSpecificProperties);
+        return basicProperties;
     }
 
-    private Map<String, Property> collectProperties(PropertyFilter filter, Component component, String env, Set<Include> processedInclude) {
+    private Map<String, Property> collectProperties(Predicate<File> filter, Component component, String env, Set<Include> processedInclude) {
         Map<String, Property> propertyByKey = new HashMap<>();
 
         componentTree.getPropertyFiles(component.getType(), filter)
