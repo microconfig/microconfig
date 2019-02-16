@@ -308,10 +308,81 @@ order-db
     hibernate.show-sql=true    
 ```
 
-When you build properties for specific env(for example 'prod') Microconfig will collect properties from
+When you build properties for specific env(for example 'dev') Microconfig will collect properties from
 * application.properties 
-* then add/override properties from application.prod.{anotherEnv}.properties.
-* then add/override properties from application.prod.properties.
-
+* then add/override properties from application.dev.{anotherEnv}.properties.
+* then add/override properties from application.dev.properties.
 
 # Placeholders
+
+Instead of copypaste value of some property Microconfig allows to placeholder this value. 
+Let's refactor service-discovery-client config
+
+Initial:
+**service-discovery-client/application.properties**
+```*.properties
+service-discovery.url=http://10.12.172.11:6781 # are you sure host and port are consistent with SD configuration? 
+```
+**service-discovery/application.properties**
+```*.properties
+server.port=6761 
+```
+
+Refactored:
+**service-discovery-client/application.properties**
+```*.properties
+service-discovery.url=http://${service-discovery@ip}:${service-discovery@server.port} # are you sure host and port are consistent with SD configuration? 
+```
+**service-discovery/application.properties**
+```*.properties
+server.port=6761
+ip=10.12.172.11 
+```
+
+So if change service-discovery port, all dependent services will get this update.
+
+Microconfig syntax for placeholders ${**componentName**@**propertyName**}. Microconfig forces to specify component name(folder). This syntax match better than just prop name 
+(like ${serviceDiscoveryPortName}), because it makes it obvious based on what placeholder will be resolved and where to find initial placeholder value.
+
+
+Let's refactor oracle db config using placeholders and env specific configs.
+
+Initial:
+**oracle-common/application.properties**
+```*.properties
+    #include oracle-common
+    datasource.maximum-pool-size=10
+    datasource.url=jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV 
+```   
+
+Refactored:
+**oracle-common/application.properties**
+```*.properties
+    #include oracle-common
+    datasource.maximum-pool-size=10
+    datasource.url=jdbc:oracle:thin:@${this@host}:1521:${this@oracle.sid}
+    oracle.host=172.30.162.20    
+    oracle.sid=ARMSDEV
+```
+**oracle-common/application.uat.properties**
+```*.properties    
+    oracle.host=172.30.162.80
+```    
+    
+**oracle-common/application.prod.properties**
+```*.properties    
+    oracle.host=10.17.14.18    
+    oracle.sid=ARMSDEV    
+```        
+
+As you can see using placeholders we can override not the whole property but only part of it.
+
+This approach work with includes as well. You can #include oracle-common and then override oracle.host, and datasource.url will be resolved based of overriden value. 
+
+ In the example below after build datasource.url=jdbc:oracle:thin:@**100.30.162.80**:1521:ARMSDEV
+ 
+**orders-db/application.dev.properties** 
+```*.properties   
+     #include oracle-common    
+     oracle.host=100.30.162.80                 
+```  
