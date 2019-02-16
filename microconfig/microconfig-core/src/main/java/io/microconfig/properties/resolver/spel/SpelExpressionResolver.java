@@ -25,8 +25,7 @@ public class SpelExpressionResolver implements PropertyResolver {
             Matcher matcher = SpelExpression.PATTERN.matcher(currentValue.toString());
             if (!matcher.find()) break;
 
-            SpelExpression expression = SpelExpression.parse(matcher.group());
-            String resolvedValue = expression.resolve(root);
+            String resolvedValue = SpelExpression.parse(matcher.group()).resolve(root);
             currentValue.replace(matcher.start(), matcher.end(), resolvedValue);
         }
 
