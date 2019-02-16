@@ -377,9 +377,9 @@ Refactored:
 
 As you can see using placeholders we can override not the whole property but only part of it.
 
-This approach work with includes as well. You can #include oracle-common and then override oracle.host, and datasource.url will be resolved based of overriden value. 
+This approach works with includes as well. You can #include oracle-common and then override oracle.host, and datasource.url will be resolved based of overridden value.
 
- In the example below after build datasource.url=jdbc:oracle:thin:@**100.30.162.80**:1521:ARMSDEV
+In the example below after build datasource.url=jdbc:oracle:thin:@**100.30.162.80**:1521:ARMSDEV
  
 **orders-db/application.dev.properties** 
 ```*.properties   
