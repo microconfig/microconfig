@@ -379,7 +379,19 @@ Refactored:
     oracle.sid=ARMSDEV    
 ```        
 
-As you can see using placeholders we can override not the whole property but only part of it.
+As you can see using placeholders we can override not the whole property but only part of it. 
+
+If you want to declare temp properties that will be used for placeholders and you don't want then to be included in the result config file, you can declare them with #var keyword.
+**oracle-common/application.properties**
+```*.properties
+    datasource.url=jdbc:oracle:thin:@${this@host}:1521:${this@oracle.sid}
+    #var oracle.host=172.30.162.20    
+    #var oracle.sid=ARMSDEV
+```
+**oracle-common/application.uat.properties**
+```*.properties    
+    #var oracle.host=172.30.162.80
+```  
 
 This approach works with includes as well. You can #include oracle-common and then override oracle.host, and datasource.url will be resolved based of overridden value.
 
@@ -388,5 +400,5 @@ In the example below after build datasource.url=jdbc:oracle:thin:@**100.30.162.8
 **orders-db/application.dev.properties** 
 ```*.properties   
      #include oracle-common    
-     oracle.host=100.30.162.80                 
+     #var oracle.host=100.30.162.80                 
 ```  
