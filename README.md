@@ -425,7 +425,7 @@ Let's set default value for oracle host
 ```*.properties    
     datasource.maximum-pool-size=10
     datasource.url=jdbc:oracle:thin:@${this@host:172.30.162.20}:1521:${this@oracle.sid}        
-    oracle.sid=ARMSDEV
+    #var oracle.sid=ARMSDEV
 ```
 Note, default value can be placeholder:
  ${component@property:${component2@property7:Missing value}}
