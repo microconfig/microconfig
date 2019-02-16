@@ -405,5 +405,8 @@ In the example below after build datasource.url=jdbc:oracle:thin:@**100.30.162.8
 ```  
 
 # Profiles and explicit env name for placeholders
+..todo write doc
 # Expression language
+..todo write doc
 # Arbitrary template files
+..todo write doc
