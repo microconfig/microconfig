@@ -24,7 +24,7 @@ import static java.util.Optional.of;
 
 @RequiredArgsConstructor
 public class PlaceholderResolver implements PropertyResolver {
-    private static final String VIRTUAL_LINK = "this";
+    private static final String SELF_REFERENCE = "this";
 
     private final EnvironmentProvider environmentProvider;
     private final PropertyFetcher propertyFetcher;
@@ -82,12 +82,12 @@ public class PlaceholderResolver implements PropertyResolver {
      * 2) Also 'this' componentName is replaced with root component name.
      */
     private Placeholder tryOverride(Placeholder placeholder, Property sourceOfPlaceholder, RootComponent root, Set<Placeholder> visited) {
-        boolean virtual = VIRTUAL_LINK.equals(placeholder.getComponent());
-        if (virtual) {
+        boolean selfReference = SELF_REFERENCE.equals(placeholder.getComponent());
+        if (selfReference) {
             placeholder = placeholder.changeComponent(sourceOfPlaceholder.getSource().getComponent().getName());
         }
 
-        if (virtual || (placeholderToTheSameComponent(placeholder, sourceOfPlaceholder) && !isEnvSpecificProperty(placeholder.getValue()))) {
+        if (selfReference || (placeholderToTheSameComponent(placeholder, sourceOfPlaceholder) && !isEnvSpecificProperty(placeholder.getValue()))) {
             Optional<Placeholder> overriden = tryOverrideForRoot(placeholder, root);
             if (!overriden.isPresent()) overriden = tryOverrideForParent(placeholder, visited);
             if (overriden.isPresent()) placeholder = overriden.get();
