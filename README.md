@@ -308,14 +308,14 @@ order-db
     hibernate.show-sql=true    
 ```
 
-When you build properties for specific env(for example 'dev') Microconfig will collect properties from
+When you build properties for specific env(for example 'dev') Microconfig will collect properties from:
 * application.properties 
 * then add/override properties from application.dev.{anotherEnv}.properties.
 * then add/override properties from application.dev.properties.
 
 # Placeholders
 
-Instead of copy-paste value of some property Microconfig allows to placeholder this value. 
+Instead of copy-paste value of some property Microconfig allows to placeholder to this value. 
 Let's refactor service-discovery-client config
 
 Initial:
