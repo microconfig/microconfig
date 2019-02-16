@@ -412,3 +412,5 @@ In the example below after build datasource.url=jdbc:oracle:thin:@**100.30.162.8
 ..todo write doc
 # Post config build callbacks
 ..todo write doc
+# View the differences between config's versions
+..todo write doc
