@@ -315,7 +315,7 @@ When you build properties for specific env(for example 'dev') Microconfig will c
 
 # Placeholders
 
-Instead of copypaste value of some property Microconfig allows to placeholder this value. 
+Instead of copy-paste value of some property Microconfig allows to placeholder this value. 
 Let's refactor service-discovery-client config
 
 Initial:
@@ -339,7 +339,7 @@ server.port=6761
 ip=10.12.172.11 
 ```
 
-So if change service-discovery port, all dependent services will get this update.
+So if you change service-discovery port, all dependent services will get this update.
 
 Microconfig syntax for placeholders ${**componentName**@**propertyName**}. Microconfig forces to specify component name(folder). This syntax match better than just prop name 
 (like ${serviceDiscoveryPortName}), because it makes it obvious based on what placeholder will be resolved and where to find initial placeholder value.
