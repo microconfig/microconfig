@@ -29,15 +29,15 @@ public class SpelExpressionResolver implements PropertyResolver {
             Matcher matcher = SpelExpression.PATTERN.matcher(currentValue.toString());
             if (!matcher.find()) break;
 
-            String resolvedValue = doResolve(root, matcher);
+            String resolvedValue = doResolve(matcher.group(), root);
             currentValue.replace(matcher.start(), matcher.end(), resolvedValue);
         }
 
         return currentValue.toString();
     }
 
-    private String doResolve(RootComponent root, Matcher matcher) {
-        SpelExpression expression = SpelExpression.parse(matcher.group());
+    private String doResolve(String value, RootComponent root) {
+        SpelExpression expression = SpelExpression.parse(value);
         try {
             return expression.resolve();
         } catch (RuntimeException e) {
