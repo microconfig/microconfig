@@ -416,7 +416,7 @@ Let's set default value for oracle host
     oracle.sid=ARMSDEV
 ```
 Note, default value can be placeholder:
- ${component@property:component2@property7:Missing value}
+ ${component@property:${component2@property7:Missing value}}
  
 Microconfig will try to:
 * resolve ${component@property}
