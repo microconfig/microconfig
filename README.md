@@ -422,7 +422,7 @@ As we discussed syntax for placeholders looks like application.**${ENVNAME}**.pr
 Microconfig has several special useful placeholders:
 * ${...@name} - returns current config folder name
 * ${...@env} - returns current env name 
-* ${...@folder} - returns full path of config folder 
+* ${...@folder} - returns full path of config dir 
 * ${...@configDir} - returns full path of root config dir   
 * ${...@serviceDir} - returns full path of destination service dir(result files will be put into this dir)
 * ${...@userHome} - return full path of user home dir
