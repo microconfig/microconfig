@@ -381,7 +381,7 @@ Refactored:
 
 As you can see using placeholders we can override not the whole property but only part of it. 
 
-If you want to declare temp properties that will be used for placeholders and you don't want them to be included in the result config file, you can declare them with #var keyword.
+If you want to declare temp properties that will be used for placeholders and you don't want them to be included into result config file, you can declare them with #var keyword.
 **oracle-common/application.properties**
 ```*.properties
     datasource.url=jdbc:oracle:thin:@${this@host}:1521:${this@oracle.sid}
