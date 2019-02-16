@@ -392,7 +392,7 @@ If you want to declare temp properties that will be used for placeholders and yo
 **oracle-common/application.uat.properties**
 ```*.properties    
     #var oracle.host=172.30.162.80
-```  
+``` 
 
 This approach works with includes as well. You can #include oracle-common and then override oracle.host, and datasource.url will be resolved based of overridden value.
 
@@ -403,6 +403,20 @@ In the example below after build datasource.url=jdbc:oracle:thin:@**100.30.162.8
      #include oracle-common    
      #var oracle.host=100.30.162.80                 
 ```  
+
+# Removing  base properties
+Using #var you can remove properties from result config file. You can include some config and override any property with #var to exclude it from result config file. 
+
+Lets' remove 'payments.system.retries' property for dev env:
+
+**payments/application.properties**
+```*.properties
+    payments.system.retries=3        
+```
+**payments/application.dev.properties**
+```*.properties
+    #var payments.system.retries=  // will not be included into result config        
+```
 
 # Profiles and explicit env name for placeholders
 ..todo write doc
