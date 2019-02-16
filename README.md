@@ -306,7 +306,4 @@ When you build properties for specific env(for example 'prod') Microconfig will 
 * then add/override properties from application.prod.properties.
 
 
-hibernate.show-sql=true    
-
-
 # Placeholders
