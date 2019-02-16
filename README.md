@@ -414,6 +414,12 @@ Let's set default value for oracle host
     datasource.url=jdbc:oracle:thin:@${this@host:172.30.162.20}:1521:${this@oracle.sid}        
     oracle.sid=ARMSDEV
 ```
+Note, default value can be placeholder:
+ ${component@property:component2@property7:Missing value}
+Microconfig will try to:
+* resolve ${component@property}
+* if it's missing - resolve  ${component2@property7}
+* if it's missing return 'Missing value'  
 
 # Removing  base properties
 Using #var you can remove properties from result config file. You can include some config and override any property with #var to exclude it from result config file. 
