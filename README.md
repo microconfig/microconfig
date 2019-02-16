@@ -404,6 +404,17 @@ In the example below after build datasource.url=jdbc:oracle:thin:@**100.30.162.8
      #var oracle.host=100.30.162.80                 
 ```  
 
+#Placeholder's default value
+You can specify default value for placeholder using syntax: ${component@property**:defaultValue**}
+
+Let's set default value for oracle host
+**oracle-common/application.properties**
+```*.properties    
+    datasource.maximum-pool-size=10
+    datasource.url=jdbc:oracle:thin:@${this@host:172.30.162.20}:1521:${this@oracle.sid}        
+    oracle.sid=ARMSDEV
+```
+
 # Removing  base properties
 Using #var you can remove properties from result config file. You can include some config and override any property with #var to exclude it from result config file. 
 
@@ -418,7 +429,7 @@ Lets' remove 'payments.system.retries' property for dev env:
     #var payments.system.retries=  // will not be included into result config        
 ```
 # Specials placeholders
-As we discussed syntax for placeholders looks like 'application.**${ENVNAME}**.properties'.
+As we discussed syntax for placeholders looks like '${component@property}'.
 Microconfig has several special useful placeholders:
 * ${...@name} - returns current config folder name
 * ${...@env} - returns current env name 
