@@ -348,17 +348,16 @@ Microconfig syntax for placeholders ${**componentName**@**propertyName**}. Micro
 Let's refactor oracle db config using placeholders and env specific overrides.
 
 Initial:
+
 **oracle-common/application.properties**
-```*.properties
-    #include oracle-common
+```*.properties    
     datasource.maximum-pool-size=10
     datasource.url=jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV 
 ```   
 
 Refactored:
 **oracle-common/application.properties**
-```*.properties
-    #include oracle-common
+```*.properties    
     datasource.maximum-pool-size=10
     datasource.url=jdbc:oracle:thin:@${this@host}:1521:${this@oracle.sid}
     oracle.host=172.30.162.20    
