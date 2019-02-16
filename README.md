@@ -417,6 +417,7 @@ Let's set default value for oracle host
 ```
 Note, default value can be placeholder:
  ${component@property:component2@property7:Missing value}
+ 
 Microconfig will try to:
 * resolve ${component@property}
 * if it's missing - resolve  ${component2@property7}
