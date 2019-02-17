@@ -500,15 +500,21 @@ Refactored:
 To resolve env variable use following syntax ${env@variableName}
 
 For example:
-* ${env@Path}
-* ${env@TEMP}
-* ${env@JAVA_HOME}
+```
+ ${env@Path}
+ ${env@JAVA_HOME}
+ ${env@TEMP}
+```
 
-To resolve Java system variable use following syntax ${system@variableName}
+To resolve Java system variable use following syntax: ${system@variableName}
+
 Some useful standard system variables:
-* ${system@user.home}
-* ${system@user.name}
-* ${system@os.name}
+
+```
+ ${system@user.home}
+ ${system@user.name}
+ ${system@os.name}
+```
  
 # Profiles and explicit env name for includes and placeholders
 As we discussed you can create env specific properties using filename pattern application.${ENV}.properties
