@@ -124,7 +124,7 @@ Let's see how application properties can look like. In comments we note what can
     service-discovery.url=http://10.12.172.11:6781 # are you sure url is consistent with eureka configuration?
     eureka.instance.prefer-ip-address=true  # duplication        
     datasource.minimum-pool-size=2  # duplication
-    datasource.maximum-pool-size=10    
+    datasource.maximum-pool-size=10
     datasource.url=jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV  # partial duplication
     jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true  # duplication
 ```
@@ -256,6 +256,7 @@ repo
 ```*.properties
 datasource.minimum-pool-size=2  
 datasource.maximum-pool-size=5    
+connection.timeoutInMs=300000
 jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
 ```
 **orders-db/application.properties**
@@ -517,7 +518,7 @@ Some useful standard system variables:
 ```
  
 # Profiles and explicit env name for includes and placeholders
-As we discussed you can create env specific properties using filename pattern application.${ENV}.properties. You can use the same approach for creating profile specific properties.
+As we discussed you can create env specific properties using filename pattern: application.${ENV}.properties. You can use the same approach for creating profile specific properties.
 
 For example you can create folder for http client timeout settings:
 
@@ -543,11 +544,17 @@ But what if you want some services to be configured with long timeout? Instead o
 timeout-settings
 └───application.properties
 └───application.long.properties
+└───application.huge.properties
 ```
 **timeout-settings/application.long.properties**
 ```*.properties
     timeouts.readTimeoutMs=30000    
 ```
+**timeout-settings/application.huge.properties**
+```*.properties
+    timeouts.readTimeoutMs=600000    
+```
+
 And specify profile name with include:
 
 **payments/application.properties**
@@ -562,8 +569,20 @@ ${timeout-settings[long]@readTimeoutMs}
 ${kafka[test]@bootstrap-servers}
 ```
 
+The difference between env-specific files and profiles is only logical. Microconfig handles it the same way.  
+
 # Expression language
-..todo write doc
+Microconfig allow you to use powerful expression language. It based on [Spring EL](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#expressions). Basically you can write any Java code in one line(of course you shouldn't).   
+Let's see some simple examples:
+
+**oracle-common/application.properties**
+```*.properties
+connection.timeoutInMs=#{5 * 60 * 1000} //bettet than 300000
+datasource.maximum-pool-size=#{${this@datasource.minimum-pool-size} + 10}
+healthcheck.logSucessMarker=Started #{'${this@java.main}'.substring('${this@java.main}'.lastIndexOf('.') + 1)}  
+
+```
+
 # Grouping different types of configuration
 ..todo write doc
 # Arbitrary template files
