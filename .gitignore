@@ -12,14 +12,7 @@
 .viminfo
 .vimrc
 .project
-bootstrap.properties
-bootstrap.sh
-bootstrap.config
-bootstrap2.sh
-maven-repo/
-secret/
 target/
-/components/
 build/
 .gradle/
 classes/
