@@ -34,18 +34,18 @@ public class BuildCommands {
 
     private final ComponentTree componentTree;
     private final EnvironmentProvider environmentProvider;
-    private final File componentsDir;
+    private final File destinationComponentDir;
     private final String serviceInnerDir;
 
-    public static BuildCommands init(File repoDir, File componentsDir) {
-        return init(repoDir, componentsDir, "");
+    public static BuildCommands init(File repoDir, File destinationComponentDir) {
+        return init(repoDir, destinationComponentDir, "");
     }
 
-    public static BuildCommands init(File repoDir, File componentsDir, String serviceInnerDir) {
+    public static BuildCommands init(File repoDir, File destinationComponentDir, String serviceInnerDir) {
         repoDir = canonical(repoDir);
         ComponentTree componentTree = ComponentTreeCache.build(repoDir);
         EnvironmentProvider environmentProvider = newEnvProvider(repoDir);
-        return new BuildCommands(componentTree, environmentProvider, componentsDir, serviceInnerDir);
+        return new BuildCommands(componentTree, environmentProvider, destinationComponentDir, serviceInnerDir);
     }
 
     public PropertiesProvider newPropertiesProvider(PropertyType propertyType) {
@@ -53,7 +53,9 @@ public class BuildCommands {
                 new FileBasedPropertiesProvider(componentTree, propertyType.getExtension(), new FileComponentParser(componentTree.getRepoDirRoot()))
         );
         PropertiesProvider envSpecificPropertiesProvider = cache(
-                new EnvSpecificPropertiesProvider(fileBasedPropertiesProvider, environmentProvider, componentTree, componentsDir)
+                new EnvSpecificPropertiesProvider(
+                        fileBasedPropertiesProvider, environmentProvider, componentTree, destinationComponentDir
+                )
         );
         PropertyResolver placeholderResolver = cache(
                 new SpelExpressionResolver(
@@ -84,6 +86,6 @@ public class BuildCommands {
     }
 
     private PropertySerializer mgmtSerializer(PropertyType propertyType) {
-        return new PropertiesSerializerImpl(componentsDir, serviceInnerDir + "/" + propertyType.getResultFile());
+        return new PropertiesSerializerImpl(destinationComponentDir, serviceInnerDir + "/" + propertyType.getResultFile());
     }
 }
