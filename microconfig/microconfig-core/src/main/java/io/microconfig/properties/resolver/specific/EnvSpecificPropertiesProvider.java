@@ -33,7 +33,7 @@ public class EnvSpecificPropertiesProvider implements PropertiesProvider {
     private final PropertiesProvider delegate;
     private final EnvironmentProvider environmentProvider;
     private final ComponentTree componentTree;
-    private final File componentsDir;
+    private final File destinationComponentDir;
 
     public static boolean isEnvSpecificProperty(String name) {
         return ALL.contains(name);
@@ -85,7 +85,7 @@ public class EnvSpecificPropertiesProvider implements PropertiesProvider {
         doAdd(ORDER, String.valueOf(componentOrder), properties, environment, true);
         doAdd(GROUP, componentGroup.get().getName(), properties, environment, true);
 
-        doAdd(SERVICE_DIR, new File(componentsDir, component.getName()).getAbsolutePath(), properties, environment, true);
+        doAdd(SERVICE_DIR, new File(destinationComponentDir, component.getName()).getAbsolutePath(), properties, environment, true);
         Optional<File> folder = componentTree.getFolder(component.getType());
         folder.ifPresent(file -> doAdd(FOLDER, file.getAbsolutePath(), properties, environment, true));
     }
