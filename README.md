@@ -583,7 +583,7 @@ datasource.maximum-pool-size=#{${this@datasource.minimum-pool-size} + 10} // sim
 healthcheck.logSucessMarker=Started #{'${this@java.main}'.substring('${this@java.main}'.lastIndexOf('.') + 1).toUpperCase()} //using placeholder and Java String API
 sessionKey=#{T(java.util.Base64).getEncoder().encodeToString('Some value'.bytes)}; //using java import and Base64 API  
 ```
-Insede EL you can write any Java code in one line. Of course you shouldn't overuse it to keep configuration readable.
+Inside EL you can write any Java code in one line. Of course you shouldn't overuse it to keep configuration readable.
 
 # Grouping different types of configuration
 ..todo write doc
