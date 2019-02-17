@@ -484,8 +484,7 @@ Refactored:
 
 **orders/application.properties**
 ```*.properties
-    #include service-discovery-client
-    
+    #include service-discovery-client    
 ```
 **payments/application.properties**
 ```*.properties
@@ -498,9 +497,61 @@ Refactored:
 
 
 # Env variables and system properties 
-..todo write doc
-# Profiles and explicit env name for placeholders
-..todo write doc
+To resolve env variable use following syntax ${env@variableName}
+
+For example:
+* ${env@Path}
+* ${env@TEMP}
+* ${env@JAVA_HOME}
+
+To resolve Java system variable use following syntax ${system@variableName}
+Some useful standard system variables:
+* ${system@user.home}
+* ${system@user.name}
+* ${system@os.name}
+ 
+# Profiles and explicit env name for includes and placeholders
+As we discussed you can create env specific properties using filename pattern application.${ENV}.properties
+But you can the same approach for creating profile specific properties.
+For example you can create folder for http client timeout settings.
+
+**timeout-settings/application.properties**
+```*.properties    
+    timeouts.connectTimeoutMs=1000    
+    timeouts.readTimeoutMs=5000    
+```
+And some services can include this configuration:
+
+**orders/application.properties**
+```*.properties
+    #timeout-settings
+    
+```
+**payments/application.properties**
+```*.properties
+    #timeout-settings
+```
+
+But what if you want some services to be configured with long timeout? Instead of env you can use profile name in filename:
+```
+timeout-settings
+└───application.properties
+└───application.long.properties
+```
+**timeout-settings/application.long.properties**
+```*.properties
+    timeouts.readTimeoutMs=30000    
+```
+And specify profile name with include:
+**payments/application.properties**
+```*.properties
+    #timeout-settings[long]
+```
+
+You can use profile/env name with placeholders too:
+* ${timeout-settings[**long**]@readTimeoutMs}
+* ${kafka[**test**]@bootstrap-servers}
+
 # Expression language
 ..todo write doc
 # Grouping different types of configuration
