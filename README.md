@@ -517,7 +517,7 @@ Some useful standard system variables:
 ```
  
 # Profiles and explicit env name for includes and placeholders
-As we discussed you can create env specific properties using filename pattern application.${ENV}.properties. But you can use the same approach for creating profile specific properties.
+As we discussed you can create env specific properties using filename pattern application.${ENV}.properties. You can use the same approach for creating profile specific properties.
 
 For example you can create folder for http client timeout settings:
 
@@ -530,12 +530,12 @@ And some services can include this configuration:
 
 **orders/application.properties**
 ```*.properties
-    #timeout-settings
+    #include timeout-settings
     
 ```
 **payments/application.properties**
 ```*.properties
-    #timeout-settings
+    #include timeout-settings
 ```
 
 But what if you want some services to be configured with long timeout? Instead of env you can use profile name in filename:
@@ -549,14 +549,18 @@ timeout-settings
     timeouts.readTimeoutMs=30000    
 ```
 And specify profile name with include:
+
 **payments/application.properties**
 ```*.properties
-    #timeout-settings[long]
+    #include timeout-settings[long]
 ```
 
 You can use profile/env name with placeholders too:
-* ${timeout-settings[**long**]@readTimeoutMs}
-* ${kafka[**test**]@bootstrap-servers}
+
+```
+${timeout-settings[long]@readTimeoutMs}
+${kafka[test]@bootstrap-servers}
+```
 
 # Expression language
 ..todo write doc
