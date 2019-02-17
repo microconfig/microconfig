@@ -506,7 +506,7 @@ For example:
  ${env@TEMP}
 ```
 
-To resolve Java system variable use following syntax: ${system@variableName}
+To resolve Java system variable (System::getProperty) use following syntax: ${system@variableName}
 
 Some useful standard system variables:
 
