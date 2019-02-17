@@ -522,7 +522,7 @@ As we discussed you can create env specific properties using filename pattern: a
 
 For example you can create folder for http client timeout settings:
 
-**timeout-settings/timeout.properties**
+**timeout-settings/application.properties**
 ```*.properties    
     timeouts.connectTimeoutMs=1000    
     timeouts.readTimeoutMs=5000    
@@ -542,15 +542,15 @@ And some services can include this configuration:
 But what if you want some services to be configured with long timeout? Instead of env you can use profile name in filename:
 ```
 timeout-settings
-└───timeout.properties
-└───timeout.long.properties
-└───timeout.huge.properties
+└───application.properties
+└───application.long.properties
+└───application.huge.properties
 ```
-**timeout-settings/timeout.long.properties**
+**timeout-settings/application.long.properties**
 ```*.properties
     timeouts.readTimeoutMs=30000    
 ```
-**timeout-settings/timeout.huge.properties**
+**timeout-settings/application.huge.properties**
 ```*.properties
     timeouts.readTimeoutMs=600000    
 ```
