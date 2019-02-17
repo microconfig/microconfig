@@ -517,9 +517,7 @@ Some useful standard system variables:
 ```
  
 # Profiles and explicit env name for includes and placeholders
-As we discussed you can create env specific properties using filename pattern application.${ENV}.properties.
-
-But you can use the same approach for creating profile specific properties.
+As we discussed you can create env specific properties using filename pattern application.${ENV}.properties. But you can use the same approach for creating profile specific properties.
 
 For example you can create folder for http client timeout settings:
 
