@@ -17,11 +17,11 @@ import static io.microconfig.templates.TemplatePattern.defaultPattern;
 import static java.util.Arrays.asList;
 
 public class BuildPropertiesCommandFactory {
-    public static Command newBuildPropertiesCommand(File repoDir, File componentsDir) {
-        BuildCommands buildCommands = BuildCommands.init(repoDir, componentsDir);
+    public static Command newBuildPropertiesCommand(File repoDir, File destinationComponentDir) {
+        BuildCommands buildCommands = BuildCommands.init(repoDir, destinationComponentDir);
 
         return new CompositeCommand(asList(
-                buildCommands.newBuildCommand(SERVICE, withDiffSerialize(componentsDir), copyTemplatesPostProcessor()),
+                buildCommands.newBuildCommand(SERVICE, withDiffSerialize(destinationComponentDir), copyTemplatesPostProcessor()),
                 buildCommands.newBuildCommand(PROCESS),
                 buildCommands.newBuildCommand(ENV),
                 buildCommands.newBuildCommand(LOG4j),
