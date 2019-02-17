@@ -578,16 +578,16 @@ Let's see some examples:
 
 **oracle-common/application.properties**
 ```*.properties
-#bettet than 300000
+#Better than 300000
 connection.timeoutInMs=#{5 * 60 * 1000}
 
-#simple math
+#Microconfig placeholder and simple math
 datasource.maximum-pool-size=#{${this@datasource.minimum-pool-size} + 10} 
 
-#using placeholder and Java String API
+#Using placeholder and Java String API
 healthcheck.logSucessMarker=Started #{'${this@java.main}'.substring('${this@java.main}'.lastIndexOf('.') + 1).toUpperCase()}
 
-#using Java import and Base64 API
+#Using Java import and Base64 API
 sessionKey=#{T(java.util.Base64).getEncoder().encodeToString('Some value'.bytes)}  
 ```
 Inside EL you can write any Java code in one line. Of course you shouldn't overuse it to keep configuration readable.
