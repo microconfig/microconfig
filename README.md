@@ -579,8 +579,10 @@ Let's see some examples:
 **oracle-common/application.properties**
 ```*.properties
 connection.timeoutInMs=#{5 * 60 * 1000} //bettet than 300000
-datasource.maximum-pool-size=#{${this@datasource.minimum-pool-size} + 10}
-healthcheck.logSucessMarker=Started #{'${this@java.main}'.substring('${this@java.main}'.lastIndexOf('.') + 1)}  
+datasource.maximum-pool-size=#{${this@datasource.minimum-pool-size} + 10} // simple math
+healthcheck.logSucessMarker=Started #{'${this@java.main}'.substring('${this@java.main}'.lastIndexOf('.') + 1).toUpperCase()} //using placeholder and Java String API
+sessionKey=#{T(java.util.Base64).getEncoder().encodeToString('Some value'.bytes)}; //using java import and Base64 API
+  
 
 ```
 
