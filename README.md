@@ -572,8 +572,9 @@ ${kafka[test]@bootstrap-servers}
 The difference between env-specific files and profiles is only logical. Microconfig handles it the same way.  
 
 # Expression language
-Microconfig allow you to use powerful expression language. It based on [Spring EL](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#expressions). Basically you can write any Java code in one line(of course you shouldn't).   
-Let's see some simple examples:
+Microconfig allows you to use powerful expression language. It's based on [Spring EL](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#expressions). Basically you can write any Java code in one line (of course you shouldn't overuse it to keep configuration readable).   
+
+Let's see some examples:
 
 **oracle-common/application.properties**
 ```*.properties
