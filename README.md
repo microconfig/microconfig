@@ -576,7 +576,6 @@ Microconfig allows you to use powerful expression language. It's based on [Sprin
 
 Let's see some examples:
 
-**oracle-common/application.properties**
 ```*.properties
 #Better than 300000
 connection.timeoutInMs=#{5 * 60 * 1000}
