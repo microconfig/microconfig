@@ -650,7 +650,7 @@ repo
     #include logback-template
 ```  
 
-As your can noticed placeholder syntax inside templates just ${propName}. Micronconfig will resolve  template's placeholders based on properties from component.
+As your could notice placeholder syntax inside templates just ${propName}. Micronconfig will resolve  template's placeholders based on properties from component.
 As we remember orders and payments include application.name property from service-discovery-client.
 During config build Microconfig will replace ${application.name} inside logback.xml with service's property value and copy result logback.xml to result folder for each service.
 
