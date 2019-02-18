@@ -458,9 +458,9 @@ Microconfig has several special useful placeholders:
 * ${this@env} - returns current env name 
 * ${...@name} - returns component's config folder name
 * ${...@folder} - returns full path of component's config dir 
-* ${...@configDir} - returns full path of root config dir   
+* ${this@configDir} - returns full path of root config dir   
 * ${...@serviceDir} - returns full path of destination service dir (result files will be put into this dir)
-* ${...@userHome} - returns full path of user home dir
+* ${this@userHome} - returns full path of user home dir
 
 
 There are some other env descriptor related properties, will will discuss them later:
