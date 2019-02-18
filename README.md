@@ -347,7 +347,7 @@ Refactored:
 
 **service-discovery-client/application.properties**
 ```*.properties
-service-discovery.url=http://${service-discovery@ip}:${service-discovery@server.port} # are you sure host and port are consistent with SD configuration? 
+service-discovery.url=http://${service-discovery@ip}:${service-discovery@server.port}
 ```
 **service-discovery/application.properties**
 ```*.properties
