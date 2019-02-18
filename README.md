@@ -658,23 +658,24 @@ During config build Microconfig will replace ${application.name} inside logback.
 
 If you want to declare property for template only and don't want this property to be included into result config file you can use #var propName=value. 
 
-If you want to specify template destination dir and file name you can use 'template.${templateName}.toFile=${someFile}' property. For example: 
+If you want to specify template destination dir and file you can use 'template.${templateName}.toFile=${someFile}' property. For example: 
  
  **logback-template/application.properties**
  ```*.properties   
      template.logback.fromFile=${logback@folder}/logback.xml    
      template.logback.toFile=logs/logback-descriptor.xml
- ```
-You can use absolute or relative path for toFile property. Relative path starts from result service config dir. (See 'Running config build' section)
+ ``` 
+ 
+You can use absolute or relative path for 'toFile' property. Relative path starts from result service config dir (See 'Running config build' section).
 
 So template dependency declaration syntax looks like:   
 ```
 template.${templateName}.fromFile=${sourceTemplateFile}    
 template.${templateName}.toFile=${resolvedTemplateDestinationFile}
 ```
-${templateName} - is used only for mapping 'fromFile' and 'toFile' properties for one file and can be any string.
+${templateName} - is used only for mapping 'fromFile' and 'toFile' properties.
 
-And let's override file that will be copied for prod env:
+Let's override file that will be copied on prod env:
 ```
 repo
 └───common
