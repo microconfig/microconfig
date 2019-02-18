@@ -681,7 +681,7 @@ ${templateName} - is used only for mapping 'fromFile' and 'toFile' properties fo
 # Running config build
 Micronfig stores configuration with its own format. During config build Micronfig will inline all includes, resolve placeholders, evaluate expression language, copy templates and built config files to specific folder for each service.
 
-To run build you have to download Microconfig release from: https://github.com/microconfig/microconfig/releases
+To run build you can download Microconfig release from: https://github.com/microconfig/microconfig/releases
 
 Microconfig build params:
 * Full or relative config root dir. Param 'root='. 
@@ -693,7 +693,10 @@ Command line params example:
 ```
 java -jar microconfig.jar root=repo dest=configs env=prod
 ```
-Example source layout:
+
+Let's see example of initial and destination folder layouts: 
+
+Initial source layout:
 ```
 repo
 └───common
@@ -715,7 +718,7 @@ repo
         └───application.properties
         └───process.proc
 ```
- Destination layout:
+After build:
 ```
 configs
 └───orders
@@ -735,6 +738,8 @@ configs
     └───process.proc
     └───logback.xml
 ```
+
+You can try to build example from dedicated repo: https://github.com/microconfig/configs-layout-example 
 
 # Post config build callbacks
 ..todo write doc
