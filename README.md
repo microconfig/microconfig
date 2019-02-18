@@ -686,7 +686,8 @@ To run build you can download Microconfig release from: https://github.com/micro
 Microconfig build params:
 * 'root=' - full or relative config root dir. 
 * 'dest=' - full or relative build destination dir.
-* 'root=' - environment name (Environment is used as config profile, also as group of services). 
+* 'env=' - environment name (Environment is used as config profile, also as group of services). 
+* 'group=' - optional param, comma separated list of component groups to build configs for (otherwise all services from passed env will be built). 
 * 'services=' - optional param, comma separated list of services to build configs for (otherwise all services from passed env will be built). 
 
 Command line params example:
