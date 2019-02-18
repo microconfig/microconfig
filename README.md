@@ -695,7 +695,7 @@ repo
 # Environment descriptor
 ..todo write doc
 # Running config build
-Micronfig stores configuration with its own format. During config build Micronfig inlines all includes, resolves placeholders, evaluates expression language, copies templates and built config files to specific folder for each service.
+Micronfig keeps configuration with its own format. During config build Micronfig inlines all includes, resolves placeholders, evaluates expression language, copies templates and built config files to specific folder for each service.
 
 To run build you can download Microconfig release from: https://github.com/microconfig/microconfig/releases
 
