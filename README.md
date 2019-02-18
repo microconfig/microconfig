@@ -683,7 +683,7 @@ So template dependency declaration syntax looks like:
 template.${templateName}.fromFile=${sourceTemplateFile}    
 template.${templateName}.toFile=${resolvedTemplateDestinationFile}
 ```
-`${templateName}` - is used only for mapping 'fromFile' and 'toFile' properties.
+`${templateName}` - is used only for mapping `fromFile` and `toFile` properties.
 
 Let's override file that will be copied on prod env:
 ```
