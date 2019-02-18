@@ -671,8 +671,21 @@ So template dependency declaration syntax looks like:
 template.${templateName}.fromFile=${sourceTemplateFile}    
 template.${templateName}.toFile=${resolvedTemplateDestinationFile}
 ```
+${templateName} - is used only for mapping 'fromFile' and 'toFile' properties for one file and can be any string.
 
-${templateName} - is used only for mapping 'fromFile' and 'toFile' properties for one file and can be any string. 
+And let's override file that will be copied for prod env:
+```
+repo
+└───common
+|    └───logback-template 
+|     	 └───logback.xml
+|     	 └───application.properties
+|     	 └───application.prod.properties
+```
+**logback-template/application.prod.properties**
+```*.properties   
+    template.logback.fromFile=${logback@folder}/logback-prod.xml        
+``` 
 
 # Grouping different types of configuration
 ..todo write doc 
