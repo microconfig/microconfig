@@ -726,19 +726,19 @@ After build:
 configs
 └───orders
 │   └───application.properties
-│   └───process.proc
+│   └───process.properties
 |   └───logback.xml
 └───payments
 │   └───application.properties
-│   └───process.proc
+│   └───process.properties
 |   └───logback.xml
 └───service-discovery
 │   └───application.properties
-│   └───process.proc
+│   └───process.properties
 |   └───logback.xml
 └───api-gateway
     └───application.properties
-    └───process.proc
+    └───process.properties
     └───logback.xml
 ```
 

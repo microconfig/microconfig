@@ -28,7 +28,7 @@ public class PropertiesDiffWriter implements PropertySerializer {
         File diffFile = diffFile(current);
         delete(diffFile);
 
-        String diff = compare(old, properties, component);
+        String diff = compare(old, properties, component, diffFile);
         if (!diff.isEmpty()) {
             write(diffFile, diff);
         }
@@ -40,7 +40,7 @@ public class PropertiesDiffWriter implements PropertySerializer {
         return new File(destination.getParent(), DIFF_PREFIX + destination.getName());
     }
 
-    private String compare(Map<String, String> old, Collection<Property> current, String component) {
+    private String compare(Map<String, String> old, Collection<Property> current, String component, File diffFile) {
         if (old.isEmpty()) return "";
 
         StringBuilder content = new StringBuilder(); //todo2 sort by key without +-
@@ -66,7 +66,7 @@ public class PropertiesDiffWriter implements PropertySerializer {
         diffCount += old.size();
 
         if (diffCount > 0) {
-            warn("Found " + diffCount + " property changes for " + component);
+            warn("Stored " + diffCount + " property changes to " + component + "/" + diffFile.getName());
         }
 
         return content.toString();
