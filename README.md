@@ -652,7 +652,7 @@ repo
     #include logback-template
 ```  
 
-As we remember orders and payments includes application.name property from service-discovery-client.
+As we remember orders and payments include application.name property from service-discovery-client.
 During config build Microconfig will replace ${application.name} inside logback.xml with service's property value and copy result logback.xml to result folder for each service.
 
 If you want to specify template destination dir you can use template.${templateName}.toFile=${someDir}. For example: 
