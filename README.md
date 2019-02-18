@@ -656,7 +656,7 @@ Micronconfig resolves template's placeholders based on properties from component
 As we remember order and payment services include 'application.name' property from service-discovery-client.
 During config build Microconfig will replace ${application.name} inside logback.xml with service's property value and copy result logback.xml to result folder for each service.
 
-If you want to declare property only for template and don't want this property to be included into result config file you can use #var propName=value. 
+If you want to declare property for template only and don't want this property to be included into result config file you can use #var propName=value. 
 
 If you want to specify template destination dir and file name you can use 'template.${templateName}.toFile=${someFile}' property. For example: 
  
