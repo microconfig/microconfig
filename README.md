@@ -696,7 +696,7 @@ repo
 ..todo write doc
 # Running config build
 As we discussed Micronfig has its own format for configuration sources. 
-During config build Micronfig inlines all includes, resolves placeholders, evaluates expression language, copies templates and stores result values into plain *.properties or *.yaml files to specific folder for each service.
+During config build Micronfig inlines all includes, resolves placeholders, evaluates expression language, copies templates and stores result values into plain *.properties or *.yaml files to dedicated folder for each service.
 
 To run build you can download Microconfig release from: https://github.com/microconfig/microconfig/releases
 
