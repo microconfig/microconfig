@@ -50,6 +50,6 @@ public class TemplateTest {
     public void testEnvProperties() {
         Template template = new Template("${env@Path}");
         String result = template.resolvePlaceholders(of(), templatePattern);
-        assertEquals(System.getenv("PATH"), result);
+        assertEquals(System.getenv("Path"), result);
     }
 }
