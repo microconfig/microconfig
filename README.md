@@ -428,7 +428,7 @@ Let's set default value for oracle host
     datasource.url=jdbc:oracle:thin:@${this@oracle.host:172.30.162.20}:1521:${this@oracle.sid}        
     #var oracle.sid=ARMSDEV
 ```
-Note, default value can be placeholder:
+Note, default value can be a placeholder:
  ${component@property:${component2@property7:Missing value}}
  
 Microconfig will try to:
