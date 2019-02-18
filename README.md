@@ -463,7 +463,7 @@ Microconfig has several special useful placeholders:
 * ${this@userHome} - returns full path of user home dir
 
 
-There are some other env descriptor related properties, will will discuss them later:
+There are some other env descriptor related properties, we will discuss them later:
 * ${...@portOffset}
 * ${...@ip}
 * ${...@group}
