@@ -78,7 +78,7 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
             Template template = toTemplate(fromFile, destinationDir.getName());
             if (template == null) return;
 
-            String content = doResolve(serviceProperties, template, destinationDir);
+            String content = template.resolvePlaceholders(serviceProperties, templatePattern);
             write(toFile, content);
             copyPermissions(fromFile.toPath(), toFile.toPath());
 
@@ -106,15 +106,6 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
                 warn("Cannot read fromFile. " + this);
                 return null;
             }
-        }
-
-        private String doResolve(Map<String, String> serviceProperties, Template template, File serviceDir) {
-            String resolved = template.resolvePlaceholders(serviceProperties, templatePattern);
-            return resolveSpecialsPlaceholders(resolved, serviceDir);
-        }
-
-        private String resolveSpecialsPlaceholders(String content, File serviceDir) {
-            return content.replace("${serviceDir}", unixLikePath(serviceDir.getAbsolutePath()));
         }
 
         public void setFromFile(String fromFile) {
