@@ -518,6 +518,10 @@ Some useful standard system variables:
  ${system@user.name}
  ${system@os.name}
 ```
+
+You can pass your own system properties during Microconfig start with -D prefix (See 'Running config build' section)
+
+Example: -DtaskId=3456
  
 # Profiles and explicit env name for includes and placeholders
 As we discussed you can create env specific properties using filename pattern: application.${ENV}.properties. You can use the same approach for creating profile specific properties.
