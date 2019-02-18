@@ -661,7 +661,7 @@ repo
     #include logback-template
 ```  
 
-As your could notice placeholder syntax inside template '${propName}'  differs from Micronfig one '${component@propName}', it doesnt specify component name.
+As your could notice placeholder syntax inside template `${propName}`  differs from Micronfig one `${component@propName}`, it doesnt specify component name.
 Micronconfig resolves template's placeholders based on properties from component which declared dependencies on template.
 
 As we remember order and payment services include 'application.name' property from service-discovery-client.
@@ -669,7 +669,7 @@ During config build Microconfig will replace ${application.name} inside logback.
 
 If you want to declare property for template only and don't want this property to be included into result config file you can use #var propName=value. 
 
-If you want to specify template destination dir and file you can use 'template.${templateName}.toFile=${someFile}' property. For example: 
+If you want to specify template destination dir and file you can use `template.${templateName}.toFile=${someFile}` property. For example: 
  
  **logback-template/application.properties**
  ```*.properties   
@@ -677,14 +677,14 @@ If you want to specify template destination dir and file you can use 'template.$
      template.logback.toFile=logs/logback-descriptor.xml
  ``` 
  
-You can use absolute or relative path for 'toFile' property. Relative path starts from result service config dir (See 'Running config build' section).
+You can use absolute or relative path for `toFile` property. Relative path starts from result service config dir (See 'Running config build' section).
 
 So template dependency declaration syntax looks like:   
 ```
 template.${templateName}.fromFile=${sourceTemplateFile}    
 template.${templateName}.toFile=${resolvedTemplateDestinationFile}
 ```
-${templateName} - is used only for mapping 'fromFile' and 'toFile' properties.
+`${templateName}` - is used only for mapping 'fromFile' and 'toFile' properties.
 
 Let's override file that will be copied on prod env:
 ```
@@ -712,13 +712,13 @@ During config build Micronfig inlines all includes, resolves placeholders, evalu
 To run build you can download Microconfig release from: https://github.com/microconfig/microconfig/releases
 
 Microconfig required build params:
-* 'root=' - full or relative config root dir. 
-* 'dest=' - full or relative build destination dir.
-* 'env=' - environment name (Environment is used as config profile, also as group of services to build configs for).
+* `root=` - full or relative config root dir. 
+* `dest=` - full or relative build destination dir.
+* `env=` - environment name (Environment is used as config profile, also as group of services to build configs for).
 
 To build configs not for the whole environment but only for specific services you can use following optional params: 
-* 'group=' - comma separated list of component groups to build configs for. 
-* 'services=' - comma separated list of services to build configs for. 
+* `group=` - comma separated list of component groups to build configs for. 
+* `services=` - comma separated list of services to build configs for. 
 
 Command line params example:
 ```
