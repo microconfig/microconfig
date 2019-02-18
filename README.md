@@ -684,10 +684,10 @@ Micronfig stores configuration with its own format. During config build Micronfi
 To run build you can download Microconfig release from: https://github.com/microconfig/microconfig/releases
 
 Microconfig build params:
-* Full or relative config root dir. Param 'root='. 
-* Full or relative build destination dir. Param 'dest='.
-* Environment name (Environment is used as config profile, also as group of services). Param 'env='. 
-* Optional: To build configs not for the whole environment but only for specific services use 'services=' param (comma separated component names). 
+* 'root=' - full or relative config root dir. 
+* 'dest=' - full or relative build destination dir.
+* 'root=' - environment name (Environment is used as config profile, also as group of services). 
+* 'services=' - optional param, comma separated list of services to build configs for (otherwise all services from passed env will be built). 
 
 Command line params example:
 ```
