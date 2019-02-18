@@ -670,7 +670,7 @@ template.${templateName}.fromFile=${sourceTemplateFile}
 template.${templateName}.toFile=${resolvedTemplateDestinationFile}
 ```
 
-${templateName} - is used only for mapping .fromFile and .toFile properties for one file and can be any string. 
+${templateName} - is used only for mapping 'fromFile' and 'toFile' properties for one file and can be any string. 
  
 # Environment descriptor
 # Running config build
