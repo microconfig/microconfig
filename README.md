@@ -598,7 +598,7 @@ Inside EL you can write any Java code in one line and Microconfig placeholders. 
 
 # Arbitrary template files
 Microconfig allows to keep configuration files for any libraries with their specific format and resolve placeholders inside them.
-For example your want to keep logback.xml (or some other descriptor for your log library) and reuse this file with resolved placeholders for all your services. 
+For example you want to keep logback.xml (or some other descriptor for your log library) and reuse this file with resolved placeholders for all your services. 
 
 Let's create this file:
 ```
