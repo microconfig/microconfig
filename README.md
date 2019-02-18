@@ -521,7 +521,10 @@ Some useful standard system variables:
 
 You can pass your own system properties during Microconfig start with -D prefix (See 'Running config build' section)
 
-Example: -DtaskId=3456
+Example:
+```
+ -DtaskId=3456 -DsomeParam=value
+```
  
 # Profiles and explicit env name for includes and placeholders
 As we discussed you can create env specific properties using filename pattern: application.${ENV}.properties. You can use the same approach for creating profile specific properties.
@@ -720,6 +723,11 @@ To build configs not for the whole environment but only for specific services yo
 Command line params example:
 ```
 java -jar microconfig.jar root=repo dest=configs env=prod
+```
+
+To add system properties add -D:
+```
+java -jar microconfig.jar -DtaskId=3456 -DsomeParam=value root=repo dest=configs env=prod
 ```
 
 Let's see example of initial and destination folder layouts: 
