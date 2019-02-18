@@ -433,8 +433,8 @@ Note, default value can be a placeholder:
  
 Microconfig will try to:
 * resolve ${component@property}
-* if it's missing - resolve  ${component2@property7}
-* if it's missing return 'Missing value'  
+* if it's missing - resolve ${component2@property7}
+* if it's missing - return 'Missing value'  
 
 # Removing  base properties
 Using #var you can remove properties from result config file. You can include some config and override any property with #var to exclude it from result config file. 
