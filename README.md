@@ -590,7 +590,7 @@ Inside EL you can write any Java code in one line. Of course you shouldn't overu
 
 # Arbitrary template files
 Microconfig allows to keep configuration files for any libraries with their specific format and resolve placeholders inside them.
-For example your want to keep logback.xml (or some other descriptor for your log library) and reuse this files with resolved placeholders for all your services. 
+For example your want to keep logback.xml (or some other descriptor for your log library) and reuse this file with resolved placeholders for all your services. 
 
 Let's create this file:
 ```
@@ -650,9 +650,10 @@ repo
     #include logback-template
 ```  
 
-As your could notice placeholder syntax inside template '${propName}'  differs from Micronfig one '${component@propName}', it doesnt specify component name. Micronconfig will resolve  template's placeholders based on properties from component which declared dependencies on template.
+As your could notice placeholder syntax inside template '${propName}'  differs from Micronfig one '${component@propName}', it doesnt specify component name.
+Micronconfig resolves template's placeholders based on properties from component which declared dependencies on template.
 
-As we remember orders and payments include application.name property from service-discovery-client.
+As we remember order and payment services include 'application.name' property from service-discovery-client.
 During config build Microconfig will replace ${application.name} inside logback.xml with service's property value and copy result logback.xml to result folder for each service.
 
 If you want to declare property only for template and don't want this property to be included into result config file you can use #var propName=value. 
