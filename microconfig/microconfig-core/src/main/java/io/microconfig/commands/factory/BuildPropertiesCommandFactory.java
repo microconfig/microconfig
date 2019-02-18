@@ -5,8 +5,6 @@ import io.microconfig.commands.CompositeCommand;
 import io.microconfig.commands.PropertiesPostProcessor;
 import io.microconfig.commands.postprocessors.CopyTemplatesPostProcessor;
 import io.microconfig.commands.postprocessors.SecretPropertiesPostProcessor;
-import io.microconfig.properties.serializer.PropertiesDiffWriter;
-import io.microconfig.properties.serializer.PropertiesSerializerImpl;
 import io.microconfig.templates.CopyTemplatesServiceImpl;
 
 import java.io.File;

@@ -11,7 +11,6 @@ import static io.microconfig.utils.FilePermissionUtils.copyPermissions;
 import static io.microconfig.utils.FileUtils.write;
 import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.Logger.*;
-import static io.microconfig.utils.StringUtils.unixLikePath;
 
 @RequiredArgsConstructor
 public class CopyTemplatesServiceImpl implements CopyTemplatesService {

@@ -26,15 +26,14 @@ public class PropertyFiltersTest {
         assertFalse(defaultFilter.test(f4));
         assertFalse(defaultFilter.test(f5));
 
-
-        Predicate<File>  envFilter = envFilter(extension, "dev2");
+        Predicate<File> envFilter = envFilter(extension, "dev2");
         assertFalse(envFilter.test(f1));
         assertTrue(envFilter.test(f2));
         assertFalse(envFilter.test(f3));
         assertFalse(envFilter.test(f4));
         assertFalse(envFilter.test(f5));
 
-        Predicate<File>  envSharedFilter = envSharedFilter(extension, "dev2");
+        Predicate<File> envSharedFilter = envSharedFilter(extension, "dev2");
         assertFalse(envSharedFilter.test(f1));
         assertFalse(envSharedFilter.test(f2));
         assertTrue(envSharedFilter.test(f3));
