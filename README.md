@@ -679,7 +679,63 @@ ${templateName} - is used only for mapping 'fromFile' and 'toFile' properties fo
 # Environment descriptor
 ..todo write doc
 # Running config build
-..todo write doc
+Micronfigs store configuration with its own format. 
+uring config build Micronfig will inline all includes, resolve placeholders, evaluate expression language, copy templates and copy result files to specific folder for each service. 
+
+To run build you have to pass following params:
+* Full or relative config root dir. Param 'root='. 
+* Full or relative build destination dir. Param 'dest='.
+* Environment name (Environment is used as config profile, also as group of services). Param 'env='. 
+* Optional: To build configs not for the whole environment but only for specific services use 'services=' param (comma separated component names). 
+
+Command line params example:
+```
+java -jar microconfig.jar root=repo dest=configs env=prod
+```
+Example source layout:
+```
+repo
+└───common
+|    └───logback-template 
+|     	 └───logback.xml
+└───core  
+│    └───orders
+│    │   └───application.properties
+│    │   └───process.proc
+│    └───payments
+│        └───application.properties
+│        └───process.proc
+│	
+└───infra
+    └───service-discovery
+    │   └───application.properties
+    │   └───process.proc
+    └───api-gateway
+        └───application.properties
+        └───process.proc
+```
+ Destination layout:
+```
+configs
+└───orders
+│   └───application.properties
+│   └───process.proc
+|   └───logback.xml
+└───payments
+│   └───application.properties
+│   └───process.proc
+|   └───logback.xml
+└───service-discovery
+│   └───application.properties
+│   └───process.proc
+|   └───logback.xml
+└───api-gateway
+    └───application.properties
+    └───process.proc
+    └───logback.xml
+``` 
+Microconfig releases page: https://github.com/microconfig/microconfig/releases
+
 # Post config build callbacks
 ..todo write doc
 # Viewing differences between config's versions
