@@ -679,10 +679,11 @@ ${templateName} - is used only for mapping 'fromFile' and 'toFile' properties fo
 # Environment descriptor
 ..todo write doc
 # Running config build
-Micronfigs store configuration with its own format. 
-uring config build Micronfig will inline all includes, resolve placeholders, evaluate expression language, copy templates and copy result files to specific folder for each service. 
+Micronfig stores configuration with its own format. During config build Micronfig will inline all includes, resolve placeholders, evaluate expression language, copy templates and built config files to specific folder for each service.
 
-To run build you have to pass following params:
+To run build you have to download Microconfig release from: https://github.com/microconfig/microconfig/releases
+
+Microconfig build params:
 * Full or relative config root dir. Param 'root='. 
 * Full or relative build destination dir. Param 'dest='.
 * Environment name (Environment is used as config profile, also as group of services). Param 'env='. 
@@ -733,8 +734,7 @@ configs
     └───application.properties
     └───process.proc
     └───logback.xml
-``` 
-Microconfig releases page: https://github.com/microconfig/microconfig/releases
+```
 
 # Post config build callbacks
 ..todo write doc
