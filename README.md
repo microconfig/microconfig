@@ -650,22 +650,23 @@ repo
     #include logback-template
 ```  
 
-As your could notice placeholder syntax inside templates just ${propName}. Micronconfig will resolve  template's placeholders based on properties from component.
+As your could notice placeholder syntax inside template '${propName}'  differs from Micronfig one '${component@propName}', it doesnt specify component name. Micronconfig will resolve  template's placeholders based on properties from component which declared dependencies on template.
+
 As we remember orders and payments include application.name property from service-discovery-client.
 During config build Microconfig will replace ${application.name} inside logback.xml with service's property value and copy result logback.xml to result folder for each service.
 
 If you want to declare property only for template and don't want this property to be included into result config file you can use #var propName=value. 
 
-If you want to specify template destination dir you can use template.${templateName}.toFile=${someDir}. For example: 
+If you want to specify template destination dir and file name you can use 'template.${templateName}.toFile=${someFile}' property. For example: 
  
  **logback-template/application.properties**
  ```*.properties   
      template.logback.fromFile=${logback@folder}/logback.xml    
-     template.logback.toFile=logs/logback.xml
+     template.logback.toFile=logs/logback-descriptor.xml
  ```
 You can use absolute or relative path for toFile property. Relative path starts from result service config dir. (See 'Running config build' section)
 
-So template syntax looks like:   
+So template dependency declaration syntax looks like:   
 ```
 template.${templateName}.fromFile=${sourceTemplateFile}    
 template.${templateName}.toFile=${resolvedTemplateDestinationFile}
