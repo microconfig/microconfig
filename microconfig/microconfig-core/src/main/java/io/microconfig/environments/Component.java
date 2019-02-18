@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 @EqualsAndHashCode(of = "name")
 @RequiredArgsConstructor
 public class Component {
-    private final String name; //should be unique among env
-    private final String type;//name of component folder
+    private final String name; //alias, must be unique among env
+    private final String type;//folder name
 
     public static Component byNameAndType(String name, String type) {
         return new Component(name, type);
