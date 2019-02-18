@@ -777,7 +777,5 @@ configs
 
 You can try to build configs from dedicated example repo: https://github.com/microconfig/configs-layout-example 
 
-# Post config build callbacks
-..todo write doc
 # Viewing differences between config's versions
 ..todo write doc
