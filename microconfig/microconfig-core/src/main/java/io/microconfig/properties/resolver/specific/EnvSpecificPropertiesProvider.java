@@ -51,22 +51,16 @@ public class EnvSpecificPropertiesProvider implements PropertiesProvider {
         if (environment == null) return;
 
         addPortOffset(properties, environment);
-        addIp(properties, component, environment);
         addEnv(properties, environment);
         addName(properties, component, environment);
-        addServiceProps(properties, component, environment);
-        addConfigDir(properties, environment);
+        addGroupProps(properties, component, environment);
+        addConfigDir(properties, component, environment);
         addUserHome(properties, environment);
     }
 
     private void addPortOffset(Map<String, Property> properties, Environment environment) {
-        environment.getPortOffset().ifPresent(p ->
-                properties.putIfAbsent(PORT_OFFSET, new Property(PORT_OFFSET, p.toString(), environment.getName(), systemSource(), true))
-        );
-    }
-
-    private void addIp(Map<String, Property> properties, Component component, Environment environment) {
-        environment.getComponentGroupByComponentName(component.getName()).flatMap(ComponentGroup::getIp).ifPresent(ip -> doAdd(IP, ip, properties, environment, true));
+        environment.getPortOffset()
+                .ifPresent(p -> properties.putIfAbsent(PORT_OFFSET, new Property(PORT_OFFSET, p.toString(), environment.getName(), systemSource(), true)));
     }
 
     private void addEnv(Map<String, Property> properties, Environment environment) {
@@ -77,22 +71,25 @@ public class EnvSpecificPropertiesProvider implements PropertiesProvider {
         doAdd(NAME, component.getName(), properties, environment, false);
     }
 
-    private void addServiceProps(Map<String, Property> properties, Component component, Environment environment) {
-        Optional<ComponentGroup> componentGroup = environment.getComponentGroupByComponentName(component.getName());
-        if (!componentGroup.isPresent()) return;
+    private void addGroupProps(Map<String, Property> properties, Component component, Environment environment) {
+        Optional<ComponentGroup> group = environment.getComponentGroupByComponentName(component.getName());
+        group.ifPresent(cg -> {
+            int componentOrder = 1 + cg.getComponentNames().indexOf(component.getName());
+            doAdd(ORDER, String.valueOf(componentOrder), properties, environment, true);
+            doAdd(GROUP, cg.getName(), properties, environment, true);
+            doAdd(SERVICE_DIR, new File(destinationComponentDir, component.getName()).getAbsolutePath(), properties, environment, true);
+        });
 
-        int componentOrder = 1 + componentGroup.get().getComponentNames().indexOf(component.getName());
-        doAdd(ORDER, String.valueOf(componentOrder), properties, environment, true);
-        doAdd(GROUP, componentGroup.get().getName(), properties, environment, true);
-
-        doAdd(SERVICE_DIR, new File(destinationComponentDir, component.getName()).getAbsolutePath(), properties, environment, true);
-        Optional<File> folder = componentTree.getFolder(component.getType());
-        folder.ifPresent(file -> doAdd(FOLDER, file.getAbsolutePath(), properties, environment, true));
+        group.flatMap(ComponentGroup::getIp)
+                .ifPresent(ip -> doAdd(IP, ip, properties, environment, true));
     }
 
-    private void addConfigDir(Map<String, Property> properties, Environment environment) {
+    private void addConfigDir(Map<String, Property> properties, Component component, Environment environment) {
         String configDir = componentTree.getRepoDirRoot().getParentFile().getAbsolutePath();
         doAdd(CONFIG_DIR, unixLikePath(configDir), properties, environment, true);
+
+        componentTree.getFolder(component.getType())
+                .ifPresent(file -> doAdd(FOLDER, file.getAbsolutePath(), properties, environment, true));
     }
 
     private void addUserHome(Map<String, Property> properties, Environment environment) {

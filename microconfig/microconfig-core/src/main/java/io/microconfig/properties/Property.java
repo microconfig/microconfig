@@ -14,6 +14,8 @@ import static java.util.Objects.requireNonNull;
 @Getter
 @EqualsAndHashCode
 public class Property {
+    private static final String VAR = "#var";
+
     private final String key;
     private final String value;
     private final String envContext;
@@ -28,7 +30,7 @@ public class Property {
         }
 
         boolean temp = isTempProperty(keyValue);
-        String key = keyValue.substring(temp ? 5 : 0, indexOfSeparator).trim();
+        String key = keyValue.substring(temp ? VAR.length() + 1 : 0, indexOfSeparator).trim();
         String value = keyValue.substring(indexOfSeparator + 1);
         return new Property(key, value, envContext, source, temp);
     }
@@ -50,7 +52,7 @@ public class Property {
     }
 
     public static boolean isTempProperty(String line) {
-        return line.startsWith("#var");
+        return line.startsWith(VAR);
     }
 
     public static Map<String, String> withoutTempValues(Map<String, Property> properties) {

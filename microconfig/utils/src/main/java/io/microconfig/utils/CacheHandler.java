@@ -64,7 +64,7 @@ public class CacheHandler implements InvocationHandler {
 
         @Override
         public String toString() {
-            return args.get(0).toString();
+            return method.getName() + " " + args;
         }
     }
 }
