@@ -594,7 +594,7 @@ healthcheck.logSucessMarker=Started #{'${this@java.main}'.substring('${this@java
 #Using Java import and Base64 API
 sessionKey=#{T(java.util.Base64).getEncoder().encodeToString('Some value'.bytes)}  
 ```
-Inside EL you can write any Java code in one line. Of course you shouldn't overuse it to keep configuration readable.
+Inside EL you can write any Java code in one line and Microconfig placeholders. Of course you shouldn't overuse it to keep configuration readable.
 
 # Arbitrary template files
 Microconfig allows to keep configuration files for any libraries with their specific format and resolve placeholders inside them.
