@@ -739,7 +739,7 @@ configs
     └───logback.xml
 ```
 
-You can try to build example from dedicated repo: https://github.com/microconfig/configs-layout-example 
+You can try to build configs from dedicated example repo: https://github.com/microconfig/configs-layout-example 
 
 # Post config build callbacks
 ..todo write doc
