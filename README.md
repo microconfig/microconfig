@@ -389,7 +389,7 @@ Refactored:
 **oracle-common/application.prod.properties**
 ```*.properties    
     oracle.host=10.17.14.18    
-    oracle.sid=ARMSDEV    
+    oracle.sid=ARMSPROD    
 ```        
 
 As you can see using placeholders we can override not the whole property but only part of it. 
