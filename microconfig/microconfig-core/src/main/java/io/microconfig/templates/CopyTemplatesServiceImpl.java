@@ -38,9 +38,9 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
             String fromFileSuffix = templatePattern.getFromFileSuffix();
             String toFileSuffix = templatePattern.getToFileSuffix();
             if (key.endsWith(fromFileSuffix)) {
-                getOrCreate(key, fromFileSuffix, templateByName).fromFile = value;
+                getOrCreate(key, fromFileSuffix, templateByName).setFromFile(value);
             } else if (key.endsWith(toFileSuffix)) {
-                getOrCreate(key, toFileSuffix, templateByName).toFile = value;
+                getOrCreate(key, toFileSuffix, templateByName).setToFile(value);
             }
         });
 
@@ -115,6 +115,17 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
 
         private String resolveSpecialsPlaceholders(String content, File serviceDir) {
             return content.replace("${serviceDir}", unixLikePath(serviceDir.getAbsolutePath()));
+        }
+
+        public void setFromFile(String fromFile) {
+            this.fromFile = fromFile;
+            if (this.toFile == null) {
+                this.toFile = new File(fromFile).getName();
+            }
+        }
+
+        public void setToFile(String toFile) {
+            this.toFile = toFile;
         }
 
         @Override

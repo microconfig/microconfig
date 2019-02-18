@@ -472,8 +472,7 @@ Initial:
 **orders/application.properties**
 ```*.properties
     #include service-discovery-client    
-    application.name=orders
-    
+    application.name=orders    
 ```
 **payments/application.properties**
 ```*.properties
@@ -495,7 +494,6 @@ Refactored:
 ```*.properties            
     application.name=${this@name}
 ```                 
-
 
 # Env variables and system properties 
 To resolve env variable use following syntax ${env@variableName}
@@ -531,8 +529,7 @@ And some services can include this configuration:
 
 **orders/application.properties**
 ```*.properties
-    #include timeout-settings
-    
+    #include timeout-settings    
 ```
 **payments/application.properties**
 ```*.properties
@@ -594,7 +591,68 @@ Inside EL you can write any Java code in one line. Of course you shouldn't overu
 # Grouping different types of configuration
 ..todo write doc
 # Arbitrary template files
-..todo write doc
+Microconfig allows to resolve placeholders in any files, not only in *.properties. 
+For example your want to keep logback.xml with configuration(or some other descriptor for your log library) and reuse this files with resolved placeholders for all your services. 
+
+Let's create this file:
+```
+repo
+└───common
+|    └───logback-template 
+|     	 └───logback.xml
+```
+**logback-template/logback.xml**
+```xml
+<configuration>
+    <appender class="ch.qos.logback.core.FileAppender">
+        <file>logs/${application.name}.log</file>
+            <encoder>
+                <pattern>%d [%thread] %highlight(%-5level) %cyan(%logger{15}) %msg %n</pattern>
+            </encoder>
+    </appender>    
+</configuration>
+```
+So we want every service to have it own logback.xml with resolved ${application.name}. 
+Let's configure this template for order and payment services.
+
+**orders/application.properties**
+```*.properties
+    #include service-disconvery-client
+    template.logback.fromFile=${logback@folder}/logback.xml
+    ***
+```
+
+**payments/application.properties**
+```*.properties
+    #include service-disconvery-client
+    template.logback.fromFile=${logback@folder}/logback.xml
+```  
+   
+or better to extract common property to logback-template/application.properties and than include it.
+
+```
+repo
+└───common
+|    └───logback-template 
+|     	 └───logback.xml
+|     	 └───application.properties
+```    
+**logback-template/application.properties**
+```*.properties   
+    template.logback.fromFile=${logback@folder}/logback.xml    
+```
+**orders-template/application.properties**
+```*.properties
+    #include service-disconvery-client
+    #include logback-template
+```
+**payments-template/application.properties**
+```*.properties
+    #include service-disconvery-client
+    #include logback-template
+```  
+
+ 
 # Environment descriptor
 # Running config build
 # Post config build callbacks
