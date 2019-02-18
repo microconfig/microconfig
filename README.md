@@ -679,6 +679,7 @@ repo
 └───common
 |    └───logback-template 
 |     	 └───logback.xml
+|     	 └───logback-prod.xml
 |     	 └───application.properties
 |     	 └───application.prod.properties
 ```
