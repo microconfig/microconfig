@@ -727,7 +727,7 @@ java -jar microconfig.jar root=repo dest=configs env=prod
 
 To add system properties add -D:
 ```
-java -jar microconfig.jar -DtaskId=3456 -DsomeParam=value root=repo dest=configs env=prod
+java -DtaskId=3456 -DsomeParam=value -jar microconfig.jar root=repo dest=configs env=prod
 ```
 
 Let's see example of initial and destination folder layouts: 
