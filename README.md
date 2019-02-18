@@ -593,7 +593,8 @@ connection.timeoutInMs=#{5 * 60 * 1000}
 datasource.maximum-pool-size=#{${this@datasource.minimum-pool-size} + 10} 
 
 #Using placeholder and Java String API
-healthcheck.logSucessMarker=Started #{'${this@java.main}'.substring('${this@java.main}'.lastIndexOf('.') + 1)}
+healthcheck.logSucessMarker=Started ${this@clasNameWithoutPackage}
+#var clasNameWithoutPackage=#{'${this@java.main}'.substring('${this@java.main}'.lastIndexOf('.') + 1)}
 
 #Using Java import and Base64 API
 sessionKey=#{T(java.util.Base64).getEncoder().encodeToString('Some value'.bytes)}  
