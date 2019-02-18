@@ -30,16 +30,23 @@ public class ComponentTreeCache implements ComponentTree {
         try (Stream<Path> pathStream = walk(repoDirRoot.toPath()).parallel()) {
             Map<String, List<File>> cache = pathStream
                     .map(Path::toFile)
-                    .filter(f -> {
-                        String name = f.getName();
-                        return !name.endsWith(SERVICE.getExtension())
-                                && !name.endsWith(PROCESS.getExtension())
-                                && !name.endsWith(".yaml");
-                    })
+                    .filter(isDirectory())
                     .collect(groupingBy(File::getName));
 
             return new ComponentTreeCache(repoDirRoot, cache);
         }
+    }
+
+    private static Predicate<File> isDirectory() {
+        return f -> {
+            /*Filter by ext works way faster than File::isDirectory.
+             Implementation is correct because File::listFiles for file will return null and we handle it in getPropertyFiles()
+             */
+            String name = f.getName();
+            return !name.endsWith(SERVICE.getExtension())
+                    && !name.endsWith(PROCESS.getExtension())
+                    && !name.endsWith(".yaml");
+        };
     }
 
     @Override
