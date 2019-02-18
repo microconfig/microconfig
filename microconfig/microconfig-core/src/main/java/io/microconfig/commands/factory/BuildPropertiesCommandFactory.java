@@ -21,17 +21,13 @@ public class BuildPropertiesCommandFactory {
         BuildCommands buildCommands = BuildCommands.init(repoDir, destinationComponentDir);
 
         return new CompositeCommand(asList(
-                buildCommands.newBuildCommand(SERVICE, withDiffSerialize(destinationComponentDir), copyTemplatesPostProcessor()),
+                buildCommands.newBuildCommand(SERVICE, copyTemplatesPostProcessor()),
                 buildCommands.newBuildCommand(PROCESS),
                 buildCommands.newBuildCommand(ENV),
                 buildCommands.newBuildCommand(LOG4j),
                 buildCommands.newBuildCommand(LOG4J2),
                 buildCommands.newBuildCommand(SECRET, new SecretPropertiesPostProcessor())
         ));
-    }
-
-    private static PropertiesDiffWriter withDiffSerialize(File componentsDir) {
-        return new PropertiesDiffWriter(new PropertiesSerializerImpl(componentsDir, SERVICE.getResultFile()));
     }
 
     private static PropertiesPostProcessor copyTemplatesPostProcessor() {

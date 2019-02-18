@@ -16,6 +16,7 @@ import io.microconfig.properties.resolver.ResolvedPropertiesProvider;
 import io.microconfig.properties.resolver.placeholder.PlaceholderResolver;
 import io.microconfig.properties.resolver.specific.EnvSpecificPropertiesProvider;
 import io.microconfig.properties.resolver.spel.SpelExpressionResolver;
+import io.microconfig.properties.serializer.PropertiesDiffWriter;
 import io.microconfig.properties.serializer.PropertiesSerializerImpl;
 import io.microconfig.properties.serializer.PropertySerializer;
 import lombok.Getter;
@@ -66,7 +67,7 @@ public class BuildCommands {
     }
 
     public BuildPropertiesCommand newBuildCommand(PropertyType type) {
-        return newBuildCommand(type, mgmtSerializer(type), emptyPostProcessor());
+        return newBuildCommand(type, propertySerializer(type), emptyPostProcessor());
     }
 
     public BuildPropertiesCommand newBuildCommand(PropertyType type, PropertySerializer propertySerializer) {
@@ -74,18 +75,18 @@ public class BuildCommands {
     }
 
     public BuildPropertiesCommand newBuildCommand(PropertyType type, PropertiesPostProcessor propertiesPostProcessor) {
-        return newBuildCommand(type, mgmtSerializer(type), propertiesPostProcessor);
+        return newBuildCommand(type, propertySerializer(type), propertiesPostProcessor);
+    }
+
+    private BuildPropertiesCommand newBuildCommand(PropertyType type, PropertySerializer propertySerializer, PropertiesPostProcessor propertiesPostProcessor) {
+        return new BuildPropertiesCommand(environmentProvider, newPropertiesProvider(type), propertySerializer, propertiesPostProcessor);
     }
 
     private static EnvironmentProvider newEnvProvider(File repoDir) {
         return cache(new FileBasedEnvironmentProvider(new File(repoDir, ENVS_DIR), new EnvironmentParserImpl()));
     }
 
-    public BuildPropertiesCommand newBuildCommand(PropertyType type, PropertySerializer propertySerializer, PropertiesPostProcessor propertiesPostProcessor) {
-        return new BuildPropertiesCommand(environmentProvider, newPropertiesProvider(type), propertySerializer, propertiesPostProcessor);
-    }
-
-    private PropertySerializer mgmtSerializer(PropertyType propertyType) {
-        return new PropertiesSerializerImpl(destinationComponentDir, serviceInnerDir + "/" + propertyType.getResultFile());
+    private PropertySerializer propertySerializer(PropertyType propertyType) {
+        return new PropertiesDiffWriter(new PropertiesSerializerImpl(destinationComponentDir, serviceInnerDir + "/" + propertyType.getResultFile()));
     }
 }

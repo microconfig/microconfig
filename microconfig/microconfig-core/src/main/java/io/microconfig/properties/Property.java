@@ -30,7 +30,7 @@ public class Property {
         }
 
         boolean temp = isTempProperty(keyValue);
-        String key = keyValue.substring(temp ? VAR.length() + 1 : 0, indexOfSeparator).trim();
+        String key = keyValue.substring(temp ? VAR.length() + 1 : 0, indexOfSeparator);
         String value = keyValue.substring(indexOfSeparator + 1);
         return new Property(key, value, envContext, source, temp);
     }
@@ -40,9 +40,9 @@ public class Property {
     }
 
     public Property(String key, String value, String envContext, Source source, boolean temp) {
-        this.key = requireNonNull(key, "Property key is null");
-        this.value = requireNonNull(value, "Property value is null");
-        this.envContext = requireNonNull(envContext, "Property env context is null");
+        this.key = requireNonNull(key, "Property key is null").trim();
+        this.value = requireNonNull(value, "Property value is null").trim();
+        this.envContext = requireNonNull(envContext, "Property env context is null").trim();
         this.source = requireNonNull(source, "Property source is null");
         this.temp = temp;
     }

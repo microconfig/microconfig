@@ -85,7 +85,11 @@ public class PropertiesDiffWriter implements PropertySerializer {
     }
 
     private void doWrite(String operation, String key, String value, StringBuilder content) {
-        content.append(operation).append(key).append("=").append(value).append(LINE_SEPARATOR);
+        content.append(operation)
+                .append(key)
+                .append("=")
+                .append(value)
+                .append(LINE_SEPARATOR);
     }
 
     @Override
