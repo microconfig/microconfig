@@ -454,7 +454,7 @@ Lets' remove 'payments.system.retries' property for dev env:
 # Specials placeholders
 As we discussed syntax for placeholders looks like `${component@property}`.
 Microconfig has several special useful placeholders:
-* ${...@name} - returns current config folder name
+* ${...@name} - returns component's config folder name
 * ${...@env} - returns current env name 
 * ${...@folder} - returns full path of component's config dir 
 * ${...@configDir} - returns full path of root config dir   
