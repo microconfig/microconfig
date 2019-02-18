@@ -591,8 +591,8 @@ Inside EL you can write any Java code in one line. Of course you shouldn't overu
 # Grouping different types of configuration
 ..todo write doc
 # Arbitrary template files
-Microconfig allows to resolve placeholders in any files, not only in *.properties. 
-For example your want to keep logback.xml with configuration(or some other descriptor for your log library) and reuse this files with resolved placeholders for all your services. 
+Microconfig allows to keep configuration files for any libraries with their specific format and resolve placeholders inside them.
+For example your want to keep logback.xml (or some other descriptor for your log library) and reuse this files with resolved placeholders for all your services. 
 
 Let's create this file:
 ```
