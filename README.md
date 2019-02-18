@@ -588,8 +588,6 @@ sessionKey=#{T(java.util.Base64).getEncoder().encodeToString('Some value'.bytes)
 ```
 Inside EL you can write any Java code in one line. Of course you shouldn't overuse it to keep configuration readable.
 
-# Grouping different types of configuration
-..todo write doc
 # Arbitrary template files
 Microconfig allows to keep configuration files for any libraries with their specific format and resolve placeholders inside them.
 For example your want to keep logback.xml (or some other descriptor for your log library) and reuse this files with resolved placeholders for all your services. 
@@ -613,7 +611,7 @@ repo
 </configuration>
 ```
 So we want every service to have it own logback.xml with resolved ${application.name}. 
-Let's configure this template for order and payment services.
+Let's configure order and payment services to use this template.
 
 **orders/application.properties**
 ```*.properties
@@ -674,9 +672,13 @@ template.${templateName}.toFile=${resolvedTemplateDestinationFile}
 ```
 
 ${templateName} - is used only for mapping 'fromFile' and 'toFile' properties for one file and can be any string. 
- 
+
+# Grouping different types of configuration
+..todo write doc 
 # Environment descriptor
+..todo write doc
 # Running config build
+..todo write doc
 # Post config build callbacks
 ..todo write doc
 # Viewing differences between config's versions
