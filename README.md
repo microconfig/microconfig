@@ -628,7 +628,7 @@ Let's configure this template for order and payment services.
     template.logback.fromFile=${logback@folder}/logback.xml
 ```  
    
-or better to extract common property to logback-template/application.properties and than include it.
+Better to extract common property to logback-template/application.properties and than use #include.
 
 ```
 repo
