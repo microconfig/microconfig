@@ -432,8 +432,8 @@ Note, default value can be a placeholder:
  ${component@property:${component2@property7:Missing value}}
  
 Microconfig will try to:
-* resolve ${component@property}
-* if it's missing - resolve ${component2@property7}
+* resolve `${component@property}`
+* if it's missing - resolve `${component2@property7}`
 * if it's missing - return 'Missing value'
 
 If placeholder doesnt have a default value and that placeholder can't be resolved Microconfig throws exception with detailed exception description.    
