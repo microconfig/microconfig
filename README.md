@@ -683,7 +683,7 @@ Micronfig stores configuration with its own format. During config build Micronfi
 
 To run build you can download Microconfig release from: https://github.com/microconfig/microconfig/releases
 
-Microconfig build params:
+Microconfig required build params:
 * 'root=' - full or relative config root dir. 
 * 'dest=' - full or relative build destination dir.
 * 'env=' - environment name (Environment is used as config profile, also as group of services).
