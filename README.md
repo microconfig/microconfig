@@ -436,7 +436,7 @@ Microconfig will try to:
 * if it's missing - resolve `${component2@property7}`
 * if it's missing - return 'Missing value'
 
-If placeholder doesnt have a default value and that placeholder can't be resolved Microconfig throws exception with detailed exception description.    
+If placeholder doesn't have a default value and that placeholder can't be resolved Microconfig throws exception with detailed exception description.    
 
 # Removing  base properties
 Using #var you can remove properties from result config file. You can include some config and override any property with #var to exclude it from result config file. 
@@ -661,7 +661,7 @@ repo
     #include logback-template
 ```  
 
-As your could notice placeholder syntax inside template `${propName}`  differs from Micronfig one `${component@propName}`, it doesnt specify component name.
+As your could notice placeholder syntax inside template `${propName}`  differs from Micronfig one `${component@propName}`, it doesn't specify component name.
 Micronconfig resolves template's placeholders based on properties from component which declared dependencies on template.
 
 As we remember order and payment services include 'application.name' property from service-discovery-client.
