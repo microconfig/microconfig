@@ -398,7 +398,7 @@ If you want to declare temp properties that will be used for placeholders and yo
 
 **oracle-common/application.properties**
 ```*.properties
-    datasource.url=jdbc:oracle:thin:@${this@host}:1521:${this@oracle.sid}
+    datasource.url=jdbc:oracle:thin:@${this@oracle.host}:1521:${this@oracle.sid}
     #var oracle.host=172.30.162.20    
     #var oracle.sid=ARMSDEV
 ```
@@ -425,7 +425,7 @@ Let's set default value for oracle host
 **oracle-common/application.properties**
 ```*.properties    
     datasource.maximum-pool-size=10
-    datasource.url=jdbc:oracle:thin:@${this@host:172.30.162.20}:1521:${this@oracle.sid}        
+    datasource.url=jdbc:oracle:thin:@${this@oracle.host:172.30.162.20}:1521:${this@oracle.sid}        
     #var oracle.sid=ARMSDEV
 ```
 Note, default value can be placeholder:
