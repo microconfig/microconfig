@@ -621,7 +621,7 @@ repo
     </appender>    
 </configuration>
 ```
-So we want every service to have it own logback.xml with resolved ${application.name}. 
+So we want every service to have its own logback.xml with resolved ${application.name}. 
 Let's configure order and payment services to use this template.
 
 **orders/application.properties**
