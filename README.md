@@ -377,7 +377,7 @@ Refactored:
 **oracle-common/application.properties**
 ```*.properties    
     datasource.maximum-pool-size=10
-    datasource.url=jdbc:oracle:thin:@${this@host}:1521:${this@oracle.sid}
+    datasource.url=jdbc:oracle:thin:@${this@oracle.host}:1521:${this@oracle.sid}
     oracle.host=172.30.162.20    
     oracle.sid=ARMSDEV
 ```
