@@ -662,7 +662,15 @@ If you want to specify template destination dir you can use template.${templateN
      template.logback.fromFile=${logback@folder}/logback.xml    
      template.logback.toFile=logs/logback.xml
  ```
-You can use absolute or relative path for toFile property. Relative path starts from result service config dir. (See 'Running config build' section)   
+You can use absolute or relative path for toFile property. Relative path starts from result service config dir. (See 'Running config build' section)
+
+So template syntax looks like:   
+```
+template.${templateName}.fromFile=${sourceTemplateFile}    
+template.${templateName}.toFile=${resolvedTemplateDestinationFile}
+```
+
+${templateName} - is used only for mapping .fromFile and .toFile properties for one file and can be any string. 
  
 # Environment descriptor
 # Running config build
