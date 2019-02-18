@@ -104,13 +104,13 @@ public class PropertiesProviderTest {
     @Test
     public void testSimpleInclude() {
         Map<String, Property> properties = new TreeMap<>(resolvedPropertiesProvider.getProperties(byType("i1"), "uat"));
-        assertEquals(asList("configDir", "env", "i1.prop", "i2.prop", "i3.prop", "name", "portOffset", "userHome"), new ArrayList<>(properties.keySet()));
+        assertEquals(asList("configDir", "env", "folder", "i1.prop", "i2.prop", "i3.prop", "name", "portOffset", "userHome"), new ArrayList<>(properties.keySet()));
     }
 
     @Test
     public void testIncludeWithEnvChange() {
         Map<String, Property> props = resolvedPropertiesProvider.getProperties(byType("ic1"), "dev");
-        assertEquals(13, props.size());
+        assertEquals(14, props.size());
         assertEquals("dev", props.get("env").getValue());
         assertEquals("ic1-dev", props.get("ic1.prop").getValue());
         assertEquals("ic2-dev", props.get("ic2.prop").getValue());
@@ -130,7 +130,7 @@ public class PropertiesProviderTest {
     @Test
     public void testIncludeWithoutKeyword() {
         Map<String, Property> props = resolvedPropertiesProvider.getProperties(byType("without1"), "dev");
-        assertEquals(8, props.size());
+        assertEquals(9, props.size());
         assertEquals("p1", props.get("p1").getValue());
         assertEquals("p2", props.get("p2").getValue());
         assertEquals("w2", props.get("w2.include").getValue());
