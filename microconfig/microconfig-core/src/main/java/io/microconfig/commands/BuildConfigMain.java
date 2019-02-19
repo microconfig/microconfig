@@ -15,7 +15,7 @@ import static java.util.Optional.of;
  * VM speedup params -Xverify:none -XX:TieredStopAtLevel=1
  *
  * Command line params example:
- * root=C:/Projects/config/repo dest=C:/Projects/configs env=cr-dev6
+ * root=Z:\Programming\Java\projects\microconfig-projects\configs-layout-example\repo dest=Z:\Programming\Java\projects\microconfig-projects\output env=dev
  */
 public class BuildConfigMain {
     private static final String ENV = "env";

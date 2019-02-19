@@ -11,7 +11,7 @@ import static java.util.Optional.of;
 public class EnvProperty implements SpecialProperty {
     @Override
     public String key() {
-        return "name";
+        return "env";
     }
 
     @Override
