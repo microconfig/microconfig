@@ -26,7 +26,7 @@ import static io.microconfig.utils.FileUtils.write;
         write(file.toPath(),
                 environmentProvider
                         .getByName(env)
-                        .getComponentGroupByName(group)
+                        .getGroupByName(group)
                         .getComponentNames()
         );
     }

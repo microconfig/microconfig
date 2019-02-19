@@ -50,7 +50,7 @@ public class BuildPropertiesCommand implements Command {
 
     private List<Component> getComponents(CommandContext context, Environment environment) {
         return context.getComponentGroup().isPresent() ?
-                environment.getComponentGroupByName(context.getComponentGroup().get()).getComponents()
+                environment.getGroupByName(context.getComponentGroup().get()).getComponents()
                 : environment.getComponentGroups().stream().flatMap(cg -> cg.getComponents().stream()).collect(toList());
     }
 

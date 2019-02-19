@@ -24,7 +24,7 @@ public class InheritanceTest {
     private void goTest(String env, String... services) {
         Environment demo = environmentProvider.getByName(env);
         List<String> expected = asList(services);
-        List<String> result = demo.getComponentGroupByName("g1").getComponentNames();
+        List<String> result = demo.getGroupByName("g1").getComponentNames();
         assertEquals(expected, result);
     }
 }

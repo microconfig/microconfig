@@ -32,13 +32,13 @@ public class Environment {
         this.include = requireNonNull(include);
     }
 
-    public List<ComponentGroup> getComponentsGroupByIp(String serverIp) {
+    public List<ComponentGroup> getGroupByIp(String serverIp) {
         return componentGroups.stream()
                 .filter(g -> of(serverIp).equals(g.getIp()))
                 .collect(toList());
     }
 
-    public ComponentGroup getComponentGroupByName(String groupName) {
+    public ComponentGroup getGroupByName(String groupName) {
         List<ComponentGroup> collect = componentGroups.stream()
                 .filter(g -> g.getName().equals(groupName))
                 .collect(toList());
@@ -50,7 +50,7 @@ public class Environment {
         return singleValue(collect);
     }
 
-    public Optional<ComponentGroup> getComponentGroupByComponentName(String componentName) {
+    public Optional<ComponentGroup> getGroupByComponentName(String componentName) {
         List<ComponentGroup> groups = componentGroups.stream()
                 .filter(g -> g.getComponents().stream().anyMatch(c -> c.getName().equals(componentName)))
                 .collect(toList());
@@ -73,9 +73,7 @@ public class Environment {
                 .filter(c -> !components.add(c.getName()))
                 .findFirst()
                 .ifPresent(c -> {
-                    throw new IllegalArgumentException(
-                            "Env [" + name + "] containsInnerFile several definitions of [" + c.getName() + "] component"
-                    );
+                    throw new IllegalArgumentException("Env [" + name + "] containsInnerFile several definitions of [" + c.getName() + "] component");
                 });
     }
 
@@ -89,8 +87,7 @@ public class Environment {
     }
 
     public Environment processInclude(EnvironmentProvider environmentProvider) {
-        return !include.isPresent() ? this
-                : include.get().includeTo(this, environmentProvider);
+        return include.isPresent() ? include.get().includeTo(this, environmentProvider) : this;
     }
 
     @Override

@@ -37,10 +37,10 @@ public class FileBasedEnvironmentProviderTest {
     public void testIncludes() {
         Environment demo = environmentProvider.getByName("demo");
         assertEquals("100.10.20.1", demo.getIp().get());
-        assertEquals("2.2.2.2", demo.getComponentGroupByName("c3").getIp().get());
-        assertEquals(singletonList("th-server"), demo.getComponentGroupByName("fnd1").getComponentNames());
-        assertEquals(demo.getComponentGroups().size() - 1, demo.getComponentsGroupByIp(demo.getIp().get()).size());
-        assertEquals(asList("th-cache-node3", "th-cache-node4", "th-cache-proxy"), demo.getComponentGroupByName("fnd2").getComponentNames());
+        assertEquals("2.2.2.2", demo.getGroupByName("c3").getIp().get());
+        assertEquals(singletonList("th-server"), demo.getGroupByName("fnd1").getComponentNames());
+        assertEquals(demo.getComponentGroups().size() - 1, demo.getGroupByIp(demo.getIp().get()).size());
+        assertEquals(asList("th-cache-node3", "th-cache-node4", "th-cache-proxy"), demo.getGroupByName("fnd2").getComponentNames());
     }
 
     @Test
@@ -49,16 +49,16 @@ public class FileBasedEnvironmentProviderTest {
 
         assertTrue(!env.getIp().isPresent());
         // overriden ip
-        assertEquals("172.30.162.8", env.getComponentGroupByName("fnd1").getIp().get());
+        assertEquals("172.30.162.8", env.getGroupByName("fnd1").getIp().get());
         // overriden ip and components
-        assertEquals("172.30.162.9", env.getComponentGroupByName("fnd2").getIp().get());
-        assertEquals(singletonList("th-cache-node7"), env.getComponentGroupByName("fnd2").getComponentNames());
+        assertEquals("172.30.162.9", env.getGroupByName("fnd2").getIp().get());
+        assertEquals(singletonList("th-cache-node7"), env.getGroupByName("fnd2").getComponentNames());
         // overriden components/original ip
-        assertEquals("1.1.1.1", env.getComponentGroupByName("c3").getIp().get());
-        assertEquals(asList("override1", "override2"), env.getComponentGroupByName("c3").getComponentNames());
+        assertEquals("1.1.1.1", env.getGroupByName("c3").getIp().get());
+        assertEquals(asList("override1", "override2"), env.getGroupByName("c3").getComponentNames());
         // original components/original ip
-        assertEquals("2.2.2.2", env.getComponentGroupByName("override1").getIp().get());
-        assertEquals(singletonList("tov1"), env.getComponentGroupByName("override1").getComponentNames());// overriden components
+        assertEquals("2.2.2.2", env.getGroupByName("override1").getIp().get());
+        assertEquals(singletonList("tov1"), env.getGroupByName("override1").getComponentNames());// overriden components
     }
 
     @Test
@@ -66,14 +66,14 @@ public class FileBasedEnvironmentProviderTest {
         Environment env = environmentProvider.getByName("test-include-abstract-env");
 
         assertTrue(!env.getIp().isPresent());
-        assertEquals("172.30.162.8", env.getComponentGroupByName("fnd1").getIp().get());
-        assertEquals("172.30.162.9", env.getComponentGroupByName("fnd2").getIp().get());
+        assertEquals("172.30.162.8", env.getGroupByName("fnd1").getIp().get());
+        assertEquals("172.30.162.9", env.getGroupByName("fnd2").getIp().get());
     }
 
     @Test
     public void testExcludeComponentFromOverriddenEnv() {
         Environment env = environmentProvider.getByName("test-component-exclude2");
-        assertEquals(asList("th-server", "th-client"), env.getComponentGroupByName("fnd1").getComponentNames());
+        assertEquals(asList("th-server", "th-client"), env.getGroupByName("fnd1").getComponentNames());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -95,7 +95,7 @@ public class FileBasedEnvironmentProviderTest {
     @Test(expected = IllegalArgumentException.class)
     public void testExclude() {
         Environment demo = environmentProvider.getByName("demo");
-        demo.getComponentGroupByName("mc");
+        demo.getGroupByName("mc");
 
     }
 

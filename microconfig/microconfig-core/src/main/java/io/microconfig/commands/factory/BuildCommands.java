@@ -10,11 +10,11 @@ import io.microconfig.properties.files.parser.FileComponentParser;
 import io.microconfig.properties.files.provider.ComponentTree;
 import io.microconfig.properties.files.provider.ComponentTreeCache;
 import io.microconfig.properties.files.provider.FileBasedPropertiesProvider;
-import io.microconfig.properties.resolver.placeholder.SimplePropertyFetcher;
 import io.microconfig.properties.resolver.PropertyResolver;
 import io.microconfig.properties.resolver.ResolvedPropertiesProvider;
 import io.microconfig.properties.resolver.placeholder.PlaceholderResolver;
-import io.microconfig.properties.resolver.special.SpecialPlaceholdersPropertiesProvider;
+import io.microconfig.properties.resolver.placeholder.strategies.SimpleResolverStrategy;
+import io.microconfig.properties.resolver.placeholder.strategies.SpecialResolverStrategy;
 import io.microconfig.properties.resolver.spel.SpelExpressionResolver;
 import io.microconfig.properties.serializer.PropertiesDiffWriter;
 import io.microconfig.properties.serializer.PropertiesSerializerImpl;
@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 
 import static io.microconfig.commands.PropertiesPostProcessor.emptyPostProcessor;
+import static io.microconfig.properties.resolver.placeholder.strategies.CompositeResolverStrategy.composite;
 import static io.microconfig.utils.CacheHandler.cache;
 import static io.microconfig.utils.FileUtils.canonical;
 
@@ -50,20 +51,23 @@ public class BuildCommands {
     }
 
     public PropertiesProvider newPropertiesProvider(PropertyType propertyType) {
-        PropertiesProvider fileBasedPropertiesProvider = cache(
+        PropertiesProvider provider = cache(
                 new FileBasedPropertiesProvider(componentTree, propertyType.getExtension(), new FileComponentParser(componentTree.getRepoDirRoot()))
         );
-        PropertiesProvider envSpecificPropertiesProvider = cache(
-                new SpecialPlaceholdersPropertiesProvider(
-                        fileBasedPropertiesProvider, environmentProvider, componentTree, destinationComponentDir
-                )
-        );
-        PropertyResolver placeholderResolver = cache(
+
+        SpecialResolverStrategy specialResolverStrategy = new SpecialResolverStrategy(environmentProvider);
+        PropertyResolver resolver = cache(
                 new SpelExpressionResolver(
-                        cache(new PlaceholderResolver(environmentProvider, new SimplePropertyFetcher(envSpecificPropertiesProvider)))
+                        cache(new PlaceholderResolver(
+                                        environmentProvider,
+                                        composite(new SimpleResolverStrategy(provider), specialResolverStrategy),
+                                        specialResolverStrategy.keys()
+                                )
+                        )
                 )
         );
-        return cache(new ResolvedPropertiesProvider(envSpecificPropertiesProvider, placeholderResolver));
+
+        return cache(new ResolvedPropertiesProvider(provider, resolver));
     }
 
     public BuildPropertiesCommand newBuildCommand(PropertyType type) {

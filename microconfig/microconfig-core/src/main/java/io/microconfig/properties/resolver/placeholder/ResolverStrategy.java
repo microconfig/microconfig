@@ -5,6 +5,6 @@ import io.microconfig.properties.Property;
 
 import java.util.Optional;
 
-public interface PropertyFetcher {
-    Optional<Property> getProperty(String key, Component component, String environment);
+public interface ResolverStrategy {
+    Optional<Property> resolve(String key, Component component, String environment);
 }

@@ -15,7 +15,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 
 import static io.microconfig.environments.Component.byType;
-import static io.microconfig.properties.resolver.special.SpecialPlaceholdersPropertiesProvider.isSpecialProperty;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Optional.empty;
@@ -26,7 +25,8 @@ public class PlaceholderResolver implements PropertyResolver {
     private static final String SELF_REFERENCE = "this";
 
     private final EnvironmentProvider environmentProvider;
-    private final PropertyFetcher propertyFetcher;
+    private final ResolverStrategy resolverStrategy;
+    private final Set<String> nonOverridableProperties;
 
     @Override
     public String resolve(Property sourceOfPlaceholders, RootComponent root) {
@@ -86,7 +86,7 @@ public class PlaceholderResolver implements PropertyResolver {
             placeholder = placeholder.changeComponent(sourceOfPlaceholder.getSource().getComponent().getName());
         }
 
-        if (selfReference || (placeholderToTheSameComponent(placeholder, sourceOfPlaceholder) && !isSpecialProperty(placeholder.getValue()))) {
+        if (selfReference || (placeholderToTheSameComponent(placeholder, sourceOfPlaceholder) && !nonOverridableProperties.contains(placeholder.getValue()))) {
             Optional<Placeholder> overriden = tryOverrideForRoot(placeholder, root);
             if (!overriden.isPresent()) overriden = tryOverrideForParent(placeholder, visited);
             if (overriden.isPresent()) placeholder = overriden.get();
@@ -101,7 +101,7 @@ public class PlaceholderResolver implements PropertyResolver {
     }
 
     private Optional<Placeholder> tryOverrideForRoot(Placeholder placeholder, RootComponent root) {
-        return propertyFetcher.getProperty(placeholder.getValue(), root.getRootComponent(), root.getRootComponentEnv()).isPresent() ?
+        return resolverStrategy.resolve(placeholder.getValue(), root.getRootComponent(), root.getRootComponentEnv()).isPresent() ?
                 of(placeholder.changeComponent(root.getRootComponent().getName(), root.getRootComponentEnv()))
                 : empty();
     }
@@ -124,7 +124,7 @@ public class PlaceholderResolver implements PropertyResolver {
 
     private Optional<Property> resolveToProperty(Placeholder placeholder) {
         Component component = getComponentByName(placeholder.getComponent(), placeholder.getEnvironment());
-        return propertyFetcher.getProperty(placeholder.getValue(), component, placeholder.getEnvironment());
+        return resolverStrategy.resolve(placeholder.getValue(), component, placeholder.getEnvironment());
     }
 
     private Component getComponentByName(String componentName, String env) {

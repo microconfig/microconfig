@@ -64,7 +64,7 @@ public class MgmtPropertiesImpl implements MgmtProperties {
         GroupDescription cg = componentGroupService.getDescription();
 
         return environmentProvider.getByName(cg.getEnv())
-                .getComponentGroupByName(cg.getGroup())
+                .getGroupByName(cg.getGroup())
                 .getComponents()
                 .get(0).getType();
     }
