@@ -15,7 +15,7 @@ import io.microconfig.properties.resolver.ResolvedPropertiesProvider;
 import io.microconfig.properties.resolver.placeholder.PlaceholderResolver;
 import io.microconfig.properties.resolver.placeholder.strategies.SimpleResolverStrategy;
 import io.microconfig.properties.resolver.placeholder.strategies.SpecialPropertyResolverStrategy;
-import io.microconfig.properties.resolver.placeholder.strategies.specials.SpecialKeysFactory;
+import io.microconfig.properties.resolver.placeholder.strategies.specials.SpecialPropertiesFactory;
 import io.microconfig.properties.resolver.spel.SpelExpressionResolver;
 import io.microconfig.properties.serializer.PropertiesDiffWriter;
 import io.microconfig.properties.serializer.PropertiesSerializerImpl;
@@ -56,13 +56,13 @@ public class BuildCommands {
                 new FileBasedPropertiesProvider(componentTree, propertyType.getExtension(), new FileComponentParser(componentTree.getRepoDirRoot()))
         );
 
-        SpecialKeysFactory specialKeysFactory = new SpecialKeysFactory();
+        SpecialPropertiesFactory specialPropertiesFactory = new SpecialPropertiesFactory();
         PropertyResolver resolver = cache(
                 new SpelExpressionResolver(
                         cache(new PlaceholderResolver(
                                         environmentProvider,
-                                        composite(new SimpleResolverStrategy(provider), new SpecialPropertyResolverStrategy(environmentProvider, specialKeysFactory.specialPropertiesByKeys())),
-                                        specialKeysFactory.keyNames()
+                                        composite(new SimpleResolverStrategy(provider), new SpecialPropertyResolverStrategy(environmentProvider, specialPropertiesFactory.specialPropertiesByKeys())),
+                                        specialPropertiesFactory.keyNames()
                                 )
                         )
                 )

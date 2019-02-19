@@ -9,7 +9,7 @@ import static java.util.Arrays.asList;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
-public class SpecialKeysFactory {
+public class SpecialPropertiesFactory {
     public Map<String, SpecialProperty> specialPropertiesByKeys() {
         return asList(new IpProperty())
                 .stream()
