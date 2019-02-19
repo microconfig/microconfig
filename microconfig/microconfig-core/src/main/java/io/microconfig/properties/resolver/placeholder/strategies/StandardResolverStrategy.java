@@ -12,7 +12,7 @@ import java.util.Optional;
 import static java.util.Optional.ofNullable;
 
 @RequiredArgsConstructor
-public class SimpleResolverStrategy implements ResolverStrategy {
+public class StandardResolverStrategy implements ResolverStrategy {
     private final PropertiesProvider propertiesProvider;
 
     @Override

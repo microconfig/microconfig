@@ -13,8 +13,8 @@ import io.microconfig.properties.files.provider.FileBasedPropertiesProvider;
 import io.microconfig.properties.resolver.PropertyResolver;
 import io.microconfig.properties.resolver.ResolvedPropertiesProvider;
 import io.microconfig.properties.resolver.placeholder.PlaceholderResolver;
-import io.microconfig.properties.resolver.placeholder.strategies.SimpleResolverStrategy;
 import io.microconfig.properties.resolver.placeholder.strategies.SpecialPropertyResolverStrategy;
+import io.microconfig.properties.resolver.placeholder.strategies.StandardResolverStrategy;
 import io.microconfig.properties.resolver.placeholder.strategies.specials.SpecialPropertiesFactory;
 import io.microconfig.properties.resolver.spel.SpelExpressionResolver;
 import io.microconfig.properties.serializer.PropertiesDiffWriter;
@@ -27,6 +27,8 @@ import java.io.File;
 
 import static io.microconfig.commands.PropertiesPostProcessor.emptyPostProcessor;
 import static io.microconfig.properties.resolver.placeholder.strategies.CompositeResolverStrategy.composite;
+import static io.microconfig.properties.resolver.placeholder.strategies.MapResolverStrategy.envVariablesResolveStrategy;
+import static io.microconfig.properties.resolver.placeholder.strategies.MapResolverStrategy.systemPropertiesResolveStrategy;
 import static io.microconfig.utils.CacheHandler.cache;
 import static io.microconfig.utils.FileUtils.canonical;
 
@@ -62,8 +64,10 @@ public class BuildCommands {
                         cache(new PlaceholderResolver(
                                         environmentProvider,
                                         composite(
-                                                new SimpleResolverStrategy(provider),
-                                                new SpecialPropertyResolverStrategy(environmentProvider, specialPropertiesFactory.specialPropertiesByKeys())
+                                                systemPropertiesResolveStrategy(),
+                                                new StandardResolverStrategy(provider),
+                                                new SpecialPropertyResolverStrategy(environmentProvider, specialPropertiesFactory.specialPropertiesByKeys()),
+                                                envVariablesResolveStrategy()
                                         ),
                                         specialPropertiesFactory.keyNames()
                                 )
