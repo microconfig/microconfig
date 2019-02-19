@@ -787,10 +787,8 @@ Diff for application.properties is stored in diff-application.properties, diff f
 Diff file format:
 
 **diff-application.properties**
-```  
+```*.properties     
 +security.client.protocol=SSL # property has been added
 -connection.timeoutMs=1000 # property has been removed
  server.max-threads=10 -> 35 # value has been changed from '10' to '35'
-```  
-
-
+```
