@@ -730,6 +730,11 @@ To add system properties add -D:
 ```
 java -DtaskId=3456 -DsomeParam=value -jar microconfig.jar root=repo dest=configs env=prod
 ```
+To speedup build it's recommended to add `-Xverify:none` and `-XX:TieredStopAtLevel=1` Java VM params: 
+
+```
+java -Xverify:none -XX:TieredStopAtLevel=1 -jar microconfig.jar root=repo dest=configs env=prod
+```
 
 Let's see example of initial and destination folder layouts: 
 
