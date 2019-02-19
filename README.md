@@ -783,6 +783,15 @@ During config build Micronfig compares newly generated files to files generated 
 Micronconfig can detect added/removed/changed properties. 
 
 Diff for application.properties is stored in diff-application.properties, diff for process.properties is stored in diff-process.properties, etc.
+```
+configs
+└───orders
+│   └───application.properties
+│   └───diff-application.properties
+│   └───process.properties
+│   └───diff-process.properties
+|   └───logback.xml
+```
 
 Diff file format:
 
