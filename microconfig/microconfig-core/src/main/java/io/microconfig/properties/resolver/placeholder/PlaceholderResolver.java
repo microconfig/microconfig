@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 
 import static io.microconfig.environments.Component.byType;
-import static io.microconfig.properties.resolver.specific.EnvSpecificPropertiesProvider.isEnvSpecificProperty;
+import static io.microconfig.properties.resolver.special.SpecialPlaceholdersPropertiesProvider.isSpecialProperty;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Optional.empty;
@@ -87,7 +87,7 @@ public class PlaceholderResolver implements PropertyResolver {
             placeholder = placeholder.changeComponent(sourceOfPlaceholder.getSource().getComponent().getName());
         }
 
-        if (selfReference || (placeholderToTheSameComponent(placeholder, sourceOfPlaceholder) && !isEnvSpecificProperty(placeholder.getValue()))) {
+        if (selfReference || (placeholderToTheSameComponent(placeholder, sourceOfPlaceholder) && !isSpecialProperty(placeholder.getValue()))) {
             Optional<Placeholder> overriden = tryOverrideForRoot(placeholder, root);
             if (!overriden.isPresent()) overriden = tryOverrideForParent(placeholder, visited);
             if (overriden.isPresent()) placeholder = overriden.get();

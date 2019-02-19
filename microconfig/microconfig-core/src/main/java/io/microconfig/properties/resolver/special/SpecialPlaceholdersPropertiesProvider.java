@@ -1,4 +1,4 @@
-package io.microconfig.properties.resolver.specific;
+package io.microconfig.properties.resolver.special;
 
 import io.microconfig.environments.*;
 import io.microconfig.properties.PropertiesProvider;
@@ -17,7 +17,7 @@ import static io.microconfig.utils.StringUtils.unixLikePath;
 import static java.util.Arrays.asList;
 
 @RequiredArgsConstructor
-public class EnvSpecificPropertiesProvider implements PropertiesProvider {
+public class SpecialPlaceholdersPropertiesProvider implements PropertiesProvider {
     private static final String PORT_OFFSET = "portOffset";
     private static final String IP = "ip";
     private static final String GROUP = "group";
@@ -35,7 +35,7 @@ public class EnvSpecificPropertiesProvider implements PropertiesProvider {
     private final ComponentTree componentTree;
     private final File destinationComponentDir;
 
-    public static boolean isEnvSpecificProperty(String name) {
+    public static boolean isSpecialProperty(String name) {
         return ALL.contains(name);
     }
 

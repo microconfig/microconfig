@@ -14,7 +14,7 @@ import io.microconfig.properties.resolver.PropertyFetcherImpl;
 import io.microconfig.properties.resolver.PropertyResolver;
 import io.microconfig.properties.resolver.ResolvedPropertiesProvider;
 import io.microconfig.properties.resolver.placeholder.PlaceholderResolver;
-import io.microconfig.properties.resolver.specific.EnvSpecificPropertiesProvider;
+import io.microconfig.properties.resolver.special.SpecialPlaceholdersPropertiesProvider;
 import io.microconfig.properties.resolver.spel.SpelExpressionResolver;
 import io.microconfig.properties.serializer.PropertiesDiffWriter;
 import io.microconfig.properties.serializer.PropertiesSerializerImpl;
@@ -54,7 +54,7 @@ public class BuildCommands {
                 new FileBasedPropertiesProvider(componentTree, propertyType.getExtension(), new FileComponentParser(componentTree.getRepoDirRoot()))
         );
         PropertiesProvider envSpecificPropertiesProvider = cache(
-                new EnvSpecificPropertiesProvider(
+                new SpecialPlaceholdersPropertiesProvider(
                         fileBasedPropertiesProvider, environmentProvider, componentTree, destinationComponentDir
                 )
         );
