@@ -11,10 +11,11 @@ import static io.microconfig.utils.TimeUtils.msAfter;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Optional.of;
 
-/**
- * Command line params example
+/** * 
  * VM speedup params -Xverify:none -XX:TieredStopAtLevel=1
- * root=C:/microconfig/configs-layout-example/repo dest=C:/microconfig/configs env=dev
+ *
+ * Command line params example:
+ * root=C:/Projects/config/repo dest=C:/Projects/configs env=cr-dev6
  */
 public class BuildConfigMain {
     private static final String ENV = "env";
@@ -28,7 +29,6 @@ public class BuildConfigMain {
 
         String root = clp.requiredValue(ROOT, "set root=  param. Folder with components and envs folders");
         String destination = clp.requiredValue(DEST, "set dest= param. Folder of result property output");
-
         String env = clp.requiredValue(ENV, "set env=");
         List<String> groups = clp.listValue(GROUP);
         List<String> components = clp.listValue(SERVICES);

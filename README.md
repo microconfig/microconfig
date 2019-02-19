@@ -778,5 +778,15 @@ configs
 
 You can try to build configs from dedicated example repo: https://github.com/microconfig/configs-layout-example 
 
-# Viewing differences between config's versions
-..todo write doc
+# Viewing differences between config's versions 
+During config build Micronfig compares newly generated files to files, generated during previous build for each service and config type.
+Micronconfig can detect added/removed/changed properties. Diff for application.properties is stored in diff-application.properties, diff for process.properties is stored in diff-process.properties.
+
+Diff file format:
+```  
++security.client.protocol=SSL # property has been added
+-connection.timeoutMs=1000 # property has been removed
+ server.max-threads=10 -> 35 # value has been changed from '10' to '35'
+```  
+
+
