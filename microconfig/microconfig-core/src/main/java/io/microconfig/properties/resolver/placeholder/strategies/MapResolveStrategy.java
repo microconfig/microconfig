@@ -3,7 +3,7 @@ package io.microconfig.properties.resolver.placeholder.strategies;
 import io.microconfig.environments.Component;
 import io.microconfig.properties.Property;
 import io.microconfig.properties.Property.Source;
-import io.microconfig.properties.resolver.placeholder.ResolverStrategy;
+import io.microconfig.properties.resolver.placeholder.ResolveStrategy;
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
@@ -14,17 +14,17 @@ import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 
 @RequiredArgsConstructor
-public class MapResolverStrategy implements ResolverStrategy {
+public class MapResolveStrategy implements ResolveStrategy {
     private final String componentName;
     private final Map<String, ?> keyToValue;
 
     @SuppressWarnings("unchecked")
-    public static ResolverStrategy systemPropertiesResolveStrategy() {
-        return new MapResolverStrategy("system", new HashMap(System.getProperties()));
+    public static ResolveStrategy systemPropertiesResolveStrategy() {
+        return new MapResolveStrategy("system", new HashMap(System.getProperties()));
     }
 
-    public static ResolverStrategy envVariablesResolveStrategy() {
-        return new MapResolverStrategy("env", System.getenv());
+    public static ResolveStrategy envVariablesResolveStrategy() {
+        return new MapResolveStrategy("env", System.getenv());
     }
 
     @Override

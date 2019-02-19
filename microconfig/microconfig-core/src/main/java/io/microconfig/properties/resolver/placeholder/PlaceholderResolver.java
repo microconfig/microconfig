@@ -25,7 +25,7 @@ public class PlaceholderResolver implements PropertyResolver {
     private static final String SELF_REFERENCE = "this";
 
     private final EnvironmentProvider environmentProvider;
-    private final ResolverStrategy resolverStrategy;
+    private final ResolveStrategy resolveStrategy;
     private final Set<String> nonOverridableProperties;
 
     @Override
@@ -101,7 +101,7 @@ public class PlaceholderResolver implements PropertyResolver {
     }
 
     private Optional<Placeholder> tryOverrideForRoot(Placeholder placeholder, RootComponent root) {
-        return resolverStrategy.resolve(placeholder.getValue(), root.getRootComponent(), root.getRootComponentEnv()).isPresent() ?
+        return resolveStrategy.resolve(placeholder.getValue(), root.getRootComponent(), root.getRootComponentEnv()).isPresent() ?
                 of(placeholder.changeComponent(root.getRootComponent().getName(), root.getRootComponentEnv()))
                 : empty();
     }
@@ -124,7 +124,7 @@ public class PlaceholderResolver implements PropertyResolver {
 
     private Optional<Property> resolveToProperty(Placeholder placeholder) {
         Component component = getComponentByName(placeholder.getComponent(), placeholder.getEnvironment());
-        return resolverStrategy.resolve(placeholder.getValue(), component, placeholder.getEnvironment());
+        return resolveStrategy.resolve(placeholder.getValue(), component, placeholder.getEnvironment());
     }
 
     private Component getComponentByName(String componentName, String env) {

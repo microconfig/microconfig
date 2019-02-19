@@ -9,7 +9,7 @@ import io.microconfig.properties.resolver.PropertyResolveException;
 import io.microconfig.properties.resolver.PropertyResolver;
 import io.microconfig.properties.resolver.ResolvedPropertiesProvider;
 import io.microconfig.properties.resolver.placeholder.PlaceholderResolver;
-import io.microconfig.properties.resolver.placeholder.strategies.StandardResolverStrategy;
+import io.microconfig.properties.resolver.placeholder.strategies.StandardResolveStrategy;
 import io.microconfig.properties.resolver.spel.SpelExpressionResolver;
 import org.junit.Test;
 
@@ -32,7 +32,7 @@ public class PropertiesProviderTest {
     private static final File rootDir = new File(getFile("test-props"), "components");
     private static final ComponentTree tree = ComponentTreeCache.build(rootDir);
     private static final PropertiesProvider fileBasedPropertiesProvider = new FileBasedPropertiesProvider(tree, ".properties", new FileComponentParser("components"));
-    private static final PropertyResolver resolver = new SpelExpressionResolver(new PlaceholderResolver(environmentProvider, new StandardResolverStrategy(fileBasedPropertiesProvider), emptySet()));
+    private static final PropertyResolver resolver = new SpelExpressionResolver(new PlaceholderResolver(environmentProvider, new StandardResolveStrategy(fileBasedPropertiesProvider), emptySet()));
     private static final PropertiesProvider provider = new ResolvedPropertiesProvider(fileBasedPropertiesProvider, resolver);
 
     @Test

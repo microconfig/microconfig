@@ -2,7 +2,7 @@ package io.microconfig.properties.resolver.placeholder.strategies.specials;
 
 import io.microconfig.environments.Component;
 import io.microconfig.environments.Environment;
-import io.microconfig.properties.resolver.placeholder.strategies.SpecialPropertyResolverStrategy.SpecialProperty;
+import io.microconfig.properties.resolver.placeholder.strategies.SpecialPropertyResolveStrategy.SpecialProperty;
 
 import java.util.Optional;
 

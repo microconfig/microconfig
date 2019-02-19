@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 
+import static io.microconfig.properties.Property.Source.systemSource;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
@@ -22,6 +23,10 @@ public class Property {
 
     private final Source source;
     private final boolean temp;
+
+    public static Property systemSourceProperty(String key, String value, String envContext) {
+        return new Property(key, value, envContext, systemSource(), true);
+    }
 
     public static Property parse(String keyValue, String envContext, Source source) {
         int indexOfSeparator = keyValue.indexOf('=');

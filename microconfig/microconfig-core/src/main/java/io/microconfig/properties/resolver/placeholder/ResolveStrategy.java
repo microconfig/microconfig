@@ -5,6 +5,6 @@ import io.microconfig.properties.Property;
 
 import java.util.Optional;
 
-public interface ResolverStrategy {
+public interface ResolveStrategy {
     Optional<Property> resolve(String key, Component component, String environment);
 }

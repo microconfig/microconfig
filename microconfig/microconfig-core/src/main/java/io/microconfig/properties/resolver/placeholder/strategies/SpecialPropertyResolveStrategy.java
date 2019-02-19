@@ -5,18 +5,18 @@ import io.microconfig.environments.Environment;
 import io.microconfig.environments.EnvironmentNotExistException;
 import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.properties.Property;
-import io.microconfig.properties.resolver.placeholder.ResolverStrategy;
+import io.microconfig.properties.resolver.placeholder.ResolveStrategy;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 import java.util.Optional;
 
-import static io.microconfig.properties.Property.Source.systemSource;
+import static io.microconfig.properties.Property.systemSourceProperty;
 import static java.util.Optional.empty;
 
 
 @RequiredArgsConstructor
-public class SpecialPropertyResolverStrategy implements ResolverStrategy {
+public class SpecialPropertyResolveStrategy implements ResolveStrategy {
     private final EnvironmentProvider environmentProvider;
     private final Map<String, SpecialProperty> specialKeys;
 
@@ -29,7 +29,7 @@ public class SpecialPropertyResolverStrategy implements ResolverStrategy {
         if (environment == null) return empty();
 
         return specialProperty.value(component, environment)
-                .map(value -> new Property(key, value, envName, systemSource(), true));
+                .map(value -> systemSourceProperty(key, value, envName));
     }
 
     private Environment getEnvironment(String environment) {
