@@ -1,5 +1,6 @@
 package io.microconfig.properties.resolver.placeholder;
 
+import io.microconfig.properties.resolver.PropertyResolveException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class Placeholder {
     private Placeholder(String value, String defaultEnv) {
         Matcher matcher = PATTERN.matcher(value);
         if (!matcher.find()) {
-            throw new IllegalArgumentException("Can't parse placeholders: " + value + ". Supported format: ${componentName[optionalEnvName]@propertyPlaceholder:optionalDefaultValue}");
+            throw PropertyResolveException.badPlaceholderFormat(value);
         }
 
         this.component = requireNonNull(matcher.group("comp"));

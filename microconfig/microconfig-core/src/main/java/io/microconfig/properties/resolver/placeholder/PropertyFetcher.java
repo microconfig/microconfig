@@ -1,4 +1,4 @@
-package io.microconfig.properties.resolver;
+package io.microconfig.properties.resolver.placeholder;
 
 import io.microconfig.environments.Component;
 import io.microconfig.properties.Property;

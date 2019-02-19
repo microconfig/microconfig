@@ -10,7 +10,7 @@ import io.microconfig.properties.files.parser.FileComponentParser;
 import io.microconfig.properties.files.provider.ComponentTree;
 import io.microconfig.properties.files.provider.ComponentTreeCache;
 import io.microconfig.properties.files.provider.FileBasedPropertiesProvider;
-import io.microconfig.properties.resolver.PropertyFetcherImpl;
+import io.microconfig.properties.resolver.placeholder.SimplePropertyFetcher;
 import io.microconfig.properties.resolver.PropertyResolver;
 import io.microconfig.properties.resolver.ResolvedPropertiesProvider;
 import io.microconfig.properties.resolver.placeholder.PlaceholderResolver;
@@ -60,7 +60,7 @@ public class BuildCommands {
         );
         PropertyResolver placeholderResolver = cache(
                 new SpelExpressionResolver(
-                        cache(new PlaceholderResolver(environmentProvider, new PropertyFetcherImpl(envSpecificPropertiesProvider)))
+                        cache(new PlaceholderResolver(environmentProvider, new SimplePropertyFetcher(envSpecificPropertiesProvider)))
                 )
         );
         return cache(new ResolvedPropertiesProvider(envSpecificPropertiesProvider, placeholderResolver));

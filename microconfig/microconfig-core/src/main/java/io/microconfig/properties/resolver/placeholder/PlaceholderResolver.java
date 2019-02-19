@@ -4,7 +4,6 @@ import io.microconfig.environments.Component;
 import io.microconfig.environments.EnvironmentNotExistException;
 import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.properties.Property;
-import io.microconfig.properties.resolver.PropertyFetcher;
 import io.microconfig.properties.resolver.PropertyResolveException;
 import io.microconfig.properties.resolver.PropertyResolver;
 import io.microconfig.properties.resolver.RootComponent;
@@ -131,7 +130,8 @@ public class PlaceholderResolver implements PropertyResolver {
     private Component getComponentByName(String componentName, String env) {
         try {
             return environmentProvider.getByName(env)
-                    .getComponentByName(componentName).orElse(byType(componentName));
+                    .getComponentByName(componentName)
+                    .orElse(byType(componentName));
         } catch (EnvironmentNotExistException e) {
             return byType(componentName);
         }

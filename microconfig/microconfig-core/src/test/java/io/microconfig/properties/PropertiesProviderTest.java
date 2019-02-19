@@ -5,7 +5,7 @@ import io.microconfig.properties.files.parser.FileComponentParser;
 import io.microconfig.properties.files.provider.ComponentTree;
 import io.microconfig.properties.files.provider.ComponentTreeCache;
 import io.microconfig.properties.files.provider.FileBasedPropertiesProvider;
-import io.microconfig.properties.resolver.PropertyFetcherImpl;
+import io.microconfig.properties.resolver.placeholder.SimplePropertyFetcher;
 import io.microconfig.properties.resolver.PropertyResolveException;
 import io.microconfig.properties.resolver.PropertyResolver;
 import io.microconfig.properties.resolver.ResolvedPropertiesProvider;
@@ -36,7 +36,7 @@ public class PropertiesProviderTest {
             environmentProvider,
             tree,
             new File("home", "components"));
-    private static final PropertyResolver placeholderResolver = new SpelExpressionResolver(new PlaceholderResolver(environmentProvider, new PropertyFetcherImpl(envBasedPropertiesProvider)));
+    private static final PropertyResolver placeholderResolver = new SpelExpressionResolver(new PlaceholderResolver(environmentProvider, new SimplePropertyFetcher(envBasedPropertiesProvider)));
     private static final PropertiesProvider resolvedPropertiesProvider = new ResolvedPropertiesProvider(envBasedPropertiesProvider, placeholderResolver);
 
     @Test

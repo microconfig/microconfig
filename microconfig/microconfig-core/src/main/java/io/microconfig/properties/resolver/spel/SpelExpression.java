@@ -1,5 +1,6 @@
 package io.microconfig.properties.resolver.spel;
 
+import io.microconfig.properties.resolver.PropertyResolveException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.expression.ExpressionParser;
@@ -11,7 +12,7 @@ import java.util.regex.Pattern;
 /**
  * Represents Spring EL. Supported format #{expression}
  * <p>
- * examples:
+ * Examples:
  * #{1+2} resolves to 3.
  * #{th@prop1 + th@prop2} sum value of this properties
  */
@@ -25,10 +26,9 @@ public class SpelExpression {
 
     public static SpelExpression parse(String value) {
         Matcher matcher = PATTERN.matcher(value);
-        if (!matcher.find()) {
-            throw new IllegalArgumentException(value + " is not spel expression. Supported format is: #{expression}");
-        }
-        return new SpelExpression(matcher.group("value"));
+        if (matcher.find()) return new SpelExpression(matcher.group("value"));
+
+        throw PropertyResolveException.badSpellFormat(value);
     }
 
     public String resolve() {
