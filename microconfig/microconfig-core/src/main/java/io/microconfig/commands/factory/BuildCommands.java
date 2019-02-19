@@ -53,7 +53,7 @@ public class BuildCommands {
 
     public PropertiesProvider newPropertiesProvider(PropertyType propertyType) {
         PropertiesProvider provider = cache(
-                new FileBasedPropertiesProvider(componentTree, propertyType.getExtension(), new FileComponentParser(componentTree.getRepoRoot()))
+                new FileBasedPropertiesProvider(componentTree, propertyType.getExtension(), new FileComponentParser(componentTree.getConfigComponentsRoot()))
         );
 
         SpecialPropertiesFactory specialPropertiesFactory = new SpecialPropertiesFactory(componentTree, destinationComponentDir);

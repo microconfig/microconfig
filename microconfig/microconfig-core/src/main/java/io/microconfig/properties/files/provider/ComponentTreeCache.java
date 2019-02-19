@@ -1,6 +1,5 @@
 package io.microconfig.properties.files.provider;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -22,8 +21,7 @@ import static java.util.stream.Collectors.groupingBy;
 
 @RequiredArgsConstructor
 public class ComponentTreeCache implements ComponentTree {
-    @Getter
-    private final File repoRoot;
+    private final File configComponentsRoot;
     private final Map<String, List<File>> foldersByComponentType;
 
     public static ComponentTree build(File repoDirRoot) {
@@ -35,6 +33,11 @@ public class ComponentTreeCache implements ComponentTree {
 
             return new ComponentTreeCache(repoDirRoot, cache);
         }
+    }
+
+    @Override
+    public File getConfigComponentsRoot() {
+        return configComponentsRoot;
     }
 
     private static Predicate<File> isDirectory() {

@@ -19,7 +19,7 @@ public class SpecialPropertiesFactory {
 
     public Map<String, SpecialProperty> specialPropertiesByKeys() {
         return asList(
-                new ConfigDir(componentTree.getRepoRoot()),
+                new ConfigDir(componentTree.getConfigComponentsRoot().getParentFile()),
                 new EnvProperty(),
                 new FolderProperty(componentTree),
                 new GroupProperty(),
