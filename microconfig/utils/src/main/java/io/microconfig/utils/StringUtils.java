@@ -7,7 +7,7 @@ import static java.util.stream.Collectors.joining;
 
 public class StringUtils {
     public static boolean isEmpty(String str) {
-        return str == null || "".equals(str);
+        return str == null || str.isEmpty();
     }
 
     public static String unixLikePath(String path) {

@@ -4,18 +4,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
+import static io.microconfig.utils.FileUtils.LINE_SEPARATOR;
 import static io.microconfig.utils.FileUtils.createFile;
 import static io.microconfig.utils.IoUtils.lines;
 import static io.microconfig.utils.Logger.error;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
+import static io.microconfig.utils.StringUtils.isEmpty;
 import static java.lang.System.*;
+import static java.nio.file.Files.write;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.util.Collections.emptyMap;
 import static java.util.stream.Collectors.joining;
@@ -32,19 +34,17 @@ public class PropertiesUtils {
                     .filter(s -> !s.startsWith("#"))
                     .map(s -> {
                         int i = s.indexOf('=');
-                        if (i < 0) {
-                            throw new IllegalArgumentException("Property must contain '='. Bad property: " + s + " in " + file);
-                        }
-                        return new String[]{s.substring(0, i).trim(), s.substring(i + 1)};
-                    })
-                    .collect(toLinkedMap(s -> s[0], s -> s[1]));
+                        if (i >= 0) return new String[]{s.substring(0, i).trim(), s.substring(i + 1).trim()};
+                        throw new IllegalArgumentException("Property must contain '='. Bad property: " + s + " in " + file);
+                    }).collect(toLinkedMap(s -> s[0], s -> s[1]));
         }
     }
 
     public static void writeProperties(File file, Map<String, String> keyToValue) {
-        String content = keyToValue.entrySet().stream()
+        String content = keyToValue.entrySet()
+                .stream()
                 .map(e -> e.getKey() + "=" + e.getValue())
-                .collect(joining("\n"));
+                .collect(joining(LINE_SEPARATOR));
 
         FileUtils.write(file, content);
     }
@@ -80,7 +80,7 @@ public class PropertiesUtils {
 
     public static String getRequiredProperty(String propertyName) {
         String property = getProperty(propertyName);
-        if (property == null || property.isEmpty() || "?".equals(property)) {
+        if (isEmpty(property) || "?".equals(property)) {
             error("Please specify -D" + propertyName + " param");
             exit(-1);
         }
@@ -88,14 +88,15 @@ public class PropertiesUtils {
     }
 
     public static void append(File file, Map<String, String> properties) {
-        List<String> lines = properties.entrySet().stream()
+        List<String> lines = properties.entrySet()
+                .stream()
                 .map(e -> e.getKey() + "=" + e.getValue())
                 .collect(toList());
         lines.add(0, "\n");
 
         try {
             createFile(file);
-            Files.write(file.toPath(), lines, APPEND);
+            write(file.toPath(), lines, APPEND);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
