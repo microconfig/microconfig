@@ -1,18 +1,19 @@
 package io.microconfig.properties.resolver.placeholder.strategies;
 
-import io.microconfig.environments.*;
+import io.microconfig.environments.Component;
+import io.microconfig.environments.Environment;
+import io.microconfig.environments.EnvironmentNotExistException;
+import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.properties.Property;
 import io.microconfig.properties.resolver.placeholder.ResolverStrategy;
 import lombok.RequiredArgsConstructor;
 
-import java.io.File;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static io.microconfig.properties.Property.Source.systemSource;
-import static io.microconfig.utils.FileUtils.userHomeString;
-import static io.microconfig.utils.StringUtils.unixLikePath;
 import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
@@ -46,12 +47,8 @@ public class SpecialResolverStrategy implements ResolverStrategy {
         }
     }
 
-    public Set<String> keys() {
-        return specialKeys.keySet();
-    }
-
     public interface SpecialKey {
-//        String key();
+        String key();
 
         Optional<String> value(Component component, Environment environment);
     }
