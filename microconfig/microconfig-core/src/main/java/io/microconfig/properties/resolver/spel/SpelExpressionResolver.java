@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 
 /**
  * Resolves placeholders in format of spring EL
+ *
  * @see SpelExpression
  */
 @RequiredArgsConstructor

@@ -8,9 +8,9 @@ import java.io.File;
 import java.util.Map;
 import java.util.Set;
 
-import static java.util.Arrays.asList;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Stream.of;
 
 @RequiredArgsConstructor
 public class SpecialPropertiesFactory {
@@ -18,7 +18,7 @@ public class SpecialPropertiesFactory {
     private final File destinationComponentDir;
 
     public Map<String, SpecialProperty> specialPropertiesByKeys() {
-        return asList(
+        return of(
                 new ConfigDir(componentTree.getConfigComponentsRoot().getParentFile()),
                 new EnvProperty(),
                 new FolderProperty(componentTree),
@@ -29,7 +29,7 @@ public class SpecialPropertiesFactory {
                 new PortOffsetProperty(),
                 new ServiceDirProperty(destinationComponentDir),
                 new UserHomeProperty()
-        ).stream().collect(toMap(SpecialProperty::key, identity()));
+        ).collect(toMap(SpecialProperty::key, identity()));
     }
 
     public Set<String> keyNames() {
