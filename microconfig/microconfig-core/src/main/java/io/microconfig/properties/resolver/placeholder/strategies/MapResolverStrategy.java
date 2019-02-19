@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Optional.empty;
-import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 
 @RequiredArgsConstructor
 public class MapResolverStrategy implements ResolverStrategy {
@@ -29,11 +29,9 @@ public class MapResolverStrategy implements ResolverStrategy {
 
     @Override
     public Optional<Property> resolve(String key, Component component, String environment) {
-        if (!component.getName().equals(componentName)) return empty();
+        if (!componentName.equals(component.getName())) return empty();
 
-        Object value = keyToValue.get(key);
-        if (value == null) return empty();
-
-        return of(new Property(key, value.toString(), environment, new Source(component, componentName)));
+        return ofNullable(keyToValue.get(key))
+                .map(value -> new Property(key, value.toString(), environment, new Source(component, componentName)));
     }
 }
