@@ -26,7 +26,7 @@ public class PlaceholderResolver implements PropertyResolver {
 
     private final EnvironmentProvider environmentProvider;
     private final ResolveStrategy resolveStrategy;
-    private final Set<String> nonOverridableProperties;
+    private final Set<String> nonOverridableKeys;
 
     @Override
     public String resolve(Property sourceOfPlaceholders, RootComponent root) {
@@ -86,7 +86,7 @@ public class PlaceholderResolver implements PropertyResolver {
             placeholder = placeholder.changeComponent(sourceOfPlaceholder.getSource().getComponent().getName());
         }
 
-        if (selfReference || (placeholderToTheSameComponent(placeholder, sourceOfPlaceholder) && !nonOverridableProperties.contains(placeholder.getValue()))) {
+        if (selfReference || (placeholderToTheSameComponent(placeholder, sourceOfPlaceholder) && !nonOverridableKeys.contains(placeholder.getValue()))) {
             Optional<Placeholder> overriden = tryOverrideForRoot(placeholder, root);
             if (!overriden.isPresent()) overriden = tryOverrideForParent(placeholder, visited);
             if (overriden.isPresent()) placeholder = overriden.get();
