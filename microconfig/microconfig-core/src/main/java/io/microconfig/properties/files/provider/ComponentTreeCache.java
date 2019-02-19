@@ -23,7 +23,7 @@ import static java.util.stream.Collectors.groupingBy;
 @RequiredArgsConstructor
 public class ComponentTreeCache implements ComponentTree {
     @Getter
-    private final File repoDirRoot;
+    private final File repoRoot;
     private final Map<String, List<File>> foldersByComponentType;
 
     public static ComponentTree build(File repoDirRoot) {

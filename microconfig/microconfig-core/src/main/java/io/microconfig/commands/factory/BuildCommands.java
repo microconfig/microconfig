@@ -53,15 +53,18 @@ public class BuildCommands {
 
     public PropertiesProvider newPropertiesProvider(PropertyType propertyType) {
         PropertiesProvider provider = cache(
-                new FileBasedPropertiesProvider(componentTree, propertyType.getExtension(), new FileComponentParser(componentTree.getRepoDirRoot()))
+                new FileBasedPropertiesProvider(componentTree, propertyType.getExtension(), new FileComponentParser(componentTree.getRepoRoot()))
         );
 
-        SpecialPropertiesFactory specialPropertiesFactory = new SpecialPropertiesFactory();
+        SpecialPropertiesFactory specialPropertiesFactory = new SpecialPropertiesFactory(componentTree, destinationComponentDir);
         PropertyResolver resolver = cache(
                 new SpelExpressionResolver(
                         cache(new PlaceholderResolver(
                                         environmentProvider,
-                                        composite(new SimpleResolverStrategy(provider), new SpecialPropertyResolverStrategy(environmentProvider, specialPropertiesFactory.specialPropertiesByKeys())),
+                                        composite(
+                                                new SimpleResolverStrategy(provider),
+                                                new SpecialPropertyResolverStrategy(environmentProvider, specialPropertiesFactory.specialPropertiesByKeys())
+                                        ),
                                         specialPropertiesFactory.keyNames()
                                 )
                         )
