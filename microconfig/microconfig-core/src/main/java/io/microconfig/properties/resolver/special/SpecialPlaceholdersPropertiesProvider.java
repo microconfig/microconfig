@@ -97,7 +97,7 @@ public class SpecialPlaceholdersPropertiesProvider implements PropertiesProvider
     }
 
     private void doAdd(String name, String value, Map<String, Property> properties, Environment environment, boolean temp) {
-        properties.put(name, new Property(name, value, environment.getName(), systemSource(), temp));
+        properties.putIfAbsent(name, new Property(name, value, environment.getName(), systemSource(), temp));
     }
 
     private Environment getEnv(String envName) {
