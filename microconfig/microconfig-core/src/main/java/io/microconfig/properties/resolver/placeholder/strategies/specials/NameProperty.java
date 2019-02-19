@@ -2,18 +2,20 @@ package io.microconfig.properties.resolver.placeholder.strategies.specials;
 
 import io.microconfig.environments.Component;
 import io.microconfig.environments.Environment;
-import io.microconfig.properties.resolver.placeholder.strategies.SpecialResolverStrategy.SpecialKey;
+import io.microconfig.properties.resolver.placeholder.strategies.SpecialPropertyResolverStrategy.SpecialProperty;
 
 import java.util.Optional;
 
-public class PortOffsetKey implements SpecialKey {
+import static java.util.Optional.of;
+
+public class NameProperty implements SpecialProperty {
     @Override
     public String key() {
-        return "portOffset";
+        return "name";
     }
 
     @Override
     public Optional<String> value(Component component, Environment environment) {
-        return environment.getPortOffset().map(Object::toString);
+        return of(component.getName());
     }
 }

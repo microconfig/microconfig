@@ -1,18 +1,22 @@
 package io.microconfig.properties.resolver.placeholder.strategies.specials;
 
-import io.microconfig.properties.resolver.placeholder.strategies.SpecialResolverStrategy;
+import io.microconfig.properties.resolver.placeholder.strategies.SpecialPropertyResolverStrategy.SpecialProperty;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import static java.util.Arrays.asList;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
+
 public class SpecialKeysFactory {
-    public List<SpecialResolverStrategy.SpecialKey> specialKeys() {
-        return new ArrayList<>();
+    public Map<String, SpecialProperty> specialPropertiesByKeys() {
+        return asList(new IpProperty())
+                .stream()
+                .collect(toMap(SpecialProperty::key, identity()));
     }
 
     public Set<String> keyNames() {
-        return Collections.emptySet();
+        return specialPropertiesByKeys().keySet();
     }
 }

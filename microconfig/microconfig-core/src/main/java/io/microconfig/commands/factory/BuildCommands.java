@@ -14,7 +14,7 @@ import io.microconfig.properties.resolver.PropertyResolver;
 import io.microconfig.properties.resolver.ResolvedPropertiesProvider;
 import io.microconfig.properties.resolver.placeholder.PlaceholderResolver;
 import io.microconfig.properties.resolver.placeholder.strategies.SimpleResolverStrategy;
-import io.microconfig.properties.resolver.placeholder.strategies.SpecialResolverStrategy;
+import io.microconfig.properties.resolver.placeholder.strategies.SpecialPropertyResolverStrategy;
 import io.microconfig.properties.resolver.placeholder.strategies.specials.SpecialKeysFactory;
 import io.microconfig.properties.resolver.spel.SpelExpressionResolver;
 import io.microconfig.properties.serializer.PropertiesDiffWriter;
@@ -61,7 +61,7 @@ public class BuildCommands {
                 new SpelExpressionResolver(
                         cache(new PlaceholderResolver(
                                         environmentProvider,
-                                        composite(new SimpleResolverStrategy(provider), new SpecialResolverStrategy(environmentProvider, specialKeysFactory.specialKeys())),
+                                        composite(new SimpleResolverStrategy(provider), new SpecialPropertyResolverStrategy(environmentProvider, specialKeysFactory.specialPropertiesByKeys())),
                                         specialKeysFactory.keyNames()
                                 )
                         )
