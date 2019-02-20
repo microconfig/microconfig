@@ -1,5 +1,7 @@
 package io.microconfig.templates;
 
+import io.microconfig.properties.resolver.PropertyResolver;
+import io.microconfig.properties.resolver.RootComponent;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -18,10 +20,11 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
     private final RelativePathResolver relativePathResolver;
 
     @Override
-    public void copyTemplates(File destinationDir, Map<String, String> serviceProperties) {
-        collectTemplates(serviceProperties).forEach(def -> {
+    public void copyTemplates(RootComponent currentComponent, File destinationDir,
+                              Map<String, String> componentProperties, PropertyResolver propertyResolver) {
+        collectTemplates(componentProperties).forEach(def -> {
             try {
-                def.resolveAndCopy(destinationDir, serviceProperties);
+                def.resolveAndCopy(propertyResolver, currentComponent, destinationDir);
             } catch (RuntimeException e) {
                 error("Template error " + def, e);
             }
@@ -47,10 +50,10 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
     }
 
     private TemplateDefinition getOrCreate(String key, String suffix, Map<String, TemplateDefinition> templates) {
-        return templates.computeIfAbsent(extractMiddle(key, suffix), TemplateDefinition::new);
+        return templates.computeIfAbsent(extractTemplateName(key, suffix), TemplateDefinition::new);
     }
 
-    private String extractMiddle(String str, String suffix) {
+    private String extractTemplateName(String str, String suffix) {
         try {
             return str.substring(templatePattern.getTemplatePrefix().length(), str.length() - suffix.length());
         } catch (RuntimeException e) {
@@ -65,7 +68,8 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
         private String fromFile;
         private String toFile;
 
-        private void resolveAndCopy(File destinationDir, Map<String, String> serviceProperties) {
+        private void resolveAndCopy(PropertyResolver propertyResolver, RootComponent currentComponent,
+                                    File destinationDir) {
             if (!isCorrect()) {
                 warn("Incomplete template def " + this);
                 return;
@@ -77,7 +81,7 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
             Template template = toTemplate(fromFile, destinationDir.getName());
             if (template == null) return;
 
-            String content = template.resolvePlaceholders(serviceProperties, templatePattern);
+            String content = template.resolvePlaceholders(currentComponent, propertyResolver, templatePattern.getPattern());
             write(toFile, content);
             copyPermissions(fromFile.toPath(), toFile.toPath());
 
@@ -100,7 +104,7 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
             }
 
             try {
-                return new Template(readFully(fromFile));
+                return new Template(fromFile);
             } catch (RuntimeException e) {
                 warn("Cannot read fromFile. " + this);
                 return null;

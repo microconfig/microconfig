@@ -66,9 +66,11 @@ public class NewServicePreparerImpl implements NewServicePreparer {
     }
 
     private void copyTemplates(String service) {
-        copyTemplatesService.copyTemplates(
-                deployFileStructure.service().getServiceDir(service),
-                propertyService.getServiceProperties(service)
-        );
+        //todo
+//        copyTemplatesService.copyTemplates(
+//                deployFileStructure.service().getServiceDir(service),
+//                propertyService.getServiceProperties(service),
+//                null
+//        );
     }
 }

@@ -54,28 +54,30 @@ public class BuildCommands {
     }
 
     public PropertiesProvider newPropertiesProvider(PropertyType propertyType) {
-        PropertiesProvider provider = cache(
+        PropertiesProvider fileBasedProvider = cache(
                 new FileBasedPropertiesProvider(componentTree, propertyType.getExtension(), new FileComponentParser(componentTree.getConfigComponentsRoot()))
         );
+        SpecialPropertiesFactory specialProperties = new SpecialPropertiesFactory(componentTree, destinationComponentDir);
+        PropertyResolver resolver = newPropertyResolver(fileBasedProvider, specialProperties);
+        return cache(new ResolvedPropertiesProvider(fileBasedProvider, resolver));
+    }
 
-        SpecialPropertiesFactory specialPropertiesFactory = new SpecialPropertiesFactory(componentTree, destinationComponentDir);
-        PropertyResolver resolver = cache(
-                new SpelExpressionResolver(
-                        cache(new PlaceholderResolver(
-                                        environmentProvider,
-                                        composite(
-                                                systemPropertiesResolveStrategy(),
-                                                new StandardResolveStrategy(provider),
-                                                new SpecialPropertyResolveStrategy(environmentProvider, specialPropertiesFactory.specialPropertiesByKeys()),
-                                                envVariablesResolveStrategy()
-                                        ),
-                                        specialPropertiesFactory.keyNames()
-                                )
-                        )
-                )
-        );
-
-        return cache(new ResolvedPropertiesProvider(provider, resolver));
+    private PropertyResolver newPropertyResolver(PropertiesProvider fileBasedProvider, SpecialPropertiesFactory specialProperties) {
+        return cache(
+                    new SpelExpressionResolver(
+                            cache(new PlaceholderResolver(
+                                            environmentProvider,
+                                            composite(
+                                                    systemPropertiesResolveStrategy(),
+                                                    new StandardResolveStrategy(fileBasedProvider),
+                                                    new SpecialPropertyResolveStrategy(environmentProvider, specialProperties.specialPropertiesByKeys()),
+                                                    envVariablesResolveStrategy()
+                                            ),
+                                            specialProperties.keyNames()
+                                    )
+                            )
+                    )
+            );
     }
 
     public BuildPropertiesCommand newBuildCommand(PropertyType type) {

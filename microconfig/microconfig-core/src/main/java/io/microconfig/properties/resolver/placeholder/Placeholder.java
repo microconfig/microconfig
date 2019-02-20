@@ -44,11 +44,11 @@ public class Placeholder {
         this.defaultValue = ofNullable(matcher.group("default"));
     }
 
-    public Placeholder changeComponent(String component, String environment) {
-        return new Placeholder(component, environment, value, defaultValue);
+    public static boolean isPlaceholder(String value) {
+        return PATTERN.matcher(value).matches();
     }
 
-    public Placeholder changeValue(String value) {
+    public Placeholder changeComponent(String component, String environment) {
         return new Placeholder(component, environment, value, defaultValue);
     }
 

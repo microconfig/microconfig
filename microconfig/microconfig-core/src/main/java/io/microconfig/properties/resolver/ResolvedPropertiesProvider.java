@@ -11,7 +11,7 @@ import static io.microconfig.utils.StreamUtils.toSortedMap;
 import static java.util.function.Function.identity;
 
 @RequiredArgsConstructor
-public class ResolvedPropertiesProvider implements PropertiesProvider {
+public class ResolvedPropertiesProvider implements PropertiesProvider, ResolverHolder {
     private final PropertiesProvider provider;
     private final PropertyResolver resolver;
 
@@ -19,6 +19,11 @@ public class ResolvedPropertiesProvider implements PropertiesProvider {
     public Map<String, Property> getProperties(Component rootComponent, String environment) {
         Map<String, Property> properties = provider.getProperties(rootComponent, environment);
         return resolveProperties(properties, new RootComponent(rootComponent, environment));
+    }
+
+    @Override
+    public PropertyResolver getResolver() {
+        return resolver;
     }
 
     private Map<String, Property> resolveProperties(Map<String, Property> properties, RootComponent root) {

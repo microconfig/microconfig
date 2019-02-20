@@ -5,6 +5,7 @@ import io.microconfig.environments.Environment;
 import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.Property;
+import io.microconfig.properties.resolver.RootComponent;
 import io.microconfig.properties.serializer.PropertySerializer;
 import lombok.RequiredArgsConstructor;
 
@@ -74,7 +75,7 @@ public class BuildPropertiesCommand implements Command {
         Optional<File> outputFile = propertySerializer.serialize(component.getName(), properties.values());
 
         outputFile.ifPresent(f -> {
-            propertiesPostProcessor.process(f.getParentFile(), component.getName(), properties);
+            propertiesPostProcessor.process(new RootComponent(component, env), f.getParentFile(), properties, propertiesProvider);
             info("Generated " + f.getName() + " for " + component.getName() + " [" + env + "]");
         });
 

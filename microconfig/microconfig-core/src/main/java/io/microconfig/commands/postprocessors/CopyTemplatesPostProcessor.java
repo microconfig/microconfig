@@ -1,7 +1,10 @@
 package io.microconfig.commands.postprocessors;
 
 import io.microconfig.commands.PropertiesPostProcessor;
+import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.Property;
+import io.microconfig.properties.resolver.ResolverHolder;
+import io.microconfig.properties.resolver.RootComponent;
 import io.microconfig.templates.CopyTemplatesService;
 import lombok.RequiredArgsConstructor;
 
@@ -15,7 +18,9 @@ public class CopyTemplatesPostProcessor implements PropertiesPostProcessor {
     private final CopyTemplatesService copyTemplatesService;
 
     @Override
-    public void process(File serviceDir, String serviceName, Map<String, Property> properties) {
-        copyTemplatesService.copyTemplates(serviceDir, asStringMap(properties));
+    public void process(RootComponent currentComponent, File destinationDir, Map<String, Property> componentProperties, PropertiesProvider propertiesProvider) {
+        if (propertiesProvider instanceof ResolverHolder) {
+            copyTemplatesService.copyTemplates(currentComponent, destinationDir, asStringMap(componentProperties), ((ResolverHolder) propertiesProvider).getResolver());
+        }
     }
 }

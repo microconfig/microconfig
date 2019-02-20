@@ -12,10 +12,12 @@ import static java.lang.System.currentTimeMillis;
 import static java.util.Optional.of;
 
 /**
- * VM speedup params -Xverify:none -XX:TieredStopAtLevel=1
- * <p>
+ * VM speedup params:
+ * -Xverify:none -XX:TieredStopAtLevel=1
+ *
  * Command line params example:
  * root=Z:\Programming\Java\projects\microconfig-projects\configs-layout-example\repo dest=Z:\Programming\Java\projects\microconfig-projects\output env=dev
+ * root=C:\Projects\config\repo dest=C:\Projects\configs env=cr-dev6
  */
 public class BuildConfigMain {
     private static final String ENV = "env";

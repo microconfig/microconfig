@@ -1,7 +1,9 @@
 package io.microconfig.commands.postprocessors;
 
 import io.microconfig.commands.PropertiesPostProcessor;
+import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.Property;
+import io.microconfig.properties.resolver.RootComponent;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -25,12 +27,13 @@ public class SecretPropertiesPostProcessor implements PropertiesPostProcessor {
     }
 
     @Override
-    public void process(File serviceDir, String serviceName, Map<String, Property> properties) {
-        Map<String, String> props = withoutTempValues(properties);
+    public void process(RootComponent currentComponent, File destinationDir,
+                        Map<String, Property> componentProperties, PropertiesProvider ignore) {
+        Map<String, String> props = withoutTempValues(componentProperties);
         if (props.isEmpty()) return;
 
-        doMerge(serviceName, new LinkedHashMap<>(props));
-        delete(new File(serviceDir, SECRET.getResultFile()));
+        doMerge(currentComponent.getRootComponent().getName(), new LinkedHashMap<>(props));
+        delete(new File(destinationDir, SECRET.getResultFile()));
     }
 
     private synchronized void doMerge(String serviceName, Map<String, String> properties) {

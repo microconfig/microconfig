@@ -1,8 +1,9 @@
 package mgmt.microconfig;
 
 import io.microconfig.commands.PropertiesPostProcessor;
+import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.Property;
-import io.microconfig.utils.FileUtils;
+import io.microconfig.properties.resolver.RootComponent;
 import io.microconfig.utils.Logger;
 import io.microconfig.utils.PropertiesUtils;
 
@@ -19,29 +20,30 @@ class WebappPostProcessor implements PropertiesPostProcessor {
     private static final String FORCED_STATUS_FILE = "mgmt.forced.status";
 
     @Override
-    public void process(File serviceDir, String serviceName, Map<String, Property> properties) {
-        delete(new File(serviceDir, WEBAPP_FILE));
+    public void process(RootComponent currentComponent, File destinationDir,
+                        Map<String, Property> componentProperties, PropertiesProvider ignore) {
+        delete(new File(destinationDir, WEBAPP_FILE));
 
-        if (!PropertiesUtils.hasTrueValue("mgmt.tomcat.webapp.enabled", properties)) return;
+        if (!PropertiesUtils.hasTrueValue("mgmt.tomcat.webapp.enabled", componentProperties)) return;
 
-        write(new File(serviceDir, WEBAPP_FILE), "");
-        delete(new File(serviceDir, DEPENDSON_FILE));
-        Property container = properties.get("mgmt.webapp.container");
+        write(new File(destinationDir, WEBAPP_FILE), "");
+        delete(new File(destinationDir, DEPENDSON_FILE));
+        Property container = componentProperties.get("mgmt.webapp.container");
         if (container == null) {
-            Logger.error("No container for webapp " + serviceDir.getParentFile().getAbsolutePath());
+            Logger.error("No container for webapp " + destinationDir.getParentFile().getAbsolutePath());
             return;
         }
 
-        write(new File(serviceDir, DEPENDSON_FILE), container.getValue());
-        write(new File(serviceDir, FORCED_STATUS_FILE), "WebApp(" + container + ")");
+        write(new File(destinationDir, DEPENDSON_FILE), container.getValue());
+        write(new File(destinationDir, FORCED_STATUS_FILE), "WebApp(" + container + ")");
 
-        File parentFile = canonical(serviceDir);
+        File parentFile = canonical(destinationDir);
         String componentDirName = parentFile.getName();
         String contextFileName = "mgmt.tomcat.context." + container + "" + componentDirName + ".xml";
         String contextFile = "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<Context path=\"/" + componentDirName + "\" docBase=\"" + parentFile.getAbsoluteFile() + "/webapp\" />";
 
-        write(new File(serviceDir, contextFileName), contextFile);
+        write(new File(destinationDir, contextFileName), contextFile);
     }
 
     private File canonical(File dir) {

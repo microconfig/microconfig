@@ -28,12 +28,12 @@ public class PropertyResolveException extends RuntimeException {
         this(format("Can't resolve spel: %s. Root component: %s[%s]. " +
                         "All string must be escaped with single quote '. " +
                         "Example of right spel: #{'${component1@ip}' + ':' + ${ports@port1}}",
-                expression, root.getRootComponent().getName(), root.getRootComponentEnv()), cause);
+                expression, root.getRootComponent().getName(), root.getRootEnv()), cause);
     }
 
     private static String getMessage(String innerPlaceholder, Property sourceOfPlaceholder, RootComponent root) {
         return format("Can't resolve placeholder: %s. Root component: %s[%s]. Source or error: %s[%s] -> %s:%d",
-                innerPlaceholder, root.getRootComponent().getName(), root.getRootComponentEnv(),
+                innerPlaceholder, root.getRootComponent().getName(), root.getRootEnv(),
                 sourceOfPlaceholder.getSource().getComponent().getName(), sourceOfPlaceholder.getEnvContext(),
                 sourceOfPlaceholder.getSource().getSourceOfProperty(), sourceOfPlaceholder.getSource().getLine() + 1);
     }

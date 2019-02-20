@@ -1,5 +1,6 @@
 package io.microconfig.commands.factory;
 
+import io.microconfig.commands.BuildPropertiesCommand;
 import io.microconfig.commands.Command;
 import io.microconfig.commands.CompositeCommand;
 import io.microconfig.commands.PropertiesPostProcessor;
@@ -18,8 +19,9 @@ public class BuildPropertiesCommandFactory {
     public static Command newBuildPropertiesCommand(File repoDir, File destinationComponentDir) {
         BuildCommands buildCommands = BuildCommands.init(repoDir, destinationComponentDir);
 
+        BuildPropertiesCommand serviceBuildCommand = buildCommands.newBuildCommand(SERVICE, copyTemplatesPostProcessor());
         return new CompositeCommand(asList(
-                buildCommands.newBuildCommand(SERVICE, copyTemplatesPostProcessor()),
+                serviceBuildCommand,
                 buildCommands.newBuildCommand(PROCESS),
                 buildCommands.newBuildCommand(ENV),
                 buildCommands.newBuildCommand(LOG4j),

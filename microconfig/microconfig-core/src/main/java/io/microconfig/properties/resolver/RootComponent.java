@@ -10,15 +10,15 @@ import static java.util.Objects.requireNonNull;
 @EqualsAndHashCode
 public class RootComponent {
     private final Component rootComponent;
-    private final String rootComponentEnv;
+    private final String rootEnv;
 
-    public RootComponent(Component rootComponent, String rootComponentEnv) {
+    public RootComponent(Component rootComponent, String rootEnv) {
         this.rootComponent = requireNonNull(rootComponent);
-        this.rootComponentEnv = requireNonNull(rootComponentEnv);
+        this.rootEnv = requireNonNull(rootEnv);
     }
 
     @Override
     public String toString() {
-        return rootComponent.getName() + "[" + rootComponentEnv + "]";
+        return rootComponent.getName() + "[" + rootEnv + "]";
     }
 }
