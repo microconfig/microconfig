@@ -1,44 +1,25 @@
 package io.microconfig.properties;
 
-import io.microconfig.environments.EnvironmentProvider;
-import io.microconfig.properties.files.parser.FileComponentParser;
-import io.microconfig.properties.files.provider.ComponentTree;
-import io.microconfig.properties.files.provider.ComponentTreeCache;
-import io.microconfig.properties.files.provider.FileBasedPropertiesProvider;
 import io.microconfig.properties.resolver.PropertyResolveException;
-import io.microconfig.properties.resolver.PropertyResolver;
-import io.microconfig.properties.resolver.ResolvedPropertiesProvider;
-import io.microconfig.properties.resolver.placeholder.PlaceholderResolver;
-import io.microconfig.properties.resolver.placeholder.strategies.StandardResolveStrategy;
-import io.microconfig.properties.resolver.spel.SpelExpressionResolver;
-import org.junit.Test;
+import io.microconfig.utils.MicronconfigTestFactory;
+import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
 import static io.microconfig.environments.Component.byNameAndType;
 import static io.microconfig.environments.Component.byType;
-import static io.microconfig.utils.EnvFactory.newEnvironmentProvider;
-import static io.microconfig.utils.TestUtils.getFile;
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptySet;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class PropertiesProviderTest {
-    private static final EnvironmentProvider environmentProvider = newEnvironmentProvider();
-    private static final File rootDir = new File(getFile("test-props"), "components");
-    private static final ComponentTree tree = ComponentTreeCache.build(rootDir);
-    private static final PropertiesProvider fileBasedPropertiesProvider = new FileBasedPropertiesProvider(tree, ".properties", new FileComponentParser("components"));
-    private static final PropertyResolver resolver = new SpelExpressionResolver(new PlaceholderResolver(environmentProvider, new StandardResolveStrategy(fileBasedPropertiesProvider), emptySet()));
-    private static final PropertiesProvider provider = new ResolvedPropertiesProvider(fileBasedPropertiesProvider, resolver);
+class PropertiesProviderTest {
+    private final PropertiesProvider provider = MicronconfigTestFactory.getPropertyProvider();
 
     @Test
-    public void testLoadsProperties() {
+    void testLoadsProperties() {
         Map<String, Property> props = provider.getProperties(byType("th-client"), "uat");
-        assertEquals("Incorrect property count", 25, props.size());
+        assertEquals(25, props.size());
         assertEquals("th-common-value", props.get("th-client.property.common").getValue());
         assertEquals("th-common-value", props.get("th-client.defaultValue").getValue());
         assertEquals("th-uat-value", props.get("th-client.property.from.uat").getValue());
@@ -52,7 +33,7 @@ public class PropertiesProviderTest {
     }
 
     @Test
-    public void testVar() {
+    void testVar() {
         Map<String, Property> props = provider.getProperties(byType("var"), "var");
         assertEquals(1, props.values().stream()
                 .filter(p -> !p.getSource().isSystem())
@@ -63,13 +44,13 @@ public class PropertiesProviderTest {
     }
 
     @Test
-    public void testIpParam() {
+    void testIpParam() {
         Map<String, Property> properties = provider.getProperties(byType("ip1"), "uat");
         assertEquals("1.1.1.1", properties.get("ip1.some-ip").getValue());
     }
 
     @Test
-    public void testOrderParam() {
+    void testOrderParam() {
         doTestOrder("ip1", 1);
         doTestOrder("ip2", 2);
         doTestOrder("th-client", 4);
@@ -81,30 +62,31 @@ public class PropertiesProviderTest {
     }
 
     @Test
-    public void testComponentReceivesThisIpPropertyFromEnv() {
+    void testComponentReceivesThisIpPropertyFromEnv() {
         Map<String, Property> properties = provider.getProperties(byType("th-cache-node3"), "uat");
         assertEquals("172.30.162.3", properties.get("ip").getValue());
     }
 
     @Test
-    public void testComponentOverridesThisIpPropertyFromEnv() {
+    void testComponentOverridesThisIpPropertyFromEnv() {
         Map<String, Property> properties = provider.getProperties(byType("ip3"), "uat");
         assertEquals("1.1.1.1", properties.get("ip").getValue());
     }
 
-    @Test(expected = PropertyResolveException.class)
-    public void testCyclicDetect() {
-        provider.getProperties(byType("cyclicDetectTest"), "uat");
+    @Test
+    void testCyclicDetect() {
+        assertThrows(PropertyResolveException.class, () -> provider.getProperties(byType("cyclicDetectTest"), "uat"));
+
     }
 
     @Test
-    public void testSimpleInclude() {
+    void testSimpleInclude() {
         Map<String, Property> properties = new TreeMap<>(provider.getProperties(byType("i1"), "uat"));
         assertEquals(asList("configDir", "env", "folder", "i1.prop", "i2.prop", "i3.prop", "name", "portOffset", "userHome"), new ArrayList<>(properties.keySet()));
     }
 
     @Test
-    public void testIncludeWithEnvChange() {
+    void testIncludeWithEnvChange() {
         Map<String, Property> props = provider.getProperties(byType("ic1"), "dev");
         assertEquals(14, props.size());
         assertEquals("dev", props.get("env").getValue());
@@ -118,13 +100,13 @@ public class PropertiesProviderTest {
     }
 
     @Test
-    public void testPlaceholderToIncludeWithEnvChange() {
+    void testPlaceholderToIncludeWithEnvChange() {
         Map<String, Property> props = provider.getProperties(byType("ic5"), "dev");
         assertEquals("ic2", props.get("v").getValue());
     }
 
     @Test
-    public void testIncludeWithoutKeyword() {
+    void testIncludeWithoutKeyword() {
         Map<String, Property> props = provider.getProperties(byType("without1"), "dev");
         assertEquals(9, props.size());
         assertEquals("p1", props.get("p1").getValue());
@@ -134,13 +116,13 @@ public class PropertiesProviderTest {
     }
 
     @Test
-    public void testPortOffset() {
+    void testPortOffset() {
         assertEquals("1001", provider.getProperties(byType("portOffsetTest"), "dev").get("port").getValue());
         assertEquals("1002", provider.getProperties(byType("portOffsetTest"), "dev2").get("port").getValue());
     }
 
     @Test
-    public void testPlaceholderOverride() {
+    void testPlaceholderOverride() {
         assertEquals("scomp1 20", provider.getProperties(byType("scomp2"), "dev").get("compositeValue").getValue());
         assertEquals("scomp1 2", provider.getProperties(byType("scomp1"), "dev").get("compositeValue").getValue());
 
@@ -149,30 +131,30 @@ public class PropertiesProviderTest {
     }
 
     @Test
-    public void testThisOverride() {
+    void testThisOverride() {
         assertEquals("2.2.2.2", provider.getProperties(byType("tov1"), "uat").get("value").getValue());
         assertEquals("3.3.3.3", provider.getProperties(byType("tov2"), "uat").get("value").getValue());
     }
 
     @Test
-    public void testEnvProp() {
+    void testEnvProp() {
         assertEquals("uat", provider.getProperties(byType("envPropTest"), "uat").get("env.env").getValue());
         assertEquals("dev value", provider.getProperties(byType("envPropTest"), "dev").get("env.value").getValue());
     }
 
     @Test
-    public void nestedExpTest() {
+    void nestedExpTest() {
         assertEquals("tcp://:5822", provider.getProperties(byType("pts"), "dev").get("test.mq.address").getValue());
         assertEquals("tcp://:5822", provider.getProperties(byType("pts"), "dev").get("test.mq.address2").getValue());
     }
 
     @Test
-    public void spelWrap() {
+    void spelWrap() {
         assertEquals("hello world3", provider.getProperties(byType("spelWrap"), "dev").get("v1").getValue());
     }
 
     @Test
-    public void testEnvPropAliases() {
+    void testEnvPropAliases() {
         doTestAliases("node1", "172.30.162.4");
         doTestAliases("node2", "172.30.162.4");
         doTestAliases("node3", "172.30.162.5");
@@ -180,12 +162,12 @@ public class PropertiesProviderTest {
     }
 
     @Test
-    public void testReferenceEnvWithSimilarName() {
+    void testReferenceEnvWithSimilarName() {
         assertEquals("value-from-dev", provider.getProperties(byType("main"), "dev").get("value").getValue());
     }
 
     @Test
-    public void testPlaceholderToAliases() {
+    void testPlaceholderToAliases() {
         Map<String, Property> properties = provider.getProperties(byType("placeholderToAlias"), "aliases");
         assertEquals("172.30.162.4 172.30.162.5", properties.get("ips").getValue());
         assertEquals("v1 v1", properties.get("properties").getValue());

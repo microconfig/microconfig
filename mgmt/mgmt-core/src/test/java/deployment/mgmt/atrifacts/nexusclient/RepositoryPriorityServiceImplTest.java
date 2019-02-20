@@ -4,7 +4,7 @@ import deployment.mgmt.atrifacts.Artifact;
 import deployment.mgmt.configs.service.properties.NexusRepository;
 import deployment.mgmt.configs.service.properties.NexusRepository.RepositoryType;
 import io.microconfig.utils.StreamUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import static deployment.mgmt.configs.service.properties.NexusRepository.Reposit
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toUnmodifiableList;
 import static java.util.stream.Stream.of;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RepositoryPriorityServiceImplTest {
     private final RepositoryPriorityService priorityService = new RepositoryPriorityServiceImpl(List.of("ru"));

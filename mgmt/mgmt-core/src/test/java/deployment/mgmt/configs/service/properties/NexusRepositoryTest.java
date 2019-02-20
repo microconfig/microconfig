@@ -1,11 +1,11 @@
 package deployment.mgmt.configs.service.properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static deployment.mgmt.configs.service.properties.NexusRepository.RepositoryType.DEPENDENCIES;
 import static deployment.mgmt.configs.service.properties.NexusRepository.RepositoryType.SNAPSHOTS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class NexusRepositoryTest {
     @Test

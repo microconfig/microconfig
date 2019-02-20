@@ -2,7 +2,7 @@ package deployment.mgmt.monitoring;
 
 import deployment.mgmt.stat.monitoring.MemoryUsage;
 import deployment.mgmt.utils.JsonUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MonitoringServiceImplTest {
     @Test

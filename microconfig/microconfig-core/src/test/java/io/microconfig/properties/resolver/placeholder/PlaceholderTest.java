@@ -1,15 +1,15 @@
 package io.microconfig.properties.resolver.placeholder;
 
-import org.junit.Test;
+import io.microconfig.properties.resolver.PropertyResolveException;
+import org.junit.jupiter.api.Test;
 
 import java.util.regex.Matcher;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class PlaceholderTest {
+class PlaceholderTest {
     @Test
-    public void testPlaceholderInsideSpell() {
+    void testPlaceholderInsideSpell() {
         doTestSpel("#{${this@property:false}}");
         doTestSpel("#{ 4 + !${this@property:false} - 1}");
         doTestSpel("#{!${this@property:false} + 1}");
@@ -32,7 +32,7 @@ public class PlaceholderTest {
     }
 
     @Test
-    public void testPropertyValuePlaceholder() {
+    void testPropertyValuePlaceholder() {
         String value = "${component@property.name}";
         Placeholder propValue = Placeholder.parse(value, getEnv());
         assertEquals("component", propValue.getComponent());
@@ -40,7 +40,7 @@ public class PlaceholderTest {
     }
 
     @Test
-    public void testPropertyValuePlaceholderWithEnv() {
+    void testPropertyValuePlaceholderWithEnv() {
         String value = "${component[dev]@property.name}";
         Placeholder propValue = Placeholder.parse(value, null);
         assertEquals("component", propValue.getComponent());
@@ -48,38 +48,37 @@ public class PlaceholderTest {
         assertEquals("property.name", propValue.getValue());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testSimplePropertyValue() {
-        String value = "123";
-        Placeholder.parse(value, null);
+    @Test
+    void testSimplePropertyValue() {
+        assertThrows(PropertyResolveException.class, () -> Placeholder.parse("123", null));
     }
 
     @Test
-    public void testRegex() {
+    void testRegex() {
         Matcher matcher = Placeholder.PATTERN.matcher("${th-server2[dev]@th-server.poolSize}");
 
         assertTrue(matcher.find());
         assertEquals("th-server2", matcher.group("comp"));
         assertEquals("dev", matcher.group("env"));
         assertEquals("th-server.poolSize", matcher.group("value"));
-        assertEquals(null, matcher.group("default"));
+        assertNull(matcher.group("default"));
 
         matcher = Placeholder.PATTERN.matcher("${th-server2@th-server.poolSize}");
         assertTrue(matcher.find());
         assertEquals("th-server2", matcher.group("comp"));
-        assertEquals(null, matcher.group("env"));
+        assertNull(matcher.group("env"));
         assertEquals("th-server.poolSize", matcher.group("value"));
-        assertEquals(null, matcher.group("default"));
+        assertNull(matcher.group("default"));
 
         matcher = Placeholder.PATTERN.matcher("${unknown@prop:defValue123}");
         assertTrue(matcher.find());
         assertEquals("unknown", matcher.group("comp"));
-        assertEquals(null, matcher.group("env"));
+        assertNull(matcher.group("env"));
         assertEquals("prop", matcher.group("value"));
         assertEquals("defValue123", matcher.group("default"));
     }
 
-    public String getEnv() {
+    String getEnv() {
         return "uat";
     }
 }

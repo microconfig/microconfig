@@ -1,17 +1,17 @@
 package io.microconfig.properties.files.provider;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.function.Predicate;
 
 import static io.microconfig.properties.files.provider.PropertyFilters.*;
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PropertyFiltersTest {
+class PropertyFiltersTest {
     @Test
-    public void test() {
+    void test() {
         String extension = ".properties";
         File f1 = new File("service.properties");
         File f2 = new File("service.dev2.properties");

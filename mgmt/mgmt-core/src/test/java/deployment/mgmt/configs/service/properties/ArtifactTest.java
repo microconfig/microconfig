@@ -1,15 +1,15 @@
 package deployment.mgmt.configs.service.properties;
 
 import deployment.mgmt.atrifacts.Artifact;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.function.Consumer;
 
 import static deployment.mgmt.atrifacts.Artifact.fromMavenString;
 import static deployment.mgmt.atrifacts.ArtifactType.JAR;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ArtifactTest {
     @Test

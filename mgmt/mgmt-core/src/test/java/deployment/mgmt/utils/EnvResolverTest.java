@@ -1,13 +1,13 @@
 package deployment.mgmt.utils;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
 import static deployment.mgmt.utils.EnvResolver.resolveEnvVariable;
 import static java.io.File.pathSeparator;
 import static java.util.Map.of;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EnvResolverTest {
     @Test

@@ -2,19 +2,19 @@ package io.microconfig.properties.files.parser;
 
 import io.microconfig.environments.Environment;
 import io.microconfig.environments.EnvironmentProvider;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static io.microconfig.utils.EnvFactory.newEnvironmentProvider;
+import static io.microconfig.utils.MicronconfigTestFactory.getEnvironmentProvider;
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class InheritanceTest {
-    private final EnvironmentProvider environmentProvider = newEnvironmentProvider();
+class InheritanceTest {
+    private final EnvironmentProvider environmentProvider = getEnvironmentProvider();
 
     @Test
-    public void testIncludes() {
+    void testIncludes() {
         goTest("e1", "s1", "s2");
         goTest("e2", "s1", "s3");
         goTest("e3", "s3", "s4");

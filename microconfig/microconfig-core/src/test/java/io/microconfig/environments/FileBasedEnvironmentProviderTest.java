@@ -1,20 +1,20 @@
 package io.microconfig.environments;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static io.microconfig.utils.EnvFactory.newEnvironmentProvider;
+import static io.microconfig.utils.MicronconfigTestFactory.getEnvironmentProvider;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class FileBasedEnvironmentProviderTest {
-    private final EnvironmentProvider environmentProvider = newEnvironmentProvider();
+class FileBasedEnvironmentProviderTest {
+    private final EnvironmentProvider environmentProvider = getEnvironmentProvider();
 
     @Test
-    public void testEnvName() {
+    void testEnvName() {
         Set<String> environmentNames = environmentProvider.getEnvironmentNames();
         assertEquals(new HashSet<>(asList("test-component-exclude1", "p1", "test-component-exclude2", "test-env-include-err",
                 "aliases", "base-env", "var", "uat", "demo", "dev2", "dev", "test-env-include", "test-include-abstract-env", "duplicate-components", "e1", "e2", "e3", "e4")),
@@ -22,7 +22,7 @@ public class FileBasedEnvironmentProviderTest {
     }
 
     @Test
-    public void testGetEnv() {
+    void testGetEnv() {
         Environment uat = environmentProvider.getByName("uat");
         assertEquals("uat", uat.getName());
         assertEquals(7, uat.getComponentGroups().size());
@@ -34,7 +34,7 @@ public class FileBasedEnvironmentProviderTest {
     }
 
     @Test
-    public void testIncludes() {
+    void testIncludes() {
         Environment demo = environmentProvider.getByName("demo");
         assertEquals("100.10.20.1", demo.getIp().get());
         assertEquals("2.2.2.2", demo.getGroupByName("c3").getIp().get());
@@ -44,7 +44,7 @@ public class FileBasedEnvironmentProviderTest {
     }
 
     @Test
-    public void testIncludesOverrides() {
+    void testIncludesOverrides() {
         Environment env = environmentProvider.getByName("test-env-include");
 
         assertTrue(!env.getIp().isPresent());
@@ -62,7 +62,7 @@ public class FileBasedEnvironmentProviderTest {
     }
 
     @Test
-    public void testIncludeAbstractEnvAndIpOverrides() {
+    void testIncludeAbstractEnvAndIpOverrides() {
         Environment env = environmentProvider.getByName("test-include-abstract-env");
 
         assertTrue(!env.getIp().isPresent());
@@ -71,19 +71,19 @@ public class FileBasedEnvironmentProviderTest {
     }
 
     @Test
-    public void testExcludeComponentFromOverriddenEnv() {
+    void testExcludeComponentFromOverriddenEnv() {
         Environment env = environmentProvider.getByName("test-component-exclude2");
         assertEquals(asList("th-server", "th-client"), env.getGroupByName("fnd1").getComponentNames());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testThrowsExceptionInCaseOfMissingIP() {
+    @Test
+    void testThrowsExceptionInCaseOfMissingIP() {
         Environment env = environmentProvider.getByName("test-env-include-err");
-        env.verifyIpsSet();
+        assertThrows(IllegalArgumentException.class, env::verifyIpsSet);
     }
 
     @Test
-    public void testThrowsExceptionInCaseOfDuplicateComponents() {
+    void testThrowsExceptionInCaseOfDuplicateComponents() {
         try {
             environmentProvider.getByName("duplicate-components");
             fail("Should throw IllegalArgumentException");
@@ -92,15 +92,13 @@ public class FileBasedEnvironmentProviderTest {
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testExclude() {
+    @Test
+    void testExclude() {
         Environment demo = environmentProvider.getByName("demo");
-        demo.getGroupByName("mc");
-
+        assertThrows(IllegalArgumentException.class, () -> demo.getGroupByName("mc"));
     }
 
-    @Test(expected = EnvironmentNotExistException.class)
-    public void testGetIncorrectEnv() {
-        environmentProvider.getByName("not-exists");
+    void testGetIncorrectEnv() {
+        assertThrows(IllegalArgumentException.class, () -> environmentProvider.getByName("not-exists"));
     }
 }

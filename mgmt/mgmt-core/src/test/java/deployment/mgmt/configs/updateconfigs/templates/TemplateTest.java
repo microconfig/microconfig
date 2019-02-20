@@ -2,11 +2,11 @@ package deployment.mgmt.configs.updateconfigs.templates;
 
 import io.microconfig.templates.Template;
 import io.microconfig.templates.TemplatePattern;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static io.microconfig.utils.OsUtil.currentUser;
 import static java.util.Map.of;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TemplateTest {
     private final TemplatePattern templatePattern = TemplatePattern.defaultPattern();

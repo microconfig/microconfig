@@ -1,14 +1,14 @@
 package io.microconfig.utils;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static io.microconfig.utils.StringUtils.like;
 import static io.microconfig.utils.StringUtils.toLowerHyphen;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class StringUtilsTest {
+class StringUtilsTest {
     @Test
-    public void testLike() {
+    void testLike() {
         assertFalse(like(null, null));
         assertFalse(like("", null));
         assertFalse(like(null, ""));
@@ -66,7 +66,7 @@ public class StringUtilsTest {
     }
 
     @Test
-    public void testToLowerHyphen() {
+    void testToLowerHyphen() {
         assertEquals("hello-world", toLowerHyphen("helloWorld"));
         assertEquals("yes", toLowerHyphen("yes"));
     }

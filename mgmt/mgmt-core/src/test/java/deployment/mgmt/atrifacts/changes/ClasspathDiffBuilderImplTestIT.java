@@ -2,7 +2,7 @@ package deployment.mgmt.atrifacts.changes;
 
 import deployment.mgmt.atrifacts.ClasspathService;
 import deployment.mgmt.factory.MgmtFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.List;
