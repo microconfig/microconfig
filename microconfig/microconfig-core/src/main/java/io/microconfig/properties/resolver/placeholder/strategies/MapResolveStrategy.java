@@ -15,7 +15,7 @@ import static java.util.Optional.ofNullable;
 @RequiredArgsConstructor
 public class MapResolveStrategy implements ResolveStrategy {
     private final String componentName;
-    private final Function<String, Object> keyToValue;
+    private final Function<String, ?> keyToValue;
 
     public static ResolveStrategy systemPropertiesResolveStrategy() {
         return new MapResolveStrategy("system", System::getProperty);
