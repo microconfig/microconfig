@@ -57,9 +57,9 @@ class PropertiesProviderTest {
 
     @Test
     void testOrderParam() {
-        doTestOrder("ip1", 1);
-        doTestOrder("ip2", 2);
-        doTestOrder("th-client", 4);
+        doTestOrder("ip1", 0);
+        doTestOrder("ip2", 1);
+        doTestOrder("th-client", 3);
     }
 
     private void doTestOrder(String compName, int order) {
