@@ -501,7 +501,7 @@ For example:
 ```
  ${env@Path}
  ${env@JAVA_HOME}
- ${env@TEMP}
+ ${env@NUMBER_OF_PROCESSORS}
 ```
 
 To resolve Java system variables (System::getProperty) use the following syntax: `${system@variableName}`

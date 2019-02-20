@@ -1,7 +1,4 @@
 {
-  //  include: {
-  //    env: "e1"
-  //  },
   g1: {
     components: [
       "s1",

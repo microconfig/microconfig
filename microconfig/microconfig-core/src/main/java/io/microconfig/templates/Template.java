@@ -4,6 +4,7 @@ import io.microconfig.properties.Property;
 import io.microconfig.properties.Property.Source;
 import io.microconfig.properties.resolver.PropertyResolver;
 import io.microconfig.properties.resolver.RootComponent;
+import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.util.regex.Matcher;
@@ -14,13 +15,13 @@ import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.Logger.warn;
 import static java.util.regex.Matcher.quoteReplacement;
 
+@RequiredArgsConstructor
 public class Template {
-    private final String text;
     private final File source;
+    private final String text;
 
     public Template(File source) {
-        this.text = readFully(source);
-        this.source = source;
+        this(source, readFully(source));
     }
 
     public String resolvePlaceholders(RootComponent currentComponent, PropertyResolver propertyResolver, Pattern pattern) {
@@ -41,12 +42,12 @@ public class Template {
             return;
         }
 
-        String value = resolveValue(currentComponent, propertyResolver, m.group("name"), m.group("defvalue"));
+        String value = resolveValue(currentComponent, propertyResolver, m);
         m.appendReplacement(result, value == null ? "$0" : quoteReplacement(value));
     }
 
-    private String resolveValue(RootComponent currentComponent, PropertyResolver propertyResolver, String value, String defvalue) {
-        String placeholder = toPlaceholder(value, defvalue);
+    private String resolveValue(RootComponent currentComponent, PropertyResolver propertyResolver, Matcher matcher) {
+        String placeholder = toPlaceholder(matcher);
         Property property = new Property("key", placeholder, currentComponent.getRootEnv(), new Source(currentComponent.getRootComponent(), source.getAbsolutePath()));
         try {
             return propertyResolver.resolve(property, currentComponent);
@@ -56,10 +57,8 @@ public class Template {
         }
     }
 
-    private String toPlaceholder(String value, String originalDevValue) {
-        if (isPlaceholder(value)) return value;
-
-        String defaultValue = originalDevValue == null ? "" : ":" + originalDevValue;
-        return "${this@" + value + defaultValue + "}";
+    private String toPlaceholder(Matcher matcher) {
+        String full = matcher.group();
+        return isPlaceholder(full) ? full : "${this@" + full.substring(2);
     }
 }
