@@ -15,16 +15,17 @@ import io.microconfig.properties.resolver.placeholder.strategies.StandardResolve
 import io.microconfig.properties.resolver.spel.SpelExpressionResolver;
 
 import java.io.File;
+import java.net.URL;
 
-import static io.microconfig.utils.ClasspathUtils.getClasspathFile;
 import static java.util.Collections.emptySet;
+import static java.util.Objects.requireNonNull;
 
 public class MicronconfigTestFactory {
     private static final EnvironmentProvider environmentProvider = new FileBasedEnvironmentProvider(
-            new File(getClasspathFile("test-props"), "envs"),
+            getClasspathFile("test-props/envs"),
             new EnvironmentParserImpl()
     );
-    private static final File rootDir = new File(getClasspathFile("test-props"), "components");
+    private static final File rootDir = getClasspathFile("test-props/components");
     private static final ComponentTree tree = ComponentTreeCache.build(rootDir);
     private static final PropertiesProvider fileProvider = new FileBasedPropertiesProvider(tree, ".properties", new FileComponentParser("components"));
     private static final PropertyResolver resolver = new SpelExpressionResolver(new PlaceholderResolver(environmentProvider, new StandardResolveStrategy(fileProvider), emptySet()));
@@ -36,5 +37,10 @@ public class MicronconfigTestFactory {
 
     public static PropertiesProvider getPropertyProvider() {
         return propertyProvider;
+    }
+
+    private static File getClasspathFile(String name) {
+        URL url = requireNonNull(MicronconfigTestFactory.class.getClassLoader().getResource(name), () -> "File doesnt exists: " + name);
+        return new File(url.getFile());
     }
 }

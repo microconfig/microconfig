@@ -1,7 +1,6 @@
 package io.microconfig.properties;
 
 import io.microconfig.properties.resolver.PropertyResolveException;
-import io.microconfig.utils.MicronconfigTestFactory;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -10,11 +9,12 @@ import java.util.TreeMap;
 
 import static io.microconfig.environments.Component.byNameAndType;
 import static io.microconfig.environments.Component.byType;
+import static io.microconfig.utils.MicronconfigTestFactory.getPropertyProvider;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PropertiesProviderTest {
-    private final PropertiesProvider provider = MicronconfigTestFactory.getPropertyProvider();
+    private final PropertiesProvider provider = getPropertyProvider();
 
     @Test
     void testLoadsProperties() {
