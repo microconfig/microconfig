@@ -4,6 +4,7 @@ import io.microconfig.environments.Component;
 import io.microconfig.environments.Environment;
 import io.microconfig.properties.files.provider.ComponentTree;
 import io.microconfig.properties.resolver.placeholder.strategies.SpecialPropertyResolveStrategy.SpecialProperty;
+import io.microconfig.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -21,6 +22,7 @@ public class FolderProperty implements SpecialProperty {
     @Override
     public Optional<String> value(Component component, Environment environment) {
         return componentTree.getFolder(component.getType())
-                .map(File::getAbsolutePath);
+                .map(File::getAbsolutePath)
+                .map(StringUtils::unixLikePath);
     }
 }

@@ -6,7 +6,6 @@ import deployment.mgmt.configs.filestructure.ProcessDirs;
 import deployment.mgmt.configs.service.properties.ProcessProperties;
 import deployment.mgmt.configs.service.properties.PropertyService;
 import deployment.mgmt.process.runner.ScriptRunner;
-import io.microconfig.templates.CopyTemplatesService;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -22,7 +21,6 @@ public class NewServicePreparerImpl implements NewServicePreparer {
     private final DeployFileStructure deployFileStructure;
     private final PropertyService propertyService;
     private final ScriptRunner scriptRunner;
-    private final CopyTemplatesService copyTemplatesService;
 
     @Override
     public void prepare(List<String> services, boolean skipClasspathBuildForSnapshot) {
@@ -36,7 +34,6 @@ public class NewServicePreparerImpl implements NewServicePreparer {
             copyLogConfigToServiceDir(service);
             buildClasspath(service, processProperties, skipClasspathBuildForSnapshot);
             runPrepareDirScript(service, processProperties);
-            copyTemplates(service);
         } catch (RuntimeException e) {
             error("Can't prepare " + service, e);
         }
@@ -63,14 +60,5 @@ public class NewServicePreparerImpl implements NewServicePreparer {
 
     private void runPrepareDirScript(String service, ProcessProperties processProperties) {
         scriptRunner.runScript(processProperties.getPrepareDirScriptName(), service);
-    }
-
-    private void copyTemplates(String service) {
-        //todo
-//        copyTemplatesService.copyTemplates(
-//                deployFileStructure.service().getServiceDir(service),
-//                propertyService.getServiceProperties(service),
-//                null
-//        );
     }
 }

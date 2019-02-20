@@ -1,17 +1,18 @@
 package mgmt.microconfig;
 
-import io.microconfig.commands.BuildConfigMain;
-import io.microconfig.commands.Command;
-import io.microconfig.commands.CompositeCommand;
+import io.microconfig.commands.*;
 import io.microconfig.commands.factory.BuildCommands;
+import io.microconfig.commands.postprocessors.CopyTemplatesPostProcessor;
 import io.microconfig.commands.postprocessors.SecretPropertiesPostProcessor;
-import io.microconfig.properties.serializer.PropertiesDiffWriter;
-import io.microconfig.properties.serializer.PropertiesSerializerImpl;
+import io.microconfig.templates.CopyTemplatesServiceImpl;
 
 import java.io.File;
 import java.util.List;
 
 import static io.microconfig.commands.factory.PropertyType.*;
+import static io.microconfig.templates.RelativePathResolver.empty;
+import static io.microconfig.templates.TemplatePattern.defaultPattern;
+import static java.util.Arrays.asList;
 
 public class MgmtMicroConfigAdapter {
     public static void execute(String env, List<String> groups, File root, File componentsDir, List<String> components) {
@@ -19,23 +20,26 @@ public class MgmtMicroConfigAdapter {
         BuildConfigMain.execute(command, env, groups, components);
     }
 
-    public static BuildCommands mgmtBuildCommands(File repoDir, File componentsDir) {
-        return BuildCommands.init(repoDir, componentsDir, ".mgmt");
-    }
-
     private static Command newBuildPropertiesCommand(File repoDir, File componentsDir) {
-        BuildCommands buildCommands = mgmtBuildCommands(repoDir, componentsDir);
+        BuildCommands commands = BuildCommands.init(repoDir, componentsDir);
 
-        return new CompositeCommand(List.of(
-                buildCommands.newBuildCommand(SERVICE, new PropertiesDiffWriter(new PropertiesSerializerImpl(componentsDir, SERVICE.getResultFile()))),
-                buildCommands.newBuildCommand(PROCESS, new WebappPostProcessor()),
-                buildCommands.newBuildCommand(ENV),
-                buildCommands.newBuildCommand(LOG4j),
-                buildCommands.newBuildCommand(LOG4J2),
-                buildCommands.newBuildCommand(SAP),
-                buildCommands.newBuildCommand(SECRET, new SecretPropertiesPostProcessor()),
-                new GenerateComponentListCommand(componentsDir, buildCommands.getEnvironmentProvider()),
-                new GenerateHelpCommand(buildCommands.getEnvironmentProvider(), buildCommands.getComponentTree(), componentsDir.toPath())
+        BuildPropertiesCommand serviceCommon = commands.newBuildCommand(SERVICE, copyTemplatesPostProcessor());
+        commands = commands.withServiceInnerDir(".mgmt");
+        return new CompositeCommand(asList(
+                serviceCommon,
+                commands.newBuildCommand(PROCESS, new WebappPostProcessor()),
+                commands.newBuildCommand(ENV),
+                commands.newBuildCommand(LOG4j),
+                commands.newBuildCommand(LOG4J2),
+                commands.newBuildCommand(SAP),
+                commands.newBuildCommand(SECRET, new SecretPropertiesPostProcessor()),
+                new GenerateComponentListCommand(componentsDir, commands.getEnvironmentProvider()),
+                new GenerateHelpCommand(commands.getEnvironmentProvider(), commands.getComponentTree(), componentsDir.toPath())
         ));
     }
+
+    private static PropertiesPostProcessor copyTemplatesPostProcessor() {
+        return new CopyTemplatesPostProcessor(new CopyTemplatesServiceImpl(defaultPattern().toBuilder().templatePrefix("mgmt.template.").build(), empty()));
+    }
+
 }

@@ -7,13 +7,14 @@ import io.microconfig.properties.resolver.placeholder.strategies.SpecialProperty
 import java.io.File;
 import java.util.Optional;
 
+import static io.microconfig.utils.StringUtils.unixLikePath;
 import static java.util.Optional.of;
 
 public class ConfigDir implements SpecialProperty {
     private final String configRoot;
 
     public ConfigDir(File configRoot) {
-        this.configRoot = configRoot.getAbsolutePath();
+        this.configRoot = unixLikePath(configRoot.getAbsolutePath());
     }
 
     @Override

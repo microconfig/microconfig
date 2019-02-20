@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 import java.util.Optional;
 
+import static io.microconfig.utils.StringUtils.unixLikePath;
 import static java.util.Optional.of;
 
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class ServiceDirProperty implements SpecialProperty {
 
     @Override
     public Optional<String> value(Component component, Environment environment) {
-        return of(new File(destinationComponentDir, component.getName()).getAbsolutePath());
+        File dir = new File(destinationComponentDir, component.getName());
+        return of(unixLikePath(dir.getAbsolutePath()));
     }
 }

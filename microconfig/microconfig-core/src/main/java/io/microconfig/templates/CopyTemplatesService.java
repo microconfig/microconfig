@@ -1,6 +1,5 @@
 package io.microconfig.templates;
 
-import io.microconfig.properties.Property;
 import io.microconfig.properties.resolver.PropertyResolver;
 import io.microconfig.properties.resolver.RootComponent;
 

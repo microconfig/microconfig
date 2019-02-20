@@ -22,6 +22,7 @@ import io.microconfig.properties.serializer.PropertiesSerializerImpl;
 import io.microconfig.properties.serializer.PropertySerializer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.Wither;
 
 import java.io.File;
 
@@ -40,17 +41,15 @@ public class BuildCommands {
     private final ComponentTree componentTree;
     private final EnvironmentProvider environmentProvider;
     private final File destinationComponentDir;
+    @Wither
     private final String serviceInnerDir;
 
     public static BuildCommands init(File repoDir, File destinationComponentDir) {
-        return init(repoDir, destinationComponentDir, "");
-    }
-
-    public static BuildCommands init(File repoDir, File destinationComponentDir, String serviceInnerDir) {
         repoDir = canonical(repoDir);
         ComponentTree componentTree = ComponentTreeCache.build(repoDir);
         EnvironmentProvider environmentProvider = newEnvProvider(repoDir);
-        return new BuildCommands(componentTree, environmentProvider, destinationComponentDir, serviceInnerDir);
+
+        return new BuildCommands(componentTree, environmentProvider, destinationComponentDir, "");
     }
 
     public PropertiesProvider newPropertiesProvider(PropertyType propertyType) {
@@ -64,20 +63,20 @@ public class BuildCommands {
 
     private PropertyResolver newPropertyResolver(PropertiesProvider fileBasedProvider, SpecialPropertiesFactory specialProperties) {
         return cache(
-                    new SpelExpressionResolver(
-                            cache(new PlaceholderResolver(
-                                            environmentProvider,
-                                            composite(
-                                                    systemPropertiesResolveStrategy(),
-                                                    new StandardResolveStrategy(fileBasedProvider),
-                                                    new SpecialPropertyResolveStrategy(environmentProvider, specialProperties.specialPropertiesByKeys()),
-                                                    envVariablesResolveStrategy()
-                                            ),
-                                            specialProperties.keyNames()
-                                    )
-                            )
-                    )
-            );
+                new SpelExpressionResolver(
+                        cache(new PlaceholderResolver(
+                                        environmentProvider,
+                                        composite(
+                                                systemPropertiesResolveStrategy(),
+                                                new StandardResolveStrategy(fileBasedProvider),
+                                                new SpecialPropertyResolveStrategy(environmentProvider, specialProperties.specialPropertiesByKeys()),
+                                                envVariablesResolveStrategy()
+                                        ),
+                                        specialProperties.keyNames()
+                                )
+                        )
+                )
+        );
     }
 
     public BuildPropertiesCommand newBuildCommand(PropertyType type) {

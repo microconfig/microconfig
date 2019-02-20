@@ -19,9 +19,8 @@ public class BuildPropertiesCommandFactory {
     public static Command newBuildPropertiesCommand(File repoDir, File destinationComponentDir) {
         BuildCommands buildCommands = BuildCommands.init(repoDir, destinationComponentDir);
 
-        BuildPropertiesCommand serviceBuildCommand = buildCommands.newBuildCommand(SERVICE, copyTemplatesPostProcessor());
         return new CompositeCommand(asList(
-                serviceBuildCommand,
+                buildCommands.newBuildCommand(SERVICE, copyTemplatesPostProcessor()),
                 buildCommands.newBuildCommand(PROCESS),
                 buildCommands.newBuildCommand(ENV),
                 buildCommands.newBuildCommand(LOG4j),

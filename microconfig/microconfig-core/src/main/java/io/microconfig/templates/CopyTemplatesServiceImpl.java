@@ -11,7 +11,6 @@ import java.util.Map;
 
 import static io.microconfig.utils.FilePermissionUtils.copyPermissions;
 import static io.microconfig.utils.FileUtils.write;
-import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.Logger.*;
 
 @RequiredArgsConstructor
