@@ -21,8 +21,6 @@ import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 class GenerateHelpCommand implements Command {
-    private static final String SKIP_VALIDATION_PROPERTY = "skipValidation";
-
     private final EnvironmentProvider environmentProvider;
     private final ComponentTree componentTree;
     private final Path destRootDir;
@@ -49,12 +47,6 @@ class GenerateHelpCommand implements Command {
     }
 
     private List<Component> toComponents(List<String> names, List<Component> allComponents, String env) {
-        if (getProperty(SKIP_VALIDATION_PROPERTY) != null) {
-            return names.stream()
-                    .map(Component::byType)
-                    .collect(toList());
-        }
-
         return names.stream().map(name -> allComponents
                 .stream()
                 .filter(c -> c.getName().equals(name))
@@ -64,7 +56,6 @@ class GenerateHelpCommand implements Command {
 
     private void processComponent(Component component) {
         String componentName = component.getName();
-
         findSourceHelpFile(componentName)
                 .ifPresent(path -> copy(path.toPath(), resolveDestHelpFile(componentName)));
     }
