@@ -4,6 +4,7 @@ import io.microconfig.properties.resolver.RootComponent;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
@@ -19,7 +20,7 @@ class TemplateTest {
 
     @Test
     void testResolve() {
-        Consumer<String > testIp = prop-> {
+        Consumer<String> testIp = prop -> {
             String result = new Template(source, prop).resolvePlaceholders(rootComponent, getPropertyResolver(), templatePattern);
             assertEquals("172.30.162.3", result);
         };
@@ -51,9 +52,10 @@ class TemplateTest {
 
     @Test
     void testEnvProperties() {
-        Template template = new Template(source, "${env@Path}");
+        Map.Entry<String, String> entry = System.getenv().entrySet().iterator().next();
+        Template template = new Template(source, "${env@" + entry.getKey() + "}");
         String result = template.resolvePlaceholders(rootComponent, getPropertyResolver(), templatePattern);
-        assertEquals(System.getenv("Path"), result);
+        assertEquals(entry.getValue(), result);
     }
 
     @Test
