@@ -16,15 +16,15 @@ import static io.microconfig.utils.Logger.warn;
 import static java.util.regex.Matcher.quoteReplacement;
 
 @RequiredArgsConstructor
-public class Template {
+class Template {
     private final File source;
     private final String text;
 
-    public Template(File source) {
+    Template(File source) {
         this(source, readFully(source));
     }
 
-    public String resolvePlaceholders(RootComponent currentComponent, PropertyResolver propertyResolver, Pattern pattern) {
+    String resolvePlaceholders(RootComponent currentComponent, PropertyResolver propertyResolver, Pattern pattern) {
         Matcher m = pattern.matcher(text);
         if (!m.find()) return text;
 
@@ -59,6 +59,6 @@ public class Template {
 
     private String toPlaceholder(Matcher matcher) {
         String full = matcher.group();
-        return isPlaceholder(full) ? full : "${this@" + full.substring(2);
+        return isPlaceholder(full) ? full : "${this@" + full.substring("${".length());
     }
 }
