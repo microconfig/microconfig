@@ -15,7 +15,7 @@ public class OrderProperty implements SpecialProperty {
     @Override
     public Optional<String> value(Component component, Environment environment) {
         return environment.getGroupByComponentName(component.getName())
-                .map(cg -> 1 + cg.getComponentNames().indexOf(component.getName()))
+                .map(cg -> cg.getComponentNames().indexOf(component.getName()))
                 .map(String::valueOf);
     }
 }
