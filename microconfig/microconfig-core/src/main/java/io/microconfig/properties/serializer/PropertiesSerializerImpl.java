@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.function.Function;
 
 import static io.microconfig.properties.serializer.PropertiesSerializerImpl.OutputFormat.PROPERTIES;
 import static io.microconfig.utils.FileUtils.*;
@@ -43,13 +42,10 @@ public class PropertiesSerializerImpl implements PropertySerializer {
         PROPERTIES {
             @Override
             String serialize(Collection<Property> properties) {
-                Function<Boolean, String> toString = system -> properties.stream()
+                return properties.stream()
                         .filter(p -> !p.isTemp())
-                        .filter(p -> p.getSource().isSystem() == system)
                         .map(Property::toString)
-                        .collect(joining(LINE_SEPARATOR, "", LINE_SEPARATOR));
-
-                return toString.apply(true) + LINE_SEPARATOR + toString.apply(false);
+                        .collect(joining(LINE_SEPARATOR));
             }
         };
 

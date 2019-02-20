@@ -44,10 +44,10 @@ public class BuildCommands {
     @Wither
     private final String serviceInnerDir;
 
-    public static BuildCommands init(File repoDir, File destinationComponentDir) {
-        repoDir = canonical(repoDir);
-        ComponentTree componentTree = ComponentTreeCache.build(repoDir);
-        EnvironmentProvider environmentProvider = newEnvProvider(repoDir);
+    public static BuildCommands init(File root, File destinationComponentDir) {
+        File fullRepoDir = canonical(root);
+        ComponentTree componentTree = ComponentTreeCache.build(fullRepoDir);
+        EnvironmentProvider environmentProvider = newEnvProvider(fullRepoDir);
 
         return new BuildCommands(componentTree, environmentProvider, destinationComponentDir, "");
     }
@@ -80,19 +80,11 @@ public class BuildCommands {
     }
 
     public BuildPropertiesCommand newBuildCommand(PropertyType type) {
-        return newBuildCommand(type, propertySerializer(type), emptyPostProcessor());
-    }
-
-    public BuildPropertiesCommand newBuildCommand(PropertyType type, PropertySerializer propertySerializer) {
-        return newBuildCommand(type, propertySerializer, emptyPostProcessor());
+        return newBuildCommand(type, emptyPostProcessor());
     }
 
     public BuildPropertiesCommand newBuildCommand(PropertyType type, PropertiesPostProcessor propertiesPostProcessor) {
-        return newBuildCommand(type, propertySerializer(type), propertiesPostProcessor);
-    }
-
-    private BuildPropertiesCommand newBuildCommand(PropertyType type, PropertySerializer propertySerializer, PropertiesPostProcessor propertiesPostProcessor) {
-        return new BuildPropertiesCommand(environmentProvider, newPropertiesProvider(type), propertySerializer, propertiesPostProcessor);
+        return new BuildPropertiesCommand(environmentProvider, newPropertiesProvider(type), propertySerializer(type), propertiesPostProcessor);
     }
 
     private static EnvironmentProvider newEnvProvider(File repoDir) {

@@ -1,6 +1,5 @@
 package io.microconfig.commands.factory;
 
-import io.microconfig.commands.BuildPropertiesCommand;
 import io.microconfig.commands.Command;
 import io.microconfig.commands.CompositeCommand;
 import io.microconfig.commands.PropertiesPostProcessor;

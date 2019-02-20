@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static io.microconfig.utils.MicronconfigTestFactory.getEnvironmentProvider;
+import static io.microconfig.utils.MicronconfigTestFactory.getEnvProvider;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class InheritanceTest {
-    private final EnvironmentProvider environmentProvider = getEnvironmentProvider();
+    private final EnvironmentProvider environmentProvider = getEnvProvider();
 
     @Test
     void testIncludes() {

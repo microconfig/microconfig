@@ -1,18 +1,18 @@
 {
-  ip: "172.30.162.3",
+  ip: 172.30.162.3,
   portOffset: 100,
   fnd1: {
-    ip: "172.30.162.4",
+    ip: 172.30.162.4,
     components: [
       "node1:node",
       "node2:node"
     ]
   },
   fnd2: {
-    ip: "172.30.162.5",
+    ip: 172.30.162.5,
     components: [
       "node3:node",
-      "node"
+      node
     ]
   }
 }

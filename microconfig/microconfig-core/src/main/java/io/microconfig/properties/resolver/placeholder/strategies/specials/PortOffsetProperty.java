@@ -14,6 +14,7 @@ public class PortOffsetProperty implements SpecialProperty {
 
     @Override
     public Optional<String> value(Component component, Environment environment) {
-        return environment.getPortOffset().map(Object::toString);
+        return environment.getPortOffset()
+                .map(Object::toString);
     }
 }

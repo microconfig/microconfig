@@ -1,5 +1,5 @@
 package io.microconfig.properties.resolver;
 
-public interface ResolverHolder {
+public interface PropertyResolverHolder {
     PropertyResolver getResolver();
 }

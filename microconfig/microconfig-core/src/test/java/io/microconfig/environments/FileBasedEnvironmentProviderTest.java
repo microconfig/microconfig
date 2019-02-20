@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Test;
 import java.util.HashSet;
 import java.util.Set;
 
-import static io.microconfig.utils.MicronconfigTestFactory.getEnvironmentProvider;
+import static io.microconfig.utils.MicronconfigTestFactory.getEnvProvider;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FileBasedEnvironmentProviderTest {
-    private final EnvironmentProvider environmentProvider = getEnvironmentProvider();
+    private final EnvironmentProvider environmentProvider = getEnvProvider();
 
     @Test
     void testEnvName() {

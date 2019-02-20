@@ -1,6 +1,9 @@
 package io.microconfig.properties;
 
+import io.microconfig.environments.Component;
 import io.microconfig.properties.resolver.PropertyResolveException;
+import io.microconfig.properties.resolver.PropertyResolver;
+import io.microconfig.properties.resolver.RootComponent;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -9,17 +12,20 @@ import java.util.TreeMap;
 
 import static io.microconfig.environments.Component.byNameAndType;
 import static io.microconfig.environments.Component.byType;
+import static io.microconfig.properties.Property.Source.systemSource;
 import static io.microconfig.utils.MicronconfigTestFactory.getPropertyProvider;
+import static io.microconfig.utils.MicronconfigTestFactory.getPropertyResolver;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PropertiesProviderTest {
     private final PropertiesProvider provider = getPropertyProvider();
+    private final PropertyResolver resolver = getPropertyResolver();
 
     @Test
     void testLoadsProperties() {
         Map<String, Property> props = provider.getProperties(byType("th-client"), "uat");
-        assertEquals(25, props.size());
+        assertEquals(15, props.size());
         assertEquals("th-common-value", props.get("th-client.property.common").getValue());
         assertEquals("th-common-value", props.get("th-client.defaultValue").getValue());
         assertEquals("th-uat-value", props.get("th-client.property.from.uat").getValue());
@@ -57,39 +63,35 @@ class PropertiesProviderTest {
     }
 
     private void doTestOrder(String compName, int order) {
-        Map<String, Property> properties = provider.getProperties(byType(compName), "uat");
-        assertEquals(String.valueOf(order), properties.get("order").getValue());
+        String orderValue = resolveValue("uat", byType(compName), "order");
+        assertEquals(String.valueOf(order), orderValue);
     }
 
     @Test
     void testComponentReceivesThisIpPropertyFromEnv() {
-        Map<String, Property> properties = provider.getProperties(byType("th-cache-node3"), "uat");
-        assertEquals("172.30.162.3", properties.get("ip").getValue());
+        assertEquals("172.30.162.3", resolveValue("uat", byType("th-cache-node3"), "ip"));
     }
 
     @Test
     void testComponentOverridesThisIpPropertyFromEnv() {
-        Map<String, Property> properties = provider.getProperties(byType("ip3"), "uat");
-        assertEquals("1.1.1.1", properties.get("ip").getValue());
+        assertEquals("1.1.1.1", resolveValue("uat", byType("ip3"), "ip"));
     }
 
     @Test
     void testCyclicDetect() {
         assertThrows(PropertyResolveException.class, () -> provider.getProperties(byType("cyclicDetectTest"), "uat"));
-
     }
 
     @Test
     void testSimpleInclude() {
         Map<String, Property> properties = new TreeMap<>(provider.getProperties(byType("i1"), "uat"));
-        assertEquals(asList("configDir", "env", "folder", "i1.prop", "i2.prop", "i3.prop", "name", "portOffset", "userHome"), new ArrayList<>(properties.keySet()));
+        assertEquals(asList("i1.prop", "i2.prop", "i3.prop"), new ArrayList<>(properties.keySet()));
     }
 
     @Test
     void testIncludeWithEnvChange() {
         Map<String, Property> props = provider.getProperties(byType("ic1"), "dev");
-        assertEquals(14, props.size());
-        assertEquals("dev", props.get("env").getValue());
+        assertEquals(8, props.size());
         assertEquals("ic1-dev", props.get("ic1.prop").getValue());
         assertEquals("ic2-dev", props.get("ic2.prop").getValue());
         assertEquals("ic3-dev2", props.get("ic3.prop").getValue());
@@ -108,7 +110,7 @@ class PropertiesProviderTest {
     @Test
     void testIncludeWithoutKeyword() {
         Map<String, Property> props = provider.getProperties(byType("without1"), "dev");
-        assertEquals(9, props.size());
+        assertEquals(3, props.size());
         assertEquals("p1", props.get("p1").getValue());
         assertEquals("p2", props.get("p2").getValue());
         assertEquals("w2", props.get("w2.include").getValue());
@@ -174,9 +176,11 @@ class PropertiesProviderTest {
     }
 
     private void doTestAliases(String componentName, String ip) {
-        Map<String, Property> properties = provider.getProperties(byNameAndType(componentName, "node"), "aliases");
-        assertEquals(componentName, properties.get("name").getValue());
-        assertEquals(ip, properties.get("ip").getValue());
+        Component component = byNameAndType(componentName, "node");
+        assertEquals(ip, resolveValue("aliases", component, "ip"));
     }
 
+    private String resolveValue(String env, Component component, String propName) {
+        return resolver.resolve(new Property(component.getName() + "." + propName, "${this@" + propName + "}", env, systemSource()), new RootComponent(component, env));
+    }
 }
