@@ -11,7 +11,7 @@ import java.util.List;
 import static deployment.mgmt.configs.deploysettings.ConfigSource.GIT;
 import static io.microconfig.utils.FileUtils.*;
 import static io.microconfig.utils.Logger.announce;
-import static io.microconfig.utils.PropertiesUtils.hasSystemFlag;
+import static io.microconfig.utils.SystemPropertiesUtils.hasSystemFlag;
 import static io.microconfig.utils.TimeUtils.secAfter;
 import static java.lang.System.currentTimeMillis;
 

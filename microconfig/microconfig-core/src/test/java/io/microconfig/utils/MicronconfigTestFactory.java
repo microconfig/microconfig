@@ -7,9 +7,9 @@ import io.microconfig.properties.resolver.PropertyResolver;
 import io.microconfig.properties.resolver.PropertyResolverHolder;
 
 import java.io.File;
-import java.net.URL;
 
 import static io.microconfig.commands.factory.ConfigType.SERVICE;
+import static io.microconfig.utils.ClasspathUtils.getClasspathFile;
 import static java.util.Objects.requireNonNull;
 
 public class MicronconfigTestFactory {
@@ -28,10 +28,5 @@ public class MicronconfigTestFactory {
 
     public static PropertyResolver getPropertyResolver() {
         return ((PropertyResolverHolder) propProvider).getResolver();
-    }
-
-    private static File getClasspathFile(String name) {
-        URL url = requireNonNull(MicronconfigTestFactory.class.getClassLoader().getResource(name), () -> "File doesnt exists: " + name);
-        return new File(url.getFile());
     }
 }

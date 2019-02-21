@@ -4,7 +4,7 @@ import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import lombok.RequiredArgsConstructor;
 
 import static deployment.mgmt.configs.encryption.PropertyEncryptionHelper.decryptProperty;
-import static deployment.mgmt.configs.encryption.PropertyEncryptionHelper.secureProperties;
+import static deployment.mgmt.configs.encryption.PropertyEncryptionHelper.encryptProperties;
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.TimeUtils.printLongTime;
 import static io.microconfig.utils.TimeUtils.secAfter;
@@ -15,13 +15,13 @@ public class EncryptPropertiesCommandImpl implements EncryptPropertiesCommand {
     private final DeployFileStructure deployFileStructure;
 
     @Override
-    public void encryptProperties() {
+    public void encryptSecretProperties() {
         announce("Encrypting secret properties...");
 
         long t = currentTimeMillis();
-        secureProperties(
-                deployFileStructure.deploy().getSecretPropertiesFile().getAbsolutePath(),
-                deployFileStructure.deploy().getEncryptionKeyFile().getAbsolutePath()
+        encryptProperties(
+                deployFileStructure.deploy().getSecretPropertiesFile(),
+                deployFileStructure.deploy().getEncryptionKeyFile()
         );
 
         announce("Encrypted secret properties in " + secAfter(t));
@@ -30,7 +30,7 @@ public class EncryptPropertiesCommandImpl implements EncryptPropertiesCommand {
     @Override
     public String decrypt(String encryptedValue) {
         return printLongTime(
-                () -> decryptProperty(encryptedValue, deployFileStructure.deploy().getEncryptionKeyFile().getAbsolutePath()),
+                () -> decryptProperty(encryptedValue, deployFileStructure.deploy().getEncryptionKeyFile()),
                 "Decrypted secret properties"
         );
     }

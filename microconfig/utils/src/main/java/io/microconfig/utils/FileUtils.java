@@ -3,6 +3,7 @@ package io.microconfig.utils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.util.Collection;
 
@@ -58,10 +59,10 @@ public class FileUtils {
         write(file.toPath(), content);
     }
 
-    public static void write(Path file, String content) {
+    public static void write(Path file, String content, OpenOption... options) {
         try {
             createDirectories(file.getParent());
-            Files.write(file, content.getBytes());
+            Files.write(file, content.getBytes(), options);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -1,7 +1,8 @@
 package deployment.mgmt.configs.service.properties.impl;
 
 import deployment.mgmt.configs.service.properties.*;
-import io.microconfig.utils.PropertiesUtils;
+import io.microconfig.io.ConfigIoService;
+import io.microconfig.utils.SystemPropertiesUtils;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -11,8 +12,6 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static deployment.mgmt.configs.service.properties.impl.StandardServiceGroup.*;
-import static io.microconfig.utils.PropertiesUtils.loadPropertiesAsMap;
-import static io.microconfig.utils.PropertiesUtils.writeProperties;
 import static io.microconfig.utils.StringUtils.isEmpty;
 import static io.microconfig.utils.StringUtils.replaceMultipleSpaces;
 import static java.util.Collections.*;
@@ -24,14 +23,19 @@ import static java.util.Set.of;
 public class ProcessPropertiesImpl implements ProcessProperties {
     private final Map<String, String> keyToValue;
     private final File file;
+    private final ConfigIoService configIoService;
 
-    public static ProcessProperties fromFile(File file) {
-        Map<String, String> keyToValue = loadPropertiesAsMap(file);
-        return new ProcessPropertiesImpl(keyToValue, file);
+    public static ProcessProperties fromFile(File file, ConfigIoService configIoService) {
+        Map<String, String> keyToValue = configIoService.read(file);
+        return new ProcessPropertiesImpl(keyToValue, file, configIoService);
+    }
+
+    public static ProcessProperties fromMap(Map<String, String> properties) {
+        return new ProcessPropertiesImpl(properties, null, null);
     }
 
     public static ProcessProperties emptyProperties() {
-        return new ProcessPropertiesImpl(emptyMap(), null);
+        return fromMap(emptyMap());
     }
 
     @Override
@@ -183,13 +187,13 @@ public class ProcessPropertiesImpl implements ProcessProperties {
 
     @Override
     public boolean hasTrueValue(String property) {
-        return PropertiesUtils.hasTrueValue(property, keyToValue);
+        return SystemPropertiesUtils.hasTrueValue(property, keyToValue);
     }
 
     @Override
     public void update(Map<String, String> update) {
         keyToValue.putAll(update);
-        writeProperties(file, keyToValue);
+        configIoService.write(file, keyToValue);
     }
 
     private Integer getIntegerValue(String name) {

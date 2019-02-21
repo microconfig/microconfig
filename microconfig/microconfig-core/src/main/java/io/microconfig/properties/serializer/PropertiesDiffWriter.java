@@ -1,5 +1,6 @@
 package io.microconfig.properties.serializer;
 
+import io.microconfig.io.ConfigIoService;
 import io.microconfig.properties.Property;
 import lombok.RequiredArgsConstructor;
 
@@ -10,24 +11,23 @@ import java.util.Optional;
 
 import static io.microconfig.utils.FileUtils.*;
 import static io.microconfig.utils.Logger.warn;
-import static io.microconfig.utils.PropertiesUtils.readProperties;
 
 @RequiredArgsConstructor
 public class PropertiesDiffWriter implements PropertySerializer {
     private static final String DIFF_PREFIX = "diff-";
 
     private final PropertySerializer delegate;
+    private final ConfigIoService configIoService;
 
     @Override
     public Optional<File> serialize(String component, Collection<Property> properties) {
         File current = pathFor(component);
 
-        Map<String, String> old = readProperties(current);
+        Map<String, String> old = configIoService.read(current);
         Optional<File> result = delegate.serialize(component, properties);
 
         File diffFile = diffFile(current);
         delete(diffFile);
-
         String diff = compare(old, properties, component, diffFile);
         if (!diff.isEmpty()) {
             write(diffFile, diff);

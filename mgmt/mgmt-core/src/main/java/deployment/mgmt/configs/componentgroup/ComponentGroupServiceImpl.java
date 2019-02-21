@@ -3,6 +3,7 @@ package deployment.mgmt.configs.componentgroup;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.service.properties.ProcessProperties;
 import deployment.mgmt.configs.service.properties.PropertyService;
+import io.microconfig.io.ConfigIoService;
 import lombok.AllArgsConstructor;
 
 import java.io.File;
@@ -18,8 +19,6 @@ import static io.microconfig.utils.IoUtils.lines;
 import static io.microconfig.utils.IoUtils.readFirstLine;
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.Logger.warn;
-import static io.microconfig.utils.PropertiesUtils.loadPropertiesAsMap;
-import static io.microconfig.utils.PropertiesUtils.readProperties;
 import static io.microconfig.utils.StringUtils.isEmpty;
 import static java.nio.file.Files.readAllLines;
 import static java.util.Arrays.asList;
@@ -35,6 +34,7 @@ public class ComponentGroupServiceImpl implements ComponentGroupService {
 
     private final DeployFileStructure deployFileStructure;
     private final PropertyService propertyService;
+    private final ConfigIoService configIoService;
 
     @Override
     public void update(GroupDescription description) {
@@ -56,7 +56,7 @@ public class ComponentGroupServiceImpl implements ComponentGroupService {
             throw new IllegalStateException("Can't find project version file " + projectVersionFile);
         }
 
-        String version = isPostfix ? requireNonNull(readProperties(projectVersionFile).get(PROJECT_VERSION_KEY)) + fullVersionOrPostfix : fullVersionOrPostfix;
+        String version = isPostfix ? requireNonNull(configIoService.read(projectVersionFile).get(PROJECT_VERSION_KEY)) + fullVersionOrPostfix : fullVersionOrPostfix;
         File envVersionFile = deployFileStructure.configs().getProjectVersionFile(getEnv());
         write(envVersionFile, PROJECT_VERSION_KEY + "=" + version);
     }
@@ -64,7 +64,7 @@ public class ComponentGroupServiceImpl implements ComponentGroupService {
     @Override
     public String getProjectVersion() {
         File projectVersionFile = deployFileStructure.configs().getProjectVersionFile(getEnv());
-        return loadPropertiesAsMap(projectVersionFile).get(PROJECT_VERSION_KEY);
+        return configIoService.read(projectVersionFile).get(PROJECT_VERSION_KEY);
     }
 
     @Override

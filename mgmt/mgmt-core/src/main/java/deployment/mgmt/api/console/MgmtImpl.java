@@ -31,7 +31,7 @@ import static deployment.mgmt.init.InitParams.getConfigBranchOrTag;
 import static deployment.mgmt.init.InitParams.getProjectFullVersionOrPostfix;
 import static deployment.mgmt.process.status.ExecutionStatus.RUNNING;
 import static io.microconfig.utils.Logger.*;
-import static io.microconfig.utils.PropertiesUtils.hasSystemFlag;
+import static io.microconfig.utils.SystemPropertiesUtils.hasSystemFlag;
 import static io.microconfig.utils.TimeUtils.secAfter;
 import static java.lang.String.join;
 import static java.lang.System.currentTimeMillis;
@@ -168,7 +168,7 @@ public class MgmtImpl implements Mgmt {
 
     @Override
     public void encryptProperties() {
-        encryptPropertiesCommand.encryptProperties();
+        encryptPropertiesCommand.encryptSecretProperties();
     }
 
     @Override

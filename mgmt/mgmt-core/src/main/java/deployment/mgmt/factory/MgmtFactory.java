@@ -71,6 +71,7 @@ import deployment.mgmt.update.updater.MgmtAutoUpdater;
 import deployment.mgmt.update.updater.MgmtAutoUpdaterImpl;
 import deployment.mgmt.update.updater.MgmtProperties;
 import deployment.mgmt.update.updater.MgmtPropertiesImpl;
+import io.microconfig.io.ConfigIoService;
 import lombok.Getter;
 
 import static java.util.Arrays.asList;
@@ -80,6 +81,7 @@ import static java.util.List.of;
 public class MgmtFactory {
     private final DeployFileStructure deployFileStructure;
     private final LockService lockService;
+    private final ConfigIoService configIoService;
     private final ComponentGroupService componentGroupService;
     private final PropertyService propertyService;
     private final MetadataProvider metadataProvider;
@@ -104,10 +106,11 @@ public class MgmtFactory {
     public MgmtFactory() {
         this.deployFileStructure = DeployFileStructureImpl.init();
         this.lockService = new OsLockService(deployFileStructure);
-        this.propertyService = new PropertyServiceImpl(deployFileStructure);
+        this.configIoService = ConfigIoService.getInstance();
+        this.propertyService = new PropertyServiceImpl(deployFileStructure, configIoService);
         this.metadataProvider = new MetadataProviderImpl(deployFileStructure);
-        this.componentGroupService = new ComponentGroupServiceImpl(deployFileStructure, propertyService);
-        this.deploySettings = new DeploySettingsImpl(deployFileStructure, componentGroupService, new SimpleEncryptionServiceImpl());
+        this.componentGroupService = new ComponentGroupServiceImpl(deployFileStructure, propertyService, configIoService);
+        this.deploySettings = new DeploySettingsImpl(deployFileStructure, componentGroupService, new SimpleEncryptionServiceImpl(), configIoService);
         this.nexusClient = new NexusClientImpl(
                 new RepositoryPriorityServiceImpl(asList("ru", Mgmt.class.getPackage().getName().split("\\.")[0])),
                 deploySettings
@@ -179,7 +182,7 @@ public class MgmtFactory {
                 newInitService(),
                 new EncryptPropertiesCommandImpl(deployFileStructure),
                 updateConfigCommand,
-                new ShowDiffCommandImpl(componentGroupService, propertyService, deployFileStructure),
+                new ShowDiffCommandImpl(componentGroupService, propertyService, deployFileStructure, configIoService),
                 new LessLogCommand(propertyService, deployFileStructure),
                 deploySettings,
                 mgmgUpdater,

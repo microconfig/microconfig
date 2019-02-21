@@ -12,7 +12,7 @@ import java.util.TreeMap;
 import static deployment.mgmt.process.start.StartHandleImpl.errorResult;
 import static io.microconfig.utils.ConsoleColor.green;
 import static io.microconfig.utils.Logger.*;
-import static io.microconfig.utils.PropertiesUtils.hasSystemFlag;
+import static io.microconfig.utils.SystemPropertiesUtils.hasSystemFlag;
 import static io.microconfig.utils.StreamUtils.map;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;

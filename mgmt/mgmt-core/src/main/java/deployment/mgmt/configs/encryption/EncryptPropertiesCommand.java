@@ -1,7 +1,7 @@
 package deployment.mgmt.configs.encryption;
 
 public interface EncryptPropertiesCommand {
-    void encryptProperties();
+    void encryptSecretProperties();
 
     String decrypt(String value);
 }

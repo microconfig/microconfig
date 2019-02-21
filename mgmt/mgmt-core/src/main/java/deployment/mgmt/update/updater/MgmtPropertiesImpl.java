@@ -59,7 +59,7 @@ public class MgmtPropertiesImpl implements MgmtProperties {
             throw new IllegalArgumentException("Can't resolve process properties for " + serviceName);
         }
 
-        return new ProcessPropertiesImpl(withoutTempValues(properties), null).getMavenSettings().getNexusRepositories();
+        return ProcessPropertiesImpl.fromMap(withoutTempValues(properties)).getMavenSettings().getNexusRepositories();
     }
 
     private String anyServiceFromCurrentGroup(EnvironmentProvider environmentProvider) {

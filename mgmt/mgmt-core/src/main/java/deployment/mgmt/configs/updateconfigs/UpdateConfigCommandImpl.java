@@ -15,7 +15,7 @@ import static deployment.mgmt.configs.updateconfigs.UpdateConfigOption.*;
 import static io.microconfig.utils.FileUtils.delete;
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.Logger.info;
-import static io.microconfig.utils.PropertiesUtils.hasSystemFlag;
+import static io.microconfig.utils.SystemPropertiesUtils.hasSystemFlag;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 

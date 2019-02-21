@@ -5,7 +5,7 @@ import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.Property;
 import io.microconfig.properties.resolver.RootComponent;
 import io.microconfig.utils.Logger;
-import io.microconfig.utils.PropertiesUtils;
+import io.microconfig.utils.SystemPropertiesUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +24,7 @@ class WebappPostProcessor implements PropertiesPostProcessor {
                         Map<String, Property> componentProperties, PropertiesProvider ignore) {
         delete(new File(destinationDir, WEBAPP_FILE));
 
-        if (!PropertiesUtils.hasTrueValue("mgmt.tomcat.webapp.enabled", componentProperties)) return;
+        if (!SystemPropertiesUtils.hasTrueValue("mgmt.tomcat.webapp.enabled", componentProperties)) return;
 
         write(new File(destinationDir, WEBAPP_FILE), "");
         delete(new File(destinationDir, DEPENDSON_FILE));
