@@ -64,12 +64,7 @@ public class ComponentTreeCache implements ComponentTree {
 
     @Override
     public Optional<File> getFolder(String component) {
-        List<File> files = getFolders(component);
+        List<File> files = foldersByComponentType.getOrDefault(component, emptyList());
         return files.size() == 1 ? of(files.get(0)) : empty();
-    }
-
-    @Override
-    public List<File> getFolders(String component) {
-        return foldersByComponentType.getOrDefault(component, emptyList());
     }
 }

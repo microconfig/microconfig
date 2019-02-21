@@ -12,6 +12,4 @@ public interface ComponentTree {
     File getConfigComponentsRoot();
 
     Optional<File> getFolder(String component);
-
-    List<File> getFolders(String component);
 }
