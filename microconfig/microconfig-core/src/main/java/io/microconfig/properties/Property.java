@@ -78,6 +78,10 @@ public class Property {
     }
 
     public Object typedValue() {
+        return typeValue(value);
+    }
+
+    public static Object typeValue(String value) {
         if ("true".equals(value)) return true;
         if ("false".equals(value)) return false;
 
