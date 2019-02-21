@@ -1,6 +1,7 @@
 package io.microconfig.properties.files.provider;
 
 import java.io.File;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -11,4 +12,6 @@ public interface ComponentTree {
     File getConfigComponentsRoot();
 
     Optional<File> getFolder(String component);
+
+    List<File> getFolders(String component);
 }
