@@ -22,6 +22,6 @@ public enum PropertyType {
 
     PropertyType(String configExtension, String resultFileName) {
         this.configExtension = "." + configExtension;
-        this.resultFileName = resultFileName + "." + System.getProperty("outputFormat", "yaml");
+        this.resultFileName = resultFileName + "." + System.getProperty("outputFormat", "properties");
     }
 }
