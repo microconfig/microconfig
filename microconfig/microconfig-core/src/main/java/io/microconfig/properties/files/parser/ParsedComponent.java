@@ -7,12 +7,18 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class ComponentProperties {
+public class ParsedComponent {
     private final String component;
-    @Getter
     private final List<Include> includes;
-    @Getter
     private final List<Property> properties;
+
+    public List<Include> getIncludes() {
+        return includes;
+    }
+
+    public List<Property> getProperties() {
+        return properties;
+    }
 
     @Override
     public String toString() {

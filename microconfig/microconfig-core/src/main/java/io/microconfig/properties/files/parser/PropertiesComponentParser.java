@@ -14,16 +14,16 @@ import static io.microconfig.utils.IoUtils.readAllLines;
 import static java.util.Collections.emptyList;
 
 @RequiredArgsConstructor
-public class FileComponentParser implements ComponentParser<File> {
+public class PropertiesComponentParser implements ComponentParser {
     private static final String IGNORE = "#@Ignore";
     private final String rootComponent;
 
-    public FileComponentParser(File path) {
+    public PropertiesComponentParser(File path) {
         this.rootComponent = path.getName();
     }
 
     @Override
-    public ComponentProperties parse(File path, Component component, String env) {
+    public ParsedComponent parse(File path, Component component, String env) {
         List<Include> includes = new ArrayList<>();
         List<Property> properties = new ArrayList<>();
         boolean ignore = false;
@@ -48,7 +48,7 @@ public class FileComponentParser implements ComponentParser<File> {
             }
         }
 
-        return new ComponentProperties(component.getName(), includes, ignore ? emptyList() : properties);
+        return new ParsedComponent(component.getName(), includes, ignore ? emptyList() : properties);
     }
 
     private boolean isIgnore(String line) {

@@ -4,7 +4,7 @@ import io.microconfig.commands.*;
 import io.microconfig.commands.factory.BuildCommands;
 import io.microconfig.commands.postprocessors.CopyTemplatesPostProcessor;
 import io.microconfig.commands.postprocessors.SecretPropertiesPostProcessor;
-import io.microconfig.io.BaseConfigIoService;
+import io.microconfig.io.BaseConfigFormat;
 import io.microconfig.templates.CopyTemplatesServiceImpl;
 
 import java.io.File;
@@ -33,7 +33,7 @@ public class MgmtMicroConfigAdapter {
                 commands.newBuildCommand(LOG4j),
                 commands.newBuildCommand(LOG4J2),
                 commands.newBuildCommand(SAP),
-                commands.newBuildCommand(SECRET, new SecretPropertiesPostProcessor(BaseConfigIoService.getInstance())),
+                commands.newBuildCommand(SECRET, new SecretPropertiesPostProcessor(BaseConfigFormat.getInstance())),
                 new GenerateComponentListCommand(componentsDir, commands.getEnvironmentProvider()),
                 new GenerateHelpCommand(commands.getEnvironmentProvider(), commands.getComponentTree(), componentsDir.toPath())
         ));

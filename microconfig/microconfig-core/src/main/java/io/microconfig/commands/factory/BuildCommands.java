@@ -5,10 +5,10 @@ import io.microconfig.commands.PropertiesPostProcessor;
 import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.environments.filebased.EnvironmentParserImpl;
 import io.microconfig.environments.filebased.FileBasedEnvironmentProvider;
-import io.microconfig.io.BaseConfigIoService;
-import io.microconfig.io.ConfigIoService;
+import io.microconfig.io.BaseConfigFormat;
+import io.microconfig.io.ConfigFormat;
 import io.microconfig.properties.PropertiesProvider;
-import io.microconfig.properties.files.parser.FileComponentParser;
+import io.microconfig.properties.files.parser.PropertiesComponentParser;
 import io.microconfig.properties.files.provider.ComponentTree;
 import io.microconfig.properties.files.provider.ComponentTreeCache;
 import io.microconfig.properties.files.provider.FileBasedPropertiesProvider;
@@ -45,7 +45,7 @@ public class BuildCommands {
     private final File destinationComponentDir;
     @Wither
     private final String serviceInnerDir;
-    private final ConfigIoService configIoService = BaseConfigIoService.getInstance();
+    private final ConfigFormat configFormat = BaseConfigFormat.getInstance();
 
     public static BuildCommands init(File root, File destinationComponentDir) {
         File fullRepoDir = canonical(root);
@@ -57,7 +57,7 @@ public class BuildCommands {
 
     public PropertiesProvider newPropertiesProvider(ConfigType configType) {
         PropertiesProvider fileBasedProvider = cache(
-                new FileBasedPropertiesProvider(componentTree, configType.getConfigExtension(), new FileComponentParser(componentTree.getConfigComponentsRoot()))
+                new FileBasedPropertiesProvider(componentTree, configType.getConfigExtension(), new PropertiesComponentParser(componentTree.getConfigComponentsRoot()))
         );
         SpecialPropertiesFactory specialProperties = new SpecialPropertiesFactory(componentTree, destinationComponentDir);
         PropertyResolver resolver = newPropertyResolver(fileBasedProvider, specialProperties);
@@ -95,6 +95,6 @@ public class BuildCommands {
     }
 
     private PropertySerializer propertySerializer(ConfigType configType) {
-        return new PropertiesDiffWriter(new PropertiesSerializerImpl(destinationComponentDir, serviceInnerDir + "/" + configType.getResultFileName()), configIoService);
+        return new PropertiesDiffWriter(new PropertiesSerializerImpl(destinationComponentDir, serviceInnerDir + "/" + configType.getResultFileName()), configFormat);
     }
 }

@@ -18,7 +18,7 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.of;
 
-class PropertiesIoService implements ConfigIoService {
+class PropertiesConfigFormat implements ConfigFormat {
     @Override
     public Map<String, String> read(File file) {
         if (!file.exists()) return emptyMap();
@@ -49,18 +49,6 @@ class PropertiesIoService implements ConfigIoService {
         return keyToValue;
     }
 
-    private boolean isMultilineValue(String line) {
-        return line.endsWith("\\");
-    }
-
-    private int separatorIndex(StringBuilder line) {
-        int eqIndex = line.indexOf("=");
-        if (eqIndex < 0) return line.indexOf(":");
-
-        int colonIndex = line.lastIndexOf(":", eqIndex - 1);
-        return colonIndex < 0 ? eqIndex : colonIndex;
-    }
-
     @Override
     public void append(File file, Map<String, String> properties) {
         Stream<String> lines = properties.entrySet()
@@ -82,6 +70,18 @@ class PropertiesIoService implements ConfigIoService {
         doWrite(file, properties.stream()
                 .filter(p -> !p.isTemp())
                 .map(Property::toString));
+    }
+
+    private boolean isMultilineValue(String line) {
+        return line.endsWith("\\");
+    }
+
+    private int separatorIndex(StringBuilder line) {
+        int eqIndex = line.indexOf("=");
+        if (eqIndex < 0) return line.indexOf(":");
+
+        int colonIndex = line.lastIndexOf(":", eqIndex - 1);
+        return colonIndex < 0 ? eqIndex : colonIndex;
     }
 
     private void doWrite(File file, Stream<String> lines, OpenOption... openOptions) {

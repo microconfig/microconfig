@@ -1,6 +1,6 @@
 package deployment.mgmt.configs.encryption;
 
-import io.microconfig.io.BaseConfigIoService;
+import io.microconfig.io.BaseConfigFormat;
 
 import java.io.File;
 import java.util.Map;
@@ -11,7 +11,7 @@ public class PropertyEncryptionHelper {
     private static final String DEFAULT_SECRET_PROPERTY_MATCHER = "^.*password.*$";
 
     public static void encryptProperties(File propertiesFile, File passwordFile) {
-        Map<String, String> properties = BaseConfigIoService.getInstance().read(propertiesFile);
+        Map<String, String> properties = BaseConfigFormat.getInstance().read(propertiesFile);
         String result = new PropertiesEncryptor(passwordFile).encryptProperties(properties, DEFAULT_SECRET_PROPERTY_MATCHER);
 
         write(propertiesFile, result);

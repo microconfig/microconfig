@@ -3,7 +3,7 @@ package deployment.mgmt.configs.componentgroup;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.service.properties.ProcessProperties;
 import deployment.mgmt.configs.service.properties.PropertyService;
-import io.microconfig.io.ConfigIoService;
+import io.microconfig.io.ConfigFormat;
 import lombok.AllArgsConstructor;
 
 import java.io.File;
@@ -34,7 +34,7 @@ public class ComponentGroupServiceImpl implements ComponentGroupService {
 
     private final DeployFileStructure deployFileStructure;
     private final PropertyService propertyService;
-    private final ConfigIoService configIoService;
+    private final ConfigFormat configFormat;
 
     @Override
     public void update(GroupDescription description) {
@@ -56,7 +56,7 @@ public class ComponentGroupServiceImpl implements ComponentGroupService {
             throw new IllegalStateException("Can't find project version file " + projectVersionFile);
         }
 
-        String version = isPostfix ? requireNonNull(configIoService.read(projectVersionFile).get(PROJECT_VERSION_KEY)) + fullVersionOrPostfix : fullVersionOrPostfix;
+        String version = isPostfix ? requireNonNull(configFormat.read(projectVersionFile).get(PROJECT_VERSION_KEY)) + fullVersionOrPostfix : fullVersionOrPostfix;
         File envVersionFile = deployFileStructure.configs().getProjectVersionFile(getEnv());
         write(envVersionFile, PROJECT_VERSION_KEY + "=" + version);
     }
@@ -64,7 +64,7 @@ public class ComponentGroupServiceImpl implements ComponentGroupService {
     @Override
     public String getProjectVersion() {
         File projectVersionFile = deployFileStructure.configs().getProjectVersionFile(getEnv());
-        return configIoService.read(projectVersionFile).get(PROJECT_VERSION_KEY);
+        return configFormat.read(projectVersionFile).get(PROJECT_VERSION_KEY);
     }
 
     @Override

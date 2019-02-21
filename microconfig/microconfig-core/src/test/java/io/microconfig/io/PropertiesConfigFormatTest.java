@@ -9,8 +9,8 @@ import static io.microconfig.utils.ClasspathUtils.getClasspathFile;
 import static io.microconfig.utils.FileUtils.LINE_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class PropertiesIoServiceTest {
-    private final PropertiesIoService ioService = new PropertiesIoService();
+class PropertiesConfigFormatTest {
+    private final PropertiesConfigFormat ioService = new PropertiesConfigFormat();
 
     @Test
     void test() {

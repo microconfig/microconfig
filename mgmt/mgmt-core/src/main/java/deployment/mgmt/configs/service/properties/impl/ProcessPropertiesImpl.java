@@ -1,7 +1,7 @@
 package deployment.mgmt.configs.service.properties.impl;
 
 import deployment.mgmt.configs.service.properties.*;
-import io.microconfig.io.ConfigIoService;
+import io.microconfig.io.ConfigFormat;
 import io.microconfig.utils.SystemPropertiesUtils;
 import lombok.RequiredArgsConstructor;
 
@@ -23,11 +23,11 @@ import static java.util.Set.of;
 public class ProcessPropertiesImpl implements ProcessProperties {
     private final Map<String, String> keyToValue;
     private final File file;
-    private final ConfigIoService configIoService;
+    private final ConfigFormat configFormat;
 
-    public static ProcessProperties fromFile(File file, ConfigIoService configIoService) {
-        Map<String, String> keyToValue = configIoService.read(file);
-        return new ProcessPropertiesImpl(keyToValue, file, configIoService);
+    public static ProcessProperties fromFile(File file, ConfigFormat configFormat) {
+        Map<String, String> keyToValue = configFormat.read(file);
+        return new ProcessPropertiesImpl(keyToValue, file, configFormat);
     }
 
     public static ProcessProperties fromMap(Map<String, String> properties) {
@@ -193,7 +193,7 @@ public class ProcessPropertiesImpl implements ProcessProperties {
     @Override
     public void update(Map<String, String> update) {
         keyToValue.putAll(update);
-        configIoService.write(file, keyToValue);
+        configFormat.write(file, keyToValue);
     }
 
     private Integer getIntegerValue(String name) {

@@ -4,7 +4,7 @@ import io.microconfig.environments.Component;
 import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.Property;
 import io.microconfig.properties.files.parser.ComponentParser;
-import io.microconfig.properties.files.parser.ComponentProperties;
+import io.microconfig.properties.files.parser.ParsedComponent;
 import io.microconfig.properties.files.parser.Include;
 
 import java.io.File;
@@ -21,9 +21,9 @@ import static java.util.stream.Collectors.toMap;
 public class FileBasedPropertiesProvider implements PropertiesProvider {
     private final ComponentTree componentTree;
     private final String fileExtension;
-    private final ComponentParser<File> componentParser;
+    private final ComponentParser componentParser;
 
-    public FileBasedPropertiesProvider(ComponentTree componentTree, String fileExtension, ComponentParser<File> componentParser) {
+    public FileBasedPropertiesProvider(ComponentTree componentTree, String fileExtension, ComponentParser componentParser) {
         this.componentTree = componentTree;
         this.fileExtension = fileExtension;
         this.componentParser = componentParser;
@@ -53,28 +53,28 @@ public class FileBasedPropertiesProvider implements PropertiesProvider {
         Map<String, Property> propertyByKey = new HashMap<>();
 
         componentTree.getPropertyFiles(component.getType(), filter)
-                .map(p -> parseComponentProperties(component, env, p))
+                .map(p -> parseComponent(component, env, p))
                 .forEach(c -> processComponent(c, processedInclude, propertyByKey));
 
         return propertyByKey;
     }
 
-    private ComponentProperties parseComponentProperties(Component component, String env, File file) {
+    private ParsedComponent parseComponent(Component component, String env, File file) {
         return componentParser.parse(file, component, env);
     }
 
-    private void processComponent(ComponentProperties componentProperties, Set<Include> processedInclude, Map<String, Property> destination) {
-        Map<String, Property> includes = processIncludes(componentProperties, processedInclude);
-        Map<String, Property> componentProps = componentProperties.getProperties().stream().collect(toMap(Property::getKey, p -> p));
+    private void processComponent(ParsedComponent parsedComponent, Set<Include> processedInclude, Map<String, Property> destination) {
+        Map<String, Property> includes = processIncludes(parsedComponent, processedInclude);
+        Map<String, Property> componentProps = parsedComponent.getProperties().stream().collect(toMap(Property::getKey, p -> p));
 
         destination.putAll(includes);
         destination.putAll(componentProps);
     }
 
-    private Map<String, Property> processIncludes(ComponentProperties componentProperties, Set<Include> processedInclude) {
+    private Map<String, Property> processIncludes(ParsedComponent parsedComponent, Set<Include> processedInclude) {
         Map<String, Property> propByKey = new HashMap<>();
 
-        for (Include include : componentProperties.getIncludes()) {
+        for (Include include : parsedComponent.getIncludes()) {
             if (!processedInclude.add(include)) continue;
 
             Map<String, Property> includedProperties = getPropertiesByKey(Component.byType(include.getComponentName()), include.getEnv(), processedInclude);

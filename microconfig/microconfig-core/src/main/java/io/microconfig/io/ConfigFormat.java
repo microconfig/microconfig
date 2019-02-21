@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
-public interface ConfigIoService {
+public interface ConfigFormat {
     Map<String, String> read(File file);
 
     void write(File file, Collection<Property> properties);

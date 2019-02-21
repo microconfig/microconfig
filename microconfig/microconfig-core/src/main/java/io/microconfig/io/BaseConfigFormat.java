@@ -6,12 +6,12 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
-public class BaseConfigIoService implements ConfigIoService {
-    private static final ConfigIoService propertiesFormat = new PropertiesIoService();
-    private static final ConfigIoService yamlFormat = new YamlIoServiceImpl();
+public class BaseConfigFormat implements ConfigFormat {
+    private final ConfigFormat yamlFormat = new YamlConfigFormat();
+    private final ConfigFormat propertiesFormat = new PropertiesConfigFormat();
 
-    public static ConfigIoService getInstance() {
-        return new BaseConfigIoService();
+    public static ConfigFormat getInstance() {
+        return new BaseConfigFormat();
     }
 
     @Override
@@ -34,7 +34,7 @@ public class BaseConfigIoService implements ConfigIoService {
         select(file).write(file, properties);
     }
 
-    private ConfigIoService select(File file) {
+    private ConfigFormat select(File file) {
         return file.getName().endsWith(".yaml") ? yamlFormat : propertiesFormat;
     }
 }
