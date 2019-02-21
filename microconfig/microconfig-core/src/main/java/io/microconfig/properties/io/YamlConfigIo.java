@@ -6,6 +6,8 @@ import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.OpenOption;
 import java.util.Collection;
 import java.util.Map;
@@ -20,8 +22,13 @@ import static org.yaml.snakeyaml.DumperOptions.ScalarStyle.PLAIN;
 
 public class YamlConfigIo implements ConfigIo {
     @Override
+    @SuppressWarnings("unchecked")
     public Map<String, String> read(File file) {
-        return null;
+        try (FileReader fileReader = new FileReader(file)) {
+            return new Yaml().loadAs(fileReader, Map.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
