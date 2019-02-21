@@ -4,6 +4,14 @@ mainClassName = 'io.microconfig.commands.BuildConfigMain'
 sourceCompatibility = 9
 targetCompatibility = 9
 
+publishing {
+    publications {
+        shadow(MavenPublication) { publication ->
+            project.shadow.component(publication)
+        }
+    }
+}
+
 dependencies {
     implementation project(':microconfig:utils'),
             lib.snakeyaml,
