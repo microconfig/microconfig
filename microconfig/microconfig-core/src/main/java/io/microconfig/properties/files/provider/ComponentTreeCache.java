@@ -43,7 +43,7 @@ public class ComponentTreeCache implements ComponentTree {
     private static Predicate<File> isDirectory() {
         return f -> {
             /*Filter by ext works way faster than File::isDirectory.
-             Implementation is correct because File::listFiles for file will return null and we handle it in getPropertyFiles()
+             Implementation is correct because File::listFiles for file will return null and we handle it in getConfigFiles()
              */
             String name = f.getName();
             return !name.endsWith(SERVICE.getConfigExtension())
@@ -53,8 +53,8 @@ public class ComponentTreeCache implements ComponentTree {
     }
 
     @Override
-    public Stream<File> getPropertyFiles(String componentType, Predicate<File> filter) {
-        return foldersByComponentType.getOrDefault(componentType, emptyList())
+    public Stream<File> getConfigFiles(String component, Predicate<File> filter) {
+        return foldersByComponentType.getOrDefault(component, emptyList())
                 .stream()
                 .map(File::listFiles)
                 .filter(Objects::nonNull)

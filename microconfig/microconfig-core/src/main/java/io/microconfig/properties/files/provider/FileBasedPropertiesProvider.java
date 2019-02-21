@@ -52,7 +52,7 @@ public class FileBasedPropertiesProvider implements PropertiesProvider {
     private Map<String, Property> collectProperties(Predicate<File> filter, Component component, String env, Set<Include> processedInclude) {
         Map<String, Property> propertyByKey = new HashMap<>();
 
-        componentTree.getPropertyFiles(component.getType(), filter)
+        componentTree.getConfigFiles(component.getType(), filter)
                 .map(p -> parseComponent(component, env, p))
                 .forEach(c -> processComponent(c, processedInclude, propertyByKey));
 
