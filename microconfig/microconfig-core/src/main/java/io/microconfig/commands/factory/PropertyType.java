@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum PropertyType {
-    SERVICE("service", "properties"),
-    PROCESS("process", "proc"),
+    SERVICE("properties", "service"),
+    PROCESS("proc", "process"),
     SECRET("secret"),
     DEPENDENCIES("dependencies"),
     ENV("env"),
@@ -13,14 +13,14 @@ public enum PropertyType {
     LOG4J2("log4j2"),
     SAP("sap");
 
-    private final String resultFileName;
     private final String configExtension;
+    private final String resultFileName;
 
     PropertyType(String configExtension) {
         this(configExtension, configExtension);
     }
 
-    PropertyType(String resultFileName, String configExtension) {
+    PropertyType(String configExtension, String resultFileName) {
         this.configExtension = "." + configExtension;
         this.resultFileName = resultFileName + "." + System.getProperty("outputFormat", "yaml");
     }
