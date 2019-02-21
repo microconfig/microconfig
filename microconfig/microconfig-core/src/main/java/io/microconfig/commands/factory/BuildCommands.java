@@ -95,6 +95,7 @@ public class BuildCommands {
     }
 
     private PropertySerializer propertySerializer(ConfigType configType) {
-        return new PropertiesDiffWriter(new PropertiesSerializerImpl(destinationComponentDir, serviceInnerDir + "/" + configType.getResultFileName()), configIo);
+        PropertiesSerializerImpl serializer = new PropertiesSerializerImpl(destinationComponentDir, serviceInnerDir + "/" + configType.getResultFileName(), configIo);
+        return new PropertiesDiffWriter(serializer, configIo);
     }
 }
