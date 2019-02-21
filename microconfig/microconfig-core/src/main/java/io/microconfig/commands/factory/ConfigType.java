@@ -14,6 +14,7 @@ public enum ConfigType {
     SAP("sap");
 
     private final String configExtension;
+    private final String configFileName;
     private final String resultFileName;
 
     ConfigType(String configExtension) {
@@ -22,6 +23,7 @@ public enum ConfigType {
 
     ConfigType(String configExtension, String resultFileName) {
         this.configExtension = "." + configExtension;
+        this.configFileName = resultFileName + this.configExtension;
         this.resultFileName = resultFileName + "." + System.getProperty("outputFormat", "properties");
     }
 }

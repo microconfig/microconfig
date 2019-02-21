@@ -3,6 +3,7 @@ package io.microconfig.properties.io;
 import io.microconfig.properties.Property;
 import io.microconfig.utils.FileUtils;
 import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
@@ -16,6 +17,7 @@ import java.util.TreeMap;
 import static io.microconfig.properties.Property.typeValue;
 import static io.microconfig.utils.FileUtils.LINE_SEPARATOR;
 import static java.nio.file.StandardOpenOption.APPEND;
+import static java.util.Collections.emptyMap;
 import static org.yaml.snakeyaml.DumperOptions.FlowStyle.BLOCK;
 import static org.yaml.snakeyaml.DumperOptions.LineBreak.WIN;
 import static org.yaml.snakeyaml.DumperOptions.ScalarStyle.PLAIN;
@@ -24,11 +26,8 @@ public class YamlConfigIo implements ConfigIo {
     @Override
     @SuppressWarnings("unchecked")
     public Map<String, String> read(File file) {
-        try (FileReader fileReader = new FileReader(file)) {
-            return new Yaml().loadAs(fileReader, Map.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        if (!file.exists()) return emptyMap();
+        return YamlUtils.asFlatMap(file);
     }
 
     @Override
