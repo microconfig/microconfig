@@ -30,7 +30,7 @@ public class PropertiesIoService implements ConfigIoService {
             if (trimmed.isEmpty() || trimmed.startsWith("#")) continue;
 
             lastLine.append(trimmed);
-            if (trimmed.endsWith("\\")) {
+            if (isMultilineValue(trimmed)) {
                 lastLine.append(LINE_SEPARATOR);
                 continue;
             }
@@ -47,6 +47,10 @@ public class PropertiesIoService implements ConfigIoService {
         }
 
         return keyToValue;
+    }
+
+    private boolean isMultilineValue(String line) {
+        return line.endsWith("\\");
     }
 
     private int separatorIndex(StringBuilder line) {

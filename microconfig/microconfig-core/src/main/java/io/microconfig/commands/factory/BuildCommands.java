@@ -5,6 +5,7 @@ import io.microconfig.commands.PropertiesPostProcessor;
 import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.environments.filebased.EnvironmentParserImpl;
 import io.microconfig.environments.filebased.FileBasedEnvironmentProvider;
+import io.microconfig.io.ConfigIoService;
 import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.files.parser.FileComponentParser;
 import io.microconfig.properties.files.provider.ComponentTree;
@@ -17,6 +18,7 @@ import io.microconfig.properties.resolver.placeholder.strategies.SpecialProperty
 import io.microconfig.properties.resolver.placeholder.strategies.StandardResolveStrategy;
 import io.microconfig.properties.resolver.placeholder.strategies.specials.SpecialPropertiesFactory;
 import io.microconfig.properties.resolver.spel.SpelExpressionResolver;
+import io.microconfig.properties.serializer.PropertiesDiffWriter;
 import io.microconfig.properties.serializer.PropertiesSerializerImpl;
 import io.microconfig.properties.serializer.PropertySerializer;
 import lombok.Getter;
@@ -42,6 +44,7 @@ public class BuildCommands {
     private final File destinationComponentDir;
     @Wither
     private final String serviceInnerDir;
+    private final ConfigIoService configIoService = ConfigIoService.getInstance();
 
     public static BuildCommands init(File root, File destinationComponentDir) {
         File fullRepoDir = canonical(root);
@@ -91,7 +94,6 @@ public class BuildCommands {
     }
 
     private PropertySerializer propertySerializer(ConfigType configType) {
-//        return new PropertiesDiffWriter(new PropertiesSerializerImpl(destinationComponentDir, serviceInnerDir + "/" + configType.getResultFileName()));
-        return new PropertiesSerializerImpl(destinationComponentDir, serviceInnerDir + "/" + configType.getResultFileName());
+        return new PropertiesDiffWriter(new PropertiesSerializerImpl(destinationComponentDir, serviceInnerDir + "/" + configType.getResultFileName()), configIoService);
     }
 }
