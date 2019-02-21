@@ -1,4 +1,4 @@
-package io.microconfig.io;
+package io.microconfig.properties.io;
 
 import io.microconfig.properties.Property;
 
@@ -6,12 +6,12 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
-public class BaseConfigFormat implements ConfigFormat {
-    private final ConfigFormat yamlFormat = new YamlConfigFormat();
-    private final ConfigFormat propertiesFormat = new PropertiesConfigFormat();
+public class BaseConfigIo implements ConfigIo {
+    private final ConfigIo yamlFormat = new YamlConfigIo();
+    private final ConfigIo propertiesFormat = new PropertiesConfigIo();
 
-    public static ConfigFormat getInstance() {
-        return new BaseConfigFormat();
+    public static ConfigIo getInstance() {
+        return new BaseConfigIo();
     }
 
     @Override
@@ -34,7 +34,7 @@ public class BaseConfigFormat implements ConfigFormat {
         select(file).write(file, properties);
     }
 
-    private ConfigFormat select(File file) {
+    private ConfigIo select(File file) {
         return file.getName().endsWith(".yaml") ? yamlFormat : propertiesFormat;
     }
 }

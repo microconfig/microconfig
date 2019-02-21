@@ -5,8 +5,8 @@ import io.microconfig.commands.PropertiesPostProcessor;
 import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.environments.filebased.EnvironmentParserImpl;
 import io.microconfig.environments.filebased.FileBasedEnvironmentProvider;
-import io.microconfig.io.BaseConfigFormat;
-import io.microconfig.io.ConfigFormat;
+import io.microconfig.properties.io.BaseConfigIo;
+import io.microconfig.properties.io.ConfigIo;
 import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.files.parser.PropertiesComponentParser;
 import io.microconfig.properties.files.provider.ComponentTree;
@@ -45,7 +45,7 @@ public class BuildCommands {
     private final File destinationComponentDir;
     @Wither
     private final String serviceInnerDir;
-    private final ConfigFormat configFormat = BaseConfigFormat.getInstance();
+    private final ConfigIo configIo = BaseConfigIo.getInstance();
 
     public static BuildCommands init(File root, File destinationComponentDir) {
         File fullRepoDir = canonical(root);
@@ -95,6 +95,6 @@ public class BuildCommands {
     }
 
     private PropertySerializer propertySerializer(ConfigType configType) {
-        return new PropertiesDiffWriter(new PropertiesSerializerImpl(destinationComponentDir, serviceInnerDir + "/" + configType.getResultFileName()), configFormat);
+        return new PropertiesDiffWriter(new PropertiesSerializerImpl(destinationComponentDir, serviceInnerDir + "/" + configType.getResultFileName()), configIo);
     }
 }

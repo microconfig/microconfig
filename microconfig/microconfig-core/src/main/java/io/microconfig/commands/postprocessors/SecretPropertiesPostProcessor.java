@@ -1,7 +1,7 @@
 package io.microconfig.commands.postprocessors;
 
 import io.microconfig.commands.PropertiesPostProcessor;
-import io.microconfig.io.ConfigFormat;
+import io.microconfig.properties.io.ConfigIo;
 import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.Property;
 import io.microconfig.properties.resolver.RootComponent;
@@ -20,10 +20,10 @@ import static io.microconfig.utils.Logger.announce;
 @RequiredArgsConstructor
 public class SecretPropertiesPostProcessor implements PropertiesPostProcessor {
     private final File secretFile;
-    private final ConfigFormat configFormat;
+    private final ConfigIo configIo;
 
-    public SecretPropertiesPostProcessor(ConfigFormat configFormat) {
-        this(new File(userHome(), "/secret/secret.properties"), configFormat);
+    public SecretPropertiesPostProcessor(ConfigIo configIo) {
+        this(new File(userHome(), "/secret/secret.properties"), configIo);
     }
 
     @Override
@@ -37,13 +37,13 @@ public class SecretPropertiesPostProcessor implements PropertiesPostProcessor {
     }
 
     private synchronized void doMerge(String serviceName, Map<String, String> properties) {
-        configFormat.read(secretFile)
+        configIo.read(secretFile)
                 .keySet()
                 .forEach(properties::remove);
 
         if (!properties.isEmpty()) {
             announce("Appending new values to secret.properties: " + serviceName + " -> " + properties);
-            configFormat.append(secretFile, properties);
+            configIo.append(secretFile, properties);
         }
     }
 }

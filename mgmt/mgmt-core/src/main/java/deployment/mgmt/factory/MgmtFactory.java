@@ -71,8 +71,8 @@ import deployment.mgmt.update.updater.MgmtAutoUpdater;
 import deployment.mgmt.update.updater.MgmtAutoUpdaterImpl;
 import deployment.mgmt.update.updater.MgmtProperties;
 import deployment.mgmt.update.updater.MgmtPropertiesImpl;
-import io.microconfig.io.BaseConfigFormat;
-import io.microconfig.io.ConfigFormat;
+import io.microconfig.properties.io.BaseConfigIo;
+import io.microconfig.properties.io.ConfigIo;
 import lombok.Getter;
 
 import static java.util.Arrays.asList;
@@ -82,7 +82,7 @@ import static java.util.List.of;
 public class MgmtFactory {
     private final DeployFileStructure deployFileStructure;
     private final LockService lockService;
-    private final ConfigFormat configFormat;
+    private final ConfigIo configIo;
     private final ComponentGroupService componentGroupService;
     private final PropertyService propertyService;
     private final MetadataProvider metadataProvider;
@@ -107,11 +107,11 @@ public class MgmtFactory {
     public MgmtFactory() {
         this.deployFileStructure = DeployFileStructureImpl.init();
         this.lockService = new OsLockService(deployFileStructure);
-        this.configFormat = BaseConfigFormat.getInstance();
-        this.propertyService = new PropertyServiceImpl(deployFileStructure, configFormat);
+        this.configIo = BaseConfigIo.getInstance();
+        this.propertyService = new PropertyServiceImpl(deployFileStructure, configIo);
         this.metadataProvider = new MetadataProviderImpl(deployFileStructure);
-        this.componentGroupService = new ComponentGroupServiceImpl(deployFileStructure, propertyService, configFormat);
-        this.deploySettings = new DeploySettingsImpl(deployFileStructure, componentGroupService, new SimpleEncryptionServiceImpl(), configFormat);
+        this.componentGroupService = new ComponentGroupServiceImpl(deployFileStructure, propertyService, configIo);
+        this.deploySettings = new DeploySettingsImpl(deployFileStructure, componentGroupService, new SimpleEncryptionServiceImpl(), configIo);
         this.nexusClient = new NexusClientImpl(
                 new RepositoryPriorityServiceImpl(asList("ru", Mgmt.class.getPackage().getName().split("\\.")[0])),
                 deploySettings
@@ -183,7 +183,7 @@ public class MgmtFactory {
                 newInitService(),
                 new EncryptPropertiesCommandImpl(deployFileStructure),
                 updateConfigCommand,
-                new ShowDiffCommandImpl(componentGroupService, propertyService, deployFileStructure, configFormat),
+                new ShowDiffCommandImpl(componentGroupService, propertyService, deployFileStructure, configIo),
                 new LessLogCommand(propertyService, deployFileStructure),
                 deploySettings,
                 mgmgUpdater,

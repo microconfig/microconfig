@@ -3,7 +3,7 @@ package deployment.mgmt.configs.diff;
 import deployment.mgmt.configs.componentgroup.ComponentGroupService;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.service.properties.PropertyService;
-import io.microconfig.io.ConfigFormat;
+import io.microconfig.properties.io.ConfigIo;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -20,11 +20,11 @@ public class ShowDiffCommandImpl implements ShowDiffCommand {
     private final ComponentGroupService componentGroupService;
     private final PropertyService propertyService;
     private final DeployFileStructure deployFileStructure;
-    private final ConfigFormat configFormat;
+    private final ConfigIo configIo;
 
     @Override
     public void showPropDiff(String... services) {
-        doShow(services, deployFileStructure.service()::getDiffFile, f -> configFormat.read(f).forEach(this::colorOutput));
+        doShow(services, deployFileStructure.service()::getDiffFile, f -> configIo.read(f).forEach(this::colorOutput));
     }
 
     @Override

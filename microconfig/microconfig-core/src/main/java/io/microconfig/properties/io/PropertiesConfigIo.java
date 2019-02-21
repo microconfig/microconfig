@@ -1,4 +1,4 @@
-package io.microconfig.io;
+package io.microconfig.properties.io;
 
 import io.microconfig.properties.Property;
 import io.microconfig.utils.FileUtils;
@@ -18,7 +18,7 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.of;
 
-class PropertiesConfigFormat implements ConfigFormat {
+class PropertiesConfigIo implements ConfigIo {
     @Override
     public Map<String, String> read(File file) {
         if (!file.exists()) return emptyMap();
