@@ -46,8 +46,8 @@ public class ComponentTreeCache implements ComponentTree {
              Implementation is correct because File::listFiles for file will return null and we handle it in getPropertyFiles()
              */
             String name = f.getName();
-            return !name.endsWith(SERVICE.getExtension())
-                    && !name.endsWith(PROCESS.getExtension())
+            return !name.endsWith(SERVICE.getConfigExtension())
+                    && !name.endsWith(PROCESS.getConfigExtension())
                     && !name.endsWith(".yaml");
         };
     }

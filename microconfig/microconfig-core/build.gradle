@@ -6,6 +6,7 @@ targetCompatibility = 9
 
 dependencies {
     implementation project(':microconfig:utils'),
+            lib.snakeyaml,
             'org.springframework:spring-expression',
             'com.google.code.gson:gson'
 }

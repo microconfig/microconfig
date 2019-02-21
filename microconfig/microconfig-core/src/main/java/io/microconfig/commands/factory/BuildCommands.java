@@ -17,7 +17,6 @@ import io.microconfig.properties.resolver.placeholder.strategies.SpecialProperty
 import io.microconfig.properties.resolver.placeholder.strategies.StandardResolveStrategy;
 import io.microconfig.properties.resolver.placeholder.strategies.specials.SpecialPropertiesFactory;
 import io.microconfig.properties.resolver.spel.SpelExpressionResolver;
-import io.microconfig.properties.serializer.PropertiesDiffWriter;
 import io.microconfig.properties.serializer.PropertiesSerializerImpl;
 import io.microconfig.properties.serializer.PropertySerializer;
 import lombok.Getter;
@@ -54,7 +53,7 @@ public class BuildCommands {
 
     public PropertiesProvider newPropertiesProvider(PropertyType propertyType) {
         PropertiesProvider fileBasedProvider = cache(
-                new FileBasedPropertiesProvider(componentTree, propertyType.getExtension(), new FileComponentParser(componentTree.getConfigComponentsRoot()))
+                new FileBasedPropertiesProvider(componentTree, propertyType.getConfigExtension(), new FileComponentParser(componentTree.getConfigComponentsRoot()))
         );
         SpecialPropertiesFactory specialProperties = new SpecialPropertiesFactory(componentTree, destinationComponentDir);
         PropertyResolver resolver = newPropertyResolver(fileBasedProvider, specialProperties);
@@ -92,6 +91,7 @@ public class BuildCommands {
     }
 
     private PropertySerializer propertySerializer(PropertyType propertyType) {
-        return new PropertiesDiffWriter(new PropertiesSerializerImpl(destinationComponentDir, serviceInnerDir + "/" + propertyType.getResultFile()));
+//        return new PropertiesDiffWriter(new PropertiesSerializerImpl(destinationComponentDir, serviceInnerDir + "/" + propertyType.getResultFileName()));
+        return new PropertiesSerializerImpl(destinationComponentDir, serviceInnerDir + "/" + propertyType.getResultFileName());
     }
 }

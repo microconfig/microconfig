@@ -13,15 +13,15 @@ public enum PropertyType {
     LOG4J2("log4j2"),
     SAP("sap");
 
-    private final String extension;
-    private final String resultFile;
+    private final String resultFileName;
+    private final String configExtension;
 
-    PropertyType(String extension) {
-        this(extension, extension);
+    PropertyType(String configExtension) {
+        this(configExtension, configExtension);
     }
 
-    PropertyType(String resultFile, String extension) {
-        this.extension = "." + extension;
-        this.resultFile = resultFile + ".properties";
+    PropertyType(String resultFileName, String configExtension) {
+        this.configExtension = "." + configExtension;
+        this.resultFileName = resultFileName + "." + System.getProperty("outputFormat", "yaml");
     }
 }

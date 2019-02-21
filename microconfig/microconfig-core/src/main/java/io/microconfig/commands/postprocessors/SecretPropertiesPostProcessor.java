@@ -33,7 +33,7 @@ public class SecretPropertiesPostProcessor implements PropertiesPostProcessor {
         if (props.isEmpty()) return;
 
         doMerge(currentComponent.getRootComponent().getName(), new LinkedHashMap<>(props));
-        delete(new File(destinationDir, SECRET.getResultFile()));
+        delete(new File(destinationDir, SECRET.getResultFileName()));
     }
 
     private synchronized void doMerge(String serviceName, Map<String, String> properties) {
