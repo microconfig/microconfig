@@ -2,6 +2,8 @@ package io.microconfig.commands.factory;
 
 import lombok.Getter;
 
+import java.util.stream.Stream;
+
 @Getter
 public enum ConfigType {
     SERVICE("properties", "service"),
@@ -25,5 +27,12 @@ public enum ConfigType {
         this.configExtension = "." + configExtension;
         this.configFileName = resultFileName + this.configExtension;
         this.resultFileName = resultFileName + "." + System.getProperty("outputFormat", "properties");
+    }
+
+    public static ConfigType byExtension(String ext) {
+        return Stream.of(values())
+                .filter(ct -> ct.configExtension.equals(ext))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Can't find ConfigType for extension " + ext));
     }
 }
