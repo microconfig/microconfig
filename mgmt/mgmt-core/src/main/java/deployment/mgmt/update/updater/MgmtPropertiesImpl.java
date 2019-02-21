@@ -6,7 +6,7 @@ import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.service.properties.NexusRepository;
 import deployment.mgmt.configs.service.properties.impl.ProcessPropertiesImpl;
 import io.microconfig.commands.factory.BuildCommands;
-import io.microconfig.commands.factory.PropertyType;
+import io.microconfig.commands.factory.ConfigType;
 import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.Property;
@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
 
-import static io.microconfig.commands.factory.PropertyType.PROCESS;
+import static io.microconfig.commands.factory.ConfigType.PROCESS;
 import static io.microconfig.environments.Component.byType;
 import static io.microconfig.properties.Property.withoutTempValues;
 import static io.microconfig.utils.Logger.info;
@@ -36,8 +36,8 @@ public class MgmtPropertiesImpl implements MgmtProperties {
     }
 
     @Override
-    public PropertiesProvider getPropertyProvider(PropertyType propertyType) {
-        return initBuildCommands().newPropertiesProvider(propertyType);
+    public PropertiesProvider getPropertyProvider(ConfigType configType) {
+        return initBuildCommands().newPropertiesProvider(configType);
     }
 
     @Override

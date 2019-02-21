@@ -51,9 +51,9 @@ public class BuildCommands {
         return new BuildCommands(componentTree, environmentProvider, destinationComponentDir, "");
     }
 
-    public PropertiesProvider newPropertiesProvider(PropertyType propertyType) {
+    public PropertiesProvider newPropertiesProvider(ConfigType configType) {
         PropertiesProvider fileBasedProvider = cache(
-                new FileBasedPropertiesProvider(componentTree, propertyType.getConfigExtension(), new FileComponentParser(componentTree.getConfigComponentsRoot()))
+                new FileBasedPropertiesProvider(componentTree, configType.getConfigExtension(), new FileComponentParser(componentTree.getConfigComponentsRoot()))
         );
         SpecialPropertiesFactory specialProperties = new SpecialPropertiesFactory(componentTree, destinationComponentDir);
         PropertyResolver resolver = newPropertyResolver(fileBasedProvider, specialProperties);
@@ -78,11 +78,11 @@ public class BuildCommands {
         );
     }
 
-    public BuildPropertiesCommand newBuildCommand(PropertyType type) {
+    public BuildPropertiesCommand newBuildCommand(ConfigType type) {
         return newBuildCommand(type, emptyPostProcessor());
     }
 
-    public BuildPropertiesCommand newBuildCommand(PropertyType type, PropertiesPostProcessor propertiesPostProcessor) {
+    public BuildPropertiesCommand newBuildCommand(ConfigType type, PropertiesPostProcessor propertiesPostProcessor) {
         return new BuildPropertiesCommand(environmentProvider, newPropertiesProvider(type), propertySerializer(type), propertiesPostProcessor);
     }
 
@@ -90,8 +90,8 @@ public class BuildCommands {
         return cache(new FileBasedEnvironmentProvider(new File(repoDir, ENVS_DIR), new EnvironmentParserImpl()));
     }
 
-    private PropertySerializer propertySerializer(PropertyType propertyType) {
-//        return new PropertiesDiffWriter(new PropertiesSerializerImpl(destinationComponentDir, serviceInnerDir + "/" + propertyType.getResultFileName()));
-        return new PropertiesSerializerImpl(destinationComponentDir, serviceInnerDir + "/" + propertyType.getResultFileName());
+    private PropertySerializer propertySerializer(ConfigType configType) {
+//        return new PropertiesDiffWriter(new PropertiesSerializerImpl(destinationComponentDir, serviceInnerDir + "/" + configType.getResultFileName()));
+        return new PropertiesSerializerImpl(destinationComponentDir, serviceInnerDir + "/" + configType.getResultFileName());
     }
 }

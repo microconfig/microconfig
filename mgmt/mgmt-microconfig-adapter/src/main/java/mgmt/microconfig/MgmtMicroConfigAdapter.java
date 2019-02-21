@@ -9,7 +9,7 @@ import io.microconfig.templates.CopyTemplatesServiceImpl;
 import java.io.File;
 import java.util.List;
 
-import static io.microconfig.commands.factory.PropertyType.*;
+import static io.microconfig.commands.factory.ConfigType.*;
 import static io.microconfig.templates.RelativePathResolver.empty;
 import static io.microconfig.templates.TemplatePattern.defaultPattern;
 import static java.util.Arrays.asList;

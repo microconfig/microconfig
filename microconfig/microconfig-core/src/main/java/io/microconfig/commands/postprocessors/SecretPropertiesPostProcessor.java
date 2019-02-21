@@ -10,7 +10,7 @@ import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static io.microconfig.commands.factory.PropertyType.SECRET;
+import static io.microconfig.commands.factory.ConfigType.SECRET;
 import static io.microconfig.properties.Property.withoutTempValues;
 import static io.microconfig.utils.FileUtils.delete;
 import static io.microconfig.utils.FileUtils.userHome;

@@ -17,7 +17,7 @@ import java.util.Map;
 
 import static deployment.mgmt.atrifacts.Artifact.fromMavenString;
 import static deployment.mgmt.utils.ZipUtils.unzip;
-import static io.microconfig.commands.factory.PropertyType.DEPENDENCIES;
+import static io.microconfig.commands.factory.ConfigType.DEPENDENCIES;
 import static io.microconfig.properties.Property.withoutTempValues;
 import static io.microconfig.utils.Logger.*;
 import static io.microconfig.utils.OsUtil.isWindows;

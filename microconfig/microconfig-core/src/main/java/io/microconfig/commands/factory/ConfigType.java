@@ -3,7 +3,7 @@ package io.microconfig.commands.factory;
 import lombok.Getter;
 
 @Getter
-public enum PropertyType {
+public enum ConfigType {
     SERVICE("properties", "service"),
     PROCESS("proc", "process"),
     SECRET("secret"),
@@ -16,11 +16,11 @@ public enum PropertyType {
     private final String configExtension;
     private final String resultFileName;
 
-    PropertyType(String configExtension) {
+    ConfigType(String configExtension) {
         this(configExtension, configExtension);
     }
 
-    PropertyType(String configExtension, String resultFileName) {
+    ConfigType(String configExtension, String resultFileName) {
         this.configExtension = "." + configExtension;
         this.resultFileName = resultFileName + "." + System.getProperty("outputFormat", "properties");
     }

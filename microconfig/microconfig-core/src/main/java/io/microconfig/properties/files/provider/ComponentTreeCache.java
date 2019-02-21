@@ -11,8 +11,8 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static io.microconfig.commands.factory.PropertyType.PROCESS;
-import static io.microconfig.commands.factory.PropertyType.SERVICE;
+import static io.microconfig.commands.factory.ConfigType.PROCESS;
+import static io.microconfig.commands.factory.ConfigType.SERVICE;
 import static io.microconfig.utils.IoUtils.walk;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;

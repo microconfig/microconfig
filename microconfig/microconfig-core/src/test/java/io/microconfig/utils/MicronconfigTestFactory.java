@@ -9,7 +9,7 @@ import io.microconfig.properties.resolver.PropertyResolverHolder;
 import java.io.File;
 import java.net.URL;
 
-import static io.microconfig.commands.factory.PropertyType.SERVICE;
+import static io.microconfig.commands.factory.ConfigType.SERVICE;
 import static java.util.Objects.requireNonNull;
 
 public class MicronconfigTestFactory {
