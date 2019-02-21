@@ -17,15 +17,15 @@ import static java.util.Arrays.asList;
 
 public class BuildPropertiesCommandFactory {
     public static Command newBuildPropertiesCommand(File repoDir, File destinationComponentDir) {
-        BuildCommands buildCommands = BuildCommands.init(repoDir, destinationComponentDir);
+        MicroconfigFactory microconfigFactory = MicroconfigFactory.init(repoDir, destinationComponentDir);
 
         return new CompositeCommand(asList(
-                buildCommands.newBuildCommand(SERVICE, copyTemplatesPostProcessor()),
-                buildCommands.newBuildCommand(PROCESS),
-                buildCommands.newBuildCommand(ENV),
-                buildCommands.newBuildCommand(LOG4j),
-                buildCommands.newBuildCommand(LOG4J2),
-                buildCommands.newBuildCommand(SECRET, new SecretPropertiesPostProcessor(BaseConfigIo.getInstance()))
+                microconfigFactory.newBuildCommand(SERVICE, copyTemplatesPostProcessor()),
+                microconfigFactory.newBuildCommand(PROCESS),
+                microconfigFactory.newBuildCommand(ENV),
+                microconfigFactory.newBuildCommand(LOG4j),
+                microconfigFactory.newBuildCommand(LOG4J2),
+                microconfigFactory.newBuildCommand(SECRET, new SecretPropertiesPostProcessor(BaseConfigIo.getInstance()))
         ));
     }
 

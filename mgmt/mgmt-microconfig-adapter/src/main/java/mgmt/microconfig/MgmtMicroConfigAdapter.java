@@ -1,7 +1,7 @@
 package mgmt.microconfig;
 
 import io.microconfig.commands.*;
-import io.microconfig.commands.factory.BuildCommands;
+import io.microconfig.commands.factory.MicroconfigFactory;
 import io.microconfig.commands.postprocessors.CopyTemplatesPostProcessor;
 import io.microconfig.commands.postprocessors.SecretPropertiesPostProcessor;
 import io.microconfig.properties.io.BaseConfigIo;
@@ -22,7 +22,7 @@ public class MgmtMicroConfigAdapter {
     }
 
     private static Command newBuildPropertiesCommand(File repoDir, File componentsDir) {
-        BuildCommands commands = BuildCommands.init(repoDir, componentsDir);
+        MicroconfigFactory commands = MicroconfigFactory.init(repoDir, componentsDir);
 
         BuildPropertiesCommand serviceCommon = commands.newBuildCommand(SERVICE, copyTemplatesPostProcessor());
         commands = commands.withServiceInnerDir(".mgmt");

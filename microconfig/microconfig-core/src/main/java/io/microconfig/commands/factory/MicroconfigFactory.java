@@ -37,7 +37,7 @@ import static io.microconfig.utils.FileUtils.canonical;
 
 @Getter
 @RequiredArgsConstructor
-public class BuildCommands {
+public class MicroconfigFactory {
     private static final String ENVS_DIR = "envs";
 
     private final ComponentTree componentTree;
@@ -47,12 +47,12 @@ public class BuildCommands {
     private final String serviceInnerDir;
     private final ConfigIo configIo = BaseConfigIo.getInstance();
 
-    public static BuildCommands init(File root, File destinationComponentDir) {
+    public static MicroconfigFactory init(File root, File destinationComponentDir) {
         File fullRepoDir = canonical(root);
         ComponentTree componentTree = ComponentTreeCache.build(fullRepoDir);
         EnvironmentProvider environmentProvider = newEnvProvider(fullRepoDir);
 
-        return new BuildCommands(componentTree, environmentProvider, destinationComponentDir, "");
+        return new MicroconfigFactory(componentTree, environmentProvider, destinationComponentDir, "");
     }
 
     public PropertiesProvider newPropertiesProvider(ConfigType configType) {

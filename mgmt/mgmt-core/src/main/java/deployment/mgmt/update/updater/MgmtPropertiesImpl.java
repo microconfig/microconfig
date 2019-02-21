@@ -5,7 +5,7 @@ import deployment.mgmt.configs.componentgroup.GroupDescription;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.service.properties.NexusRepository;
 import deployment.mgmt.configs.service.properties.impl.ProcessPropertiesImpl;
-import io.microconfig.commands.factory.BuildCommands;
+import io.microconfig.commands.factory.MicroconfigFactory;
 import io.microconfig.commands.factory.ConfigType;
 import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.properties.PropertiesProvider;
@@ -27,9 +27,9 @@ public class MgmtPropertiesImpl implements MgmtProperties {
 
     @Override //todo migrate  for DeploySettings::getMgmtNexusRepository
     public List<NexusRepository> resolveNexusRepositories() {
-        BuildCommands buildCommands = initBuildCommands();
-        PropertiesProvider propertiesProvider = buildCommands.newPropertiesProvider(PROCESS);
-        EnvironmentProvider environmentProvider = buildCommands.getEnvironmentProvider();
+        MicroconfigFactory microconfigFactory = initBuildCommands();
+        PropertiesProvider propertiesProvider = microconfigFactory.newPropertiesProvider(PROCESS);
+        EnvironmentProvider environmentProvider = microconfigFactory.getEnvironmentProvider();
 
         String serviceName = anyServiceFromCurrentGroup(environmentProvider);
         return resolveNexusUrlProperty(serviceName, propertiesProvider);
@@ -45,8 +45,8 @@ public class MgmtPropertiesImpl implements MgmtProperties {
         return initBuildCommands().getEnvironmentProvider();
     }
 
-    private BuildCommands initBuildCommands() {
-        return BuildCommands.init(
+    private MicroconfigFactory initBuildCommands() {
+        return MicroconfigFactory.init(
                 deployFileStructure.configs().getInnerRepoDir(),
                 deployFileStructure.service().getComponentsDir()
         );
