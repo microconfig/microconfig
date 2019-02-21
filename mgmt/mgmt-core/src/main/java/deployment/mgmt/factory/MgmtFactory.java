@@ -71,6 +71,7 @@ import deployment.mgmt.update.updater.MgmtAutoUpdater;
 import deployment.mgmt.update.updater.MgmtAutoUpdaterImpl;
 import deployment.mgmt.update.updater.MgmtProperties;
 import deployment.mgmt.update.updater.MgmtPropertiesImpl;
+import io.microconfig.io.BaseConfigIoService;
 import io.microconfig.io.ConfigIoService;
 import lombok.Getter;
 
@@ -106,7 +107,7 @@ public class MgmtFactory {
     public MgmtFactory() {
         this.deployFileStructure = DeployFileStructureImpl.init();
         this.lockService = new OsLockService(deployFileStructure);
-        this.configIoService = ConfigIoService.getInstance();
+        this.configIoService = BaseConfigIoService.getInstance();
         this.propertyService = new PropertyServiceImpl(deployFileStructure, configIoService);
         this.metadataProvider = new MetadataProviderImpl(deployFileStructure);
         this.componentGroupService = new ComponentGroupServiceImpl(deployFileStructure, propertyService, configIoService);

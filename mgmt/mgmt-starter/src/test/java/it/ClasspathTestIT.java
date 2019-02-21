@@ -15,7 +15,7 @@ import deployment.mgmt.configs.filestructure.DeployFileStructureImpl;
 import deployment.mgmt.configs.service.properties.MavenSettings;
 import deployment.mgmt.configs.service.properties.NexusRepository;
 import deployment.mgmt.configs.service.properties.impl.PropertyServiceImpl;
-import io.microconfig.io.PropertiesIoService;
+import io.microconfig.io.BaseConfigIoService;
 import org.junit.jupiter.api.Disabled;
 
 import java.io.File;
@@ -36,7 +36,7 @@ public class ClasspathTestIT {
         DeployFileStructure fileStructure = DeployFileStructureImpl.init();
 
         String service = "cr-xls-export";
-        MavenSettings mavenSettings = new PropertyServiceImpl(fileStructure, new PropertiesIoService()).getProcessProperties(service).getMavenSettings();
+        MavenSettings mavenSettings = new PropertyServiceImpl(fileStructure, BaseConfigIoService.getInstance()).getProcessProperties(service).getMavenSettings();
         List<NexusRepository> nexusRepositories = mavenSettings.getNexusRepositories();
 //        Artifact artifact = Artifact.fromMavenString("ru.sbt.cr.astreya.stresstest:stresstest-reports:RP-18.24-SNAPSHOT");
         Artifact artifact = Artifact.fromMavenString("ru.sbt.risk.tradehub:th-server:TH-18.24-SNAPSHOT");
@@ -52,7 +52,7 @@ public class ClasspathTestIT {
     private static ClasspathFileStrategy gradleStrategy() {
         NexusClient nexusClient = new NexusClientImpl(
                 new RepositoryPriorityServiceImpl(asList("ru", "deployment")),
-                new DeploySettingsImpl(DeployFileStructureImpl.init(), null, new SimpleEncryptionServiceImpl(), new PropertiesIoService())
+                new DeploySettingsImpl(DeployFileStructureImpl.init(), null, new SimpleEncryptionServiceImpl(), BaseConfigIoService.getInstance())
         );
         return new ClasspathFileStrategy(
                 new JarClasspathFileReaderImpl(),

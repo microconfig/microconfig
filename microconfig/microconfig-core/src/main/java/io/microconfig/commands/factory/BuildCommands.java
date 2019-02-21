@@ -5,6 +5,7 @@ import io.microconfig.commands.PropertiesPostProcessor;
 import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.environments.filebased.EnvironmentParserImpl;
 import io.microconfig.environments.filebased.FileBasedEnvironmentProvider;
+import io.microconfig.io.BaseConfigIoService;
 import io.microconfig.io.ConfigIoService;
 import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.files.parser.FileComponentParser;
@@ -44,7 +45,7 @@ public class BuildCommands {
     private final File destinationComponentDir;
     @Wither
     private final String serviceInnerDir;
-    private final ConfigIoService configIoService = ConfigIoService.getInstance();
+    private final ConfigIoService configIoService = BaseConfigIoService.getInstance();
 
     public static BuildCommands init(File root, File destinationComponentDir) {
         File fullRepoDir = canonical(root);

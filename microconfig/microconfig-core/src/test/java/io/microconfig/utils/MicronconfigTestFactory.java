@@ -10,7 +10,6 @@ import java.io.File;
 
 import static io.microconfig.commands.factory.ConfigType.SERVICE;
 import static io.microconfig.utils.ClasspathUtils.getClasspathFile;
-import static java.util.Objects.requireNonNull;
 
 public class MicronconfigTestFactory {
     private static final File rootDir = getClasspathFile("test-props");

@@ -2,7 +2,6 @@ package io.microconfig.io;
 
 import io.microconfig.properties.Property;
 import io.microconfig.utils.FileUtils;
-import io.microconfig.utils.IoUtils;
 
 import java.io.File;
 import java.nio.file.OpenOption;
@@ -12,20 +11,21 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static io.microconfig.utils.FileUtils.LINE_SEPARATOR;
+import static io.microconfig.utils.IoUtils.readAllLines;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.util.Collections.emptyMap;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.of;
 
-public class PropertiesIoService implements ConfigIoService {
+class PropertiesIoService implements ConfigIoService {
     @Override
     public Map<String, String> read(File file) {
         if (!file.exists()) return emptyMap();
 
         Map<String, String> keyToValue = new LinkedHashMap<>();
         StringBuilder lastLine = new StringBuilder();
-        for (String line : IoUtils.readAllLines(file)) {
+        for (String line : readAllLines(file)) {
             String trimmed = line.trim();
             if (trimmed.isEmpty() || trimmed.startsWith("#")) continue;
 

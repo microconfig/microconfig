@@ -14,8 +14,4 @@ public interface ConfigIoService {
     void append(File file, Map<String, String> properties);
 
     void write(File file, Map<String, String> properties);
-
-    static ConfigIoService getInstance() {
-        return new PropertiesIoService();
-    }
 }

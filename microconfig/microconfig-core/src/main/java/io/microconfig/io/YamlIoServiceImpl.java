@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
-class ConfigIoServiceImpl implements ConfigIoService {
+public class YamlIoServiceImpl implements ConfigIoService {
     @Override
     public Map<String, String> read(File file) {
         return null;
