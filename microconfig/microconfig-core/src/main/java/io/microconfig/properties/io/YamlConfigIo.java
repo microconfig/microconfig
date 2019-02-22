@@ -1,5 +1,6 @@
 package io.microconfig.properties.io;
 
+import io.codearte.props2yaml.Props2YAML;
 import io.microconfig.properties.Property;
 import io.microconfig.utils.FileUtils;
 import org.yaml.snakeyaml.DumperOptions;
@@ -9,6 +10,7 @@ import java.io.File;
 import java.nio.file.OpenOption;
 import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static io.microconfig.properties.io.YamlUtils.asFlatMap;
 import static io.microconfig.properties.io.YamlUtils.toTree;

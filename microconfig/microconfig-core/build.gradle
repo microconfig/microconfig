@@ -13,6 +13,8 @@ publishing {
 }
 
 dependencies {
+    implementation 'io.codearte.props2yaml:props2yaml:0.5'
+    
     implementation project(':microconfig:utils'),
             lib.snakeyaml,
             'org.springframework:spring-expression',

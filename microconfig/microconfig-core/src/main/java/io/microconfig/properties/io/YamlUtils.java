@@ -12,6 +12,20 @@ import java.util.Map.Entry;
 import static java.util.Collections.singletonMap;
 import static java.util.stream.Collectors.toMap;
 
+/*
+cr=0
+cr.out.p2=2
+cr.out.p3=2
+cr.out.p3.p4=2
+cr.out.p3.p5=2
+
+#cr: 0
+#cr.out:
+#     p2: 2
+#     p3: 2
+#     p3.p4: 2
+
+*/
 public class YamlUtils {
     @SuppressWarnings("unchecked")
     public static Map<String, String> asFlatMap(File file) {
@@ -60,15 +74,16 @@ public class YamlUtils {
     }
 
     public static Map<String, Object> toTree(Collection<Property> properties) {
-        return toTree(properties.stream()
+        Map<String, Object> result = new TreeMap<>();
+        properties.stream()
                 .filter(p -> !p.isTemp())
-                .collect(toMap(Property::getKey, Property::getValue)));
+                .forEach(p -> add(p.getKey(), p.typedValue(), result));
+        return result;
     }
 
     public static Map<String, Object> toTree(Map<String, String> original) {
         List<Entry<String, String>> entries = sortedEntries(original);
         TreeMap<String, Object> result = new TreeMap<>();
-
         return result;
     }
 
@@ -85,13 +100,18 @@ public class YamlUtils {
         String[] split = key.split("\\.");
         for (int i = 0; i < split.length - 1; i++) {
             String part = split[i];
-            result = (Map<String, Object>) result.compute(part, (k, v) -> {
-                if (v == null) return new TreeMap<>();
-                if (v instanceof Map) return v;
-                TreeMap<Object, Object> map = new TreeMap<>();
-                map.put(k, v);
-                return map;
-            });
+            Object oldValue = result.get(part);
+            if (oldValue == null) {
+                Map<String, Object> newMap = new TreeMap<>();
+                result.put(part, newMap);
+                result = newMap;
+            } else  if (oldValue instanceof Map) {
+                result = (Map<String, Object>) oldValue;
+            } else {
+                Map<String, Object> map = new TreeMap<>();
+                map.put(part, oldValue);
+                result = map;
+            }
         }
 
         result.put(split[split.length - 1], value);
