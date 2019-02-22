@@ -130,13 +130,10 @@ public class YamlUtils {
 
         private void dumpValue(StringBuilder result, Object value, int indent) {
             if (value instanceof Map) {
-                result.append(":").append(LINE_SEPARATOR);
-                for (int i = 0; i < indent; i++) {
-                     result.append(' ');
-                }
+                result.append(':').append(LINE_SEPARATOR);
                 dump(result, (Map) value, indent, false);
             } else  {
-                result.append(": ").append(value);
+                result.append(": ").append(value).append(LINE_SEPARATOR);
             }
         }
     }
