@@ -1,7 +1,6 @@
 package io.microconfig.properties.files.parser;
 
 import io.microconfig.properties.Property;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;

@@ -2,7 +2,6 @@ package io.microconfig.properties.serializer;
 
 import io.microconfig.properties.Property;
 import io.microconfig.properties.io.ConfigIo;
-import io.microconfig.utils.Logger;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

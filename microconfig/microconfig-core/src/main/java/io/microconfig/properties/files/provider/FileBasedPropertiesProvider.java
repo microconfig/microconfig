@@ -4,8 +4,8 @@ import io.microconfig.environments.Component;
 import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.Property;
 import io.microconfig.properties.files.parser.ComponentParser;
-import io.microconfig.properties.files.parser.ParsedComponent;
 import io.microconfig.properties.files.parser.Include;
+import io.microconfig.properties.files.parser.ParsedComponent;
 
 import java.io.File;
 import java.util.HashMap;

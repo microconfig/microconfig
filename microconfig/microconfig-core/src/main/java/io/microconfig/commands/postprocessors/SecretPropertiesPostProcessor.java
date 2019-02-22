@@ -1,9 +1,9 @@
 package io.microconfig.commands.postprocessors;
 
 import io.microconfig.commands.PropertiesPostProcessor;
-import io.microconfig.properties.io.ConfigIo;
 import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.Property;
+import io.microconfig.properties.io.ConfigIo;
 import io.microconfig.properties.resolver.RootComponent;
 import lombok.RequiredArgsConstructor;
 
