@@ -2,6 +2,7 @@ package io.microconfig.properties.io;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ class PropertiesConfigIoTest {
         expected.put("empty", "");
         expected.put("empty2", "");
 
-        Map<String, String> actual = ioService.read(getClasspathFile("files/multiLine.properties"));
+        Map<String, String> actual = ioService.read(new File(getClasspathFile("files"), "multiLine.properties"));
         assertEquals(expected, actual);
     }
 }
