@@ -28,6 +28,9 @@ class PropertiesConfigIoTest {
         expected.put("empty2", "");
 
         Map<String, String> actual = ioService.read(new File(getClasspathFile("files"), "multiLine.properties"));
+
+        System.out.println(actual);
+        System.out.println(expected);
         assertEquals(expected, actual);
     }
 }
