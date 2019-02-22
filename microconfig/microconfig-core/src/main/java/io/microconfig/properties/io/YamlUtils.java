@@ -32,7 +32,6 @@ public class YamlUtils {
     }
 
     private static class YamlReader {
-        @SuppressWarnings("unchecked")
         public Map<String, String> asFlatMap(File file) {
             try (FileReader fileReader = new FileReader(file)) {
                 Map<String, Object> map = new Yaml(new ToStringConstructor()).load(fileReader);
@@ -45,6 +44,7 @@ public class YamlUtils {
             }
         }
 
+        @SuppressWarnings("unchecked")
         private Map<String, Object> flat(Map<?, ?> source) {
             Map<String, Object> result = new LinkedHashMap<>();
 
