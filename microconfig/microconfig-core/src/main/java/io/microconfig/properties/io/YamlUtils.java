@@ -2,6 +2,10 @@ package io.microconfig.properties.io;
 
 import io.microconfig.utils.FileUtils;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.AbstractConstruct;
+import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.nodes.Node;
+import org.yaml.snakeyaml.nodes.ScalarNode;
 
 import java.io.File;
 import java.io.FileReader;
@@ -16,6 +20,7 @@ import java.util.TreeMap;
 import static io.microconfig.utils.FileUtils.LINE_SEPARATOR;
 import static java.util.Collections.singletonMap;
 import static java.util.stream.Collectors.toMap;
+import static org.yaml.snakeyaml.nodes.Tag.*;
 
 public class YamlUtils {
     public static Map<String, String> readAsFlatMap(File file) {
@@ -30,7 +35,7 @@ public class YamlUtils {
         @SuppressWarnings("unchecked")
         public Map<String, String> asFlatMap(File file) {
             try (FileReader fileReader = new FileReader(file)) {
-                Map<String, Object> map = new Yaml().loadAs(fileReader, Map.class);
+                Map<String, Object> map = new Yaml(new ToStringConstructor()).load(fileReader);
                 Map<String, Object> flatten = flat(map);
                 return flatten.entrySet()
                         .stream()
@@ -135,5 +140,40 @@ public class YamlUtils {
                 result.append(": ").append(value).append(LINE_SEPARATOR);
             }
         }
+
+    }
+
+    private static class ToStringConstructor extends Constructor {
+        ToStringConstructor() {
+            this.yamlConstructors.put(INT, ToStringConstruct.INSTANCE);
+            this.yamlConstructors.put(FLOAT, ToStringConstruct.INSTANCE);
+            this.yamlConstructors.put(TIMESTAMP, ToStringConstruct.INSTANCE);
+        }
+
+        private static class ToStringConstruct extends AbstractConstruct {
+            private static final ToStringConstruct INSTANCE = new ToStringConstruct();
+
+            public Object construct(Node node) {
+                return ((ScalarNode) node).getValue();
+            }
+        }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
