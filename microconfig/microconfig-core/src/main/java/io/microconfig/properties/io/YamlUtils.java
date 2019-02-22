@@ -132,6 +132,7 @@ public class YamlUtils {
             return result.toString();
         }
 
+        @SuppressWarnings("unchecked")
         private void dumpValue(StringBuilder result, Object value, int indent) {
             if (value instanceof Map) {
                 result.append(':').append(LINE_SEPARATOR);
@@ -159,21 +160,3 @@ public class YamlUtils {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
