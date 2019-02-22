@@ -11,7 +11,7 @@ public interface ConfigIo {
 
     void write(File file, Collection<Property> properties);
 
-    void append(File file, Map<String, String> properties);
-
     void write(File file, Map<String, String> properties);
+
+    void append(File file, Map<String, String> properties);
 }
