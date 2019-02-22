@@ -28,7 +28,7 @@ class Template {
         Matcher m = pattern.matcher(text);
         if (!m.find()) return text;
 
-        StringBuilder result = new StringBuilder();
+        StringBuffer result = new StringBuffer();
         do {
             doResolve(m, result, propertyResolver, currentComponent);
         } while (m.find());
@@ -36,7 +36,7 @@ class Template {
         return result.toString();
     }
 
-    private void doResolve(Matcher m, StringBuilder result, PropertyResolver propertyResolver, RootComponent currentComponent) {
+    private void doResolve(Matcher m, StringBuffer result, PropertyResolver propertyResolver, RootComponent currentComponent) {
         if (m.group("escaped") != null) {
             m.appendReplacement(result, quoteReplacement(m.group("placeholder")));
             return;
