@@ -20,17 +20,14 @@ class PropertiesConfigIoTest {
         expected.put("p2", "p2_v");
         expected.put("p3", "=p3_v");
         expected.put("p4", ":p4_v");
-        expected.put("jwt.publicKey", "-----BEGIN PUBLIC KEY-----\\" + LINE_SEPARATOR +
-                "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgfjVb7pJlEdu9lDPOxmi\\" + LINE_SEPARATOR +
-                "LwIDAQAB\\" + LINE_SEPARATOR +
-                "-----END PUBLIC KEY-----");
+//        expected.put("jwt.publicKey", "-----BEGIN PUBLIC KEY-----\\" + LINE_SEPARATOR +
+//                "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgfjVb7pJlEdu9lDPOxmi\\" + LINE_SEPARATOR +
+//                "LwIDAQAB\\" + LINE_SEPARATOR +
+//                "-----END PUBLIC KEY-----");
         expected.put("empty", "");
         expected.put("empty2", "");
 
         Map<String, String> actual = ioService.read(new File(getClasspathFile("files"), "multiLine.properties"));
-
-        System.out.println(actual);
-        System.out.println(expected);
         assertEquals(expected, actual);
     }
 }
