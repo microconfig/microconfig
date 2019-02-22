@@ -82,8 +82,8 @@ public class Property {
     }
 
     public static Object typeValue(String value) {
-        if ("true".equals(value)) return true;
-        if ("false".equals(value)) return false;
+        if ("true".equalsIgnoreCase(value)) return true;
+        if ("false".equalsIgnoreCase(value)) return false;
 
         boolean containsDot = false;
         boolean hasNumbers = false;
