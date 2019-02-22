@@ -141,7 +141,6 @@ public class YamlUtils {
                 result.append(": ").append(value).append(LINE_SEPARATOR);
             }
         }
-
     }
 
     private static class ToStringConstructor extends Constructor {
