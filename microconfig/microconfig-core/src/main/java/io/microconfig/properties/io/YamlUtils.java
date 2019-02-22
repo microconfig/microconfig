@@ -118,6 +118,9 @@ public class YamlUtils {
 
         private String dump(StringBuilder result, Map<String, Object> tree, int indent, boolean emptyLine) {
             for (Entry<String, Object> entry : tree.entrySet()) {
+                for (int i = 0; i < indent; i++) {
+                     result.append(' ');
+                }
                 result.append(entry.getKey());
                 dumpValue(result, entry.getValue(), indent + 2);
                 if (emptyLine) {
