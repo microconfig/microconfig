@@ -9,7 +9,6 @@ import java.util.Map;
 
 import static io.microconfig.properties.Property.Source.systemSource;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
-import static java.lang.Character.isDigit;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
@@ -75,38 +74,6 @@ public class Property {
 
     public Property withNewValue(String resolvedValue) {
         return new Property(key, resolvedValue, envContext, source, temp);
-    }
-
-    public Object typedValue() {
-        return typeValue(value);
-    }
-
-    public static Object typeValue(String value) {
-        if ("true".equalsIgnoreCase(value)) return true;
-        if ("false".equalsIgnoreCase(value)) return false;
-
-        boolean containsDot = false;
-        boolean hasNumbers = false;
-        for (int i = 0; i < value.length(); i++) {
-            if (isDigit(value.charAt(i))) {
-                hasNumbers = true;
-                continue;
-            }
-
-            if (value.charAt(i) == '.') {
-                if (containsDot) {
-                    return value;
-                }
-                containsDot = true;
-                continue;
-            }
-
-            return value;
-        }
-
-        if (!hasNumbers) return value;
-        if (containsDot) return Double.parseDouble(value);
-        return Long.parseLong(value);
     }
 
     @Override
