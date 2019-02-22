@@ -3,11 +3,10 @@ version = "${major}.${minor}.${patch}${versionPostfix}"
 
 buildscript {
     repositories {
-        mavenLocal()
-        if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
-            maven { url "http://172.30.162.1/nexus/content/groups/public" }
-        }
-        mavenCentral()
+//        if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
+//            maven { url "http://172.30.162.1/nexus/content/groups/public" }
+//        }
+        mavenCentral()        
         jcenter()
     }
 
@@ -25,11 +24,10 @@ allprojects {
     group = 'io.microconfig'
     version = rootProject.version
 
-    repositories {
-        mavenLocal()
-        if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
-            maven { url "http://172.30.162.1/nexus/content/groups/public" }
-        }
+    repositories {        
+//        if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
+//            maven { url "http://172.30.162.1/nexus/content/groups/public" }
+//        }
         mavenCentral()
     }
 
