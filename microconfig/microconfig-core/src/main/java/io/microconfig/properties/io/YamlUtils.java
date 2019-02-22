@@ -1,7 +1,6 @@
 package io.microconfig.properties.io;
 
 import io.microconfig.utils.FileUtils;
-import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
@@ -17,9 +16,6 @@ import java.util.TreeMap;
 import static io.microconfig.utils.FileUtils.LINE_SEPARATOR;
 import static java.util.Collections.singletonMap;
 import static java.util.stream.Collectors.toMap;
-import static org.yaml.snakeyaml.DumperOptions.FlowStyle.BLOCK;
-import static org.yaml.snakeyaml.DumperOptions.LineBreak.WIN;
-import static org.yaml.snakeyaml.DumperOptions.ScalarStyle.PLAIN;
 
 public class YamlUtils {
     public static Map<String, String> readAsFlatMap(File file) {
@@ -111,7 +107,7 @@ public class YamlUtils {
             result.put(parts[parts.length - 1], value);
         }
 
-        private String toYaml(Map<String, Object > tree) {
+        private String toYaml(Map<String, Object> tree) {
             StringBuilder result = new StringBuilder();
             return dump(result, tree, 0, true);
         }
@@ -119,7 +115,7 @@ public class YamlUtils {
         private String dump(StringBuilder result, Map<String, Object> tree, int indent, boolean emptyLine) {
             for (Entry<String, Object> entry : tree.entrySet()) {
                 for (int i = 0; i < indent; i++) {
-                     result.append(' ');
+                    result.append(' ');
                 }
                 result.append(entry.getKey());
                 dumpValue(result, entry.getValue(), indent + 2);
@@ -135,7 +131,7 @@ public class YamlUtils {
             if (value instanceof Map) {
                 result.append(':').append(LINE_SEPARATOR);
                 dump(result, (Map) value, indent, false);
-            } else  {
+            } else {
                 result.append(": ").append(value).append(LINE_SEPARATOR);
             }
         }
