@@ -6,10 +6,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static java.util.Collections.singletonMap;
 import static java.util.stream.Collectors.toMap;
 
 public class YamlUtils {
@@ -42,9 +42,8 @@ public class YamlUtils {
                 String separator = "";
 
                 for (Object element : ((Collection) value)) {
-                    Map<String, Object> subMap = flatten(Collections.singletonMap(key, element));
-                    joiner
-                            .append(separator)
+                    Map<String, Object> subMap = flatten(singletonMap(key, element));
+                    joiner.append(separator)
                             .append(subMap.entrySet().iterator().next().getValue().toString());
 
                     separator = ",";
