@@ -11,7 +11,7 @@ publishing {
         }
     }
 }
-
+  
 dependencies {
     implementation 'io.codearte.props2yaml:props2yaml:0.5'
     

@@ -6,9 +6,13 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
+import static io.microconfig.properties.Property.typeValue;
 import static java.util.Collections.singletonMap;
 import static java.util.stream.Collectors.toMap;
 
@@ -77,26 +81,18 @@ public class YamlUtils {
         Map<String, Object> result = new TreeMap<>();
         properties.stream()
                 .filter(p -> !p.isTemp())
-                .forEach(p -> add(p.getKey(), p.typedValue(), result));
+                .forEach(p -> addProperty(p.getKey(), p.typedValue(), result));
         return result;
     }
 
-    public static Map<String, Object> toTree(Map<String, String> original) {
-        List<Entry<String, String>> entries = sortedEntries(original);
-        TreeMap<String, Object> result = new TreeMap<>();
+    public static Map<String, Object> toTree(Map<String, String> properties) {
+        Map<String, Object> result = new TreeMap<>();
+        properties.forEach((k, v) -> addProperty(k, typeValue(v), result));
         return result;
-    }
-
-    private static List<Entry<String, String>> sortedEntries(Map<String, String> original) {
-        List<Entry<String, String>> list = new ArrayList<>(original.entrySet());
-        if (!(original instanceof TreeMap) || ((TreeMap) original).comparator() != null) {
-            list.sort(null);
-        }
-        return list;
     }
 
     @SuppressWarnings("unchecked")
-    private static void add(String key, Object value, Map<String, Object> result) {
+    private static void addProperty(String key, Object value, Map<String, Object> result) {
         String[] split = key.split("\\.");
         for (int i = 0; i < split.length - 1; i++) {
             String part = split[i];
@@ -105,12 +101,10 @@ public class YamlUtils {
                 Map<String, Object> newMap = new TreeMap<>();
                 result.put(part, newMap);
                 result = newMap;
-            } else  if (oldValue instanceof Map) {
+            } else if (oldValue instanceof Map) {
                 result = (Map<String, Object>) oldValue;
             } else {
-                Map<String, Object> map = new TreeMap<>();
-                map.put(part, oldValue);
-                result = map;
+                split[i + 1] = part + "." + split[i + 1];
             }
         }
 
