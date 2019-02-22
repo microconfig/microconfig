@@ -34,22 +34,22 @@ public class YamlUtils {
                 Map<String, Object> flatten = flat(map);
                 return flatten.entrySet()
                         .stream()
-                        .collect(toMap(Entry::getKey, e -> e.getValue().toString()));
+                        .collect(toMap(Entry::getKey, e -> e.getValue() == null ? "" : e.getValue().toString()));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        private Map<String, Object> flat(Map<String, Object> source) {
+        private Map<String, Object> flat(Map<?, ?> source) {
             Map<String, Object> result = new LinkedHashMap<>();
 
-            for (String key : source.keySet()) {
+            for (Object key : source.keySet()) {
                 Object value = source.get(key);
 
                 if (value instanceof Map) {
-                    Map<String, Object> subMap = flat((Map<String, Object>) value);
+                    Map<?, ?> subMap = flat((Map<String, Object>) value);
 
-                    for (String subkey : subMap.keySet()) {
+                    for (Object subkey : subMap.keySet()) {
                         result.put(key + "." + subkey, subMap.get(subkey));
                     }
                 } else if (value instanceof Collection) {
@@ -57,16 +57,16 @@ public class YamlUtils {
                     String separator = "";
 
                     for (Object element : ((Collection) value)) {
-                        Map<String, Object> subMap = flat(singletonMap(key, element));
+                        Map<?, ?> subMap = flat(singletonMap(key, element));
                         joiner.append(separator)
                                 .append(subMap.entrySet().iterator().next().getValue().toString());
 
                         separator = ",";
                     }
 
-                    result.put(key, joiner.toString());
+                    result.put(key.toString(), joiner.toString());
                 } else {
-                    result.put(key, value);
+                    result.put(key.toString(), value);
                 }
             }
 
