@@ -703,7 +703,13 @@ repo
 ..todo write doc 
 
 # Environment descriptor
-..todo write doc
+As we discussed every service can have default and environment-specific configuration, also we can extract common configuration to some components. 
+During build phase we want to build configs only for a subset of our components, only for real services on a concrete environment.    
+Of course you can pass env name and list of service names to build configs for. But it not too convenient if you want to build configuration for a big amount of services. 
+
+So Microconfig allows specifying list of service names on a special environment descriptor and then use only env name to build configs for all services listed on that descriptor.
+
+  
 
 # Running config build
 As we discussed Micronfig has its own format for configuration sources. 
@@ -806,5 +812,5 @@ Diff file format:
  server.max-threads=10 -> 35 # value has been changed from '10' to '35'
 ```
 
-#YAML format support
+# YAML format support
 ..todo writ doc
