@@ -8,13 +8,12 @@ orders:
     - order-ui
     - recommendations
 
-payments: {
+payments:
   components: [
     payment-db-patcher,
     payment-service,
     payment-ui
   ]
-}
 
 infra:
   ip: 17.44.48.45
