@@ -24,17 +24,3 @@ infra:
 
 kafka:
   components: [zookeeper, kafka]
-
-#portOffset: 0
-#ip: 172.30.40.1
-#
-#include:
-#  env: base
-#
-#infra:
-#  exclude: ssl-api-gateway,
-#  append: local-proxy
-#
-#
-#cassandra2:
-#  ip: 172.30.43.8

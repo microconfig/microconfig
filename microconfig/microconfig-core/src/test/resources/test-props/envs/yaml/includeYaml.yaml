@@ -7,8 +7,10 @@ include:
     - kafka
 
 infra:
-  exclude: ssl-api-gateway,
-  append: local-proxy
+  exclude:
+    - ssl-api-gateway
+  append:
+    - local-proxy
 
 payments:
   components:
