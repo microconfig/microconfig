@@ -3,13 +3,13 @@ package io.microconfig.environments.filebased;
 import io.microconfig.environments.Component;
 import io.microconfig.environments.ComponentGroup;
 import io.microconfig.environments.Environment;
-import io.microconfig.environments.filebased.parsers.YamlEnvironmentParser;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static io.microconfig.environments.filebased.EnvironmentParserImpl.yamlParser;
 import static io.microconfig.utils.ClasspathUtils.read;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class YamlEnvironmentParserTest {
-    private final YamlEnvironmentParser parser = new YamlEnvironmentParser();
+    private final EnvironmentParser parser = yamlParser();
 
     @Test
     void parse() {

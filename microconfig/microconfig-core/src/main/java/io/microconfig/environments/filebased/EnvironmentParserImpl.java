@@ -1,18 +1,22 @@
-package io.microconfig.environments.filebased.parsers;
+package io.microconfig.environments.filebased;
 
+import com.google.gson.Gson;
 import io.microconfig.environments.Component;
 import io.microconfig.environments.ComponentGroup;
 import io.microconfig.environments.EnvInclude;
 import io.microconfig.environments.Environment;
-import io.microconfig.environments.filebased.EnvironmentParser;
+import lombok.RequiredArgsConstructor;
+import org.yaml.snakeyaml.Yaml;
 
 import java.util.*;
+import java.util.function.Function;
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.*;
 import static java.util.stream.Collectors.toList;
 
-public abstract class AbstractEnvironmentParser implements EnvironmentParser {
+@RequiredArgsConstructor
+public class EnvironmentParserImpl implements EnvironmentParser {
     private static final String IP = "ip";
     private static final String PORT_OFFSET = "portOffset";
     private static final String INCLUDE = "include";
@@ -21,9 +25,21 @@ public abstract class AbstractEnvironmentParser implements EnvironmentParser {
     private static final String APPEND = "append";
     private static final String COMPONENTS = "components";
 
+    private final Function<String, Map<String, Object>> parser;
+
+    public static EnvironmentParser yamlParser() {
+        return new EnvironmentParserImpl(new Yaml()::load);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static EnvironmentParser jsonParser() {
+        Gson gson = new Gson();
+        return new EnvironmentParserImpl(content -> gson.fromJson(content, Map.class));
+    }
+
     @Override
     public Environment parse(String name, String content) {
-        Map<String, Object> map = toMap(content);
+        Map<String, Object> map = parser.apply(content);
 
         Optional<EnvInclude> envInclude = parseInclude(map);
         Optional<Integer> portOffset = parsePortOffset(map);
@@ -32,8 +48,6 @@ public abstract class AbstractEnvironmentParser implements EnvironmentParser {
 
         return new Environment(name, componentGroups, envIp, portOffset, envInclude);
     }
-
-    protected abstract Map<String, Object> toMap(String content);
 
     @SuppressWarnings("unchecked")
     private Optional<EnvInclude> parseInclude(Map<String, Object> map) {
@@ -91,5 +105,4 @@ public abstract class AbstractEnvironmentParser implements EnvironmentParser {
                     return parts.length == 1 ? Component.byType(parts[0]) : Component.byNameAndType(parts[0], parts[1]);
                 }).collect(toList());
     }
-
 }

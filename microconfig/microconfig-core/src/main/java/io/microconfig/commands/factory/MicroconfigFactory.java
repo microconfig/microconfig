@@ -4,9 +4,7 @@ import io.microconfig.commands.BuildPropertiesCommand;
 import io.microconfig.commands.PropertiesPostProcessor;
 import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.environments.filebased.EnvironmentParserSelectorImpl;
-import io.microconfig.environments.filebased.parsers.JsonEnvironmentParser;
 import io.microconfig.environments.filebased.FileBasedEnvironmentProvider;
-import io.microconfig.environments.filebased.parsers.YamlEnvironmentParser;
 import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.files.parser.PropertiesComponentParser;
 import io.microconfig.properties.files.provider.ComponentTree;
@@ -31,6 +29,8 @@ import lombok.experimental.Wither;
 import java.io.File;
 
 import static io.microconfig.commands.PropertiesPostProcessor.emptyPostProcessor;
+import static io.microconfig.environments.filebased.EnvironmentParserImpl.jsonParser;
+import static io.microconfig.environments.filebased.EnvironmentParserImpl.yamlParser;
 import static io.microconfig.properties.resolver.placeholder.strategies.CompositeResolveStrategy.composite;
 import static io.microconfig.properties.resolver.placeholder.strategies.MapResolveStrategy.envVariablesResolveStrategy;
 import static io.microconfig.properties.resolver.placeholder.strategies.MapResolveStrategy.systemPropertiesResolveStrategy;
@@ -93,7 +93,7 @@ public class MicroconfigFactory {
     }
 
     private static EnvironmentProvider newEnvProvider(File repoDir) {
-        return cache(new FileBasedEnvironmentProvider(new File(repoDir, ENVS_DIR), new EnvironmentParserSelectorImpl(new JsonEnvironmentParser(), new YamlEnvironmentParser())));
+        return cache(new FileBasedEnvironmentProvider(new File(repoDir, ENVS_DIR), new EnvironmentParserSelectorImpl(jsonParser(), yamlParser())));
     }
 
     private PropertySerializer propertySerializer(ConfigType configType) {
