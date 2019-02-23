@@ -14,7 +14,6 @@ class PropertiesConfigIoTest {
     private final PropertiesConfigIo ioService = new PropertiesConfigIo();
 
     @Test
-    @Disabled
     void test() {
         Map<String, String> expected = new LinkedHashMap<>();
         expected.put("p", "p_v");
