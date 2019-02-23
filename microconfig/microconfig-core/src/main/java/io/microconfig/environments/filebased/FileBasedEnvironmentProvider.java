@@ -7,7 +7,6 @@ import io.microconfig.environments.EnvironmentProvider;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -15,43 +14,44 @@ import java.util.stream.Stream;
 import static io.microconfig.utils.CollectionUtils.singleValue;
 import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.IoUtils.walk;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 public class FileBasedEnvironmentProvider implements EnvironmentProvider {
     private final File rootDirectory;
-    private final EnvironmentParser<String> environmentParser;
+    private final EnvironmentParserSelector environmentParserSelector;
 
-    public FileBasedEnvironmentProvider(File rootDirectory, EnvironmentParser<String> environmentParser) {
+    public FileBasedEnvironmentProvider(File rootDirectory, EnvironmentParserSelector environmentParserSelector) {
         if (!rootDirectory.exists()) {
             throw new IllegalArgumentException("Can't find env directory '" + rootDirectory + "'. Maybe -Droot directory is incorrect.");
         }
         this.rootDirectory = rootDirectory;
-        this.environmentParser = environmentParser;
+        this.environmentParserSelector = environmentParserSelector;
     }
 
     @Override
     public Set<String> getEnvironmentNames() {
-        try (Stream<File> envStream = envFiles(empty())) {
+        try (Stream<File> envStream = envFiles(null)) {
             return envStream
-                    .map(f -> f.getName().split("\\.")[0])
+                    .map(f -> f.getName().substring(0, f.getName().indexOf('.')))
                     .collect(toSet());
         }
     }
 
     @Override
     public Environment getByName(String name) {
-        Environment environment = environmentParser.parse(name, readFully(getEnvFile(name)))
+        File envFile = getEnvFile(name);
+        Environment environment = environmentParserSelector.selectParser(envFile)
+                .parse(name, readFully(envFile))
                 .processInclude(this);
+
         environment.verifyComponents();
         return environment;
     }
 
     private File getEnvFile(String name) {
         List<File> files;
-        try (Stream<File> envStream = envFiles(of(name))) {
+        try (Stream<File> envStream = envFiles(name)) {
             files = envStream.collect(toList());
         }
 
@@ -64,13 +64,11 @@ public class FileBasedEnvironmentProvider implements EnvironmentProvider {
         return singleValue(files);
     }
 
-    private Stream<File> envFiles(Optional<String> envName) {
-        String jsonExt = ".json";
-        String yamlExt = ".yaml";
-
-        Predicate<File> fileNamePredicate = envName.isPresent() ?
-                f -> f.getName().equals(envName.get() + jsonExt) || f.getName().equals(envName.get() + yamlExt)
-                : f -> f.getName().endsWith(jsonExt) || f.getName().endsWith(yamlExt);
+    private Stream<File> envFiles(String envName) {
+        List<String> supportedFormats = environmentParserSelector.supportedFormats();
+        Predicate<File> fileNamePredicate = envName == null ?
+                f -> supportedFormats.stream().anyMatch(format -> f.getName().endsWith(format))
+                : f -> supportedFormats.stream().anyMatch(format -> f.getName().equals(envName + format));
 
         return walk(rootDirectory.toPath())
                 .map(Path::toFile)
