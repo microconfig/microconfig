@@ -1,5 +1,7 @@
 package io.microconfig.environments;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.*;
 
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
@@ -8,6 +10,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 
+@EqualsAndHashCode
 public class EnvInclude {
     private final String env;
     private final Set<String> excludeGroups;

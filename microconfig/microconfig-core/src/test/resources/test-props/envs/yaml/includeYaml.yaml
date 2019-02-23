@@ -14,8 +14,10 @@ infra:
 
 payments:
   components:
-    - payment-service,
+    - payment-service
     - payment-ui
 
 cassandra:
   ip: 172.30.43.8
+  components:
+    - cassandra
