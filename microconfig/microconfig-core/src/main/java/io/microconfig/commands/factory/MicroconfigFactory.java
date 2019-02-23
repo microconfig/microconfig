@@ -3,8 +3,10 @@ package io.microconfig.commands.factory;
 import io.microconfig.commands.BuildPropertiesCommand;
 import io.microconfig.commands.PropertiesPostProcessor;
 import io.microconfig.environments.EnvironmentProvider;
+import io.microconfig.environments.filebased.EnvironmentParserSelectorImpl;
 import io.microconfig.environments.filebased.JsonEnvironmentParser;
 import io.microconfig.environments.filebased.FileBasedEnvironmentProvider;
+import io.microconfig.environments.filebased.YamlEnvironmentParser;
 import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.files.parser.PropertiesComponentParser;
 import io.microconfig.properties.files.provider.ComponentTree;
@@ -91,7 +93,7 @@ public class MicroconfigFactory {
     }
 
     private static EnvironmentProvider newEnvProvider(File repoDir) {
-        return cache(new FileBasedEnvironmentProvider(new File(repoDir, ENVS_DIR), new JsonEnvironmentParser()));
+        return cache(new FileBasedEnvironmentProvider(new File(repoDir, ENVS_DIR), new EnvironmentParserSelectorImpl(new JsonEnvironmentParser(), new YamlEnvironmentParser())));
     }
 
     private PropertySerializer propertySerializer(ConfigType configType) {
