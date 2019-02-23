@@ -13,13 +13,13 @@ import static java.util.Optional.*;
 import static java.util.stream.Collectors.toList;
 
 public abstract class AbstractEnvironmentParser implements EnvironmentParser {
-    static final String IP = "ip";
-    static final String PORT_OFFSET = "portOffset";
-    static final String INCLUDE = "include";
-    static final String INCLUDE_ENV = "env";
-    static final String EXCLUDE = "exclude";
-    static final String APPEND = "append";
-    static final String COMPONENTS = "components";
+    private static final String IP = "ip";
+    private static final String PORT_OFFSET = "portOffset";
+    private static final String INCLUDE = "include";
+    private static final String INCLUDE_ENV = "env";
+    private static final String EXCLUDE = "exclude";
+    private static final String APPEND = "append";
+    private static final String COMPONENTS = "components";
 
     @Override
     public Environment parse(String name, String content) {
@@ -36,7 +36,7 @@ public abstract class AbstractEnvironmentParser implements EnvironmentParser {
     protected abstract Map<String, Object> toMap(String content);
 
     @SuppressWarnings("unchecked")
-    protected Optional<EnvInclude> parseInclude(Map<String, Object> map) {
+    private Optional<EnvInclude> parseInclude(Map<String, Object> map) {
         Map<String, Object> includeProps = (Map<String, Object>) map.remove(INCLUDE);
         if (includeProps == null) return empty();
 
@@ -47,15 +47,15 @@ public abstract class AbstractEnvironmentParser implements EnvironmentParser {
 
     private Optional<Integer> parsePortOffset(Map<String, ?> map) {
         return ofNullable(map.remove(PORT_OFFSET))
-                .map(Double.class::cast)
-                .map(Double::intValue);
+                .map(Number.class::cast)
+                .map(Number::intValue);
     }
 
     private Optional<String> parseIp(Map<String, ?> map) {
         return ofNullable(map.remove(IP)).map(Object::toString);
     }
 
-    private List<ComponentGroup> parseComponentGroups(Map<String, Object> map, Optional<String> envIp) {
+    protected List<ComponentGroup> parseComponentGroups(Map<String, Object> map, Optional<String> envIp) {
         return map.entrySet()
                 .stream()
                 .map(componentGroupDeclaration -> {
