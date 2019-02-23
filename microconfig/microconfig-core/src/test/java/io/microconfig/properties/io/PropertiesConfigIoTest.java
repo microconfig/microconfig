@@ -1,6 +1,5 @@
 package io.microconfig.properties.io;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -9,6 +8,7 @@ import java.util.Map;
 
 import static io.microconfig.utils.ClasspathUtils.getClasspathFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PropertiesConfigIoTest {
     private final PropertiesConfigIo ioService = new PropertiesConfigIo();
@@ -27,7 +27,9 @@ class PropertiesConfigIoTest {
         expected.put("empty", "");
         expected.put("empty2", "");
 
-        Map<String, String> actual = ioService.read(new File(getClasspathFile("files"), "multiLine.properties"));
+        File file = getClasspathFile("files/propLine.properties");
+        assertTrue(file.exists());
+        Map<String, String> actual = ioService.read(file);
         assertEquals(expected, actual);
     }
 }
