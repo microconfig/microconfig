@@ -1,7 +1,10 @@
+portOffset: 0
+ip: 1.2.3.4
+
 orders:
   components:
     - order-db-patcher
-    - o1rder-service
+    - order-service
     - order-ui
     - recommendations
 
@@ -18,15 +21,10 @@ infra:
   components:
     - service-discovery
     - api-gateway
-    - ssl-api-gateway
-    - auth2
-    - audit
-    - user-management
-
 
 kafka: [zookeeper, kafka]
 
-kafka3: zookeeper, kafka
+kafka2: zookeeper2, kafka2
 
 
 

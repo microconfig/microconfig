@@ -1,0 +1,19 @@
+portOffset: 5
+ip: 172.30.40.1
+
+include:
+  env: baseYaml
+  exclude:
+    - kafka
+
+infra:
+  exclude: ssl-api-gateway,
+  append: local-proxy
+
+payments:
+  components:
+    - payment-service,
+    - payment-ui
+
+cassandra:
+  ip: 172.30.43.8

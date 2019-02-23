@@ -17,7 +17,8 @@ class FileBasedEnvironmentProviderTest {
     void testEnvName() {
         Set<String> environmentNames = environmentProvider.getEnvironmentNames();
         assertEquals(new HashSet<>(asList("test-component-exclude1", "p1", "test-component-exclude2", "test-env-include-err",
-                "aliases", "base-env", "var", "uat", "demo", "dev2", "dev", "test-env-include", "test-include-abstract-env", "duplicate-components", "e1", "e2", "e3", "e4")),
+                "aliases", "base-env", "var", "uat", "demo", "dev2", "dev", "test-env-include", "test-include-abstract-env",
+                "duplicate-components", "e1", "e2", "e3", "e4", "baseYaml", "includeYaml")),
                 environmentNames);
     }
 

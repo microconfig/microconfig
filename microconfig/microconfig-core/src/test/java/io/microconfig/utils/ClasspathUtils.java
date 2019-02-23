@@ -1,13 +1,24 @@
 package io.microconfig.utils;
 
-import java.io.File;
-import java.net.URL;
+import org.springframework.core.io.ClassPathResource;
 
-import static java.util.Objects.requireNonNull;
+import java.io.File;
+import java.io.IOException;
 
 public class ClasspathUtils {
     public static File getClasspathFile(String name) {
-        URL url = requireNonNull(ClasspathUtils.class.getClassLoader().getResource(name), () -> "File doesnt exists: " + name);
-        return new File(url.getFile());
+        try {
+            return new ClassPathResource(name).getFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String read(String file) {
+        try {
+            return IoUtils.readFully(new ClassPathResource(file).getInputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
