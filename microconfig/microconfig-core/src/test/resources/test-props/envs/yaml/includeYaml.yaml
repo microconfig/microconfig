@@ -1,6 +1,3 @@
-portOffset: 5
-ip: 172.30.40.1
-
 include:
   env: baseYaml
   exclude:
