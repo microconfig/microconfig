@@ -1,5 +1,6 @@
 package io.microconfig.environments;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.ArrayList;

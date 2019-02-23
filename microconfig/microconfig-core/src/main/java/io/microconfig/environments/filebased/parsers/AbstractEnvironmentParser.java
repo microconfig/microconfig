@@ -55,30 +55,35 @@ public abstract class AbstractEnvironmentParser implements EnvironmentParser {
         return ofNullable(map.remove(IP)).map(Object::toString);
     }
 
-    protected List<ComponentGroup> parseComponentGroups(Map<String, Object> map, Optional<String> envIp) {
+    private List<ComponentGroup> parseComponentGroups(Map<String, Object> map, Optional<String> envIp) {
         return map.entrySet()
                 .stream()
                 .map(componentGroupDeclaration -> {
-                    String componentGroupName = componentGroupDeclaration.getKey();
-                    Map<String, Object> properties = (Map<String, Object>) componentGroupDeclaration.getValue();
-                    Optional<String> ip = ofNullable((String) properties.getOrDefault(IP, envIp.orElse(null)));
-
-                    List<Component> parsedComponents = fetchComponentsFromProperties(properties, COMPONENTS);
-                    List<Component> excludedComponents = fetchComponentsFromProperties(properties, EXCLUDE);
-                    List<Component> appendedComponents = fetchComponentsFromProperties(properties, APPEND);
-
-                    return new ComponentGroup(componentGroupName, ip, parsedComponents, excludedComponents, appendedComponents);
+                    try {
+                        return parseGroup(componentGroupDeclaration, envIp);
+                    } catch (RuntimeException e) {
+                        throw new RuntimeException("Can't parse " + componentGroupDeclaration, e);
+                    }
                 }).collect(toList());
     }
 
     @SuppressWarnings("unchecked")
-    private List<Component> fetchComponentsFromProperties(Map<String, Object> properties, String property) {
-        List<String> values = (List<String>) properties.get(property);
-        return values == null ? emptyList() : parseComponents(values);
+    private ComponentGroup parseGroup(Map.Entry<String, Object> componentGroupDeclaration, Optional<String> envIp) {
+        String componentGroupName = componentGroupDeclaration.getKey();
+        Map<String, Object> properties = (Map<String, Object>) componentGroupDeclaration.getValue();
+        Optional<String> ip = ofNullable((String) properties.getOrDefault(IP, envIp.orElse(null)));
+
+        List<Component> parsedComponents = parseComponents(properties, COMPONENTS);
+        List<Component> excludedComponents = parseComponents(properties, EXCLUDE);
+        List<Component> appendedComponents = parseComponents(properties, APPEND);
+
+        return new ComponentGroup(componentGroupName, ip, parsedComponents, excludedComponents, appendedComponents);
     }
 
-    private List<Component> parseComponents(List<String> components) {
-        return components.stream()
+    @SuppressWarnings("unchecked")
+    private List<Component> parseComponents(Map<String, Object> properties, String property) {
+        return ((List<String>) properties.getOrDefault(property, emptyList()))
+                .stream()
                 .filter(Objects::nonNull)
                 .map(s -> {
                     String[] parts = s.split(":");
@@ -86,4 +91,5 @@ public abstract class AbstractEnvironmentParser implements EnvironmentParser {
                     return parts.length == 1 ? Component.byType(parts[0]) : Component.byNameAndType(parts[0], parts[1]);
                 }).collect(toList());
     }
+
 }
