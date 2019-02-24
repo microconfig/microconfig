@@ -738,10 +738,9 @@ payments:
     - payment-ui
 
 infra:
-  components: [
-    service-discovery,
-    api-gateway
-  ]      
+  components: 
+    - service-discovery
+    - api-gateway  
 ```  
 
 # Running config build
