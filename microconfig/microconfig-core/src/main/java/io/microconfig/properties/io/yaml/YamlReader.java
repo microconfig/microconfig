@@ -8,6 +8,7 @@ import java.util.*;
 import static io.microconfig.utils.IoUtils.readAllLines;
 import static java.lang.Character.isWhitespace;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.IntStream.range;
 
 public class YamlReader {
     public Map<String, String> readAsFlatMap(File file) {
@@ -25,14 +26,12 @@ public class YamlReader {
                 throw new IllegalArgumentException("Property must contain ':'. Bad property: " + separatorIndex + " in " + file);
             }
 
-            while (!currentProperty.isEmpty() && currentProperty.peekLast().offset >= currentOffset) {
-                currentProperty.pollLast();
-            }
+            removeWithBiggerOffset(currentProperty, currentOffset);
 
             String key = line.substring(currentOffset, separatorIndex).trim();
 
-            if (separatorIndex == line.length() - 1) {
-                if (isLastProperty(lines, i, currentOffset)) {
+            if (isValueEmpty(line, separatorIndex)) {
+                if (isLastProperty(lines, i, currentOffset + 1)) {
                     addValue(result, currentProperty, currentOffset, key, "");
                 } else {
                     currentProperty.add(new KeyOffset(key, currentOffset));
@@ -47,8 +46,28 @@ public class YamlReader {
         return result;
     }
 
+    private boolean isValueEmpty(String line, int separatorIndex) {
+        return separatorIndex == line.length() - 1;
+    }
+
+    private void removeWithBiggerOffset(Deque<KeyOffset> currentProperty, int currentOffset) {
+        while (!currentProperty.isEmpty() && currentProperty.peekLast().offset >= currentOffset) {
+            currentProperty.pollLast();
+        }
+    }
+
+    private boolean skip(String line) {
+        return line.isEmpty() || line.startsWith("#");
+    }
+
+    private int offsetIndex(String line) {
+        return range(0, line.length())
+                .filter(i -> !isWhitespace(line.charAt(i)))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("assertion error: line is empty"));
+    }
+
     private boolean isLastProperty(List<String> lines, int i, int currentOffset) {
-        ++i;
         while (i < lines.size()) {
             String line = lines.get(i++);
             if (skip(line)) continue;
@@ -58,24 +77,12 @@ public class YamlReader {
         return true;
     }
 
-    private boolean skip(String line) {
-        return line.isEmpty() || line.startsWith("#");
-    }
-
     private void addValue(Map<String, String> result, Deque<KeyOffset> currentProperty, int currentOffset, String lastKey, String value) {
         currentProperty.add(new KeyOffset(lastKey, currentOffset));
         String key = toProperty(currentProperty);
         currentProperty.pollLast();
 
         result.put(key, value);
-    }
-
-    private int offsetIndex(String line) {
-        for (int i = 0; i < line.length(); i++) {
-            if (!isWhitespace(line.charAt(i))) return i;
-        }
-
-        throw new IllegalStateException("assertion error: line is empy");
     }
 
     private String toProperty(Deque<KeyOffset> currentProperty) {

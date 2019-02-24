@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static io.microconfig.utils.ClasspathUtils.getClasspathFile;
+import static io.microconfig.utils.ClasspathUtils.classpathFile;
 import static io.microconfig.utils.FileUtils.LINE_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -28,7 +28,7 @@ class PropertiesConfigIoTest {
         expected.put("empty", "");
         expected.put("empty2", "");
 
-        File file = getClasspathFile("files/propLine.properties");
+        File file = classpathFile("files/propLine.properties");
         assertTrue(file.exists());
         Map<String, String> actual = ioService.read(file);
         assertEquals(expected, actual);

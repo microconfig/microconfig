@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class ClasspathUtils {
-    public static File getClasspathFile(String name) {
+    public static File classpathFile(String name) {
         try {
             return new ClassPathResource(name).getFile();
         } catch (IOException e) {
