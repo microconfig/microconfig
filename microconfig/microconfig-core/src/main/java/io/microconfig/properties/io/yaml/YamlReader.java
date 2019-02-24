@@ -23,7 +23,7 @@ public class YamlReader {
 
             int currentOffset = offsetIndex(line);
 
-            if (listValue(line, currentOffset)) {
+            if (multilineValue(line, currentOffset)) {
                 index = addMultilineValue(result, currentProperty, currentOffset, lines, index);
             } else {
                 parseSimpleProperty(file, result, currentProperty, currentOffset, lines, index);
@@ -33,7 +33,7 @@ public class YamlReader {
         return result;
     }
 
-    private boolean listValue(String line, int currentOffset) {
+    private boolean multilineValue(String line, int currentOffset) {
         char c = line.charAt(currentOffset);
         return c == '-' || c == '[' || c == '>';
     }
