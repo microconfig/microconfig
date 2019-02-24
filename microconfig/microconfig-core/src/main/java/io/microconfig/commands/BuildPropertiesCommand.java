@@ -42,17 +42,22 @@ public class BuildPropertiesCommand implements Command {
     }
 
     private List<Component> collectComponents(CommandContext context) {
-        Environment environment = environmentProvider.getByName(context.getEnv());
-        environment.verifyIpsSet();
-
-        List<Component> allComponents = getComponents(context, environment);
-        return context.getComponents().isEmpty() ? allComponents : toComponents(context.getComponents(), allComponents, context.getEnv());
+        List<Component> allComponents = getComponents(context);
+        return context.getComponents().isEmpty() ?
+                allComponents
+                : toComponents(context.getComponents(), allComponents, context.getEnv());
     }
 
-    private List<Component> getComponents(CommandContext context, Environment environment) {
+    private List<Component> getComponents(CommandContext context) {
+        Environment environment = environmentProvider.getByName(context.getEnv());
+
         return context.getComponentGroup().isPresent() ?
-                environment.getGroupByName(context.getComponentGroup().get()).getComponents()
-                : environment.getComponentGroups().stream().flatMap(cg -> cg.getComponents().stream()).collect(toList());
+                environment.getGroupByName(context.getComponentGroup().get())
+                        .getComponents()
+                : environment.getComponentGroups()
+                .stream()
+                .flatMap(cg -> cg.getComponents().stream())
+                .collect(toList());
     }
 
     private List<Component> toComponents(List<String> names, List<Component> allComponents, String env) {

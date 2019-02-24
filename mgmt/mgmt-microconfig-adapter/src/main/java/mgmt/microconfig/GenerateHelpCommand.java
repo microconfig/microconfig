@@ -33,7 +33,6 @@ class GenerateHelpCommand implements Command {
 
     private List<Component> collectComponents(CommandContext context) {
         Environment environment = environmentProvider.getByName(context.getEnv());
-
         List<Component> allComponents = getComponents(context, environment);
         return context.getComponents().isEmpty() ? allComponents : toComponents(context.getComponents(), allComponents, context.getEnv());
     }
