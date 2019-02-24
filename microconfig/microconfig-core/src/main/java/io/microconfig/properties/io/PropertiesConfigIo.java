@@ -35,18 +35,30 @@ class PropertiesConfigIo implements ConfigIo {
                 continue;
             }
 
-            int i = separatorIndex(lastLine);
-            if (i < 0) {
+            int separatorIndex = separatorIndex(lastLine);
+            if (separatorIndex < 0) {
                 throw new IllegalArgumentException("Property must contain '=' or ':'. Bad property: " + trimmed + " in " + file);
             }
-            String key = lastLine.substring(0, i);
-            String value = lastLine.substring(i + 1);
+            String key = lastLine.substring(0, separatorIndex);
+            String value = lastLine.substring(separatorIndex + 1);
             keyToValue.put(key, value);
 
             lastLine.setLength(0);
         }
 
         return keyToValue;
+    }
+
+    private boolean isMultilineValue(String line) {
+        return line.endsWith("\\");
+    }
+
+    private int separatorIndex(StringBuilder line) {
+        int eqIndex = line.indexOf("=");
+        if (eqIndex < 0) return line.indexOf(":");
+
+        int colonIndex = line.lastIndexOf(":", eqIndex - 1);
+        return colonIndex < 0 ? eqIndex : colonIndex;
     }
 
     @Override
@@ -70,18 +82,6 @@ class PropertiesConfigIo implements ConfigIo {
                 .map(e -> e.getKey() + "=" + e.getValue());
 
         doWrite(file, concat(of(LINE_SEPARATOR), lines), APPEND);
-    }
-
-    private boolean isMultilineValue(String line) {
-        return line.endsWith("\\");
-    }
-
-    private int separatorIndex(StringBuilder line) {
-        int eqIndex = line.indexOf("=");
-        if (eqIndex < 0) return line.indexOf(":");
-
-        int colonIndex = line.lastIndexOf(":", eqIndex - 1);
-        return colonIndex < 0 ? eqIndex : colonIndex;
     }
 
     private void doWrite(File file, Stream<String> lines, OpenOption... openOptions) {
