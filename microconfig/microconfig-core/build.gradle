@@ -18,5 +18,6 @@ dependencies {
     implementation project(':microconfig:utils'),
             lib.snakeyaml,
             'org.springframework:spring-expression',
-            'com.google.code.gson:gson'
+            'com.google.code.gson:gson',
+            'org.slf4j:slf4j-log4j12'
 }
