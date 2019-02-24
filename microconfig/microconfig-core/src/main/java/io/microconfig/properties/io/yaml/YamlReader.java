@@ -31,7 +31,7 @@ public class YamlReader {
             String key = line.substring(currentOffset, separatorIndex).trim();
 
             if (isValueEmpty(line, separatorIndex)) {
-                if (isLastProperty(lines, i, currentOffset + 1)) {
+                if (isLastProperty(lines, i, currentOffset)) {
                     addValue(result, currentProperty, currentOffset, key, "");
                 } else {
                     currentProperty.add(new KeyOffset(key, currentOffset));
@@ -68,6 +68,7 @@ public class YamlReader {
     }
 
     private boolean isLastProperty(List<String> lines, int i, int currentOffset) {
+        ++i;
         while (i < lines.size()) {
             String line = lines.get(i++);
             if (skip(line)) continue;

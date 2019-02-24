@@ -1,5 +1,6 @@
 package io.microconfig.properties.io.yaml;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedHashMap;
@@ -8,6 +9,7 @@ import java.util.Map;
 import static io.microconfig.utils.ClasspathUtils.classpathFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Disabled
 class YamlReaderTest {
     private final YamlReader reader = new YamlReader();
 

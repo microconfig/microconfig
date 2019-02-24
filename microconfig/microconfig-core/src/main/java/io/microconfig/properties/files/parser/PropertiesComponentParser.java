@@ -18,8 +18,8 @@ public class PropertiesComponentParser implements ComponentParser {
     private static final String IGNORE = "#@Ignore";
     private final String rootComponent;
 
-    public PropertiesComponentParser(File path) {
-        this.rootComponent = path.getName();
+    public PropertiesComponentParser(File rootComponent) {
+        this.rootComponent = rootComponent.getAbsolutePath();
     }
 
     @Override
@@ -57,6 +57,6 @@ public class PropertiesComponentParser implements ComponentParser {
 
     private String getPath(File path) {
         String absolutePath = path.getAbsolutePath();
-        return absolutePath.substring(absolutePath.indexOf(rootComponent));
+        return absolutePath.substring(absolutePath.indexOf(rootComponent) + rootComponent.length());
     }
 }
