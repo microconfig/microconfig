@@ -35,7 +35,7 @@ public class YamlReader {
 
     private boolean listValue(String line, int currentOffset) {
         char c = line.charAt(currentOffset);
-        return c == '-' || c == '[';
+        return c == '-' || c == '[' || c == '>';
     }
 
     private int addMultilineValue(Map<String, String> result,
