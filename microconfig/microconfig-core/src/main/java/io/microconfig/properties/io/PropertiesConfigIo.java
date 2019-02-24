@@ -50,15 +50,6 @@ class PropertiesConfigIo implements ConfigIo {
     }
 
     @Override
-    public void append(File file, Map<String, String> properties) {
-        Stream<String> lines = properties.entrySet()
-                .stream()
-                .map(e -> e.getKey() + "=" + e.getValue());
-
-        doWrite(file, concat(of(LINE_SEPARATOR), lines), APPEND);
-    }
-
-    @Override
     public void write(File file, Map<String, String> properties) {
         doWrite(file, properties.entrySet()
                 .stream()
@@ -70,6 +61,15 @@ class PropertiesConfigIo implements ConfigIo {
         doWrite(file, properties.stream()
                 .filter(p -> !p.isTemp())
                 .map(Property::toString));
+    }
+
+    @Override
+    public void append(File file, Map<String, String> properties) {
+        Stream<String> lines = properties.entrySet()
+                .stream()
+                .map(e -> e.getKey() + "=" + e.getValue());
+
+        doWrite(file, concat(of(LINE_SEPARATOR), lines), APPEND);
     }
 
     private boolean isMultilineValue(String line) {

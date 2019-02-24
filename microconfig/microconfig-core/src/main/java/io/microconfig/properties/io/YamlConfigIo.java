@@ -17,8 +17,8 @@ public class YamlConfigIo implements ConfigIo {
     }
 
     @Override
-    public void append(File file, Map<String, String> properties) {
-        YamlUtils.write(file, properties, APPEND);
+    public void write(File file, Map<String, String> properties) {
+        YamlUtils.write(file, properties);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class YamlConfigIo implements ConfigIo {
     }
 
     @Override
-    public void write(File file, Map<String, String> properties) {
-        YamlUtils.write(file, properties);
+    public void append(File file, Map<String, String> properties) {
+        YamlUtils.write(file, properties, APPEND);
     }
 }
