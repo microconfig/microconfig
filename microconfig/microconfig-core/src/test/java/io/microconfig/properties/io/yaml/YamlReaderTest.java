@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static io.microconfig.utils.ClasspathUtils.classpathFile;
+import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class YamlReaderTest {
@@ -41,5 +42,27 @@ class YamlReaderTest {
         map.put("p9", "p9v");
 
         assertEquals(map, reader.readAsFlatMap(classpathFile("files/yaml/inner.yaml")));
+    }
+
+    @Test
+    void testMultiline() {
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put("psp.adyen.payment-method-list",
+                "- name: bancontact-card" + LINES_SEPARATOR +
+                "  displayName: Bancontact (card)" + LINES_SEPARATOR +
+                "  pspName: bcmc" + LINES_SEPARATOR +
+                "  fee: 0" + LINES_SEPARATOR +
+                "  countryCodes: BE" + LINES_SEPARATOR +
+                "  enabled: true" + LINES_SEPARATOR +
+                LINES_SEPARATOR +
+                "- name: bancontact-mobile" + LINES_SEPARATOR +
+                "  displayName: Bancontact (mobile)" + LINES_SEPARATOR +
+                "  pspName: bcmc_mobile" + LINES_SEPARATOR +
+                "  fee: 0" + LINES_SEPARATOR +
+                "  countryCodes: BE" + LINES_SEPARATOR +
+                "  enabled: true"
+        );
+
+        assertEquals(map, reader.readAsFlatMap(classpathFile("files/yaml/multilines.yaml")));
     }
 }

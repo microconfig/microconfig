@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 import java.util.*;
 
+import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static io.microconfig.utils.IoUtils.readAllLines;
 import static java.lang.Character.isWhitespace;
 import static java.util.stream.Collectors.joining;
@@ -16,41 +17,82 @@ public class YamlReader {
 
         Deque<KeyOffset> currentProperty = new ArrayDeque<>();
         List<String> lines = readAllLines(file);
-        for (int i = 0; i < lines.size(); i++) {
-            String line = lines.get(i);
+        for (int index = 0; index < lines.size(); index++) {
+            String line = lines.get(index);
             if (skip(line)) continue;
 
             int currentOffset = offsetIndex(line);
-            int separatorIndex = line.indexOf(':', currentOffset);
-            if (separatorIndex < 0) {
-                throw new IllegalArgumentException("Property must contain ':'. Bad property: " + separatorIndex + " in " + file);
+
+            if (listValue(line, currentOffset)) {
+                index = addMultilineValue(result, currentProperty, currentOffset, lines, index);
+            } else {
+                parseSimpleProperty(file, result, currentProperty, currentOffset, lines, index);
             }
-
-            removeWithBiggerOffset(currentProperty, currentOffset);
-
-            String key = line.substring(currentOffset, separatorIndex).trim();
-
-            if (isValueEmpty(line, separatorIndex)) {
-                if (isLastProperty(lines, i, currentOffset)) {
-                    addValue(result, currentProperty, currentOffset, key, "");
-                } else {
-                    currentProperty.add(new KeyOffset(key, currentOffset));
-                }
-                continue;
-            }
-
-            String value = line.substring(separatorIndex + 1).trim();
-            addValue(result, currentProperty, currentOffset, key, value);
         }
 
         return result;
+    }
+
+    private boolean listValue(String line, int currentOffset) {
+        char c = line.charAt(currentOffset);
+        return c == '-' || c == '[';
+    }
+
+    private int addMultilineValue(Map<String, String> result,
+                                  Deque<KeyOffset> currentProperty, int currentOffset,
+                                  List<String> lines, int index) {
+        StringBuilder value = new StringBuilder();
+        while (true) {
+            String line = lines.get(index);
+            if (!line.isEmpty()) {
+                value.append(line.substring(currentOffset));
+            }
+            ++index;
+            if (index >= lines.size()) {
+                break;
+            }
+            String nextLine = lines.get(index);
+            if (!skip(nextLine) && offsetIndex(nextLine) < currentOffset) {
+                break;
+            }
+            value.append(LINES_SEPARATOR);
+        }
+
+        addValue(result, currentProperty, currentOffset, null, value.toString());
+        return index;
+    }
+
+    private void parseSimpleProperty(File file, Map<String, String> result,
+                                     Deque<KeyOffset> currentProperty, int currentOffset,
+                                     List<String> lines, int index) {
+        String line = lines.get(index);
+        int separatorIndex = line.indexOf(':', currentOffset);
+        if (separatorIndex < 0) {
+            throw new IllegalArgumentException("Property must contain ':'. Bad property: " + separatorIndex + " in " + file);
+        }
+
+        removePropertiesWithBiggerOffset(currentProperty, currentOffset);
+
+        String key = line.substring(currentOffset, separatorIndex).trim();
+
+        if (isValueEmpty(line, separatorIndex)) {
+            if (isLastProperty(lines, index, currentOffset)) {
+                addValue(result, currentProperty, currentOffset, key, "");
+            } else {
+                currentProperty.add(new KeyOffset(key, currentOffset));
+            }
+            return;
+        }
+
+        String value = line.substring(separatorIndex + 1).trim();
+        addValue(result, currentProperty, currentOffset, key, value);
     }
 
     private boolean isValueEmpty(String line, int separatorIndex) {
         return separatorIndex == line.length() - 1;
     }
 
-    private void removeWithBiggerOffset(Deque<KeyOffset> currentProperty, int currentOffset) {
+    private void removePropertiesWithBiggerOffset(Deque<KeyOffset> currentProperty, int currentOffset) {
         while (!currentProperty.isEmpty() && currentProperty.peekLast().offset >= currentOffset) {
             currentProperty.pollLast();
         }
@@ -79,7 +121,9 @@ public class YamlReader {
     }
 
     private void addValue(Map<String, String> result, Deque<KeyOffset> currentProperty, int currentOffset, String lastKey, String value) {
-        currentProperty.add(new KeyOffset(lastKey, currentOffset));
+        if (lastKey != null) {
+            currentProperty.add(new KeyOffset(lastKey, currentOffset));
+        }
         String key = toProperty(currentProperty);
         currentProperty.pollLast();
 

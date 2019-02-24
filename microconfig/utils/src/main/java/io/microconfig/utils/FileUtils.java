@@ -16,7 +16,7 @@ import static java.util.stream.Stream.of;
 
 
 public class FileUtils {
-    public static final String LINE_SEPARATOR = "\r\n";
+    public static final String LINES_SEPARATOR = "\r\n";
 
     public static File userHome() {
         return new File(userHomeString());

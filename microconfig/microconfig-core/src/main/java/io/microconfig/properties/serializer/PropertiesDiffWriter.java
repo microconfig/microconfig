@@ -100,7 +100,7 @@ public class PropertiesDiffWriter implements PropertySerializer {
                 .append(key)
                 .append("=")
                 .append(value)
-                .append(LINE_SEPARATOR);
+                .append(LINES_SEPARATOR);
     }
 
     @Override

@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static io.microconfig.utils.FileUtils.LINE_SEPARATOR;
+import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static io.microconfig.utils.IoUtils.readAllLines;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.util.Collections.emptyMap;
@@ -31,7 +31,7 @@ class PropertiesConfigIo implements ConfigIo {
 
             lastLine.append(trimmed);
             if (isMultilineValue(trimmed)) {
-                lastLine.append(LINE_SEPARATOR);
+                lastLine.append(LINES_SEPARATOR);
                 continue;
             }
 
@@ -81,10 +81,10 @@ class PropertiesConfigIo implements ConfigIo {
                 .stream()
                 .map(e -> e.getKey() + "=" + e.getValue());
 
-        doWrite(file, concat(of(LINE_SEPARATOR), lines), APPEND);
+        doWrite(file, concat(of(LINES_SEPARATOR), lines), APPEND);
     }
 
     private void doWrite(File file, Stream<String> lines, OpenOption... openOptions) {
-        FileUtils.write(file.toPath(), lines.collect(joining(LINE_SEPARATOR)), openOptions);
+        FileUtils.write(file.toPath(), lines.collect(joining(LINES_SEPARATOR)), openOptions);
     }
 }

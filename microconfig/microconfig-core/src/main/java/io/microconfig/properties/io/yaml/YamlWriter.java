@@ -7,7 +7,7 @@ import java.nio.file.OpenOption;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static io.microconfig.utils.FileUtils.LINE_SEPARATOR;
+import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 
 public class YamlWriter {
     public void write(File file, Map<String, String> flatProperties, OpenOption... openOptions) {
@@ -55,7 +55,7 @@ public class YamlWriter {
             result.append(entry.getKey());
             dumpValue(result, entry.getValue(), indent + 2);
             if (emptyLine) {
-                result.append(LINE_SEPARATOR);
+                result.append(LINES_SEPARATOR);
             }
 
         }
@@ -66,12 +66,12 @@ public class YamlWriter {
     private void dumpValue(StringBuilder result, Object value, int indent) {
         if (value instanceof Map) {
             result.append(':')
-                    .append(LINE_SEPARATOR);
+                    .append(LINES_SEPARATOR);
             dump(result, (Map) value, indent, false);
         } else {
             result.append(": ")
                     .append(value)
-                    .append(LINE_SEPARATOR);
+                    .append(LINES_SEPARATOR);
         }
     }
 }
