@@ -7,16 +7,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static io.microconfig.utils.IoUtils.readAllLines;
 import static java.lang.Character.isWhitespace;
 
 public class YamlReader {
     public Map<String, String> readAsFlatMap(File file) {
-        List<String> lines = IoUtils.readAllLines(file);
         Map<String, String> result = new TreeMap<>();
 
         int lastOffset = -1;
         StringBuilder key = new StringBuilder();
-        for (String line : lines) {
+        for (String line : readAllLines(file)) {
             if (line.isEmpty() || line.startsWith("#")) continue;
 
             int currentOffset = offsetIndex(line);
