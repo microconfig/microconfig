@@ -3,6 +3,7 @@ package io.microconfig.properties.io.yaml;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -19,13 +20,13 @@ class YamlReaderTest {
     }
 
     private Map<String, String> simpleMap() {
-        Map<String, String> map = new TreeMap<>();
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put("p0", "p0v");
+        map.put("p1.p2.p3.p4.p5", "p5v");
         map.put("server.port", "8080");
         map.put("name", "");
         map.put("name.name2", "");
         map.put("displayName", "dv");
-        map.put("p1.p2.p3.p4.p5", "p5v");
-        map.put("p9", "p9v");
         return map;
     }
 }

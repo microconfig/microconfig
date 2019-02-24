@@ -3,10 +3,7 @@ package io.microconfig.properties.io.yaml;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import static io.microconfig.utils.IoUtils.readAllLines;
 import static java.lang.Character.isWhitespace;
@@ -14,27 +11,32 @@ import static java.util.stream.Collectors.joining;
 
 public class YamlReader {
     public Map<String, String> readAsFlatMap(File file) {
-        Map<String, String> result = new TreeMap<>();
+        Map<String, String> result = new LinkedHashMap<>();
 
         Deque<KeyOffset> currentProperty = new ArrayDeque<>();
-        for (String line : readAllLines(file)) {
-
-            if (line.isEmpty() || line.startsWith("#")) continue;
+        List<String> lines = readAllLines(file);
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
+            if (skip(line)) continue;
 
             int currentOffset = offsetIndex(line);
-            if (newPropertyStart(currentOffset, currentProperty)) {
-                setNullValueForLastKey(currentProperty, currentOffset, result);
-            }
-
             int separatorIndex = line.indexOf(':', currentOffset);
             if (separatorIndex < 0) {
                 throw new IllegalArgumentException("Property must contain ':'. Bad property: " + separatorIndex + " in " + file);
             }
 
+            while (!currentProperty.isEmpty() && currentProperty.peekLast().offset >= currentOffset) {
+                currentProperty.pollLast();
+            }
+
             String key = line.substring(currentOffset, separatorIndex).trim();
 
             if (separatorIndex == line.length() - 1) {
-                currentProperty.add(new KeyOffset(currentOffset, key));
+                if (isLastProperty(lines, i, currentOffset)) {
+                    addValue(result, currentProperty, currentOffset, key, "");
+                } else {
+                    currentProperty.add(new KeyOffset(key, currentOffset));
+                }
                 continue;
             }
 
@@ -45,22 +47,23 @@ public class YamlReader {
         return result;
     }
 
-    private boolean newPropertyStart(int currentOffset, Deque<KeyOffset> currentProperty) {
-        return currentProperty.isEmpty() || currentProperty.peekLast().offset >= currentOffset;
+    private boolean isLastProperty(List<String> lines, int i, int currentOffset) {
+        ++i;
+        while (i < lines.size()) {
+            String line = lines.get(i++);
+            if (skip(line)) continue;
+            return currentOffset >= offsetIndex(line);
+        }
+
+        return true;
     }
 
-    private void setNullValueForLastKey(Deque<KeyOffset> currentProperty, int currentOffset, Map<String, String> result) {
-        if (!currentProperty.isEmpty() && currentProperty.peekLast().offset >= currentOffset) {
-            result.put(toProperty(currentProperty), "");
-
-            while (!currentProperty.isEmpty() && currentProperty.pollLast().offset >= currentOffset) {
-                currentProperty.pollLast();
-            }
-        }
+    private boolean skip(String line) {
+        return line.isEmpty() || line.startsWith("#");
     }
 
     private void addValue(Map<String, String> result, Deque<KeyOffset> currentProperty, int currentOffset, String lastKey, String value) {
-        currentProperty.add(new KeyOffset(currentOffset, lastKey));
+        currentProperty.add(new KeyOffset(lastKey, currentOffset));
         String key = toProperty(currentProperty);
         currentProperty.pollLast();
 
@@ -77,13 +80,13 @@ public class YamlReader {
 
     private String toProperty(Deque<KeyOffset> currentProperty) {
         return currentProperty.stream()
-                .map(k -> k.value)
+                .map(k -> k.key)
                 .collect(joining("."));
     }
 
     @RequiredArgsConstructor
     private static class KeyOffset {
+        private final String key;
         private final int offset;
-        private final String value;
     }
 }
