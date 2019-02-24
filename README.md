@@ -740,8 +740,34 @@ payments:
 infra:
   components: 
     - service-discovery
-    - api-gateway  
+    - api-gateway
+    - ssl-api-gateway
+    
+monitoring:
+  components:
+    - grafana
+    - prometheus    
 ```  
+
+One env can include another one and add/remove/override component groups:
+
+**envs/test.yaml**
+```*.yml
+include:
+  env: base
+  exclude:
+   - monitoring
+
+infra:
+  exclude:
+    - ssl-api-gateway
+  append:
+    - local-proxy
+
+tests_dashboard:  
+  components:
+    - test-statistic-collector
+``` 
 
 # Running config build
 As we discussed Micronfig has its own format for configuration sources. 
