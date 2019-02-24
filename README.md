@@ -719,10 +719,29 @@ repo
     └───dev.yaml
     └───test.yaml
     └───prod.yaml
+```
 
 Let's see env descriptor format:
  
-      
+```*.yml
+orders:
+  components:
+    - order-db-patcher
+    - order-service
+    - order-ui
+
+payments:
+  components:
+    - payment-db-patcher
+    - payment-service
+    - payment-ui
+
+infra:
+  components: [
+    service-discovery,
+    api-gateway
+  ]      
+```  
 
 # Running config build
 As we discussed Micronfig has its own format for configuration sources. 
