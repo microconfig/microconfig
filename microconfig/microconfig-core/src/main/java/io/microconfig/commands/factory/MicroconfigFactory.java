@@ -10,7 +10,7 @@ import io.microconfig.properties.files.parser.PropertiesComponentParser;
 import io.microconfig.properties.files.provider.ComponentTree;
 import io.microconfig.properties.files.provider.ComponentTreeCache;
 import io.microconfig.properties.files.provider.FileBasedPropertiesProvider;
-import io.microconfig.properties.io.BaseConfigIo;
+import io.microconfig.properties.io.ConfigIoSelector;
 import io.microconfig.properties.io.ConfigIo;
 import io.microconfig.properties.resolver.PropertyResolver;
 import io.microconfig.properties.resolver.ResolvedPropertiesProvider;
@@ -47,7 +47,7 @@ public class MicroconfigFactory {
     private final File destinationComponentDir;
     @Wither
     private final String serviceInnerDir;
-    private final ConfigIo configIo = BaseConfigIo.getInstance();
+    private final ConfigIo configIo = ConfigIoSelector.getInstance();
 
     public static MicroconfigFactory init(File root, File destinationComponentDir) {
         File fullRepoDir = canonical(root);

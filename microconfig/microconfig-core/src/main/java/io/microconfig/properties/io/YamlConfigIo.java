@@ -1,6 +1,8 @@
 package io.microconfig.properties.io;
 
 import io.microconfig.properties.Property;
+import io.microconfig.properties.io.yaml.YamlReader;
+import io.microconfig.properties.io.yaml.YamlWriter;
 
 import java.io.File;
 import java.util.Collection;
@@ -11,14 +13,17 @@ import static java.util.Collections.emptyMap;
 import static java.util.stream.Collectors.toMap;
 
 public class YamlConfigIo implements ConfigIo {
+    private final YamlReader yamlReader = new YamlReader();
+    private final YamlWriter yamlWriter = new YamlWriter();
+
     @Override
     public Map<String, String> read(File file) {
-        return !file.exists() ? emptyMap() : YamlUtils.readAsFlatMap(file);
+        return !file.exists() ? emptyMap() : yamlReader.readAsFlatMap(file);
     }
 
     @Override
     public void write(File file, Map<String, String> properties) {
-        YamlUtils.write(file, properties);
+        yamlWriter.write(file, properties);
     }
 
     @Override
@@ -31,6 +36,6 @@ public class YamlConfigIo implements ConfigIo {
 
     @Override
     public void append(File file, Map<String, String> properties) {
-        YamlUtils.write(file, properties, APPEND);
+        yamlWriter.write(file, properties, APPEND);
     }
 }

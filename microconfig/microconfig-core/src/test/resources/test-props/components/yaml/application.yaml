@@ -1,0 +1,21 @@
+server.port: 8080
+
+grpc.port: 8180
+grpc.enableReflection: true
+
+psp:
+  adyen:
+    payment-method-list:
+      - name: bancontact-card
+        displayName: Bancontact (card)
+        pspName: bcmc
+        fee: 0
+        countryCodes: BE
+        enabled: true
+
+      - name: bancontact-mobile
+        displayName: Bancontact (mobile)
+        pspName: bcmc_mobile
+        fee: 0
+        countryCodes: BE
+        enabled: true

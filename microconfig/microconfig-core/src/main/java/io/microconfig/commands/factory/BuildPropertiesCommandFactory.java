@@ -5,7 +5,7 @@ import io.microconfig.commands.CompositeCommand;
 import io.microconfig.commands.PropertiesPostProcessor;
 import io.microconfig.commands.postprocessors.CopyTemplatesPostProcessor;
 import io.microconfig.commands.postprocessors.SecretPropertiesPostProcessor;
-import io.microconfig.properties.io.BaseConfigIo;
+import io.microconfig.properties.io.ConfigIoSelector;
 import io.microconfig.templates.CopyTemplatesServiceImpl;
 
 import java.io.File;
@@ -25,7 +25,7 @@ public class BuildPropertiesCommandFactory {
                 microconfigFactory.newBuildCommand(ENV),
                 microconfigFactory.newBuildCommand(LOG4j),
                 microconfigFactory.newBuildCommand(LOG4J2),
-                microconfigFactory.newBuildCommand(SECRET, new SecretPropertiesPostProcessor(BaseConfigIo.getInstance()))
+                microconfigFactory.newBuildCommand(SECRET, new SecretPropertiesPostProcessor(ConfigIoSelector.getInstance()))
         ));
     }
 

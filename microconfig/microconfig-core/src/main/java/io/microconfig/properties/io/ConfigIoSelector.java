@@ -6,12 +6,12 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
-public class BaseConfigIo implements ConfigIo {
+public class ConfigIoSelector implements ConfigIo {
     private final ConfigIo yamlFormat = new YamlConfigIo();
     private final ConfigIo propertiesFormat = new PropertiesConfigIo();
 
     public static ConfigIo getInstance() {
-        return new BaseConfigIo();
+        return new ConfigIoSelector();
     }
 
     @Override
