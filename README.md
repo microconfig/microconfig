@@ -723,6 +723,7 @@ repo
 
 Let's see env descriptor format:
  
+ **envs/base.yaml**
 ```*.yml
 orders:
   components:
