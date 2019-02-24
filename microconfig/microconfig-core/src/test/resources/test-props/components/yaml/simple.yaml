@@ -1,7 +1,4 @@
-server.port: 8080
-name:
-name.name2:
-displayName: dv
+p9: p9v
 
 p1:
   p2:
@@ -9,4 +6,9 @@ p1:
       p4:
         p5: p5v
 
-p9: p9v
+server.port: 8080
+name:
+name.name2:
+displayName: dv
+
+

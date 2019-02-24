@@ -16,31 +16,33 @@ public class YamlReader {
 
         int lastOffset = -1;
         StringBuilder key = new StringBuilder();
-        for (String str : lines) {
-            if (str.isEmpty() || str.startsWith("#")) continue;
+        for (String line : lines) {
+            if (line.isEmpty() || line.startsWith("#")) continue;
 
-            int offsetIndex = offsetIndex(str);
-            if (offsetIndex > lastOffset) {
-                lastOffset = offsetIndex;
+            int currentOffset = offsetIndex(line);
+            if (currentOffset > lastOffset) {
+                lastOffset = currentOffset;
             } else {
                 result.put(key.toString(), "");
                 key.setLength(0);
             }
 
-            String line = str.trim();
-            int separatorIndex = line.indexOf(':');
+            int separatorIndex = line.indexOf(':', currentOffset);
             if (separatorIndex < 0) {
                 throw new IllegalArgumentException("Property must contain ':'. Bad property: " + separatorIndex + " in " + file);
             }
 
-            key.append(line);
-            if (line.length() == separatorIndex) {
+            if (key.length() > 0) {
                 key.append('.');
+            }
+            key.append(line, currentOffset, separatorIndex);
+            if (separatorIndex == line.length() - 1) {
                 continue;
             }
 
             String value = line.substring(separatorIndex + 1).trim();
             result.put(key.toString(), value);
+            key.setLength(0);
             lastOffset = -1;
         }
 
