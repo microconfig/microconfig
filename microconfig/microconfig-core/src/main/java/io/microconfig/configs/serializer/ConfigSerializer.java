@@ -14,5 +14,5 @@ public interface ConfigSerializer {
      */
     Optional<File> serialize(String component, Collection<Property> properties);
 
-    File pathFor(String component);
+    File configDestination(String component);
 }

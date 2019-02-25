@@ -20,7 +20,7 @@ public class ToFileConfigSerializer implements ConfigSerializer {
 
     @Override
     public Optional<File> serialize(String component, Collection<Property> properties) {
-        File file = pathFor(component);
+        File file = configDestination(component);
         delete(file);
         if (containsOnlySystemProperties(properties)) return empty();
 
@@ -29,7 +29,7 @@ public class ToFileConfigSerializer implements ConfigSerializer {
     }
 
     @Override
-    public File pathFor(String component) {
+    public File configDestination(String component) {
         return new File(componentsDir, component + "/" + fileName);
     }
 
