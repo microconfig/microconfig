@@ -67,7 +67,7 @@ public class ConfigDiffSerializer implements ConfigSerializer {
                     markAdded(p.getKey(), p.getValue(), content);
                     ++diffCount;
                 }
-            } else if (!p.getValue().equals(oldValue)) {
+            } else if (!p.getValue().trim().equals(oldValue)) {
                 markChanged(p.getKey(), oldValue, p.getValue(), content);
                 ++diffCount;
             }
