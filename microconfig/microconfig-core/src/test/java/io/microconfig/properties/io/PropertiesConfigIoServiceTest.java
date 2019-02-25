@@ -1,5 +1,6 @@
 package io.microconfig.properties.io;
 
+import io.microconfig.properties.io.properties.PropertiesConfigIoService;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -11,8 +12,8 @@ import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class PropertiesConfigIoTest {
-    private final PropertiesConfigIo ioService = new PropertiesConfigIo();
+class PropertiesConfigIoServiceTest {
+    private final PropertiesConfigIoService ioService = new PropertiesConfigIoService();
 
     @Test
     void test() {
@@ -30,7 +31,7 @@ class PropertiesConfigIoTest {
 
         File file = classpathFile("files/propLine.properties");
         assertTrue(file.exists());
-        Map<String, String> actual = ioService.read(file);
+        Map<String, String> actual = ioService.read(file).asMap();
         assertEquals(expected, actual);
     }
 }

@@ -1,7 +1,7 @@
 package io.microconfig.properties.serializer;
 
 import io.microconfig.properties.Property;
-import io.microconfig.properties.io.ConfigIo;
+import io.microconfig.properties.io.ConfigIoService;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -16,7 +16,7 @@ import static java.util.Optional.of;
 public class PropertiesSerializerImpl implements PropertySerializer {
     private final File componentsDir;
     private final String fileName;
-    private final ConfigIo configIo;
+    private final ConfigIoService configIo;
 
     @Override
     public Optional<File> serialize(String component, Collection<Property> properties) {
@@ -24,7 +24,7 @@ public class PropertiesSerializerImpl implements PropertySerializer {
         delete(file);
         if (containsOnlySystemProperties(properties)) return empty();
 
-        configIo.write(file, properties);
+        configIo.writeTo(file).write(properties);
         return of(file);
     }
 

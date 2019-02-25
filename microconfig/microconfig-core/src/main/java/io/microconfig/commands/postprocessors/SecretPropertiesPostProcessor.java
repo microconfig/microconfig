@@ -3,7 +3,7 @@ package io.microconfig.commands.postprocessors;
 import io.microconfig.commands.PropertiesPostProcessor;
 import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.Property;
-import io.microconfig.properties.io.ConfigIo;
+import io.microconfig.properties.io.ConfigIoService;
 import io.microconfig.properties.resolver.RootComponent;
 import lombok.RequiredArgsConstructor;
 
@@ -20,9 +20,9 @@ import static io.microconfig.utils.Logger.announce;
 @RequiredArgsConstructor
 public class SecretPropertiesPostProcessor implements PropertiesPostProcessor {
     private final File secretFile;
-    private final ConfigIo configIo;
+    private final ConfigIoService configIo;
 
-    public SecretPropertiesPostProcessor(ConfigIo configIo) {
+    public SecretPropertiesPostProcessor(ConfigIoService configIo) {
         this(new File(userHome(), "/secret/secret.properties"), configIo);
     }
 
@@ -38,12 +38,13 @@ public class SecretPropertiesPostProcessor implements PropertiesPostProcessor {
 
     private synchronized void doMerge(String serviceName, Map<String, String> properties) {
         configIo.read(secretFile)
+                .asMap()
                 .keySet()
                 .forEach(properties::remove);
 
         if (!properties.isEmpty()) {
             announce("Appending new values to secret.properties: " + serviceName + " -> " + properties);
-            configIo.append(secretFile, properties);
+            configIo.writeTo(secretFile).append(properties);
         }
     }
 }

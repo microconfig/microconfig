@@ -6,12 +6,14 @@ import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.environments.filebased.EnvironmentParserSelectorImpl;
 import io.microconfig.environments.filebased.FileBasedEnvironmentProvider;
 import io.microconfig.properties.PropertiesProvider;
-import io.microconfig.properties.files.parser.PropertiesComponentParser;
+import io.microconfig.properties.files.parser.ComponentParserImpl;
 import io.microconfig.properties.files.provider.ComponentTree;
 import io.microconfig.properties.files.provider.ComponentTreeCache;
 import io.microconfig.properties.files.provider.FileBasedPropertiesProvider;
-import io.microconfig.properties.io.ConfigIoSelector;
-import io.microconfig.properties.io.ConfigIo;
+import io.microconfig.properties.io.ConfigIoServiceSelector;
+import io.microconfig.properties.io.ConfigIoService;
+import io.microconfig.properties.io.properties.PropertiesConfigIoService;
+import io.microconfig.properties.io.yaml.YamlConfigIoService;
 import io.microconfig.properties.resolver.PropertyResolver;
 import io.microconfig.properties.resolver.ResolvedPropertiesProvider;
 import io.microconfig.properties.resolver.placeholder.PlaceholderResolver;
@@ -47,7 +49,7 @@ public class MicroconfigFactory {
     private final File destinationComponentDir;
     @Wither
     private final String serviceInnerDir;
-    private final ConfigIo configIo = ConfigIoSelector.getInstance();
+    private final ConfigIoService configIo = new ConfigIoServiceSelector(new YamlConfigIoService(), new PropertiesConfigIoService());
 
     public static MicroconfigFactory init(File root, File destinationComponentDir) {
         File fullRepoDir = canonical(root);
@@ -59,7 +61,7 @@ public class MicroconfigFactory {
 
     public PropertiesProvider newPropertiesProvider(ConfigType configType) {
         PropertiesProvider fileBasedProvider = cache(
-                new FileBasedPropertiesProvider(componentTree, configType.getConfigExtension(), new PropertiesComponentParser(componentTree.getConfigComponentsRoot()))
+                new FileBasedPropertiesProvider(componentTree, configType.getConfigExtension(), new ComponentParserImpl(componentTree.getConfigComponentsRoot(), configIo))
         );
         SpecialPropertiesFactory specialProperties = new SpecialPropertiesFactory(componentTree, destinationComponentDir);
         PropertyResolver resolver = newPropertyResolver(fileBasedProvider, specialProperties);

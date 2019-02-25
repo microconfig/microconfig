@@ -39,7 +39,7 @@ public class PropertyResolveException extends RuntimeException {
     }
 
     public static PropertyResolveException badPlaceholderFormat(String value) {
-        return new PropertyResolveException("Can't parse placeholders: " + value + ". Supported format: ${componentName[optionalEnvName]@propertyPlaceholder:optionalDefaultValue}");
+        return new PropertyResolveException("Can't asProperties placeholders: " + value + ". Supported format: ${componentName[optionalEnvName]@propertyPlaceholder:optionalDefaultValue}");
     }
 
     public static PropertyResolveException badSpellFormat(String value) {

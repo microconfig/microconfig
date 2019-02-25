@@ -1,5 +1,7 @@
 package io.microconfig.properties.io.yaml;
 
+import io.microconfig.properties.Property;
+import io.microconfig.properties.io.ConfigReader;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -11,12 +13,30 @@ import static java.lang.Character.isWhitespace;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.IntStream.range;
 
-public class YamlReader {
-    public Map<String, String> readAsFlatMap(File file) {
+@RequiredArgsConstructor
+public class YamlConfigReader implements ConfigReader {
+    private final File file;
+    private final List<String> lines;
+
+    YamlConfigReader(File file) {
+        this(file, readAllLines(file));
+    }
+
+    @Override
+    public List<Property> properties() {
+        return null;
+    }
+
+    @Override
+    public List<String> comments() {
+        return null;
+    }
+
+    @Override
+    public Map<String, String> asMap(){
         Map<String, String> result = new LinkedHashMap<>();
 
         Deque<KeyOffset> currentProperty = new ArrayDeque<>();
-        List<String> lines = readAllLines(file);
         for (int index = 0; index < lines.size(); index++) {
             String line = lines.get(index);
             if (skip(line)) continue;
@@ -100,7 +120,11 @@ public class YamlReader {
 
     private boolean skip(String line) {
         String trim = line.trim();
-        return trim.isEmpty() || trim.startsWith("#");
+        return trim.isEmpty() || isComment(trim);
+    }
+
+    private boolean isComment(String trim) {
+        return trim.startsWith("#");
     }
 
     private int offsetIndex(String line) {

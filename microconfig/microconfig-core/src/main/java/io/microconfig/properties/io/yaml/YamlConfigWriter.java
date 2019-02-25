@@ -1,16 +1,43 @@
 package io.microconfig.properties.io.yaml;
 
+import io.microconfig.properties.Property;
+import io.microconfig.properties.io.ConfigWriter;
 import io.microconfig.utils.FileUtils;
+import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.nio.file.OpenOption;
+import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
+import static java.nio.file.StandardOpenOption.APPEND;
+import static java.util.stream.Collectors.toMap;
 
-public class YamlWriter {
-    public void write(File file, Map<String, String> flatProperties, OpenOption... openOptions) {
+@RequiredArgsConstructor
+public class YamlConfigWriter implements ConfigWriter {
+    private final File file;
+
+    @Override
+    public void write(Map<String, String> properties) {
+        doWrite(properties);
+    }
+
+    @Override
+    public void write(Collection<Property> properties) {
+        doWrite(properties.stream()
+                .filter(p -> !p.isTemp())
+                .collect(toMap(Property::getKey, Property::getValue))
+        );
+    }
+
+    @Override
+    public void append(Map<String, String> properties) {
+        doWrite(properties, APPEND); //todo
+    }
+
+    private void doWrite(Map<String, String> flatProperties, OpenOption... openOptions) {
         Map<String, Object> tree = toTree(flatProperties);
         String yaml = toYaml(tree);
         FileUtils.write(file.toPath(), yaml, openOptions);

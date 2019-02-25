@@ -9,8 +9,8 @@ import static io.microconfig.utils.ClasspathUtils.classpathFile;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class YamlReaderTest {
-    private final YamlReader reader = new YamlReader();
+class YamlConfigReaderTest {
+    private final YamlConfigIoService yaml = new YamlConfigIoService();
 
     @Test
     void testSimpleYaml() {
@@ -22,7 +22,7 @@ class YamlReaderTest {
         map.put("name.name2", "");
         map.put("displayName", "dv");
 
-        assertEquals(map, reader.readAsFlatMap(classpathFile("files/yaml/simple.yaml")));
+        assertEquals(map, yaml.read(classpathFile("files/yaml/simple.yaml")).asMap());
     }
 
     @Test
@@ -41,7 +41,7 @@ class YamlReaderTest {
         map.put("p1.p2_3", "p2_3v");
         map.put("p9", "p9v");
 
-        assertEquals(map, reader.readAsFlatMap(classpathFile("files/yaml/inner.yaml")));
+        assertEquals(map, yaml.read(classpathFile("files/yaml/inner.yaml")).asMap());
     }
 
     @Test
@@ -64,6 +64,6 @@ class YamlReaderTest {
                 "  enabled: true"
         );
 
-        assertEquals(map, reader.readAsFlatMap(classpathFile("files/yaml/multilines.yaml")));
+        assertEquals(map, yaml.read(classpathFile("files/yaml/multilines.yaml")).asMap());
     }
 }

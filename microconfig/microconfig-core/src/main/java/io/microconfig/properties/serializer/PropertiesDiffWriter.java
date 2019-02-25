@@ -1,7 +1,7 @@
 package io.microconfig.properties.serializer;
 
 import io.microconfig.properties.Property;
-import io.microconfig.properties.io.ConfigIo;
+import io.microconfig.properties.io.ConfigIoService;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -19,7 +19,7 @@ public class PropertiesDiffWriter implements PropertySerializer {
     private static final String DIFF_PREFIX = "diff-";
 
     private final PropertySerializer delegate;
-    private final ConfigIo configIo;
+    private final ConfigIoService configIo;
 
     @Override
     public Optional<File> serialize(String component, Collection<Property> properties) {
@@ -40,7 +40,7 @@ public class PropertiesDiffWriter implements PropertySerializer {
 
     private Map<String, String> readOldConfig(File current) {
         try {
-            return configIo.read(current);
+            return configIo.read(current).asMap();
         } catch (RuntimeException e) {
             error("Can't read previous config '" + current + "' for comparison: " + e.getMessage());
             return emptyMap();

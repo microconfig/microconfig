@@ -39,7 +39,7 @@ public class Include {
     private Include(String line, String defaultEnv) {
         Matcher matcher = PATTERN.matcher(line);
         if (!matcher.find()) {
-            throw new IllegalArgumentException("Can't parse include directive: " + line + ". Supported format: #include componentName[optionalEnv]");
+            throw new IllegalArgumentException("Can't asProperties include directive: " + line + ". Supported format: #include componentName[optionalEnv]");
         }
 
         this.componentName = requireNonNull(matcher.group("comp")).trim();

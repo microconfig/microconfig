@@ -8,6 +8,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ParsedComponent {
     private final String component;
+
     private final List<Include> includes;
     private final List<Property> properties;
 
