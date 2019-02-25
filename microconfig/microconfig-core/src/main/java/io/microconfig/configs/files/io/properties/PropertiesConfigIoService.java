@@ -9,11 +9,11 @@ import java.io.File;
 public class PropertiesConfigIoService implements ConfigIoService {
     @Override
     public ConfigReader read(File file) {
-        return new PropertiesConfigReader(file);
+        return new PropertiesReader(file);
     }
 
     @Override
     public ConfigWriter writeTo(File file) {
-        return new PropertiesConfigWriter(file);
+        return new PropertiesWriter(file);
     }
 }

@@ -17,7 +17,7 @@ import static java.nio.file.StandardOpenOption.APPEND;
 import static java.util.stream.Collectors.toMap;
 
 @RequiredArgsConstructor
-public class YamlConfigWriter implements ConfigWriter {
+public class YamlWriter implements ConfigWriter {
     private static final int OFFSET = 2;
     private final File file;
 

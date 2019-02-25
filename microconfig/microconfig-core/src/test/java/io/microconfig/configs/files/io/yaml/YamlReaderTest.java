@@ -9,7 +9,7 @@ import static io.microconfig.utils.ClasspathUtils.classpathFile;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class YamlConfigReaderTest {
+class YamlReaderTest {
     private final YamlConfigIoService yaml = new YamlConfigIoService();
 
     @Test

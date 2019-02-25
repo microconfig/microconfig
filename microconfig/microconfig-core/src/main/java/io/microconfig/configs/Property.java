@@ -8,7 +8,6 @@ import java.util.function.IntSupplier;
 
 import static io.microconfig.configs.PropertySource.systemSource;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.IntStream.range;
 
@@ -61,14 +60,16 @@ public class Property {
     }
 
     public static Map<String, String> withoutTempValues(Map<String, Property> properties) {
-        return unmodifiableMap(properties.entrySet().stream()
+        return properties.entrySet()
+                .stream()
                 .filter(e -> !e.getValue().isTemp())
                 .filter(e -> !e.getValue().getSource().isSystem())
-                .collect(toLinkedMap(Map.Entry::getKey, e -> e.getValue().getValue())));
+                .collect(toLinkedMap(Map.Entry::getKey, e -> e.getValue().getValue()));
     }
 
     public static Map<String, String> asStringMap(Map<String, Property> properties) {
-        return properties.entrySet().stream()
+        return properties.entrySet()
+                .stream()
                 .collect(toLinkedMap(Map.Entry::getKey, e -> e.getValue().getValue()));
     }
 

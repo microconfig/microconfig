@@ -18,7 +18,7 @@ import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.of;
 
 @RequiredArgsConstructor
-class PropertiesConfigWriter implements ConfigWriter {
+class PropertiesWriter implements ConfigWriter {
     private final File file;
 
     @Override

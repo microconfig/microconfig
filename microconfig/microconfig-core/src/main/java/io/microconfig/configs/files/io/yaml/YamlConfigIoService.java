@@ -9,11 +9,11 @@ import java.io.File;
 public class YamlConfigIoService implements ConfigIoService {
     @Override
     public ConfigReader read(File file) {
-        return new YamlConfigReader(file);
+        return new YamlReader(file);
     }
 
     @Override
     public ConfigWriter writeTo(File file) {
-        return new YamlConfigWriter(file);
+        return new YamlWriter(file);
     }
 }

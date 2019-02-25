@@ -10,8 +10,8 @@ import java.util.List;
 import static io.microconfig.configs.PropertySource.fileSource;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 
-class PropertiesConfigReader extends AbstractConfigReader {
-    PropertiesConfigReader(File file) {
+class PropertiesReader extends AbstractConfigReader {
+    PropertiesReader(File file) {
         super(file);
     }
 

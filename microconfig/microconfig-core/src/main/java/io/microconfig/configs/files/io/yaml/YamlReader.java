@@ -16,8 +16,8 @@ import static java.lang.Character.isWhitespace;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.IntStream.range;
 
-class YamlConfigReader extends AbstractConfigReader {
-    YamlConfigReader(File file) {
+class YamlReader extends AbstractConfigReader {
+    YamlReader(File file) {
         super(file);
     }
 
