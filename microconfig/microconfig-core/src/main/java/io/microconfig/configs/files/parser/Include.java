@@ -27,13 +27,13 @@ public class Include {
     private final String env;
     private final Optional<String> without;
 
-    public static Include parse(String line, String defaultEnv) {
-        return new Include(line, defaultEnv);
-    }
-
     static boolean isInclude(String line) {
         String lower = line.toLowerCase();
         return lower.startsWith("#include") || lower.startsWith("#@include");
+    }
+
+    public static Include parse(String line, String defaultEnv) {
+        return new Include(line, defaultEnv);
     }
 
     private Include(String line, String defaultEnv) {

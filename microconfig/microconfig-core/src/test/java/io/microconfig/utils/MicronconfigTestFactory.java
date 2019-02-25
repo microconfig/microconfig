@@ -14,18 +14,18 @@ import static io.microconfig.utils.ClasspathUtils.classpathFile;
 public class MicronconfigTestFactory {
     private static final File rootDir = classpathFile("test-props");
     private static final MicroconfigFactory commands = MicroconfigFactory.init(rootDir, new File(rootDir, "output"));
-    private static final ConfigProvider propProvider = commands.newPropertiesProvider(SERVICE);
+    private static final ConfigProvider configProvider = commands.newConfigProvider(SERVICE);
     private static final EnvironmentProvider envProvider = commands.getEnvironmentProvider();
 
     public static EnvironmentProvider getEnvProvider() {
         return envProvider;
     }
 
-    public static ConfigProvider getPropertyProvider() {
-        return propProvider;
+    public static ConfigProvider getConfigProvider() {
+        return configProvider;
     }
 
     public static PropertyResolver getPropertyResolver() {
-        return ((PropertyResolverHolder) propProvider).getResolver();
+        return ((PropertyResolverHolder) configProvider).getResolver();
     }
 }

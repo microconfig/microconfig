@@ -6,8 +6,8 @@ import deployment.mgmt.configs.componentgroup.ComponentGroupService;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.service.properties.NexusRepository;
 import deployment.mgmt.update.updater.MgmtProperties;
+import io.microconfig.configs.ConfigProvider;
 import io.microconfig.environments.Component;
-import io.microconfig.properties.PropertiesProvider;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -18,7 +18,7 @@ import java.util.Map;
 import static deployment.mgmt.atrifacts.Artifact.fromMavenString;
 import static deployment.mgmt.utils.ZipUtils.unzip;
 import static io.microconfig.commands.factory.ConfigType.DEPENDENCIES;
-import static io.microconfig.properties.Property.withoutTempValues;
+import static io.microconfig.configs.Property.withoutTempValues;
 import static io.microconfig.utils.Logger.*;
 import static io.microconfig.utils.OsUtil.isWindows;
 import static io.microconfig.utils.TimeUtils.secAfter;
@@ -36,8 +36,8 @@ public class EnvDependenciesDownloaderImpl implements EnvDependenciesDownloader 
     public void downloadDependencies(String env) {
         if (isWindows()) return;
 
-        PropertiesProvider propertiesProvider = mgmtProperties.getPropertyProvider(DEPENDENCIES);
-        Map<String, String> dependencies = withoutTempValues(propertiesProvider.getProperties(Component.byType(DEPENDENCIES.name().toLowerCase()), componentGroup.getEnv()));
+        ConfigProvider configProvider = mgmtProperties.getConfigProvider(DEPENDENCIES);
+        Map<String, String> dependencies = withoutTempValues(configProvider.getProperties(Component.byType(DEPENDENCIES.name().toLowerCase()), componentGroup.getEnv()));
 
         List<NexusRepository> nexusRepositories = new ArrayList<>();
         dependencies.forEach((name, artifactLine) -> {

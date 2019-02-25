@@ -1,8 +1,8 @@
 package mgmt.microconfig;
 
 import io.microconfig.commands.PropertiesPostProcessor;
-import io.microconfig.properties.PropertiesProvider;
-import io.microconfig.properties.Property;
+import io.microconfig.configs.ConfigProvider;
+import io.microconfig.configs.Property;
 import io.microconfig.configs.resolver.RootComponent;
 import io.microconfig.utils.Logger;
 import io.microconfig.utils.SystemPropertiesUtils;
@@ -20,8 +20,7 @@ class WebappPostProcessor implements PropertiesPostProcessor {
     private static final String FORCED_STATUS_FILE = "mgmt.forced.status";
 
     @Override
-    public void process(RootComponent currentComponent, File destinationDir,
-                        Map<String, Property> componentProperties, PropertiesProvider ignore) {
+    public void process(RootComponent currentComponent, File destinationDir, Map<String, Property> componentProperties, ConfigProvider configProvider) {
         delete(new File(destinationDir, WEBAPP_FILE));
 
         if (!SystemPropertiesUtils.hasTrueValue("mgmt.tomcat.webapp.enabled", componentProperties)) return;

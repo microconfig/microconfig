@@ -7,10 +7,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import static io.microconfig.utils.IoUtils.readAllLines;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
+import static io.microconfig.utils.StreamUtils.toSortedMap;
 
 @RequiredArgsConstructor
 public abstract class AbstractConfigReader implements ConfigReader {
@@ -31,15 +31,19 @@ public abstract class AbstractConfigReader implements ConfigReader {
         return parse("")
                 .entrySet()
                 .stream()
-                .collect(toMap(Map.Entry::getKey, p -> p.getValue().getValue()));
+                .collect(toSortedMap(Map.Entry::getKey, p -> p.getValue().getValue()));
     }
 
     @Override
-    public List<String> comments() {
-        return lines.stream()
-                .map(String::trim)
-                .filter(this::isComment)
-                .collect(toList());
+    public Map<Integer, String> commentsByLineNumber() {
+        Map<Integer, String> result = new TreeMap<>();
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i).trim();
+            if (isComment(line)) {
+                result.put(i, line);
+            }
+        }
+        return result;
     }
 
     protected boolean isComment(String p) {

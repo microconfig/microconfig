@@ -10,5 +10,5 @@ public interface ConfigReader {
 
     Map<String, String> propertiesAsMap();
 
-    List<String> comments();
+    Map<Integer, String> commentsByLineNumber();
 }

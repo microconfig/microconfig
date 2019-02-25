@@ -1,6 +1,8 @@
 package io.microconfig.utils;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class CollectionUtils {
     public static <T> T singleValue(Collection<T> values) {
@@ -9,5 +11,12 @@ public class CollectionUtils {
         }
 
         return values.iterator().next();
+    }
+
+    public static<T> List<T> join(List<T> first, List<T> second) {
+        List<T> list = new ArrayList<>();
+        list.addAll(first);
+        list.addAll(second);
+        return list;
     }
 }

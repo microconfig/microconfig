@@ -7,44 +7,50 @@ import io.microconfig.environments.Component;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
+import static io.microconfig.configs.Property.isTempProperty;
+import static io.microconfig.configs.PropertySource.fileSource;
+import static io.microconfig.utils.CollectionUtils.join;
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 public class ComponentParserImpl implements ComponentParser {
-    private final String rootComponentDir;
     private final ConfigIoService configIo;
-
-    public ComponentParserImpl(File rootComponentDir, ConfigIoService configIo) {
-        this(rootComponentDir.getAbsolutePath(), configIo);
-    }
 
     @Override
     public ParsedComponent parse(File file, Component component, String env) {
         ConfigReader read = configIo.read(file);
+        Map<Integer, String> comments = read.commentsByLineNumber();
         List<Property> properties = read.properties(env);
-        List<String> comments = read.comments();
-        List<Include> includes = toIncludes(comments);
-        boolean ignore = shouldIgnore(comments);
+        List<Property> tempProperties = parseTempProperties(comments, file, env);
+        List<Include> includes = parseIncludes(comments.values(), env);
+        boolean ignore = shouldIgnore(comments.values());
 
-        return new ParsedComponent(component.getName(), includes, ignore ? emptyList() : properties);
+        return new ParsedComponent(component.getName(), includes, ignore ? emptyList() : join(properties, tempProperties));
     }
 
-    private List<Include> toIncludes(List<String> comments) {
-        return null;
+    private List<Property> parseTempProperties(Map<Integer, String> comments, File file, String env) {
+        return comments
+                .entrySet()
+                .stream()
+                .filter(e -> isTempProperty(e.getValue()))
+                .map(e -> Property.parse(e.getValue(), env, fileSource(file, e.getKey())))
+                .collect(toList());
     }
 
-    private boolean shouldIgnore(List<String> comments) {
-        return false;
+    private List<Include> parseIncludes(Collection<String> comments, String env) {
+        return comments.stream()
+                .filter(Include::isInclude)
+                .map(line -> Include.parse(line, env))
+                .collect(toList());
     }
 
-    private boolean isIgnore(String line) {
-        return line.startsWith("#@Ignore");
-    }
-
-    private String toRelativePath(File path) {
-        String absolutePath = path.getAbsolutePath();
-        return absolutePath.substring(absolutePath.indexOf(rootComponentDir) + rootComponentDir.length());
+    private boolean shouldIgnore(Collection<String> comments) {
+        return comments.stream()
+                .anyMatch(s -> s.startsWith("#@Ignore"));
     }
 }

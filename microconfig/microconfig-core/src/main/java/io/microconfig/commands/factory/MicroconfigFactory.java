@@ -59,9 +59,9 @@ public class MicroconfigFactory {
         return new MicroconfigFactory(componentTree, environmentProvider, destinationComponentDir, "");
     }
 
-    public ConfigProvider newPropertiesProvider(ConfigType configType) {
+    public ConfigProvider newConfigProvider(ConfigType configType) {
         ConfigProvider fileBasedProvider = cache(
-                new FileBasedConfigProvider(componentTree, configType.getConfigExtension(), new ComponentParserImpl(componentTree.getConfigComponentsRoot(), configIo))
+                new FileBasedConfigProvider(componentTree, configType.getConfigExtension(), new ComponentParserImpl(configIo))
         );
         SpecialPropertiesFactory specialProperties = new SpecialPropertiesFactory(componentTree, destinationComponentDir);
         PropertyResolver resolver = newPropertyResolver(fileBasedProvider, specialProperties);
@@ -91,7 +91,7 @@ public class MicroconfigFactory {
     }
 
     public BuildPropertiesCommand newBuildCommand(ConfigType type, PropertiesPostProcessor propertiesPostProcessor) {
-        return new BuildPropertiesCommand(environmentProvider, newPropertiesProvider(type), propertySerializer(type), propertiesPostProcessor);
+        return new BuildPropertiesCommand(environmentProvider, newConfigProvider(type), propertySerializer(type), propertiesPostProcessor);
     }
 
     private static EnvironmentProvider newEnvProvider(File repoDir) {

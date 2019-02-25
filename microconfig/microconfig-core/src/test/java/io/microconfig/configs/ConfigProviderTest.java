@@ -13,13 +13,13 @@ import java.util.TreeMap;
 import static io.microconfig.configs.PropertySource.systemSource;
 import static io.microconfig.environments.Component.byNameAndType;
 import static io.microconfig.environments.Component.byType;
-import static io.microconfig.utils.MicronconfigTestFactory.getPropertyProvider;
+import static io.microconfig.utils.MicronconfigTestFactory.getConfigProvider;
 import static io.microconfig.utils.MicronconfigTestFactory.getPropertyResolver;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ConfigProviderTest {
-    private final ConfigProvider provider = getPropertyProvider();
+    private final ConfigProvider provider = getConfigProvider();
     private final PropertyResolver resolver = getPropertyResolver();
 
     @Test

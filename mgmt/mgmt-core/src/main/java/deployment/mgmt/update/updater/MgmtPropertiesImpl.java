@@ -5,19 +5,19 @@ import deployment.mgmt.configs.componentgroup.GroupDescription;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.service.properties.NexusRepository;
 import deployment.mgmt.configs.service.properties.impl.ProcessPropertiesImpl;
-import io.microconfig.commands.factory.MicroconfigFactory;
 import io.microconfig.commands.factory.ConfigType;
+import io.microconfig.commands.factory.MicroconfigFactory;
+import io.microconfig.configs.ConfigProvider;
+import io.microconfig.configs.Property;
 import io.microconfig.environments.EnvironmentProvider;
-import io.microconfig.properties.PropertiesProvider;
-import io.microconfig.properties.Property;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
 
 import static io.microconfig.commands.factory.ConfigType.PROCESS;
+import static io.microconfig.configs.Property.withoutTempValues;
 import static io.microconfig.environments.Component.byType;
-import static io.microconfig.properties.Property.withoutTempValues;
 import static io.microconfig.utils.Logger.info;
 
 @RequiredArgsConstructor
@@ -28,16 +28,16 @@ public class MgmtPropertiesImpl implements MgmtProperties {
     @Override //todo migrate  for DeploySettings::getMgmtNexusRepository
     public List<NexusRepository> resolveNexusRepositories() {
         MicroconfigFactory microconfigFactory = initBuildCommands();
-        PropertiesProvider propertiesProvider = microconfigFactory.newPropertiesProvider(PROCESS);
+        ConfigProvider configProvider = microconfigFactory.newConfigProvider(PROCESS);
         EnvironmentProvider environmentProvider = microconfigFactory.getEnvironmentProvider();
 
         String serviceName = anyServiceFromCurrentGroup(environmentProvider);
-        return resolveNexusUrlProperty(serviceName, propertiesProvider);
+        return resolveNexusUrlProperty(serviceName, configProvider);
     }
 
     @Override
-    public PropertiesProvider getPropertyProvider(ConfigType configType) {
-        return initBuildCommands().newPropertiesProvider(configType);
+    public ConfigProvider getConfigProvider(ConfigType configType) {
+        return initBuildCommands().newConfigProvider(configType);
     }
 
     @Override
@@ -52,9 +52,9 @@ public class MgmtPropertiesImpl implements MgmtProperties {
         );
     }
 
-    private List<NexusRepository> resolveNexusUrlProperty(String serviceName, PropertiesProvider propertiesProvider) {
+    private List<NexusRepository> resolveNexusUrlProperty(String serviceName, ConfigProvider configProvider) {
         info("Resolving nexus repositories");
-        Map<String, Property> properties = propertiesProvider.getProperties(byType(serviceName), componentGroupService.getEnv());
+        Map<String, Property> properties = configProvider.getProperties(byType(serviceName), componentGroupService.getEnv());
         if (properties.isEmpty()) {
             throw new IllegalArgumentException("Can't resolve process properties for " + serviceName);
         }
