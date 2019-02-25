@@ -1,6 +1,6 @@
 package io.microconfig.templates;
 
-import io.microconfig.properties.resolver.RootComponent;
+import io.microconfig.configs.resolver.RootComponent;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

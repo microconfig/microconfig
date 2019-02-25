@@ -1,12 +1,12 @@
 package io.microconfig.commands;
 
+import io.microconfig.configs.ConfigProvider;
+import io.microconfig.configs.Property;
+import io.microconfig.configs.resolver.RootComponent;
+import io.microconfig.configs.serializer.ConfigSerializer;
 import io.microconfig.environments.Component;
 import io.microconfig.environments.Environment;
 import io.microconfig.environments.EnvironmentProvider;
-import io.microconfig.properties.PropertiesProvider;
-import io.microconfig.properties.Property;
-import io.microconfig.properties.resolver.RootComponent;
-import io.microconfig.properties.serializer.PropertySerializer;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -24,8 +24,8 @@ public class BuildPropertiesCommand implements Command {
     private static final String SKIP_VALIDATION_PROPERTY = "skipValidation";
 
     private final EnvironmentProvider environmentProvider;
-    private final PropertiesProvider propertiesProvider;
-    private final PropertySerializer propertySerializer;
+    private final ConfigProvider configProvider;
+    private final ConfigSerializer configSerializer;
 
     private final PropertiesPostProcessor propertiesPostProcessor;
 
@@ -76,11 +76,11 @@ public class BuildPropertiesCommand implements Command {
     }
 
     private int processComponent(Component component, String env) {
-        Map<String, Property> properties = propertiesProvider.getProperties(component, env);
-        Optional<File> outputFile = propertySerializer.serialize(component.getName(), properties.values());
+        Map<String, Property> properties = configProvider.getProperties(component, env);
+        Optional<File> outputFile = configSerializer.serialize(component.getName(), properties.values());
 
         outputFile.ifPresent(f -> {
-            propertiesPostProcessor.process(new RootComponent(component, env), f.getParentFile(), properties, propertiesProvider);
+            propertiesPostProcessor.process(new RootComponent(component, env), f.getParentFile(), properties, configProvider);
             info("Generated " + f.getName() + " for " + component.getName() + " [" + env + "]");
         });
 

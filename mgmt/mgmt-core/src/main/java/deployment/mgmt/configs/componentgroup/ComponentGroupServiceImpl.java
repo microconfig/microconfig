@@ -3,7 +3,7 @@ package deployment.mgmt.configs.componentgroup;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.service.properties.ProcessProperties;
 import deployment.mgmt.configs.service.properties.PropertyService;
-import io.microconfig.properties.io.ConfigIo;
+import io.microconfig.configs.io.ConfigIo;
 import lombok.AllArgsConstructor;
 
 import java.io.File;

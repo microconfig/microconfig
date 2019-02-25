@@ -71,8 +71,8 @@ import deployment.mgmt.update.updater.MgmtAutoUpdater;
 import deployment.mgmt.update.updater.MgmtAutoUpdaterImpl;
 import deployment.mgmt.update.updater.MgmtProperties;
 import deployment.mgmt.update.updater.MgmtPropertiesImpl;
-import io.microconfig.properties.io.ConfigIoSelector;
-import io.microconfig.properties.io.ConfigIo;
+import io.microconfig.configs.io.ConfigIoSelector;
+import io.microconfig.configs.io.ConfigIo;
 import lombok.Getter;
 
 import static java.util.Arrays.asList;

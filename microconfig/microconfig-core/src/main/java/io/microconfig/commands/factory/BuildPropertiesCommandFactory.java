@@ -5,9 +5,9 @@ import io.microconfig.commands.CompositeCommand;
 import io.microconfig.commands.PropertiesPostProcessor;
 import io.microconfig.commands.postprocessors.CopyTemplatesPostProcessor;
 import io.microconfig.commands.postprocessors.SecretPropertiesPostProcessor;
-import io.microconfig.properties.io.ConfigIoServiceSelector;
-import io.microconfig.properties.io.properties.PropertiesConfigIoService;
-import io.microconfig.properties.io.yaml.YamlConfigIoService;
+import io.microconfig.configs.io.ConfigIoServiceSelector;
+import io.microconfig.configs.io.properties.PropertiesConfigIoService;
+import io.microconfig.configs.io.yaml.YamlConfigIoService;
 import io.microconfig.templates.CopyTemplatesServiceImpl;
 
 import java.io.File;

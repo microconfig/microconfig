@@ -1,7 +1,7 @@
 package io.microconfig.templates;
 
-import io.microconfig.properties.resolver.PropertyResolver;
-import io.microconfig.properties.resolver.RootComponent;
+import io.microconfig.configs.resolver.PropertyResolver;
+import io.microconfig.configs.resolver.RootComponent;
 
 import java.io.File;
 import java.util.Map;

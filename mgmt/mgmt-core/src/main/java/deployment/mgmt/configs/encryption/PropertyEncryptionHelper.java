@@ -1,6 +1,6 @@
 package deployment.mgmt.configs.encryption;
 
-import io.microconfig.properties.io.ConfigIoSelector;
+import io.microconfig.configs.io.ConfigIoSelector;
 
 import java.io.File;
 import java.util.Map;

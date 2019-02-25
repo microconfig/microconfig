@@ -5,7 +5,7 @@ import io.microconfig.commands.CommandContext;
 import io.microconfig.environments.Component;
 import io.microconfig.environments.Environment;
 import io.microconfig.environments.EnvironmentProvider;
-import io.microconfig.properties.files.provider.ComponentTree;
+import io.microconfig.configs.files.provider.ComponentTree;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

@@ -1,0 +1,10 @@
+package io.microconfig.configs.resolver.placeholder;
+
+import io.microconfig.configs.Property;
+import io.microconfig.environments.Component;
+
+import java.util.Optional;
+
+public interface ResolveStrategy {
+    Optional<Property> resolve(String key, Component component, String environment);
+}

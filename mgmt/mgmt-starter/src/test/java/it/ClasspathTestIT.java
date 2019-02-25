@@ -15,7 +15,7 @@ import deployment.mgmt.configs.filestructure.DeployFileStructureImpl;
 import deployment.mgmt.configs.service.properties.MavenSettings;
 import deployment.mgmt.configs.service.properties.NexusRepository;
 import deployment.mgmt.configs.service.properties.impl.PropertyServiceImpl;
-import io.microconfig.properties.io.ConfigIoSelector;
+import io.microconfig.configs.io.ConfigIoSelector;
 import org.junit.jupiter.api.Disabled;
 
 import java.io.File;

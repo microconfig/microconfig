@@ -3,7 +3,7 @@ package mgmt.microconfig;
 import io.microconfig.commands.PropertiesPostProcessor;
 import io.microconfig.properties.PropertiesProvider;
 import io.microconfig.properties.Property;
-import io.microconfig.properties.resolver.RootComponent;
+import io.microconfig.configs.resolver.RootComponent;
 import io.microconfig.utils.Logger;
 import io.microconfig.utils.SystemPropertiesUtils;
 

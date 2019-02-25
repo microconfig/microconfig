@@ -4,7 +4,7 @@ import io.microconfig.commands.*;
 import io.microconfig.commands.factory.MicroconfigFactory;
 import io.microconfig.commands.postprocessors.CopyTemplatesPostProcessor;
 import io.microconfig.commands.postprocessors.SecretPropertiesPostProcessor;
-import io.microconfig.properties.io.ConfigIoSelector;
+import io.microconfig.configs.io.ConfigIoSelector;
 import io.microconfig.templates.CopyTemplatesServiceImpl;
 
 import java.io.File;

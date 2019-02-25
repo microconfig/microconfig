@@ -1,16 +1,16 @@
 package io.microconfig.templates;
 
-import io.microconfig.properties.Property;
-import io.microconfig.properties.Property.Source;
-import io.microconfig.properties.resolver.PropertyResolver;
-import io.microconfig.properties.resolver.RootComponent;
+import io.microconfig.configs.Property;
+import io.microconfig.configs.Property.Source;
+import io.microconfig.configs.resolver.PropertyResolver;
+import io.microconfig.configs.resolver.RootComponent;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static io.microconfig.properties.resolver.placeholder.Placeholder.isPlaceholder;
+import static io.microconfig.configs.resolver.placeholder.Placeholder.isPlaceholder;
 import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.Logger.warn;
 import static java.util.regex.Matcher.quoteReplacement;
