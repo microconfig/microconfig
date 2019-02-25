@@ -85,12 +85,13 @@ class YamlReader extends AbstractConfigReader {
 
         String key = line.substring(currentOffset, separatorIndex).trim();
 
-        if (isValueEmpty(line, separatorIndex)) {
-            if (isLastProperty(lines, index, currentOffset)) {
+        if (valueEmpty(line, separatorIndex)) {
+            if (itsLastProperty(index, currentOffset)) {
                 addValue(result, currentProperty, currentOffset, index - 1, key, "", env);
-            } else {
-                currentProperty.add(new KeyOffset(key, currentOffset, index));
+                return;
             }
+
+            currentProperty.add(new KeyOffset(key, currentOffset, index));
             return;
         }
 
@@ -98,7 +99,7 @@ class YamlReader extends AbstractConfigReader {
         addValue(result, currentProperty, currentOffset, index, key, value, env);
     }
 
-    private boolean isValueEmpty(String line, int separatorIndex) {
+    private boolean valueEmpty(String line, int separatorIndex) {
         return line.substring(separatorIndex + 1).trim().isEmpty();
     }
 
@@ -120,7 +121,7 @@ class YamlReader extends AbstractConfigReader {
                 .orElseThrow(() -> new IllegalStateException("assertion error: line is empty"));
     }
 
-    private boolean isLastProperty(List<String> lines, int i, int currentOffset) {
+    private boolean itsLastProperty(int i, int currentOffset) {
         ++i;
         while (i < lines.size()) {
             String line = lines.get(i++);

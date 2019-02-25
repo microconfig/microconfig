@@ -23,9 +23,10 @@ public class ComponentParserImpl implements ComponentParser {
 
     @Override
     public ParsedComponent parse(File file, Component component, String env) {
-        ConfigReader read = configIo.read(file);
-        Map<Integer, String> comments = read.commentsByLineNumber();
-        List<Property> properties = read.properties(env);
+        ConfigReader reader = configIo.read(file);
+        Map<Integer, String> comments = reader.commentsByLineNumber();
+        List<Property> properties = reader.properties(env);
+
         List<Property> tempProperties = parseTempProperties(comments, file, env);
         List<Include> includes = parseIncludes(comments.values(), env);
         boolean ignore = shouldIgnore(comments.values());

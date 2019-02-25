@@ -36,7 +36,7 @@ public class YamlWriter implements ConfigWriter {
 
     @Override
     public void append(Map<String, String> properties) {
-        doWrite(properties, APPEND); //todo can break yaml format
+        doWrite(properties, APPEND);//todo can break yaml format
     }
 
     private void doWrite(Map<String, String> flatProperties, OpenOption... openOptions) {
@@ -80,34 +80,31 @@ public class YamlWriter implements ConfigWriter {
 
     private String toYaml(Map<String, Object> tree) {
         StringBuilder result = new StringBuilder();
-        return dump(result, tree, 0, true);
+        dump(result, tree, 0, true);
+        return result.toString();
     }
 
-    private String dump(StringBuilder result, Map<String, Object> tree, int indent, boolean emptyLine) {
-        for (Map.Entry<String, Object> entry : tree.entrySet()) {
-            for (int i = 0; i < indent; i++) {
-                result.append(' ');
-            }
-            result.append(entry.getKey());
-            dumpValue(result, entry.getValue(), indent + OFFSET);
+    private void dump(StringBuilder result, Map<String, Object> tree, int indent, boolean emptyLine) {
+        tree.forEach((key, value) -> {
+            result.append(align("", indent)).append(key);
+            dumpValue(result, value, indent + OFFSET);
+
             if (emptyLine) {
                 result.append(LINES_SEPARATOR);
             }
-
-        }
-        return result.toString();
+        });
     }
 
     @SuppressWarnings("unchecked")
     private void dumpValue(StringBuilder result, Object value, int indent) {
         if (value instanceof Map) {
-            result.append(':')
-                    .append(LINES_SEPARATOR);
+            result.append(':').append(LINES_SEPARATOR);
             dump(result, (Map) value, indent, false);
-        } else {
-            result.append(": ")
-                    .append(value)
-                    .append(LINES_SEPARATOR);
+            return;
         }
+
+        result.append(": ")
+                .append(value)
+                .append(LINES_SEPARATOR);
     }
 }
