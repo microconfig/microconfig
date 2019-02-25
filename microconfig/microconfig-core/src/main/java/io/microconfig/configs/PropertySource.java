@@ -19,7 +19,7 @@ public class PropertySource {
     private final String sourceOfProperty;
     private final int line;
 
-    public static PropertySource systemSource() {
+    static PropertySource systemSource() {
         return SYSTEM_SOURCE;
     }
 
