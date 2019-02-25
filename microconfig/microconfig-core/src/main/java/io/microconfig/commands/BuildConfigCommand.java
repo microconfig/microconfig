@@ -27,7 +27,7 @@ public class BuildConfigCommand implements Command {
     private final ConfigProvider configProvider;
     private final ConfigSerializer configSerializer;
 
-    private final PropertiesPostProcessor propertiesPostProcessor;
+    private final BuildConfigPostProcessor postProcessor;
 
     @Override
     public void execute(CommandContext context) {
@@ -80,7 +80,7 @@ public class BuildConfigCommand implements Command {
         Optional<File> outputFile = configSerializer.serialize(component.getName(), properties.values());
 
         outputFile.ifPresent(f -> {
-            propertiesPostProcessor.process(new RootComponent(component, env), f.getParentFile(), properties, configProvider);
+            postProcessor.process(new RootComponent(component, env), f.getParentFile(), properties, configProvider);
             info("Generated " + f.getName() + " for " + component.getName() + " [" + env + "]");
         });
 

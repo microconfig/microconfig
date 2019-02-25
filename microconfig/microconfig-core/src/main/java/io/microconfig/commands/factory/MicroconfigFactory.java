@@ -1,7 +1,7 @@
 package io.microconfig.commands.factory;
 
 import io.microconfig.commands.BuildConfigCommand;
-import io.microconfig.commands.PropertiesPostProcessor;
+import io.microconfig.commands.BuildConfigPostProcessor;
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.files.io.ConfigIoService;
 import io.microconfig.configs.files.io.ConfigIoServiceSelector;
@@ -30,7 +30,7 @@ import lombok.experimental.Wither;
 
 import java.io.File;
 
-import static io.microconfig.commands.PropertiesPostProcessor.emptyPostProcessor;
+import static io.microconfig.commands.BuildConfigPostProcessor.emptyPostProcessor;
 import static io.microconfig.configs.resolver.placeholder.strategies.CompositeResolveStrategy.composite;
 import static io.microconfig.configs.resolver.placeholder.strategies.MapResolveStrategy.envVariablesResolveStrategy;
 import static io.microconfig.configs.resolver.placeholder.strategies.MapResolveStrategy.systemPropertiesResolveStrategy;
@@ -90,8 +90,8 @@ public class MicroconfigFactory {
         return newBuildCommand(type, emptyPostProcessor());
     }
 
-    public BuildConfigCommand newBuildCommand(ConfigType type, PropertiesPostProcessor propertiesPostProcessor) {
-        return new BuildConfigCommand(environmentProvider, newConfigProvider(type), configSerializer(type), propertiesPostProcessor);
+    public BuildConfigCommand newBuildCommand(ConfigType type, BuildConfigPostProcessor buildConfigPostProcessor) {
+        return new BuildConfigCommand(environmentProvider, newConfigProvider(type), configSerializer(type), buildConfigPostProcessor);
     }
 
     private static EnvironmentProvider newEnvProvider(File repoDir) {

@@ -1,6 +1,6 @@
 package io.microconfig.commands.postprocessors;
 
-import io.microconfig.commands.PropertiesPostProcessor;
+import io.microconfig.commands.BuildConfigPostProcessor;
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.Property;
 import io.microconfig.configs.files.io.ConfigIoService;
@@ -18,11 +18,11 @@ import static io.microconfig.utils.FileUtils.userHome;
 import static io.microconfig.utils.Logger.announce;
 
 @RequiredArgsConstructor
-public class SecretPropertiesPostProcessor implements PropertiesPostProcessor {
+public class SecretBuildConfigPostProcessor implements BuildConfigPostProcessor {
     private final File secretFile;
     private final ConfigIoService configIo;
 
-    public SecretPropertiesPostProcessor(ConfigIoService configIo) {
+    public SecretBuildConfigPostProcessor(ConfigIoService configIo) {
         this(new File(userHome(), "/secret/secret.properties"), configIo);
     }
 

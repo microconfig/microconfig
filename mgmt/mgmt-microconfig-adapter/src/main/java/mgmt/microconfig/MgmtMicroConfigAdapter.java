@@ -3,7 +3,7 @@ package mgmt.microconfig;
 import io.microconfig.commands.*;
 import io.microconfig.commands.factory.MicroconfigFactory;
 import io.microconfig.commands.postprocessors.CopyTemplatesPostProcessor;
-import io.microconfig.commands.postprocessors.SecretPropertiesPostProcessor;
+import io.microconfig.commands.postprocessors.SecretBuildConfigPostProcessor;
 import io.microconfig.configs.files.io.ConfigIoServiceSelector;
 import io.microconfig.configs.files.io.properties.PropertiesConfigIoService;
 import io.microconfig.configs.files.io.yaml.YamlConfigIoService;
@@ -35,13 +35,13 @@ public class MgmtMicroConfigAdapter {
                 commands.newBuildCommand(LOG4j),
                 commands.newBuildCommand(LOG4J2),
                 commands.newBuildCommand(SAP),
-                commands.newBuildCommand(SECRET, new SecretPropertiesPostProcessor(new ConfigIoServiceSelector(new YamlConfigIoService(), new PropertiesConfigIoService()))),
+                commands.newBuildCommand(SECRET, new SecretBuildConfigPostProcessor(new ConfigIoServiceSelector(new YamlConfigIoService(), new PropertiesConfigIoService()))),
                 new GenerateComponentListCommand(componentsDir, commands.getEnvironmentProvider()),
                 new GenerateHelpCommand(commands.getEnvironmentProvider(), commands.getComponentTree(), componentsDir.toPath())
         ));
     }
 
-    private static PropertiesPostProcessor copyTemplatesPostProcessor() {
+    private static BuildConfigPostProcessor copyTemplatesPostProcessor() {
         return new CopyTemplatesPostProcessor(new CopyTemplatesServiceImpl(defaultPattern().toBuilder().templatePrefix("mgmt.template.").build(), empty()));
     }
 

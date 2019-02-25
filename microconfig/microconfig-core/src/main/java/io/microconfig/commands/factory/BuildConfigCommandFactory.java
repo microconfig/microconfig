@@ -1,10 +1,10 @@
 package io.microconfig.commands.factory;
 
+import io.microconfig.commands.BuildConfigPostProcessor;
 import io.microconfig.commands.Command;
 import io.microconfig.commands.CompositeCommand;
-import io.microconfig.commands.PropertiesPostProcessor;
 import io.microconfig.commands.postprocessors.CopyTemplatesPostProcessor;
-import io.microconfig.commands.postprocessors.SecretPropertiesPostProcessor;
+import io.microconfig.commands.postprocessors.SecretBuildConfigPostProcessor;
 import io.microconfig.configs.files.io.ConfigIoServiceSelector;
 import io.microconfig.configs.files.io.properties.PropertiesConfigIoService;
 import io.microconfig.configs.files.io.yaml.YamlConfigIoService;
@@ -27,11 +27,11 @@ public class BuildConfigCommandFactory {
                 microconfigFactory.newBuildCommand(ENV),
                 microconfigFactory.newBuildCommand(LOG4j),
                 microconfigFactory.newBuildCommand(LOG4J2),
-                microconfigFactory.newBuildCommand(SECRET, new SecretPropertiesPostProcessor(new ConfigIoServiceSelector(new YamlConfigIoService(), new PropertiesConfigIoService())))
+                microconfigFactory.newBuildCommand(SECRET, new SecretBuildConfigPostProcessor(new ConfigIoServiceSelector(new YamlConfigIoService(), new PropertiesConfigIoService())))
         ));
     }
 
-    private static PropertiesPostProcessor copyTemplatesPostProcessor() {
+    private static BuildConfigPostProcessor copyTemplatesPostProcessor() {
         return new CopyTemplatesPostProcessor(new CopyTemplatesServiceImpl(defaultPattern(), empty()));
     }
 }

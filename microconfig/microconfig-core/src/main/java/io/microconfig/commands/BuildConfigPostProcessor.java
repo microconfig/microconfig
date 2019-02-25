@@ -7,10 +7,10 @@ import io.microconfig.configs.resolver.RootComponent;
 import java.io.File;
 import java.util.Map;
 
-public interface PropertiesPostProcessor {
+public interface BuildConfigPostProcessor {
     void process(RootComponent currentComponent, File destinationDir, Map<String, Property> componentProperties, ConfigProvider configProvider);
 
-    static PropertiesPostProcessor emptyPostProcessor() {
+    static BuildConfigPostProcessor emptyPostProcessor() {
         return (p1, p2, p3, p4) -> {
         };
     }
