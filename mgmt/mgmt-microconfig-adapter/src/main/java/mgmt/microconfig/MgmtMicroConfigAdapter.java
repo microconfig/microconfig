@@ -4,9 +4,6 @@ import io.microconfig.commands.*;
 import io.microconfig.commands.factory.MicroconfigFactory;
 import io.microconfig.commands.postprocessors.CopyTemplatesPostProcessor;
 import io.microconfig.commands.postprocessors.UpdateSecretsPostProcessor;
-import io.microconfig.configs.files.io.ConfigIoServiceSelector;
-import io.microconfig.configs.files.io.properties.PropertiesConfigIoService;
-import io.microconfig.configs.files.io.yaml.YamlConfigIoService;
 import io.microconfig.templates.CopyTemplatesServiceImpl;
 
 import java.io.File;
@@ -24,25 +21,26 @@ public class MgmtMicroConfigAdapter {
     }
 
     private static Command newBuildPropertiesCommand(File repoDir, File componentsDir) {
-        MicroconfigFactory commands = MicroconfigFactory.init(repoDir, componentsDir);
+        MicroconfigFactory factory = MicroconfigFactory.init(repoDir, componentsDir);
 
-        BuildConfigCommand serviceCommon = commands.newBuildCommand(SERVICE, copyTemplatesPostProcessor());
-        commands = commands.withServiceInnerDir(".mgmt");
+        BuildConfigCommand serviceCommon = factory.newBuildCommand(SERVICE, copyTemplatesPostProcessor());
+        factory = factory.withServiceInnerDir(".mgmt");
         return new CompositeCommand(asList(
                 serviceCommon,
-                commands.newBuildCommand(PROCESS, new WebappPostProcessor()),
-                commands.newBuildCommand(ENV),
-                commands.newBuildCommand(LOG4j),
-                commands.newBuildCommand(LOG4J2),
-                commands.newBuildCommand(SAP),
-                commands.newBuildCommand(SECRET, new UpdateSecretsPostProcessor(new ConfigIoServiceSelector(new YamlConfigIoService(), new PropertiesConfigIoService()))),
-                new GenerateComponentListCommand(componentsDir, commands.getEnvironmentProvider()),
-                new GenerateHelpCommand(commands.getEnvironmentProvider(), commands.getComponentTree(), componentsDir.toPath())
+                factory.newBuildCommand(PROCESS, new WebappPostProcessor()),
+                factory.newBuildCommand(ENV),
+                factory.newBuildCommand(LOG4j),
+                factory.newBuildCommand(LOG4J2),
+                factory.newBuildCommand(SAP),
+                factory.newBuildCommand(SECRET, new UpdateSecretsPostProcessor(factory.getConfigIo())),
+                new GenerateComponentListCommand(componentsDir, factory.getEnvironmentProvider()),
+                new CopyHelpFilesCommand(factory.getEnvironmentProvider(), factory.getComponentTree(), componentsDir.toPath())
         ));
     }
 
     private static BuildConfigPostProcessor copyTemplatesPostProcessor() {
-        return new CopyTemplatesPostProcessor(new CopyTemplatesServiceImpl(defaultPattern().toBuilder().templatePrefix("mgmt.template.").build(), empty()));
+        return new CopyTemplatesPostProcessor(
+                new CopyTemplatesServiceImpl(defaultPattern().toBuilder().templatePrefix("mgmt.template.").build(), empty())
+        );
     }
-
 }

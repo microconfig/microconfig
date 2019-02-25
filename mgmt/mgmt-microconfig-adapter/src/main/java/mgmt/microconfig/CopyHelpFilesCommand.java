@@ -2,10 +2,10 @@ package mgmt.microconfig;
 
 import io.microconfig.commands.Command;
 import io.microconfig.commands.CommandContext;
+import io.microconfig.configs.files.provider.ComponentTree;
 import io.microconfig.environments.Component;
 import io.microconfig.environments.Environment;
 import io.microconfig.environments.EnvironmentProvider;
-import io.microconfig.configs.files.provider.ComponentTree;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -14,13 +14,12 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.microconfig.utils.FileUtils.copy;
-import static java.lang.System.getProperty;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
-class GenerateHelpCommand implements Command {
+class CopyHelpFilesCommand implements Command {
     private final EnvironmentProvider environmentProvider;
     private final ComponentTree componentTree;
     private final Path destRootDir;

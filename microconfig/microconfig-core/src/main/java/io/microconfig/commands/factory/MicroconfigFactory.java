@@ -49,6 +49,7 @@ public class MicroconfigFactory {
     private final File destinationComponentDir;
     @Wither
     private final String serviceInnerDir;
+    @Getter
     private final ConfigIoService configIo = new ConfigIoServiceSelector(new YamlConfigIoService(), new PropertiesConfigIoService());
 
     public static MicroconfigFactory init(File root, File destinationComponentDir) {
