@@ -47,7 +47,7 @@ class YamlConfigReader extends AbstractConfigReader {
     private int addMultilineValue(Map<String, Property> result,
                                   Deque<KeyOffset> currentProperty, int currentOffset,
                                   List<String> lines, int originalIndex, String env) {
-        StringBuilder value = new StringBuilder(LINES_SEPARATOR);
+        StringBuilder value = new StringBuilder();
         int index = originalIndex;
         while (true) {
             String line = lines.get(index);

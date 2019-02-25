@@ -12,11 +12,13 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
+import static io.microconfig.utils.Logger.align;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.util.stream.Collectors.toMap;
 
 @RequiredArgsConstructor
 public class YamlConfigWriter implements ConfigWriter {
+    private static final int OFFSET = 2;
     private final File file;
 
     @Override
@@ -66,7 +68,14 @@ public class YamlConfigWriter implements ConfigWriter {
             }
         }
 
-        result.put(parts[parts.length - 1], value);
+        result.put(parts[parts.length - 1], offsetForMultilineValue(parts.length, value));
+    }
+
+    private String offsetForMultilineValue(int parts, String value) {
+        if (!value.startsWith("-")) return value;
+
+        return (LINES_SEPARATOR + value)
+                .replace(LINES_SEPARATOR, align(LINES_SEPARATOR, (parts + 1) * OFFSET));
     }
 
     private String toYaml(Map<String, Object> tree) {
@@ -80,7 +89,7 @@ public class YamlConfigWriter implements ConfigWriter {
                 result.append(' ');
             }
             result.append(entry.getKey());
-            dumpValue(result, entry.getValue(), indent + 2);
+            dumpValue(result, entry.getValue(), indent + OFFSET);
             if (emptyLine) {
                 result.append(LINES_SEPARATOR);
             }

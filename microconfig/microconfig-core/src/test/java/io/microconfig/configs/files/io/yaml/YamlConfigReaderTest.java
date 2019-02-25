@@ -48,7 +48,6 @@ class YamlConfigReaderTest {
     void testMultiline() {
         Map<String, String> map = new LinkedHashMap<>();
         map.put("psp.adyen.payment-method-list",
-                LINES_SEPARATOR +
                 "- name: bancontact-card" + LINES_SEPARATOR +
                 "  displayName: Bancontact (card)" + LINES_SEPARATOR +
                 "  pspName: bcmc" + LINES_SEPARATOR +
@@ -63,6 +62,7 @@ class YamlConfigReaderTest {
                 "  countryCodes: BE" + LINES_SEPARATOR +
                 "  enabled: true"
         );
+        map.put("server.port", "8080");
 
         assertEquals(map, yaml.read(classpathFile("files/yaml/multilines.yaml")).propertiesAsMap());
     }

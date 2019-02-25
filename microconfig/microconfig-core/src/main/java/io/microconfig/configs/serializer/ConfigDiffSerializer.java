@@ -67,7 +67,7 @@ public class ConfigDiffSerializer implements ConfigSerializer {
                     markAdded(p.getKey(), p.getValue(), content);
                     ++diffCount;
                 }
-            } else if (!p.getValue().trim().equals(oldValue)) {
+            } else if (!linesEquals(p.getValue(), oldValue)) {
                 markChanged(p.getKey(), oldValue, p.getValue(), content);
                 ++diffCount;
             }
@@ -81,6 +81,11 @@ public class ConfigDiffSerializer implements ConfigSerializer {
         }
 
         return content.toString();
+    }
+
+    private boolean linesEquals(String current, String oldValue) {
+        return current.trim()
+                .equals(oldValue.trim());
     }
 
     private void markAdded(String key, String value, StringBuilder content) {
@@ -98,7 +103,7 @@ public class ConfigDiffSerializer implements ConfigSerializer {
     private void doWrite(String operation, String key, String value, StringBuilder content) {
         content.append(operation)
                 .append(key)
-                .append("=")
+                .append(": ")//todo
                 .append(value)
                 .append(LINES_SEPARATOR);
     }

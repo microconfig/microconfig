@@ -14,3 +14,6 @@ psp:
         fee: 0
         countryCodes: BE
         enabled: true
+
+server:
+  port: 8080

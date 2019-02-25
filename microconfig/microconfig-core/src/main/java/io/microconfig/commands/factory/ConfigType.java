@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 @Getter
 public enum ConfigType {
-    SERVICE("properties", "service"),
+    SERVICE("yaml", "service"),
     PROCESS("proc", "process"),
     SECRET("secret"),
     DEPENDENCIES("dependencies"),
