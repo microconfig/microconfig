@@ -76,7 +76,7 @@ public class EnvironmentParserImpl implements EnvironmentParser {
                     try {
                         return parseGroup(componentGroupDeclaration, envIp);
                     } catch (RuntimeException e) {
-                        throw new RuntimeException("Can't asProperties " + componentGroupDeclaration, e);
+                        throw new RuntimeException("Can't parse " + componentGroupDeclaration, e);
                     }
                 }).collect(toList());
     }
