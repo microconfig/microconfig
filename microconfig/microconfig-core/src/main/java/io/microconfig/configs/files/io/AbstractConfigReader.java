@@ -22,13 +22,13 @@ public abstract class AbstractConfigReader implements ConfigReader {
     }
 
     @Override
-    public List<Property> properties() {
-        return new ArrayList<>(parse().values());
+    public List<Property> properties(String env) {
+        return new ArrayList<>(parse(env).values());
     }
 
     @Override
     public Map<String, String> propertiesAsMap() {
-        return parse()
+        return parse("")
                 .entrySet()
                 .stream()
                 .collect(toMap(Map.Entry::getKey, p -> p.getValue().getValue()));
@@ -46,5 +46,5 @@ public abstract class AbstractConfigReader implements ConfigReader {
         return p.startsWith("#");
     }
 
-    protected abstract Map<String, Property> parse();
+    protected abstract Map<String, Property> parse(String env);
 }

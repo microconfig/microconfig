@@ -43,9 +43,9 @@ public class Property {
     }
 
     public Property(String key, String value, String envContext, boolean temp, PropertySource source) {
-        this.key = requireNonNull(key, "Property key is null").trim();
-        this.value = requireNonNull(value, "Property value is null").trim();
-        this.envContext = requireNonNull(envContext, "Property env context is null").trim();
+        this.key = requireNonNull(key, "Property key is null");
+        this.value = requireNonNull(value, "Property value is null");
+        this.envContext = requireNonNull(envContext, "Property env context is null");
         this.temp = temp;
         this.source = requireNonNull(source, "Property source is null");
     }

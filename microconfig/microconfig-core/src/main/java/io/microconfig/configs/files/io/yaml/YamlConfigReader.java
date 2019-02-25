@@ -19,7 +19,7 @@ class YamlConfigReader extends AbstractConfigReader {
     }
 
     @Override
-    protected Map<String, Property> parse() {
+    protected Map<String, Property> parse(String env) {
         Map<String, Property> result = new LinkedHashMap<>();
 
         Deque<KeyOffset> currentProperty = new ArrayDeque<>();
@@ -30,9 +30,9 @@ class YamlConfigReader extends AbstractConfigReader {
             int currentOffset = offsetIndex(line);
 
             if (multilineValue(line, currentOffset)) {
-                index = addMultilineValue(result, currentProperty, currentOffset, lines, index);
+                index = addMultilineValue(result, currentProperty, currentOffset, lines, index, env);
             } else {
-                parseSimpleProperty(file, result, currentProperty, currentOffset, lines, index);
+                parseSimpleProperty(file, result, currentProperty, currentOffset, lines, index, env);
             }
         }
 
@@ -46,7 +46,7 @@ class YamlConfigReader extends AbstractConfigReader {
 
     private int addMultilineValue(Map<String, Property> result,
                                   Deque<KeyOffset> currentProperty, int currentOffset,
-                                  List<String> lines, int originalIndex) {
+                                  List<String> lines, int originalIndex, String env) {
         StringBuilder value = new StringBuilder(LINES_SEPARATOR);
         int index = originalIndex;
         while (true) {
@@ -65,13 +65,13 @@ class YamlConfigReader extends AbstractConfigReader {
             value.append(LINES_SEPARATOR);
         }
 
-        addValue(result, currentProperty, currentOffset, null, value.toString(), originalIndex);
+        addValue(result, currentProperty, currentOffset, originalIndex, null, value.toString(), env);
         return index;
     }
 
     private void parseSimpleProperty(File file, Map<String, Property> result,
                                      Deque<KeyOffset> currentProperty, int currentOffset,
-                                     List<String> lines, int index) {
+                                     List<String> lines, int index, String env) {
         String line = lines.get(index);
         int separatorIndex = line.indexOf(':', currentOffset);
         if (separatorIndex < 0) {
@@ -84,7 +84,7 @@ class YamlConfigReader extends AbstractConfigReader {
 
         if (isValueEmpty(line, separatorIndex)) {
             if (isLastProperty(lines, index, currentOffset)) {
-                addValue(result, currentProperty, currentOffset, key, "", index - 1);
+                addValue(result, currentProperty, currentOffset, index - 1, key, "", env);
             } else {
                 currentProperty.add(new KeyOffset(key, currentOffset, index));
             }
@@ -92,7 +92,7 @@ class YamlConfigReader extends AbstractConfigReader {
         }
 
         String value = line.substring(separatorIndex + 1).trim();
-        addValue(result, currentProperty, currentOffset, key, value, index);
+        addValue(result, currentProperty, currentOffset, index, key, value, env);
     }
 
     private boolean isValueEmpty(String line, int separatorIndex) {
@@ -128,16 +128,17 @@ class YamlConfigReader extends AbstractConfigReader {
         return true;
     }
 
-    private void addValue(Map<String, Property> result, Deque<KeyOffset> currentProperty, int currentOffset, String lastKey, String value, int index) {
+    private void addValue(Map<String, Property> result,
+                          Deque<KeyOffset> currentProperty, int currentOffset, int line,
+                          String lastKey, String value, String env) {
         if (lastKey != null) {
-            currentProperty.add(new KeyOffset(lastKey, currentOffset, index));
+            currentProperty.add(new KeyOffset(lastKey, currentOffset, line));
         }
         int lineNumber = currentProperty.peekFirst().lineNumber;
         String key = toProperty(currentProperty);
         currentProperty.pollLast();
 
-        boolean temp = false;
-        result.put(key, new Property(key, value, "", temp, fileSource(file, lineNumber)));
+        result.put(key, new Property(key, value, env, fileSource(file, lineNumber)));
     }
 
     private String toProperty(Deque<KeyOffset> currentProperty) {

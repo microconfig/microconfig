@@ -16,31 +16,30 @@ class PropertiesConfigReader extends AbstractConfigReader {
     }
 
     @Override
-    protected Map<String, Property> parse() {
+    protected Map<String, Property> parse(String env) {
         Map<String, Property> keyToValue = new LinkedHashMap<>();
-        StringBuilder lastLine = new StringBuilder();
+
+        StringBuilder currentLine = new StringBuilder();
         for (int index = 0; index < lines.size(); index++) {
             String line = lines.get(index);
             String trimmed = line.trim();
             if (trimmed.isEmpty() || isComment(trimmed)) continue;
 
-            lastLine.append(trimmed);
+            currentLine.append(trimmed);
             if (isMultilineValue(trimmed)) {
-                lastLine.append(LINES_SEPARATOR);
+                currentLine.append(LINES_SEPARATOR);
                 continue;
             }
 
-            int separatorIndex = separatorIndex(lastLine);
+            int separatorIndex = separatorIndex(currentLine);
             if (separatorIndex < 0) {
                 throw new IllegalArgumentException("Property must contain '=' or ':'. Bad property: " + trimmed + " in " + file);
             }
-            String key = lastLine.substring(0, separatorIndex);
-            String value = lastLine.substring(separatorIndex + 1);
+            String key = currentLine.substring(0, separatorIndex);
+            String value = currentLine.substring(separatorIndex + 1);
 
-            boolean temp = false;
-            keyToValue.put(key, new Property(key, value, "", temp, fileSource(file, index)));
-
-            lastLine.setLength(0);
+            keyToValue.put(key, new Property(key, value, env, fileSource(file, index)));
+            currentLine.setLength(0);
         }
 
         return keyToValue;

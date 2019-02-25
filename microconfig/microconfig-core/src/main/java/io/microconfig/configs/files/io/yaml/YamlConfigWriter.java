@@ -34,7 +34,7 @@ public class YamlConfigWriter implements ConfigWriter {
 
     @Override
     public void append(Map<String, String> properties) {
-        doWrite(properties, APPEND); //todo
+        doWrite(properties, APPEND); //todo can break yaml format
     }
 
     private void doWrite(Map<String, String> flatProperties, OpenOption... openOptions) {
