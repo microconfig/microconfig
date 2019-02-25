@@ -47,6 +47,7 @@ class YamlConfigReaderTest {
     @Test
     void testMultiline() {
         Map<String, String> map = new LinkedHashMap<>();
+        map.put("management.endpoints", "");
         map.put("psp.adyen.payment-method-list",
                 "- name: bancontact-card" + LINES_SEPARATOR +
                 "  displayName: Bancontact (card)" + LINES_SEPARATOR +
@@ -60,7 +61,7 @@ class YamlConfigReaderTest {
                 "  pspName: bcmc_mobile" + LINES_SEPARATOR +
                 "  fee: 0" + LINES_SEPARATOR +
                 "  countryCodes: BE" + LINES_SEPARATOR +
-                "  enabled: true"
+                "  enabled: true"  + LINES_SEPARATOR
         );
         map.put("server.port", "8080");
 

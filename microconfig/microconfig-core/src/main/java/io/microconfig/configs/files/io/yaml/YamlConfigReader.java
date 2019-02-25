@@ -54,15 +54,15 @@ class YamlConfigReader extends AbstractConfigReader {
             if (!line.isEmpty()) {
                 value.append(line.substring(currentOffset));
             }
-            ++index;
-            if (index >= lines.size()) {
+            if (index + 1 >= lines.size()) {
                 break;
             }
-            String nextLine = lines.get(index);
+            String nextLine = lines.get(index + 1);
             if (!skip(nextLine) && offsetIndex(nextLine) < currentOffset) {
                 break;
             }
             value.append(LINES_SEPARATOR);
+            ++index;
         }
 
         addValue(result, currentProperty, currentOffset, originalIndex, null, value.toString(), env);
@@ -152,5 +152,10 @@ class YamlConfigReader extends AbstractConfigReader {
         private final String key;
         private final int offset;
         private final int lineNumber;
+
+        @Override
+        public String toString() {
+            return key;
+        }
     }
 }
