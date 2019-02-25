@@ -10,6 +10,7 @@ import static io.microconfig.configs.PropertySource.systemSource;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.IntStream.range;
 
 @Getter
 @EqualsAndHashCode
@@ -28,20 +29,16 @@ public class Property {
     }
 
     public static Property parse(String keyValue, String envContext, PropertySource source) {
-        IntSupplier separatorIndex = () -> {
-            int eqIndex = keyValue.indexOf('=');
-            if (eqIndex < 0) return keyValue.indexOf(':');
-
-            int colonIndex = keyValue.lastIndexOf(':', eqIndex - 1);
-            return colonIndex < 0 ? eqIndex : colonIndex;
-        };
-
-        int indexOfSeparator = separatorIndex.getAsInt();
-        if (indexOfSeparator < 0) {
-            throw new IllegalArgumentException("Property must contain ':' or '='. Bad property: " + keyValue + " in " + source);
-        }
+        IntSupplier separatorIndex = () -> range(0, keyValue.length())
+                .filter(i -> {
+                    char c = keyValue.charAt(i);
+                    return c == '=' || c == ':';
+                })
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Property must contain ':' or '='. Bad property: " + keyValue + " in " + source));
 
         boolean temp = isTempProperty(keyValue);
+        int indexOfSeparator = separatorIndex.getAsInt();
         String key = keyValue.substring(temp ? TEMP_VALUE.length() + 1 : 0, indexOfSeparator).trim();
         String value = keyValue.substring(indexOfSeparator + 1).trim();
         return new Property(key, value, envContext, temp, source);
