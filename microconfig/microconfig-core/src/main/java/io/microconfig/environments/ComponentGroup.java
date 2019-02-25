@@ -1,6 +1,5 @@
 package io.microconfig.environments;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -10,6 +9,7 @@ import java.util.Optional;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
 @Getter
@@ -36,7 +36,7 @@ public class ComponentGroup {
     }
 
     public ComponentGroup changeIp(String ip) {
-        return new ComponentGroup(name, Optional.of(ip), components, excludedComponents, appendedComponents);
+        return new ComponentGroup(name, of(ip), components, excludedComponents, appendedComponents);
     }
 
     public ComponentGroup changeComponents(List<Component> newComponents) {
