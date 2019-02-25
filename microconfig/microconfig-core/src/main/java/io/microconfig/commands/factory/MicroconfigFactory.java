@@ -1,6 +1,6 @@
 package io.microconfig.commands.factory;
 
-import io.microconfig.commands.BuildPropertiesCommand;
+import io.microconfig.commands.BuildConfigCommand;
 import io.microconfig.commands.PropertiesPostProcessor;
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.files.io.ConfigIoService;
@@ -86,19 +86,19 @@ public class MicroconfigFactory {
         );
     }
 
-    public BuildPropertiesCommand newBuildCommand(ConfigType type) {
+    public BuildConfigCommand newBuildCommand(ConfigType type) {
         return newBuildCommand(type, emptyPostProcessor());
     }
 
-    public BuildPropertiesCommand newBuildCommand(ConfigType type, PropertiesPostProcessor propertiesPostProcessor) {
-        return new BuildPropertiesCommand(environmentProvider, newConfigProvider(type), propertySerializer(type), propertiesPostProcessor);
+    public BuildConfigCommand newBuildCommand(ConfigType type, PropertiesPostProcessor propertiesPostProcessor) {
+        return new BuildConfigCommand(environmentProvider, newConfigProvider(type), configSerializer(type), propertiesPostProcessor);
     }
 
     private static EnvironmentProvider newEnvProvider(File repoDir) {
         return cache(new FileBasedEnvironmentProvider(new File(repoDir, ENVS_DIR), new EnvironmentParserSelectorImpl(jsonParser(), yamlParser())));
     }
 
-    private ConfigSerializer propertySerializer(ConfigType configType) {
+    private ConfigSerializer configSerializer(ConfigType configType) {
         ToFileConfigSerializer serializer = new ToFileConfigSerializer(destinationComponentDir, serviceInnerDir + "/" + configType.getResultFileName(), configIo);
         return new ConfigDiffSerializer(serializer, configIo);
     }

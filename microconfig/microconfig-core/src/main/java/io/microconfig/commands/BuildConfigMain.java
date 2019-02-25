@@ -5,7 +5,7 @@ import io.microconfig.utils.CommandLineParams;
 import java.io.File;
 import java.util.List;
 
-import static io.microconfig.commands.factory.BuildPropertiesCommandFactory.newBuildPropertiesCommand;
+import static io.microconfig.commands.factory.BuildConfigCommandFactory.newBuildCommand;
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.TimeUtils.msAfter;
 import static java.lang.System.currentTimeMillis;
@@ -36,7 +36,7 @@ public class BuildConfigMain {
         List<String> groups = clp.listValue(GROUP);
         List<String> components = clp.listValue(SERVICES);
 
-        Command command = newBuildPropertiesCommand(new File(root), new File(destination));
+        Command command = newBuildCommand(new File(root), new File(destination));
         execute(command, env, groups, components);
     }
 

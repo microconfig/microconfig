@@ -20,7 +20,7 @@ import static java.lang.System.getProperty;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
-public class BuildPropertiesCommand implements Command {
+public class BuildConfigCommand implements Command {
     private static final String SKIP_VALIDATION_PROPERTY = "skipValidation";
 
     private final EnvironmentProvider environmentProvider;

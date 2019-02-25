@@ -17,8 +17,8 @@ import static io.microconfig.templates.RelativePathResolver.empty;
 import static io.microconfig.templates.TemplatePattern.defaultPattern;
 import static java.util.Arrays.asList;
 
-public class BuildPropertiesCommandFactory {
-    public static Command newBuildPropertiesCommand(File repoDir, File destinationComponentDir) {
+public class BuildConfigCommandFactory {
+    public static Command newBuildCommand(File repoDir, File destinationComponentDir) {
         MicroconfigFactory microconfigFactory = MicroconfigFactory.init(repoDir, destinationComponentDir);
 
         return new CompositeCommand(asList(

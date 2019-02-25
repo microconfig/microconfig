@@ -26,7 +26,7 @@ public class MgmtMicroConfigAdapter {
     private static Command newBuildPropertiesCommand(File repoDir, File componentsDir) {
         MicroconfigFactory commands = MicroconfigFactory.init(repoDir, componentsDir);
 
-        BuildPropertiesCommand serviceCommon = commands.newBuildCommand(SERVICE, copyTemplatesPostProcessor());
+        BuildConfigCommand serviceCommon = commands.newBuildCommand(SERVICE, copyTemplatesPostProcessor());
         commands = commands.withServiceInnerDir(".mgmt");
         return new CompositeCommand(asList(
                 serviceCommon,
