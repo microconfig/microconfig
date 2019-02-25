@@ -4,7 +4,7 @@ import io.microconfig.commands.BuildConfigPostProcessor;
 import io.microconfig.commands.Command;
 import io.microconfig.commands.CompositeCommand;
 import io.microconfig.commands.postprocessors.CopyTemplatesPostProcessor;
-import io.microconfig.commands.postprocessors.SecretBuildConfigPostProcessor;
+import io.microconfig.commands.postprocessors.UpdateSecretsPostProcessor;
 import io.microconfig.configs.files.io.ConfigIoServiceSelector;
 import io.microconfig.configs.files.io.properties.PropertiesConfigIoService;
 import io.microconfig.configs.files.io.yaml.YamlConfigIoService;
@@ -27,7 +27,7 @@ public class BuildConfigCommandFactory {
                 microconfigFactory.newBuildCommand(ENV),
                 microconfigFactory.newBuildCommand(LOG4j),
                 microconfigFactory.newBuildCommand(LOG4J2),
-                microconfigFactory.newBuildCommand(SECRET, new SecretBuildConfigPostProcessor(new ConfigIoServiceSelector(new YamlConfigIoService(), new PropertiesConfigIoService())))
+                microconfigFactory.newBuildCommand(SECRET, new UpdateSecretsPostProcessor(new ConfigIoServiceSelector(new YamlConfigIoService(), new PropertiesConfigIoService())))
         ));
     }
 

@@ -3,6 +3,7 @@ package io.microconfig.commands.postprocessors;
 import io.microconfig.commands.BuildConfigPostProcessor;
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.Property;
+import io.microconfig.configs.resolver.PropertyResolver;
 import io.microconfig.configs.resolver.PropertyResolverHolder;
 import io.microconfig.configs.resolver.RootComponent;
 import io.microconfig.templates.CopyTemplatesService;
@@ -20,7 +21,8 @@ public class CopyTemplatesPostProcessor implements BuildConfigPostProcessor {
     @Override
     public void process(RootComponent currentComponent, File destinationDir, Map<String, Property> componentProperties, ConfigProvider configProvider) {
         if (configProvider instanceof PropertyResolverHolder) {
-            copyTemplatesService.copyTemplates(currentComponent, destinationDir, asStringMap(componentProperties), ((PropertyResolverHolder) configProvider).getResolver());
+            PropertyResolver resolver = ((PropertyResolverHolder) configProvider).getResolver();
+            copyTemplatesService.copyTemplates(currentComponent, destinationDir, asStringMap(componentProperties), resolver);
         }
     }
 }

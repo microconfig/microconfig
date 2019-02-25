@@ -18,11 +18,11 @@ import static io.microconfig.utils.FileUtils.userHome;
 import static io.microconfig.utils.Logger.announce;
 
 @RequiredArgsConstructor
-public class SecretBuildConfigPostProcessor implements BuildConfigPostProcessor {
+public class UpdateSecretsPostProcessor implements BuildConfigPostProcessor {
     private final File secretFile;
     private final ConfigIoService configIo;
 
-    public SecretBuildConfigPostProcessor(ConfigIoService configIo) {
+    public UpdateSecretsPostProcessor(ConfigIoService configIo) {
         this(new File(userHome(), "/secret/secret.properties"), configIo);
     }
 
