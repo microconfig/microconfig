@@ -24,12 +24,18 @@ public class ShowDiffCommandImpl implements ShowDiffCommand {
 
     @Override
     public void showPropDiff(String... services) {
-        doShow(services, deployFileStructure.service()::getDiffFile, f -> configIo.read(f).propertiesAsMap().forEach(this::colorOutput));
+        doShow(services,
+                deployFileStructure.service()::getDiffFile,
+                f -> configIo.read(f).propertiesAsMap().forEach(this::colorOutput)
+        );
     }
 
     @Override
     public void showClasspathDiff(String... services) {
-        doShow(services, deployFileStructure.process()::getClasspathDiffFile, f -> info(readFully(f)));
+        doShow(services,
+                deployFileStructure.process()::getClasspathDiffFile,
+                f -> info(readFully(f))
+        );
     }
 
     @Override
