@@ -3,14 +3,12 @@ package io.microconfig.configs;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-import java.util.List;
 import java.util.Map;
 
 import static io.microconfig.configs.PropertySource.systemSource;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 @Getter
 @EqualsAndHashCode
@@ -50,17 +48,6 @@ public class Property {
         this.envContext = requireNonNull(envContext, "Property env context is null").trim();
         this.temp = temp;
         this.source = requireNonNull(source, "Property source is null");
-    }
-
-    public static List<String> filterComments(List<String> lines) {
-        return lines.stream()
-                .map(String::trim)
-                .filter(Property::isComment)
-                .collect(toList());
-    }
-
-    public static boolean isComment(String line) {
-        return line.startsWith("#");
     }
 
     public static boolean isTempProperty(String line) {

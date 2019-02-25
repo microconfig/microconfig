@@ -1,50 +1,22 @@
 package io.microconfig.configs.files.io.properties;
 
 import io.microconfig.configs.Property;
-import io.microconfig.configs.files.io.ConfigReader;
-import lombok.RequiredArgsConstructor;
+import io.microconfig.configs.files.io.AbstractConfigReader;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
-import static io.microconfig.configs.Property.filterComments;
-import static io.microconfig.configs.Property.isComment;
 import static io.microconfig.configs.PropertySource.fileSource;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
-import static io.microconfig.utils.IoUtils.readAllLines;
-import static java.util.stream.Collectors.toMap;
 
-@RequiredArgsConstructor
-class PropertiesConfigReader implements ConfigReader {
-    private final File file;
-    private final List<String> lines;
-
+class PropertiesConfigReader extends AbstractConfigReader {
     PropertiesConfigReader(File file) {
-        this(file, readAllLines(file));
+        super(file);
     }
 
     @Override
-    public List<Property> properties() {
-        return new ArrayList<>(parse().values());
-    }
-
-    @Override
-    public Map<String, String> propertiesAsMap() {
-        return parse()
-                .entrySet()
-                .stream()
-                .collect(toMap(Map.Entry::getKey, p -> p.getValue().getValue()));
-    }
-
-    @Override
-    public List<String> comments() {
-        return filterComments(lines);
-    }
-
-    private Map<String, Property> parse() {
+    protected Map<String, Property> parse() {
         Map<String, Property> keyToValue = new LinkedHashMap<>();
         StringBuilder lastLine = new StringBuilder();
         for (int index = 0; index < lines.size(); index++) {

@@ -1,50 +1,25 @@
 package io.microconfig.configs.files.io.yaml;
 
 import io.microconfig.configs.Property;
-import io.microconfig.configs.files.io.ConfigReader;
+import io.microconfig.configs.files.io.AbstractConfigReader;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.util.*;
 
-import static io.microconfig.configs.Property.filterComments;
-import static io.microconfig.configs.Property.isComment;
 import static io.microconfig.configs.PropertySource.fileSource;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
-import static io.microconfig.utils.IoUtils.readAllLines;
 import static java.lang.Character.isWhitespace;
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toMap;
 import static java.util.stream.IntStream.range;
 
-@RequiredArgsConstructor
-public class YamlConfigReader implements ConfigReader {
-    private final File file;
-    private final List<String> lines;
-
+class YamlConfigReader extends AbstractConfigReader {
     YamlConfigReader(File file) {
-        this(file, readAllLines(file));
+        super(file);
     }
 
     @Override
-    public List<Property> properties() {
-        return new ArrayList<>(parse().values());
-    }
-
-    @Override
-    public Map<String, String> propertiesAsMap() {
-        return parse()
-                .entrySet()
-                .stream()
-                .collect(toMap(Map.Entry::getKey, p -> p.getValue().getValue()));
-    }
-
-    @Override
-    public List<String> comments() {
-        return filterComments(lines);
-    }
-
-    private Map<String, Property> parse() {
+    protected Map<String, Property> parse() {
         Map<String, Property> result = new LinkedHashMap<>();
 
         Deque<KeyOffset> currentProperty = new ArrayDeque<>();
