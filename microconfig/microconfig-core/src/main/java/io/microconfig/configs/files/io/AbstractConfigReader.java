@@ -4,7 +4,6 @@ import io.microconfig.configs.Property;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -22,16 +21,10 @@ public abstract class AbstractConfigReader implements ConfigReader {
     }
 
     @Override
-    public List<Property> properties(String env) {
-        return new ArrayList<>(parse(env).values());
-    }
-
-    @Override
     public Map<String, String> propertiesAsMap() {
-        return parse("")
-                .entrySet()
+        return properties("")
                 .stream()
-                .collect(toSortedMap(Map.Entry::getKey, p -> p.getValue().getValue()));
+                .collect(toSortedMap(Property::getKey, Property::getValue));
     }
 
     @Override
@@ -49,6 +42,4 @@ public abstract class AbstractConfigReader implements ConfigReader {
     protected boolean isComment(String p) {
         return p.startsWith("#");
     }
-
-    protected abstract Map<String, Property> parse(String env);
 }

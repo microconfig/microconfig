@@ -4,8 +4,8 @@ import io.microconfig.configs.Property;
 import io.microconfig.configs.files.io.AbstractConfigReader;
 
 import java.io.File;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import static io.microconfig.configs.PropertySource.fileSource;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
@@ -16,8 +16,8 @@ class PropertiesConfigReader extends AbstractConfigReader {
     }
 
     @Override
-    protected Map<String, Property> parse(String env) {
-        Map<String, Property> keyToValue = new LinkedHashMap<>();
+    public List<Property> properties(String env) {
+        List<Property> result = new ArrayList<>();
 
         StringBuilder currentLine = new StringBuilder();
         for (int index = 0; index < lines.size(); index++) {
@@ -31,12 +31,11 @@ class PropertiesConfigReader extends AbstractConfigReader {
                 continue;
             }
 
-            Property property = Property.parse(currentLine.toString(), env, fileSource(file, index));
-            keyToValue.put(property.getKey(), property);
+            result.add(Property.parse(currentLine.toString(), env, fileSource(file, index)));
             currentLine.setLength(0);
         }
 
-        return keyToValue;
+        return result;
     }
 
     private boolean isMultilineValue(String line) {
