@@ -8,12 +8,13 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 
 import static io.microconfig.environments.Component.bySourceFile;
+import static io.microconfig.environments.Component.byType;
 
 @Getter
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class PropertySource {
-    private static final PropertySource SYSTEM_SOURCE = new PropertySource(Component.byType(""), "SYSTEM");
+    private static final PropertySource SYSTEM_SOURCE = new PropertySource(byType(""), "SYSTEM");
 
     private final Component component;
     private final String sourceOfProperty;
@@ -37,6 +38,7 @@ public class PropertySource {
 
     @Override
     public String toString() {
-        return sourceOfProperty + ":" + line;
+        return line < 0 ? sourceOfProperty
+                : sourceOfProperty + ":" + line;
     }
 }
