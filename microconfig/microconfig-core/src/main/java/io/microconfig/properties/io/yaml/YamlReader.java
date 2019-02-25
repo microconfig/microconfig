@@ -41,7 +41,7 @@ public class YamlReader {
     private int addMultilineValue(Map<String, String> result,
                                   Deque<KeyOffset> currentProperty, int currentOffset,
                                   List<String> lines, int index) {
-        StringBuilder value = new StringBuilder();
+        StringBuilder value = new StringBuilder(LINES_SEPARATOR);
         while (true) {
             String line = lines.get(index);
             if (!line.isEmpty()) {
@@ -99,7 +99,8 @@ public class YamlReader {
     }
 
     private boolean skip(String line) {
-        return line.isEmpty() || line.startsWith("#");
+        String trim = line.trim();
+        return trim.isEmpty() || trim.startsWith("#");
     }
 
     private int offsetIndex(String line) {

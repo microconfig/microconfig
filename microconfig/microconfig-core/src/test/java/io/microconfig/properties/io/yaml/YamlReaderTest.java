@@ -48,6 +48,7 @@ class YamlReaderTest {
     void testMultiline() {
         Map<String, String> map = new LinkedHashMap<>();
         map.put("psp.adyen.payment-method-list",
+                LINES_SEPARATOR +
                 "- name: bancontact-card" + LINES_SEPARATOR +
                 "  displayName: Bancontact (card)" + LINES_SEPARATOR +
                 "  pspName: bcmc" + LINES_SEPARATOR +
