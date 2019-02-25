@@ -8,8 +8,9 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 
-import static io.microconfig.utils.FileUtils.*;
+import static io.microconfig.utils.FileUtils.delete;
 import static io.microconfig.utils.Logger.error;
 import static io.microconfig.utils.Logger.warn;
 import static java.util.Collections.emptyMap;
@@ -22,20 +23,26 @@ public class ConfigDiffSerializer implements ConfigSerializer {
     private final ConfigIoService configIoService;
 
     @Override
-    public Optional<File> serialize(String component, Collection<Property> properties) {
+    public Optional<File> serialize(String component, Collection<Property> currentProperties) {
         File current = pathFor(component);
-
-        Map<String, String> old = readOldConfig(current);
-        Optional<File> result = delegate.serialize(component, properties);
-
         File diffFile = diffFile(current);
-        delete(diffFile);
-        String diff = compare(old, properties, component, diffFile);
+
+        Map<String, String> oldProperties = readOldConfig(current);
+        Optional<File> result = delegate.serialize(component, currentProperties);
+        Map<String, String> diff = compare(oldProperties, currentProperties);
+
         if (!diff.isEmpty()) {
-            write(diffFile, diff);
+            warn("Stored " + diff.size() + " property changes to " + component + "/" + diffFile.getName());
+            configIoService.writeTo(diffFile).write(diff);
         }
 
         return result;
+    }
+
+    private File diffFile(File destination) {
+        File diffFile = new File(destination.getParent(), DIFF_PREFIX + destination.getName());
+        delete(diffFile);
+        return diffFile;
     }
 
     private Map<String, String> readOldConfig(File current) {
@@ -47,16 +54,10 @@ public class ConfigDiffSerializer implements ConfigSerializer {
         }
     }
 
-    private File diffFile(File destination) {
-        return new File(destination.getParent(), DIFF_PREFIX + destination.getName());
-    }
+    private Map<String, String> compare(Map<String, String> old, Collection<Property> current) {
+        if (old.isEmpty()) return emptyMap();
 
-    private String compare(Map<String, String> old, Collection<Property> current, String component, File diffFile) {
-        if (old.isEmpty()) return "";
-
-        StringBuilder content = new StringBuilder(); //todo2 sort by key without +-
-
-        int diffCount = 0;
+        Map<String, String> result = new TreeMap<>();
 
         for (Property p : current) {
             if (p.isTemp()) continue;
@@ -64,23 +65,15 @@ public class ConfigDiffSerializer implements ConfigSerializer {
             String oldValue = old.remove(p.getKey());
             if (oldValue == null) {
                 if (!p.getSource().isSystem()) {
-                    markAdded(p.getKey(), p.getValue(), content);
-                    ++diffCount;
+                    markAdded(p.getKey(), p.getValue(), result);
                 }
             } else if (!linesEquals(p.getValue(), oldValue)) {
-                markChanged(p.getKey(), oldValue, p.getValue(), content);
-                ++diffCount;
+                markChanged(p.getKey(), oldValue, p.getValue(), result);
             }
         }
 
-        old.forEach((k, oldValue) -> markRemoved(k, oldValue, content));
-        diffCount += old.size();
-
-        if (diffCount > 0) {
-            warn("Stored " + diffCount + " property changes to " + component + "/" + diffFile.getName());
-        }
-
-        return content.toString();
+        old.forEach((k, oldValue) -> markRemoved(k, oldValue, result));
+        return result;
     }
 
     private boolean linesEquals(String current, String oldValue) {
@@ -88,24 +81,16 @@ public class ConfigDiffSerializer implements ConfigSerializer {
                 .equals(oldValue.trim());
     }
 
-    private void markAdded(String key, String value, StringBuilder content) {
-        doWrite("+", key, value, content);
+    private void markAdded(String key, String value, Map<String, String> result) {
+        result.put("+" + key, value);
     }
 
-    private void markRemoved(String key, String value, StringBuilder content) {
-        doWrite("-", key, value, content);
+    private void markRemoved(String key, String value, Map<String, String> result) {
+        result.put("-" + key, value);
     }
 
-    private void markChanged(String key, String oldValue, String currentValue, StringBuilder content) {
-        doWrite(" ", key, oldValue + " -> " + currentValue, content);
-    }
-
-    private void doWrite(String operation, String key, String value, StringBuilder content) {
-        content.append(operation)
-                .append(key)
-                .append(": ")//todo
-                .append(value)
-                .append(LINES_SEPARATOR);
+    private void markChanged(String key, String oldValue, String currentValue, Map<String, String> result) {
+        result.put(key, oldValue + " -> " + currentValue);
     }
 
     @Override
