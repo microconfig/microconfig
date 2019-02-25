@@ -76,9 +76,9 @@ public class ConfigDiffSerializer implements ConfigSerializer {
         return result;
     }
 
-    private boolean linesEquals(String current, String oldValue) {
+    private boolean linesEquals(String current, String old) {
         return current.trim()
-                .equals(oldValue.trim());
+                .equals(old.trim());
     }
 
     private void markAdded(String key, String value, Map<String, String> result) {
