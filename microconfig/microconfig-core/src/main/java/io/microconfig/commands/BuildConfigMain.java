@@ -48,6 +48,7 @@ public class BuildConfigMain {
         } else {
             groups.forEach(group -> command.execute(new CommandContext(env, of(group), components)));
         }
+
         announce("Generated configs in " + msAfter(t));
     }
 }
