@@ -32,7 +32,7 @@ class YamlConfigReader extends AbstractConfigReader {
             if (multilineValue(line, currentOffset)) {
                 index = addMultilineValue(result, currentProperty, currentOffset, lines, index, env);
             } else {
-                parseSimpleProperty(file, result, currentProperty, currentOffset, lines, index, env);
+                parseSimpleProperty(result, currentProperty, currentOffset, lines, index, env);
             }
         }
 
@@ -69,7 +69,7 @@ class YamlConfigReader extends AbstractConfigReader {
         return index;
     }
 
-    private void parseSimpleProperty(File file, Map<String, Property> result,
+    private void parseSimpleProperty(Map<String, Property> result,
                                      Deque<KeyOffset> currentProperty, int currentOffset,
                                      List<String> lines, int index, String env) {
         String line = lines.get(index);

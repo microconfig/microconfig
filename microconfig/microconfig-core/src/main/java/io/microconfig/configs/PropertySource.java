@@ -37,6 +37,6 @@ public class PropertySource {
 
     @Override
     public String toString() {
-        return component.getType() + " -> " + sourceOfProperty;
+        return sourceOfProperty + ":" + line;
     }
 }

@@ -31,14 +31,8 @@ class PropertiesConfigReader extends AbstractConfigReader {
                 continue;
             }
 
-            int separatorIndex = separatorIndex(currentLine);
-            if (separatorIndex < 0) {
-                throw new IllegalArgumentException("Property must contain '=' or ':'. Bad property: " + trimmed + " in " + file);
-            }
-            String key = currentLine.substring(0, separatorIndex);
-            String value = currentLine.substring(separatorIndex + 1);
-
-            keyToValue.put(key, new Property(key, value, env, fileSource(file, index)));
+            Property property = Property.parse(currentLine.toString(), env, fileSource(file, index));
+            keyToValue.put(property.getKey(), property);
             currentLine.setLength(0);
         }
 
@@ -47,13 +41,5 @@ class PropertiesConfigReader extends AbstractConfigReader {
 
     private boolean isMultilineValue(String line) {
         return line.endsWith("\\");
-    }
-
-    private int separatorIndex(StringBuilder line) {
-        int eqIndex = line.indexOf("=");
-        if (eqIndex < 0) return line.indexOf(":");
-
-        int colonIndex = line.lastIndexOf(":", eqIndex - 1);
-        return colonIndex < 0 ? eqIndex : colonIndex;
     }
 }

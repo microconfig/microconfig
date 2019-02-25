@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.Map;
+import java.util.function.IntSupplier;
 
 import static io.microconfig.configs.PropertySource.systemSource;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
@@ -27,14 +28,22 @@ public class Property {
     }
 
     public static Property parse(String keyValue, String envContext, PropertySource source) {
-        int indexOfSeparator = keyValue.indexOf('=');
+        IntSupplier separatorIndex = () -> {
+            int eqIndex = keyValue.indexOf('=');
+            if (eqIndex < 0) return keyValue.indexOf(':');
+
+            int colonIndex = keyValue.lastIndexOf(':', eqIndex - 1);
+            return colonIndex < 0 ? eqIndex : colonIndex;
+        };
+
+        int indexOfSeparator = separatorIndex.getAsInt();
         if (indexOfSeparator < 0) {
-            throw new IllegalArgumentException("Can't split keyValue '" + keyValue + "' by =");
+            throw new IllegalArgumentException("Property must contain ':' or '='. Bad property: " + keyValue + " in " + source);
         }
 
         boolean temp = isTempProperty(keyValue);
-        String key = keyValue.substring(temp ? TEMP_VALUE.length() + 1 : 0, indexOfSeparator);
-        String value = keyValue.substring(indexOfSeparator + 1);
+        String key = keyValue.substring(temp ? TEMP_VALUE.length() + 1 : 0, indexOfSeparator).trim();
+        String value = keyValue.substring(indexOfSeparator + 1).trim();
         return new Property(key, value, envContext, temp, source);
     }
 
