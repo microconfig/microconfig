@@ -14,7 +14,7 @@ import static java.util.Optional.ofNullable;
 import static lombok.AccessLevel.PRIVATE;
 
 /**
- * supported format  ${componentName[optionalEnvName]@propertyPlaceholder:optionalDefaultValue}
+//supported format  ${componentName[optionalEnvName]@propertyPlaceholder:optionalDefaultValue}
  */
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
@@ -27,6 +27,10 @@ public class Placeholder {
     private final String environment;
     private final String value;
     private final Optional<String> defaultValue;
+
+    public static boolean isPlaceholder(String value) {
+        return PATTERN.matcher(value).matches();
+    }
 
     public static Placeholder parse(String value, String defaultEnv) {
         return new Placeholder(value, defaultEnv);
@@ -42,10 +46,6 @@ public class Placeholder {
         this.environment = requireNonNull(ofNullable(matcher.group("env")).orElse(defaultEnv));
         this.value = requireNonNull(matcher.group("value"));
         this.defaultValue = ofNullable(matcher.group("default"));
-    }
-
-    public static boolean isPlaceholder(String value) {
-        return PATTERN.matcher(value).matches();
     }
 
     public Placeholder changeComponent(String component, String environment) {
