@@ -96,7 +96,7 @@ class YamlConfigReader extends AbstractConfigReader {
     }
 
     private boolean isValueEmpty(String line, int separatorIndex) {
-        return separatorIndex == line.length() - 1;
+        return line.substring(separatorIndex + 1).trim().isEmpty();
     }
 
     private void removePropertiesWithBiggerOffset(Deque<KeyOffset> currentProperty, int currentOffset) {
