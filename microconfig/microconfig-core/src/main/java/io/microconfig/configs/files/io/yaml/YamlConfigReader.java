@@ -1,16 +1,20 @@
-package io.microconfig.configs.io.yaml;
+package io.microconfig.configs.files.io.yaml;
 
 import io.microconfig.configs.Property;
-import io.microconfig.configs.io.ConfigReader;
+import io.microconfig.configs.files.io.ConfigReader;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.util.*;
 
+import static io.microconfig.configs.Property.filterComments;
+import static io.microconfig.configs.Property.isComment;
+import static io.microconfig.configs.PropertySource.fileSource;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static io.microconfig.utils.IoUtils.readAllLines;
 import static java.lang.Character.isWhitespace;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toMap;
 import static java.util.stream.IntStream.range;
 
 @RequiredArgsConstructor
@@ -24,17 +28,24 @@ public class YamlConfigReader implements ConfigReader {
 
     @Override
     public List<Property> properties() {
-        return null;
+        return new ArrayList<>(parse().values());
+    }
+
+    @Override
+    public Map<String, String> propertiesAsMap() {
+        return parse()
+                .entrySet()
+                .stream()
+                .collect(toMap(Map.Entry::getKey, p -> p.getValue().getValue()));
     }
 
     @Override
     public List<String> comments() {
-        return null;
+        return filterComments(lines);
     }
 
-    @Override
-    public Map<String, String> asMap(){
-        Map<String, String> result = new LinkedHashMap<>();
+    private Map<String, Property> parse() {
+        Map<String, Property> result = new LinkedHashMap<>();
 
         Deque<KeyOffset> currentProperty = new ArrayDeque<>();
         for (int index = 0; index < lines.size(); index++) {
@@ -58,10 +69,11 @@ public class YamlConfigReader implements ConfigReader {
         return c == '-' || c == '[' || c == '>';
     }
 
-    private int addMultilineValue(Map<String, String> result,
+    private int addMultilineValue(Map<String, Property> result,
                                   Deque<KeyOffset> currentProperty, int currentOffset,
-                                  List<String> lines, int index) {
+                                  List<String> lines, int originalIndex) {
         StringBuilder value = new StringBuilder(LINES_SEPARATOR);
+        int index = originalIndex;
         while (true) {
             String line = lines.get(index);
             if (!line.isEmpty()) {
@@ -78,11 +90,11 @@ public class YamlConfigReader implements ConfigReader {
             value.append(LINES_SEPARATOR);
         }
 
-        addValue(result, currentProperty, currentOffset, null, value.toString());
+        addValue(result, currentProperty, currentOffset, null, value.toString(), originalIndex);
         return index;
     }
 
-    private void parseSimpleProperty(File file, Map<String, String> result,
+    private void parseSimpleProperty(File file, Map<String, Property> result,
                                      Deque<KeyOffset> currentProperty, int currentOffset,
                                      List<String> lines, int index) {
         String line = lines.get(index);
@@ -97,15 +109,15 @@ public class YamlConfigReader implements ConfigReader {
 
         if (isValueEmpty(line, separatorIndex)) {
             if (isLastProperty(lines, index, currentOffset)) {
-                addValue(result, currentProperty, currentOffset, key, "");
+                addValue(result, currentProperty, currentOffset, key, "", index - 1);
             } else {
-                currentProperty.add(new KeyOffset(key, currentOffset));
+                currentProperty.add(new KeyOffset(key, currentOffset, index));
             }
             return;
         }
 
         String value = line.substring(separatorIndex + 1).trim();
-        addValue(result, currentProperty, currentOffset, key, value);
+        addValue(result, currentProperty, currentOffset, key, value, index);
     }
 
     private boolean isValueEmpty(String line, int separatorIndex) {
@@ -121,10 +133,6 @@ public class YamlConfigReader implements ConfigReader {
     private boolean skip(String line) {
         String trim = line.trim();
         return trim.isEmpty() || isComment(trim);
-    }
-
-    private boolean isComment(String trim) {
-        return trim.startsWith("#");
     }
 
     private int offsetIndex(String line) {
@@ -145,14 +153,16 @@ public class YamlConfigReader implements ConfigReader {
         return true;
     }
 
-    private void addValue(Map<String, String> result, Deque<KeyOffset> currentProperty, int currentOffset, String lastKey, String value) {
+    private void addValue(Map<String, Property> result, Deque<KeyOffset> currentProperty, int currentOffset, String lastKey, String value, int index) {
         if (lastKey != null) {
-            currentProperty.add(new KeyOffset(lastKey, currentOffset));
+            currentProperty.add(new KeyOffset(lastKey, currentOffset, index));
         }
+        int lineNumber = currentProperty.peekFirst().lineNumber;
         String key = toProperty(currentProperty);
         currentProperty.pollLast();
 
-        result.put(key, value);
+        boolean temp = false;
+        result.put(key, new Property(key, value, "", temp, fileSource(file, lineNumber)));
     }
 
     private String toProperty(Deque<KeyOffset> currentProperty) {
@@ -165,5 +175,6 @@ public class YamlConfigReader implements ConfigReader {
     private static class KeyOffset {
         private final String key;
         private final int offset;
+        private final int lineNumber;
     }
 }

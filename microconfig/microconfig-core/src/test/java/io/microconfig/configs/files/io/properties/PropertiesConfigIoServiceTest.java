@@ -1,4 +1,4 @@
-package io.microconfig.configs.io.properties;
+package io.microconfig.configs.files.io.properties;
 
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +30,7 @@ class PropertiesConfigIoServiceTest {
 
         File file = classpathFile("files/propLine.properties");
         assertTrue(file.exists());
-        Map<String, String> actual = ioService.read(file).asMap();
+        Map<String, String> actual = ioService.read(file).propertiesAsMap();
         assertEquals(expected, actual);
     }
 }

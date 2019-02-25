@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static io.microconfig.configs.Property.Source.systemSource;
+import static io.microconfig.configs.PropertySource.systemSource;
 import static io.microconfig.environments.Component.byNameAndType;
 import static io.microconfig.environments.Component.byType;
 import static io.microconfig.utils.MicronconfigTestFactory.getPropertyProvider;

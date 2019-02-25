@@ -1,16 +1,21 @@
-package io.microconfig.configs.io.properties;
+package io.microconfig.configs.files.io.properties;
 
 import io.microconfig.configs.Property;
-import io.microconfig.configs.io.ConfigReader;
+import io.microconfig.configs.files.io.ConfigReader;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static io.microconfig.configs.Property.filterComments;
+import static io.microconfig.configs.Property.isComment;
+import static io.microconfig.configs.PropertySource.fileSource;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static io.microconfig.utils.IoUtils.readAllLines;
+import static java.util.stream.Collectors.toMap;
 
 @RequiredArgsConstructor
 class PropertiesConfigReader implements ConfigReader {
@@ -23,19 +28,27 @@ class PropertiesConfigReader implements ConfigReader {
 
     @Override
     public List<Property> properties() {
-        return null;
+        return new ArrayList<>(parse().values());
+    }
+
+    @Override
+    public Map<String, String> propertiesAsMap() {
+        return parse()
+                .entrySet()
+                .stream()
+                .collect(toMap(Map.Entry::getKey, p -> p.getValue().getValue()));
     }
 
     @Override
     public List<String> comments() {
-        return null;
+        return filterComments(lines);
     }
 
-    @Override
-    public Map<String, String> asMap() {
-        Map<String, String> keyToValue = new LinkedHashMap<>();
+    private Map<String, Property> parse() {
+        Map<String, Property> keyToValue = new LinkedHashMap<>();
         StringBuilder lastLine = new StringBuilder();
-        for (String line : lines) {
+        for (int index = 0; index < lines.size(); index++) {
+            String line = lines.get(index);
             String trimmed = line.trim();
             if (trimmed.isEmpty() || isComment(trimmed)) continue;
 
@@ -51,16 +64,14 @@ class PropertiesConfigReader implements ConfigReader {
             }
             String key = lastLine.substring(0, separatorIndex);
             String value = lastLine.substring(separatorIndex + 1);
-            keyToValue.put(key, value);
+
+            boolean temp = false;
+            keyToValue.put(key, new Property(key, value, "", temp, fileSource(file, index)));
 
             lastLine.setLength(0);
         }
 
         return keyToValue;
-    }
-
-    private boolean isComment(String trimmed) {
-        return trimmed.startsWith("#");
     }
 
     private boolean isMultilineValue(String line) {

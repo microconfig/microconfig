@@ -1,4 +1,4 @@
-package io.microconfig.configs.io;
+package io.microconfig.configs.files.io;
 
 import io.microconfig.configs.Property;
 
@@ -8,7 +8,7 @@ import java.util.Map;
 public interface ConfigReader {
     List<Property> properties();
 
-    List<String> comments();
+    Map<String, String> propertiesAsMap();
 
-    Map<String, String> asMap();
+    List<String> comments();
 }

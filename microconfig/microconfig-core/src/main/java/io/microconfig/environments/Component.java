@@ -4,6 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.io.File;
+
 @Getter
 @EqualsAndHashCode(of = "name")
 @RequiredArgsConstructor
@@ -17,6 +19,10 @@ public class Component {
 
     public static Component byType(String type) {
         return new Component(type, type);
+    }
+
+    public static Component bySourceFile(File file) {
+        return byType(file.getParentFile().getName());
     }
 
     @Override

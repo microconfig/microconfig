@@ -1,7 +1,7 @@
 package deployment.mgmt.configs.service.properties.impl;
 
 import deployment.mgmt.configs.service.properties.*;
-import io.microconfig.configs.io.ConfigIo;
+import io.microconfig.configs.files.io.ConfigIo;
 import io.microconfig.utils.SystemPropertiesUtils;
 import lombok.RequiredArgsConstructor;
 

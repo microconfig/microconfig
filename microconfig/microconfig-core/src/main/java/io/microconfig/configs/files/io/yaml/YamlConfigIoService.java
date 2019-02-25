@@ -1,8 +1,8 @@
-package io.microconfig.configs.io.yaml;
+package io.microconfig.configs.files.io.yaml;
 
-import io.microconfig.configs.io.ConfigIoService;
-import io.microconfig.configs.io.ConfigReader;
-import io.microconfig.configs.io.ConfigWriter;
+import io.microconfig.configs.files.io.ConfigIoService;
+import io.microconfig.configs.files.io.ConfigReader;
+import io.microconfig.configs.files.io.ConfigWriter;
 
 import java.io.File;
 

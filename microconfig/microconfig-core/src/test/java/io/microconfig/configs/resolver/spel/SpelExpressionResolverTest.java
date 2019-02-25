@@ -1,6 +1,7 @@
 package io.microconfig.configs.resolver.spel;
 
 import io.microconfig.configs.Property;
+import io.microconfig.configs.PropertySource;
 import io.microconfig.configs.resolver.PropertyResolver;
 import io.microconfig.configs.resolver.RootComponent;
 import io.microconfig.environments.Component;
@@ -57,6 +58,6 @@ class SpelExpressionResolverTest {
     }
 
     static Property prop(String value) {
-        return new Property("key", value, "uat", new Property.Source(Component.byType("c"), "c"));
+        return new Property("key", value, "uat", new PropertySource(Component.byType("c"), "c"));
     }
 }

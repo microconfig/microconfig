@@ -3,7 +3,7 @@ package io.microconfig.commands.postprocessors;
 import io.microconfig.commands.PropertiesPostProcessor;
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.Property;
-import io.microconfig.configs.io.ConfigIoService;
+import io.microconfig.configs.files.io.ConfigIoService;
 import io.microconfig.configs.resolver.RootComponent;
 import lombok.RequiredArgsConstructor;
 
@@ -38,7 +38,7 @@ public class SecretPropertiesPostProcessor implements PropertiesPostProcessor {
 
     private synchronized void doMerge(String serviceName, Map<String, String> properties) {
         configIo.read(secretFile)
-                .asMap()
+                .propertiesAsMap()
                 .keySet()
                 .forEach(properties::remove);
 

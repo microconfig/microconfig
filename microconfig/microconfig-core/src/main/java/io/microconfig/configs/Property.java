@@ -1,16 +1,16 @@
 package io.microconfig.configs;
 
-import io.microconfig.environments.Component;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Map;
 
-import static io.microconfig.configs.Property.Source.systemSource;
+import static io.microconfig.configs.PropertySource.systemSource;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 @Getter
 @EqualsAndHashCode
@@ -20,15 +20,15 @@ public class Property {
     private final String key;
     private final String value;
     private final String envContext;
-
-    private final Source source;
     private final boolean temp;
 
+    private final PropertySource source;
+
     public static Property systemSourceProperty(String key, String value, String envContext) {
-        return new Property(key, value, envContext, systemSource(), true);
+        return new Property(key, value, envContext, true, systemSource());
     }
 
-    public static Property parse(String keyValue, String envContext, Source source) {
+    public static Property parse(String keyValue, String envContext, PropertySource source) {
         int indexOfSeparator = keyValue.indexOf('=');
         if (indexOfSeparator < 0) {
             throw new IllegalArgumentException("Can't split keyValue '" + keyValue + "' by =");
@@ -37,19 +37,26 @@ public class Property {
         boolean temp = isTempProperty(keyValue);
         String key = keyValue.substring(temp ? TEMP_VALUE.length() + 1 : 0, indexOfSeparator);
         String value = keyValue.substring(indexOfSeparator + 1);
-        return new Property(key, value, envContext, source, temp);
+        return new Property(key, value, envContext, temp, source);
     }
 
-    public Property(String key, String value, String envContext, Source source) {
-        this(key, value, envContext, source, false);
+    public Property(String key, String value, String envContext, PropertySource source) {
+        this(key, value, envContext, false, source);
     }
 
-    public Property(String key, String value, String envContext, Source source, boolean temp) {
+    public Property(String key, String value, String envContext, boolean temp, PropertySource source) {
         this.key = requireNonNull(key, "Property key is null").trim();
         this.value = requireNonNull(value, "Property value is null").trim();
         this.envContext = requireNonNull(envContext, "Property env context is null").trim();
-        this.source = requireNonNull(source, "Property source is null");
         this.temp = temp;
+        this.source = requireNonNull(source, "Property source is null");
+    }
+
+    public static List<String> filterComments(List<String> lines) {
+        return lines.stream()
+                .map(String::trim)
+                .filter(Property::isComment)
+                .collect(toList());
     }
 
     public static boolean isComment(String line) {
@@ -73,39 +80,13 @@ public class Property {
     }
 
     public Property withNewValue(String resolvedValue) {
-        return new Property(key, resolvedValue, envContext, source, temp);
+        return new Property(key, resolvedValue, envContext, temp, source);
     }
 
     @Override
     public String toString() {
-        return (source.isSystem() ? "#" : "") + (key + "=" + value);
+        String keyValue = key + "=" + value;
+        return temp ? ("#" + keyValue) : keyValue;
     }
 
-    @Getter
-    @EqualsAndHashCode
-    @RequiredArgsConstructor
-    public static class Source {
-        private static final Source SYSTEM_SOURCE = new Source(Component.byType(""), "SYSTEM");
-
-        private final Component component;
-        private final String sourceOfProperty;
-        private final int line;
-
-        public static Source systemSource() {
-            return SYSTEM_SOURCE;
-        }
-
-        public Source(Component component, String sourceOfProperty) {
-            this(component, sourceOfProperty, -1);
-        }
-
-        public boolean isSystem() {
-            return this == SYSTEM_SOURCE;
-        }
-
-        @Override
-        public String toString() {
-            return component.getType() + " -> " + sourceOfProperty;
-        }
-    }
 }

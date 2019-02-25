@@ -1,4 +1,4 @@
-package io.microconfig.configs.io.yaml;
+package io.microconfig.configs.files.io.yaml;
 
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +22,7 @@ class YamlConfigReaderTest {
         map.put("name.name2", "");
         map.put("displayName", "dv");
 
-        assertEquals(map, yaml.read(classpathFile("files/yaml/simple.yaml")).asMap());
+        assertEquals(map, yaml.read(classpathFile("files/yaml/simple.yaml")).propertiesAsMap());
     }
 
     @Test
@@ -41,7 +41,7 @@ class YamlConfigReaderTest {
         map.put("p1.p2_3", "p2_3v");
         map.put("p9", "p9v");
 
-        assertEquals(map, yaml.read(classpathFile("files/yaml/inner.yaml")).asMap());
+        assertEquals(map, yaml.read(classpathFile("files/yaml/inner.yaml")).propertiesAsMap());
     }
 
     @Test
@@ -64,6 +64,6 @@ class YamlConfigReaderTest {
                 "  enabled: true"
         );
 
-        assertEquals(map, yaml.read(classpathFile("files/yaml/multilines.yaml")).asMap());
+        assertEquals(map, yaml.read(classpathFile("files/yaml/multilines.yaml")).propertiesAsMap());
     }
 }

@@ -1,8 +1,8 @@
 package io.microconfig.configs.files.parser;
 
 import io.microconfig.configs.Property;
-import io.microconfig.configs.io.ConfigIoService;
-import io.microconfig.configs.io.ConfigReader;
+import io.microconfig.configs.files.io.ConfigIoService;
+import io.microconfig.configs.files.io.ConfigReader;
 import io.microconfig.environments.Component;
 import lombok.RequiredArgsConstructor;
 

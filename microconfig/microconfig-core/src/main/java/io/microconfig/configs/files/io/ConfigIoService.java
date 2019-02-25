@@ -1,4 +1,4 @@
-package io.microconfig.configs.io;
+package io.microconfig.configs.files.io;
 
 import java.io.File;
 
@@ -6,5 +6,4 @@ public interface ConfigIoService {
     ConfigReader read(File file);
 
     ConfigWriter writeTo(File file);
-
 }

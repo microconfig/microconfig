@@ -1,7 +1,7 @@
 package io.microconfig.configs.serializer;
 
 import io.microconfig.configs.Property;
-import io.microconfig.configs.io.ConfigIoService;
+import io.microconfig.configs.files.io.ConfigIoService;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -40,7 +40,7 @@ public class ConfigDiffSerializer implements ConfigSerializer {
 
     private Map<String, String> readOldConfig(File current) {
         try {
-            return configIoService.read(current).asMap();
+            return configIoService.read(current).propertiesAsMap();
         } catch (RuntimeException e) {
             error("Can't read previous config '" + current + "' for comparison: " + e.getMessage());
             return emptyMap();

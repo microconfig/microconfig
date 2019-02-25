@@ -1,7 +1,7 @@
 package io.microconfig.configs.serializer;
 
 import io.microconfig.configs.Property;
-import io.microconfig.configs.io.ConfigIoService;
+import io.microconfig.configs.files.io.ConfigIoService;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

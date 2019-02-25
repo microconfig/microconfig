@@ -1,7 +1,7 @@
-package io.microconfig.configs.io.properties;
+package io.microconfig.configs.files.io.properties;
 
 import io.microconfig.configs.Property;
-import io.microconfig.configs.io.ConfigWriter;
+import io.microconfig.configs.files.io.ConfigWriter;
 import io.microconfig.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 

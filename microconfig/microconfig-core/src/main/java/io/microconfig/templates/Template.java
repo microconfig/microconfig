@@ -1,7 +1,7 @@
 package io.microconfig.templates;
 
 import io.microconfig.configs.Property;
-import io.microconfig.configs.Property.Source;
+import io.microconfig.configs.PropertySource;
 import io.microconfig.configs.resolver.PropertyResolver;
 import io.microconfig.configs.resolver.RootComponent;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +48,7 @@ class Template {
 
     private String resolveValue(RootComponent currentComponent, PropertyResolver propertyResolver, Matcher matcher) {
         String placeholder = toPlaceholder(matcher);
-        Property property = new Property("key", placeholder, currentComponent.getRootEnv(), new Source(currentComponent.getRootComponent(), source.getAbsolutePath()));
+        Property property = new Property("key", placeholder, currentComponent.getRootEnv(), new PropertySource(currentComponent.getRootComponent(), source.getAbsolutePath()));
         try {
             return propertyResolver.resolve(property, currentComponent);
         } catch (RuntimeException e) {
