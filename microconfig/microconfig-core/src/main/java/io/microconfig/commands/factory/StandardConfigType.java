@@ -11,9 +11,10 @@ import static io.microconfig.commands.factory.ConfigType.extensionAsName;
 
 @Getter
 @RequiredArgsConstructor
-public enum StandardConfigTypes {
+public enum StandardConfigType {
     SERVICE(byNameAndTypes("service", ".properties", ".yaml")),
-    PROCESS(byNameAndTypes("process", ".proc")),
+    PROCESS(byNameAndTypes("process", ".process", ".proc")),
+    DEPLOY(byNameAndTypes("deploy", ".deploy")),
     ENV(extensionAsName("env")),
     SECRET(extensionAsName("secret")),
     LOG4j(extensionAsName("log4j")),

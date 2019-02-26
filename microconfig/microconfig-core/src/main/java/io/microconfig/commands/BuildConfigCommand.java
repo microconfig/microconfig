@@ -39,7 +39,7 @@ public class BuildConfigCommand implements Command {
 
     private int processComponent(Component component, String env) {
         Map<String, Property> properties = configProvider.getProperties(component, env);
-        Optional<File> outputFile = configSerializer.serialize(component.getName(), chooseOutputFormat(component, env), properties.values());
+        Optional<File> outputFile = configSerializer.serialize(component.getName(), properties.values());
 
         outputFile.ifPresent(f -> {
             postProcessor.process(new RootComponent(component, env), f.getParentFile(), properties, configProvider);
@@ -47,9 +47,5 @@ public class BuildConfigCommand implements Command {
         });
 
         return outputFile.isPresent() ? 1 : 0;
-    }
-
-    private String chooseOutputFormat(Component component, String env) {
-        return ".yaml";
     }
 }

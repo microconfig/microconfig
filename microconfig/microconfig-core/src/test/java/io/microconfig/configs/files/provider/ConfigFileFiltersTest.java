@@ -1,10 +1,8 @@
 package io.microconfig.configs.files.provider;
 
-import io.microconfig.utils.CollectionUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.function.Predicate;
 
 import static io.microconfig.configs.files.provider.ConfigFileFilters.*;
@@ -29,7 +27,7 @@ class ConfigFileFiltersTest {
         assertFalse(defaultFilter.test(f4));
         assertFalse(defaultFilter.test(f5));
 
-        Predicate<File> envFilter = envFilter(singleton(extension), "dev2");
+        Predicate<File> envFilter = envSpecificFilter(singleton(extension), "dev2");
         assertFalse(envFilter.test(f1));
         assertTrue(envFilter.test(f2));
         assertFalse(envFilter.test(f3));

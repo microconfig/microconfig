@@ -40,7 +40,7 @@ public class FileBasedConfigProvider implements ConfigProvider {
 
         Map<String, Property> basicProperties = collectProperties.apply(defaultComponentFilter(configExtensions));
         Map<String, Property> envSharedProperties = collectProperties.apply(envSharedFilter(configExtensions, environment));
-        Map<String, Property> envSpecificProperties = collectProperties.apply(envFilter(configExtensions, environment));
+        Map<String, Property> envSpecificProperties = collectProperties.apply(envSpecificFilter(configExtensions, environment));
 
         basicProperties.putAll(envSharedProperties);
         basicProperties.putAll(envSpecificProperties);

@@ -10,7 +10,7 @@ import java.io.File;
 import java.util.List;
 
 import static io.microconfig.commands.factory.ConfigType.extensionAsName;
-import static io.microconfig.commands.factory.StandardConfigTypes.*;
+import static io.microconfig.commands.factory.StandardConfigType.*;
 import static io.microconfig.templates.RelativePathResolver.empty;
 import static io.microconfig.templates.TemplatePattern.defaultPattern;
 import static java.util.Arrays.asList;
@@ -29,11 +29,12 @@ public class MgmtMicroConfigAdapter {
         return new CompositeCommand(asList(
                 serviceCommon,
                 factory.newBuildCommand(PROCESS.type(), new WebappPostProcessor()),
+                factory.newBuildCommand(DEPLOY.type()),
                 factory.newBuildCommand(ENV.type()),
+                factory.newBuildCommand(SECRET.type(), new UpdateSecretsPostProcessor(factory.getConfigIo())),
                 factory.newBuildCommand(LOG4j.type()),
                 factory.newBuildCommand(LOG4J2.type()),
                 factory.newBuildCommand(extensionAsName("sap")),
-                factory.newBuildCommand(SECRET.type(), new UpdateSecretsPostProcessor(factory.getConfigIo())),
                 new GenerateComponentListCommand(componentsDir, factory.getEnvironmentProvider()),
                 new CopyHelpFilesCommand(factory.getEnvironmentProvider(), factory.getComponentTree(), componentsDir.toPath())
         ));

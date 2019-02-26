@@ -17,7 +17,7 @@ import static java.util.Optional.of;
  *
  * Command line params example:
  * root=Z:\Programming\Java\projects\microconfig-projects\configs-layout-example\repo dest=Z:\Programming\Java\projects\microconfig-projects\output env=dev
- * root=C:\Projects\config\repo dest=C:\Projects\configs env=cr-dev6
+ * root=C:\Projects\config\repo dest=C:\Projects\configs env=cr-dev6 outputFormat=.yaml
  */
 public class BuildConfigMain {
     private static final String ENV = "env";
@@ -34,6 +34,7 @@ public class BuildConfigMain {
         String env = clp.requiredValue(ENV, "set env=");
         List<String> groups = clp.listValue(GROUP);
         List<String> components = clp.listValue(SERVICES);
+        clp.putToSystem("outputFormat");
 
         Command command = newBuildCommand(new File(root), new File(destination));
         execute(command, env, groups, components);

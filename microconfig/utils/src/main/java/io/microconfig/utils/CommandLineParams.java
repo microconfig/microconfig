@@ -49,4 +49,11 @@ public class CommandLineParams {
         }
         return value;
     }
+
+    public void putToSystem(String key) {
+        String value = value(key);
+        if (value != null) {
+            System.setProperty(key, value);
+        }
+    }
 }

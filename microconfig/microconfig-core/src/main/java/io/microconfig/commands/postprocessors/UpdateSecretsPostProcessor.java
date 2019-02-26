@@ -11,7 +11,7 @@ import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static io.microconfig.commands.factory.StandardConfigTypes.SECRET;
+import static io.microconfig.commands.factory.StandardConfigType.SECRET;
 import static io.microconfig.configs.Property.withoutTempValues;
 import static io.microconfig.utils.FileUtils.delete;
 import static io.microconfig.utils.FileUtils.userHome;

@@ -1,6 +1,6 @@
 package io.microconfig.configs.files.provider;
 
-import io.microconfig.commands.factory.StandardConfigTypes;
+import io.microconfig.commands.factory.StandardConfigType;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -46,7 +46,7 @@ public class ComponentTreeCache implements ComponentTree {
              */
             String name = f.getName();
 
-            return Stream.of(StandardConfigTypes.values())
+            return Stream.of(StandardConfigType.values())
                     .flatMap(c -> c.getConfigExtensions().stream())
                     .noneMatch(name::endsWith);
         };

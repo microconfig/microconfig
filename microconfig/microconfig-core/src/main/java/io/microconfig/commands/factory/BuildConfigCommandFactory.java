@@ -12,7 +12,7 @@ import io.microconfig.templates.CopyTemplatesServiceImpl;
 
 import java.io.File;
 
-import static io.microconfig.commands.factory.StandardConfigTypes.*;
+import static io.microconfig.commands.factory.StandardConfigType.*;
 import static io.microconfig.templates.RelativePathResolver.empty;
 import static io.microconfig.templates.TemplatePattern.defaultPattern;
 import static java.util.Arrays.asList;
@@ -24,10 +24,11 @@ public class BuildConfigCommandFactory {
         return new CompositeCommand(asList(
                 microconfigFactory.newBuildCommand(SERVICE.type(), copyTemplatesPostProcessor()),
                 microconfigFactory.newBuildCommand(PROCESS.type()),
+                microconfigFactory.newBuildCommand(DEPLOY.type()),
                 microconfigFactory.newBuildCommand(ENV.type()),
+                microconfigFactory.newBuildCommand(SECRET.type(), new UpdateSecretsPostProcessor(new ConfigIoServiceSelector(new YamlConfigIoService(), new PropertiesConfigIoService()))),
                 microconfigFactory.newBuildCommand(LOG4j.type()),
-                microconfigFactory.newBuildCommand(LOG4J2.type()),
-                microconfigFactory.newBuildCommand(SECRET.type(), new UpdateSecretsPostProcessor(new ConfigIoServiceSelector(new YamlConfigIoService(), new PropertiesConfigIoService())))
+                microconfigFactory.newBuildCommand(LOG4J2.type())
         ));
     }
 

@@ -16,9 +16,13 @@ public class ConfigFileFilters {
                 && containsEnvPart(file, environment, false);
     }
 
-    public static Predicate<File> envFilter(Set<String> fileExtensions, String environment) {
+    public static Predicate<File> envSpecificFilter(Set<String> fileExtensions, String environment) {
         return file -> hasExtension(file, fileExtensions)
                 && containsEnvPart(file, environment, true);
+    }
+
+    public static Predicate<File> extensionFilter(Set<String> fileExtensions) {
+        return file -> hasExtension(file, fileExtensions);
     }
 
     private static boolean hasExtension(File file, Set<String> fileExtensions) {

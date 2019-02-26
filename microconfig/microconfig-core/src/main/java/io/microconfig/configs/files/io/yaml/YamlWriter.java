@@ -7,12 +7,14 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.nio.file.OpenOption;
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static io.microconfig.utils.Logger.align;
+import static io.microconfig.utils.StreamUtils.toSortedMap;
 import static java.nio.file.StandardOpenOption.APPEND;
-import static java.util.stream.Collectors.toMap;
 
 @RequiredArgsConstructor
 public class YamlWriter implements ConfigWriter {
@@ -28,7 +30,7 @@ public class YamlWriter implements ConfigWriter {
     public void write(Collection<Property> properties) {
         doWrite(properties.stream()
                 .filter(p -> !p.isTemp())
-                .collect(toMap(Property::getKey, Property::getValue))
+                .collect(toSortedMap(Property::getKey, Property::getValue))
         );
     }
 
@@ -38,18 +40,15 @@ public class YamlWriter implements ConfigWriter {
     }
 
     private void doWrite(Map<String, String> flatProperties, OpenOption... openOptions) {
-        ArrayList<String> strings = new ArrayList<>(flatProperties.keySet());
-        for (String string : strings) {
-            if (!string.startsWith("cr.cf.tfs.out")) {
-                flatProperties.remove(string);
-            }
-        }
-
         Map<String, Object> tree = toTree(flatProperties);
         FileUtils.write(file.toPath(), toYaml(tree), openOptions);
     }
 
     Map<String, Object> toTree(Map<String, String> properties) {
+        if (!(properties instanceof TreeMap) || ((TreeMap) properties).comparator() != null) {
+            properties = new TreeMap<>(properties);
+        }
+
         Map<String, Object> result = new TreeMap<>();
         properties.forEach((k, v) -> propertyToTree(k, v, result));
         return result;

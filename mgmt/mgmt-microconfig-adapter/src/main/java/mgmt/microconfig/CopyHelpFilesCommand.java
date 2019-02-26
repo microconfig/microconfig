@@ -36,7 +36,8 @@ class CopyHelpFilesCommand implements Command {
     }
 
     private Optional<File> findSourceHelpFile(String componentName) {
-        List<File> helpFiles = componentTree.getConfigFiles(componentName, p -> p.getName().equals("help.txt")).collect(toList());
+        List<File> helpFiles = componentTree.getConfigFiles(componentName, p -> p.getName().equals("help.txt"))
+                .collect(toList());
 
         if (helpFiles.isEmpty()) return empty();
         if (helpFiles.size() == 1) return of(helpFiles.get(0));

@@ -20,6 +20,7 @@ import io.microconfig.configs.resolver.placeholder.strategies.specials.SpecialPr
 import io.microconfig.configs.resolver.spel.SpelExpressionResolver;
 import io.microconfig.configs.serializer.ConfigDiffSerializer;
 import io.microconfig.configs.serializer.ConfigSerializer;
+import io.microconfig.configs.serializer.FilenameGeneratorImpl;
 import io.microconfig.configs.serializer.ToFileConfigSerializer;
 import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.environments.filebased.EnvironmentParserSelectorImpl;
@@ -100,7 +101,12 @@ public class MicroconfigFactory {
     }
 
     private ConfigSerializer configSerializer(ConfigType configType) {
-        ToFileConfigSerializer serializer = new ToFileConfigSerializer(destinationComponentDir, serviceInnerDir + "/" + configType.getResultFileName(), configIo);
-        return new ConfigDiffSerializer(serializer, configIo);
+        return new ConfigDiffSerializer(
+                new ToFileConfigSerializer(
+                        new FilenameGeneratorImpl(destinationComponentDir, serviceInnerDir, configType, componentTree),
+                        configIo
+                ),
+                configIo
+        );
     }
 }
