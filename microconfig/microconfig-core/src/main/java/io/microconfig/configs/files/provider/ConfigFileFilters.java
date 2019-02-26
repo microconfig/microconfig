@@ -21,10 +21,6 @@ public class ConfigFileFilters {
                 && containsEnvPart(file, environment, true);
     }
 
-    public static Predicate<File> extensionFilter(Set<String> fileExtensions) {
-        return file -> hasExtension(file, fileExtensions);
-    }
-
     private static boolean hasExtension(File file, Set<String> fileExtensions) {
         return fileExtensions
                 .stream()
