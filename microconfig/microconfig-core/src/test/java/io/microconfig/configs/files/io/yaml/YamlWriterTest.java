@@ -23,20 +23,17 @@ class YamlWriterTest {
     @Test
     void testWriteInner() {
         Map<String, String> initial = new HashMap<>();
-        initial.put("cr.cf.tfs.out.archiveDir", "dirV");
-        initial.put("cr.cf.tfs.out", "outV");
-        initial.put("cr.cf.tfs.out.shouldArchive", "true");
+        initial.put("tfs.out.archiveDir", "dirV");
+        initial.put("tfs.out", "outV");
+        initial.put("tfs.out.shouldArchive", "true");
+
 
         Map<String, Object> expected = new TreeMap<>();
         Map<String, Object> level2 = new TreeMap<>();
-        expected.put("cr", level2);
-        Map<String, Object> level3 = new TreeMap<>();
-        level2.put("cf", level3);
-        Map<String, Object> level4 = new TreeMap<>();
-        level3.put("tfs", level4);
-        level4.put("out.archiveDir", "dirV");
-        level4.put("out", "outV");
-        level4.put("out.shouldArchive", "true");
+        expected.put("tfs", level2);
+        level2.put("out.archiveDir", "dirV");
+        level2.put("out", "outV");
+        level2.put("out.shouldArchive", "true");
 
         Map<String, Object> actual = new YamlWriter(null).toTree(initial);
         assertEquals(expected, actual);
