@@ -3,6 +3,7 @@ management:
 
 psp:
   adyen:
+    dodo: haha
     payment-method-list:
     - name: bancontact-card
       displayName: Bancontact (card)
@@ -17,6 +18,6 @@ psp:
       fee: 0
       countryCodes: BE
       enabled: true
-
+    value: v2
 server:
   port: 8080

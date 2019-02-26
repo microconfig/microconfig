@@ -63,6 +63,7 @@ class YamlReaderTest {
     void testMultiline() {
         Map<String, String> map = new LinkedHashMap<>();
         map.put("management.endpoints", "");
+        map.put("psp.adyen.dodo", "haha");
         map.put("psp.adyen.payment-method-list",
                 "- name: bancontact-card" + LINES_SEPARATOR +
                         "  displayName: Bancontact (card)" + LINES_SEPARATOR +
@@ -78,6 +79,7 @@ class YamlReaderTest {
                         "  countryCodes: BE" + LINES_SEPARATOR +
                         "  enabled: true" + LINES_SEPARATOR
         );
+        map.put("psp.adyen.value","v2");
         map.put("server.port", "8080");
 
         Map<String, String> expected = yaml.read(classpathFile("files/yaml/multilines.yaml")).propertiesAsMap();
