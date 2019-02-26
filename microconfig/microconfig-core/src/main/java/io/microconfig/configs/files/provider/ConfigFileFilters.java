@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 
 
 public class ConfigFileFilters {
-    public static Predicate<File> defaultComponentFilter(Set<String> fileExtensions) {
+    public static Predicate<File> defaultFilter(Set<String> fileExtensions) {
         return file -> hasExtension(file, fileExtensions)
                 && file.getName().indexOf('.') == file.getName().lastIndexOf('.');
     }

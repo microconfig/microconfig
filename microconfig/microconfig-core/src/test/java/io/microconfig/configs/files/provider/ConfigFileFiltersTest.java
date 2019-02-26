@@ -20,7 +20,7 @@ class ConfigFileFiltersTest {
         File f4 = new File("service.prod.dev2.dev4.properties");
         File f5 = new File("service.prod.dev4.properties");
 
-        Predicate<File> defaultFilter = defaultComponentFilter(singleton(extension));
+        Predicate<File> defaultFilter = defaultFilter(singleton(extension));
         assertTrue(defaultFilter.test(f1));
         assertFalse(defaultFilter.test(f2));
         assertFalse(defaultFilter.test(f3));

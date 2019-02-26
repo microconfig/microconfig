@@ -35,7 +35,7 @@ public class FileBasedConfigProvider implements ConfigProvider {
     private Map<String, Property> collectProperties(Component component, String env, Set<Include> processedIncludes) {
         Function<Predicate<File>, Map<String, Property>> collectProperties = filter -> collectProperties(filter, component, env, processedIncludes);
 
-        Map<String, Property> basicProperties = collectProperties.apply(defaultComponentFilter(configExtensions));
+        Map<String, Property> basicProperties = collectProperties.apply(defaultFilter(configExtensions));
         Map<String, Property> envSharedProperties = collectProperties.apply(envSharedFilter(configExtensions, env));
         Map<String, Property> envSpecificProperties = collectProperties.apply(envSpecificFilter(configExtensions, env));
 
