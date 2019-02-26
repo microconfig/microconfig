@@ -24,8 +24,9 @@ public class ComponentTreeCache implements ComponentTree {
     private final Map<String, List<File>> foldersByComponentType;
 
     public static ComponentTree build(File repoDirRoot) {
-        try (Stream<Path> pathStream = walk(repoDirRoot.toPath()).parallel()) {
+        try (Stream<Path> pathStream = walk(repoDirRoot.toPath())) {
             Map<String, List<File>> cache = pathStream
+                    .parallel()
                     .map(Path::toFile)
                     .filter(isDirectory())
                     .collect(groupingBy(File::getName));
