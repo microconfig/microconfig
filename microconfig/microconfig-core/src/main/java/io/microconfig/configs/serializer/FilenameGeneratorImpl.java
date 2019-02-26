@@ -41,6 +41,6 @@ public class FilenameGeneratorImpl implements FilenameGenerator {
 
     private boolean containsYamlSources(String component) {
         return componentTree.getConfigFiles(component, extensionFilter(configType.getConfigExtensions()))
-                .anyMatch(file -> fileFormatDetector.detectFormat(file) == YAML);
+                .anyMatch(file -> fileFormatDetector.outputFileFormat(file) == YAML);
     }
 }

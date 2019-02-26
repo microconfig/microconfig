@@ -27,10 +27,10 @@ public class ConfigIoServiceSelector implements ConfigIoService {
     }
 
     private ConfigIoService select(File file) {
-        FileFormat format = fileFormatDetector.detectFormat(file);
+        FileFormat format = fileFormatDetector.sourceFileFormat(file);
         if (format == YAML) return yamlFormat;
         if (format == PROPERTIES) return propertiesFormat;
 
-        throw new IllegalStateException("Unsupported format");
+        throw new IllegalStateException("Unsupported format " + format + " for " + file);
     }
 }
