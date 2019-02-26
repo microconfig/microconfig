@@ -48,13 +48,13 @@ class YamlReaderTest {
     @Test
     void testInnerYaml2() {
         Map<String, String> map = new TreeMap<>();
-        map.put("tfs.out", "outV");
-        map.put("tfs.out.shouldArchive", "true");
-        map.put("tfs.out.archiveDir", "dirV");
+        map.put("cr.cf.tfs.out", "outV");
+        map.put("cr.cf.tfs.out.shouldArchive", "true");
+        map.put("cr.cf.tfs.out.archiveDir", "dirV");
 
-        map.put("tfs2.out", "outV");
-        map.put("tfs2.out.shouldArchive", "true");
-        map.put("tfs2.out.archiveDir", "dirV");
+        map.put("cr2.cf.tfs.out", "outV");
+        map.put("cr2.cf.tfs.out.shouldArchive", "true");
+        map.put("cr2.cf.tfs.out.archiveDir", "dirV");
 
         assertEquals(map, yaml.read(classpathFile("files/yaml/inner2.yaml")).propertiesAsMap());
     }

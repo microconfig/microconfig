@@ -38,6 +38,13 @@ public class YamlWriter implements ConfigWriter {
     }
 
     private void doWrite(Map<String, String> flatProperties, OpenOption... openOptions) {
+        ArrayList<String> strings = new ArrayList<>(flatProperties.keySet());
+        for (String string : strings) {
+            if (!string.startsWith("cr.cf.tfs.out")) {
+                flatProperties.remove(string);
+            }
+        }
+
         Map<String, Object> tree = toTree(flatProperties);
         FileUtils.write(file.toPath(), toYaml(tree), openOptions);
     }
