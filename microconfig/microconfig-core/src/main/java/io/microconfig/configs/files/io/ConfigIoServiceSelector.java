@@ -1,7 +1,7 @@
 package io.microconfig.configs.files.io;
 
 import io.microconfig.configs.files.format.FileFormat;
-import io.microconfig.configs.files.format.FileFormatDetector;
+import io.microconfig.configs.files.format.ConfigFormatDetector;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -11,7 +11,7 @@ import static io.microconfig.configs.files.format.FileFormat.YAML;
 
 @RequiredArgsConstructor
 public class ConfigIoServiceSelector implements ConfigIoService {
-    private final FileFormatDetector fileFormatDetector;
+    private final ConfigFormatDetector configFormatDetector;
 
     private final ConfigIoService yamlFormat;
     private final ConfigIoService propertiesFormat;
@@ -27,7 +27,7 @@ public class ConfigIoServiceSelector implements ConfigIoService {
     }
 
     private ConfigIoService select(File file) {
-        FileFormat format = fileFormatDetector.detectFileFormat(file);
+        FileFormat format = configFormatDetector.detectConfigFormat(file);
         if (format == YAML) return yamlFormat;
         if (format == PROPERTIES) return propertiesFormat;
 

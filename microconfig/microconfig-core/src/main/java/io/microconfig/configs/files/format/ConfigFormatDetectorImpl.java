@@ -9,9 +9,9 @@ import static io.microconfig.configs.files.format.FileFormat.PROPERTIES;
 import static io.microconfig.configs.files.format.FileFormat.YAML;
 import static io.microconfig.utils.IoUtils.lines;
 
-public class FileFormatDetectorImpl implements FileFormatDetector {
+public class ConfigFormatDetectorImpl implements ConfigFormatDetector {
     @Override
-    public FileFormat detectFileFormat(File file) {
+    public FileFormat detectConfigFormat(File file) {
         if (file.getName().endsWith(PROPERTIES.extension())) return PROPERTIES;
         if (file.getName().endsWith(YAML.extension())) return YAML;
         return hasYamlOffsets(file) ? YAML : PROPERTIES;
