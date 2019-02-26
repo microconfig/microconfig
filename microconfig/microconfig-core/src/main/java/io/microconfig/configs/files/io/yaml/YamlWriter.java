@@ -45,7 +45,7 @@ public class YamlWriter implements ConfigWriter {
         FileUtils.write(file.toPath(), yaml, openOptions);
     }
 
-    private Map<String, Object> toTree(Map<String, String> properties) {
+    Map<String, Object> toTree(Map<String, String> properties) {
         Map<String, Object> result = new TreeMap<>();
         properties.forEach((k, v) -> propertyToTree(k, v, result));
         return result;

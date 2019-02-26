@@ -73,7 +73,7 @@ public class Environment {
                 .filter(c -> !components.add(c.getName()))
                 .findFirst()
                 .ifPresent(c -> {
-                    throw new IllegalArgumentException("Env [" + name + "] containsInnerFile several definitions of [" + c.getName() + "] component");
+                    throw new IllegalArgumentException("Env [" + name + "] contains several definitions of [" + c.getName() + "] component");
                 });
     }
 

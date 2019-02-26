@@ -1,5 +1,9 @@
-package io.microconfig.environments;
+package io.microconfig.environments.filebased;
 
+import io.microconfig.environments.ComponentGroup;
+import io.microconfig.environments.Environment;
+import io.microconfig.environments.EnvironmentNotExistException;
+import io.microconfig.environments.EnvironmentProvider;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -10,7 +14,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBasedEnvironmentProviderTest {
+class JsonEnvironmentProviderTest {
     private final EnvironmentProvider environmentProvider = getEnvProvider();
 
     @Test
@@ -89,7 +93,7 @@ class FileBasedEnvironmentProviderTest {
             environmentProvider.getByName("duplicate-components");
             fail("Should throw IllegalArgumentException");
         } catch (IllegalArgumentException ex) {
-            assertEquals("Env [duplicate-components] containsInnerFile several definitions of [th-cache-node7] component", ex.getMessage());
+            assertEquals("Env [duplicate-components] contains several definitions of [th-cache-node7] component", ex.getMessage());
         }
     }
 
@@ -99,7 +103,8 @@ class FileBasedEnvironmentProviderTest {
         assertThrows(IllegalArgumentException.class, () -> demo.getGroupByName("mc"));
     }
 
+    @Test
     void testGetIncorrectEnv() {
-        assertThrows(IllegalArgumentException.class, () -> environmentProvider.getByName("not-exists"));
+        assertThrows(EnvironmentNotExistException.class, () -> environmentProvider.getByName("not-exists"));
     }
 }
