@@ -1,6 +1,7 @@
 package io.microconfig.configs.files.parser;
 
 import io.microconfig.configs.Property;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -9,16 +10,10 @@ import java.util.List;
 public class ParsedComponent {
     private final String component;
 
+    @Getter
     private final List<Include> includes;
+    @Getter
     private final List<Property> properties;
-
-    public List<Include> getIncludes() {
-        return includes;
-    }
-
-    public List<Property> getProperties() {
-        return properties;
-    }
 
     @Override
     public String toString() {
