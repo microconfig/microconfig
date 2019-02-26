@@ -4,7 +4,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.Map;
-import java.util.function.IntSupplier;
 
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static java.util.Objects.requireNonNull;
@@ -23,20 +22,26 @@ public class Property {
     private final PropertySource source;
 
     public static Property parse(String keyValue, String envContext, PropertySource source) {
-        IntSupplier separatorIndex = () -> range(0, keyValue.length())
+        boolean temp = isTempProperty(keyValue);
+        int indexOfSeparator = separatorIndex(keyValue);
+        if (indexOfSeparator < 0) {
+            throw new IllegalArgumentException("Property must contain ':' or '='. Bad property: " + keyValue + " in " + source);
+        }
+
+        String key = keyValue.substring(temp ? TEMP_VALUE.length() + 1 : 0, indexOfSeparator).trim();
+        String value = keyValue.substring(indexOfSeparator + 1).trim();
+
+        return new Property(key, value, envContext, temp, source);
+    }
+
+    public static int separatorIndex(String keyValue) {
+        return range(0, keyValue.length())
                 .filter(i -> {
                     char c = keyValue.charAt(i);
                     return c == '=' || c == ':';
                 })
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Property must contain ':' or '='. Bad property: " + keyValue + " in " + source));
-
-        boolean temp = isTempProperty(keyValue);
-        int indexOfSeparator = separatorIndex.getAsInt();
-        String key = keyValue.substring(temp ? TEMP_VALUE.length() + 1 : 0, indexOfSeparator).trim();
-        String value = keyValue.substring(indexOfSeparator + 1).trim();
-
-        return new Property(key, value, envContext, temp, source);
+                .orElse(-1);
     }
 
     public static Property property(String key, String value, String envContext, PropertySource source) {
@@ -57,6 +62,10 @@ public class Property {
 
     public static boolean isTempProperty(String line) {
         return line.startsWith(TEMP_VALUE);
+    }
+
+    public static boolean isComment(String line) {
+        return line.startsWith("#");
     }
 
     public static Map<String, String> withoutTempValues(Map<String, Property> properties) {

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
+import static io.microconfig.configs.Property.isComment;
 import static io.microconfig.configs.Property.property;
 import static io.microconfig.configs.PropertySource.fileSource;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
@@ -90,7 +91,7 @@ class YamlReader extends AbstractConfigReader {
         String line = lines.get(index);
         int separatorIndex = line.indexOf(':', currentOffset);
         if (separatorIndex < 0) {
-            throw new IllegalArgumentException("Property must contain ':'. Bad property: " + separatorIndex + " in " + file);
+            throw new IllegalArgumentException("Yaml property must contain ':'. For *.properties use '='. Bad property: '" + line + "' in " + file);
         }
 
         removePropertiesWithBiggerOffset(currentProperty, currentOffset);

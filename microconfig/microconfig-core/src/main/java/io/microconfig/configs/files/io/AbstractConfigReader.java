@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static io.microconfig.configs.Property.isComment;
 import static io.microconfig.utils.IoUtils.readAllLines;
 import static io.microconfig.utils.StreamUtils.toSortedMap;
 
@@ -37,9 +38,5 @@ public abstract class AbstractConfigReader implements ConfigReader {
             }
         }
         return result;
-    }
-
-    protected boolean isComment(String p) {
-        return p.startsWith("#");
     }
 }
