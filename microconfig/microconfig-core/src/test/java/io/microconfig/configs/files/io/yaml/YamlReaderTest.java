@@ -77,7 +77,7 @@ class YamlReaderTest {
                         "  pspName: bcmc_mobile" + LINES_SEPARATOR +
                         "  fee: 0" + LINES_SEPARATOR +
                         "  countryCodes: BE" + LINES_SEPARATOR +
-                        "  enabled: true" + LINES_SEPARATOR
+                        "  enabled: true"
         );
         map.put("psp.adyen.value","v2");
         map.put("server.port", "8080");

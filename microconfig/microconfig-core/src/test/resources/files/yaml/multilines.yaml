@@ -1,6 +1,4 @@
-management:
-  endpoints:
-
+management.endpoints:
 psp:
   adyen:
     dodo: haha
@@ -19,5 +17,4 @@ psp:
       countryCodes: BE
       enabled: true
     value: v2
-server:
-  port: 8080
+server.port: 8080

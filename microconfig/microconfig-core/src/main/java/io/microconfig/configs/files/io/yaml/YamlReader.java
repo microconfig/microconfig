@@ -33,7 +33,7 @@ class YamlReader extends AbstractConfigReader {
 
             int currentOffset = offsetIndex(line);
 
-            if (multilineValue(line, currentOffset)) {
+            if (isMultilineValue(line, currentOffset)) {
                 index = addMultilineValue(result, currentProperty, currentOffset, index, env);
             } else {
                 parseSimpleProperty(result, currentProperty, currentOffset, index, env);
@@ -43,7 +43,7 @@ class YamlReader extends AbstractConfigReader {
         return result;
     }
 
-    private boolean multilineValue(String line, int currentOffset) {
+    private boolean isMultilineValue(String line, int currentOffset) {
         char c = line.charAt(currentOffset);
         return c == '-' || c == '[' || c == '>';
     }
@@ -61,16 +61,27 @@ class YamlReader extends AbstractConfigReader {
             if (index + 1 >= lines.size()) {
                 break;
             }
-            String nextLine = lines.get(index + 1);
-            if (!skip(nextLine) && offsetIndex(nextLine) < currentOffset) {
+            if (multilineValueEnd(lines.get(index + 1), currentOffset)) {
                 break;
             }
+
             value.append(LINES_SEPARATOR);
             ++index;
         }
 
         addValue(result, currentProperty, currentOffset, originalIndex, null, value.toString(), env);
         return index;
+    }
+
+    private boolean multilineValueEnd(String nextLine, int currentOffset) {
+        if (skip(nextLine)) return false;
+        int nextOffset = offsetIndex(nextLine);
+        if (currentOffset > nextOffset) return true;
+        if (currentOffset == nextOffset && !isMultilineValue(nextLine, nextOffset)) {
+            return true;
+        }
+
+        return false;
     }
 
     private void parseSimpleProperty(List<Property> result,
@@ -132,7 +143,7 @@ class YamlReader extends AbstractConfigReader {
                 return true;
             }
             if (currentOffset == offsetIndex) {
-                return !multilineValue(line, offsetIndex);
+                return !isMultilineValue(line, offsetIndex);
             }
             return false;
         }
