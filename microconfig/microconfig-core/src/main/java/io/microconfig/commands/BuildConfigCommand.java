@@ -50,6 +50,6 @@ public class BuildConfigCommand implements Command {
     }
 
     private String chooseOutputFormat(Component component, String env) {
-        return ".properties";
+        return ".yaml";
     }
 }

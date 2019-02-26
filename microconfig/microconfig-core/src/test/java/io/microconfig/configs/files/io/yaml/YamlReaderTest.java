@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import static io.microconfig.utils.ClasspathUtils.classpathFile;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
@@ -42,6 +43,20 @@ class YamlReaderTest {
         map.put("p9", "p9v");
 
         assertEquals(map, yaml.read(classpathFile("files/yaml/inner.yaml")).propertiesAsMap());
+    }
+
+    @Test
+    void testInnerYaml2() {
+        Map<String, String> map = new TreeMap<>();
+        map.put("tfs.out", "outV");
+        map.put("tfs.out.shouldArchive", "true");
+        map.put("tfs.out.archiveDir", "dirV");
+
+        map.put("tfs2.out", "outV");
+        map.put("tfs2.out.shouldArchive", "true");
+        map.put("tfs2.out.archiveDir", "dirV");
+
+        assertEquals(map, yaml.read(classpathFile("files/yaml/inner2.yaml")).propertiesAsMap());
     }
 
     @Test

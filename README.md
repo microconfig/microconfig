@@ -413,6 +413,8 @@ In the example below after build datasource.url=jdbc:oracle:thin:@**100.30.162.8
      #var oracle.host=100.30.162.80                 
 ```  
 
+Placeholder can link to another placeholder. Microconfig can resolve them recursively and detect cyclic dependencies.
+
 # Placeholder's default value
 You can specify a default value for placeholder using syntax ${component@property:**defaultValue**}
 

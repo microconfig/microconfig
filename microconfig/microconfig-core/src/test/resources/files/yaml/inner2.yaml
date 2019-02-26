@@ -1,0 +1,8 @@
+tfs2.out: outV
+tfs2.out.shouldArchive: true
+tfs2.out.archiveDir: dirV
+
+tfs:
+  out: outV
+  out.shouldArchive: true
+  out.archiveDir: dirV
