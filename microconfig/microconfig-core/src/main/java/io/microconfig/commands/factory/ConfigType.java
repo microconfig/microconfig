@@ -1,29 +1,35 @@
 package io.microconfig.commands.factory;
 
+
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import static java.util.Arrays.asList;
+import static java.util.stream.Stream.of;
+
+@ToString
 @Getter
-public enum ConfigType {
-    SERVICE("properties", "service"),
-    PROCESS("proc", "process"),
-    SECRET("secret"),
-    DEPENDENCIES("dependencies"),
-    ENV("env"),
-    LOG4j("log4j"),
-    LOG4J2("log4j2"),
-    SAP("sap");
-
-    private final String configExtension;
-    private final String configFileName;
+@RequiredArgsConstructor
+public class ConfigType {
     private final String resultFileName;
+    private final Set<String> configExtensions;
 
-    ConfigType(String configExtension) {
-        this(configExtension, configExtension);
+    public static ConfigType byNameAndTypes(String resultFileName, String... configExtensions) {
+        of(configExtensions)
+                .filter(ext -> ext.charAt(0) != '.')
+                .findFirst()
+                .ifPresent(ext -> {
+                    throw new IllegalStateException("File extension must starts with .");
+                });
+
+        return new ConfigType(resultFileName, new HashSet<>(asList(configExtensions)));
     }
 
-    ConfigType(String configExtension, String resultFileName) {
-        this.configExtension = "." + configExtension;
-        this.configFileName = resultFileName + this.configExtension;
-        this.resultFileName = resultFileName + "." + System.getProperty("outputFormat", "properties");
+    public static ConfigType extensionAsName(String resultFileName) {
+        return byNameAndTypes(resultFileName, "." + resultFileName);
     }
 }

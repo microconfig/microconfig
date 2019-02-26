@@ -1,5 +1,6 @@
 package io.microconfig.configs.files.provider;
 
+import io.microconfig.commands.factory.StandardConfigTypes;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -11,8 +12,6 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static io.microconfig.commands.factory.ConfigType.PROCESS;
-import static io.microconfig.commands.factory.ConfigType.SERVICE;
 import static io.microconfig.utils.IoUtils.walk;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
@@ -46,9 +45,10 @@ public class ComponentTreeCache implements ComponentTree {
              Implementation is correct because File::listFiles for file will return null and we handle it in getConfigFiles()
              */
             String name = f.getName();
-            return !name.endsWith(SERVICE.getConfigExtension())
-                    && !name.endsWith(PROCESS.getConfigExtension())
-                    && !name.endsWith(".yaml");
+
+            return Stream.of(StandardConfigTypes.values())
+                    .flatMap(c -> c.getConfigExtensions().stream())
+                    .noneMatch(name::endsWith);
         };
     }
 

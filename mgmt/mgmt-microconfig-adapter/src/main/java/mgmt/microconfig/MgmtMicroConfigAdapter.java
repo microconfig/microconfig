@@ -9,7 +9,8 @@ import io.microconfig.templates.CopyTemplatesServiceImpl;
 import java.io.File;
 import java.util.List;
 
-import static io.microconfig.commands.factory.ConfigType.*;
+import static io.microconfig.commands.factory.ConfigType.extensionAsName;
+import static io.microconfig.commands.factory.StandardConfigTypes.*;
 import static io.microconfig.templates.RelativePathResolver.empty;
 import static io.microconfig.templates.TemplatePattern.defaultPattern;
 import static java.util.Arrays.asList;
@@ -23,16 +24,16 @@ public class MgmtMicroConfigAdapter {
     private static Command newBuildPropertiesCommand(File repoDir, File componentsDir) {
         MicroconfigFactory factory = MicroconfigFactory.init(repoDir, componentsDir);
 
-        BuildConfigCommand serviceCommon = factory.newBuildCommand(SERVICE, copyTemplatesPostProcessor());
+        BuildConfigCommand serviceCommon = factory.newBuildCommand(SERVICE.type(), copyTemplatesPostProcessor());
         factory = factory.withServiceInnerDir(".mgmt");
         return new CompositeCommand(asList(
                 serviceCommon,
-                factory.newBuildCommand(PROCESS, new WebappPostProcessor()),
-                factory.newBuildCommand(ENV),
-                factory.newBuildCommand(LOG4j),
-                factory.newBuildCommand(LOG4J2),
-                factory.newBuildCommand(SAP),
-                factory.newBuildCommand(SECRET, new UpdateSecretsPostProcessor(factory.getConfigIo())),
+                factory.newBuildCommand(PROCESS.type(), new WebappPostProcessor()),
+                factory.newBuildCommand(ENV.type()),
+                factory.newBuildCommand(LOG4j.type()),
+                factory.newBuildCommand(LOG4J2.type()),
+                factory.newBuildCommand(extensionAsName("sap")),
+                factory.newBuildCommand(SECRET.type(), new UpdateSecretsPostProcessor(factory.getConfigIo())),
                 new GenerateComponentListCommand(componentsDir, factory.getEnvironmentProvider()),
                 new CopyHelpFilesCommand(factory.getEnvironmentProvider(), factory.getComponentTree(), componentsDir.toPath())
         ));

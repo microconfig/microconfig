@@ -1,5 +1,6 @@
 package io.microconfig.configs.files.provider;
 
+import io.microconfig.commands.factory.ConfigType;
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.Property;
 import io.microconfig.configs.files.parser.ComponentParser;
@@ -20,16 +21,13 @@ import static java.util.stream.Collectors.toMap;
 
 public class FileBasedConfigProvider implements ConfigProvider {
     private final ComponentTree componentTree;
-    private final String fileExtension;
+    private final Set<String> configExtensions;
     private final ComponentParser componentParser;
 
-    public FileBasedConfigProvider(ComponentTree componentTree, String fileExtension, ComponentParser componentParser) {
+    public FileBasedConfigProvider(ComponentTree componentTree, ConfigType configType, ComponentParser componentParser) {
         this.componentTree = componentTree;
-        this.fileExtension = fileExtension;
+        this.configExtensions = configType.getConfigExtensions();
         this.componentParser = componentParser;
-        if (fileExtension.charAt(0) != '.') {
-            throw new IllegalStateException("File extension must starts with .");
-        }
     }
 
     @Override
@@ -40,9 +38,9 @@ public class FileBasedConfigProvider implements ConfigProvider {
     private Map<String, Property> getPropertiesByKey(Component component, String environment, Set<Include> processedInclude) {
         Function<Predicate<File>, Map<String, Property>> collectProperties = filter -> collectProperties(filter, component, environment, processedInclude);
 
-        Map<String, Property> basicProperties = collectProperties.apply(defaultComponentFilter(fileExtension));
-        Map<String, Property> envSharedProperties = collectProperties.apply(envSharedFilter(fileExtension, environment));
-        Map<String, Property> envSpecificProperties = collectProperties.apply(envFilter(fileExtension, environment));
+        Map<String, Property> basicProperties = collectProperties.apply(defaultComponentFilter(configExtensions));
+        Map<String, Property> envSharedProperties = collectProperties.apply(envSharedFilter(configExtensions, environment));
+        Map<String, Property> envSpecificProperties = collectProperties.apply(envFilter(configExtensions, environment));
 
         basicProperties.putAll(envSharedProperties);
         basicProperties.putAll(envSpecificProperties);

@@ -39,8 +39,7 @@ public class YamlWriter implements ConfigWriter {
 
     private void doWrite(Map<String, String> flatProperties, OpenOption... openOptions) {
         Map<String, Object> tree = toTree(flatProperties);
-        String yaml = toYaml(tree);
-        FileUtils.write(file.toPath(), yaml, openOptions);
+        FileUtils.write(file.toPath(), toYaml(tree), openOptions);
     }
 
     Map<String, Object> toTree(Map<String, String> properties) {

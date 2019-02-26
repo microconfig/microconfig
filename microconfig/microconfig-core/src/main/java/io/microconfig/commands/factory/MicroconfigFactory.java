@@ -62,7 +62,7 @@ public class MicroconfigFactory {
 
     public ConfigProvider newConfigProvider(ConfigType configType) {
         ConfigProvider fileBasedProvider = cache(
-                new FileBasedConfigProvider(componentTree, configType.getConfigExtension(), new ComponentParserImpl(configIo))
+                new FileBasedConfigProvider(componentTree, configType, new ComponentParserImpl(configIo))
         );
         SpecialPropertiesFactory specialProperties = new SpecialPropertiesFactory(componentTree, destinationComponentDir);
         PropertyResolver resolver = newPropertyResolver(fileBasedProvider, specialProperties);

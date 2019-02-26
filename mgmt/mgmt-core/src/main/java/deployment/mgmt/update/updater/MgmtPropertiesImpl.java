@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
 
-import static io.microconfig.commands.factory.ConfigType.PROCESS;
+import static io.microconfig.commands.factory.StandardConfigTypes.PROCESS;
 import static io.microconfig.configs.Property.withoutTempValues;
 import static io.microconfig.environments.Component.byType;
 import static io.microconfig.utils.Logger.info;
@@ -28,7 +28,7 @@ public class MgmtPropertiesImpl implements MgmtProperties {
     @Override //todo migrate  for DeploySettings::getMgmtNexusRepository
     public List<NexusRepository> resolveNexusRepositories() {
         MicroconfigFactory microconfigFactory = initBuildCommands();
-        ConfigProvider configProvider = microconfigFactory.newConfigProvider(PROCESS);
+        ConfigProvider configProvider = microconfigFactory.newConfigProvider(PROCESS.type());
         EnvironmentProvider environmentProvider = microconfigFactory.getEnvironmentProvider();
 
         String serviceName = anyServiceFromCurrentGroup(environmentProvider);
