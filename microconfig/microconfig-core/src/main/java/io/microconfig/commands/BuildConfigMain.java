@@ -14,7 +14,7 @@ import static java.util.Optional.of;
 /**
  * VM speedup params:
  * -Xverify:none -XX:TieredStopAtLevel=1
- *
+ * <p>
  * Command line params example:
  * root=Z:\Programming\Java\projects\microconfig-projects\configs-layout-example\repo dest=Z:\Programming\Java\projects\microconfig-projects\output env=dev
  * root=C:\Projects\config\repo dest=C:\Projects\configs env=cr-dev6 outputFormat=.yaml

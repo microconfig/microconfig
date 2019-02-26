@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface ConfigSerializer {
     Optional<File> serialize(String component, Collection<Property> properties);
 
-    File configDestination(String component);
+    File configDestination(String component, Collection<Property> properties);
 }

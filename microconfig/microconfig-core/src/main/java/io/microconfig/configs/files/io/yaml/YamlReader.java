@@ -127,7 +127,14 @@ class YamlReader extends AbstractConfigReader {
         while (i < lines.size()) {
             String line = lines.get(i++);
             if (skip(line)) continue;
-            return currentOffset >= offsetIndex(line);
+            int offsetIndex = offsetIndex(line);
+            if (currentOffset > offsetIndex) {
+                return true;
+            }
+            if (currentOffset == offsetIndex) {
+                return !multilineValue(line, offsetIndex);
+            }
+            return false;
         }
 
         return true;

@@ -17,7 +17,8 @@ import static io.microconfig.environments.Component.byType;
 import static io.microconfig.utils.MicronconfigTestFactory.getConfigProvider;
 import static io.microconfig.utils.MicronconfigTestFactory.getPropertyResolver;
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ConfigProviderTest {
     private final ConfigProvider provider = getConfigProvider();

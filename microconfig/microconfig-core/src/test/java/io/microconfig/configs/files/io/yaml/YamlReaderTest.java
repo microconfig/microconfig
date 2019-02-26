@@ -65,21 +65,22 @@ class YamlReaderTest {
         map.put("management.endpoints", "");
         map.put("psp.adyen.payment-method-list",
                 "- name: bancontact-card" + LINES_SEPARATOR +
-                "  displayName: Bancontact (card)" + LINES_SEPARATOR +
-                "  pspName: bcmc" + LINES_SEPARATOR +
-                "  fee: 0" + LINES_SEPARATOR +
-                "  countryCodes: BE" + LINES_SEPARATOR +
-                "  enabled: true" + LINES_SEPARATOR +
-                LINES_SEPARATOR +
-                "- name: bancontact-mobile" + LINES_SEPARATOR +
-                "  displayName: Bancontact (mobile)" + LINES_SEPARATOR +
-                "  pspName: bcmc_mobile" + LINES_SEPARATOR +
-                "  fee: 0" + LINES_SEPARATOR +
-                "  countryCodes: BE" + LINES_SEPARATOR +
-                "  enabled: true"  + LINES_SEPARATOR
+                        "  displayName: Bancontact (card)" + LINES_SEPARATOR +
+                        "  pspName: bcmc" + LINES_SEPARATOR +
+                        "  fee: 0" + LINES_SEPARATOR +
+                        "  countryCodes: BE" + LINES_SEPARATOR +
+                        "  enabled: true" + LINES_SEPARATOR +
+                        LINES_SEPARATOR +
+                        "- name: bancontact-mobile" + LINES_SEPARATOR +
+                        "  displayName: Bancontact (mobile)" + LINES_SEPARATOR +
+                        "  pspName: bcmc_mobile" + LINES_SEPARATOR +
+                        "  fee: 0" + LINES_SEPARATOR +
+                        "  countryCodes: BE" + LINES_SEPARATOR +
+                        "  enabled: true" + LINES_SEPARATOR
         );
         map.put("server.port", "8080");
 
-        assertEquals(map, yaml.read(classpathFile("files/yaml/multilines.yaml")).propertiesAsMap());
+        Map<String, String> expected = yaml.read(classpathFile("files/yaml/multilines.yaml")).propertiesAsMap();
+        assertEquals(map, expected);
     }
 }

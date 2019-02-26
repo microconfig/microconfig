@@ -24,7 +24,7 @@ public class ConfigDiffSerializer implements ConfigSerializer {
 
     @Override
     public Optional<File> serialize(String component, Collection<Property> currentProperties) {
-        File current = configDestination(component);
+        File current = configDestination(component, currentProperties);
         File diffFile = diffFile(current);
 
         Map<String, String> oldProperties = readOldConfig(current);
@@ -92,7 +92,7 @@ public class ConfigDiffSerializer implements ConfigSerializer {
     }
 
     @Override
-    public File configDestination(String component) {
-        return delegate.configDestination(component);
+    public File configDestination(String component, Collection<Property> properties) {
+        return delegate.configDestination(component, properties);
     }
 }

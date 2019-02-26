@@ -18,7 +18,7 @@ public class ToFileConfigSerializer implements ConfigSerializer {
 
     @Override
     public Optional<File> serialize(String component, Collection<Property> properties) {
-        File file = configDestination(component);
+        File file = configDestination(component, properties);
         delete(file);
 
         configIoService.writeTo(file).write(properties);
@@ -26,7 +26,7 @@ public class ToFileConfigSerializer implements ConfigSerializer {
     }
 
     @Override
-    public File configDestination(String component) {
-        return filenameGenerator.fileFor(component);
+    public File configDestination(String component, Collection<Property> properties) {
+        return filenameGenerator.fileFor(component, properties);
     }
 }

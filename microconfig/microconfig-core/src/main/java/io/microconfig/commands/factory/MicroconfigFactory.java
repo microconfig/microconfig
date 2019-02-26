@@ -106,7 +106,7 @@ public class MicroconfigFactory {
     private ConfigSerializer configSerializer(ConfigType configType) {
         return new ConfigDiffSerializer(
                 new ToFileConfigSerializer(
-                        new FilenameGeneratorImpl(destinationComponentDir, serviceInnerDir, configType, componentTree, fileFormatDetector),
+                        new FilenameGeneratorImpl(destinationComponentDir, serviceInnerDir, configType),
                         configIoService
                 ),
                 configIoService

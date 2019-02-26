@@ -14,7 +14,7 @@ import static java.util.Optional.ofNullable;
 import static lombok.AccessLevel.PRIVATE;
 
 /**
-//supported format  ${componentName[optionalEnvName]@propertyPlaceholder:optionalDefaultValue}
+ * //supported format  ${componentName[optionalEnvName]@propertyPlaceholder:optionalDefaultValue}
  */
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)

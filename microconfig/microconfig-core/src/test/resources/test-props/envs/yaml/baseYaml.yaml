@@ -3,10 +3,10 @@ ip: 1.2.3.4
 
 orders:
   components:
-    - order-db-patcher
-    - order-service
-    - order-ui
-    - recommendations
+  - order-db-patcher
+  - order-service
+  - order-ui
+  - recommendations
 
 payments:
   components: [
@@ -18,8 +18,8 @@ payments:
 infra:
   ip: 17.44.48.45
   components:
-    - service-discovery
-    - api-gateway
+  - service-discovery
+  - api-gateway
 
 kafka:
   components: [zookeeper, kafka]

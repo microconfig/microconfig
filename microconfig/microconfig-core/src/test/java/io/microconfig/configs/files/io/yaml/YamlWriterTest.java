@@ -3,7 +3,6 @@ package io.microconfig.configs.files.io.yaml;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 

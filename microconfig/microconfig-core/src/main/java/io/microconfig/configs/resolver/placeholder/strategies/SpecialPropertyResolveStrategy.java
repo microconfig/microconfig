@@ -1,7 +1,6 @@
 package io.microconfig.configs.resolver.placeholder.strategies;
 
 import io.microconfig.configs.Property;
-import io.microconfig.configs.PropertySource;
 import io.microconfig.configs.resolver.placeholder.ResolveStrategy;
 import io.microconfig.environments.Component;
 import io.microconfig.environments.Environment;
