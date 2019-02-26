@@ -15,6 +15,7 @@ import deployment.mgmt.configs.filestructure.DeployFileStructureImpl;
 import deployment.mgmt.configs.service.properties.MavenSettings;
 import deployment.mgmt.configs.service.properties.NexusRepository;
 import deployment.mgmt.configs.service.properties.impl.PropertyServiceImpl;
+import io.microconfig.configs.files.format.FileFormatDetectorImpl;
 import io.microconfig.configs.files.io.ConfigIoService;
 import io.microconfig.configs.files.io.ConfigIoServiceSelector;
 import io.microconfig.configs.files.io.properties.PropertiesConfigIoService;
@@ -65,6 +66,6 @@ public class ClasspathTestIT {
     }
 
     private static ConfigIoService configIoSelector() {
-        return new ConfigIoServiceSelector(new YamlConfigIoService(), new PropertiesConfigIoService());
+        return new ConfigIoServiceSelector(new FileFormatDetectorImpl(), new YamlConfigIoService(), new PropertiesConfigIoService());
     }
 }

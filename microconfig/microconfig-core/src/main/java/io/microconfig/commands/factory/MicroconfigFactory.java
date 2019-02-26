@@ -3,6 +3,8 @@ package io.microconfig.commands.factory;
 import io.microconfig.commands.BuildConfigCommand;
 import io.microconfig.commands.BuildConfigPostProcessor;
 import io.microconfig.configs.ConfigProvider;
+import io.microconfig.configs.files.format.FileFormatDetector;
+import io.microconfig.configs.files.format.FileFormatDetectorImpl;
 import io.microconfig.configs.files.io.ConfigIoService;
 import io.microconfig.configs.files.io.ConfigIoServiceSelector;
 import io.microconfig.configs.files.io.properties.PropertiesConfigIoService;
@@ -50,8 +52,9 @@ public class MicroconfigFactory {
     private final File destinationComponentDir;
     @Wither
     private final String serviceInnerDir;
+    private final FileFormatDetector fileFormatDetector = new FileFormatDetectorImpl();
     @Getter
-    private final ConfigIoService configIo = new ConfigIoServiceSelector(new YamlConfigIoService(), new PropertiesConfigIoService());
+    private final ConfigIoService configIo = new ConfigIoServiceSelector(fileFormatDetector, new YamlConfigIoService(), new PropertiesConfigIoService());
 
     public static MicroconfigFactory init(File root, File destinationComponentDir) {
         File fullRepoDir = canonical(root);
@@ -103,7 +106,7 @@ public class MicroconfigFactory {
     private ConfigSerializer configSerializer(ConfigType configType) {
         return new ConfigDiffSerializer(
                 new ToFileConfigSerializer(
-                        new FilenameGeneratorImpl(destinationComponentDir, serviceInnerDir, configType, componentTree),
+                        new FilenameGeneratorImpl(destinationComponentDir, serviceInnerDir, configType, componentTree, fileFormatDetector),
                         configIo
                 ),
                 configIo

@@ -5,6 +5,7 @@ import io.microconfig.commands.Command;
 import io.microconfig.commands.CompositeCommand;
 import io.microconfig.commands.postprocessors.CopyTemplatesPostProcessor;
 import io.microconfig.commands.postprocessors.UpdateSecretsPostProcessor;
+import io.microconfig.configs.files.format.FileFormatDetectorImpl;
 import io.microconfig.configs.files.io.ConfigIoServiceSelector;
 import io.microconfig.configs.files.io.properties.PropertiesConfigIoService;
 import io.microconfig.configs.files.io.yaml.YamlConfigIoService;
@@ -26,10 +27,14 @@ public class BuildConfigCommandFactory {
                 microconfigFactory.newBuildCommand(PROCESS.type()),
                 microconfigFactory.newBuildCommand(DEPLOY.type()),
                 microconfigFactory.newBuildCommand(ENV.type()),
-                microconfigFactory.newBuildCommand(SECRET.type(), new UpdateSecretsPostProcessor(new ConfigIoServiceSelector(new YamlConfigIoService(), new PropertiesConfigIoService()))),
+                microconfigFactory.newBuildCommand(SECRET.type(), new UpdateSecretsPostProcessor(configIoService())),
                 microconfigFactory.newBuildCommand(LOG4j.type()),
                 microconfigFactory.newBuildCommand(LOG4J2.type())
         ));
+    }
+
+    private static ConfigIoServiceSelector configIoService() {
+        return new ConfigIoServiceSelector(new FileFormatDetectorImpl(), new YamlConfigIoService(), new PropertiesConfigIoService());
     }
 
     private static BuildConfigPostProcessor copyTemplatesPostProcessor() {

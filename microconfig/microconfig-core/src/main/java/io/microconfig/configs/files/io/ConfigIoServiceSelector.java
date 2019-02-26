@@ -1,11 +1,18 @@
 package io.microconfig.configs.files.io;
 
+import io.microconfig.configs.files.format.FileFormat;
+import io.microconfig.configs.files.format.FileFormatDetector;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
+import static io.microconfig.configs.files.format.FileFormat.PROPERTIES;
+import static io.microconfig.configs.files.format.FileFormat.YAML;
+
 @RequiredArgsConstructor
 public class ConfigIoServiceSelector implements ConfigIoService {
+    private final FileFormatDetector fileFormatDetector;
+
     private final ConfigIoService yamlFormat;
     private final ConfigIoService propertiesFormat;
 
@@ -20,6 +27,10 @@ public class ConfigIoServiceSelector implements ConfigIoService {
     }
 
     private ConfigIoService select(File file) {
-        return file.getName().endsWith(".yaml") ? yamlFormat : propertiesFormat;
+        FileFormat format = fileFormatDetector.detectFormat(file);
+        if (format == YAML) return yamlFormat;
+        if (format == PROPERTIES) return propertiesFormat;
+
+        throw new IllegalStateException("Unsupported format");
     }
 }

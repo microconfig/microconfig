@@ -71,6 +71,7 @@ import deployment.mgmt.update.updater.MgmtAutoUpdater;
 import deployment.mgmt.update.updater.MgmtAutoUpdaterImpl;
 import deployment.mgmt.update.updater.MgmtProperties;
 import deployment.mgmt.update.updater.MgmtPropertiesImpl;
+import io.microconfig.configs.files.format.FileFormatDetectorImpl;
 import io.microconfig.configs.files.io.ConfigIoService;
 import io.microconfig.configs.files.io.ConfigIoServiceSelector;
 import io.microconfig.configs.files.io.properties.PropertiesConfigIoService;
@@ -109,7 +110,7 @@ public class MgmtFactory {
     public MgmtFactory() {
         this.deployFileStructure = DeployFileStructureImpl.init();
         this.lockService = new OsLockService(deployFileStructure);
-        this.configIoService = new ConfigIoServiceSelector(new YamlConfigIoService(), new PropertiesConfigIoService());
+        this.configIoService = new ConfigIoServiceSelector(new FileFormatDetectorImpl(), new YamlConfigIoService(), new PropertiesConfigIoService());
         this.propertyService = new PropertyServiceImpl(deployFileStructure, configIoService);
         this.metadataProvider = new MetadataProviderImpl(deployFileStructure);
         this.componentGroupService = new ComponentGroupServiceImpl(deployFileStructure, propertyService, configIoService);
