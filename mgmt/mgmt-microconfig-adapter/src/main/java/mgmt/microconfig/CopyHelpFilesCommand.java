@@ -4,7 +4,6 @@ import io.microconfig.commands.Command;
 import io.microconfig.commands.CommandContext;
 import io.microconfig.configs.files.provider.ComponentTree;
 import io.microconfig.environments.Component;
-import io.microconfig.environments.Environment;
 import io.microconfig.environments.EnvironmentProvider;
 import lombok.RequiredArgsConstructor;
 
@@ -26,30 +25,8 @@ class CopyHelpFilesCommand implements Command {
 
     @Override
     public void execute(CommandContext context) {
-        List<Component> componentToBuild = collectComponents(context);
-        componentToBuild.forEach(this::processComponent);
-    }
-
-    private List<Component> collectComponents(CommandContext context) {
-        Environment environment = environmentProvider.getByName(context.getEnv());
-        List<Component> allComponents = getComponents(context, environment);
-        return context.getComponents().isEmpty() ? allComponents : toComponents(context.getComponents(), allComponents, context.getEnv());
-    }
-
-    private List<Component> getComponents(CommandContext context, Environment environment) {
-        return context.getComponentGroup().isPresent() ?
-                environment.getGroupByName(context.getComponentGroup().get()).getComponents()
-                : environment.getComponentGroups().stream()
-                .flatMap(cg -> cg.getComponents().stream())
-                .collect(toList());
-    }
-
-    private List<Component> toComponents(List<String> names, List<Component> allComponents, String env) {
-        return names.stream().map(name -> allComponents
-                .stream()
-                .filter(c -> c.getName().equals(name))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Component '" + name + "' is not configured for " + env + " env"))).collect(toList());
+        context.components(environmentProvider)
+                .forEach(this::processComponent);
     }
 
     private void processComponent(Component component) {

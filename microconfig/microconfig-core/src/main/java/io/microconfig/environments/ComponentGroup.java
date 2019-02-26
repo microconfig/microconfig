@@ -58,11 +58,15 @@ public class ComponentGroup {
     }
 
     public Optional<Component> getComponentByName(String name) {
-        return components.stream().filter(c -> c.getName().equals(name)).findFirst();
+        return components.stream()
+                .filter(c -> c.getName().equals(name))
+                .findFirst();
     }
 
     public List<String> getComponentNames() {
-        return components.stream().map(Component::getName).collect(toList());
+        return components.stream()
+                .map(Component::getName)
+                .collect(toList());
     }
 
     @Override

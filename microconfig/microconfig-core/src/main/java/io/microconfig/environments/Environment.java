@@ -58,6 +58,17 @@ public class Environment {
         return groups.isEmpty() ? empty() : of(singleValue(groups));
     }
 
+    public List<Component> getComponentsForGroup(String group) {
+        return getGroupByName(group).getComponents();
+    }
+
+    public List<Component> getAllComponents() {
+        return getComponentGroups()
+                .stream()
+                .flatMap(group -> group.getComponents().stream())
+                .collect(toList());
+    }
+
     public Optional<Component> getComponentByName(String componentName) {
         return componentGroups.stream()
                 .map(componentGroup -> componentGroup.getComponentByName(componentName))
@@ -69,7 +80,7 @@ public class Environment {
     public void verifyComponents() {
         Set<String> components = new HashSet<>();
         componentGroups.stream()
-                .flatMap(cg -> cg.getComponents().stream())
+                .flatMap(group -> group.getComponents().stream())
                 .filter(c -> !components.add(c.getName()))
                 .findFirst()
                 .ifPresent(c -> {

@@ -16,15 +16,16 @@ import static java.util.Optional.of;
 public class ToFileConfigSerializer implements ConfigSerializer {
     private final File componentsDir;
     private final String fileName;
-    private final ConfigIoService configIo;
+    private final ConfigIoService configIoService;
 
     @Override
     public Optional<File> serialize(String component, Collection<Property> properties) {
         File file = configDestination(component);
         delete(file);
+
         if (containsOnlySystemProperties(properties)) return empty();
 
-        configIo.writeTo(file).write(properties);
+        configIoService.writeTo(file).write(properties);
         return of(file);
     }
 
@@ -34,6 +35,7 @@ public class ToFileConfigSerializer implements ConfigSerializer {
     }
 
     private boolean containsOnlySystemProperties(Collection<Property> properties) {
-        return properties.stream().allMatch(p -> p.getSource().isSystem());
+        return properties.stream()
+                .allMatch(p -> p.getSource().isSystem());
     }
 }
