@@ -20,10 +20,10 @@ public class ConfigType {
 
     public static ConfigType byNameAndTypes(String resultFileName, String... configExtensions) {
         of(configExtensions)
-                .filter(ext -> ext.charAt(0) != '.')
+                .filter(ext -> !ext.startsWith("."))
                 .findFirst()
                 .ifPresent(ext -> {
-                    throw new IllegalStateException("File extension must starts with .");
+                    throw new IllegalStateException("File extension must start with '.'. Bad extension:" + ext);
                 });
 
         return new ConfigType(resultFileName, new HashSet<>(asList(configExtensions)));

@@ -18,14 +18,14 @@ public class FilenameGeneratorImpl implements FilenameGenerator {
 
     @Override
     public File fileFor(String component, Collection<Property> properties) {
-        return new File(destinationComponentDir, serviceDir(component) + "/" + fileName() + extension(properties));
+        return new File(destinationComponentDir, dir(component) + "/" + name() + extension(properties));
     }
 
-    private String serviceDir(String component) {
+    private String dir(String component) {
         return serviceInnerDir == null ? component : serviceInnerDir + "/" + component;
     }
 
-    private String fileName() {
+    private String name() {
         return configType.getResultFileName();
     }
 
@@ -33,7 +33,9 @@ public class FilenameGeneratorImpl implements FilenameGenerator {
         String outputFormat = System.getProperty("outputFormat");
         if (outputFormat != null) return outputFormat;
 
-        return properties.stream()
-                .anyMatch(p -> p.getSource().isYaml()) ? YAML.extension() : PROPERTIES.extension();
+        return properties
+                .stream()
+                .anyMatch(p -> p.getSource().isYaml()) ?
+                YAML.extension() : PROPERTIES.extension();
     }
 }
