@@ -26,20 +26,20 @@ public class BuildConfigCommand implements Command {
 
     @Override
     public void execute(CommandContext context) {
-        List<Component> componentToBuild = context.components(environmentProvider);
+        List<Component> componentsToBuild = context.components(environmentProvider);
 
-        int resultCount = componentToBuild.parallelStream()
+        int processedComponents = componentsToBuild.parallelStream()
                 .mapToInt(component -> processComponent(component, context.env()))
                 .sum();
 
-        if (resultCount > 0) {
+        if (processedComponents > 0) {
             logLineBreak();
         }
     }
 
     private int processComponent(Component component, String env) {
         Map<String, Property> properties = configProvider.getProperties(component, env);
-        Optional<File> outputFile = configSerializer.serialize(component.getName(), properties.values());
+        Optional<File> outputFile = configSerializer.serialize(component.getName(), chooseOutputFormat(component, env), properties.values());
 
         outputFile.ifPresent(f -> {
             postProcessor.process(new RootComponent(component, env), f.getParentFile(), properties, configProvider);
@@ -47,5 +47,9 @@ public class BuildConfigCommand implements Command {
         });
 
         return outputFile.isPresent() ? 1 : 0;
+    }
+
+    private String chooseOutputFormat(Component component, String env) {
+        return ".properties";
     }
 }

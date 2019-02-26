@@ -19,8 +19,8 @@ public class ToFileConfigSerializer implements ConfigSerializer {
     private final ConfigIoService configIoService;
 
     @Override
-    public Optional<File> serialize(String component, Collection<Property> properties) {
-        File file = configDestination(component);
+    public Optional<File> serialize(String component, String outputFormat, Collection<Property> properties) {
+        File file = configDestination(component, outputFormat);
         delete(file);
 
         if (containsOnlySystemProperties(properties)) return empty();
@@ -30,8 +30,8 @@ public class ToFileConfigSerializer implements ConfigSerializer {
     }
 
     @Override
-    public File configDestination(String component) {
-        return new File(componentsDir, component + "/" + fileName);
+    public File configDestination(String component, String format) {
+        return new File(componentsDir, component + "/" + fileName + format);
     }
 
     private boolean containsOnlySystemProperties(Collection<Property> properties) {
