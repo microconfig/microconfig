@@ -45,16 +45,16 @@ import static io.microconfig.utils.FileUtils.canonical;
 @Getter
 @RequiredArgsConstructor
 public class MicroconfigFactory {
-    private static final String ENVS_DIR = "envs";
+    private static final String ENV_DIR = "envs";
 
     private final ComponentTree componentTree;
     private final EnvironmentProvider environmentProvider;
     private final File destinationComponentDir;
     @Wither
     private final String serviceInnerDir;
-    private final FileFormatDetector fileFormatDetector = new FileFormatDetectorImpl();
+    private final FileFormatDetector fileFormatDetector = cache(new FileFormatDetectorImpl());
     @Getter
-    private final ConfigIoService configIo = new ConfigIoServiceSelector(fileFormatDetector, new YamlConfigIoService(), new PropertiesConfigIoService());
+    private final ConfigIoService configIoService = new ConfigIoServiceSelector(fileFormatDetector, new YamlConfigIoService(), new PropertiesConfigIoService());
 
     public static MicroconfigFactory init(File root, File destinationComponentDir) {
         File fullRepoDir = canonical(root);
@@ -66,7 +66,7 @@ public class MicroconfigFactory {
 
     public ConfigProvider newConfigProvider(ConfigType configType) {
         ConfigProvider fileBasedProvider = cache(
-                new FileBasedConfigProvider(componentTree, configType, new ComponentParserImpl(configIo))
+                new FileBasedConfigProvider(componentTree, configType, new ComponentParserImpl(configIoService))
         );
         SpecialPropertiesFactory specialProperties = new SpecialPropertiesFactory(componentTree, destinationComponentDir);
         PropertyResolver resolver = newPropertyResolver(fileBasedProvider, specialProperties);
@@ -100,16 +100,16 @@ public class MicroconfigFactory {
     }
 
     private static EnvironmentProvider newEnvProvider(File repoDir) {
-        return cache(new FileBasedEnvironmentProvider(new File(repoDir, ENVS_DIR), new EnvironmentParserSelectorImpl(jsonParser(), yamlParser())));
+        return cache(new FileBasedEnvironmentProvider(new File(repoDir, ENV_DIR), new EnvironmentParserSelectorImpl(jsonParser(), yamlParser())));
     }
 
     private ConfigSerializer configSerializer(ConfigType configType) {
         return new ConfigDiffSerializer(
                 new ToFileConfigSerializer(
                         new FilenameGeneratorImpl(destinationComponentDir, serviceInnerDir, configType, componentTree, fileFormatDetector),
-                        configIo
+                        configIoService
                 ),
-                configIo
+                configIoService
         );
     }
 }

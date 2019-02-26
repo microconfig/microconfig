@@ -5,10 +5,6 @@ import io.microconfig.commands.Command;
 import io.microconfig.commands.CompositeCommand;
 import io.microconfig.commands.postprocessors.CopyTemplatesPostProcessor;
 import io.microconfig.commands.postprocessors.UpdateSecretsPostProcessor;
-import io.microconfig.configs.files.format.FileFormatDetectorImpl;
-import io.microconfig.configs.files.io.ConfigIoServiceSelector;
-import io.microconfig.configs.files.io.properties.PropertiesConfigIoService;
-import io.microconfig.configs.files.io.yaml.YamlConfigIoService;
 import io.microconfig.templates.CopyTemplatesServiceImpl;
 
 import java.io.File;
@@ -20,21 +16,17 @@ import static java.util.Arrays.asList;
 
 public class BuildConfigCommandFactory {
     public static Command newBuildCommand(File repoDir, File destinationComponentDir) {
-        MicroconfigFactory microconfigFactory = MicroconfigFactory.init(repoDir, destinationComponentDir);
+        MicroconfigFactory factory = MicroconfigFactory.init(repoDir, destinationComponentDir);
 
         return new CompositeCommand(asList(
-                microconfigFactory.newBuildCommand(SERVICE.type(), copyTemplatesPostProcessor()),
-                microconfigFactory.newBuildCommand(PROCESS.type()),
-                microconfigFactory.newBuildCommand(DEPLOY.type()),
-                microconfigFactory.newBuildCommand(ENV.type()),
-                microconfigFactory.newBuildCommand(SECRET.type(), new UpdateSecretsPostProcessor(configIoService())),
-                microconfigFactory.newBuildCommand(LOG4j.type()),
-                microconfigFactory.newBuildCommand(LOG4J2.type())
+                factory.newBuildCommand(SERVICE.type(), copyTemplatesPostProcessor()),
+                factory.newBuildCommand(PROCESS.type()),
+                factory.newBuildCommand(DEPLOY.type()),
+                factory.newBuildCommand(ENV.type()),
+                factory.newBuildCommand(SECRET.type(), new UpdateSecretsPostProcessor(factory.getConfigIoService())),
+                factory.newBuildCommand(LOG4j.type()),
+                factory.newBuildCommand(LOG4J2.type())
         ));
-    }
-
-    private static ConfigIoServiceSelector configIoService() {
-        return new ConfigIoServiceSelector(new FileFormatDetectorImpl(), new YamlConfigIoService(), new PropertiesConfigIoService());
     }
 
     private static BuildConfigPostProcessor copyTemplatesPostProcessor() {

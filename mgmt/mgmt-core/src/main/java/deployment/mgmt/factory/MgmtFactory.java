@@ -78,6 +78,7 @@ import io.microconfig.configs.files.io.properties.PropertiesConfigIoService;
 import io.microconfig.configs.files.io.yaml.YamlConfigIoService;
 import lombok.Getter;
 
+import static io.microconfig.utils.CacheHandler.cache;
 import static java.util.Arrays.asList;
 import static java.util.List.of;
 
@@ -110,7 +111,7 @@ public class MgmtFactory {
     public MgmtFactory() {
         this.deployFileStructure = DeployFileStructureImpl.init();
         this.lockService = new OsLockService(deployFileStructure);
-        this.configIoService = new ConfigIoServiceSelector(new FileFormatDetectorImpl(), new YamlConfigIoService(), new PropertiesConfigIoService());
+        this.configIoService = new ConfigIoServiceSelector(cache(new FileFormatDetectorImpl()), new YamlConfigIoService(), new PropertiesConfigIoService());
         this.propertyService = new PropertyServiceImpl(deployFileStructure, configIoService);
         this.metadataProvider = new MetadataProviderImpl(deployFileStructure);
         this.componentGroupService = new ComponentGroupServiceImpl(deployFileStructure, propertyService, configIoService);

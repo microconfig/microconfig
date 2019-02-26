@@ -31,7 +31,7 @@ public class MgmtMicroConfigAdapter {
                 factory.newBuildCommand(PROCESS.type(), new WebappPostProcessor()),
                 factory.newBuildCommand(DEPLOY.type()),
                 factory.newBuildCommand(ENV.type()),
-                factory.newBuildCommand(SECRET.type(), new UpdateSecretsPostProcessor(factory.getConfigIo())),
+                factory.newBuildCommand(SECRET.type(), new UpdateSecretsPostProcessor(factory.getConfigIoService())),
                 factory.newBuildCommand(LOG4j.type()),
                 factory.newBuildCommand(LOG4J2.type()),
                 factory.newBuildCommand(extensionAsName("sap")),
