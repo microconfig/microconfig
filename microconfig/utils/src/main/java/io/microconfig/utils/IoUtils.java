@@ -35,7 +35,9 @@ public class IoUtils {
         if (!file.exists()) return null;
 
         try (Stream<String> strings = lines(file.toPath())) {
-            return strings.findFirst().map(String::trim).orElse("");
+            return strings.findFirst()
+                    .map(String::trim)
+                    .orElse("");
         }
     }
 
