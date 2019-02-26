@@ -36,11 +36,11 @@ public class FilenameGeneratorImpl implements FilenameGenerator {
         String outputFormat = System.getProperty("outputFormat");
         if (outputFormat != null) return outputFormat;
 
-        return containsYamlSources(component) ? YAML.extension() : PROPERTIES.extension();
+        return containsYamlFiles(component) ? YAML.extension() : PROPERTIES.extension();
     }
 
-    private boolean containsYamlSources(String component) {
+    private boolean containsYamlFiles(String component) {
         return componentTree.getConfigFiles(component, extensionFilter(configType.getConfigExtensions()))
-                .anyMatch(file -> fileFormatDetector.outputFileFormat(file) == YAML);
+                .anyMatch(file -> fileFormatDetector.detectFileFormat(file) == YAML);
     }
 }

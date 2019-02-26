@@ -23,16 +23,6 @@ class IncludeTest {
     }
 
     @Test
-    void testMatchWithout() {
-        Matcher matcher = Include.PATTERN.matcher("#include zeus[uat] @without:ru.sbt.*");
-
-        assertTrue(matcher.find());
-        assertEquals("zeus", matcher.group("comp"));
-        assertEquals("uat", matcher.group("env"));
-        assertEquals("ru.sbt.*", matcher.group("without"));
-    }
-
-    @Test
     void testDontMatch() {
         Matcher matcher = Include.PATTERN.matcher("include zeus[uat]");
         assertFalse(matcher.find());

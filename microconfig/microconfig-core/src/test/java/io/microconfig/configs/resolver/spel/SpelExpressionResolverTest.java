@@ -1,7 +1,6 @@
 package io.microconfig.configs.resolver.spel;
 
 import io.microconfig.configs.Property;
-import io.microconfig.configs.PropertySource;
 import io.microconfig.configs.resolver.PropertyResolver;
 import io.microconfig.configs.resolver.RootComponent;
 import io.microconfig.environments.Component;
@@ -10,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static io.microconfig.configs.PropertySource.specialSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -57,7 +57,7 @@ class SpelExpressionResolverTest {
         assertEquals("connparams1", result);
     }
 
-    static Property prop(String value) {
-        return new Property("key", value, "uat", new PropertySource(Component.byType("c"), "c"));
+    private static Property prop(String value) {
+        return Property.property("key", value, "uat", specialSource(Component.byType("c"), "c"));
     }
 }

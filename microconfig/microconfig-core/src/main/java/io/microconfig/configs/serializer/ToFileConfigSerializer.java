@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static io.microconfig.utils.FileUtils.delete;
-import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
 @RequiredArgsConstructor
@@ -22,8 +21,6 @@ public class ToFileConfigSerializer implements ConfigSerializer {
         File file = configDestination(component);
         delete(file);
 
-        if (containsOnlySystemProperties(properties)) return empty();
-
         configIoService.writeTo(file).write(properties);
         return of(file);
     }
@@ -31,10 +28,5 @@ public class ToFileConfigSerializer implements ConfigSerializer {
     @Override
     public File configDestination(String component) {
         return filenameGenerator.fileFor(component);
-    }
-
-    private boolean containsOnlySystemProperties(Collection<Property> properties) {
-        return properties.stream()
-                .allMatch(p -> p.getSource().isSystem());
     }
 }

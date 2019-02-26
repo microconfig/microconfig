@@ -27,7 +27,7 @@ public class ConfigIoServiceSelector implements ConfigIoService {
     }
 
     private ConfigIoService select(File file) {
-        FileFormat format = fileFormatDetector.sourceFileFormat(file);
+        FileFormat format = fileFormatDetector.detectFileFormat(file);
         if (format == YAML) return yamlFormat;
         if (format == PROPERTIES) return propertiesFormat;
 

@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static io.microconfig.configs.Property.tempProperty;
+import static io.microconfig.configs.PropertySource.specialSource;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 
@@ -31,6 +33,6 @@ public class MapResolveStrategy implements ResolveStrategy {
 
         return ofNullable(keyToValue.apply(key))
                 .map(Object::toString)
-                .map(value -> new Property(key, value, environment, new PropertySource(component, name)));
+                .map(value -> tempProperty(key, value, environment, specialSource(component, name)));
     }
 }

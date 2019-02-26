@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static io.microconfig.configs.PropertySource.systemSource;
+import static io.microconfig.configs.Property.property;
+import static io.microconfig.configs.PropertySource.specialSource;
 import static io.microconfig.environments.Component.byNameAndType;
 import static io.microconfig.environments.Component.byType;
 import static io.microconfig.utils.MicronconfigTestFactory.getConfigProvider;
@@ -42,7 +43,6 @@ class ConfigProviderTest {
     void testVar() {
         Map<String, Property> props = provider.getProperties(byType("var"), "var");
         assertEquals(1, props.values().stream()
-                .filter(p -> !p.getSource().isSystem())
                 .filter(p -> !p.isTemp())
                 .count());
 
@@ -105,16 +105,6 @@ class ConfigProviderTest {
     void testPlaceholderToIncludeWithEnvChange() {
         Map<String, Property> props = provider.getProperties(byType("ic5"), "dev");
         assertEquals("ic2", props.get("v").getValue());
-    }
-
-    @Test
-    void testIncludeWithoutKeyword() {
-        Map<String, Property> props = provider.getProperties(byType("without1"), "dev");
-        assertEquals(3, props.size());
-        assertEquals("p1", props.get("p1").getValue());
-        assertEquals("p2", props.get("p2").getValue());
-        assertEquals("w2", props.get("w2.include").getValue());
-        assertFalse(props.containsKey("w2.exclude"));
     }
 
     @Test
@@ -181,6 +171,6 @@ class ConfigProviderTest {
     }
 
     private String resolveValue(String env, Component component, String propName) {
-        return resolver.resolve(new Property(component.getName() + "." + propName, "${this@" + propName + "}", env, systemSource()), new RootComponent(component, env));
+        return resolver.resolve(property(component.getName() + "." + propName, "${this@" + propName + "}", env, specialSource(component, "")), new RootComponent(component, env));
     }
 }

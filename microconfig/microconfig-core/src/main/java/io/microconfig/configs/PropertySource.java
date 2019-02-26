@@ -8,37 +8,27 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 
 import static io.microconfig.environments.Component.bySourceFile;
-import static io.microconfig.environments.Component.byType;
 
 @Getter
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class PropertySource {
-    private static final PropertySource SYSTEM_SOURCE = new PropertySource(byType(""), "SYSTEM");
-
     private final Component component;
     private final String sourceOfProperty;
     private final int line;
 
-    static PropertySource systemSource() {
-        return SYSTEM_SOURCE;
+    private final boolean yaml;
+
+    public static PropertySource fileSource(File file, int lineNumber, boolean yaml) {
+        return new PropertySource(bySourceFile(file), file.getAbsolutePath(), lineNumber, yaml);
     }
 
-    public PropertySource(Component component, String sourceOfProperty) {
-        this(component, sourceOfProperty, -1);
-    }
-
-    public static PropertySource fileSource(File file, int lineNumber) {
-        return new PropertySource(bySourceFile(file), file.getAbsolutePath(), lineNumber);
-    }
-
-    public boolean isSystem() {
-        return this == SYSTEM_SOURCE;
+    public static PropertySource specialSource(Component component, String sourceOfProperty) {
+        return new PropertySource(component, sourceOfProperty, -1, false);
     }
 
     @Override
     public String toString() {
-        return line < 0 ? sourceOfProperty
-                : sourceOfProperty + ":" + line;
+        return line < 0 ? sourceOfProperty : sourceOfProperty + ":" + line;
     }
 }

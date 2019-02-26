@@ -3,7 +3,6 @@ package io.microconfig.configs.files.parser;
 import io.microconfig.configs.Property;
 import io.microconfig.configs.files.io.ConfigIoService;
 import io.microconfig.configs.files.io.ConfigReader;
-import io.microconfig.environments.Component;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -39,7 +38,7 @@ public class ComponentParserImpl implements ComponentParser {
                 .entrySet()
                 .stream()
                 .filter(e -> isTempProperty(e.getValue()))
-                .map(e -> Property.parse(e.getValue(), env, fileSource(file, e.getKey())))
+                .map(e -> Property.parse(e.getValue(), env, fileSource(file, e.getKey(), false)))
                 .collect(toList());
     }
 

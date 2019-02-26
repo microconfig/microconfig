@@ -1,6 +1,7 @@
 package io.microconfig.configs.resolver.placeholder.strategies;
 
 import io.microconfig.configs.Property;
+import io.microconfig.configs.PropertySource;
 import io.microconfig.configs.resolver.placeholder.ResolveStrategy;
 import io.microconfig.environments.Component;
 import io.microconfig.environments.Environment;
@@ -11,7 +12,8 @@ import lombok.RequiredArgsConstructor;
 import java.util.Map;
 import java.util.Optional;
 
-import static io.microconfig.configs.Property.systemSourceProperty;
+import static io.microconfig.configs.Property.tempProperty;
+import static io.microconfig.configs.PropertySource.specialSource;
 import static java.util.Optional.empty;
 
 
@@ -29,7 +31,7 @@ public class SpecialPropertyResolveStrategy implements ResolveStrategy {
         if (environment == null) return empty();
 
         return specialProperty.value(component, environment)
-                .map(value -> systemSourceProperty(key, value, envName));
+                .map(value -> tempProperty(key, value, envName, specialSource(component, "specials")));
     }
 
     private Environment getEnvironment(String environment) {

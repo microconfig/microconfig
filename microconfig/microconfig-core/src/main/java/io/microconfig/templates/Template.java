@@ -1,7 +1,6 @@
 package io.microconfig.templates;
 
 import io.microconfig.configs.Property;
-import io.microconfig.configs.PropertySource;
 import io.microconfig.configs.resolver.PropertyResolver;
 import io.microconfig.configs.resolver.RootComponent;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +9,8 @@ import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static io.microconfig.configs.Property.tempProperty;
+import static io.microconfig.configs.PropertySource.specialSource;
 import static io.microconfig.configs.resolver.placeholder.Placeholder.isPlaceholder;
 import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.Logger.warn;
@@ -48,7 +49,7 @@ class Template {
 
     private String resolveValue(RootComponent currentComponent, PropertyResolver propertyResolver, Matcher matcher) {
         String placeholder = toPlaceholder(matcher);
-        Property property = new Property("key", placeholder, currentComponent.getRootEnv(), new PropertySource(currentComponent.getRootComponent(), source.getAbsolutePath()));
+        Property property = tempProperty("key", placeholder, currentComponent.getRootEnv(), specialSource(currentComponent.getRootComponent(), source.getAbsolutePath()));
         try {
             return propertyResolver.resolve(property, currentComponent);
         } catch (RuntimeException e) {

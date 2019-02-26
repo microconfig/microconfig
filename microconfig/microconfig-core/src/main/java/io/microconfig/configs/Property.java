@@ -6,7 +6,6 @@ import lombok.Getter;
 import java.util.Map;
 import java.util.function.IntSupplier;
 
-import static io.microconfig.configs.PropertySource.systemSource;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.IntStream.range;
@@ -23,10 +22,6 @@ public class Property {
 
     private final PropertySource source;
 
-    public static Property systemSourceProperty(String key, String value, String envContext) {
-        return new Property(key, value, envContext, true, systemSource());
-    }
-
     public static Property parse(String keyValue, String envContext, PropertySource source) {
         IntSupplier separatorIndex = () -> range(0, keyValue.length())
                 .filter(i -> {
@@ -40,14 +35,19 @@ public class Property {
         int indexOfSeparator = separatorIndex.getAsInt();
         String key = keyValue.substring(temp ? TEMP_VALUE.length() + 1 : 0, indexOfSeparator).trim();
         String value = keyValue.substring(indexOfSeparator + 1).trim();
+
         return new Property(key, value, envContext, temp, source);
     }
 
-    public Property(String key, String value, String envContext, PropertySource source) {
-        this(key, value, envContext, false, source);
+    public static Property property(String key, String value, String envContext, PropertySource source) {
+        return new Property(key, value, envContext, false, source);
     }
 
-    public Property(String key, String value, String envContext, boolean temp, PropertySource source) {
+    public static Property tempProperty(String key, String value, String envContext, PropertySource source) {
+        return new Property(key, value, envContext, true, source);
+    }
+
+    private Property(String key, String value, String envContext, boolean temp, PropertySource source) {
         this.key = requireNonNull(key, "Property key is null");
         this.value = requireNonNull(value, "Property value is null");
         this.envContext = requireNonNull(envContext, "Property env context is null");
@@ -63,7 +63,6 @@ public class Property {
         return properties.entrySet()
                 .stream()
                 .filter(e -> !e.getValue().isTemp())
-                .filter(e -> !e.getValue().getSource().isSystem())
                 .collect(toLinkedMap(Map.Entry::getKey, e -> e.getValue().getValue()));
     }
 

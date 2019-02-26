@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
+import static io.microconfig.configs.Property.property;
 import static io.microconfig.configs.PropertySource.fileSource;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static java.lang.Character.isWhitespace;
@@ -142,7 +143,7 @@ class YamlReader extends AbstractConfigReader {
         String key = toProperty(currentProperty);
         currentProperty.pollLast();
 
-        result.add(new Property(key, value, env, fileSource(file, lineNumber)));
+        result.add(property(key, value, env, fileSource(file, lineNumber, true)));
     }
 
     private String toProperty(Deque<KeyOffset> currentProperty) {
