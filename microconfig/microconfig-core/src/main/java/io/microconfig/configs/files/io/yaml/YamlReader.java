@@ -78,11 +78,7 @@ class YamlReader extends AbstractConfigReader {
         if (skip(nextLine)) return false;
         int nextOffset = offsetIndex(nextLine);
         if (currentOffset > nextOffset) return true;
-        if (currentOffset == nextOffset && !isMultilineValue(nextLine, nextOffset)) {
-            return true;
-        }
-
-        return false;
+        return currentOffset == nextOffset && !isMultilineValue(nextLine, nextOffset);
     }
 
     private void parseSimpleProperty(List<Property> result,
