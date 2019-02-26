@@ -1,13 +1,8 @@
 package io.microconfig.configs.files.parser;
 
-import io.microconfig.configs.Property;
-import io.microconfig.utils.StringUtils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,17 +10,16 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
 /**
- * supported format #include componentName[optionalEnv]
+ * supported format #include component[optionalEnv]
  */
-@EqualsAndHashCode(of = {"componentName", "env"})
+@EqualsAndHashCode(of = {"component", "env"})
 public class Include {
-    final static Pattern PATTERN = Pattern.compile("[#@][iI]nclude\\s+(?<comp>[\\w\\d\\s_-]+)(\\[(?<env>.+)])?(\\s*@without:(?<without>.+))?");
+    final static Pattern PATTERN = Pattern.compile("[#@][iI]nclude\\s+(?<comp>[\\w\\d\\s_-]+)(\\[(?<env>.+)])?");
 
     @Getter
-    private final String componentName;
+    private final String component;
     @Getter
     private final String env;
-    private final Optional<String> without;
 
     static boolean isInclude(String line) {
         String lower = line.toLowerCase();
@@ -39,24 +33,15 @@ public class Include {
     private Include(String line, String defaultEnv) {
         Matcher matcher = PATTERN.matcher(line);
         if (!matcher.find()) {
-            throw new IllegalArgumentException("Can't parse include directive: " + line + ". Supported format: #include componentName[optionalEnv]");
+            throw new IllegalArgumentException("Can't parse include directive: " + line + ". Supported format: #include component[optionalEnv]");
         }
 
-        this.componentName = requireNonNull(matcher.group("comp")).trim();
+        this.component = requireNonNull(matcher.group("comp")).trim();
         this.env = requireNonNull(ofNullable(matcher.group("env")).orElse(defaultEnv)).trim();
-        this.without = ofNullable(matcher.group("without"));
-    }
-
-    public Map<String, Property> removeExcluded(Map<String, Property> includedProperties) {
-        if (!without.isPresent()) return includedProperties;
-
-        Map<String, Property> copy = new LinkedHashMap<>(includedProperties);
-        copy.keySet().removeIf(p -> StringUtils.like(p, without.get().trim()));
-        return copy;
     }
 
     @Override
     public String toString() {
-        return "#include " + componentName + "[" + env + "]";
+        return "#include " + component + "[" + env + "]";
     }
 }

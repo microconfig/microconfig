@@ -22,7 +22,7 @@ public class ComponentParserImpl implements ComponentParser {
     private final ConfigIoService configIo;
 
     @Override
-    public ParsedComponent parse(File file, Component component, String env) {
+    public ParsedComponent parse(File file, String env) {
         ConfigReader reader = configIo.read(file);
         Map<Integer, String> comments = reader.commentsByLineNumber();
         List<Property> properties = reader.properties(env);
@@ -31,7 +31,7 @@ public class ComponentParserImpl implements ComponentParser {
         List<Include> includes = parseIncludes(comments.values(), env);
         boolean ignore = shouldIgnore(comments.values());
 
-        return new ParsedComponent(component.getName(), includes, ignore ? emptyList() : join(properties, tempProperties));
+        return new ParsedComponent(includes, ignore ? emptyList() : join(properties, tempProperties));
     }
 
     private List<Property> parseTempProperties(Map<Integer, String> comments, File file, String env) {
