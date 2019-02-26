@@ -7,9 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.nio.file.OpenOption;
-import java.util.Collection;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static io.microconfig.utils.Logger.align;
@@ -53,7 +51,7 @@ public class YamlWriter implements ConfigWriter {
 
     @SuppressWarnings("unchecked")
     private void propertyToTree(String key, String value, Map<String, Object> result) {
-        String[] parts = key.split("\\.");
+        String[] parts = splitKey(key);
         for (int i = 0; i < parts.length - 1; i++) {
             String part = parts[i];
             Object oldValue = result.get(part);
@@ -69,6 +67,10 @@ public class YamlWriter implements ConfigWriter {
         }
 
         result.put(parts[parts.length - 1], offsetForMultilineValue(parts.length, value));
+    }
+
+    private String[] splitKey(String key) {
+        return key.split("\\.(?![^\\[]*])"); // split on '.' that are not inside of []
     }
 
     private String offsetForMultilineValue(int parts, String value) {
