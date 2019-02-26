@@ -82,7 +82,7 @@ public class YamlWriter implements ConfigWriter {
         if (!value.startsWith("-")) return value;
 
         return (LINES_SEPARATOR + value)
-                .replace(LINES_SEPARATOR, align(LINES_SEPARATOR, (parts + 1) * OFFSET));
+                .replace(LINES_SEPARATOR, align(LINES_SEPARATOR, parts * OFFSET));
     }
 
     private String toYaml(Map<String, Object> tree) {
