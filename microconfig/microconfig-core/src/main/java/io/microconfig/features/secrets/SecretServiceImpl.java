@@ -1,7 +1,7 @@
 package io.microconfig.features.secrets;
 
 import io.microconfig.configs.Property;
-import io.microconfig.configs.files.io.ConfigIoService;
+import io.microconfig.configs.io.ioservice.ConfigIoService;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

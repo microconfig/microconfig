@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 import java.util.Collection;
 
-import static io.microconfig.configs.files.io.selector.FileFormat.PROPERTIES;
-import static io.microconfig.configs.files.io.selector.FileFormat.YAML;
+import static io.microconfig.configs.io.ioservice.selector.FileFormat.PROPERTIES;
+import static io.microconfig.configs.io.ioservice.selector.FileFormat.YAML;
 
 @RequiredArgsConstructor
 public class FilenameGeneratorImpl implements FilenameGenerator {

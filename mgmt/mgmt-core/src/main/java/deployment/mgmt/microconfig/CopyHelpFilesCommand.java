@@ -2,7 +2,7 @@ package deployment.mgmt.microconfig;
 
 import io.microconfig.commands.Command;
 import io.microconfig.commands.CommandContext;
-import io.microconfig.configs.files.tree.ComponentTree;
+import io.microconfig.configs.io.tree.ComponentTree;
 import io.microconfig.environments.Component;
 import io.microconfig.environments.EnvironmentProvider;
 import lombok.RequiredArgsConstructor;

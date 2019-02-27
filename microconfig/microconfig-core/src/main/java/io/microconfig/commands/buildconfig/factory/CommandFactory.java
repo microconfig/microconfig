@@ -4,7 +4,7 @@ import io.microconfig.commands.Command;
 import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
 import io.microconfig.commands.buildconfig.postprocessors.CopyTemplatesPostProcessor;
 import io.microconfig.commands.buildconfig.postprocessors.UpdateSecretsPostProcessor;
-import io.microconfig.configs.files.io.ConfigIoService;
+import io.microconfig.configs.io.ioservice.ConfigIoService;
 import io.microconfig.features.secrets.SecretServiceImpl;
 import io.microconfig.features.templates.CopyTemplatesServiceImpl;
 

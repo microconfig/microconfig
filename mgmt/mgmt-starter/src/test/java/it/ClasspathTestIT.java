@@ -15,11 +15,11 @@ import deployment.mgmt.configs.filestructure.DeployFileStructureImpl;
 import deployment.mgmt.configs.service.properties.MavenSettings;
 import deployment.mgmt.configs.service.properties.NexusRepository;
 import deployment.mgmt.configs.service.properties.impl.PropertyServiceImpl;
-import io.microconfig.configs.files.io.selector.ConfigFormatDetectorImpl;
-import io.microconfig.configs.files.io.ConfigIoService;
-import io.microconfig.configs.files.io.selector.ConfigIoServiceSelector;
-import io.microconfig.configs.files.io.properties.PropertiesConfigIoService;
-import io.microconfig.configs.files.io.yaml.YamlConfigIoService;
+import io.microconfig.configs.io.ioservice.selector.ConfigFormatDetectorImpl;
+import io.microconfig.configs.io.ioservice.ConfigIoService;
+import io.microconfig.configs.io.ioservice.selector.ConfigIoServiceSelector;
+import io.microconfig.configs.io.ioservice.properties.PropertiesConfigIoService;
+import io.microconfig.configs.io.ioservice.yaml.YamlConfigIoService;
 import io.microconfig.utils.reader.FsFileReader;
 import org.junit.jupiter.api.Disabled;
 

@@ -34,16 +34,6 @@ public class Property {
         return new Property(key, value, envContext, temp, source);
     }
 
-    public static int separatorIndex(String keyValue) {
-        return range(0, keyValue.length())
-                .filter(i -> {
-                    char c = keyValue.charAt(i);
-                    return c == '=' || c == ':';
-                })
-                .findFirst()
-                .orElse(-1);
-    }
-
     public static Property property(String key, String value, String envContext, PropertySource source) {
         return new Property(key, value, envContext, false, source);
     }
@@ -58,6 +48,16 @@ public class Property {
         this.envContext = requireNonNull(envContext, "Property env context is null");
         this.temp = temp;
         this.source = requireNonNull(source, "Property source is null");
+    }
+
+    public static int separatorIndex(String keyValue) {
+        return range(0, keyValue.length())
+                .filter(i -> {
+                    char c = keyValue.charAt(i);
+                    return c == '=' || c == ':';
+                })
+                .findFirst()
+                .orElse(-1);
     }
 
     public static boolean isTempProperty(String line) {
@@ -81,8 +81,8 @@ public class Property {
                 .collect(toLinkedMap(Map.Entry::getKey, e -> e.getValue().getValue()));
     }
 
-    public Property withNewValue(String resolvedValue) {
-        return new Property(key, resolvedValue, envContext, temp, source);
+    public Property withNewValue(String value) {
+        return new Property(key, value, envContext, temp, source);
     }
 
     @Override
