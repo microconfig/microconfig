@@ -21,9 +21,10 @@ class WebappPostProcessor implements BuildConfigPostProcessor {
 
     @Override
     public void process(RootComponent currentComponent,
-                        File destinationDir,
                         Map<String, Property> componentProperties,
-                        ConfigProvider configProvider) {
+                        ConfigProvider configProvider,
+                        File resultFile) {
+        File destinationDir = resultFile.getParentFile();
         delete(new File(destinationDir, WEBAPP_FILE));
 
         if (!SystemPropertiesUtils.hasTrueValue("mgmt.tomcat.webapp.enabled", componentProperties)) return;
