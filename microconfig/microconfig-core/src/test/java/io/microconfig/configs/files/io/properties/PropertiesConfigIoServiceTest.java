@@ -1,5 +1,6 @@
 package io.microconfig.configs.files.io.properties;
 
+import io.microconfig.utils.reader.FsFileReader;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PropertiesConfigIoServiceTest {
-    private final PropertiesConfigIoService ioService = new PropertiesConfigIoService();
+    private final PropertiesConfigIoService ioService = new PropertiesConfigIoService(new FsFileReader());
 
     @Test
     void test() {

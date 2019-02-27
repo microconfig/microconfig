@@ -1,5 +1,6 @@
 package io.microconfig.configs.files.io.yaml;
 
+import io.microconfig.utils.reader.FsFileReader;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedHashMap;
@@ -11,7 +12,7 @@ import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class YamlReaderTest {
-    private final YamlConfigIoService yaml = new YamlConfigIoService();
+    private final YamlConfigIoService yaml = new YamlConfigIoService(new FsFileReader());
 
     @Test
     void testSimpleYaml() {

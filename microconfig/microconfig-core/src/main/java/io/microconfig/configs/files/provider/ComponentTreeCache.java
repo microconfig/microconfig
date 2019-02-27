@@ -15,29 +15,33 @@ import java.util.stream.Stream;
 import static io.microconfig.utils.FileUtils.walk;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Stream.of;
 
 @RequiredArgsConstructor
 public class ComponentTreeCache implements ComponentTree {
-    private final File configComponentsRoot;
+    private final File rootDir;
     private final Map<String, List<File>> foldersByComponentType;
 
-    public static ComponentTree build(File repoDirRoot) {
-        try (Stream<Path> pathStream = walk(repoDirRoot.toPath())) {
+    public static ComponentTree prepare(File rootDir) {
+        if (!rootDir.exists()) {
+            throw new IllegalArgumentException("Root directory doesnt exists: " + rootDir);
+        }
+
+        try (Stream<Path> pathStream = walk(rootDir.toPath())) {
             Map<String, List<File>> cache = pathStream
                     .parallel()
                     .map(Path::toFile)
                     .filter(isDirectory())
                     .collect(groupingBy(File::getName));
 
-            return new ComponentTreeCache(repoDirRoot, cache);
+            return new ComponentTreeCache(rootDir, cache);
         }
     }
 
     @Override
-    public File getConfigComponentsRoot() {
-        return configComponentsRoot;
+    public File getRootDir() {
+        return rootDir;
     }
 
     private static Predicate<File> isDirectory() {
@@ -45,11 +49,9 @@ public class ComponentTreeCache implements ComponentTree {
             /*Filter by ext works way faster than File::isDirectory.
              Implementation is correct because File::listFiles for file will return null and we handle it in getConfigFiles()
              */
-            String name = f.getName();
-
-            return Stream.of(StandardConfigType.values())
+            return of(StandardConfigType.values())
                     .flatMap(c -> c.getConfigExtensions().stream())
-                    .noneMatch(name::endsWith);
+                    .noneMatch(f.getName()::endsWith);
         };
     }
 
@@ -66,6 +68,6 @@ public class ComponentTreeCache implements ComponentTree {
     @Override
     public Optional<File> getFolder(String component) {
         List<File> files = foldersByComponentType.getOrDefault(component, emptyList());
-        return files.size() == 1 ? of(files.get(0)) : empty();
+        return files.size() == 1 ? Optional.of(files.get(0)) : empty();
     }
 }

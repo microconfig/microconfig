@@ -84,7 +84,7 @@ class JsonEnvironmentProviderTest {
     @Test
     void testThrowsExceptionInCaseOfMissingIP() {
         Environment env = environmentProvider.getByName("test-env-include-err");
-        assertThrows(IllegalArgumentException.class, env::verifyIpsSet);
+        assertThrows(IllegalArgumentException.class, env::verifyIpsPresent);
     }
 
     @Test

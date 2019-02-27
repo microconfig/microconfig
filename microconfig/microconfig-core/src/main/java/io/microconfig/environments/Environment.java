@@ -2,10 +2,7 @@ package io.microconfig.environments;
 
 import lombok.Getter;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static io.microconfig.utils.CollectionUtils.singleValue;
 import static java.util.Collections.unmodifiableList;
@@ -23,8 +20,10 @@ public class Environment {
     private final Optional<Integer> portOffset;
     private final Optional<EnvInclude> include;
 
-    public Environment(String name, List<ComponentGroup> componentGroups,
-                       Optional<String> ip, Optional<Integer> portOffset, Optional<EnvInclude> include) {
+    public Environment(String name,
+                       List<ComponentGroup> componentGroups,
+                       Optional<String> ip, Optional<Integer> portOffset,
+                       Optional<EnvInclude> include) {
         this.name = requireNonNull(name);
         this.componentGroups = unmodifiableList(requireNonNull(componentGroups));
         this.ip = requireNonNull(ip);
@@ -58,7 +57,7 @@ public class Environment {
         return groups.isEmpty() ? empty() : of(singleValue(groups));
     }
 
-    public List<Component> getComponentsForGroup(String group) {
+    public List<Component> getComponentsByGroup(String group) {
         return getGroupByName(group).getComponents();
     }
 
@@ -77,24 +76,29 @@ public class Environment {
                 .findFirst();
     }
 
-    public void verifyComponents() {
-        Set<String> components = new HashSet<>();
+    public Environment verifyUniqueComponentNames() {
+        Set<String> unique = new HashSet<>();
         componentGroups.stream()
-                .flatMap(group -> group.getComponents().stream())
-                .filter(c -> !components.add(c.getName()))
+                .map(ComponentGroup::getComponents)
+                .flatMap(Collection::stream)
+                .filter(c -> !unique.add(c.getName()))
                 .findFirst()
                 .ifPresent(c -> {
                     throw new IllegalArgumentException("Env [" + name + "] contains several definitions of [" + c.getName() + "] component");
                 });
+
+        return this;
     }
 
-    public void verifyIpsSet() {
+    public Environment verifyIpsPresent() {
         componentGroups.stream()
                 .filter(g -> !ip.isPresent() && !g.getIp().isPresent())
                 .findFirst()
                 .ifPresent(g -> {
-                    throw new IllegalArgumentException("Env [" + name + "] does not have ip for [" + g.getName() + "] componentGroup");
+                    throw new IllegalArgumentException("Env [" + name + "] doesn't have ip for [" + g.getName() + "] componentGroup");
                 });
+
+        return this;
     }
 
     public Environment processInclude(EnvironmentProvider environmentProvider) {

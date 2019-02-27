@@ -2,6 +2,7 @@ package io.microconfig.configs.files.io.yaml;
 
 import io.microconfig.configs.Property;
 import io.microconfig.configs.files.io.AbstractConfigReader;
+import io.microconfig.utils.reader.FileReader;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -19,8 +20,8 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.IntStream.range;
 
 class YamlReader extends AbstractConfigReader {
-    YamlReader(File file) {
-        super(file);
+    YamlReader(File file, FileReader fileReader) {
+        super(file, fileReader);
     }
 
     @Override

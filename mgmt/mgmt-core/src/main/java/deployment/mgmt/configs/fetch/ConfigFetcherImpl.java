@@ -26,7 +26,7 @@ public class ConfigFetcherImpl implements ConfigFetcher {
 
     @Override
     public void fetchConfigs(String configVersion) {
-        File destination = deployFileStructure.configs().getConfigRepoRootDir();
+        File destination = deployFileStructure.configs().getConfigsRootDir();
         if (hasSystemFlag("skipConfigFetch") && dirNotEmpty(destination, 2)) {
             announce("Skipping config fetch");
             return;

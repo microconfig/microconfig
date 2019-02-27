@@ -3,6 +3,7 @@ package io.microconfig.environments.filebased;
 import io.microconfig.environments.Environment;
 import io.microconfig.environments.EnvironmentNotExistException;
 import io.microconfig.environments.EnvironmentProvider;
+import io.microconfig.utils.reader.FileReader;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -13,20 +14,22 @@ import java.util.stream.Stream;
 
 import static io.microconfig.utils.CollectionUtils.singleValue;
 import static io.microconfig.utils.FileUtils.walk;
-import static io.microconfig.utils.IoUtils.readFully;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 public class FileBasedEnvironmentProvider implements EnvironmentProvider {
-    private final File rootDirectory;
+    private final File envDir;
     private final EnvironmentParserSelector environmentParserSelector;
+    private final FileReader fileReader;
 
-    public FileBasedEnvironmentProvider(File rootDirectory, EnvironmentParserSelector environmentParserSelector) {
-        if (!rootDirectory.exists()) {
-            throw new IllegalArgumentException("Can't find env directory '" + rootDirectory + "'. Maybe -Droot directory is incorrect.");
-        }
-        this.rootDirectory = rootDirectory;
+    public FileBasedEnvironmentProvider(File envDir, EnvironmentParserSelector environmentParserSelector, FileReader fileReader) {
+        this.envDir = envDir;
         this.environmentParserSelector = environmentParserSelector;
+        this.fileReader = fileReader;
+
+        if (!envDir.exists()) {
+            throw new IllegalArgumentException("Env directory doesn't exist " + envDir);
+        }
     }
 
     @Override
@@ -40,16 +43,16 @@ public class FileBasedEnvironmentProvider implements EnvironmentProvider {
 
     @Override
     public Environment getByName(String name) {
-        File envFile = getEnvFile(name);
-        Environment environment = environmentParserSelector.selectParser(envFile)
-                .parse(name, readFully(envFile))
-                .processInclude(this);
+        File envFile = findEnvFile(name);
 
-        environment.verifyComponents();
-        return environment;
+        return environmentParserSelector
+                .selectParser(envFile)
+                .parse(name, fileReader.read(envFile))
+                .processInclude(this)
+                .verifyUniqueComponentNames();
     }
 
-    private File getEnvFile(String name) {
+    private File findEnvFile(String name) {
         List<File> files;
         try (Stream<File> envStream = envFiles(name)) {
             files = envStream.collect(toList());
@@ -70,7 +73,7 @@ public class FileBasedEnvironmentProvider implements EnvironmentProvider {
                 f -> supportedFormats.stream().anyMatch(format -> f.getName().endsWith(format))
                 : f -> supportedFormats.stream().anyMatch(format -> f.getName().equals(envName + format));
 
-        return walk(rootDirectory.toPath())
+        return walk(envDir.toPath())
                 .map(Path::toFile)
                 .filter(fileNamePredicate);
     }

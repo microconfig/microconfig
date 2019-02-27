@@ -3,9 +3,9 @@ package deployment.mgmt.configs.filestructure;
 import java.io.File;
 
 public interface ConfigDirs {
-    File getConfigRepoRootDir();
+    File getConfigsRootDir();
 
-    File getInnerRepoDir();
+    File getConfigSourcesRootDir();
 
     File getConfigVersionFile();
 

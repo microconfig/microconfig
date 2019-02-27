@@ -1,15 +1,20 @@
 package io.microconfig.configs.files.format;
 
+import io.microconfig.utils.reader.FileReader;
+import lombok.RequiredArgsConstructor;
+
 import java.io.File;
-import java.util.stream.Stream;
+import java.util.function.Predicate;
 
 import static io.microconfig.configs.Property.isComment;
 import static io.microconfig.configs.Property.separatorIndex;
 import static io.microconfig.configs.files.format.FileFormat.PROPERTIES;
 import static io.microconfig.configs.files.format.FileFormat.YAML;
-import static io.microconfig.utils.IoUtils.lines;
 
+@RequiredArgsConstructor
 public class ConfigFormatDetectorImpl implements ConfigFormatDetector {
+    private final FileReader fileReader;
+
     @Override
     public FileFormat detectConfigFormat(File file) {
         if (file.getName().endsWith(PROPERTIES.extension())) return PROPERTIES;
@@ -20,7 +25,7 @@ public class ConfigFormatDetectorImpl implements ConfigFormatDetector {
     private boolean hasYamlOffsets(File file) {
         if (!file.exists()) return false;
 
-        String firstProperty = firstPropertyLine(file);
+        String firstProperty = fileReader.firstLine(file, containsValue()).orElse(null);
         if (firstProperty == null) return false;
 
         int separatorIndex = separatorIndex(firstProperty);
@@ -31,13 +36,10 @@ public class ConfigFormatDetectorImpl implements ConfigFormatDetector {
         return firstProperty.charAt(separatorIndex) == ':';
     }
 
-    private String firstPropertyLine(File file) {
-        try (Stream<String> lines = lines(file.toPath())) {
-            return lines.map(String::trim)
-                    .filter(s -> !s.isEmpty())
-                    .filter(s -> !isComment(s))
-                    .findFirst()
-                    .orElse(null);
-        }
+    private Predicate<String> containsValue() {
+        return line -> {
+            String trimmed = line.trim();
+            return !trimmed.isEmpty() && !isComment(trimmed);
+        };
     }
 }

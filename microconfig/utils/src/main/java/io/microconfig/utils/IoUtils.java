@@ -60,7 +60,7 @@ public class IoUtils {
         }
     }
 
-    public static List<String> allLines(File file) {
+    public static List<String> readLines(File file) {
         if (!file.exists()) return emptyList();
 
         try {

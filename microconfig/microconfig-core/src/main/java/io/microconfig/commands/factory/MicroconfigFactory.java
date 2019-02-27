@@ -3,7 +3,6 @@ package io.microconfig.commands.factory;
 import io.microconfig.commands.BuildConfigCommand;
 import io.microconfig.commands.BuildConfigPostProcessor;
 import io.microconfig.configs.ConfigProvider;
-import io.microconfig.configs.files.format.ConfigFormatDetector;
 import io.microconfig.configs.files.format.ConfigFormatDetectorImpl;
 import io.microconfig.configs.files.io.ConfigIoService;
 import io.microconfig.configs.files.io.ConfigIoServiceSelector;
@@ -27,6 +26,8 @@ import io.microconfig.configs.serializer.ToFileConfigSerializer;
 import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.environments.filebased.EnvironmentParserSelectorImpl;
 import io.microconfig.environments.filebased.FileBasedEnvironmentProvider;
+import io.microconfig.utils.reader.FileReader;
+import io.microconfig.utils.reader.FsFileReader;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Wither;
@@ -49,38 +50,45 @@ public class MicroconfigFactory {
 
     private final ComponentTree componentTree;
     private final EnvironmentProvider environmentProvider;
+    private final ConfigIoService configIoService;
     private final File destinationComponentDir;
     @Wither
     private final String serviceInnerDir;
-    private final ConfigFormatDetector configFormatDetector = cache(new ConfigFormatDetectorImpl());
-    @Getter
-    private final ConfigIoService configIoService = new ConfigIoServiceSelector(configFormatDetector, new YamlConfigIoService(), new PropertiesConfigIoService());
 
-    public static MicroconfigFactory init(File root, File destinationComponentDir) {
-        File fullRepoDir = canonical(root);
-        ComponentTree componentTree = ComponentTreeCache.build(fullRepoDir);
-        EnvironmentProvider environmentProvider = newEnvProvider(fullRepoDir);
+    public static MicroconfigFactory init(File sourcesRootDir, File destinationComponentDir) {
+        return init(sourcesRootDir, destinationComponentDir, new FsFileReader());
+    }
 
-        return new MicroconfigFactory(componentTree, environmentProvider, destinationComponentDir, "");
+    public static MicroconfigFactory init(File sourcesRootDir, File destinationComponentDir, FileReader fileReader) {
+        File fullSourcesRootDir = canonical(sourcesRootDir);
+
+        return new MicroconfigFactory(
+                ComponentTreeCache.prepare(fullSourcesRootDir),
+                newEnvProvider(fullSourcesRootDir, fileReader),
+                newConfigIoService(fileReader),
+                destinationComponentDir,
+                ""
+        );
     }
 
     public ConfigProvider newConfigProvider(ConfigType configType) {
         ConfigProvider fileBasedProvider = cache(
                 new FileBasedConfigProvider(componentTree, configType, new ComponentParserImpl(configIoService))
         );
-        SpecialPropertiesFactory specialProperties = new SpecialPropertiesFactory(componentTree, destinationComponentDir);
-        PropertyResolver resolver = newPropertyResolver(fileBasedProvider, specialProperties);
-        return cache(new ResolvedConfigProvider(fileBasedProvider, resolver));
+        return cache(
+                new ResolvedConfigProvider(fileBasedProvider, newPropertyResolver(fileBasedProvider))
+        );
     }
 
-    private PropertyResolver newPropertyResolver(ConfigProvider fileBasedProvider, SpecialPropertiesFactory specialProperties) {
+    private PropertyResolver newPropertyResolver(ConfigProvider configProvider) {
+        SpecialPropertiesFactory specialProperties = new SpecialPropertiesFactory(componentTree, destinationComponentDir);
         return cache(
                 new SpelExpressionResolver(
                         cache(new PlaceholderResolver(
                                         environmentProvider,
                                         composite(
                                                 systemPropertiesResolveStrategy(),
-                                                new StandardResolveStrategy(fileBasedProvider),
+                                                new StandardResolveStrategy(configProvider),
                                                 new SpecialPropertyResolveStrategy(environmentProvider, specialProperties.specialPropertiesByKeys()),
                                                 envVariablesResolveStrategy()
                                         ),
@@ -96,11 +104,12 @@ public class MicroconfigFactory {
     }
 
     public BuildConfigCommand newBuildCommand(ConfigType type, BuildConfigPostProcessor buildConfigPostProcessor) {
-        return new BuildConfigCommand(environmentProvider, newConfigProvider(type), configSerializer(type), buildConfigPostProcessor);
-    }
-
-    private static EnvironmentProvider newEnvProvider(File repoDir) {
-        return cache(new FileBasedEnvironmentProvider(new File(repoDir, ENV_DIR), new EnvironmentParserSelectorImpl(jsonParser(), yamlParser())));
+        return new BuildConfigCommand(
+                environmentProvider,
+                newConfigProvider(type),
+                configSerializer(type),
+                buildConfigPostProcessor
+        );
     }
 
     private ConfigSerializer configSerializer(ConfigType configType) {
@@ -110,6 +119,24 @@ public class MicroconfigFactory {
                         configIoService
                 ),
                 configIoService
+        );
+    }
+
+    private static EnvironmentProvider newEnvProvider(File root, FileReader fileReader) {
+        return cache(
+                new FileBasedEnvironmentProvider(
+                        new File(root, ENV_DIR),
+                        new EnvironmentParserSelectorImpl(jsonParser(), yamlParser()),
+                        fileReader
+                )
+        );
+    }
+
+    private static ConfigIoService newConfigIoService(FileReader fileReader) {
+        return new ConfigIoServiceSelector(
+                cache(new ConfigFormatDetectorImpl(fileReader)),
+                new YamlConfigIoService(fileReader),
+                new PropertiesConfigIoService(fileReader)
         );
     }
 }

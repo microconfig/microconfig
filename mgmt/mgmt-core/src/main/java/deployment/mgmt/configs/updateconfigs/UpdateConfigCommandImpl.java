@@ -55,7 +55,7 @@ public class UpdateConfigCommandImpl implements UpdateConfigCommand {
     private void buildConfigs() {
         GroupDescription groupDescription = componentGroupService.getDescription();
 
-        File repoDir = deployFileStructure.configs().getInnerRepoDir();
+        File repoDir = deployFileStructure.configs().getConfigSourcesRootDir();
         File componentsDir = deployFileStructure.service().getComponentsDir();
         info("Source: " + repoDir + ". Destination: " + componentsDir);
 

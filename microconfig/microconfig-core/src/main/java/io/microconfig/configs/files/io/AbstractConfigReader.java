@@ -1,6 +1,7 @@
 package io.microconfig.configs.files.io;
 
 import io.microconfig.configs.Property;
+import io.microconfig.utils.reader.FileReader;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -9,7 +10,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static io.microconfig.configs.Property.isComment;
-import static io.microconfig.utils.IoUtils.allLines;
 import static io.microconfig.utils.StreamUtils.toSortedMap;
 
 @RequiredArgsConstructor
@@ -17,8 +17,8 @@ public abstract class AbstractConfigReader implements ConfigReader {
     protected final File file;
     protected final List<String> lines;
 
-    protected AbstractConfigReader(File file) {
-        this(file, allLines(file));
+    protected AbstractConfigReader(File file, FileReader fileReader) {
+        this(file, fileReader.readLines(file));
     }
 
     @Override

@@ -39,7 +39,7 @@ public class CommandContext {
         Environment environment = environmentProvider.getByName(env);
 
         return componentGroup.isPresent() ?
-                environment.getComponentsForGroup(componentGroup.get())
+                environment.getComponentsByGroup(componentGroup.get())
                 : environment.getAllComponents();
     }
 

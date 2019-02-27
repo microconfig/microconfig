@@ -55,7 +55,7 @@ public class GitConfigStrategy implements ConfigFetcherStrategy {
     private List<String> fetchTags() {
         String output = executeAndReadOutput(
                 new ProcessBuilder("git", "ls-remote", "--tags")
-                        .directory(deployFileStructure.configs().getConfigRepoRootDir())
+                        .directory(deployFileStructure.configs().getConfigsRootDir())
         );
         return of(output.split("\n"))
                 .map(s -> s.split("\\s+")[1])

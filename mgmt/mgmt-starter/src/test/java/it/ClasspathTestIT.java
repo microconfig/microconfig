@@ -20,6 +20,7 @@ import io.microconfig.configs.files.io.ConfigIoService;
 import io.microconfig.configs.files.io.ConfigIoServiceSelector;
 import io.microconfig.configs.files.io.properties.PropertiesConfigIoService;
 import io.microconfig.configs.files.io.yaml.YamlConfigIoService;
+import io.microconfig.utils.reader.FsFileReader;
 import org.junit.jupiter.api.Disabled;
 
 import java.io.File;
@@ -66,6 +67,7 @@ public class ClasspathTestIT {
     }
 
     private static ConfigIoService configIoSelector() {
-        return new ConfigIoServiceSelector(new ConfigFormatDetectorImpl(), new YamlConfigIoService(), new PropertiesConfigIoService());
+        FsFileReader fileReader = new FsFileReader();
+        return new ConfigIoServiceSelector(new ConfigFormatDetectorImpl(fileReader), new YamlConfigIoService(fileReader), new PropertiesConfigIoService(fileReader));
     }
 }

@@ -9,13 +9,13 @@ import static io.microconfig.utils.FileUtils.userHome;
 
 public class ConfigDirsImpl implements ConfigDirs {
     @Override
-    public File getConfigRepoRootDir() {
+    public File getConfigsRootDir() {
         return createDir(new File(userHome(), "config-repo"));
     }
 
     @Override
-    public File getInnerRepoDir() {
-        return createDir(new File(getConfigRepoRootDir(), "repo"));
+    public File getConfigSourcesRootDir() {
+        return createDir(new File(getConfigsRootDir(), "repo"));
     }
 
     @Override
@@ -30,12 +30,12 @@ public class ConfigDirsImpl implements ConfigDirs {
 
     @Override
     public File getScriptsDir() {
-        return new File(getConfigRepoRootDir(), "/bin/scripts");
+        return new File(getConfigsRootDir(), "/bin/scripts");
     }
 
     @Override
     public File getMgmtScriptsDir() {
-        return new File(getConfigRepoRootDir(), "/mgmt");
+        return new File(getConfigsRootDir(), "/mgmt");
     }
 
     @Override
@@ -48,10 +48,10 @@ public class ConfigDirsImpl implements ConfigDirs {
 
     @Override
     public File getEnvCfgFile() {
-        return new File(getConfigRepoRootDir(), "share/env/env.cfg");
+        return new File(getConfigsRootDir(), "share/env/env.cfg");
     }
 
     private File configFile(String file) {
-        return new File(getInnerRepoDir(), file);
+        return new File(getConfigSourcesRootDir(), file);
     }
 }
