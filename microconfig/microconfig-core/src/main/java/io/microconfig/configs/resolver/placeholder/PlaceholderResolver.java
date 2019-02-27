@@ -1,9 +1,9 @@
 package io.microconfig.configs.resolver.placeholder;
 
 import io.microconfig.configs.Property;
+import io.microconfig.configs.resolver.EnvComponent;
 import io.microconfig.configs.resolver.PropertyResolveException;
 import io.microconfig.configs.resolver.PropertyResolver;
-import io.microconfig.configs.resolver.EnvComponent;
 import io.microconfig.environments.Component;
 import io.microconfig.environments.EnvironmentNotExistException;
 import io.microconfig.environments.EnvironmentProvider;

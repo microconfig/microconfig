@@ -12,6 +12,6 @@ ext {
             commons_compress  : 'org.apache.commons:commons-compress:1.18',
             jsch              : 'com.jcraft:jsch:0.1.54',
             guava             : 'com.google.guava:guava:20.0',
-            lombok            : 'org.projectlombok:lombok:1.18.4'
+            lombok            : 'org.projectlombok:lombok:1.18.6'
     ].withDefault({ key -> throw new IllegalArgumentException("Unknown library '$key'") })
 }

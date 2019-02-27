@@ -1,9 +1,9 @@
 package io.microconfig.configs.resolver.spel;
 
 import io.microconfig.configs.Property;
+import io.microconfig.configs.resolver.EnvComponent;
 import io.microconfig.configs.resolver.PropertyResolveException;
 import io.microconfig.configs.resolver.PropertyResolver;
-import io.microconfig.configs.resolver.EnvComponent;
 import lombok.RequiredArgsConstructor;
 
 import java.util.regex.Matcher;

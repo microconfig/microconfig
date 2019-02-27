@@ -10,7 +10,7 @@ import static io.microconfig.utils.FileUtils.userHomeString;
 import static io.microconfig.utils.StringUtils.unixLikePath;
 import static java.util.Optional.of;
 
-@Deprecated //use ${system@user.home}
+//todo ${system@user.home}
 @RequiredArgsConstructor
 public class UserHomeProperty implements ComponentProperty {
     @Override

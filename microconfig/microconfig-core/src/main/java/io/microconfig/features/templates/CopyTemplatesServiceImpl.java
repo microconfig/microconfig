@@ -1,7 +1,7 @@
 package io.microconfig.features.templates;
 
-import io.microconfig.configs.resolver.PropertyResolver;
 import io.microconfig.configs.resolver.EnvComponent;
+import io.microconfig.configs.resolver.PropertyResolver;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
