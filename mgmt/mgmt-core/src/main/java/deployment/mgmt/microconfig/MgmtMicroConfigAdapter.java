@@ -14,7 +14,7 @@ import java.io.File;
 import java.util.List;
 
 import static io.microconfig.commands.Command.composite;
-import static io.microconfig.commands.buildconfig.factory.BuildConfigCommandFactory.updateSecretsPostProcessor;
+import static io.microconfig.commands.buildconfig.factory.CommandFactory.updateSecretsPostProcessor;
 import static io.microconfig.commands.buildconfig.factory.ConfigType.extensionAsName;
 import static io.microconfig.commands.buildconfig.factory.StandardConfigType.*;
 import static io.microconfig.features.templates.TemplatePattern.defaultPattern;

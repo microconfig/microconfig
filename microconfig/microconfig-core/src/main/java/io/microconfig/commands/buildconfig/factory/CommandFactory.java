@@ -16,7 +16,7 @@ import static io.microconfig.features.templates.RelativePathResolver.empty;
 import static io.microconfig.features.templates.TemplatePattern.defaultPattern;
 import static io.microconfig.utils.FileUtils.userHome;
 
-public class BuildConfigCommandFactory {
+public class CommandFactory {
     public static Command newBuildCommand(File rootDir, File destinationComponentDir) {
         MicroconfigFactory factory = MicroconfigFactory.init(rootDir, destinationComponentDir);
 

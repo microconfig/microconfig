@@ -7,7 +7,7 @@ import io.microconfig.utils.CommandLineParams;
 import java.io.File;
 import java.util.List;
 
-import static io.microconfig.commands.buildconfig.factory.BuildConfigCommandFactory.newBuildCommand;
+import static io.microconfig.commands.buildconfig.factory.CommandFactory.newBuildCommand;
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.TimeUtils.msAfter;
 import static java.lang.System.currentTimeMillis;
