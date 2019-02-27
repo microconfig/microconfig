@@ -19,12 +19,12 @@ import static java.util.stream.Collectors.toSet;
 
 public class FileBasedEnvironmentProvider implements EnvironmentProvider {
     private final File envDir;
-    private final EnvironmentParserSelector environmentParserSelector;
+    private final EnvironmentParser environmentParser;
     private final FileReader fileReader;
 
-    public FileBasedEnvironmentProvider(File envDir, EnvironmentParserSelector environmentParserSelector, FileReader fileReader) {
+    public FileBasedEnvironmentProvider(File envDir, EnvironmentParser environmentParser, FileReader fileReader) {
         this.envDir = envDir;
-        this.environmentParserSelector = environmentParserSelector;
+        this.environmentParser = environmentParser;
         this.fileReader = fileReader;
 
         if (!envDir.exists()) {
@@ -45,8 +45,7 @@ public class FileBasedEnvironmentProvider implements EnvironmentProvider {
     public Environment getByName(String name) {
         File envFile = findEnvFile(name);
 
-        return environmentParserSelector
-                .selectParser(envFile)
+        return environmentParser
                 .parse(name, fileReader.read(envFile))
                 .processInclude(this)
                 .verifyUniqueComponentNames();
@@ -68,7 +67,7 @@ public class FileBasedEnvironmentProvider implements EnvironmentProvider {
     }
 
     private Stream<File> envFiles(String envName) {
-        List<String> supportedFormats = environmentParserSelector.supportedFormats();
+        List<String> supportedFormats = environmentParser.supportedFormats();
         Predicate<File> fileNamePredicate = envName == null ?
                 f -> supportedFormats.stream().anyMatch(format -> f.getName().endsWith(format))
                 : f -> supportedFormats.stream().anyMatch(format -> f.getName().equals(envName + format));

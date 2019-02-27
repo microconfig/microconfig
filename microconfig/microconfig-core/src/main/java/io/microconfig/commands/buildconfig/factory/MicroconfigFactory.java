@@ -26,7 +26,7 @@ import io.microconfig.configs.serializer.DiffSerializer;
 import io.microconfig.configs.serializer.FilenameGeneratorImpl;
 import io.microconfig.configs.serializer.ToFileConfigSerializer;
 import io.microconfig.environments.EnvironmentProvider;
-import io.microconfig.environments.filebased.EnvironmentParserSelectorImpl;
+import io.microconfig.environments.filebased.EnvironmentParserImpl;
 import io.microconfig.environments.filebased.FileBasedEnvironmentProvider;
 import io.microconfig.utils.reader.FileReader;
 import io.microconfig.utils.reader.FsFileReader;
@@ -41,8 +41,6 @@ import static io.microconfig.commands.buildconfig.BuildConfigPostProcessor.empty
 import static io.microconfig.configs.resolver.placeholder.ResolveStrategy.composite;
 import static io.microconfig.configs.resolver.placeholder.strategies.system.SystemResolveStrategy.envVariablesResolveStrategy;
 import static io.microconfig.configs.resolver.placeholder.strategies.system.SystemResolveStrategy.systemPropertiesResolveStrategy;
-import static io.microconfig.environments.filebased.EnvironmentParserImpl.jsonParser;
-import static io.microconfig.environments.filebased.EnvironmentParserImpl.yamlParser;
 import static io.microconfig.utils.CacheHandler.cache;
 import static io.microconfig.utils.CollectionUtils.joinToSet;
 import static io.microconfig.utils.FileUtils.canonical;
@@ -134,7 +132,7 @@ public class MicroconfigFactory {
         return cache(
                 new FileBasedEnvironmentProvider(
                         new File(root, ENV_DIR),
-                        new EnvironmentParserSelectorImpl(jsonParser(), yamlParser()),
+                        new EnvironmentParserImpl(),
                         fileReader
                 )
         );

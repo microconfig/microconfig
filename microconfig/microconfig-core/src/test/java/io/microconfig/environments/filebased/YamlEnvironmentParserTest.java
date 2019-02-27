@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static io.microconfig.environments.Component.byType;
-import static io.microconfig.environments.filebased.EnvironmentParserImpl.yamlParser;
 import static io.microconfig.utils.ClasspathUtils.read;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
@@ -21,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class YamlEnvironmentParserTest {
-    private final EnvironmentParser parser = yamlParser();
+    private final EnvironmentParser parser = new EnvironmentParserImpl();
 
     @Test
     void testBase() {
