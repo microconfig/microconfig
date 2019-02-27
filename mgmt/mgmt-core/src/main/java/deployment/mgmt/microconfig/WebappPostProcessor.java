@@ -4,7 +4,6 @@ import io.microconfig.commands.build.BuildConfigPostProcessor;
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.Property;
 import io.microconfig.configs.resolver.RootComponent;
-import io.microconfig.utils.Logger;
 import io.microconfig.utils.SystemPropertiesUtils;
 
 import java.io.File;
@@ -13,6 +12,7 @@ import java.util.Map;
 
 import static io.microconfig.utils.FileUtils.delete;
 import static io.microconfig.utils.FileUtils.write;
+import static io.microconfig.utils.Logger.error;
 
 class WebappPostProcessor implements BuildConfigPostProcessor {
     private static final String WEBAPP_FILE = "mgmt.webapp";
@@ -33,7 +33,7 @@ class WebappPostProcessor implements BuildConfigPostProcessor {
         delete(new File(destinationDir, DEPENDSON_FILE));
         Property container = componentProperties.get("mgmt.webapp.container");
         if (container == null) {
-            Logger.error("No container for webapp " + destinationDir.getParentFile().getAbsolutePath());
+            error("No container for webapp " + destinationDir.getParentFile().getAbsolutePath());
             return;
         }
 

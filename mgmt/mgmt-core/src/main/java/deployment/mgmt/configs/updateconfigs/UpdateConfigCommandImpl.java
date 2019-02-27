@@ -3,10 +3,10 @@ package deployment.mgmt.configs.updateconfigs;
 import deployment.mgmt.configs.componentgroup.ComponentGroupService;
 import deployment.mgmt.configs.componentgroup.GroupDescription;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
+import deployment.mgmt.microconfig.MgmtMicroConfigAdapter;
 import deployment.mgmt.process.stop.StopCommand;
 import deployment.mgmt.update.scriptgenerator.MgmtScriptGenerator;
 import lombok.RequiredArgsConstructor;
-import deployment.mgmt.microconfig.MgmtMicroConfigAdapter;
 
 import java.io.File;
 import java.util.List;

@@ -14,8 +14,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static io.microconfig.utils.FileUtils.*;
-import static io.microconfig.utils.IoUtils.readFullyOrEmpty;
 import static io.microconfig.utils.IoUtils.firstLineOrEmpty;
+import static io.microconfig.utils.IoUtils.readFullyOrEmpty;
 import static io.microconfig.utils.Logger.warn;
 import static io.microconfig.utils.StringUtils.isEmpty;
 import static java.io.File.pathSeparator;

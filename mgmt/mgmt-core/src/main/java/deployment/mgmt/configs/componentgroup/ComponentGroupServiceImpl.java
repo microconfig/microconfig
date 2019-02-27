@@ -15,8 +15,8 @@ import java.util.stream.Stream;
 
 import static io.microconfig.utils.FileUtils.delete;
 import static io.microconfig.utils.FileUtils.write;
-import static io.microconfig.utils.IoUtils.lines;
 import static io.microconfig.utils.IoUtils.firstLine;
+import static io.microconfig.utils.IoUtils.lines;
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.Logger.warn;
 import static io.microconfig.utils.StringUtils.isEmpty;

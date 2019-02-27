@@ -28,12 +28,12 @@ import static deployment.mgmt.atrifacts.Artifact.SNAPSHOT;
 import static deployment.mgmt.atrifacts.ArtifactType.JAR;
 import static io.microconfig.utils.FileUtils.createDir;
 import static io.microconfig.utils.FileUtils.delete;
-import static mgmt.utils.ByteReaderUtils.readAllBytes;
 import static io.microconfig.utils.Logger.warn;
 import static java.nio.file.Files.copy;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.Collections.emptyList;
 import static lombok.AccessLevel.PRIVATE;
+import static mgmt.utils.ByteReaderUtils.readAllBytes;
 
 @RequiredArgsConstructor
 public class NexusClientImpl implements NexusClient {
