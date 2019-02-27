@@ -22,7 +22,7 @@ public class ComponentResolveStrategy implements ResolveStrategy {
 
         return ofNullable(componentProperty)
                 .flatMap(p -> p.value(component))
-                .map(value -> tempProperty(propertyKey, value, envName, specialSource(component, "generalProperties")));
+                .map(value -> tempProperty(propertyKey, value, envName, specialSource(component, "COMPONENT")));
     }
 
     public interface ComponentProperty {

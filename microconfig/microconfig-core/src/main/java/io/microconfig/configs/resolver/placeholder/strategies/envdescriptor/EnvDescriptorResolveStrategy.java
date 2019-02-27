@@ -29,7 +29,7 @@ public class EnvDescriptorResolveStrategy implements ResolveStrategy {
         if (environment == null) return empty();
 
         return specialProperty.value(component, environment)
-                .map(value -> tempProperty(propertyKey, value, envName, specialSource(component, "specialProperties")));
+                .map(value -> tempProperty(propertyKey, value, envName, specialSource(component, "ENV_DESCRIPTOR")));
     }
 
     private Environment getEnvironment(String environment) {
