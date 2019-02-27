@@ -41,7 +41,7 @@ public class EncryptPropertiesCommandImpl implements EncryptPropertiesCommand {
     }
 
     private void encryptProperties(File propertiesFile, File passwordFile) {
-        Map<String, String> properties = configIoService.read(propertiesFile).propertiesAsMap();
+        Map<String, String> properties = configIoService.read(propertiesFile).escapeResolvedPropertiesAsMap();
         String result = new PropertiesEncryptor(passwordFile).encryptProperties(properties, DEFAULT_SECRET_PROPERTY_MATCHER);
 
         write(propertiesFile, result);

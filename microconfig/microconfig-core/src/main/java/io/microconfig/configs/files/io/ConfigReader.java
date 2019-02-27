@@ -10,5 +10,7 @@ public interface ConfigReader {
 
     Map<String, String> propertiesAsMap();
 
+    Map<String, String> escapeResolvedPropertiesAsMap();
+
     Map<Integer, String> commentsByLineNumber();
 }

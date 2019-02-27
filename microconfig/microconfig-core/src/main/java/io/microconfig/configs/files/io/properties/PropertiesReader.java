@@ -18,7 +18,7 @@ class PropertiesReader extends AbstractConfigReader {
     }
 
     @Override
-    public List<Property> properties(String env) {
+    protected List<Property> properties(String env, boolean resolveEscape) {
         List<Property> result = new ArrayList<>();
 
         StringBuilder currentLine = new StringBuilder();
@@ -29,7 +29,11 @@ class PropertiesReader extends AbstractConfigReader {
 
             currentLine.append(trimmed);
             if (isMultilineValue(trimmed)) {
-                currentLine.append(LINES_SEPARATOR);
+                if (resolveEscape) {
+                    currentLine.setLength(currentLine.length() - 1);
+                } else {
+                    currentLine.append(LINES_SEPARATOR);
+                }
                 continue;
             }
 

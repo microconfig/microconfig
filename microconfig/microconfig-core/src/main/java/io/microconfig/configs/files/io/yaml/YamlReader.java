@@ -25,7 +25,7 @@ class YamlReader extends AbstractConfigReader {
     }
 
     @Override
-    public List<Property> properties(String env) {
+    protected List<Property> properties(String env, boolean ignore /*todo*/) {
         List<Property> result = new ArrayList<>();
 
         Deque<KeyOffset> currentProperty = new ArrayDeque<>();
