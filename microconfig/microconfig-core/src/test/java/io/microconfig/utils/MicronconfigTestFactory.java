@@ -1,6 +1,6 @@
 package io.microconfig.utils;
 
-import io.microconfig.commands.build.factory.MicroconfigFactory;
+import io.microconfig.commands.configbuild.factory.MicroconfigFactory;
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.resolver.PropertyResolver;
 import io.microconfig.configs.resolver.PropertyResolverHolder;
@@ -8,7 +8,7 @@ import io.microconfig.environments.EnvironmentProvider;
 
 import java.io.File;
 
-import static io.microconfig.commands.build.factory.StandardConfigType.SERVICE;
+import static io.microconfig.commands.configbuild.factory.StandardConfigType.SERVICE;
 import static io.microconfig.utils.ClasspathUtils.classpathFile;
 
 public class MicronconfigTestFactory {

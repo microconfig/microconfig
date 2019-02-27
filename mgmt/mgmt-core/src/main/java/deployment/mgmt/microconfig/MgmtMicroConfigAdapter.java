@@ -2,11 +2,11 @@ package deployment.mgmt.microconfig;
 
 import deployment.mgmt.configs.updateconfigs.OldConfigsRelativePathResolver;
 import io.microconfig.commands.Command;
-import io.microconfig.commands.build.BuildConfigCommand;
-import io.microconfig.commands.build.BuildConfigPostProcessor;
-import io.microconfig.commands.build.entry.BuildConfigMain;
-import io.microconfig.commands.build.factory.MicroconfigFactory;
-import io.microconfig.commands.build.postprocessors.CopyTemplatesPostProcessor;
+import io.microconfig.commands.configbuild.BuildConfigCommand;
+import io.microconfig.commands.configbuild.BuildConfigPostProcessor;
+import io.microconfig.commands.configbuild.entry.BuildConfigMain;
+import io.microconfig.commands.configbuild.factory.MicroconfigFactory;
+import io.microconfig.commands.configbuild.postprocessors.CopyTemplatesPostProcessor;
 import io.microconfig.features.templates.CopyTemplatesServiceImpl;
 import io.microconfig.features.templates.TemplatePattern;
 
@@ -14,9 +14,9 @@ import java.io.File;
 import java.util.List;
 
 import static io.microconfig.commands.Command.composite;
-import static io.microconfig.commands.build.factory.BuildConfigCommandFactory.updateSecretsPostProcessor;
-import static io.microconfig.commands.build.factory.ConfigType.extensionAsName;
-import static io.microconfig.commands.build.factory.StandardConfigType.*;
+import static io.microconfig.commands.configbuild.factory.BuildConfigCommandFactory.updateSecretsPostProcessor;
+import static io.microconfig.commands.configbuild.factory.ConfigType.extensionAsName;
+import static io.microconfig.commands.configbuild.factory.StandardConfigType.*;
 import static io.microconfig.features.templates.TemplatePattern.defaultPattern;
 
 public class MgmtMicroConfigAdapter {

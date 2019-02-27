@@ -6,7 +6,7 @@ import deployment.mgmt.configs.componentgroup.ComponentGroupService;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.service.properties.NexusRepository;
 import deployment.mgmt.update.updater.MgmtProperties;
-import io.microconfig.commands.build.factory.ConfigType;
+import io.microconfig.commands.configbuild.factory.ConfigType;
 import io.microconfig.configs.ConfigProvider;
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +17,7 @@ import java.util.Map;
 
 import static deployment.mgmt.atrifacts.Artifact.fromMavenString;
 import static deployment.mgmt.utils.ZipUtils.unzip;
-import static io.microconfig.commands.build.factory.ConfigType.extensionAsName;
+import static io.microconfig.commands.configbuild.factory.ConfigType.extensionAsName;
 import static io.microconfig.configs.Property.withoutTempValues;
 import static io.microconfig.environments.Component.byType;
 import static io.microconfig.utils.Logger.*;

@@ -1,7 +1,7 @@
 package deployment.mgmt.update.updater;
 
 import deployment.mgmt.configs.service.properties.NexusRepository;
-import io.microconfig.commands.build.factory.ConfigType;
+import io.microconfig.commands.configbuild.factory.ConfigType;
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.environments.EnvironmentProvider;
 
