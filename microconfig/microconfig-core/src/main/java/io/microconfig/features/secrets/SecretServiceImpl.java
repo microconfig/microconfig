@@ -34,6 +34,7 @@ public class SecretServiceImpl implements SecretService {
         if (!properties.isEmpty()) {
             configIoService.writeTo(secretFile).append(properties);
         }
+
         return properties.keySet();
     }
 }
