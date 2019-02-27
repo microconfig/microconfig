@@ -13,7 +13,7 @@ import static java.util.Optional.ofNullable;
  * supported format #include component[optionalEnv]
  */
 @EqualsAndHashCode(of = {"component", "env"})
-class Include {
+public class Include {
     final static Pattern PATTERN = Pattern.compile("[#@][iI]nclude\\s+(?<comp>[\\w\\d\\s_-]+)(\\[(?<env>.+)])?");
 
     @Getter

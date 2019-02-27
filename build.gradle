@@ -40,7 +40,7 @@ allprojects {
     dependencies {
         implementation platform("org.springframework.boot:spring-boot-dependencies:2.1.3.RELEASE")
 
-        compile lib.lombok
+        compileOnly lib.lombok
         annotationProcessor lib.lombok
 
         testImplementation 'org.junit.jupiter:junit-jupiter-engine',
