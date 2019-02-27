@@ -20,19 +20,19 @@ import static java.util.Optional.of;
  * root=C:\Projects\config\repo dest=C:\Projects\configs env=cr-dev6 outputFormat=.yaml
  */
 public class BuildConfigMain {
-    private static final String ENV = "env";
-    private static final String GROUP = "group"; //optional param. values: fnd, mc, etc
     private static final String ROOT = "root";
     private static final String DEST = "dest";
+    private static final String ENV = "env";
+    private static final String GROUPS = "groups";
     private static final String SERVICES = "services";
 
     public static void main(String[] args) {
         CommandLineParams clp = CommandLineParams.parse(args);
 
-        String root = clp.requiredValue(ROOT, "set root=  param. Folder with components and envs folders");
-        String destination = clp.requiredValue(DEST, "set dest= param. Folder of result property output");
+        String root = clp.requiredValue(ROOT, "set root=  param (folder with 'components' and 'envs' directories)");
+        String destination = clp.requiredValue(DEST, "set dest= param (folder for config build output)");
         String env = clp.requiredValue(ENV, "set env=");
-        List<String> groups = clp.listValue(GROUP);
+        List<String> groups = clp.listValue(GROUPS);
         List<String> components = clp.listValue(SERVICES);
         clp.putToSystem("outputFormat");
 

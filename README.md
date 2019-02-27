@@ -783,7 +783,7 @@ Microconfig required build params:
 * `env=` - environment name (Environment is used as a config profile, also as a group of services to build configs for).
 
 To build configs not for the whole environment but only for specific services you can use following optional params: 
-* `group=` - comma-separated list of component groups to build configs for. 
+* `groups=` - comma-separated list of component groups to build configs for. 
 * `services=` - comma-separated list of services to build configs for. 
 
 Command line params example:
