@@ -1,9 +1,9 @@
-package io.microconfig.commands.configbuild.factory;
+package io.microconfig.commands.buildconfig.factory;
 
 import io.microconfig.commands.Command;
-import io.microconfig.commands.configbuild.BuildConfigPostProcessor;
-import io.microconfig.commands.configbuild.postprocessors.CopyTemplatesPostProcessor;
-import io.microconfig.commands.configbuild.postprocessors.UpdateSecretsPostProcessor;
+import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
+import io.microconfig.commands.buildconfig.postprocessors.CopyTemplatesPostProcessor;
+import io.microconfig.commands.buildconfig.postprocessors.UpdateSecretsPostProcessor;
 import io.microconfig.configs.files.io.ConfigIoService;
 import io.microconfig.features.secrets.SecretServiceImpl;
 import io.microconfig.features.templates.CopyTemplatesServiceImpl;
@@ -11,7 +11,7 @@ import io.microconfig.features.templates.CopyTemplatesServiceImpl;
 import java.io.File;
 
 import static io.microconfig.commands.Command.composite;
-import static io.microconfig.commands.configbuild.factory.StandardConfigType.*;
+import static io.microconfig.commands.buildconfig.factory.StandardConfigType.*;
 import static io.microconfig.features.templates.RelativePathResolver.empty;
 import static io.microconfig.features.templates.TemplatePattern.defaultPattern;
 import static io.microconfig.utils.FileUtils.userHome;

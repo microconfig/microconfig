@@ -1,4 +1,4 @@
-package io.microconfig.commands.configbuild;
+package io.microconfig.commands.buildconfig;
 
 import io.microconfig.commands.Command;
 import io.microconfig.commands.CommandContext;

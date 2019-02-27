@@ -1,7 +1,7 @@
-package io.microconfig.commands.configbuild.factory;
+package io.microconfig.commands.buildconfig.factory;
 
-import io.microconfig.commands.configbuild.BuildConfigCommand;
-import io.microconfig.commands.configbuild.BuildConfigPostProcessor;
+import io.microconfig.commands.buildconfig.BuildConfigCommand;
+import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.files.io.ConfigIoService;
 import io.microconfig.configs.files.io.properties.PropertiesConfigIoService;
@@ -37,7 +37,7 @@ import lombok.experimental.Wither;
 import java.io.File;
 import java.util.Set;
 
-import static io.microconfig.commands.configbuild.BuildConfigPostProcessor.emptyPostProcessor;
+import static io.microconfig.commands.buildconfig.BuildConfigPostProcessor.emptyPostProcessor;
 import static io.microconfig.configs.resolver.placeholder.ResolveStrategy.composite;
 import static io.microconfig.configs.resolver.placeholder.strategies.system.SystemResolveStrategy.envVariablesResolveStrategy;
 import static io.microconfig.configs.resolver.placeholder.strategies.system.SystemResolveStrategy.systemPropertiesResolveStrategy;

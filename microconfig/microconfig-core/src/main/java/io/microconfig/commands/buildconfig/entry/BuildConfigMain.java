@@ -1,4 +1,4 @@
-package io.microconfig.commands.configbuild.entry;
+package io.microconfig.commands.buildconfig.entry;
 
 import io.microconfig.commands.Command;
 import io.microconfig.commands.CommandContext;
@@ -7,7 +7,7 @@ import io.microconfig.utils.CommandLineParams;
 import java.io.File;
 import java.util.List;
 
-import static io.microconfig.commands.configbuild.factory.BuildConfigCommandFactory.newBuildCommand;
+import static io.microconfig.commands.buildconfig.factory.BuildConfigCommandFactory.newBuildCommand;
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.TimeUtils.msAfter;
 import static java.lang.System.currentTimeMillis;

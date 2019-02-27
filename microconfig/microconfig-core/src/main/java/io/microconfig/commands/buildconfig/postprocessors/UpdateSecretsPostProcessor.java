@@ -1,6 +1,6 @@
-package io.microconfig.commands.configbuild.postprocessors;
+package io.microconfig.commands.buildconfig.postprocessors;
 
-import io.microconfig.commands.configbuild.BuildConfigPostProcessor;
+import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.Property;
 import io.microconfig.configs.resolver.EnvComponent;
