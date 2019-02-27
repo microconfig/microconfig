@@ -14,8 +14,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static io.microconfig.utils.FileUtils.*;
-import static io.microconfig.utils.IoUtils.readNullableFirstLine;
-import static io.microconfig.utils.IoUtils.safeRead;
+import static io.microconfig.utils.IoUtils.readFullyOrEmpty;
+import static io.microconfig.utils.IoUtils.firstLineOrEmpty;
 import static io.microconfig.utils.Logger.warn;
 import static io.microconfig.utils.StringUtils.isEmpty;
 import static java.io.File.pathSeparator;
@@ -34,7 +34,7 @@ public class ClasspathStoreImpl implements ClasspathStore {
 
     @Override
     public String getClasspath(String service) {
-        String classpath = safeRead(classpathPrependFile(service)) + safeRead(classpathFile(service));
+        String classpath = readFullyOrEmpty(classpathPrependFile(service)) + readFullyOrEmpty(classpathFile(service));
         return classpath.replace(LINE_SEPARATOR, "");
     }
 
@@ -58,7 +58,7 @@ public class ClasspathStoreImpl implements ClasspathStore {
 
     @Override
     public Optional<String> getClasspathVersion(String service) {
-        return ofNullable(readNullableFirstLine(classpathVersionFile(service)));
+        return ofNullable(firstLineOrEmpty(classpathVersionFile(service)));
     }
 
     @Override

@@ -13,7 +13,7 @@ import static deployment.mgmt.atrifacts.Artifact.fromMavenString;
 import static deployment.mgmt.configs.service.properties.NexusRepository.RepositoryType.RELEASE;
 import static deployment.mgmt.init.InitParams.*;
 import static io.microconfig.utils.FileUtils.*;
-import static io.microconfig.utils.IoUtils.readFirstLine;
+import static io.microconfig.utils.IoUtils.firstLine;
 import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.Logger.info;
 import static java.lang.System.getProperty;
@@ -67,7 +67,7 @@ public class DeploySettingsImpl implements DeploySettings {
 
     @Override
     public Artifact getConfigArtifact(String version) {
-        String line = readFirstLine(configArtifactFile());
+        String line = firstLine(configArtifactFile());
         return fromMavenString(line == null ? "configs:configs:zip:${version}" : line).withNewVersion(version);
     }
 
@@ -83,7 +83,7 @@ public class DeploySettingsImpl implements DeploySettings {
 
     @Override
     public String getConfigVersion() {
-        String line = readFirstLine(configVersionFile());
+        String line = firstLine(configVersionFile());
         return line == null ? "master" : line;
     }
 
@@ -141,7 +141,7 @@ public class DeploySettingsImpl implements DeploySettings {
             info("Saved '" + propertyName + "' value to " + file);
             return value;
         } else {
-            String rawValue = readFirstLine(file);
+            String rawValue = firstLine(file);
             return secretMode ? simpleEncryptionService.decrypt(rawValue) : rawValue;
         }
     }

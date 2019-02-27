@@ -6,9 +6,9 @@ import java.io.*;
 import java.util.Optional;
 import java.util.Set;
 
-import static io.microconfig.utils.IoUtils.copyWithFlush;
 import static io.microconfig.utils.TimeUtils.calcSecFrom;
 import static java.util.Optional.of;
+import static mgmt.utils.ByteReaderUtils.copyWithFlush;
 import static mgmt.utils.ThreadUtils.sleepSec;
 
 public class ProcessUtil {

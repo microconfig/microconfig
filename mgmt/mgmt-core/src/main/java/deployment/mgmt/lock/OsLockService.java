@@ -10,7 +10,7 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 
 import static io.microconfig.utils.ConsoleColor.yellow;
-import static io.microconfig.utils.IoUtils.readNullableFirstLine;
+import static io.microconfig.utils.IoUtils.firstLineOrEmpty;
 import static io.microconfig.utils.Logger.*;
 import static io.microconfig.utils.TimeUtils.secAfter;
 import static java.lang.ProcessHandle.current;
@@ -62,7 +62,7 @@ public class OsLockService implements LockService {
 
         long waitStartTime = currentTimeMillis();
         while (true) {
-            oneLineInfo(yellow("Waiting completion of mgmt process with pid " + readNullableFirstLine(file) + "... " + secAfter(waitStartTime)));
+            oneLineInfo(yellow("Waiting completion of mgmt process with pid " + firstLineOrEmpty(file) + "... " + secAfter(waitStartTime)));
             sleepSec(1);
 
             if ((lock = channel.tryLock()) != null) {

@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static io.microconfig.utils.IoUtils.walk;
+import static io.microconfig.utils.FileUtils.walk;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;

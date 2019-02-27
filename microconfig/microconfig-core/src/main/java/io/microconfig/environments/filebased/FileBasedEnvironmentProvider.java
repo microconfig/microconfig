@@ -12,8 +12,8 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static io.microconfig.utils.CollectionUtils.singleValue;
+import static io.microconfig.utils.FileUtils.walk;
 import static io.microconfig.utils.IoUtils.readFully;
-import static io.microconfig.utils.IoUtils.walk;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 

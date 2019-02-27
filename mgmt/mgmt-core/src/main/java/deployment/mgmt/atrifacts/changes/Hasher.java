@@ -13,8 +13,8 @@ import java.util.zip.Adler32;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
-import static io.microconfig.utils.IoUtils.readChunked;
 import static java.util.Comparator.comparing;
+import static mgmt.utils.ByteReaderUtils.readChunked;
 
 @RequiredArgsConstructor
 class Hasher {

@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static io.microconfig.configs.Property.isComment;
-import static io.microconfig.utils.IoUtils.readAllLines;
+import static io.microconfig.utils.IoUtils.allLines;
 import static io.microconfig.utils.StreamUtils.toSortedMap;
 
 @RequiredArgsConstructor
@@ -18,7 +18,7 @@ public abstract class AbstractConfigReader implements ConfigReader {
     protected final List<String> lines;
 
     protected AbstractConfigReader(File file) {
-        this(file, readAllLines(file));
+        this(file, allLines(file));
     }
 
     @Override

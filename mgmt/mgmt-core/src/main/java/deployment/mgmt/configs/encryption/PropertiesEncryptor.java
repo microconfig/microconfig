@@ -8,7 +8,7 @@ import java.io.File;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static io.microconfig.utils.IoUtils.readFirstLine;
+import static io.microconfig.utils.IoUtils.firstLine;
 import static io.microconfig.utils.StringUtils.isEmpty;
 import static java.util.stream.Collectors.joining;
 import static org.jasypt.properties.PropertyValueEncryptionUtils.isEncryptedValue;
@@ -48,7 +48,7 @@ public class PropertiesEncryptor {
     }
 
     private static String readPassword(File file) {
-        String password = readFirstLine(file);
+        String password = firstLine(file);
         if (isEmpty(password)) {
             throw new IllegalArgumentException("Password can't be empty. Pass file: " + file);
         }

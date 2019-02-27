@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 import static io.microconfig.utils.FileUtils.delete;
 import static io.microconfig.utils.FileUtils.write;
 import static io.microconfig.utils.IoUtils.lines;
-import static io.microconfig.utils.IoUtils.readFirstLine;
+import static io.microconfig.utils.IoUtils.firstLine;
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.Logger.warn;
 import static io.microconfig.utils.StringUtils.isEmpty;
@@ -70,7 +70,7 @@ public class ComponentGroupServiceImpl implements ComponentGroupService {
     @Override
     public GroupDescription getDescription() {
         File envFile = deployFileStructure.deploy().getGroupDescriptionFile();
-        String envDescription = readFirstLine(envFile);
+        String envDescription = firstLine(envFile);
         if (isEmpty(envDescription)) {
             throw new IllegalStateException("Can't find env description in " + envFile);
         }

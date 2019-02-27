@@ -23,7 +23,7 @@ public class MetadataProviderImpl implements MetadataProvider {
     public Optional<Long> lastPid(String service) {
         return of(deployFileStructure.service().getPidFile(service))
                 .filter(File::exists)
-                .map(IoUtils::readFirstLine)
+                .map(IoUtils::firstLine)
                 .filter(s -> !s.isEmpty())
                 .map(Long::valueOf);
     }
