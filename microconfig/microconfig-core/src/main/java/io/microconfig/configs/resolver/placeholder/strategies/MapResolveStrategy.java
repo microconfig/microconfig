@@ -27,11 +27,11 @@ public class MapResolveStrategy implements ResolveStrategy {
     }
 
     @Override
-    public Optional<Property> resolve(String key, Component component, String environment) {
+    public Optional<Property> resolve(Component component, String propertyKey, String environment) {
         if (!name.equals(component.getName())) return empty();
 
-        return ofNullable(keyToValue.apply(key))
+        return ofNullable(keyToValue.apply(propertyKey))
                 .map(Object::toString)
-                .map(value -> tempProperty(key, value, environment, specialSource(component, name)));
+                .map(value -> tempProperty(propertyKey, value, environment, specialSource(component, name)));
     }
 }

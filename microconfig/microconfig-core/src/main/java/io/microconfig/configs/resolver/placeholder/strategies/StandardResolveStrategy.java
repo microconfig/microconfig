@@ -16,8 +16,8 @@ public class StandardResolveStrategy implements ResolveStrategy {
     private final ConfigProvider configProvider;
 
     @Override
-    public Optional<Property> resolve(String key, Component component, String environment) {
+    public Optional<Property> resolve(Component component, String propertyKey, String environment) {
         Map<String, Property> properties = configProvider.getProperties(component, environment);
-        return ofNullable(properties.get(key));
+        return ofNullable(properties.get(propertyKey));
     }
 }

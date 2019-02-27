@@ -15,22 +15,21 @@ import static io.microconfig.configs.Property.tempProperty;
 import static io.microconfig.configs.PropertySource.specialSource;
 import static java.util.Optional.empty;
 
-
 @RequiredArgsConstructor
-public class SpecialPropertyResolveStrategy implements ResolveStrategy {
+public class EnvSpecificResolveStrategy implements ResolveStrategy {
     private final EnvironmentProvider environmentProvider;
-    private final Map<String, SpecialProperty> specialKeys;
+    private final Map<String, EnvProperty> properties;
 
     @Override
-    public Optional<Property> resolve(String key, Component component, String envName) {
-        SpecialProperty specialProperty = specialKeys.get(key);
+    public Optional<Property> resolve(Component component, String propertyKey, String envName) {
+        EnvProperty specialProperty = properties.get(propertyKey);
         if (specialProperty == null) return empty();
 
         Environment environment = getEnvironment(envName);
         if (environment == null) return empty();
 
         return specialProperty.value(component, environment)
-                .map(value -> tempProperty(key, value, envName, specialSource(component, "specials")));
+                .map(value -> tempProperty(propertyKey, value, envName, specialSource(component, "specialProperties")));
     }
 
     private Environment getEnvironment(String environment) {
@@ -41,7 +40,7 @@ public class SpecialPropertyResolveStrategy implements ResolveStrategy {
         }
     }
 
-    public interface SpecialProperty {
+    public interface EnvProperty {
         String key();
 
         Optional<String> value(Component component, Environment environment);

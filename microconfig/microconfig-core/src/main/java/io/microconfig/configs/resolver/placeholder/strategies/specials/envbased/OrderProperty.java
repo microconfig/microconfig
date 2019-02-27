@@ -1,12 +1,12 @@
-package io.microconfig.configs.resolver.placeholder.strategies.specials;
+package io.microconfig.configs.resolver.placeholder.strategies.specials.envbased;
 
-import io.microconfig.configs.resolver.placeholder.strategies.SpecialPropertyResolveStrategy.SpecialProperty;
+import io.microconfig.configs.resolver.placeholder.strategies.EnvSpecificResolveStrategy.EnvProperty;
 import io.microconfig.environments.Component;
 import io.microconfig.environments.Environment;
 
 import java.util.Optional;
 
-public class OrderProperty implements SpecialProperty {
+public class OrderProperty implements EnvProperty {
     @Override
     public String key() {
         return "order";
