@@ -3,7 +3,7 @@ package deployment.mgmt.microconfig;
 import io.microconfig.commands.build.BuildConfigPostProcessor;
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.Property;
-import io.microconfig.configs.resolver.RootComponent;
+import io.microconfig.configs.resolver.EnvComponent;
 import io.microconfig.utils.SystemPropertiesUtils;
 
 import java.io.File;
@@ -20,7 +20,7 @@ class WebappPostProcessor implements BuildConfigPostProcessor {
     private static final String FORCED_STATUS_FILE = "mgmt.forced.status";
 
     @Override
-    public void process(RootComponent currentComponent,
+    public void process(EnvComponent currentComponent,
                         Map<String, Property> componentProperties,
                         ConfigProvider configProvider,
                         File resultFile) {

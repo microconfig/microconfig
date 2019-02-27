@@ -2,7 +2,7 @@ package io.microconfig.configs.resolver.spel;
 
 import io.microconfig.configs.Property;
 import io.microconfig.configs.resolver.PropertyResolver;
-import io.microconfig.configs.resolver.RootComponent;
+import io.microconfig.configs.resolver.EnvComponent;
 import io.microconfig.environments.Component;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +18,7 @@ class SpelExpressionResolverTest {
     @Mock
     PropertyResolver placeholderResolver;
     @Mock
-    RootComponent context;
+    EnvComponent context;
 
     @Test
     void testResolves() {

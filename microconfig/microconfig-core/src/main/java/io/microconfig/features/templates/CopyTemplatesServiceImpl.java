@@ -1,7 +1,7 @@
 package io.microconfig.features.templates;
 
 import io.microconfig.configs.resolver.PropertyResolver;
-import io.microconfig.configs.resolver.RootComponent;
+import io.microconfig.configs.resolver.EnvComponent;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -19,7 +19,7 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
     private final RelativePathResolver relativePathResolver;
 
     @Override
-    public void copyTemplates(RootComponent currentComponent, File destinationDir,
+    public void copyTemplates(EnvComponent currentComponent, File destinationDir,
                               Map<String, String> componentProperties, PropertyResolver propertyResolver) {
         collectTemplates(componentProperties).forEach(def -> {
             try {
@@ -67,7 +67,7 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
         private String fromFile;
         private String toFile;
 
-        private void resolveAndCopy(PropertyResolver propertyResolver, RootComponent currentComponent,
+        private void resolveAndCopy(PropertyResolver propertyResolver, EnvComponent currentComponent,
                                     File destinationDir) {
             if (!isCorrect()) {
                 warn("Incomplete template def " + this);

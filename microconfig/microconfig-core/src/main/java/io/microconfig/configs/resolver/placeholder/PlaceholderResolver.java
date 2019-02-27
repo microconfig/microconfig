@@ -3,7 +3,7 @@ package io.microconfig.configs.resolver.placeholder;
 import io.microconfig.configs.Property;
 import io.microconfig.configs.resolver.PropertyResolveException;
 import io.microconfig.configs.resolver.PropertyResolver;
-import io.microconfig.configs.resolver.RootComponent;
+import io.microconfig.configs.resolver.EnvComponent;
 import io.microconfig.environments.Component;
 import io.microconfig.environments.EnvironmentNotExistException;
 import io.microconfig.environments.EnvironmentProvider;
@@ -29,11 +29,11 @@ public class PlaceholderResolver implements PropertyResolver {
     private final Set<String> nonOverridableKeys;
 
     @Override
-    public String resolve(Property sourceOfPlaceholders, RootComponent root) {
+    public String resolve(Property sourceOfPlaceholders, EnvComponent root) {
         return doResolve(sourceOfPlaceholders, root, emptySet());
     }
 
-    private String doResolve(Property sourceOfPlaceholders, RootComponent root, Set<Placeholder> visited) {
+    private String doResolve(Property sourceOfPlaceholders, EnvComponent root, Set<Placeholder> visited) {
         StringBuilder currentPropertyValue = new StringBuilder(sourceOfPlaceholders.getValue());
 
         while (true) {
@@ -65,7 +65,7 @@ public class PlaceholderResolver implements PropertyResolver {
         return unmodifiableSet(updated);
     }
 
-    private Placeholder newPlaceholder(String innerPlaceholder, Property sourceOfPlaceholder, RootComponent root, Set<Placeholder> visited) {
+    private Placeholder newPlaceholder(String innerPlaceholder, Property sourceOfPlaceholder, EnvComponent root, Set<Placeholder> visited) {
         try {
             Placeholder placeholder = Placeholder.parse(innerPlaceholder, sourceOfPlaceholder.getEnvContext());
             return tryOverride(placeholder, sourceOfPlaceholder, root, visited);
@@ -80,7 +80,7 @@ public class PlaceholderResolver implements PropertyResolver {
      * If some component includes commons(or has placeholder to commons!!!) and overrides ${java.opts.PermSize} or ${java.opts.mem} - java.opts will be resolved with overriden values.
      * 2) Also 'this' componentName is replaced with root component name.
      */
-    private Placeholder tryOverride(Placeholder placeholder, Property sourceOfPlaceholder, RootComponent root, Set<Placeholder> visited) {
+    private Placeholder tryOverride(Placeholder placeholder, Property sourceOfPlaceholder, EnvComponent root, Set<Placeholder> visited) {
         boolean selfReference = SELF_REFERENCE.equals(placeholder.getComponent());
         if (selfReference) {
             placeholder = placeholder.changeComponent(sourceOfPlaceholder.getSource().getComponent().getName());
@@ -100,9 +100,9 @@ public class PlaceholderResolver implements PropertyResolver {
                 && placeholder.getEnvironment().equals(sourceOfPlaceholder.getEnvContext());
     }
 
-    private Optional<Placeholder> tryOverrideForRoot(Placeholder placeholder, RootComponent root) {
-        return resolveStrategy.resolve(root.getRootComponent(), placeholder.getValue(), root.getRootEnv()).isPresent() ?
-                of(placeholder.changeComponent(root.getRootComponent().getName(), root.getRootEnv()))
+    private Optional<Placeholder> tryOverrideForRoot(Placeholder placeholder, EnvComponent root) {
+        return resolveStrategy.resolve(root.getComponent(), placeholder.getValue(), root.getEnvironment()).isPresent() ?
+                of(placeholder.changeComponent(root.getComponent().getName(), root.getEnvironment()))
                 : empty();
     }
 
@@ -115,7 +115,7 @@ public class PlaceholderResolver implements PropertyResolver {
 
         for (Placeholder placeholder : orderedVisited) {
             Component component = getComponentByName(placeholder.getComponent(), placeholder.getEnvironment());
-            Optional<Placeholder> overrider = tryOverrideForRoot(placeholderToOverride, new RootComponent(component, placeholder.getEnvironment()));
+            Optional<Placeholder> overrider = tryOverrideForRoot(placeholderToOverride, new EnvComponent(component, placeholder.getEnvironment()));
             if (overrider.isPresent()) return overrider;
         }
 

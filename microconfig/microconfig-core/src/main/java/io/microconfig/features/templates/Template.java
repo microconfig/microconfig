@@ -2,7 +2,7 @@ package io.microconfig.features.templates;
 
 import io.microconfig.configs.Property;
 import io.microconfig.configs.resolver.PropertyResolver;
-import io.microconfig.configs.resolver.RootComponent;
+import io.microconfig.configs.resolver.EnvComponent;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -25,7 +25,7 @@ class Template {
         this(source, readFully(source));
     }
 
-    String resolvePlaceholders(RootComponent currentComponent, PropertyResolver propertyResolver, Pattern pattern) {
+    String resolvePlaceholders(EnvComponent currentComponent, PropertyResolver propertyResolver, Pattern pattern) {
         Matcher m = pattern.matcher(text);
         if (!m.find()) return text;
 
@@ -37,7 +37,7 @@ class Template {
         return result.toString();
     }
 
-    private void doResolve(Matcher m, StringBuffer result, PropertyResolver propertyResolver, RootComponent currentComponent) {
+    private void doResolve(Matcher m, StringBuffer result, PropertyResolver propertyResolver, EnvComponent currentComponent) {
         if (m.group("escaped") != null) {
             m.appendReplacement(result, quoteReplacement(m.group("placeholder")));
             return;
@@ -47,9 +47,9 @@ class Template {
         m.appendReplacement(result, value == null ? "$0" : quoteReplacement(value));
     }
 
-    private String resolveValue(RootComponent currentComponent, PropertyResolver propertyResolver, Matcher matcher) {
+    private String resolveValue(EnvComponent currentComponent, PropertyResolver propertyResolver, Matcher matcher) {
         String placeholder = toPlaceholder(matcher);
-        Property property = tempProperty("key", placeholder, currentComponent.getRootEnv(), specialSource(currentComponent.getRootComponent(), source.getAbsolutePath()));
+        Property property = tempProperty("key", placeholder, currentComponent.getEnvironment(), specialSource(currentComponent.getComponent(), source.getAbsolutePath()));
         try {
             return propertyResolver.resolve(property, currentComponent);
         } catch (RuntimeException e) {

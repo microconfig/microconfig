@@ -15,25 +15,25 @@ public class PropertyResolveException extends RuntimeException {
     }
 
     public PropertyResolveException(String innerPlaceholder, Property sourceOfPlaceholder,
-                                    RootComponent root, Throwable cause) {
+                                    EnvComponent root, Throwable cause) {
         this(getMessage(innerPlaceholder, sourceOfPlaceholder, root), cause);
     }
 
     public PropertyResolveException(String innerPlaceholder, Property sourceOfPlaceholder,
-                                    RootComponent root) {
+                                    EnvComponent root) {
         super(getMessage(innerPlaceholder, sourceOfPlaceholder, root));
     }
 
-    public PropertyResolveException(SpelExpression expression, RootComponent root, Throwable cause) {
+    public PropertyResolveException(SpelExpression expression, EnvComponent root, Throwable cause) {
         this(format("Can't resolve spel: %s. Root component: %s[%s]. " +
                         "All string must be escaped with single quote '. " +
                         "Example of right spel: #{'${component1@ip}' + ':' + ${ports@port1}}",
-                expression, root.getRootComponent().getName(), root.getRootEnv()), cause);
+                expression, root.getComponent().getName(), root.getEnvironment()), cause);
     }
 
-    private static String getMessage(String innerPlaceholder, Property sourceOfPlaceholder, RootComponent root) {
+    private static String getMessage(String innerPlaceholder, Property sourceOfPlaceholder, EnvComponent root) {
         return format("Can't resolve placeholder: %s. Root component: %s[%s]. Source or error: %s[%s] '%s:%d'",
-                innerPlaceholder, root.getRootComponent().getName(), root.getRootEnv(),
+                innerPlaceholder, root.getComponent().getName(), root.getEnvironment(),
                 sourceOfPlaceholder.getSource().getComponent().getName(), sourceOfPlaceholder.getEnvContext(),
                 sourceOfPlaceholder.getSource().getSourceOfProperty(), sourceOfPlaceholder.getSource().getLine() + 1);
     }

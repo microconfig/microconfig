@@ -3,7 +3,7 @@ package io.microconfig.configs.resolver.spel;
 import io.microconfig.configs.Property;
 import io.microconfig.configs.resolver.PropertyResolveException;
 import io.microconfig.configs.resolver.PropertyResolver;
-import io.microconfig.configs.resolver.RootComponent;
+import io.microconfig.configs.resolver.EnvComponent;
 import lombok.RequiredArgsConstructor;
 
 import java.util.regex.Matcher;
@@ -18,12 +18,12 @@ public class SpelExpressionResolver implements PropertyResolver {
     private final PropertyResolver delegate;
 
     @Override
-    public String resolve(Property property, RootComponent root) {
+    public String resolve(Property property, EnvComponent root) {
         String resolvedPlaceholders = delegate.resolve(property, root);
         return resolveSpels(resolvedPlaceholders, root);
     }
 
-    private String resolveSpels(String placeholders, RootComponent root) {
+    private String resolveSpels(String placeholders, EnvComponent root) {
         StringBuilder currentValue = new StringBuilder(placeholders);
         while (true) {
             Matcher matcher = SpelExpression.PATTERN.matcher(currentValue.toString());
@@ -36,7 +36,7 @@ public class SpelExpressionResolver implements PropertyResolver {
         return currentValue.toString();
     }
 
-    private String doResolve(String value, RootComponent root) {
+    private String doResolve(String value, EnvComponent root) {
         SpelExpression expression = SpelExpression.parse(value);
         try {
             return expression.resolve();
