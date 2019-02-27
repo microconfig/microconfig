@@ -1,11 +1,10 @@
 dependencies {
-    compile project(':microconfig:microconfig-core')
-    
-    implementation project(':microconfig:utils'),
+    implementation project(':microconfig:microconfig-core'),
+            project(':microconfig:utils'),
             project(':mgmt:mgmt-utils'),
             project(':mgmt:nexus-resolver'),
             project(':mgmt:console-api-exposer'),
             lib.jasypt,
             lib.commons_compress,
-            'com.google.code.gson:gson'    
+            'com.google.code.gson:gson'
 }
