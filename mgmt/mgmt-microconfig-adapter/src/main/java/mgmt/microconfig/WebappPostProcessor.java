@@ -1,6 +1,6 @@
 package mgmt.microconfig;
 
-import io.microconfig.commands.BuildConfigPostProcessor;
+import io.microconfig.commands.build.BuildConfigPostProcessor;
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.Property;
 import io.microconfig.configs.resolver.RootComponent;

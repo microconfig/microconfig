@@ -1,6 +1,5 @@
 package io.microconfig.configs.files.provider;
 
-import io.microconfig.commands.factory.ConfigType;
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.Property;
 import io.microconfig.configs.files.parser.ComponentParser;
@@ -22,10 +21,6 @@ public class FileBasedConfigProvider implements ConfigProvider {
     private final ComponentTree componentTree;
     private final Set<String> configExtensions;
     private final ComponentParser componentParser;
-
-    public FileBasedConfigProvider(ComponentTree componentTree, ConfigType configType, ComponentParser componentParser) {
-        this(componentTree, configType.getConfigExtensions(), componentParser);
-    }
 
     @Override
     public Map<String, Property> getProperties(Component component, String environment) {

@@ -1,6 +1,5 @@
 package io.microconfig.configs.serializer;
 
-import io.microconfig.commands.factory.ConfigType;
 import io.microconfig.configs.Property;
 import lombok.RequiredArgsConstructor;
 
@@ -14,7 +13,7 @@ import static io.microconfig.configs.files.format.FileFormat.YAML;
 public class FilenameGeneratorImpl implements FilenameGenerator {
     private final File destinationComponentDir;
     private final String serviceInnerDir;
-    private final ConfigType configType;
+    private final String resultFileName;
 
     @Override
     public File fileFor(String component, Collection<Property> properties) {
@@ -26,7 +25,7 @@ public class FilenameGeneratorImpl implements FilenameGenerator {
     }
 
     private String name() {
-        return configType.getResultFileName();
+        return resultFileName;
     }
 
     private String extension(Collection<Property> properties) {

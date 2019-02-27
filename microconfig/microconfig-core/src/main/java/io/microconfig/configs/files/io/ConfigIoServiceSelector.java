@@ -1,7 +1,7 @@
 package io.microconfig.configs.files.io;
 
-import io.microconfig.configs.files.format.FileFormat;
 import io.microconfig.configs.files.format.ConfigFormatDetector;
+import io.microconfig.configs.files.format.FileFormat;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

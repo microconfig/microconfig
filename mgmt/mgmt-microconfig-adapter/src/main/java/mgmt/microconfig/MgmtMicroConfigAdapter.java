@@ -1,19 +1,22 @@
 package mgmt.microconfig;
 
-import io.microconfig.commands.*;
-import io.microconfig.commands.factory.MicroconfigFactory;
-import io.microconfig.commands.postprocessors.CopyTemplatesPostProcessor;
-import io.microconfig.commands.postprocessors.UpdateSecretsPostProcessor;
+import io.microconfig.commands.Command;
+import io.microconfig.commands.build.BuildConfigCommand;
+import io.microconfig.commands.build.BuildConfigPostProcessor;
+import io.microconfig.commands.build.entry.BuildConfigMain;
+import io.microconfig.commands.build.factory.MicroconfigFactory;
+import io.microconfig.commands.build.postprocessors.CopyTemplatesPostProcessor;
+import io.microconfig.commands.build.postprocessors.UpdateSecretsPostProcessor;
 import io.microconfig.templates.CopyTemplatesServiceImpl;
 
 import java.io.File;
 import java.util.List;
 
-import static io.microconfig.commands.factory.ConfigType.extensionAsName;
-import static io.microconfig.commands.factory.StandardConfigType.*;
+import static io.microconfig.commands.Command.composite;
+import static io.microconfig.configs.types.ConfigType.extensionAsName;
+import static io.microconfig.configs.types.StandardConfigType.*;
 import static io.microconfig.templates.RelativePathResolver.empty;
 import static io.microconfig.templates.TemplatePattern.defaultPattern;
-import static java.util.Arrays.asList;
 
 public class MgmtMicroConfigAdapter {
     public static void execute(String env, List<String> groups, File root, File componentsDir, List<String> components) {
@@ -26,7 +29,7 @@ public class MgmtMicroConfigAdapter {
 
         BuildConfigCommand serviceCommon = factory.newBuildCommand(SERVICE.type(), copyTemplatesPostProcessor());
         factory = factory.withServiceInnerDir(".mgmt");
-        return new CompositeCommand(asList(
+        return composite(
                 serviceCommon,
                 factory.newBuildCommand(PROCESS.type(), new WebappPostProcessor()),
                 factory.newBuildCommand(DEPLOY.type()),
@@ -37,7 +40,7 @@ public class MgmtMicroConfigAdapter {
                 factory.newBuildCommand(extensionAsName("sap")),
                 new GenerateComponentListCommand(componentsDir, factory.getEnvironmentProvider()),
                 new CopyHelpFilesCommand(factory.getEnvironmentProvider(), factory.getComponentTree(), componentsDir.toPath())
-        ));
+        );
     }
 
     private static BuildConfigPostProcessor copyTemplatesPostProcessor() {

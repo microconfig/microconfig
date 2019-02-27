@@ -1,6 +1,6 @@
 package io.microconfig.configs.files.provider;
 
-import io.microconfig.commands.factory.StandardConfigType;
+import io.microconfig.configs.types.StandardConfigType;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

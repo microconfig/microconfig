@@ -1,12 +1,12 @@
-package io.microconfig.commands.factory;
+package io.microconfig.configs.types;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
-import static io.microconfig.commands.factory.ConfigType.byNameAndTypes;
-import static io.microconfig.commands.factory.ConfigType.extensionAsName;
+import static io.microconfig.configs.types.ConfigType.byNameAndTypes;
+import static io.microconfig.configs.types.ConfigType.extensionAsName;
 
 
 @Getter
