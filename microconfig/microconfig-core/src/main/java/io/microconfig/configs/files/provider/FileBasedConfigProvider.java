@@ -2,9 +2,7 @@ package io.microconfig.configs.files.provider;
 
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.Property;
-import io.microconfig.configs.files.parser.ComponentParser;
-import io.microconfig.configs.files.parser.Include;
-import io.microconfig.configs.files.parser.ParsedComponent;
+import io.microconfig.configs.files.tree.ComponentTree;
 import io.microconfig.environments.Component;
 import lombok.RequiredArgsConstructor;
 
@@ -13,7 +11,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static io.microconfig.configs.files.provider.ConfigFileFilters.*;
+import static io.microconfig.configs.files.tree.ConfigFileFilters.*;
 import static io.microconfig.environments.Component.byType;
 
 @RequiredArgsConstructor

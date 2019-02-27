@@ -1,7 +1,7 @@
 package deployment.mgmt.configs.updateconfigs;
 
 import deployment.mgmt.init.LegacyMgmtStructureImpl;
-import io.microconfig.templates.RelativePathResolver;
+import io.microconfig.features.templates.RelativePathResolver;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -11,7 +11,7 @@ import static io.microconfig.utils.Logger.warn;
 
 @RequiredArgsConstructor
 public class OldConfigsRelativePathResolver implements RelativePathResolver {
-    private final File configRepoDir;
+    private final File repoRootDir;
 
     @Override
     public File overrideRelativePath(File serviceConfigDir, String path) {
@@ -26,7 +26,7 @@ public class OldConfigsRelativePathResolver implements RelativePathResolver {
 
         if (oldConfigPath.test(path)) {
             warn(warnMessage(serviceConfigDir));
-            return new File(configRepoDir, path.substring(prefix.length()));
+            return new File(repoRootDir, path.substring(prefix.length()));
         }
 
         return new File(path);
@@ -34,6 +34,6 @@ public class OldConfigsRelativePathResolver implements RelativePathResolver {
 
     private String warnMessage(File serviceDir) {
         return "Overriding template path for " + serviceDir.getName() + " " + this +
-                ". Use ${this@configDir}- resolves config repo root or ${component_name@folder} - resolves folder of config component";
+                ". Use ${this@configDir}- resolves config root or ${component_name@folder} - resolves folder of config component";
     }
 }

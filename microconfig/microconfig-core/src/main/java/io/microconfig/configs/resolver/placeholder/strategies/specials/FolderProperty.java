@@ -1,6 +1,6 @@
 package io.microconfig.configs.resolver.placeholder.strategies.specials;
 
-import io.microconfig.configs.files.provider.ComponentTree;
+import io.microconfig.configs.files.tree.ComponentTree;
 import io.microconfig.configs.resolver.placeholder.strategies.SpecialPropertyResolveStrategy.SpecialProperty;
 import io.microconfig.environments.Component;
 import io.microconfig.environments.Environment;

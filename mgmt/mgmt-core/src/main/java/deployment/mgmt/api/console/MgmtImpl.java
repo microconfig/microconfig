@@ -189,16 +189,16 @@ public class MgmtImpl implements Mgmt {
     @Override
     public void update(String minVersion) {
         mgmtAutoUpdater.updateAndRestart(minVersion, true, "version");
-        warn("Canceled update, current version: " + deploySettings.getCurrentMgmtArtifact().getVersion());
+        warn("Canceled updateSecrets, current version: " + deploySettings.getCurrentMgmtArtifact().getVersion());
     }
 
     @Override
     public void updateOnEveryNode(String minVersion) {
-        sshCommand.executeOnEveryNode(componentGroupService.getEnv(), "mgmt update " + minVersion,
+        sshCommand.executeOnEveryNode(componentGroupService.getEnv(), "mgmt updateSecrets " + minVersion,
                 (group) -> info("Updating " + group.getName()),
                 (group, output) -> {
                     if (output == null) {
-                        error("Failed to update on " + group.getName());
+                        error("Failed to updateSecrets on " + group.getName());
                     } else {
                         announce("Updated on " + group.getName());
                     }

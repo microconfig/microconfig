@@ -53,7 +53,7 @@ public class MgmtAutoUpdaterImpl implements MgmtAutoUpdater {
             announce("Updated mgmt to " + configArtifact);
             return true;
         } catch (RuntimeException e) {
-            error("Mgmt update canceled", e);
+            error("Mgmt updateSecrets canceled", e);
             return false;
         }
     }

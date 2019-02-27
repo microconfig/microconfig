@@ -8,7 +8,7 @@ import io.microconfig.environments.EnvironmentProvider;
 
 import java.io.File;
 
-import static io.microconfig.configs.types.StandardConfigType.SERVICE;
+import static io.microconfig.commands.build.factory.StandardConfigType.SERVICE;
 import static io.microconfig.utils.ClasspathUtils.classpathFile;
 
 public class MicronconfigTestFactory {

@@ -11,7 +11,7 @@ public class UpdateListenerImpl implements UpdateListener {
 
     @Override
     public void onUpdate() {
-        info("Executing update listener");
+        info("Executing updateSecrets listener");
         mgmtFactory.getMgmtScriptGenerator().generateMgmtScript();
     }
 }
