@@ -1,4 +1,4 @@
-package io.microconfig.configs.resolver.placeholder.strategies;
+package io.microconfig.configs.resolver.placeholder.strategies.envdescriptor;
 
 import io.microconfig.configs.Property;
 import io.microconfig.configs.resolver.placeholder.ResolveStrategy;
@@ -16,7 +16,7 @@ import static io.microconfig.configs.PropertySource.specialSource;
 import static java.util.Optional.empty;
 
 @RequiredArgsConstructor
-public class EnvSpecificResolveStrategy implements ResolveStrategy {
+public class EnvDescriptorResolveStrategy implements ResolveStrategy {
     private final EnvironmentProvider environmentProvider;
     private final Map<String, EnvProperty> properties;
 

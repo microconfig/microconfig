@@ -1,21 +1,21 @@
-package io.microconfig.configs.resolver.placeholder.strategies.specials.envbased;
+package io.microconfig.configs.resolver.placeholder.strategies.envdescriptor.properties;
 
-import io.microconfig.configs.resolver.placeholder.strategies.EnvSpecificResolveStrategy.EnvProperty;
+import io.microconfig.configs.resolver.placeholder.strategies.envdescriptor.EnvDescriptorResolveStrategy.EnvProperty;
 import io.microconfig.environments.Component;
 import io.microconfig.environments.ComponentGroup;
 import io.microconfig.environments.Environment;
 
 import java.util.Optional;
 
-public class GroupProperty implements EnvProperty {
+public class IpProperty implements EnvProperty {
     @Override
     public String key() {
-        return "group";
+        return "ip";
     }
 
     @Override
     public Optional<String> value(Component component, Environment environment) {
         return environment.getGroupByComponentName(component.getName())
-                .map(ComponentGroup::getName);
+                .flatMap(ComponentGroup::getIp);
     }
 }

@@ -1,4 +1,4 @@
-package io.microconfig.configs.resolver.placeholder.strategies;
+package io.microconfig.configs.resolver.placeholder.strategies.system;
 
 import io.microconfig.configs.Property;
 import io.microconfig.configs.resolver.placeholder.ResolveStrategy;
@@ -14,16 +14,16 @@ import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 
 @RequiredArgsConstructor
-public class MapResolveStrategy implements ResolveStrategy {
+public class SystemResolveStrategy implements ResolveStrategy {
     private final String name;
     private final Function<String, ?> keyToValue;
 
     public static ResolveStrategy systemPropertiesResolveStrategy() {
-        return new MapResolveStrategy("system", System::getProperty);
+        return new SystemResolveStrategy("system", System::getProperty);
     }
 
     public static ResolveStrategy envVariablesResolveStrategy() {
-        return new MapResolveStrategy("env", System::getenv);
+        return new SystemResolveStrategy("env", System::getenv);
     }
 
     @Override

@@ -1,11 +1,8 @@
-package io.microconfig.configs.resolver.placeholder.strategies.specials.general;
+package io.microconfig.configs.resolver.placeholder.strategies.component.properties;
 
 import io.microconfig.configs.files.tree.ComponentTree;
-import io.microconfig.configs.resolver.placeholder.strategies.EnvSpecificResolveStrategy.EnvProperty;
-import io.microconfig.configs.resolver.placeholder.strategies.GeneralPropertiesResolveStrategy;
-import io.microconfig.configs.resolver.placeholder.strategies.GeneralPropertiesResolveStrategy.GeneralProperty;
+import io.microconfig.configs.resolver.placeholder.strategies.component.ComponentResolveStrategy.ComponentProperty;
 import io.microconfig.environments.Component;
-import io.microconfig.environments.Environment;
 import io.microconfig.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 
@@ -13,7 +10,7 @@ import java.io.File;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class FolderProperty implements GeneralProperty {
+public class ComponentFolderProperty implements ComponentProperty {
     private final ComponentTree componentTree;
 
     @Override

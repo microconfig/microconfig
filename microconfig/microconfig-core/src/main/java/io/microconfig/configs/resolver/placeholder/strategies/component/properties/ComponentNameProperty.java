@@ -1,13 +1,13 @@
-package io.microconfig.configs.resolver.placeholder.strategies.specials.general;
+package io.microconfig.configs.resolver.placeholder.strategies.component.properties;
 
-import io.microconfig.configs.resolver.placeholder.strategies.GeneralPropertiesResolveStrategy.GeneralProperty;
+import io.microconfig.configs.resolver.placeholder.strategies.component.ComponentResolveStrategy.ComponentProperty;
 import io.microconfig.environments.Component;
 
 import java.util.Optional;
 
 import static java.util.Optional.of;
 
-public class NameProperty implements GeneralProperty {
+public class ComponentNameProperty implements ComponentProperty {
     @Override
     public String key() {
         return "name";

@@ -1,4 +1,4 @@
-package io.microconfig.configs.resolver.placeholder.strategies;
+package io.microconfig.configs.resolver.placeholder.strategies.component;
 
 import io.microconfig.configs.Property;
 import io.microconfig.configs.resolver.placeholder.ResolveStrategy;
@@ -13,19 +13,19 @@ import static io.microconfig.configs.PropertySource.specialSource;
 import static java.util.Optional.ofNullable;
 
 @RequiredArgsConstructor
-public class GeneralPropertiesResolveStrategy implements ResolveStrategy {
-    private final Map<String, GeneralProperty> properties;
+public class ComponentResolveStrategy implements ResolveStrategy {
+    private final Map<String, ComponentProperty> properties;
 
     @Override
     public Optional<Property> resolve(Component component, String propertyKey, String envName) {
-        GeneralProperty specialProperty = properties.get(propertyKey);
+        ComponentProperty componentProperty = properties.get(propertyKey);
 
-        return ofNullable(specialProperty)
+        return ofNullable(componentProperty)
                 .flatMap(p -> p.value(component))
                 .map(value -> tempProperty(propertyKey, value, envName, specialSource(component, "generalProperties")));
     }
 
-    public interface GeneralProperty {
+    public interface ComponentProperty {
         String key();
 
         Optional<String> value(Component component);
