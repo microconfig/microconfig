@@ -727,8 +727,8 @@ Let's see env descriptor format:
  
  **envs/base.yaml**
 ```*.yml
-orders:
-  components:
+orders:  
+  components:  
     - order-db-patcher
     - order-service
     - order-ui
@@ -751,22 +751,31 @@ monitoring:
     - prometheus    
 ```  
 
+Env name = file name
+```
+orders: # component group name
+  components:  
+    - order-db-patcher # component name(folder)
+    - order-service # component name
+    - order-ui # component name
+``` 
+
 One env can include another one and add/remove/override component groups:
 
 **envs/test.yaml**
 ```*.yml
-include:
+include: # include all groups from 'base' env except 'monitoring'
   env: base
   exclude:
    - monitoring
 
 infra:
   exclude:
-    - ssl-api-gateway
+    - ssl-api-gateway # excluded ssl-api-gateway component from 'infra' group  
   append:
     - local-proxy
 
-tests_dashboard:  
+tests_dashboard: # new component group  
   components:
     - test-statistic-collector
 ``` 
