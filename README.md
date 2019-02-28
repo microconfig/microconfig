@@ -665,14 +665,14 @@ repo
 ```  
 
 As you could notice the placeholder syntax inside template `${propName}`  differs from Micronfig one `${component@propName}`, it doesn't specify a component name.
-You can use standard Microconfig syntax for placeholder as well. For short sytax ${propName} == ${this@propName}.
+You can use standard Microconfig syntax for placeholder as well. For short sytax ${propName} == ${**this**@propName}.
 
 If Microconfig can't resolve a template placeholder, Microconfig logs warn and leaves unresolved template text.
 
-As we remember order and payment services include 'application.name' property from service-discovery-client.
-During config build Microconfig will replace ${application.name} inside logback.xml with service's property value and copy result logback.xml to the resulting folder for each service.
+As we remember order and payment services include `application.name` property from service-discovery-client.
+During config build Microconfig will replace `${application.name}` inside logback.xml with service's property value and copy result logback.xml to the resulting folder for each service.
 
-If you want to declare a property for a template only and don't want this property to be included into the result config file you can use `#var propName=value`. 
+If you want to declare a property for a template only and don't want this property to be included into the result config file you can use `#var` keyword. 
 
 If you want to specify template destination dir and file you can use `template.${templateName}.toFile=${someFile}` property. For example:  
  
