@@ -752,7 +752,7 @@ monitoring:
 ```  
 
 Env name = file name
-```
+```*.yml
 orders: # component group name
   components:  
     - order-db-patcher # component name(folder)
