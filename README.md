@@ -824,7 +824,7 @@ Command line params example:
 java -jar microconfig.jar root=repo dest=configs env=prod
 ```
 
-To add system properties use -D:
+To add system properties use `-D`
 ```
 java -DtaskId=3456 -DsomeParam=value -jar microconfig.jar root=repo dest=configs env=prod
 ```
