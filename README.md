@@ -631,7 +631,7 @@ Let's configure order and payment services to use this template.
 **orders/application.properties**
 ```*.properties
     #include service-disconvery-client
-    template.logback.fromFile=${logback@folder}/logback.xml # full path to logback.xml, @folder - special placeholder propertry
+    template.logback.fromFile=${logback@folder}/logback.xml # full path to logback.xml, @folder - special placeholder property
 ```
 
 **payments/application.properties**
