@@ -914,7 +914,7 @@ cluster.gateway:
     
 ```
 
-Yaml format configs will be built in *.yaml, property format configs will be built in *.properties. If *.properties configs include *.yaml configs, result file will be *.yaml.
+Yaml format configs will be built into *.yaml, property format configs will be built into *.properties. If *.properties configs include *.yaml configs, result file will be *.yaml.
 
 Microconfig can detect config's format based on separators (if config file has extension neither *.yaml nor *.properties). If you use ':' key-value separator, Microconfig will handle it like *.yaml ('=' for *.properties).
 
