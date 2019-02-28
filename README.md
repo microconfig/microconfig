@@ -149,7 +149,14 @@ Let's see how application properties can look like. In comments we note what can
     eureka.server.enable-self-preservation=false    
 ```
 
-The first bad thing - application files contain duplication. Also, you have to spend some time to understand the application’s dependencies or its structure. For instance, payments service contains settings for 1) service-discovery client,  2)for oracle db and 3)application specific. Of course, you can separate a group of settings by an empty line. But we can do it more readable and understandable.
+The first bad thing - application files contain duplication. 
+Also, you have to spend some time to understand the application’s dependencies or its structure. 
+For instance, payments service contains settings for:
+*  service-discovery client
+* oracle db 
+* application specific 
+
+Of course, you can separate a group of settings by an empty line. But we can do it more readable and understandable.
 
 # Better config structure using #include
 Our services have a common configuration for service-discovery and database. To make it easy to understand service's dependencies, let’s create folders for service-discovery-client and oracle-client and specify links to these dependencies from core services.
