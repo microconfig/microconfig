@@ -780,15 +780,16 @@ You can use optional param 'ip' for env and component groups and then use placeh
 
 For instance, ${order-service@ip} will be resolved to 12.53.12.67, ${payment-service@ip} will be resolved to 170.53.12.80.   
 ```*.yml
+ip: 170.53.12.80 # default ip
+
 orders:  
-  ip: 12.53.12.67 1
+  ip: 12.53.12.67 # ip overriden for the group
   components:  
     - order-db-patcher
     - order-service
     - order-ui
 
-payments:
-  ip: 170.53.12.80
+payments:  
   components:
     - payment-db-patcher
     - payment-service
