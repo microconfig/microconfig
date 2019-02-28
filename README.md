@@ -707,8 +707,6 @@ Of course you can pass env name and list of service names to build configs for. 
 
 So Microconfig allows specifying list of service names on a special environment descriptor and then use only env name to build configs for all services listed on that descriptor.
 
-Also you can configure you deployment tool to read env descriptor to know which services to deploy.
-
 Environments descriptors must be in {configRoot}/'envs' folder.
 ``` 
 repo
@@ -777,6 +775,27 @@ tests_dashboard: # aded new component group 'tests_dashboard'
   components:
     - test-statistic-collector
 ``` 
+
+You can use optional param 'ip' for env and component groups and then use placeholder ${componentName@ip}.
+
+For instance, ${order-service@ip} will be resolved to 12.53.12.67, ${payment-service@ip} will be resolved to 170.53.12.80.   
+```*.yml
+orders:  
+  ip: 12.53.12.67 1
+  components:  
+    - order-db-patcher
+    - order-service
+    - order-ui
+
+payments:
+  ip: 170.53.12.80
+  components:
+    - payment-db-patcher
+    - payment-service
+    - payment-ui    
+```
+
+Also you can configure your deployment tool to read env descriptor to know which services to deploy.
 
 # Running config build
 As we discussed Micronfig has its own format for configuration sources. 
