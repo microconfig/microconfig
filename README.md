@@ -674,7 +674,7 @@ During config build Microconfig will replace `${application.name}` inside logbac
 
 If you want to declare a property for a template only and don't want this property to be included into the result config file you can use `#var` keyword. 
 
-If you want to specify template destination dir and file you can use `template.${templateName}.toFile=${someFile}` property. For example:  
+If you want to override template destination filename you can use `template.${templateName}.toFile=${someFile}` property. For example:  
  
  **logback-template/application.properties**
  ```*.properties   
