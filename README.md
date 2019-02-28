@@ -810,7 +810,7 @@ During config build Micronfig inlines all includes, resolves placeholders, evalu
 
 To run build you can download Microconfig release from https://github.com/microconfig/microconfig/releases.
 
-Microconfig required build params:
+Required build params:
 * `root=` - full or relative config root dir. 
 * `dest=` - full or relative build destination dir.
 * `env=` - environment name (Environment is used as a config profile, also as a group of services to build configs for).
