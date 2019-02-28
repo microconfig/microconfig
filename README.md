@@ -15,7 +15,7 @@ Keep configuration for each service, ideally separately from code.
 
 Microconfig is written in Java, but it designed to be used with systems written in any language. Microconfig just describes format of base configuration, syntax for placeholders, includes, excludes, overrides, expression language for dynamic properties and engine than can build it to plain *.properties or *.yaml. Also it can resolve placeholders in arbitrary template files and show diff between config releases.
 
-# Difference between Microconfig and other popular tools
+# Difference between Microconfig and popular devops tools
 **Comparing to config servers** (like Spring cloud config server or Zookeeper):
 
 Config servers solve the problem of dynamic distribution of configuration in runtime (can use http api endpoints), but to distribute configuration you have to store it, ideally with change history and without duplication of common part.
