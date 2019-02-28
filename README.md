@@ -773,9 +773,9 @@ infra:
   exclude:
     - ssl-api-gateway # excluded ssl-api-gateway component from 'infra' group  
   append:
-    - local-proxy
+    - local-proxy # added new componet into 'infra' group
 
-tests_dashboard: # new component group  
+tests_dashboard: # aded new component group 'tests_dashboard'  
   components:
     - test-statistic-collector
 ``` 
