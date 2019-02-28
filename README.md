@@ -873,4 +873,39 @@ Diff file format:
 ```
 
 # YAML format support
-..todo writ doc
+Microconfig supports YAML format for source and result configs.
+You can keep part of configuration in *.yaml files and another part in *.properties.
+
+```
+repo
+└───core  
+│    └───orders
+│    │   └───application.yaml
+│    │   └───process.proc
+│    └───payments
+│        └───application.properties
+│        └───process.proc
+```
+
+Yaml configs can have nested properties:
+```*.yml
+datasource:  
+  minimum-pool-size: 2  
+  maximum-pool-size: 5    
+  timeout:
+    ms: 10
+```      
+
+and lists:
+```*.yml
+cluster.gateway:
+  hosts:
+    - 10.20.30.47
+    - 15.20.30.47
+    
+```
+
+Yaml format configs will be built in *.yaml, property format configs will be built in *.properties. If *.properties configs include *.yaml configs, result file will be *.yaml.
+
+Microconfig can detect config's format based on separators (if config file has extension neither *.yaml nor *.properties). If you use ':' key-value separator, Microconfig will handle it like *.yaml ('=' for *.properties).
+
