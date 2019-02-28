@@ -394,7 +394,7 @@ Refactored:
     oracle.sid=ARMSPROD    
 ```        
 
-As you can see using placeholders we can override not the whole property but only part of it. 
+As you can see using placeholders we can override not the whole property but only a part of it. 
 
 If you want to declare temp properties that will be used for placeholders and you don't want them to be included in the result config file, you can declare them with #var keyword.
 
