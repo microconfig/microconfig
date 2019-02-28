@@ -38,7 +38,7 @@ Let’s see a basic folder layout that you can keep in a dedicated repository.
 
 For every service, you have to create a folder with a unique name(name of the service). In the service directory, we will keep common and env specific configuration.
 
-So let’s imagine we have 4 microservices: order service, payment service,  service-discovery, and api-gateway. To make it easy to manage we can group services by layers: 'infra' for infrastructure services and 'core' for our business domain services. The resulting layout will look like:
+So let’s imagine we have 4 microservices: order service, payment service,  service-discovery, and api-gateway. For convenience we can group services by layers: 'infra' for infrastructure services and 'core' for our business domain services. The resulting layout will look like:
 
 ```
 repo
