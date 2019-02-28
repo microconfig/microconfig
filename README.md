@@ -331,7 +331,7 @@ When you build properties for specific env (for example 'dev') Microconfig will 
 
 # Placeholders
 
-Instead of copy-paste value of some property, Microconfig allows to placeholder to this value. 
+Instead of copy-paste value of some property, Microconfig allows to have a link (placeholder) to this value. 
 
 Let's refactor service-discovery-client config.
 
