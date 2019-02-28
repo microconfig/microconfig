@@ -707,7 +707,9 @@ Of course you can pass env name and list of service names to build configs for. 
 
 So Microconfig allows specifying list of service names on a special environment descriptor and then use only env name to build configs for all services listed on that descriptor.
 
-Environments descriptors must be in {condigRoot}/'envs' folder.
+Also you can configure you deployment tool to read env descriptor to know which services to deploy.
+
+Environments descriptors must be in {configRoot}/'envs' folder.
 ``` 
 repo
 └───components
