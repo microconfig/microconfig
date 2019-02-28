@@ -464,7 +464,6 @@ Microconfig has several special useful placeholders:
 * ${...@folder} - returns full path of component's config dir 
 * ${this@configDir} - returns full path of root config dir   
 * ${...@serviceDir} - returns full path of destination service dir (result files will be put into this dir)
-* ${this@userHome} - returns full path of user home dir
 
 There are some other env descriptor related properties, we will discuss them later:
 * ${...@portOffset}
