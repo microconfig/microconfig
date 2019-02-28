@@ -119,7 +119,7 @@ Let's see how application properties can look like. In comments we note what can
     application.name=orders # better to get name from folder
     orders.personalRecommendation=true
     statistics.enableExtendedStatistics=true
-    service-discovery.url=http://10.12.172.11:6781 # are you sure url is consistent with eureka configuration?
+    service-discovery.url=http://10.12.172.11:6781 # are you sure url is consistent with SD configuration?
     eureka.instance.prefer-ip-address=true  # duplication        
     datasource.minimum-pool-size=2  # duplication
     datasource.maximum-pool-size=10
