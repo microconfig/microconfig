@@ -802,7 +802,7 @@ payments:
     - payment-ui    
 ```
 
-Also you can configure your deployment tool to read env descriptor to know which services to deploy.
+Consider configuring your deployment tool to read env descriptor to know which services to deploy.
 
 # Running config build
 As we discussed Micronfig has its own format for configuration sources. 
