@@ -25,8 +25,12 @@ public class ComponentTreeCache implements ComponentTree {
         if (!rootDir.exists()) {
             throw new IllegalArgumentException("Root directory doesnt exists: " + rootDir);
         }
+        File components = new File(rootDir, "components");
+        if (!components.exists()) {
+            throw new IllegalArgumentException("Root directory must contain 'components' dir");
+        }
 
-        try (Stream<Path> pathStream = walk(rootDir.toPath())) {
+        try (Stream<Path> pathStream = walk(components.toPath())) {
             Map<String, List<File>> cache = pathStream
                     .parallel()
                     .map(Path::toFile)
