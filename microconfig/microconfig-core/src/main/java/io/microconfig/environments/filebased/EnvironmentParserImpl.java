@@ -31,7 +31,7 @@ public class EnvironmentParserImpl implements EnvironmentParser {
         Optional<EnvInclude> envInclude = parseInclude(map);
         Optional<Integer> portOffset = parsePortOffset(map);
         Optional<String> envIp = parseIp(map);
-        List<ComponentGroup> componentGroups = parseComponentGroups(map, envIp);
+        List<ComponentGroup> componentGroups = parseComponentGroups(map, envIp, name);
 
         return new Environment(name, componentGroups, envIp, portOffset, envInclude);
     }
@@ -61,14 +61,14 @@ public class EnvironmentParserImpl implements EnvironmentParser {
         return ofNullable(map.remove(IP)).map(Object::toString);
     }
 
-    private List<ComponentGroup> parseComponentGroups(Map<String, Object> map, Optional<String> envIp) {
+    private List<ComponentGroup> parseComponentGroups(Map<String, Object> map, Optional<String> envIp, String envName) {
         return map.entrySet()
                 .stream()
                 .map(componentGroupDeclaration -> {
                     try {
                         return parseGroup(componentGroupDeclaration, envIp);
                     } catch (RuntimeException e) {
-                        throw new RuntimeException("Can't parse " + componentGroupDeclaration, e);
+                        throw new RuntimeException("Can't parse component group declaration: '" + componentGroupDeclaration + "' in '" + envName + "' env.", e);
                     }
                 }).collect(toList());
     }
@@ -79,18 +79,26 @@ public class EnvironmentParserImpl implements EnvironmentParser {
         Map<String, Object> properties = (Map<String, Object>) componentGroupDeclaration.getValue();
         Optional<String> ip = ofNullable((String) properties.getOrDefault(IP, envIp.orElse(null)));
 
-        List<Component> parsedComponents = parseComponents(properties, COMPONENTS);
-        List<Component> excludedComponents = parseComponents(properties, EXCLUDE);
-        List<Component> appendedComponents = parseComponents(properties, APPEND);
+        List<Component> parsedComponents = parseComponents(properties, COMPONENTS, true);
+        List<Component> excludedComponents = parseComponents(properties, EXCLUDE, false);
+        List<Component> appendedComponents = parseComponents(properties, APPEND, false);
 
         return new ComponentGroup(componentGroupName, ip, parsedComponents, excludedComponents, appendedComponents);
     }
 
     @SuppressWarnings("unchecked")
-    private List<Component> parseComponents(Map<String, Object> properties, String property) {
-        return ((List<String>) properties.getOrDefault(property, emptyList()))
+    private List<Component> parseComponents(Map<String, Object> properties, String property, boolean required) {
+        if (required && !properties.containsKey(property)) {
+            throw new IllegalArgumentException("Missing required component-group property '" + property + "'");
+        }
+
+        List<String> values = (List<String>) properties.get(property);
+        if (values == null) {
+            return emptyList();
+        }
+
+        return values
                 .stream()
-                .filter(Objects::nonNull)
                 .map(s -> {
                     String[] parts = s.split(":");
                     if (parts.length > 2) throw new IllegalArgumentException("Incorrect component declaration: " + s);
