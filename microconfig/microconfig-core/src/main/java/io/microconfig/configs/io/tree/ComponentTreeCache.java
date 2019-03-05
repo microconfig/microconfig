@@ -18,6 +18,8 @@ import static java.util.stream.Collectors.groupingBy;
 
 @RequiredArgsConstructor
 public class ComponentTreeCache implements ComponentTree {
+    private static final String COMPONENTS_DIR = "components";
+
     private final File rootDir;
     private final Map<String, List<File>> foldersByComponentType;
 
@@ -25,7 +27,7 @@ public class ComponentTreeCache implements ComponentTree {
         if (!rootDir.exists()) {
             throw new IllegalArgumentException("Root directory doesnt exists: " + rootDir);
         }
-        File components = new File(rootDir, "components");
+        File components = new File(rootDir, COMPONENTS_DIR);
         if (!components.exists()) {
             throw new IllegalArgumentException("Root directory must contain 'components' dir");
         }
