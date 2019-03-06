@@ -1,7 +1,7 @@
 package io.microconfig.configs.resolver.placeholder.strategies.component;
 
 import io.microconfig.configs.Property;
-import io.microconfig.configs.resolver.placeholder.ResolveStrategy;
+import io.microconfig.configs.resolver.placeholder.PlaceholderResolveStrategy;
 import io.microconfig.environments.Component;
 import lombok.RequiredArgsConstructor;
 
@@ -13,7 +13,7 @@ import static io.microconfig.configs.PropertySource.specialSource;
 import static java.util.Optional.ofNullable;
 
 @RequiredArgsConstructor
-public class ComponentResolveStrategy implements ResolveStrategy {
+public class ComponentResolveStrategy implements PlaceholderResolveStrategy {
     private final Map<String, ComponentProperty> properties;
 
     @Override

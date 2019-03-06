@@ -1,7 +1,7 @@
 package io.microconfig.configs.resolver.placeholder.strategies.system;
 
 import io.microconfig.configs.Property;
-import io.microconfig.configs.resolver.placeholder.ResolveStrategy;
+import io.microconfig.configs.resolver.placeholder.PlaceholderResolveStrategy;
 import io.microconfig.environments.Component;
 import lombok.RequiredArgsConstructor;
 
@@ -14,15 +14,15 @@ import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 
 @RequiredArgsConstructor
-public class SystemResolveStrategy implements ResolveStrategy {
+public class SystemResolveStrategy implements PlaceholderResolveStrategy {
     private final String name;
     private final Function<String, ?> keyToValue;
 
-    public static ResolveStrategy systemPropertiesResolveStrategy() {
+    public static PlaceholderResolveStrategy systemPropertiesResolveStrategy() {
         return new SystemResolveStrategy("system", System::getProperty);
     }
 
-    public static ResolveStrategy envVariablesResolveStrategy() {
+    public static PlaceholderResolveStrategy envVariablesResolveStrategy() {
         return new SystemResolveStrategy("env", System::getenv);
     }
 

@@ -29,7 +29,7 @@ public class Placeholder {
     private final String value;
     private final Optional<String> defaultValue;
 
-    public static boolean isPlaceholder(String value) {
+    public static boolean isSinglePlaceholder(String value) {
         return SINGE_PLACEHOLDER.matcher(value).matches();
     }
 
@@ -49,12 +49,12 @@ public class Placeholder {
         this.defaultValue = ofNullable(matcher.group("default"));
     }
 
-    public Placeholder changeComponent(String component, String environment) {
-        return new Placeholder(component, environment, value, defaultValue);
-    }
-
     public Placeholder changeComponent(String componentName) {
         return changeComponent(componentName, environment);
+    }
+
+    public Placeholder changeComponent(String component, String environment) {
+        return new Placeholder(component, environment, value, defaultValue);
     }
 
     @Override

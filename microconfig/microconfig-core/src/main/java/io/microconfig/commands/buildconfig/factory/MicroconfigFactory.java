@@ -14,6 +14,7 @@ import io.microconfig.configs.provider.ComponentParserImpl;
 import io.microconfig.configs.provider.FileBasedConfigProvider;
 import io.microconfig.configs.resolver.PropertyResolver;
 import io.microconfig.configs.resolver.ResolvedConfigProvider;
+import io.microconfig.configs.resolver.placeholder.PlaceholderResolveStrategy;
 import io.microconfig.configs.resolver.placeholder.PlaceholderResolver;
 import io.microconfig.configs.resolver.placeholder.strategies.component.ComponentResolveStrategy;
 import io.microconfig.configs.resolver.placeholder.strategies.component.properties.ComponentPropertiesFactory;
@@ -30,7 +31,6 @@ import io.microconfig.environments.filebased.EnvironmentParserImpl;
 import io.microconfig.environments.filebased.FileBasedEnvironmentProvider;
 import io.microconfig.utils.reader.FileReader;
 import io.microconfig.utils.reader.FsFileReader;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Wither;
@@ -39,7 +39,7 @@ import java.io.File;
 import java.util.Set;
 
 import static io.microconfig.commands.buildconfig.BuildConfigPostProcessor.emptyPostProcessor;
-import static io.microconfig.configs.resolver.placeholder.ResolveStrategy.composite;
+import static io.microconfig.configs.resolver.placeholder.PlaceholderResolveStrategy.composite;
 import static io.microconfig.configs.resolver.placeholder.strategies.system.SystemResolveStrategy.envVariablesResolveStrategy;
 import static io.microconfig.configs.resolver.placeholder.strategies.system.SystemResolveStrategy.systemPropertiesResolveStrategy;
 import static io.microconfig.utils.CacheHandler.cache;
@@ -89,17 +89,18 @@ public class MicroconfigFactory {
         EnvDescriptorPropertiesFactory envProperties = new EnvDescriptorPropertiesFactory();
         Set<String> specialKeys = joinToSet(componentProperties.get().keySet(), envProperties.get().keySet());
 
+        PlaceholderResolveStrategy resolveStrategy = composite(
+                systemPropertiesResolveStrategy(),
+                new StandardResolveStrategy(configProvider),
+                new ComponentResolveStrategy(componentProperties.get()),
+                new EnvDescriptorResolveStrategy(environmentProvider, envProperties.get()),
+                envVariablesResolveStrategy()
+        );
         return cache(
                 new SpelExpressionResolver(
                         cache(new PlaceholderResolver(
                                         environmentProvider,
-                                        composite(
-                                                systemPropertiesResolveStrategy(),
-                                                new StandardResolveStrategy(configProvider),
-                                                new ComponentResolveStrategy(componentProperties.get()),
-                                                new EnvDescriptorResolveStrategy(environmentProvider, envProperties.get()),
-                                                envVariablesResolveStrategy()
-                                        ),
+                                        resolveStrategy,
                                         specialKeys
                                 )
                         )

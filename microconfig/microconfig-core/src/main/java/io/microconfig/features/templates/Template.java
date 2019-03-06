@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 import static io.microconfig.configs.Property.tempProperty;
 import static io.microconfig.configs.PropertySource.specialSource;
-import static io.microconfig.configs.resolver.placeholder.Placeholder.isPlaceholder;
+import static io.microconfig.configs.resolver.placeholder.Placeholder.isSinglePlaceholder;
 import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.Logger.warn;
 import static java.util.regex.Matcher.quoteReplacement;
@@ -60,6 +60,6 @@ class Template {
 
     private String toPlaceholder(Matcher matcher) {
         String full = matcher.group();
-        return isPlaceholder(full) ? full : "${this@" + full.substring("${".length());
+        return isSinglePlaceholder(full) ? full : "${this@" + full.substring("${".length());
     }
 }

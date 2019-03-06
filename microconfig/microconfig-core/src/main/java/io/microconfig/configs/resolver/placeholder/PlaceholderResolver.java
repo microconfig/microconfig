@@ -25,7 +25,7 @@ public class PlaceholderResolver implements PropertyResolver {
     private static final String SELF_REFERENCE = "this";
 
     private final EnvironmentProvider environmentProvider;
-    private final ResolveStrategy resolveStrategy;
+    private final PlaceholderResolveStrategy resolveStrategy;
     private final Set<String> nonOverridableKeys;
 
     @Override

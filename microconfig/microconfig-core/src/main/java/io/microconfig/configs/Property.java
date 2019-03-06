@@ -85,10 +85,14 @@ public class Property {
         return new Property(key, value, envContext, temp, source);
     }
 
+    //used by plugin
+    public Property withNewEnv(String env) {
+        return new Property(key, value, env, temp, source);
+    }
+
     @Override
     public String toString() {
         String keyValue = key + "=" + value;
         return temp ? ("#" + keyValue) : keyValue;
     }
-
 }

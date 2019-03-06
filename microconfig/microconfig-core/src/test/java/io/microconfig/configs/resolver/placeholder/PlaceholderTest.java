@@ -9,6 +9,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PlaceholderTest {
     @Test
+    void testIsPlaceholder() {
+        assertTrue(Placeholder.isSinglePlaceholder("${this@property:false}"));
+        assertFalse(Placeholder.isSinglePlaceholder("#{${this@property:false}}"));
+//        assertFalse(Placeholder.isSinglePlaceholder("${this@property:false} this2property2}"));
+//        assertFalse(Placeholder.isSinglePlaceholder("${this@property:false} ${this@property:false}"));
+//        assertFalse(Placeholder.isSinglePlaceholder("${this@property:${this@property2}}"));
+    }
+
+    @Test
     void testPlaceholderInsideSpell() {
         doTestSpel("#{${this@property:false}}");
         doTestSpel("#{ 4 + !${this@property:false} - 1}");

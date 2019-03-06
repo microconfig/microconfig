@@ -1,7 +1,7 @@
 package io.microconfig.configs.resolver.placeholder.strategies.envdescriptor;
 
 import io.microconfig.configs.Property;
-import io.microconfig.configs.resolver.placeholder.ResolveStrategy;
+import io.microconfig.configs.resolver.placeholder.PlaceholderResolveStrategy;
 import io.microconfig.environments.Component;
 import io.microconfig.environments.Environment;
 import io.microconfig.environments.EnvironmentNotExistException;
@@ -16,7 +16,7 @@ import static io.microconfig.configs.PropertySource.specialSource;
 import static java.util.Optional.empty;
 
 @RequiredArgsConstructor
-public class EnvDescriptorResolveStrategy implements ResolveStrategy {
+public class EnvDescriptorResolveStrategy implements PlaceholderResolveStrategy {
     private final EnvironmentProvider environmentProvider;
     private final Map<String, EnvProperty> properties;
 

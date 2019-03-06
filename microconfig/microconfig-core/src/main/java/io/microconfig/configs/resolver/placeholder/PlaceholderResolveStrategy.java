@@ -7,12 +7,12 @@ import java.util.Optional;
 
 import static java.util.Optional.empty;
 
-public interface ResolveStrategy {
+public interface PlaceholderResolveStrategy {
     Optional<Property> resolve(Component component, String propertyKey, String environment);
 
-    static ResolveStrategy composite(ResolveStrategy... strategies) {
+    static PlaceholderResolveStrategy composite(PlaceholderResolveStrategy... strategies) {
         return (component, propertyKey, environment) -> {
-            for (ResolveStrategy strategy : strategies) {
+            for (PlaceholderResolveStrategy strategy : strategies) {
                 Optional<Property> value = strategy.resolve(component, propertyKey, environment);
                 if (value.isPresent()) return value;
             }
