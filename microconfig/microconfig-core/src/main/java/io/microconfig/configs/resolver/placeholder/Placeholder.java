@@ -35,6 +35,10 @@ public class Placeholder {
         return SINGE_PLACEHOLDER.matcher(value).matches();
     }
 
+    public static Matcher placeholderMatcher(CharSequence line) {
+        return PLACEHOLDER_INSIDE_LINE.matcher(line);
+    }
+
     public static Placeholder parse(String value, String defaultEnv) {
         return new Placeholder(value, defaultEnv);
     }
