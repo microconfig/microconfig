@@ -26,7 +26,7 @@ public class Include {
     private final String component;
     private final String env;
 
-    static boolean isInclude(String line) {
+    public static boolean isInclude(String line) {
         String lower = line.toLowerCase();
         return lower.startsWith(PREFIX) || lower.startsWith(PREFIX2);
     }

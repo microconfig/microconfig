@@ -13,7 +13,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.UnaryOperator;
 
 import static io.microconfig.configs.Property.parse;
 import static io.microconfig.configs.PropertySource.fileSource;
@@ -49,18 +48,18 @@ public class PluginApiTestIT {
     }
 
     private ConfigType configTypeFor(File file) {
-        UnaryOperator<String> fileExtension = currentFileName -> {
-            int lastDot = currentFileName.lastIndexOf('.');
-            if (lastDot >= 0) return currentFileName.substring(lastDot);
-
-            throw new IllegalStateException("File " + file + "doesn't have an extension. Unable to resolve config type.");
-        };
-
-        String ext = fileExtension.apply(file.getName());
+        String ext = fileExtension(file.getName());
         return of(StandardConfigType.values())
                 .filter(ct -> ct.getConfigExtensions().stream().anyMatch(e -> e.equals(ext)))
                 .map(StandardConfigType::type)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Can't find ConfigType for extension " + ext));
+    }
+
+    private static String fileExtension(String currentFileName) {
+        int lastDot = currentFileName.lastIndexOf('.');
+        if (lastDot >= 0) return currentFileName.substring(lastDot);
+
+        throw new IllegalArgumentException();
     }
 }
