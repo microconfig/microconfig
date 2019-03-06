@@ -83,7 +83,9 @@ public class EnvironmentParserImpl implements EnvironmentParser {
         List<Component> excludedComponents = parseComponents(properties, EXCLUDE);
         List<Component> appendedComponents = parseComponents(properties, APPEND);
 
-        return new ComponentGroup(componentGroupName, ip, parsedComponents, excludedComponents, appendedComponents);
+        return new ComponentGroup(componentGroupName, ip,
+                parsedComponents, excludedComponents, appendedComponents
+        );
     }
 
     @SuppressWarnings("unchecked")
