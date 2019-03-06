@@ -36,7 +36,11 @@ public class PluginApiTestIT {
 
         return allEnvs(factory)
                 .stream()
-                .collect(toMap(identity(), env -> propertyResolver.resolve(property.withNewEnv(env), root)));
+                .collect(toMap(identity(), env -> resolve(property.withNewEnv(env), root, propertyResolver)));
+    }
+
+    private String resolve(Property property, EnvComponent root, PropertyResolver propertyResolver) {
+        return propertyResolver.resolve(property, root);
     }
 
     private Set<String> allEnvs(MicroconfigFactory factory) {
