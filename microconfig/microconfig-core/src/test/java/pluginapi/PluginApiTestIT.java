@@ -10,22 +10,24 @@ import io.microconfig.configs.resolver.PropertyResolverHolder;
 import io.microconfig.utils.MicronconfigTestFactory;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 
 import static io.microconfig.configs.Property.parse;
 import static io.microconfig.configs.PropertySource.fileSource;
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Stream.of;
 
 public class PluginApiTestIT {
+    private static final String ERROR_VALUE = "ERROR";
+
     public void placeholderValues() {
-        System.out.println(envToValues("${ports@p1} ${ports@p2}", new File("source.yaml")));
+        System.out.println(valueToEnvs("${ports@p1} ${ports@p2}", new File("source.yaml")));
     }
 
-    public Map<String, String> envToValues(String lineWithPlaceholders, File currentFile) {
+    public Map<String, List<String>> valueToEnvs(String lineWithPlaceholders, File currentFile) {
         Property property = parse(lineWithPlaceholders, "", fileSource(currentFile, -1, false));
         EnvComponent root = new EnvComponent(property.getSource().getComponent(), "");
 
@@ -36,15 +38,19 @@ public class PluginApiTestIT {
 
         return allEnvs(factory)
                 .stream()
-                .collect(toMap(identity(), env -> resolve(property.withNewEnv(env), root, propertyResolver)));
-    }
-
-    private String resolve(Property property, EnvComponent root, PropertyResolver propertyResolver) {
-        return propertyResolver.resolve(property, root);
+                .collect(groupingBy(env -> resolve(property.withNewEnv(env), root, propertyResolver)));
     }
 
     private Set<String> allEnvs(MicroconfigFactory factory) {
         return factory.getEnvironmentProvider().getEnvironmentNames();
+    }
+
+    private String resolve(Property property, EnvComponent root, PropertyResolver propertyResolver) {
+        try {
+            return propertyResolver.resolve(property, root);
+        } catch (RuntimeException e) {
+            return ERROR_VALUE;
+        }
     }
 
     private ConfigType configTypeFor(File file) {
