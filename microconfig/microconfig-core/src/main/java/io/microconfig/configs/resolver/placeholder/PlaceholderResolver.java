@@ -14,7 +14,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 
-import static io.microconfig.configs.resolver.placeholder.Placeholder.SELF_REFERENCE;
 import static io.microconfig.environments.Component.byType;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
@@ -80,7 +79,7 @@ public class PlaceholderResolver implements PropertyResolver {
      * 2) Also 'this' componentName is replaced with root component name.
      */
     private Placeholder tryOverride(Placeholder placeholder, Property sourceOfPlaceholder, EnvComponent root, Set<Placeholder> visited) {
-        boolean selfReference = SELF_REFERENCE.equals(placeholder.getComponent());
+        boolean selfReference = placeholder.isSelfReferenced();
         if (selfReference) {
             placeholder = placeholder.changeComponent(sourceOfPlaceholder.getSource().getComponent().getName());
         }

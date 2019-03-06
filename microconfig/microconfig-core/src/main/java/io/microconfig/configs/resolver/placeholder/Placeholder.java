@@ -21,7 +21,7 @@ import static lombok.AccessLevel.PRIVATE;
 @RequiredArgsConstructor(access = PRIVATE)
 @EqualsAndHashCode(exclude = "defaultValue")
 public class Placeholder {
-    public static final String SELF_REFERENCE = "this";
+    private static final String SELF_REFERENCE = "this";
 
     static final Pattern PLACEHOLDER_INSIDE_LINE = compile("\\$\\{(?<comp>[\\w\\-_]+)(\\[(?<env>[\\w\\-_]+)])?@(?<value>[\\w\\-._]+)(:(?<default>[^$}]+))?}");
     static final Pattern SINGE_PLACEHOLDER = compile("^\\$\\{(?<comp>[\\s\\w._-]+)(\\[(?<env>.+)])?@(?<value>[\\w._-]+)(:(?<default>.+))?}$");
@@ -57,6 +57,10 @@ public class Placeholder {
 
     public Placeholder changeComponent(String component, String environment) {
         return new Placeholder(component, environment, value, defaultValue);
+    }
+
+    public boolean isSelfReferenced() {
+        return SELF_REFERENCE.equals(component);
     }
 
     @Override
