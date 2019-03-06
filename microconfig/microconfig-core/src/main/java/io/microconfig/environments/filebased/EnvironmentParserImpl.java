@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.yaml.snakeyaml.Yaml;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -64,17 +65,17 @@ public class EnvironmentParserImpl implements EnvironmentParser {
     private List<ComponentGroup> parseComponentGroups(Map<String, Object> map, Optional<String> envIp, String envName) {
         return map.entrySet()
                 .stream()
-                .map(componentGroupDeclaration -> {
+                .map(group -> {
                     try {
-                        return parseGroup(componentGroupDeclaration, envIp);
+                        return parseGroup(group, envIp);
                     } catch (RuntimeException e) {
-                        throw new RuntimeException("Can't parse component group declaration: '" + componentGroupDeclaration + "' in '" + envName + "' env.", e);
+                        throw new RuntimeException("Can't parse component group declaration: '" + group + "' in '" + envName + "' env.", e);
                     }
                 }).collect(toList());
     }
 
     @SuppressWarnings("unchecked")
-    private ComponentGroup parseGroup(Map.Entry<String, Object> componentGroupDeclaration, Optional<String> envIp) {
+    private ComponentGroup parseGroup(Entry<String, Object> componentGroupDeclaration, Optional<String> envIp) {
         String componentGroupName = componentGroupDeclaration.getKey();
         Map<String, Object> properties = (Map<String, Object>) componentGroupDeclaration.getValue();
         Optional<String> ip = ofNullable((String) properties.getOrDefault(IP, envIp.orElse(null)));
