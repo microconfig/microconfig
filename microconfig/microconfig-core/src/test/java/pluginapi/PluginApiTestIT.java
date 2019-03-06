@@ -29,7 +29,7 @@ public class PluginApiTestIT {
 
     public Map<String, List<String>> valueToEnvs(String lineWithPlaceholders, File currentFile) {
         Property property = parse(lineWithPlaceholders, "", fileSource(currentFile, -1, false));
-        EnvComponent root = new EnvComponent(property.getSource().getComponent(), "");
+
 
         MicroconfigFactory factory = MicronconfigTestFactory.getFactory();
         PropertyResolver propertyResolver = ((PropertyResolverHolder) factory
@@ -38,16 +38,16 @@ public class PluginApiTestIT {
 
         return allEnvs(factory)
                 .stream()
-                .collect(groupingBy(env -> resolve(property.withNewEnv(env), root, propertyResolver)));
+                .collect(groupingBy(env -> resolve(property.withNewEnv(env), propertyResolver)));
     }
 
     private Set<String> allEnvs(MicroconfigFactory factory) {
         return factory.getEnvironmentProvider().getEnvironmentNames();
     }
 
-    private String resolve(Property property, EnvComponent root, PropertyResolver propertyResolver) {
+    private String resolve(Property p, PropertyResolver propertyResolver) {
         try {
-            return propertyResolver.resolve(property, root);
+            return propertyResolver.resolve(p, new EnvComponent(p.getSource().getComponent(), p.getEnvContext()));
         } catch (RuntimeException e) {
             return ERROR_VALUE;
         }
