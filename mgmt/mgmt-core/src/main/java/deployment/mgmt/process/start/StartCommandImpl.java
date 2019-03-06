@@ -60,7 +60,9 @@ public class StartCommandImpl implements StartCommand {
     }
 
     private List<StartHandle> prepareStart(String[] services, String... args) {
-        List<StartHandle> handlers = stream(services).map(s -> prepareStart(s, args)).collect(toList());
+        List<StartHandle> handlers = stream(services)
+                .map(s -> prepareStart(s, args))
+                .collect(toList());
         logLineBreak();
         return handlers;
     }

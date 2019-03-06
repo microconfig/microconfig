@@ -13,6 +13,7 @@ import static java.lang.System.exit;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Stream.of;
 
 @RequiredArgsConstructor
 public class ServiceNameResolverImpl implements ServiceNameResolver {
@@ -34,7 +35,7 @@ public class ServiceNameResolverImpl implements ServiceNameResolver {
     }
 
     private String[] removeTaskServices(String[] names) {
-        return Stream.of(names)
+        return of(names)
                 .filter(s -> !propertyService.getProcessProperties(s).isTask())
                 .toArray(String[]::new);
     }
@@ -51,10 +52,14 @@ public class ServiceNameResolverImpl implements ServiceNameResolver {
     @Override
     public String[] notStrictResolve(String... serviceNamePatterns) {
         if (serviceNamePatterns.length == 0 || allArgUsed(serviceNamePatterns)) {
-            return componentGroupService.getServices().toArray(new String[0]);
+            return componentGroupService.getServices()
+                    .toArray(new String[0]);
         }
 
-        String[] services = Stream.of(serviceNamePatterns)
+        List<String> exactMatch = findExactMatch(serviceNamePatterns, true);
+        if (!exactMatch.isEmpty()) return exactMatch.toArray(new String[0]);
+
+        String[] services = of(serviceNamePatterns)
                 .flatMap(this::findLike)
                 .distinct()
                 .toArray(String[]::new);
@@ -82,14 +87,21 @@ public class ServiceNameResolverImpl implements ServiceNameResolver {
             return notStrictResolve(serviceNamePatterns);
         }
 
-        List<String> deployedServiceNames = componentGroupService.getServices();
-        List<String> badServiceNames = Stream.of(serviceNamePatterns).filter(s -> !deployedServiceNames.contains(s)).collect(toList());
-
+        List<String> badServiceNames = findExactMatch(serviceNamePatterns, false);
         if (!badServiceNames.isEmpty()) {
             logStrictModeWarn(badServiceNames);
         }
 
-        return Stream.of(serviceNamePatterns).distinct().toArray(String[]::new);
+        return of(serviceNamePatterns)
+                .distinct()
+                .toArray(String[]::new);
+    }
+
+    private List<String> findExactMatch(String[] serviceNamePatterns, boolean match) {
+        List<String> deployedServiceNames = componentGroupService.getServices();
+        return of(serviceNamePatterns)
+                .filter(s -> deployedServiceNames.contains(s) == match)
+                .collect(toList());
     }
 
     private Stream<String> findLike(String pattern) {
@@ -108,7 +120,7 @@ public class ServiceNameResolverImpl implements ServiceNameResolver {
             warn("Can't find services by name " + badServiceNames);
         }
         warn("1) specify exact service names");
-        warn("2) or disable strict mode [mgmt strict-mode off]");
+        warn("2) or disable strict mode [mgmt strict-mode false]");
         warn("3) or use '" + ALL_SERVICE_ALIAS + "' argument (mgmt restart " + ALL_SERVICE_ALIAS + ")");
 
         exit(-1);
