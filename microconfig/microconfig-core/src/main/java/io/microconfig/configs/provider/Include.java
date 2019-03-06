@@ -18,38 +18,39 @@ import static java.util.stream.Collectors.toList;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class Include {
-    private static Pattern PATTERN = Pattern.compile("(?<comp>[\\w\\d\\s_-]+)(\\[(?<env>.+)])?");
-    private static final String INCLUDE = "#include";
-    private static final String INCLUDE2 = "#@include";
+    private static Pattern componentPattern = Pattern.compile("(?<comp>[\\w\\d\\s_-]+)(\\[(?<env>.+)])?");
+    private static final String PREFIX = "#include";
+    private static final String PREFIX2 = "#@include";
 
     private final String component;
     private final String env;
 
     static boolean isInclude(String line) {
         String lower = line.toLowerCase();
-        return lower.startsWith(INCLUDE) || lower.startsWith(INCLUDE2);
+        return lower.startsWith(PREFIX) || lower.startsWith(PREFIX2);
     }
 
     public static List<Include> parse(String line, String defaultEnv) {
-        String[] parts = line.split("\\s+");
-        if (parts.length >= 2) {
+        try {
+            String[] parts = line
+                    .replace(",", "")
+                    .split("\\s+");
+
             return stream(parts, 1, parts.length)
-                    .map(s -> s.replace(",", ""))
-                    .map(String::trim)
                     .map(comp -> parseComponent(comp, defaultEnv))
                     .collect(toList());
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException("Can't parse include directive: " + line + "."
+                    + " Supported format: #include component[optionalEnv], component2[optionalEnv]", e);
         }
-
-        throw new IllegalArgumentException("Can't parse include directive: " + line
-                + ". Supported format: #include component[optionalEnv], component2[optionalEnv]"
-        );
     }
 
     private static Include parseComponent(String compLine, String defaultEnv) {
-        Matcher matcher = PATTERN.matcher(compLine);
+        Matcher matcher = componentPattern.matcher(compLine);
         if (!matcher.find()) {
-            throw new IllegalArgumentException("can't parse include component:" + compLine);
+            throw new IllegalArgumentException("Can't parse include component: " + compLine);
         }
+
         String comp = matcher.group("comp");
         String env = matcher.group("env");
         return new Include(comp, env == null ? defaultEnv : env);

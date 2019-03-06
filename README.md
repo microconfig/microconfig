@@ -220,13 +220,6 @@ And replace explicit configs with includes
     consistency.validateConsistencyIntervalInMs=420000 # difficult to read. how long in min ?    
 ```
 
-Includes can be in one line:
-
-**payments/application.properties**
-```*.properties
-    #include service-discovery-client, oracle-db-client    
-```
-
 Some problems still here, but we removed duplication and made it easy to understand the service's dependencies.
 
 You can override any properties from your dependencies.
@@ -291,6 +284,14 @@ jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
 **payments/application.properties**
 ```*.properties
     #include payment-db
+```
+
+
+Also includes can be in one line:
+
+**payments/application.properties**
+```*.properties
+    #include service-discovery-client, oracle-db-client    
 ```
 
 # Env specific properties
