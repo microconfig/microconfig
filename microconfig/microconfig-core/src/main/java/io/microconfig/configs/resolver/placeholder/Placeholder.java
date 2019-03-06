@@ -21,7 +21,9 @@ import static lombok.AccessLevel.PRIVATE;
 @RequiredArgsConstructor(access = PRIVATE)
 @EqualsAndHashCode(exclude = "defaultValue")
 public class Placeholder {
-    public static final Pattern PLACEHOLDER_INSIDE_LINE = compile("\\$\\{(?<comp>[\\w\\-_]+)(\\[(?<env>[\\w\\-_]+)])?@(?<value>[\\w\\-._]+)(:(?<default>[^$}]+))?}");
+    public static final String SELF_REFERENCE = "this";
+
+    static final Pattern PLACEHOLDER_INSIDE_LINE = compile("\\$\\{(?<comp>[\\w\\-_]+)(\\[(?<env>[\\w\\-_]+)])?@(?<value>[\\w\\-._]+)(:(?<default>[^$}]+))?}");
     static final Pattern SINGE_PLACEHOLDER = compile("^\\$\\{(?<comp>[\\s\\w._-]+)(\\[(?<env>.+)])?@(?<value>[\\w._-]+)(:(?<default>.+))?}$");
 
     private final String component;

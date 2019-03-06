@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 
+import static io.microconfig.configs.resolver.placeholder.Placeholder.SELF_REFERENCE;
 import static io.microconfig.environments.Component.byType;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
@@ -22,8 +23,6 @@ import static java.util.Optional.of;
 
 @RequiredArgsConstructor
 public class PlaceholderResolver implements PropertyResolver {
-    private static final String SELF_REFERENCE = "this";
-
     private final EnvironmentProvider environmentProvider;
     private final PlaceholderResolveStrategy resolveStrategy;
     private final Set<String> nonOverridableKeys;
