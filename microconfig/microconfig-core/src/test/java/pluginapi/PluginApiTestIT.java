@@ -58,7 +58,7 @@ public class PluginApiTestIT {
             int lastDot = currentFileName.lastIndexOf('.');
             if (lastDot >= 0) return currentFileName.substring(lastDot);
 
-            throw new IllegalStateException("Current file doesn't have an extension. Unable to resolve component type.");
+            throw new IllegalStateException("File " + file + "doesn't have an extension. Unable to resolve config type.");
         };
 
         String ext = fileExtension.apply(file.getName());
