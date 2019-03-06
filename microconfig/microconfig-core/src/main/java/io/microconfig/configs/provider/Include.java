@@ -2,42 +2,57 @@ package io.microconfig.configs.provider;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.util.Objects.requireNonNull;
-import static java.util.Optional.ofNullable;
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
 
 /**
  * supported format #include component[optionalEnv]
  */
-@EqualsAndHashCode(of = {"component", "env"})
+@Getter
+@EqualsAndHashCode
+@RequiredArgsConstructor
 public class Include {
-    final static Pattern PATTERN = Pattern.compile("[#@][iI]nclude\\s+(?<comp>[\\w\\d\\s_-]+)(\\[(?<env>.+)])?");
+    private static Pattern PATTERN = Pattern.compile("(?<comp>[\\w\\d\\s_-]+)(\\[(?<env>.+)])?");
+    private static final String INCLUDE = "#include";
+    private static final String INCLUDE2 = "#@include";
 
-    @Getter
     private final String component;
-    @Getter
     private final String env;
 
     static boolean isInclude(String line) {
         String lower = line.toLowerCase();
-        return lower.startsWith("#include") || lower.startsWith("#@include");
+        return lower.startsWith(INCLUDE) || lower.startsWith(INCLUDE2);
     }
 
-    public static Include parse(String line, String defaultEnv) {
-        return new Include(line, defaultEnv);
-    }
-
-    private Include(String line, String defaultEnv) {
-        Matcher matcher = PATTERN.matcher(line);
-        if (!matcher.find()) {
-            throw new IllegalArgumentException("Can't parse include directive: " + line + ". Supported format: #include component[optionalEnv]");
+    public static List<Include> parse(String line, String defaultEnv) {
+        String[] parts = line.split("\\s+");
+        if (parts.length >= 2) {
+            return stream(parts, 1, parts.length)
+                    .map(s -> s.replace(",", ""))
+                    .map(String::trim)
+                    .map(comp -> parseComponent(comp, defaultEnv))
+                    .collect(toList());
         }
 
-        this.component = requireNonNull(matcher.group("comp")).trim();
-        this.env = requireNonNull(ofNullable(matcher.group("env")).orElse(defaultEnv)).trim();
+        throw new IllegalArgumentException("Can't parse include directive: " + line
+                + ". Supported format: #include component[optionalEnv], component2[optionalEnv]"
+        );
+    }
+
+    private static Include parseComponent(String compLine, String defaultEnv) {
+        Matcher matcher = PATTERN.matcher(compLine);
+        if (!matcher.find()) {
+            throw new IllegalArgumentException("can't parse include component:" + compLine);
+        }
+        String comp = matcher.group("comp");
+        String env = matcher.group("env");
+        return new Include(comp, env == null ? defaultEnv : env);
     }
 
     @Override

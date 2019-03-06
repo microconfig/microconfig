@@ -199,7 +199,7 @@ And replace explicit configs with includes
 
 **orders/application.properties**
 ```*.properties
-    #include service-discovry-client
+    #include service-discovery-client
     #include oracle-db-client
     
     server.port=9000
@@ -210,7 +210,7 @@ And replace explicit configs with includes
 
 **payments/application.properties**
 ```*.properties
-    #include service-discovry-client
+    #include service-discovery-client
     #include oracle-db-client
     
     server.port=8080
@@ -219,6 +219,14 @@ And replace explicit configs with includes
     payments.system.retries=3
     consistency.validateConsistencyIntervalInMs=420000 # difficult to read. how long in min ?    
 ```
+
+Includes can be in one line:
+
+**payments/application.properties**
+```*.properties
+    #include service-discovery-client, oracle-db-client    
+```
+
 Some problems still here, but we removed duplication and made it easy to understand the service's dependencies.
 
 You can override any properties from your dependencies.

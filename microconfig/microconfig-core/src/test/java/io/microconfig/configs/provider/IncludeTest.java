@@ -2,32 +2,39 @@ package io.microconfig.configs.provider;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.regex.Matcher;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class IncludeTest {
     @Test
-    void testMatch() {
-        Matcher matcher = Include.PATTERN.matcher("#include zeus[uat]");
+    void testSingleComponentParse() {
+        testSingeInclude("#include  zeus[uat]", "uat");
+        testSingeInclude("#@Include   zeus[uat]", "uat");
+        testSingeInclude("#@Include  zeus", "dev");
+    }
 
-        assertTrue(matcher.find());
-        assertEquals("zeus", matcher.group("comp"));
-        assertEquals("uat", matcher.group("env"));
-
-        matcher = Include.PATTERN.matcher("#include zeus");
-
-        assertTrue(matcher.find());
-        assertEquals("zeus", matcher.group("comp"));
-        assertNull(matcher.group("env"));
+    @Test
+    void testMultipleComponentsParse() {
+        testMultipleComponents(Include.parse("#include discovery,    gateway[uat]", "prod"));
+        testMultipleComponents(Include.parse("#@Include       discovery,     gateway[uat]", "prod"));
     }
 
     @Test
     void testDontMatch() {
-        Matcher matcher = Include.PATTERN.matcher("include zeus[uat]");
-        assertFalse(matcher.find());
+        assertFalse(Include.isInclude("include zeus[uat]"));
+        assertFalse(Include.isInclude("#iclude zeus"));
+    }
 
-        matcher = Include.PATTERN.matcher("#iclude zeus");
-        assertFalse(matcher.find());
+    private void testSingeInclude(String line, String env) {
+        List<Include> include = Include.parse(line, "dev");
+        assertEquals(singletonList(new Include("zeus", env)), include);
+    }
+
+    private void testMultipleComponents(List<Include> includes) {
+        assertEquals(asList(new Include("discovery", "prod"), new Include("gateway", "uat")), includes);
     }
 }

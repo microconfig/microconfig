@@ -45,7 +45,7 @@ public class ComponentParserImpl implements ComponentParser {
     private List<Include> parseIncludes(Collection<String> comments, String env) {
         return comments.stream()
                 .filter(Include::isInclude)
-                .map(line -> Include.parse(line, env))
+                .flatMap(line -> Include.parse(line, env).stream())
                 .collect(toList());
     }
 
