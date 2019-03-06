@@ -23,7 +23,7 @@ class PlaceholderTest {
     }
 
     private void doTestSpel(String value) {
-        Matcher matcher = Placeholder.PATTERN_FOR_RESOLVE.matcher(value);
+        Matcher matcher = Placeholder.PLACEHOLDER_INSIDE_LINE.matcher(value);
         assertTrue(matcher.find());
 
         Placeholder propValue = Placeholder.parse(matcher.group(), getEnv());
@@ -55,7 +55,7 @@ class PlaceholderTest {
 
     @Test
     void testRegex() {
-        Matcher matcher = Placeholder.PATTERN.matcher("${th-server2[dev]@th-server.poolSize}");
+        Matcher matcher = Placeholder.SINGE_PLACEHOLDER.matcher("${th-server2[dev]@th-server.poolSize}");
 
         assertTrue(matcher.find());
         assertEquals("th-server2", matcher.group("comp"));
@@ -63,14 +63,14 @@ class PlaceholderTest {
         assertEquals("th-server.poolSize", matcher.group("value"));
         assertNull(matcher.group("default"));
 
-        matcher = Placeholder.PATTERN.matcher("${th-server2@th-server.poolSize}");
+        matcher = Placeholder.SINGE_PLACEHOLDER.matcher("${th-server2@th-server.poolSize}");
         assertTrue(matcher.find());
         assertEquals("th-server2", matcher.group("comp"));
         assertNull(matcher.group("env"));
         assertEquals("th-server.poolSize", matcher.group("value"));
         assertNull(matcher.group("default"));
 
-        matcher = Placeholder.PATTERN.matcher("${unknown@prop:defValue123}");
+        matcher = Placeholder.SINGE_PLACEHOLDER.matcher("${unknown@prop:defValue123}");
         assertTrue(matcher.find());
         assertEquals("unknown", matcher.group("comp"));
         assertNull(matcher.group("env"));

@@ -13,9 +13,9 @@ import static io.microconfig.utils.ClasspathUtils.classpathFile;
 
 public class MicronconfigTestFactory {
     private static final File rootDir = classpathFile("test-props");
-    private static final MicroconfigFactory commands = MicroconfigFactory.init(rootDir, new File(rootDir, "output"));
-    private static final ConfigProvider configProvider = commands.newConfigProvider(SERVICE.type());
-    private static final EnvironmentProvider envProvider = commands.getEnvironmentProvider();
+    private static final MicroconfigFactory factory = MicroconfigFactory.init(rootDir, new File(rootDir, "output"));
+    private static final ConfigProvider configProvider = factory.newConfigProvider(SERVICE.type());
+    private static final EnvironmentProvider envProvider = factory.getEnvironmentProvider();
 
     public static EnvironmentProvider getEnvProvider() {
         return envProvider;
@@ -27,5 +27,9 @@ public class MicronconfigTestFactory {
 
     public static PropertyResolver getPropertyResolver() {
         return ((PropertyResolverHolder) configProvider).getResolver();
+    }
+
+    public static MicroconfigFactory getFactory() {
+        return factory;
     }
 }

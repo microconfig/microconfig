@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.util.Arrays.stream;
+import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -18,7 +19,7 @@ import static java.util.stream.Collectors.toList;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class Include {
-    private static Pattern componentPattern = Pattern.compile("(?<comp>[\\w\\d\\s_-]+)(\\[(?<env>.+)])?");
+    private static Pattern COMPONENT_PATTERN = compile("^(?<comp>[\\w\\d\\s_-]+)(\\[(?<env>.+)])?$");
     private static final String PREFIX = "#include";
     private static final String PREFIX2 = "#@include";
 
@@ -46,7 +47,7 @@ public class Include {
     }
 
     private static Include parseComponent(String compLine, String defaultEnv) {
-        Matcher matcher = componentPattern.matcher(compLine);
+        Matcher matcher = COMPONENT_PATTERN.matcher(compLine);
         if (!matcher.find()) {
             throw new IllegalArgumentException("Can't parse include component: " + compLine);
         }

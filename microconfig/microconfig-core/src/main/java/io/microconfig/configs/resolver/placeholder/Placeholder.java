@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.regex.Pattern.compile;
 import static lombok.AccessLevel.PRIVATE;
 
 /**
@@ -20,8 +21,8 @@ import static lombok.AccessLevel.PRIVATE;
 @RequiredArgsConstructor(access = PRIVATE)
 @EqualsAndHashCode(exclude = "defaultValue")
 public class Placeholder {
-    public static final Pattern PATTERN_FOR_RESOLVE = Pattern.compile("\\$\\{(?<comp>[\\w\\-_]+)(\\[(?<env>[\\w\\-_]+)])?@(?<value>[\\w\\-._]+)(:(?<default>[^$}]+))?}");
-    static final Pattern PATTERN = Pattern.compile("\\$\\{(?<comp>[\\s\\w._-]+)(\\[(?<env>.+)])?@(?<value>[\\w._-]+)(:(?<default>.+))?}");
+    public static final Pattern PLACEHOLDER_INSIDE_LINE = compile("\\$\\{(?<comp>[\\w\\-_]+)(\\[(?<env>[\\w\\-_]+)])?@(?<value>[\\w\\-._]+)(:(?<default>[^$}]+))?}");
+    static final Pattern SINGE_PLACEHOLDER = compile("^\\$\\{(?<comp>[\\s\\w._-]+)(\\[(?<env>.+)])?@(?<value>[\\w._-]+)(:(?<default>.+))?}$");
 
     private final String component;
     private final String environment;
@@ -29,7 +30,7 @@ public class Placeholder {
     private final Optional<String> defaultValue;
 
     public static boolean isPlaceholder(String value) {
-        return PATTERN.matcher(value).matches();
+        return SINGE_PLACEHOLDER.matcher(value).matches();
     }
 
     public static Placeholder parse(String value, String defaultEnv) {
@@ -37,7 +38,7 @@ public class Placeholder {
     }
 
     private Placeholder(String value, String defaultEnv) {
-        Matcher matcher = PATTERN.matcher(value);
+        Matcher matcher = SINGE_PLACEHOLDER.matcher(value);
         if (!matcher.find()) {
             throw PropertyResolveException.badPlaceholderFormat(value);
         }

@@ -37,7 +37,7 @@ public class PlaceholderResolver implements PropertyResolver {
         StringBuilder currentPropertyValue = new StringBuilder(sourceOfPlaceholders.getValue());
 
         while (true) {
-            Matcher matcher = Placeholder.PATTERN_FOR_RESOLVE.matcher(currentPropertyValue);
+            Matcher matcher = Placeholder.PLACEHOLDER_INSIDE_LINE.matcher(currentPropertyValue);
             if (!matcher.find()) break;
 
             Placeholder placeholder = newPlaceholder(matcher.group(), sourceOfPlaceholders, root, visited);

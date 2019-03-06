@@ -30,6 +30,7 @@ import io.microconfig.environments.filebased.EnvironmentParserImpl;
 import io.microconfig.environments.filebased.FileBasedEnvironmentProvider;
 import io.microconfig.utils.reader.FileReader;
 import io.microconfig.utils.reader.FsFileReader;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Wither;
@@ -44,9 +45,10 @@ import static io.microconfig.configs.resolver.placeholder.strategies.system.Syst
 import static io.microconfig.utils.CacheHandler.cache;
 import static io.microconfig.utils.CollectionUtils.joinToSet;
 import static io.microconfig.utils.FileUtils.canonical;
+import static lombok.AccessLevel.PRIVATE;
 
 @Getter
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = PRIVATE)
 public class MicroconfigFactory {
     private static final String ENV_DIR = "envs";
 
