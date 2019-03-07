@@ -27,6 +27,14 @@ public class EnvironmentParserImpl implements EnvironmentParser {
 
     @Override
     public Environment parse(String name, String content) {
+        try {
+            return doParse(name, content);
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Can't parse " + name + " env", e);
+        }
+    }
+
+    private Environment doParse(String name, String content) {
         Map<String, Object> map = new Yaml().load(content);
 
         Optional<EnvInclude> envInclude = parseInclude(map);
