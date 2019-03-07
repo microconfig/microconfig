@@ -46,11 +46,6 @@ public class Logger {
     }
 
     public static String align(String value, int spacesCount) {
-        StringBuilder result = new StringBuilder();
-        result.append(value);
-        for (int i = 0; i < spacesCount; i++) {
-            result.append(' ');
-        }
-        return result.toString();
+        return String.format("%1$-" + spacesCount + "s", value);
     }
 }

@@ -77,7 +77,7 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
             File fromFile = absolute(destinationDir, this.fromFile);
             File toFile = absolute(destinationDir, this.toFile);
 
-            Template template = toTemplate(fromFile, destinationDir.getName());
+            Template template = toTemplate(fromFile, currentComponent.getComponent().getName());
             if (template == null) return;
 
             String content = template.resolvePlaceholders(currentComponent, propertyResolver, templatePattern.getPattern());

@@ -39,4 +39,13 @@ public class StringUtils {
         }
         return defaultIndex;
     }
+
+    public static String addOffsets(String value, int spacesCount) {
+        StringBuilder result = new StringBuilder();
+        result.append(value);
+        for (int i = 0; i < spacesCount; i++) {
+            result.append(' ');
+        }
+        return result.toString();
+    }
 }

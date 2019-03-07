@@ -21,7 +21,7 @@ public class FilenameGeneratorImpl implements FilenameGenerator {
     }
 
     private String dir(String component) {
-        return serviceInnerDir == null ? component : serviceInnerDir + "/" + component;
+        return serviceInnerDir == null ? component : component + "/" + serviceInnerDir;
     }
 
     private String name() {

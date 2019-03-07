@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
-import static io.microconfig.utils.Logger.align;
 import static io.microconfig.utils.StreamUtils.toSortedMap;
+import static io.microconfig.utils.StringUtils.addOffsets;
 import static java.nio.file.StandardOpenOption.APPEND;
 
 @RequiredArgsConstructor
@@ -82,7 +82,7 @@ public class YamlWriter implements ConfigWriter {
         if (!value.startsWith("-")) return value;
 
         return (LINES_SEPARATOR + value)
-                .replace(LINES_SEPARATOR, align(LINES_SEPARATOR, parts * OFFSET));
+                .replace(LINES_SEPARATOR, addOffsets(LINES_SEPARATOR, parts * OFFSET));
     }
 
     private String toYaml(Map<String, Object> tree) {
@@ -93,7 +93,7 @@ public class YamlWriter implements ConfigWriter {
 
     private void dump(StringBuilder result, Map<String, Object> tree, int indent, boolean emptyLine) {
         tree.forEach((key, value) -> {
-            result.append(align("", indent)).append(key);
+            result.append(addOffsets("", indent)).append(key);
             dumpValue(result, value, indent + OFFSET);
 
             if (emptyLine) {

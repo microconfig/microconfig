@@ -90,7 +90,7 @@ public class ClasspathServiceImpl implements ClasspathService {
                 oneLineInfo("Resolved " + artifacts.size() + " dependencies for " + service + " in " + msAfter(t));
                 logLineBreak();
             } catch (RuntimeException e) {
-                error("Failed to updateSecrets classpath for " + service + ", " + e.getMessage());
+                error("Failed to update classpath for " + service + ", " + e.getMessage());
             }
         }
 

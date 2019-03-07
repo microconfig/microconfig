@@ -30,7 +30,7 @@ public class MgmtMain {
         try {
             mgmtFactory.getMgmgUpdater().updateAndRestart(args);
         } catch (RuntimeException e) {
-            error("Failed to updateSecrets mgmt. Continuing using current version", e);
+            error("Failed to update mgmt. Continuing using current version", e);
         }
     }
 }
