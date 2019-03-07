@@ -34,6 +34,11 @@ public class EnvironmentParserImpl implements EnvironmentParser {
         }
     }
 
+    @Override
+    public List<String> supportedFormats() {
+        return asList(".yaml", ".json");
+    }
+
     private Environment doParse(String name, String content) {
         Map<String, Object> map = new Yaml().load(content);
 
@@ -43,11 +48,6 @@ public class EnvironmentParserImpl implements EnvironmentParser {
         List<ComponentGroup> componentGroups = parseComponentGroups(map, envIp, name);
 
         return new Environment(name, componentGroups, envIp, portOffset, envInclude);
-    }
-
-    @Override
-    public List<String> supportedFormats() {
-        return asList(".yaml", ".json");
     }
 
     @SuppressWarnings("unchecked")
