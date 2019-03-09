@@ -90,11 +90,6 @@ public class MgmtLockDecorator implements Mgmt {
     }
 
     @Override
-    public void updateConfig() {
-        mgmt.updateConfig();
-    }
-
-    @Override
     public void buildConfigs() {
         mgmt.buildConfigs();
     }
