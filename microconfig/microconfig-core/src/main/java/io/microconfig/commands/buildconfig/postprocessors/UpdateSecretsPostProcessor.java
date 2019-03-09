@@ -19,10 +19,8 @@ public class UpdateSecretsPostProcessor implements BuildConfigPostProcessor {
     private final SecretService secretService;
 
     @Override
-    public void process(EnvComponent currentComponent,
-                        Map<String, Property> componentProperties,
-                        ConfigProvider ignore,
-                        File resultFile) {
+    public void process(EnvComponent currentComponent, Map<String, Property> componentProperties,
+                        File resultFile, ConfigProvider ignore) {
         try {
             doUpdate(currentComponent, componentProperties);
         } finally {

@@ -19,11 +19,13 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
     private final RelativePathResolver relativePathResolver;
 
     @Override
-    public void copyTemplates(EnvComponent currentComponent, File destinationDir,
-                              Map<String, String> componentProperties, PropertyResolver propertyResolver) {
+    public void copyTemplates(EnvComponent currentComponent,
+                              File serviceDestinationDir,
+                              Map<String, String> componentProperties,
+                              PropertyResolver propertyResolver) {
         collectTemplates(componentProperties).forEach(def -> {
             try {
-                def.resolveAndCopy(propertyResolver, currentComponent, destinationDir);
+                def.resolveAndCopy(propertyResolver, currentComponent, serviceDestinationDir);
             } catch (RuntimeException e) {
                 error("Template error " + def, e);
             }

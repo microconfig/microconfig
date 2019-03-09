@@ -22,8 +22,7 @@ class WebappPostProcessor implements BuildConfigPostProcessor {
     @Override
     public void process(EnvComponent currentComponent,
                         Map<String, Property> componentProperties,
-                        ConfigProvider configProvider,
-                        File resultFile) {
+                        File resultFile, ConfigProvider configProvider) {
         File destinationDir = resultFile.getParentFile();
         delete(new File(destinationDir, WEBAPP_FILE));
 
