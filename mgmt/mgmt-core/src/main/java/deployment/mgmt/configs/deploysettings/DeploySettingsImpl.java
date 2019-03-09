@@ -109,7 +109,7 @@ public class DeploySettingsImpl implements DeploySettings {
     @Override
     public void setNexusCredentials(String credentials) {
         if (!credentials.contains(":")) {
-            throw new IllegalArgumentException("Nexus credentials must contains login and password separated by ':'. Example 'user:secret'");
+            throw new IllegalArgumentException("Nexus credentials must contain login and password separated by ':'. Example 'user:secret'");
         }
 
         nexusCredentialCache = null;
