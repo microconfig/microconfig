@@ -44,7 +44,7 @@ public class BuildConfigCommand implements Command {
         Optional<File> outputFile = configSerializer.serialize(component.getName(), properties.values());
 
         outputFile.ifPresent(f -> {
-            postProcessor.process(new EnvComponent(component, env), properties, f, configProvider);
+            postProcessor.process(new EnvComponent(component, env), properties, configProvider, f);
             info("Generated " + f.getName() + " for " + component.getName() + " [" + env + "]");
         });
 

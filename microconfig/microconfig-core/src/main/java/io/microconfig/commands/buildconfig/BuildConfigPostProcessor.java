@@ -8,11 +8,12 @@ import java.io.File;
 import java.util.Map;
 
 public interface BuildConfigPostProcessor {
-    void process(EnvComponent currentComponent, Map<String, Property> componentProperties,
-                 File resultFile, ConfigProvider configProvider);
+    void process(EnvComponent currentComponent,
+                 Map<String, Property> componentProperties, ConfigProvider configProvider,
+                 File resultFile);
 
     static BuildConfigPostProcessor emptyPostProcessor() {
-        return (p1, p3, p2, p4) -> {
+        return (p1, p3, p4, p2) -> {
         };
     }
 }

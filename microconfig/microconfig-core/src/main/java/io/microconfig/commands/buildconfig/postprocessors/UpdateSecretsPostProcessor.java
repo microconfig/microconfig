@@ -20,7 +20,7 @@ public class UpdateSecretsPostProcessor implements BuildConfigPostProcessor {
 
     @Override
     public void process(EnvComponent currentComponent, Map<String, Property> componentProperties,
-                        File resultFile, ConfigProvider ignore) {
+                        ConfigProvider ignore, File resultFile) {
         try {
             doUpdate(currentComponent, componentProperties);
         } finally {

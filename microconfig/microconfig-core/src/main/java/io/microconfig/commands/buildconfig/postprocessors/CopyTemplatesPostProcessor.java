@@ -21,7 +21,7 @@ public class CopyTemplatesPostProcessor implements BuildConfigPostProcessor {
     @Override
     public void process(EnvComponent currentComponent,
                         Map<String, Property> componentProperties,
-                        File resultFile, ConfigProvider configProvider) {
+                        ConfigProvider configProvider, File resultFile) {
         if (configProvider instanceof PropertyResolverHolder) {
             PropertyResolver resolver = ((PropertyResolverHolder) configProvider).getResolver();
             copyTemplatesService.copyTemplates(currentComponent, resultFile.getParentFile(), asStringMap(componentProperties), resolver);

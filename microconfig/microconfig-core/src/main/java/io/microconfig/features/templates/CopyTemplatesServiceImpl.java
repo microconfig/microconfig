@@ -27,7 +27,7 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
             try {
                 def.resolveAndCopy(propertyResolver, currentComponent, serviceDestinationDir);
             } catch (RuntimeException e) {
-                error("Template error " + def, e);
+                error("Template error: " + def, e);
             }
         });
     }
@@ -76,8 +76,8 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
                 return;
             }
 
-            File fromFile = absolute(destinationDir, this.fromFile);
-            File toFile = absolute(destinationDir, this.toFile);
+            File fromFile = absoluteFromFile(destinationDir);
+            File toFile = absoluteToFile(destinationDir);
 
             Template template = toTemplate(fromFile, currentComponent.getComponent().getName());
             if (template == null) return;
@@ -93,8 +93,17 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
             return fromFile != null && toFile != null;
         }
 
-        private File absolute(File serviceDir, String file) {
-            File path = relativePathResolver.overrideRelativePath(serviceDir, file);
+        private File absoluteFromFile(File serviceDir) {
+            File path = relativePathResolver.overrideRelativePath(serviceDir, fromFile);
+            if (!path.isAbsolute()) {
+                throw new IllegalArgumentException("Using relative path for template '" + fromFile + "' for component '" + serviceDir.getName() + "'. "
+                        + "Template path must be absolute. Consider using ${this@configDir}- resolves config root or ${component_name@folder}.");
+            }
+            return path;
+        }
+
+        private File absoluteToFile(File serviceDir) {
+            File path = relativePathResolver.overrideRelativePath(serviceDir, toFile);
             return path.isAbsolute() ? path : new File(serviceDir, path.getPath());
         }
 
@@ -125,7 +134,7 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
 
         @Override
         public String toString() {
-            return "template: " + name + ", file: " + fromFile + " -> " + toFile;
+            return "templateName: '" + name + "', file: '" + fromFile + "' -> '" + toFile + "'";
         }
     }
 }
