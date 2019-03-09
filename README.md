@@ -477,8 +477,8 @@ Microconfig has several special useful placeholders:
 * ${this@configRoot} - returns full path of config repo's root dir (see `root` build param )   
 
 There are some other env descriptor related properties, we will discuss them later:
-* ${...@portOffset}
 * ${...@ip}
+* ${...@portOffset}
 * ${...@group}
 * ${...@order}
 
