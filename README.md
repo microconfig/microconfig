@@ -471,7 +471,7 @@ As we discussed syntax for placeholders looks like `${component@property}`.
 Microconfig has several special useful placeholders:
 
 * ${this@env} - returns current env name 
-* ${...@name} - returns component's config folder name
+* ${...@name} - returns component's name
 * ${...@configDir} - returns full path of component's config dir 
 * ${...@resultDir} - returns full path of destination service dir (result files will be put into this dir)
 * ${this@configRoot} - returns full path of root config dir   
