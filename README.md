@@ -473,8 +473,8 @@ Microconfig has several special useful placeholders:
 * ${this@env} - returns current env name 
 * ${...@name} - returns component's name
 * ${...@configDir} - returns full path of component's config dir 
-* ${...@resultDir} - returns full path of destination service dir (result files will be put into this dir)
-* ${this@configRoot} - returns full path of root config dir   
+* ${...@resultDir} - returns full path of component's destination dir (result files will be put into this dir)
+* ${this@configRoot} - returns full path of config repo's root dir (see `root` build param )   
 
 There are some other env descriptor related properties, we will discuss them later:
 * ${...@portOffset}
