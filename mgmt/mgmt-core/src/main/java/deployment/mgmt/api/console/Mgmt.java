@@ -72,11 +72,6 @@ public interface Mgmt {
     @ConsoleOrder(13)
     void fetchConfigs();
 
-    @Hidden //todo for compatibility. delete after 01.02.19
-    default void updateConfig() {
-        buildConfigs();
-    }
-
     @ConsoleOrder(14)
     void buildConfigs();
 
