@@ -34,6 +34,6 @@ public class OldConfigsRelativePathResolver implements RelativePathResolver {
 
     private String warnMessage(File serviceDir) {
         return "Overriding template path for " + serviceDir.getName() + " " + this +
-                ". Use ${this@configDir}- resolves config root or ${component_name@folder} - resolves folder of config component";
+                ". Please, replace relative path with absolute using ${this@configRoot}\\.. or ${component_name@configDir}\\..";
     }
 }

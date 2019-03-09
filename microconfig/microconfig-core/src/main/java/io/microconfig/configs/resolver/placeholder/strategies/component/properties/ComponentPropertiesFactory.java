@@ -18,7 +18,7 @@ public class ComponentPropertiesFactory {
 
     public Map<String, ComponentProperty> get() {
         return of(
-                new ComponentFolderProperty(componentTree),
+                new ComponentConfigDirProperty(componentTree),
                 new ComponentNameProperty(),
                 new ResultServiceDirProperty(destinationComponentDir),
                 new ConfigRootDirProperty(componentTree.getRootDir()),

@@ -97,7 +97,7 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
             File path = relativePathResolver.overrideRelativePath(serviceDir, fromFile);
             if (!path.isAbsolute()) {
                 throw new IllegalArgumentException("Using relative path for template '" + fromFile + "' for component '" + serviceDir.getName() + "'. "
-                        + "Template path must be absolute. Consider using ${this@configDir}- resolves config root or ${component_name@folder}.");
+                        + "Template path must be absolute. Consider using '${this@configRoot}\\..' or '${component_name@configDir}\\..' to build absolute path");
             }
             return path;
         }

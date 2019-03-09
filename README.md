@@ -472,9 +472,9 @@ Microconfig has several special useful placeholders:
 
 * ${this@env} - returns current env name 
 * ${...@name} - returns component's config folder name
-* ${...@folder} - returns full path of component's config dir 
-* ${this@configDir} - returns full path of root config dir   
-* ${...@serviceDir} - returns full path of destination service dir (result files will be put into this dir)
+* ${...@configDir} - returns full path of component's config dir 
+* ${...@resultDir} - returns full path of destination service dir (result files will be put into this dir)
+* ${this@configRoot} - returns full path of root config dir   
 
 There are some other env descriptor related properties, we will discuss them later:
 * ${...@portOffset}
@@ -642,13 +642,13 @@ Let's configure order and payment services to use this template.
 **orders/application.properties**
 ```*.properties
     #include service-disconvery-client
-    template.logback.fromFile=${logback@folder}/logback.xml # full path to logback.xml, @folder - special placeholder property
+    template.logback.fromFile=${logback@configDir}/logback.xml # full path to logback.xml, @configDir - special placeholder property
 ```
 
 **payments/application.properties**
 ```*.properties
     #include service-disconvery-client
-    template.logback.fromFile=${logback@folder}/logback.xml
+    template.logback.fromFile=${logback@configDir}/logback.xml
 ```  
    
 It's better to extract the common property `template.logback.fromFile` to logback-template/application.properties and than use #include.
@@ -662,7 +662,7 @@ repo
 ```    
 **logback-template/application.properties**
 ```*.properties   
-    template.logback.fromFile=${logback@folder}/logback.xml    
+    template.logback.fromFile=${logback@configDir}/logback.xml    
 ```
 **orders-template/application.properties**
 ```*.properties
@@ -689,7 +689,7 @@ If you want to override template destination filename you can use `template.${te
  
  **logback-template/application.properties**
  ```*.properties   
-     template.logback.fromFile=${logback@folder}/logback.xml    
+     template.logback.fromFile=${logback@configDir}/logback.xml    
      template.logback.toFile=logs/logback-descriptor.xml
  ``` 
  
@@ -714,7 +714,7 @@ repo
 ```
 **logback-template/application.prod.properties**
 ```*.properties   
-    template.logback.fromFile=${logback@folder}/logback-prod.xml        
+    template.logback.fromFile=${logback@configDir}/logback-prod.xml        
 ``` 
 
 # Environment descriptor

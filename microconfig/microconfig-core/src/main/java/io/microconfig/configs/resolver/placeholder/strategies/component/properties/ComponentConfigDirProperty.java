@@ -10,12 +10,12 @@ import java.io.File;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class ComponentFolderProperty implements ComponentProperty {
+public class ComponentConfigDirProperty implements ComponentProperty {
     private final ComponentTree componentTree;
 
     @Override
     public String key() {
-        return "folder";
+        return "configDir";
     }
 
     @Override

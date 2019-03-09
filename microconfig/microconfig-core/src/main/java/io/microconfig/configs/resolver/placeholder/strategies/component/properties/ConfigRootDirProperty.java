@@ -18,7 +18,7 @@ public class ConfigRootDirProperty implements ComponentProperty {
 
     @Override
     public String key() {
-        return "configDir"; //todo rename configRoot
+        return "configRoot";
     }
 
     @Override

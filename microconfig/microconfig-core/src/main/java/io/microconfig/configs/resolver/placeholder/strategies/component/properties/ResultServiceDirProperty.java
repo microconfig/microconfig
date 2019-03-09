@@ -16,7 +16,7 @@ public class ResultServiceDirProperty implements ComponentProperty {
 
     @Override
     public String key() {
-        return "serviceDir";
+        return "resultDir";
     }
 
     @Override
