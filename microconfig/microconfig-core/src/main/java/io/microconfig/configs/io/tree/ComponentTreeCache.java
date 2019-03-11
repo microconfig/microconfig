@@ -18,7 +18,7 @@ import static java.util.stream.Collectors.groupingBy;
 
 @RequiredArgsConstructor
 public class ComponentTreeCache implements ComponentTree {
-    private static final String COMPONENTS_DIR = "components";
+    public static final String COMPONENTS_DIR = "components";
 
     private final File rootDir;
     private final Map<String, List<File>> foldersByComponentType;

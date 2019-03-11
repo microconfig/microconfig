@@ -53,7 +53,7 @@ import static lombok.AccessLevel.PRIVATE;
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
 public class MicroconfigFactory {
-    private static final String ENV_DIR = "envs";
+    public static final String ENV_DIR = "envs";
 
     private final ComponentTree componentTree;
     private final EnvironmentProvider environmentProvider;
