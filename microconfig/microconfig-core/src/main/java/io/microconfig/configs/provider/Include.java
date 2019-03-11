@@ -47,12 +47,12 @@ public class Include {
                 throw new IllegalArgumentException("Include must start with " + PREFIX + " or " + PREFIX2);
             };
 
-            String[] parts = line.substring(componentStartIndex.getAsInt()).split(",");
-            if (parts.length == 0) {
+            String[] components = line.substring(componentStartIndex.getAsInt()).split(",");
+            if (components.length == 0) {
                 throw new IllegalArgumentException("Include must contain component names");
             }
 
-            return stream(parts)
+            return stream(components)
                     .map(String::trim)
                     .map(comp -> parseComponent(comp, defaultEnv))
                     .collect(toList());
@@ -65,7 +65,7 @@ public class Include {
     private static Include parseComponent(String compLine, String defaultEnv) {
         Matcher matcher = COMPONENT_PATTERN.matcher(compLine);
         if (!matcher.find()) {
-            throw new IllegalArgumentException("Can't parse include component: " + compLine);
+            throw new IllegalArgumentException("Can't parse include's component: " + compLine);
         }
 
         String comp = matcher.group("comp");
