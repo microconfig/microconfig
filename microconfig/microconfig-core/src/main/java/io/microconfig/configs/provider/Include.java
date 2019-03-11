@@ -37,6 +37,9 @@ public class Include {
             String[] parts = line
                     .replace(",", "")
                     .split("\\s+");
+            if (parts.length <= 1) {
+                throw new IllegalArgumentException("Can't parse include '" + line + "'");
+            }
 
             return stream(parts, 1, parts.length)
                     .map(comp -> parseComponent(comp, defaultEnv))
