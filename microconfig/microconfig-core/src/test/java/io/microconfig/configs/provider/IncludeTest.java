@@ -19,8 +19,8 @@ class IncludeTest {
 
     @Test
     void testMultipleComponentsParse() {
-        testMultipleComponents(Include.parse("#include discovery,    gateway[uat]", "prod"));
-        testMultipleComponents(Include.parse("#@Include       discovery,     gateway[uat]", "prod"));
+        testMultipleComponents(Include.parse("#include service_discovery,    gateway[uat]", "prod"));
+        testMultipleComponents(Include.parse("#@Include       service_discovery,     gateway[uat]", "prod"));
     }
 
     @Test
@@ -35,6 +35,6 @@ class IncludeTest {
     }
 
     private void testMultipleComponents(List<Include> includes) {
-        assertEquals(asList(new Include("discovery", "prod"), new Include("gateway", "uat")), includes);
+        assertEquals(asList(new Include("service_discovery", "prod"), new Include("gateway", "uat")), includes);
     }
 }

@@ -21,7 +21,7 @@ import static java.util.stream.Collectors.toList;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class Include {
-    private static Pattern COMPONENT_PATTERN = compile("^(?<comp>[\\w\\d]+)(\\[(?<env>.+)])?$");
+    private static Pattern COMPONENT_PATTERN = compile("^(?<comp>[\\w\\d-_]+)(\\[(?<env>.+)])?$");
     private static final String PREFIX = "#include";
     private static final String PREFIX2 = "#@include";
 
