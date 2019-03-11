@@ -5,8 +5,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.function.IntSupplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 import static java.util.Arrays.stream;
 import static java.util.regex.Pattern.compile;
@@ -19,7 +21,7 @@ import static java.util.stream.Collectors.toList;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class Include {
-    private static Pattern COMPONENT_PATTERN = compile("^(?<comp>[\\w\\d\\s_-]+)(\\[(?<env>.+)])?$");
+    private static Pattern COMPONENT_PATTERN = compile("^(?<comp>[\\w\\d]+)(\\[(?<env>.+)])?$");
     private static final String PREFIX = "#include";
     private static final String PREFIX2 = "#@include";
 
@@ -34,18 +36,28 @@ public class Include {
 
     public static List<Include> parse(String line, String defaultEnv) {
         try {
-            String[] parts = line
-                    .replace(",", "")
-                    .split("\\s+");
-            if (parts.length <= 1) {
-                throw new IllegalArgumentException("Can't parse include '" + line + "'");
+            IntSupplier componentStartIndex = () -> {
+                String lower = line.toLowerCase();
+                int start = lower.indexOf(PREFIX);
+                if (start >= 0) return start + PREFIX.length() + 1;
+
+                start = lower.indexOf(PREFIX2);
+                if (start >= 0) return start + PREFIX2.length() + 1;
+
+                throw new IllegalArgumentException("Include must start with " + PREFIX + " or " + PREFIX2);
+            };
+
+            String[] parts = line.substring(componentStartIndex.getAsInt()).split(",");
+            if (parts.length == 0) {
+                throw new IllegalArgumentException("Include must contain component names");
             }
 
-            return stream(parts, 1, parts.length)
+            return stream(parts)
+                    .map(String::trim)
                     .map(comp -> parseComponent(comp, defaultEnv))
                     .collect(toList());
         } catch (RuntimeException e) {
-            throw new IllegalArgumentException("Can't parse include directive: " + line + "."
+            throw new IllegalArgumentException("Can't parse include '" + line + "'."
                     + " Supported format: #include component[optionalEnv], component2[optionalEnv]", e);
         }
     }
