@@ -35,7 +35,7 @@ public class PropertyResolveException extends RuntimeException {
         return format("Can't resolve placeholder: %s. Root component: %s[%s]. Source or error: %s[%s] '%s:%d'",
                 innerPlaceholder, root.getComponent().getName(), root.getEnvironment(),
                 sourceOfPlaceholder.getSource().getComponent().getName(), sourceOfPlaceholder.getEnvContext(),
-                sourceOfPlaceholder.getSource().getSourceOfProperty(), sourceOfPlaceholder.getSource().getLine() + 1);
+                sourceOfPlaceholder.getSource().getSourceValue(), sourceOfPlaceholder.getSource().getLine() + 1);
     }
 
     public static PropertyResolveException badPlaceholderFormat(String value) {

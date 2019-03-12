@@ -14,7 +14,7 @@ import static io.microconfig.environments.Component.bySourceFile;
 @RequiredArgsConstructor
 public class PropertySource {
     private final Component component;
-    private final String sourceOfProperty;
+    private final String sourceValue;
     private final int line;
 
     private final boolean yaml;
@@ -29,6 +29,6 @@ public class PropertySource {
 
     @Override
     public String toString() {
-        return line < 0 ? sourceOfProperty : sourceOfProperty + ":" + line;
+        return line < 0 ? sourceValue : sourceValue + ":" + line;
     }
 }
