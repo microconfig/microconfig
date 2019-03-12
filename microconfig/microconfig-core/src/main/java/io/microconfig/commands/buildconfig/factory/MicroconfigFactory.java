@@ -21,13 +21,12 @@ import io.microconfig.configs.resolver.placeholder.strategies.component.properti
 import io.microconfig.configs.resolver.placeholder.strategies.envdescriptor.EnvDescriptorResolveStrategy;
 import io.microconfig.configs.resolver.placeholder.strategies.envdescriptor.properties.EnvDescriptorPropertiesFactory;
 import io.microconfig.configs.resolver.placeholder.strategies.standard.StandardResolveStrategy;
-import io.microconfig.configs.resolver.spel.SpelExpressionResolver;
+import io.microconfig.configs.resolver.expression.ExpressionResolver;
 import io.microconfig.configs.serializer.ConfigSerializer;
 import io.microconfig.configs.serializer.DiffSerializer;
 import io.microconfig.configs.serializer.FilenameGeneratorImpl;
 import io.microconfig.configs.serializer.ToFileConfigSerializer;
 import io.microconfig.environments.EnvironmentProvider;
-import io.microconfig.environments.filebased.EnvironmentParserImpl;
 import io.microconfig.environments.filebased.EnvironmentParserSelectorImpl;
 import io.microconfig.environments.filebased.FileBasedEnvironmentProvider;
 import io.microconfig.utils.reader.FileReader;
@@ -37,7 +36,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Wither;
 
 import java.io.File;
-import java.util.Set;
 
 import static io.microconfig.commands.buildconfig.BuildConfigPostProcessor.emptyPostProcessor;
 import static io.microconfig.configs.resolver.placeholder.PlaceholderResolveStrategy.composite;
@@ -79,35 +77,38 @@ public class MicroconfigFactory {
     }
 
     public ConfigProvider newConfigProvider(ConfigType configType) {
-        ConfigProvider fileBasedProvider = cache(
-                new FileBasedConfigProvider(componentTree, configType.getConfigExtensions(), new ComponentParserImpl(configIoService))
-        );
+        ConfigProvider fileBasedProvider = newFileBasedProvider(configType);
         return cache(
-                new ResolvedConfigProvider(fileBasedProvider, newPropertyResolver(fileBasedProvider))
+                new ResolvedConfigProvider(fileBasedProvider, newExpressionResolver(fileBasedProvider))
         );
     }
 
-    private PropertyResolver newPropertyResolver(ConfigProvider configProvider) {
+    public ConfigProvider newFileBasedProvider(ConfigType configType) {
+        return cache(
+                new FileBasedConfigProvider(componentTree, configType.getConfigExtensions(), new ComponentParserImpl(configIoService))
+        );
+    }
+
+    private PropertyResolver newExpressionResolver(ConfigProvider simpleProvider) {
+        return cache(new ExpressionResolver(cache(newPlaceholderResolver(simpleProvider))));
+    }
+
+    public PlaceholderResolver newPlaceholderResolver(ConfigProvider simpleProvider) {
         ComponentPropertiesFactory componentProperties = new ComponentPropertiesFactory(componentTree, destinationComponentDir);
         EnvDescriptorPropertiesFactory envProperties = new EnvDescriptorPropertiesFactory();
-        Set<String> specialKeys = joinToSet(componentProperties.get().keySet(), envProperties.get().keySet());
 
-        PlaceholderResolveStrategy resolveStrategy = composite(
+        PlaceholderResolveStrategy strategy = composite(
                 systemPropertiesResolveStrategy(),
-                new StandardResolveStrategy(configProvider),
+                new StandardResolveStrategy(simpleProvider),
                 new ComponentResolveStrategy(componentProperties.get()),
                 new EnvDescriptorResolveStrategy(environmentProvider, envProperties.get()),
                 envVariablesResolveStrategy()
         );
-        return cache(
-                new SpelExpressionResolver(
-                        cache(new PlaceholderResolver(
-                                        environmentProvider,
-                                        resolveStrategy,
-                                        specialKeys
-                                )
-                        )
-                )
+
+        return new PlaceholderResolver(
+                        environmentProvider,
+                        strategy,
+                        joinToSet(componentProperties.get().keySet(), envProperties.get().keySet())
         );
     }
 

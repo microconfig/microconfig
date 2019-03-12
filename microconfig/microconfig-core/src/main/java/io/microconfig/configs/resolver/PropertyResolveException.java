@@ -1,7 +1,7 @@
 package io.microconfig.configs.resolver;
 
 import io.microconfig.configs.Property;
-import io.microconfig.configs.resolver.spel.SpelExpression;
+import io.microconfig.configs.resolver.expression.Expression;
 
 import static java.lang.String.format;
 
@@ -24,7 +24,7 @@ public class PropertyResolveException extends RuntimeException {
         super(getMessage(innerPlaceholder, sourceOfPlaceholder, root));
     }
 
-    public PropertyResolveException(SpelExpression expression, EnvComponent root, Throwable cause) {
+    public PropertyResolveException(Expression expression, EnvComponent root, Throwable cause) {
         this(format("Can't resolve spel: %s. Root component: %s[%s]. " +
                         "All string must be escaped with single quote '. " +
                         "Example of right spel: #{'${component1@ip}' + ':' + ${ports@port1}}",

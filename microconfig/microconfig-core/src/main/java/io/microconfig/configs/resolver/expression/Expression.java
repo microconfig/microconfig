@@ -1,4 +1,4 @@
-package io.microconfig.configs.resolver.spel;
+package io.microconfig.configs.resolver.expression;
 
 import io.microconfig.configs.resolver.PropertyResolveException;
 import lombok.Getter;
@@ -18,20 +18,20 @@ import java.util.regex.Pattern;
  */
 @Getter
 @RequiredArgsConstructor
-public class SpelExpression {
+public class Expression {
     private static final ExpressionParser parser = new SpelExpressionParser();
     final static Pattern PATTERN = Pattern.compile("#\\{(?<value>[^{]+?)}");
 
     private final String value;
 
-    public static SpelExpression parse(String value) {
+    public static Expression parse(String value) {
         Matcher matcher = PATTERN.matcher(value);
-        if (matcher.find()) return new SpelExpression(matcher.group("value"));
+        if (matcher.find()) return new Expression(matcher.group("value"));
 
         throw PropertyResolveException.badSpellFormat(value);
     }
 
-    public String resolve() {
+    public String evaluate() {
         return parser.parseExpression(value).getValue(String.class);
     }
 

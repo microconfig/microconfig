@@ -14,9 +14,6 @@ import static java.util.Optional.ofNullable;
 import static java.util.regex.Pattern.compile;
 import static lombok.AccessLevel.PRIVATE;
 
-/**
- * //supported format  ${componentName[optionalEnvName]@propertyPlaceholder:optionalDefaultValue}
- */
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
 @EqualsAndHashCode(exclude = "defaultValue")
@@ -29,6 +26,7 @@ public class Placeholder {
     private final String component;
     private final String environment;
     private final String value;
+
     private final Optional<String> defaultValue;
 
     public static boolean isSinglePlaceholder(String value) {

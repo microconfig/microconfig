@@ -12,12 +12,12 @@ import static java.util.function.Function.identity;
 
 @RequiredArgsConstructor
 public class ResolvedConfigProvider implements ConfigProvider, PropertyResolverHolder {
-    private final ConfigProvider provider;
+    private final ConfigProvider delegate;
     private final PropertyResolver resolver;
 
     @Override
     public Map<String, Property> getProperties(Component rootComponent, String environment) {
-        Map<String, Property> properties = provider.getProperties(rootComponent, environment);
+        Map<String, Property> properties = delegate.getProperties(rootComponent, environment);
         return resolveProperties(properties, new EnvComponent(rootComponent, environment));
     }
 
