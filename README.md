@@ -840,7 +840,7 @@ To add system properties use `-D`
 java -DtaskId=3456 -DsomeParam=value -jar microconfig.jar root=repo dest=configs env=prod
 ```
 
-To speedup build up to 2 times you can add `-Xverify:none` and `-XX:TieredStopAtLevel=1` Java VM params. Although build time for even big projects with hungdreds of services is about 1-3 seconds.
+To speedup build up to 3 times you can add `-Xverify:none` and `-XX:TieredStopAtLevel=1` Java VM params. Although build time for even big projects with hungdreds of services is about 1-4 seconds.
 ```
 java -Xverify:none -XX:TieredStopAtLevel=1 -jar microconfig.jar root=repo dest=configs env=prod
 ```
