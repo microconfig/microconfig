@@ -172,6 +172,7 @@ class ConfigProviderTest {
     }
 
     private String resolveValue(String env, Component component, String propName) {
-        return resolver.resolve(property(component.getName() + "." + propName, "${this@" + propName + "}", env, new SpecialSource(component, "")), new EnvComponent(component, env));
+        return resolver.resolve(property(component.getName() + "." + propName, "${this@" + propName + "}", env,
+                new SpecialSource(component, "")), new EnvComponent(component, env));
     }
 }
