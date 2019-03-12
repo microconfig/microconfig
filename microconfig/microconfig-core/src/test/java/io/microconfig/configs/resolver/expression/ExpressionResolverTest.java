@@ -1,15 +1,15 @@
 package io.microconfig.configs.resolver.expression;
 
 import io.microconfig.configs.Property;
-import io.microconfig.configs.resolver.PropertyResolver;
 import io.microconfig.configs.resolver.EnvComponent;
+import io.microconfig.configs.resolver.PropertyResolver;
+import io.microconfig.configs.sources.SpecialSource;
 import io.microconfig.environments.Component;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static io.microconfig.configs.PropertySource.specialSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -57,7 +57,7 @@ class ExpressionResolverTest {
         assertEquals("connparams1", result);
     }
 
-    private static Property prop(String value) {
-        return Property.property("key", value, "uat", specialSource(Component.byType("c"), "c"));
+    private Property prop(String value) {
+        return Property.property("key", value, "uat", new SpecialSource(Component.byType("c"), "c"));
     }
 }

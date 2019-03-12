@@ -1,8 +1,9 @@
 package io.microconfig.configs;
 
+import io.microconfig.configs.resolver.EnvComponent;
 import io.microconfig.configs.resolver.PropertyResolveException;
 import io.microconfig.configs.resolver.PropertyResolver;
-import io.microconfig.configs.resolver.EnvComponent;
+import io.microconfig.configs.sources.SpecialSource;
 import io.microconfig.environments.Component;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +12,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static io.microconfig.configs.Property.property;
-import static io.microconfig.configs.PropertySource.specialSource;
 import static io.microconfig.environments.Component.byNameAndType;
 import static io.microconfig.environments.Component.byType;
 import static io.microconfig.utils.MicronconfigTestFactory.getConfigProvider;
@@ -172,6 +172,6 @@ class ConfigProviderTest {
     }
 
     private String resolveValue(String env, Component component, String propName) {
-        return resolver.resolve(property(component.getName() + "." + propName, "${this@" + propName + "}", env, specialSource(component, "")), new EnvComponent(component, env));
+        return resolver.resolve(property(component.getName() + "." + propName, "${this@" + propName + "}", env, new SpecialSource(component, "")), new EnvComponent(component, env));
     }
 }

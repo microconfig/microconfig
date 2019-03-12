@@ -2,6 +2,7 @@ package io.microconfig.configs.resolver.placeholder.strategies.component;
 
 import io.microconfig.configs.Property;
 import io.microconfig.configs.resolver.placeholder.PlaceholderResolveStrategy;
+import io.microconfig.configs.sources.SpecialSource;
 import io.microconfig.environments.Component;
 import lombok.RequiredArgsConstructor;
 
@@ -9,7 +10,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static io.microconfig.configs.Property.tempProperty;
-import static io.microconfig.configs.PropertySource.specialSource;
 import static java.util.Optional.ofNullable;
 
 @RequiredArgsConstructor
@@ -22,7 +22,7 @@ public class ComponentResolveStrategy implements PlaceholderResolveStrategy {
 
         return ofNullable(componentProperty)
                 .flatMap(p -> p.value(component))
-                .map(value -> tempProperty(propertyKey, value, envName, specialSource(component, "COMPONENT")));
+                .map(value -> tempProperty(propertyKey, value, envName, new SpecialSource(component, "COMPONENT")));
     }
 
     public interface ComponentProperty {

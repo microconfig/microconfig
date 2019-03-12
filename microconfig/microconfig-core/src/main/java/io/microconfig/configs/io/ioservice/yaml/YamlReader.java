@@ -13,7 +13,7 @@ import java.util.List;
 
 import static io.microconfig.configs.Property.isComment;
 import static io.microconfig.configs.Property.property;
-import static io.microconfig.configs.PropertySource.fileSource;
+import static io.microconfig.configs.sources.FileSource.fileSource;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static java.lang.Character.isWhitespace;
 import static java.util.stream.Collectors.joining;
@@ -159,7 +159,7 @@ class YamlReader extends AbstractConfigReader {
         String key = toProperty(currentProperty);
         currentProperty.pollLast();
 
-        result.add(property(key, value, env, fileSource(file, lineNumber, true)));
+        result.add(property(key, value, env, fileSource(file, lineNumber + 1, true)));
     }
 
     private String toProperty(Deque<KeyOffset> currentProperty) {

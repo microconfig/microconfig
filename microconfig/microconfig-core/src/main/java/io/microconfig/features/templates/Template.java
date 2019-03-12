@@ -10,8 +10,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.microconfig.configs.Property.tempProperty;
-import static io.microconfig.configs.PropertySource.specialSource;
 import static io.microconfig.configs.resolver.placeholder.Placeholder.isSinglePlaceholder;
+import static io.microconfig.configs.sources.SpecialSource.templateSource;
 import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.Logger.warn;
 import static java.util.regex.Matcher.quoteReplacement;
@@ -49,7 +49,7 @@ class Template {
 
     private String resolveValue(EnvComponent currentComponent, PropertyResolver propertyResolver, Matcher matcher) {
         String placeholder = toPlaceholder(matcher);
-        Property property = tempProperty("key", placeholder, currentComponent.getEnvironment(), specialSource(currentComponent.getComponent(), source.getAbsolutePath()));
+        Property property = tempProperty("key", placeholder, currentComponent.getEnvironment(), templateSource(currentComponent.getComponent(), source));
         try {
             return propertyResolver.resolve(property, currentComponent);
         } catch (RuntimeException e) {

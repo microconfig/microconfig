@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static io.microconfig.configs.Property.tempProperty;
-import static io.microconfig.configs.PropertySource.specialSource;
+import static io.microconfig.configs.sources.SpecialSource.envSource;
 import static java.util.Optional.empty;
 
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class EnvDescriptorResolveStrategy implements PlaceholderResolveStrategy 
         if (environment == null) return empty();
 
         return specialProperty.value(component, environment)
-                .map(value -> tempProperty(propertyKey, value, envName, specialSource(component, "ENV_DESCRIPTOR")));
+                .map(value -> tempProperty(propertyKey, value, envName, envSource(component)));
     }
 
     private Environment getEnvironment(String environment) {
