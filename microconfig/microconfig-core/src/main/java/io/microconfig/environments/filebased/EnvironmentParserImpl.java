@@ -5,7 +5,6 @@ import io.microconfig.environments.Component;
 import io.microconfig.environments.ComponentGroup;
 import io.microconfig.environments.EnvInclude;
 import io.microconfig.environments.Environment;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.yaml.snakeyaml.Yaml;
 
@@ -13,7 +12,6 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Function;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.*;
 import static java.util.stream.Collectors.toList;

@@ -14,6 +14,7 @@ import io.microconfig.configs.provider.ComponentParserImpl;
 import io.microconfig.configs.provider.FileBasedConfigProvider;
 import io.microconfig.configs.resolver.PropertyResolver;
 import io.microconfig.configs.resolver.ResolvedConfigProvider;
+import io.microconfig.configs.resolver.expression.ExpressionResolver;
 import io.microconfig.configs.resolver.placeholder.PlaceholderResolveStrategy;
 import io.microconfig.configs.resolver.placeholder.PlaceholderResolver;
 import io.microconfig.configs.resolver.placeholder.strategies.component.ComponentResolveStrategy;
@@ -21,7 +22,6 @@ import io.microconfig.configs.resolver.placeholder.strategies.component.properti
 import io.microconfig.configs.resolver.placeholder.strategies.envdescriptor.EnvDescriptorResolveStrategy;
 import io.microconfig.configs.resolver.placeholder.strategies.envdescriptor.properties.EnvDescriptorPropertiesFactory;
 import io.microconfig.configs.resolver.placeholder.strategies.standard.StandardResolveStrategy;
-import io.microconfig.configs.resolver.expression.ExpressionResolver;
 import io.microconfig.configs.serializer.ConfigSerializer;
 import io.microconfig.configs.serializer.DiffSerializer;
 import io.microconfig.configs.serializer.FilenameGeneratorImpl;
@@ -89,7 +89,7 @@ public class MicroconfigFactory {
         );
     }
 
-    private PropertyResolver newExpressionResolver(ConfigProvider simpleProvider) {
+    public PropertyResolver newExpressionResolver(ConfigProvider simpleProvider) {
         return cache(new ExpressionResolver(cache(newPlaceholderResolver(simpleProvider))));
     }
 
@@ -106,9 +106,9 @@ public class MicroconfigFactory {
         );
 
         return new PlaceholderResolver(
-                        environmentProvider,
-                        strategy,
-                        joinToSet(componentProperties.get().keySet(), envProperties.get().keySet())
+                environmentProvider,
+                strategy,
+                joinToSet(componentProperties.get().keySet(), envProperties.get().keySet())
         );
     }
 
