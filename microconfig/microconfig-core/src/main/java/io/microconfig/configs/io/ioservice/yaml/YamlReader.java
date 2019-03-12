@@ -155,7 +155,7 @@ class YamlReader extends AbstractConfigReader {
         if (lastKey != null) {
             currentProperty.add(new KeyOffset(lastKey, currentOffset, line));
         }
-        int lineNumber = currentProperty.peekFirst().lineNumber;
+        int lineNumber = currentProperty.peekLast().lineNumber;
         String key = toProperty(currentProperty);
         currentProperty.pollLast();
 
