@@ -3,6 +3,7 @@ package io.microconfig.utils;
 import io.microconfig.commands.buildconfig.factory.MicroconfigFactory;
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.resolver.PropertyResolver;
+import io.microconfig.configs.resolver.PropertyResolverHolder;
 import io.microconfig.environments.EnvironmentProvider;
 
 import java.io.File;

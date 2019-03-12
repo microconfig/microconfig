@@ -5,6 +5,7 @@ import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.Property;
 import io.microconfig.configs.resolver.EnvComponent;
 import io.microconfig.configs.resolver.PropertyResolver;
+import io.microconfig.configs.resolver.PropertyResolverHolder;
 import io.microconfig.features.templates.CopyTemplatesService;
 import lombok.RequiredArgsConstructor;
 
