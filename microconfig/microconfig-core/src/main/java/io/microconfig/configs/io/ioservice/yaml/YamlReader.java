@@ -159,7 +159,7 @@ class YamlReader extends AbstractConfigReader {
         String key = toProperty(currentProperty);
         currentProperty.pollLast();
 
-        result.add(property(key, value, env, fileSource(file, lineNumber + 1, true)));
+        result.add(property(key, value, env, fileSource(file, lineNumber, true)));
     }
 
     private String toProperty(Deque<KeyOffset> currentProperty) {

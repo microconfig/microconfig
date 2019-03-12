@@ -16,7 +16,7 @@ import static io.microconfig.environments.Component.bySourceFile;
 public class FileSource implements PropertySource {
     private final Component component;
     private final File source;
-    private final int lineNumber; //starts from 1
+    private final int lineNumber; //starts from 0
     private final boolean yaml;
 
     public static PropertySource fileSource(File file, int lineNumber, boolean yaml) {
@@ -25,6 +25,6 @@ public class FileSource implements PropertySource {
 
     @Override
     public String toString() {
-        return source.getAbsolutePath() + ":" + lineNumber;
+        return source.getAbsolutePath() + ":" + (lineNumber + 1);
     }
 }
