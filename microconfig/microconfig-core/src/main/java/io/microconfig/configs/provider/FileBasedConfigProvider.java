@@ -55,8 +55,8 @@ public class FileBasedConfigProvider implements ConfigProvider {
         };
 
         Map<String, Property> result = new HashMap<>();
-        addIncludedProperties.accept(result);
         addOriginalProperties.accept(result);
+        addIncludedProperties.accept(result);
         return result;
     }
 
