@@ -85,7 +85,7 @@ public class MicroconfigFactory {
 
     public ConfigProvider newFileBasedProvider(ConfigType configType) {
         return cache(
-                new FileBasedConfigProvider(componentTree, configType.getConfigExtensions(), new ComponentParserImpl(configIoService))
+                new FileBasedConfigProvider(configType.getConfigExtensions(), componentTree, new ComponentParserImpl(configIoService))
         );
     }
 

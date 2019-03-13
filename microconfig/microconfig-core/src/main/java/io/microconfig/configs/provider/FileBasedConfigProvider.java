@@ -7,7 +7,10 @@ import io.microconfig.environments.Component;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -16,8 +19,8 @@ import static io.microconfig.environments.Component.byType;
 
 @RequiredArgsConstructor
 public class FileBasedConfigProvider implements ConfigProvider {
-    private final ComponentTree componentTree;
     private final Set<String> configExtensions;
+    private final ComponentTree componentTree;
     private final ComponentParser componentParser;
 
     @Override
