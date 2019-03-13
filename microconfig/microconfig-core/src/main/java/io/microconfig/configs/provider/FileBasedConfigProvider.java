@@ -47,7 +47,7 @@ public class FileBasedConfigProvider implements ConfigProvider {
                     .flatMap(Collection::stream)
                     .filter(processedIncludes::add)
                     .map(include -> collectComponentProperties(byType(include.getComponent()), include.getEnv(), processedIncludes))
-                    .forEach(destination::putAll);
+                    .forEach(map -> map.forEach(destination::putIfAbsent));
 
             processIncludes.accept(defaultComponents);
             processIncludes.accept(envSharedComponents);
