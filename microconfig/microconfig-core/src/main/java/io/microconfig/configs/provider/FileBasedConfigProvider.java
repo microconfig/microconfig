@@ -46,7 +46,7 @@ public class FileBasedConfigProvider implements ConfigProvider {
     private void processComponent(ParsedComponent parsedComponent, Map<String, Property> destination, Set<Include> processedIncludes) {
         parsedComponent.getIncludes()
                 .stream()
-                .filter(include -> !processedIncludes.add(include))
+                .filter(processedIncludes::add)
                 .map(include -> collectComponentProperties(byType(include.getComponent()), include.getEnv(), processedIncludes))
                 .forEach(destination::putAll);
 
