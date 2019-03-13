@@ -19,7 +19,7 @@ import static java.util.Optional.of;
  * <p>
  * Command line params example:
  * root=C:\Users\amatorin\Desktop\microconfig\configs-layout-example dest=C:\Users\amatorin\Desktop\microconfig\output env=dev
- * root=C:\Projects\config\repo dest=C:\Projects\configs env=cr-dev6 outputFormat=.yaml
+ * root=C:\Projects\config\repo dest=C:\Projects\configs env=cr-dev6
  */
 public class BuildConfigMain {
     private static final String ROOT = "root";
