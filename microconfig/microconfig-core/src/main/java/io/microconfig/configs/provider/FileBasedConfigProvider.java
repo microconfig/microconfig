@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.util.*;
-import java.util.function.Function;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static io.microconfig.configs.io.tree.ConfigFileFilters.*;
@@ -22,49 +22,34 @@ public class FileBasedConfigProvider implements ConfigProvider {
 
     @Override
     public Map<String, Property> getProperties(Component component, String environment) {
-        return collectProperties(component, environment, new LinkedHashSet<>());
+        return collectComponentProperties(component, environment, new LinkedHashSet<>());
     }
 
-    private Map<String, Property> collectProperties(Component component, String env, Set<Include> processedIncludes) {
-        Function<Predicate<File>, Map<String, Property>> collectProperties = filter -> collectProperties(filter, component, env, processedIncludes);
-
-        Map<String, Property> basicProperties = collectProperties.apply(defaultFilter(configExtensions));
-        Map<String, Property> envSharedProperties = collectProperties.apply(envSharedFilter(configExtensions, env));
-        Map<String, Property> envSpecificProperties = collectProperties.apply(envSpecificFilter(configExtensions, env));
-
-        basicProperties.putAll(envSharedProperties);
-        basicProperties.putAll(envSpecificProperties);
-        return basicProperties;
-    }
-
-    private Map<String, Property> collectProperties(Predicate<File> filter, Component component, String env, Set<Include> processedIncludes) {
+    private Map<String, Property> collectComponentProperties(Component component, String env, Set<Include> processedIncludes) {
         Map<String, Property> propertyByKey = new HashMap<>();
+        Consumer<Predicate<File>> collectProperties = filter -> findProperties(filter, component, env, processedIncludes, propertyByKey);
 
-        componentTree.getConfigFiles(component.getType(), filter)
-                .map(file -> componentParser.parse(file, env))
-                .forEach(c -> processComponent(c, propertyByKey, processedIncludes));
+        collectProperties.accept(defaultFilter(configExtensions));
+        collectProperties.accept(envSharedFilter(configExtensions, env));
+        collectProperties.accept(envSpecificFilter(configExtensions, env));
 
         return propertyByKey;
     }
 
-    private void processComponent(ParsedComponent parsedComponent, Map<String, Property> destination, Set<Include> processedIncludes) {
-        Map<String, Property> included = processIncludes(parsedComponent.getIncludes(), processedIncludes);
-        Map<String, Property> original = parsedComponent.getPropertiesAsMas();
-
-        destination.putAll(included);
-        destination.putAll(original);
+    private void findProperties(Predicate<File> filter, Component component, String env,
+                                Set<Include> processedIncludes, Map<String, Property> propertyByKey) {
+        componentTree.getConfigFiles(component.getType(), filter)
+                .map(file -> componentParser.parse(file, env))
+                .forEach(c -> processComponent(c, propertyByKey, processedIncludes));
     }
 
-    private Map<String, Property> processIncludes(List<Include> includes, Set<Include> processedIncludes) {
-        Map<String, Property> result = new HashMap<>();
+    private void processComponent(ParsedComponent parsedComponent, Map<String, Property> destination, Set<Include> processedIncludes) {
+        parsedComponent.getIncludes()
+                .stream()
+                .filter(include -> !processedIncludes.add(include))
+                .map(include -> collectComponentProperties(byType(include.getComponent()), include.getEnv(), processedIncludes))
+                .forEach(destination::putAll);
 
-        for (Include include : includes) {
-            if (!processedIncludes.add(include)) continue;
-
-            Map<String, Property> included = collectProperties(byType(include.getComponent()), include.getEnv(), processedIncludes);
-            result.putAll(included);
-        }
-
-        return result;
+        destination.putAll(parsedComponent.getPropertiesAsMas());
     }
 }

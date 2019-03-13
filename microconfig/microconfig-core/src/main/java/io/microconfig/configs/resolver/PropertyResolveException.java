@@ -33,7 +33,7 @@ public class PropertyResolveException extends RuntimeException {
 
     // Root component -> %s[%s]
     private static String getMessage(String innerPlaceholder, Property sourceOfPlaceholder, EnvComponent root) {
-        return format("Can't resolve placeholder '%s' defined in '%s'. That property is a transitive dependency of '%s'.",
+        return format("Can't resolve placeholder '%s' defined in \r\n'%s', that property is a transitive dependency of '%s'.",
                 innerPlaceholder,
                 sourceOfPlaceholder.getSource().sourceInfo(),
                 root);
