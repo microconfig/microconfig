@@ -18,8 +18,7 @@ class ParsedComponent {
         return includes;
     }
 
-    public Map<String, Property> getPropertiesAsMas() {
-        return properties.stream()
-                .collect(toMap(Property::getKey, p -> p));
+    public void dumpPropertiesTo(Map<String, Property> destination) {
+        properties.forEach(property -> destination.put(property.getKey(), property));
     }
 }
