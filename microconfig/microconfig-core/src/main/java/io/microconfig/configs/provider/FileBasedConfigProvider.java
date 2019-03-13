@@ -36,14 +36,18 @@ public class FileBasedConfigProvider implements ConfigProvider {
         return propertyByKey;
     }
 
-    private void findProperties(Predicate<File> filter, Component component, String env,
-                                Set<Include> processedIncludes, Map<String, Property> propertyByKey) {
+    private void findProperties(Predicate<File> filter,
+                                Component component, String env,
+                                Set<Include> processedIncludes,
+                                Map<String, Property> destination) {
         componentTree.getConfigFiles(component.getType(), filter)
                 .map(file -> componentParser.parse(file, env))
-                .forEach(c -> processComponent(c, propertyByKey, processedIncludes));
+                .forEach(c -> processComponent(c, processedIncludes, destination));
     }
 
-    private void processComponent(ParsedComponent parsedComponent, Map<String, Property> destination, Set<Include> processedIncludes) {
+    private void processComponent(ParsedComponent parsedComponent,
+                                  Set<Include> processedIncludes,
+                                  Map<String, Property> destination) {
         parsedComponent.getIncludes()
                 .stream()
                 .filter(processedIncludes::add)
