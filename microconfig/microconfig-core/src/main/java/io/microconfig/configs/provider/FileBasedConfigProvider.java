@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static io.microconfig.configs.io.tree.ConfigFileFilters.*;
 import static io.microconfig.environments.Component.byType;
@@ -34,29 +35,36 @@ public class FileBasedConfigProvider implements ConfigProvider {
         List<ParsedComponent> envSharedComponents = findAndParse.apply(envSharedFilter(configExtensions, env));
         List<ParsedComponent> envSpecificComponents = findAndParse.apply(envSpecificFilter(configExtensions, env));
 
-        Consumer<Map<String, Property>> addOriginalProperties = destination -> {
-            Consumer<List<ParsedComponent>> process = components -> components.forEach(c -> c.dumpPropertiesTo(destination));
+        Supplier<Map<String, Property>> originalProperties = () -> {
+            Map<String, Property> result = new HashMap<>();
+            Consumer<List<ParsedComponent>> process = components -> components.forEach(c -> c.dumpPropertiesTo(result));
 
             process.accept(defaultComponents);
             process.accept(envSharedComponents);
             process.accept(envSpecificComponents);
+
+            return result;
         };
-        Consumer<Map<String, Property>> addIncludedProperties = destination -> {
+        Supplier<Map<String, Property>> includedProperties = () -> {
+            Map<String, Property> result = new HashMap<>();
+
             Consumer<List<ParsedComponent>> processIncludes = components -> components.stream()
                     .map(ParsedComponent::getIncludes)
                     .flatMap(Collection::stream)
                     .filter(processedIncludes::add)
                     .map(include -> collectComponentProperties(byType(include.getComponent()), include.getEnv(), processedIncludes))
-                    .forEach(map -> map.forEach(destination::putIfAbsent));
+                    .forEach(map -> map.forEach(result::putIfAbsent));
 
             processIncludes.accept(defaultComponents);
             processIncludes.accept(envSharedComponents);
             processIncludes.accept(envSpecificComponents);
+
+            return result;
         };
 
-        Map<String, Property> result = new HashMap<>();
-        addOriginalProperties.accept(result);
-        addIncludedProperties.accept(result);
+
+        Map<String, Property> result = includedProperties.get();
+        result.putAll(originalProperties.get());
         return result;
     }
 
