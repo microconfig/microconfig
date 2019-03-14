@@ -99,9 +99,9 @@ public class MicroconfigFactory {
 
         PlaceholderResolveStrategy strategy = composite(
                 systemPropertiesResolveStrategy(),
-                new StandardResolveStrategy(simpleProvider),
                 new ComponentResolveStrategy(componentProperties.get()),
                 new EnvDescriptorResolveStrategy(environmentProvider, envProperties.get()),
+                new StandardResolveStrategy(simpleProvider),
                 envVariablesResolveStrategy()
         );
 
