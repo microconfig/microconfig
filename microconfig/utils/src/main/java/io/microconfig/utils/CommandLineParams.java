@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import static io.microconfig.utils.Logger.error;
-import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
+import static io.microconfig.utils.StringUtils.splitToList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
 
@@ -34,11 +33,7 @@ public class CommandLineParams {
     }
 
     public List<String> listValue(String key) {
-        String value = value(key);
-        return value == null ? emptyList()
-                : of(value.split(","))
-                .map(String::trim)
-                .collect(toList());
+        return splitToList(value(key), ",");
     }
 
     public String requiredValue(String key, String npeMessage) {
