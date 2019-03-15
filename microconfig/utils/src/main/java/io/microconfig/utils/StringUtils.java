@@ -32,9 +32,10 @@ public class StringUtils {
     }
 
     public static List<String> splitToList(String value, String separator) {
-        return value == null ? emptyList()
+        return isEmpty(value) ? emptyList()
                 : of(value.split(separator))
                 .map(String::trim)
+                .filter(s -> !s.isEmpty())
                 .collect(toList());
     }
 
