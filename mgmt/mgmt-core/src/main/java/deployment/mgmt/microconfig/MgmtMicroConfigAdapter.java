@@ -6,7 +6,7 @@ import io.microconfig.commands.buildconfig.BuildConfigCommand;
 import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
 import io.microconfig.commands.buildconfig.entry.BuildConfigMain;
 import io.microconfig.commands.buildconfig.factory.MicroconfigFactory;
-import io.microconfig.commands.buildconfig.postprocessors.CopyTemplatesPostProcessor;
+import io.microconfig.features.templates.CopyTemplatesPostProcessor;
 import io.microconfig.features.templates.CopyTemplatesServiceImpl;
 import io.microconfig.features.templates.TemplatePattern;
 

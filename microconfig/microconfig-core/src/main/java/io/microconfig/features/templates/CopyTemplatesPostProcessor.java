@@ -1,4 +1,4 @@
-package io.microconfig.commands.buildconfig.postprocessors;
+package io.microconfig.features.templates;
 
 import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
 import io.microconfig.configs.ConfigProvider;
@@ -6,7 +6,6 @@ import io.microconfig.configs.Property;
 import io.microconfig.configs.resolver.EnvComponent;
 import io.microconfig.configs.resolver.PropertyResolver;
 import io.microconfig.configs.resolver.PropertyResolverHolder;
-import io.microconfig.features.templates.CopyTemplatesService;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

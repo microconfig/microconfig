@@ -1,10 +1,9 @@
-package io.microconfig.commands.buildconfig.postprocessors;
+package io.microconfig.features.secrets;
 
 import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.Property;
 import io.microconfig.configs.resolver.EnvComponent;
-import io.microconfig.features.secrets.SecretService;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
