@@ -219,7 +219,7 @@ And replace explicit configs with includes
     payments.system.retries=3
     consistency.validateConsistencyIntervalInMs=420000 # difficult to read. how long in min ?    
 ```
-To include component's configuration you need to specify only the component name, you don't need to specify path to it. It makes config layout refactoring easy. Microconfig will find folder with component name and include configuration from its files (If the folder name is not unique, Microconfig includes configs from each folder, but it's a good idea to keep component name unique).
+To include a component's configuration you need to specify only the component name, you don't need to specify the path to it. It makes config layout refactoring easy. Microconfig will find a folder with the component's name and include the configuration from its files (If the folder name is not unique, Microconfig includes configs from each folders, but it's a good idea to keep a component name unique).
 
 
 Some problems still here, but we removed duplication and made it easy to understand the service's dependencies.
