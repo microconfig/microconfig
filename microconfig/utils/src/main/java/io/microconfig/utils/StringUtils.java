@@ -1,9 +1,13 @@
 package io.microconfig.utils;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import static java.lang.Character.*;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Stream.of;
 
 public class StringUtils {
     public static boolean isEmpty(String str) {
@@ -25,6 +29,14 @@ public class StringUtils {
         pattern = pattern.replace("_", "\\E.\\Q");
         pattern = pattern.replace("%", "\\E.*\\Q");
         return value.matches(pattern);
+    }
+
+    public static List<String> splitToList(String value, String separator) {
+        return isEmpty(value) ? emptyList()
+                : of(value.split(separator))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(toList());
     }
 
     public static String toLowerHyphen(String name) {

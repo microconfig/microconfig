@@ -1,9 +1,14 @@
 package io.microconfig.configs.io.ioservice.yaml;
 
+import io.microconfig.configs.Property;
+import io.microconfig.configs.io.ioservice.ConfigReader;
+import io.microconfig.configs.sources.FileSource;
 import io.microconfig.utils.reader.FsFileReader;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -16,15 +21,21 @@ class YamlReaderTest {
 
     @Test
     void testSimpleYaml() {
-        Map<String, String> map = new LinkedHashMap<>();
-        map.put("p0", "p0v");
-        map.put("p1.p2.p3.p4.p5", "p5v");
-        map.put("server.port", "8080");
-        map.put("name", "");
-        map.put("name.name2", "");
-        map.put("displayName", "dv");
+        Map<String, String> expected = new LinkedHashMap<>();
+        expected.put("p0", "p0v");
+        expected.put("p1.p2.p3.p4.p5", "p5v");
+        expected.put("server.port", "8080");
+        expected.put("name", "");
+        expected.put("name.name2", "");
+        expected.put("displayName", "dv");
 
-        assertEquals(map, yaml.read(classpathFile("files/yaml/simple.yaml")).propertiesAsMap());
+        ConfigReader read = yaml.read(classpathFile("files/yaml/simple.yaml"));
+        assertEquals(expected, read.propertiesAsMap());
+
+        List<Property> properties = read.properties("");
+        assertEquals(0, ((FileSource)properties.get(0).getSource()).getLineNumber());
+        assertEquals(6, ((FileSource)properties.get(1).getSource()).getLineNumber());
+        assertEquals(8, ((FileSource)properties.get(2).getSource()).getLineNumber());
     }
 
     @Test

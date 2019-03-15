@@ -16,8 +16,8 @@ import static io.microconfig.environments.Component.byType;
 
 @RequiredArgsConstructor
 public class FileBasedConfigProvider implements ConfigProvider {
-    private final ComponentTree componentTree;
     private final Set<String> configExtensions;
+    private final ComponentTree componentTree;
     private final ComponentParser componentParser;
 
     @Override

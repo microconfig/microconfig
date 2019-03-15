@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.function.IntSupplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.IntStream;
 
 import static java.util.Arrays.stream;
 import static java.util.regex.Pattern.compile;

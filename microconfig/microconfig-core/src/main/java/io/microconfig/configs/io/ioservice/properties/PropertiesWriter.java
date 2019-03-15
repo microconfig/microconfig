@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static java.nio.file.StandardOpenOption.APPEND;
+import static java.nio.file.StandardOpenOption.CREATE;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.of;
@@ -41,7 +42,7 @@ class PropertiesWriter implements ConfigWriter {
                 .stream()
                 .map(e -> e.getKey() + "=" + e.getValue());
 
-        doWrite(concat(of(LINES_SEPARATOR), lines), APPEND);
+        doWrite(concat(of(LINES_SEPARATOR), lines), CREATE, APPEND);
     }
 
     private void doWrite(Stream<String> lines, OpenOption... openOptions) {

@@ -1,7 +1,7 @@
 package io.microconfig.configs.resolver;
 
 import io.microconfig.configs.Property;
-import io.microconfig.configs.resolver.spel.SpelExpression;
+import io.microconfig.configs.resolver.expression.Expression;
 
 import static java.lang.String.format;
 
@@ -24,25 +24,27 @@ public class PropertyResolveException extends RuntimeException {
         super(getMessage(innerPlaceholder, sourceOfPlaceholder, root));
     }
 
-    public PropertyResolveException(SpelExpression expression, EnvComponent root, Throwable cause) {
-        this(format("Can't resolve spel: %s. Root component: %s[%s]. " +
+    public PropertyResolveException(Expression expression, EnvComponent root, Throwable cause) {
+        this(format("Can't evaluate EL '%s'. Root component -> %s[%s]. " +
                         "All string must be escaped with single quote '. " +
-                        "Example of right spel: #{'${component1@ip}' + ':' + ${ports@port1}}",
+                        "Example of correct EL: #{'${component1@ip}' + ':' + ${ports@port1}}",
                 expression, root.getComponent().getName(), root.getEnvironment()), cause);
     }
 
+    // Root component -> %s[%s]
     private static String getMessage(String innerPlaceholder, Property sourceOfPlaceholder, EnvComponent root) {
-        return format("Can't resolve placeholder: %s. Root component: %s[%s]. Source or error: %s[%s] '%s:%d'",
-                innerPlaceholder, root.getComponent().getName(), root.getEnvironment(),
-                sourceOfPlaceholder.getSource().getComponent().getName(), sourceOfPlaceholder.getEnvContext(),
-                sourceOfPlaceholder.getSource().getSourceOfProperty(), sourceOfPlaceholder.getSource().getLine() + 1);
+        return format("Can't resolve placeholder '%s' defined in \r\n'%s', that property is a transitive dependency of '%s'.",
+                innerPlaceholder,
+                sourceOfPlaceholder.getSource().sourceInfo(),
+                root);
     }
 
     public static PropertyResolveException badPlaceholderFormat(String value) {
-        return new PropertyResolveException("Can't resolve placeholders: " + value + ". Supported format: ${componentName[optionalEnvName]@propertyPlaceholder:optionalDefaultValue}");
+        return new PropertyResolveException("Can't parse placeholder '" + value + "'"
+                + ". Supported format: ${componentName[optionalEnvName]@propertyPlaceholder:optionalDefaultValue}");
     }
 
     public static PropertyResolveException badSpellFormat(String value) {
-        throw new PropertyResolveException(value + " is not spel expression. Supported format is: #{expression}");
+        throw new PropertyResolveException("'" + value + "' is not an expression. Supported format is: #{expression}");
     }
 }

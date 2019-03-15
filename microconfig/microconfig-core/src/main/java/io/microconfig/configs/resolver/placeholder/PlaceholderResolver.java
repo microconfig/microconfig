@@ -120,7 +120,8 @@ public class PlaceholderResolver implements PropertyResolver {
         return empty();
     }
 
-    private Optional<Property> resolveToProperty(Placeholder placeholder) {
+    //must be public for plugin
+    public Optional<Property> resolveToProperty(Placeholder placeholder) {
         Component component = getComponentByName(placeholder.getComponent(), placeholder.getEnvironment());
         return resolveStrategy.resolve(component, placeholder.getValue(), placeholder.getEnvironment());
     }

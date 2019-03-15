@@ -1,20 +1,20 @@
-package io.microconfig.configs.resolver.spel;
+package io.microconfig.configs.resolver.expression;
 
 import io.microconfig.configs.Property;
-import io.microconfig.configs.resolver.PropertyResolver;
 import io.microconfig.configs.resolver.EnvComponent;
+import io.microconfig.configs.resolver.PropertyResolver;
+import io.microconfig.configs.sources.SpecialSource;
 import io.microconfig.environments.Component;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static io.microconfig.configs.PropertySource.specialSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class SpelExpressionResolverTest {
+class ExpressionResolverTest {
     @Mock
     PropertyResolver placeholderResolver;
     @Mock
@@ -24,7 +24,7 @@ class SpelExpressionResolverTest {
     void testResolves() {
         Property spel = prop("#{'${some.test1.property}'.length() + '${some.test2.property}'.length()}");
         when(placeholderResolver.resolve(spel, context)).thenReturn("#{'someTestValue'.length() + 'someTestValue2'.length()}");
-        SpelExpressionResolver resolver = new SpelExpressionResolver(placeholderResolver);
+        ExpressionResolver resolver = new ExpressionResolver(placeholderResolver);
         String result = resolver.resolve(spel, context);
         assertEquals("27", result);
     }
@@ -33,7 +33,7 @@ class SpelExpressionResolverTest {
     void testDelegatesIfNotSpelExpression() {
         Property property = prop("${some.test1.property}-${some.test2.property}");
         when(placeholderResolver.resolve(property, context)).thenReturn("someValue");
-        SpelExpressionResolver resolver = new SpelExpressionResolver(placeholderResolver);
+        ExpressionResolver resolver = new ExpressionResolver(placeholderResolver);
         String result = resolver.resolve(property, context);
         assertEquals("someValue", result);
     }
@@ -42,7 +42,7 @@ class SpelExpressionResolverTest {
     void testExpressionsWork() {
         Property property = prop("#{${some.int.property1} * ${some.int.property2}}");
         when(placeholderResolver.resolve(property, context)).thenReturn("#{1000 * 2}");
-        SpelExpressionResolver resolver = new SpelExpressionResolver(placeholderResolver);
+        ExpressionResolver resolver = new ExpressionResolver(placeholderResolver);
         String result = resolver.resolve(property, context);
         assertEquals("2000", result);
     }
@@ -52,12 +52,12 @@ class SpelExpressionResolverTest {
         Property spel = prop("#{(${some.int.property1} > 500) ? '${connection.string1}' : '${connection.string2}'}");
         when(placeholderResolver.resolve(spel, context))
                 .thenReturn("#{(1000 > 500) ? 'connparams1' : 'connparams2'}");
-        PropertyResolver resolver = new SpelExpressionResolver(placeholderResolver);
+        PropertyResolver resolver = new ExpressionResolver(placeholderResolver);
         String result = resolver.resolve(spel, context);
         assertEquals("connparams1", result);
     }
 
-    private static Property prop(String value) {
-        return Property.property("key", value, "uat", specialSource(Component.byType("c"), "c"));
+    private Property prop(String value) {
+        return Property.property("key", value, "uat", new SpecialSource(Component.byType("c"), "c"));
     }
 }

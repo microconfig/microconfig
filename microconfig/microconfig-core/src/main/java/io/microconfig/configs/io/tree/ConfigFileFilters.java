@@ -29,10 +29,13 @@ public class ConfigFileFilters {
 
     private static boolean containsEnvPart(File file, String environment, boolean singleEnv) {
         String fileName = file.getName();
-        int indexOfEnv = fileName.indexOf('.' + environment);
+        int indexOfEnv = fileName.indexOf('.' + environment + '.');
         if (indexOfEnv < 0) return false;
 
-        boolean containsOneDot = fileName.lastIndexOf('.') == indexOfEnv + environment.length() + 1;
-        return singleEnv == containsOneDot;
+        long envCount = file.getName()
+                .chars()
+                .filter(c -> c == '.')
+                .count() - 1;
+        return singleEnv == (envCount == 1);
     }
 }

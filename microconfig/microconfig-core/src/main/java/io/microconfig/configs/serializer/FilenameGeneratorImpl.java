@@ -1,6 +1,7 @@
 package io.microconfig.configs.serializer;
 
 import io.microconfig.configs.Property;
+import io.microconfig.configs.sources.FileSource;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -34,7 +35,10 @@ public class FilenameGeneratorImpl implements FilenameGenerator {
 
         return properties
                 .stream()
-                .anyMatch(p -> p.getSource().isYaml()) ?
+                .map(Property::getSource)
+                .filter(s -> s instanceof FileSource)
+                .map(FileSource.class::cast)
+                .anyMatch(FileSource::isYaml) ?
                 YAML.extension() : PROPERTIES.extension();
     }
 }

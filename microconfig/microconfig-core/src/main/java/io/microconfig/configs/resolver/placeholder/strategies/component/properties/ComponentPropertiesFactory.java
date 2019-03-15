@@ -21,8 +21,7 @@ public class ComponentPropertiesFactory {
                 new ComponentConfigDirProperty(componentTree),
                 new ComponentNameProperty(),
                 new ResultServiceDirProperty(destinationComponentDir),
-                new ConfigRootDirProperty(componentTree.getRootDir()),
-                new UserHomeProperty()
+                new ConfigRootDirProperty(componentTree.getRootDir())
         ).collect(toMap(ComponentProperty::key, identity()));
     }
 }

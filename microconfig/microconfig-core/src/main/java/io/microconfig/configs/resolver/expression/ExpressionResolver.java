@@ -1,4 +1,4 @@
-package io.microconfig.configs.resolver.spel;
+package io.microconfig.configs.resolver.expression;
 
 import io.microconfig.configs.Property;
 import io.microconfig.configs.resolver.EnvComponent;
@@ -11,10 +11,10 @@ import java.util.regex.Matcher;
 /**
  * Resolves placeholders in format of spring EL
  *
- * @see SpelExpression
+ * @see Expression
  */
 @RequiredArgsConstructor
-public class SpelExpressionResolver implements PropertyResolver {
+public class ExpressionResolver implements PropertyResolver {
     private final PropertyResolver delegate;
 
     @Override
@@ -26,7 +26,7 @@ public class SpelExpressionResolver implements PropertyResolver {
     private String resolveSpels(String placeholders, EnvComponent root) {
         StringBuilder currentValue = new StringBuilder(placeholders);
         while (true) {
-            Matcher matcher = SpelExpression.PATTERN.matcher(currentValue.toString());
+            Matcher matcher = Expression.PATTERN.matcher(currentValue.toString());
             if (!matcher.find()) break;
 
             String resolvedValue = doResolve(matcher.group(), root);
@@ -37,9 +37,9 @@ public class SpelExpressionResolver implements PropertyResolver {
     }
 
     private String doResolve(String value, EnvComponent root) {
-        SpelExpression expression = SpelExpression.parse(value);
+        Expression expression = Expression.parse(value);
         try {
-            return expression.resolve();
+            return expression.evaluate();
         } catch (RuntimeException e) {
             throw new PropertyResolveException(expression, root, e);
         }

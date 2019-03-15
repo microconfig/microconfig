@@ -41,4 +41,12 @@ class ConfigFileFiltersTest {
         assertTrue(envSharedFilter.test(f4));
         assertFalse(envSharedFilter.test(f5));
     }
+
+    @Test
+    void testEnvShared() {
+        Predicate<File> envSharedFilter = envSharedFilter(singleton(".proc"), "alpha");
+        assertTrue(envSharedFilter.test(new File("process.dev.alpha.proc")));
+        assertFalse(envSharedFilter.test(new File("process.dev.alpha-prod.proc")));
+        assertFalse(envSharedFilter.test(new File("process.dev.prod-alpha.proc")));
+    }
 }
