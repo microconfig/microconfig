@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import static io.microconfig.utils.Logger.error;
+import static io.microconfig.utils.StringUtils.isEmpty;
 import static io.microconfig.utils.StringUtils.splitToList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
@@ -29,7 +30,8 @@ public class CommandLineParams {
     }
 
     public String value(String key) {
-        return keyToValue.get(key);
+        String v = keyToValue.get(key);
+        return isEmpty(v) ? null : v;
     }
 
     public List<String> listValue(String key) {
