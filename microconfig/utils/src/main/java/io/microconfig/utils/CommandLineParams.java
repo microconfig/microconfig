@@ -42,7 +42,8 @@ public class CommandLineParams {
             error(npeMessage);
             System.exit(-1);
         }
-        return value;
+        return value.startsWith("\"")
+                && value.endsWith("\"") ? value.substring(1, value.length() - 1) : value;
     }
 
     public void putToSystem(String key) {
