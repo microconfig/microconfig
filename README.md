@@ -13,7 +13,7 @@ Keep configuration for each service, ideally separately from code.
 * It must be easy to understand how the result file is generated and based on what placeholders are resolved.
 * Some configuration properties must be dynamic, calculated using an expression language.
 
-Microconfig is written in Java, but it designed to be used with systems written in any language. Microconfig just describes format of base configuration, syntax for placeholders, includes, excludes, overrides, expression language for dynamic properties and engine than can build it to plain *.yaml or *.properties. Also it can resolve placeholders in arbitrary template files and show diff between config releases.
+Microconfig is written in Java, but it designed to be used with systems written in any language. Microconfig just describes a format of base configuration, syntax for placeholders, includes, excludes, overrides, expression language for dynamic properties and engine than can build it to plain *.yaml or *.properties. Also it can resolve placeholders in arbitrary template files and show diff between config releases.
 
 # Difference between Microconfig and popular devops tools
 **Comparing to config servers** (like Spring cloud config server or Zookeeper):
