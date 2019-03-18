@@ -300,7 +300,7 @@ Also includes can be in one line:
 Microconfig allows specifying env specific properties (add/remove/override). For instance, you want to increase connection-pool-size for dbs and increase the amount of memory for prod env.
 To add/remove/override properties for env, you can create application.**${ENVNAME}**.properties file in the config folder. 
 
-Let's override connection pool connection size for dev and prod and add one new param for dev. 
+Let's override connection pool and connection size for dev and prod and add one new param for dev. 
 
 ```
 order-db
@@ -311,7 +311,8 @@ order-db
 
 **orders-db/application.dev.properties**
 ```*.properties   
-    datasource.maximum-pool-size=15    
+    datasource.maximum-pool-size=15   
+    hibernate.show-sql=true    
 ```
 
 **orders-db/application.prod.properties**
@@ -319,7 +320,7 @@ order-db
     datasource.maximum-pool-size=50    
 ```
 
-Also, you can declare common properties for several environments on a single file.  You can use the following file name pattern: application.**${ENV1.ENV2.ENV3...}**.properties
+Also, you can declare common properties for several environments in a single file.  You can use the following file name pattern: application.**${ENV1.ENV2.ENV3...}**.properties
 Let's create common props for dev, dev2 and test envs.
 
 ```
