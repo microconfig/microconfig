@@ -18,7 +18,7 @@ Microconfig is written in Java, but it designed to be used with systems written 
 # Difference between Microconfig and popular devops tools
 **Comparing to config servers** (like Spring cloud config server or Zookeeper):
 
-Config servers solve the problem of dynamic distribution of configuration in runtime (can use http api endpoints), but to distribute configuration you have to store it, ideally with change history and without duplication of common part.
+Config servers solve the problem of dynamic distribution of configuration in runtime (can use http endpoints), but to distribute configuration you have to store it, ideally with change history and without duplication of common part.
 
 **Comparing to Ansible**:
 
