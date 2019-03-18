@@ -300,7 +300,7 @@ Also includes can be in one line:
 Microconfig allows specifying env specific properties (add/remove/override). For instance, you want to increase connection-pool-size for dbs and increase the amount of memory for prod env.
 To add/remove/override properties for env, you can create application.**${ENVNAME}**.properties file in the config folder. 
 
-Let's override connection pool and connection size for dev and prod and add one new param for dev. 
+Let's override connection pool size for dev and prod and add one new param for dev. 
 
 ```
 order-db
