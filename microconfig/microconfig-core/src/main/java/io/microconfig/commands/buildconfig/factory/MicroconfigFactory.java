@@ -145,8 +145,7 @@ public class MicroconfigFactory {
         );
     }
 
-    //must be public for plugin
-    public static ConfigIoService newConfigIoService(ConfigFileReader fileReader) {
+    private static ConfigIoService newConfigIoService(ConfigFileReader fileReader) {
         return new ConfigIoServiceSelector(
                 cache(new ConfigFormatDetectorImpl(fileReader)),
                 new YamlConfigIoService(fileReader),
