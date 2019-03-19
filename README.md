@@ -63,7 +63,7 @@ repo
 
 ## Service configuration files
 
-Inside the service folder, you can create a configuration in key=value format.
+Inside the service folder, you can create a configuration in key=value format. For examples we will use *.properties, but Microconfig also supports *.yaml. 
 
 Let’s create basic application and process configuration files for each service.
 You can split configuration among several files, but for simplicity, we will create single application.properties and process.proc for each service. Anyway, after configuration build for each service for each config type, a single result file will be generated despite the number of base source files.
