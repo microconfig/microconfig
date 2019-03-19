@@ -831,7 +831,8 @@ To build configs not for the whole environment but only for specific services yo
 * `groups` - comma-separated list of component groups to build configs for. 
 * `services` - comma-separated list of services to build configs for. 
 
-Command line params example:
+
+Command line params example (requires Java 8+):
 ```
 java -jar microconfig.jar root=repo dest=configs env=prod
 ```
