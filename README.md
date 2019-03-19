@@ -91,9 +91,9 @@ Inside process.proc we will store configuration that describes what is your serv
 
 **orders/process.proc**
 ```properties
-    artifact=org.example:orders:19.4.2 # artifact in maven format groupId:artifactId:version
-    java.main=org.example.orders.OrdersStarter # main class to run
-    java.opts.mem=-Xms1024M -Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log # vm params
+    artifact=org.example:orders:19.4.2 # partial duplication
+    java.main=org.example.orders.OrdersStarter
+    java.opts.mem=-Xms1024M -Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log # duplication
 ```
 **payments/process.proc**
 ```properties
@@ -130,7 +130,7 @@ Let's see how application properties can look like. In comments we note what can
 ```properties
     server.port=8080
     application.name=payments # better to get name from folder
-    payments.booktimeoutInMs=900000 # how long in min ?
+    payments.booktimeoutInMs=900000 # difficult to read. how long in min ?
     payments.system.retries=3
     consistency.validateConsistencyIntervalInMs=420000 # difficult to read. how long in min ?
     service-discovery.url=http://10.12.172.11:6781 # are you sure url is consistent with eureka configuration?
