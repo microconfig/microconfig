@@ -677,7 +677,7 @@ repo
 ```  
 
 As you could notice the placeholder syntax inside template `${propName}`  differs from Micronfig one `${component@propName}`, it doesn't specify a component name.
-You can use the standard Microconfig syntax for placeholder as well. For short sytax ${propName} == ${**this**@propName}.
+You can use the standard Microconfig syntax for placeholder as well. ${propName} == ${**this**@propName}.
 
 If Microconfig can't resolve a template placeholder, Microconfig logs warn and leaves unresolved template text.
 
