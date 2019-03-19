@@ -28,12 +28,12 @@ Microconfig does one thing and does it well. It provides an approach, best pract
 
 You can use Microconfig together with config servers and deployment frameworks. Configuration can be built during deploy phase and the resulting plain config files can be copied to the filesystem, where your services can access it directly(for instance, Spring Boot can read configuration from *.yaml or *.properties), or you can distribute result configuration using any config servers. Also, you can store not only application configuration but configuration how to run your services. And deployments frameworks can read configuration from Microconfig to start your services with right params and settings.
 
-# Where to store configuration
+## Where to store configuration
 It’s a good practice to keep service configuration separated from code. It allows not to rebuild your services any time configuration is changed and use the same service artifacts (for instance, *.jar) for all environments because it doesn’t contain any env specific configuration. Configuration can be updated even in runtime without service' source code changes.
 
 So the best way to follow this principle is to have a dedicated repository for configuration in your favorite version control system.  You can store configuration for all microservices in the same repository to make it easy to reuse a common part and be sure the common part is consistent for all your services.
 
-# Service configuration types
+## Service configuration types
 
 It's convenient to have different kinds of configuration and keep it in different files:
 * Process configuration (the configuration used by deployment tools to start your service, like memory limit, VM params, etc.
@@ -61,7 +61,7 @@ repo
     └───api-gateway
 ```
 
-# Service configuration files
+## Service configuration files
 
 Inside the service folder, you can create a configuration in key=value format.
 
@@ -433,7 +433,7 @@ In the example below after build datasource.url=jdbc:oracle:thin:@**100.30.162.8
 
 Placeholder can link to another placeholder. Microconfig can resolve them recursively and detect cyclic dependencies.
 
-# Placeholder's default value
+## Placeholder's default value
 You can specify a default value for placeholder using syntax ${component@property:**defaultValue**}
 
 Let's set default value for oracle host
@@ -454,7 +454,7 @@ Microconfig will try to:
 
 If a placeholder doesn't have a default value and that placeholder can't be resolved Microconfig throws an exception with the detailed problem description.    
 
-# Removing  base properties
+## Removing base properties
 Using #var you can remove properties from the result config file. You can include some config and override any property with #var to exclude it from the result config file. 
 
 Let's remove 'payments.system.retries' property for dev env:
@@ -467,7 +467,7 @@ Let's remove 'payments.system.retries' property for dev env:
 ```*.properties
     #var payments.system.retries=  // will not be included into result config        
 ```
-# Specials placeholders
+## Specials placeholders
 As we discussed syntax for placeholders looks like `${component@property}`.
 Microconfig has several special useful placeholders:
 
@@ -513,7 +513,7 @@ Refactored:
     application.name=${this@name}
 ```                 
 
-# Env variables and system properties 
+## Env variables and system properties 
 To resolve env variables use the following syntax: `${env@variableName}`
 
 For example:
@@ -831,7 +831,6 @@ To build configs not for the whole environment but only for specific services yo
 * `groups` - comma-separated list of component groups to build configs for. 
 * `services` - comma-separated list of services to build configs for. 
 
-
 Command line params example (Java 8+ required):
 ```
 java -jar microconfig.jar root=repo dest=configs env=prod
@@ -955,7 +954,7 @@ Yaml format configs will be built into *.yaml, property ones will be built into 
 
 Microconfig can detect config's format based on separators (if config file has extension neither *.yaml nor *.properties). If you use `:` key-value separator, Microconfig will handle it like *.yaml (`=` for *.properties).
 
-## Contributing
+# Contributing
 If you want to contribute to the project and make it better, your help is very welcome. You can request a feature or submit a bug via issues. Or submit a pull request.
 
 Contributing to the documentation is very welcome too.  
