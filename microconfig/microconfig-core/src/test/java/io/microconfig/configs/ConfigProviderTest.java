@@ -166,6 +166,16 @@ class ConfigProviderTest {
         assertEquals("v1 v1", properties.get("properties").getValue());
     }
 
+    @Test
+    void testListMerge() {
+        Map<String, Property> properties = provider.getProperties(byType("mergeLists"), "some");
+        assertEquals("- v1\n" +
+                "- v2\n" +
+                "- v3\n" +
+                "- v4\n" +
+                "- v5\n", properties.get("level_1.level_2").getValue());
+    }
+
     private void doTestAliases(String componentName, String ip) {
         Component component = byNameAndType(componentName, "node");
         assertEquals(ip, resolveValue("aliases", component, "ip"));
