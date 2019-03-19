@@ -33,6 +33,16 @@ It’s a good practice to keep service configuration separated from code. It all
 
 So the best way to follow this principle is to have a dedicated repository for configuration in your favorite version control system.  You can store configuration for all microservices in the same repository to make it easy to reuse a common part and be sure the common part is consistent for all your services.
 
+# Service configuration types
+
+It's convenient to have different kinds of configuration and keep it in different files:
+* Process configuration (the configuration used by deployment tools to start your service, like memory limit, VM params, etc.
+* Application configuration (the configuration that your service reads after startup and uses in runtime)
+* OS ENV variables
+* Lib specific templates (for instance, your logger specific descriptor (logback.xml), kafka.conf, cassandra.yaml, etc)
+* Static files/scripts to run before/after your service start
+* Secrets configuration (Note, you should not store in VCS any sensitive information, like passwords. In VCS you can store references(keys) to passwords, and keep passwords in special secured stores(like Vault) or at least in encrypted files on env machines)
+
 # Basic folder layout
 Let’s see a basic folder layout that you can keep in a dedicated repository.
 
@@ -50,16 +60,6 @@ repo
     └───service-discovery
     └───api-gateway
 ```
-
-# Service configuration types
-
-It's convenient to have different kinds of configuration and keep it in different files:
-* Process configuration (the configuration used by deployment tools to start your service, like memory limit, VM params, etc.
-* Application configuration (the configuration that your service reads after startup and uses in runtime)
-* OS ENV variables
-* Lib specific templates (for instance, your logger specific descriptor (logback.xml), kafka.conf, cassandra.yaml, etc)
-* Static files/scripts to run before/after your service start
-* Secrets configuration (Note, you should not store in VCS any sensitive information, like passwords. In VCS you can store references(keys) to passwords, and keep passwords in special secured stores(like Vault) or at least in encrypted files on env machines)
 
 # Service configuration files
 
