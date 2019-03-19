@@ -13,7 +13,7 @@ class YamlTreeTest {
     @Test
     void testWrite() {
         Map<String, String> initial = singletonMap("metrics.distribution.percentiles-histogram[http.server.requests]", "true");
-        Map<String, Object> actual = new YamlTree().toTree(initial);
+        Map<String, Object> actual = new YamlTreeImpl().toTree(initial);
 
         Map<String, Object> expected = singletonMap("metrics", singletonMap("distribution", singletonMap("percentiles-histogram[http.server.requests]", "true")));
         assertEquals(expected, actual);
@@ -34,7 +34,7 @@ class YamlTreeTest {
         level2.put("out", "outV");
         level2.put("out.shouldArchive", "true");
 
-        Map<String, Object> actual = new YamlTree().toTree(initial);
+        Map<String, Object> actual = new YamlTreeImpl().toTree(initial);
         assertEquals(expected, actual);
     }
 }

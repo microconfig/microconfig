@@ -15,8 +15,12 @@ import static java.nio.file.StandardOpenOption.APPEND;
 
 @RequiredArgsConstructor
 public class YamlWriter implements ConfigWriter {
-    private final YamlTree yamlTree = new YamlTree();
+    private final YamlTree yamlTree;
     private final File file;
+
+    public YamlWriter(File file) {
+        this(new YamlTreeImpl(), file);
+    }
 
     @Override
     public void write(Map<String, String> properties) {
