@@ -61,7 +61,7 @@ repo
     └───api-gateway
 ```
 
-## Service configuration files
+## Configuration sources
 
 Inside the service folder, you can create a configuration in key=value format. For examples we will use *.properties, but Microconfig also supports *.yaml. 
 
