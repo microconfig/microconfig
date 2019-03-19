@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 import static io.microconfig.utils.IoUtils.lines;
 
-public class FsFileReader implements FileReader {
+public class FsConfigFileReader implements ConfigFileReader {
     @Override
     public String read(File file) {
         return IoUtils.readFully(file);

@@ -3,7 +3,7 @@ package io.microconfig.environments.filebased;
 import io.microconfig.environments.Environment;
 import io.microconfig.environments.EnvironmentNotExistException;
 import io.microconfig.environments.EnvironmentProvider;
-import io.microconfig.utils.reader.FileReader;
+import io.microconfig.utils.reader.ConfigFileReader;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -20,9 +20,9 @@ import static java.util.stream.Collectors.toSet;
 public class FileBasedEnvironmentProvider implements EnvironmentProvider {
     private final File envDir;
     private final EnvironmentParserSelector environmentParserSelector;
-    private final FileReader fileReader;
+    private final ConfigFileReader fileReader;
 
-    public FileBasedEnvironmentProvider(File envDir, EnvironmentParserSelector environmentParserSelector, FileReader fileReader) {
+    public FileBasedEnvironmentProvider(File envDir, EnvironmentParserSelector environmentParserSelector, ConfigFileReader fileReader) {
         this.envDir = envDir;
         this.environmentParserSelector = environmentParserSelector;
         this.fileReader = fileReader;

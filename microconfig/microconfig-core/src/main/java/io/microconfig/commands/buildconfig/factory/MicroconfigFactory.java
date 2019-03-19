@@ -29,8 +29,8 @@ import io.microconfig.configs.serializer.ToFileConfigSerializer;
 import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.environments.filebased.EnvironmentParserSelectorImpl;
 import io.microconfig.environments.filebased.FileBasedEnvironmentProvider;
-import io.microconfig.utils.reader.FileReader;
-import io.microconfig.utils.reader.FsFileReader;
+import io.microconfig.utils.reader.ConfigFileReader;
+import io.microconfig.utils.reader.FsConfigFileReader;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Wither;
@@ -61,10 +61,10 @@ public class MicroconfigFactory {
     private final String serviceInnerDir;
 
     public static MicroconfigFactory init(File sourcesRootDir, File destinationComponentDir) {
-        return init(sourcesRootDir, destinationComponentDir, new FsFileReader());
+        return init(sourcesRootDir, destinationComponentDir, new FsConfigFileReader());
     }
 
-    public static MicroconfigFactory init(File sourcesRootDir, File destinationComponentDir, FileReader fileReader) {
+    public static MicroconfigFactory init(File sourcesRootDir, File destinationComponentDir, ConfigFileReader fileReader) {
         File fullSourcesRootDir = canonical(sourcesRootDir);
 
         return new MicroconfigFactory(
@@ -135,7 +135,7 @@ public class MicroconfigFactory {
         );
     }
 
-    private static EnvironmentProvider newEnvProvider(File root, FileReader fileReader) {
+    private static EnvironmentProvider newEnvProvider(File root, ConfigFileReader fileReader) {
         return cache(
                 new FileBasedEnvironmentProvider(
                         new File(root, ENV_DIR),
@@ -145,7 +145,8 @@ public class MicroconfigFactory {
         );
     }
 
-    private static ConfigIoService newConfigIoService(FileReader fileReader) {
+    //must be public for plugin
+    public static ConfigIoService newConfigIoService(ConfigFileReader fileReader) {
         return new ConfigIoServiceSelector(
                 cache(new ConfigFormatDetectorImpl(fileReader)),
                 new YamlConfigIoService(fileReader),

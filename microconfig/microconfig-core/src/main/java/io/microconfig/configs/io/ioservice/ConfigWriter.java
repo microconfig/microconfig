@@ -10,5 +10,7 @@ public interface ConfigWriter {
 
     void write(Collection<Property> properties);
 
+    String serialize(Collection<Property> properties);
+
     void append(Map<String, String> properties);
 }

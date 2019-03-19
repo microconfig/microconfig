@@ -1,6 +1,6 @@
 package io.microconfig.configs.io.ioservice.selector;
 
-import io.microconfig.utils.reader.FileReader;
+import io.microconfig.utils.reader.ConfigFileReader;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -13,7 +13,7 @@ import static io.microconfig.configs.io.ioservice.selector.FileFormat.YAML;
 
 @RequiredArgsConstructor
 public class ConfigFormatDetectorImpl implements ConfigFormatDetector {
-    private final FileReader fileReader;
+    private final ConfigFileReader fileReader;
 
     @Override
     public FileFormat detectConfigFormat(File file) {
