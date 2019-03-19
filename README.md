@@ -90,20 +90,20 @@ repo
 Inside process.proc we will store configuration that describes what is your service and how to run it (Your config files can have other properties, so don't pay attention to concrete values).
 
 **orders/process.proc**
-```*.properties
+```properties
     artifact=org.example:orders:19.4.2 # artifact in maven format groupId:artifactId:version
     java.main=org.example.orders.OrdersStarter # main class to run
     java.opts.mem=-Xms1024M -Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log # vm params
 ```
 **payments/process.proc**
-```*.properties
+```properties
     artifact=org.example:payments:19.4.2 # partial duplication
     java.main=org.example.payments.PaymentStarter
     java.opts.mem=-Xms1024M -Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log # duplication
     instance.count=2
 ```
 **service-discovery/process.proc**
-```*.properties
+```properties
     artifact=org.example.discovery:eureka:19.4.2 # partial duplication         
     java.main=org.example.discovery.EurekaStarter
     java.opts.mem=-Xms1024M -Xmx2048M # partial duplication         
@@ -114,7 +114,7 @@ As you can see we already have some small copy-paste (all services have 19.4.2 v
 Let's see how application properties can look like. In comments we note what can be improved.
 
 **orders/application.properties**
-```*.properties
+```properties
     server.port=9000
     application.name=orders # better to get name from folder
     orders.personalRecommendation=true
@@ -127,7 +127,7 @@ Let's see how application properties can look like. In comments we note what can
     jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true  # duplication
 ```
 **payments/application.properties**
-```*.properties
+```properties
     server.port=8080
     application.name=payments # better to get name from folder
     payments.booktimeoutInMs=900000 # how long in min ?
@@ -141,7 +141,7 @@ Let's see how application properties can look like. In comments we note what can
     jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true # duplication
 ```
 **service-discovery/application.properties**
-```*.properties
+```properties
     server.port=6781
     application.name=eureka
     eureka.client.fetchRegistry=false
@@ -182,13 +182,13 @@ repo
         ***
 ```
 **service-discovery-client/application.properties**
-```*.properties
+```properties
 service-discovery.url=http://10.12.172.11:6781 # are you sure url is consistent with eureka configuration?
 eureka.instance.prefer-ip-address=true 
 ```
 
 **oracle-client/application.properties**
-```*.properties
+```properties
 datasource.minimum-pool-size=2  
 datasource.maximum-pool-size=5    
 datasource.url=jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV  
@@ -198,7 +198,7 @@ jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
 And replace explicit configs with includes
 
 **orders/application.properties**
-```*.properties
+```properties
     #include service-discovery-client
     #include oracle-db-client
     
@@ -209,7 +209,7 @@ And replace explicit configs with includes
 ```
 
 **payments/application.properties**
-```*.properties
+```properties
     #include service-discovery-client
     #include oracle-db-client
     
@@ -228,7 +228,7 @@ You can override any properties from your dependencies.
 Let's override order's connection pool size.
 
 **orders/application.properties**
-```*.properties        
+```properties        
     #include oracle-db-client
     datasource.maximum-pool-size=10
     ***    
@@ -259,32 +259,32 @@ repo
 ```
 
 **oracle-common/application.properties**
-```*.properties
+```properties
 datasource.minimum-pool-size=2  
 datasource.maximum-pool-size=5    
 connection.timeoutInMs=300000
 jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
 ```
 **orders-db/application.properties**
-```*.properties
+```properties
     #include oracle-common
     datasource.maximum-pool-size=10
     datasource.url=jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV #partial duplication
 ```
 **payment-db/application.properties**
-```*.properties
+```properties
     #include oracle-common
     datasource.url=jdbc:oracle:thin:@172.30.162.127:1521:ARMSDEV #partial duplication
 ```
 
 **orders/application.properties**
-```*.properties
+```properties
     #include order-db
     ***
 ```
 
 **payments/application.properties**
-```*.properties
+```properties
     #include payment-db
 ```
 
@@ -292,7 +292,7 @@ jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
 Also includes can be in one line:
 
 **payments/application.properties**
-```*.properties
+```properties
     #include service-discovery-client, oracle-db-client    
 ```
 
@@ -305,22 +305,22 @@ Let's refactor service-discovery-client config.
 Initial:
 
 **service-discovery-client/application.properties**
-```*.properties
+```properties
 service-discovery.url=http://10.12.172.11:6781 # are you sure host and port are consistent with SD configuration? 
 ```
 **service-discovery/application.properties**
-```*.properties
+```properties
 server.port=6761 
 ```
 
 Refactored:
 
 **service-discovery-client/application.properties**
-```*.properties
+```properties
 service-discovery.url=http://${service-discovery@ip}:${service-discovery@server.port}
 ```
 **service-discovery/application.properties**
-```*.properties
+```properties
 server.port=6761
 ip=10.12.172.11 
 ```
@@ -336,7 +336,7 @@ Let's refactor oracle db config using placeholders and env specific overrides.
 Initial:
 
 **oracle-common/application.properties**
-```*.properties    
+```properties    
     datasource.maximum-pool-size=10
     datasource.url=jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV 
 ```   
@@ -344,19 +344,19 @@ Initial:
 Refactored:
 
 **oracle-common/application.properties**
-```*.properties    
+```properties    
     datasource.maximum-pool-size=10
     datasource.url=jdbc:oracle:thin:@${this@oracle.host}:1521:${this@oracle.sid}
     oracle.host=172.30.162.20    
     oracle.sid=ARMSDEV
 ```
 **oracle-common/application.uat.properties**
-```*.properties    
+```properties    
     oracle.host=172.30.162.80
 ```    
     
 **oracle-common/application.prod.properties**
-```*.properties    
+```properties    
     oracle.host=10.17.14.18    
     oracle.sid=ARMSPROD    
 ```        
@@ -366,13 +366,13 @@ As you can see using placeholders we can override not the whole property but onl
 If you want to declare temp properties that will be used for placeholders and you don't want them to be included in the result config file, you can declare them with #var keyword.
 
 **oracle-common/application.properties**
-```*.properties
+```properties
     datasource.url=jdbc:oracle:thin:@${this@oracle.host}:1521:${this@oracle.sid}
     #var oracle.host=172.30.162.20    
     #var oracle.sid=ARMSDEV
 ```
 **oracle-common/application.uat.properties**
-```*.properties    
+```properties    
     #var oracle.host=172.30.162.80
 ``` 
 
@@ -381,7 +381,7 @@ This approach works with includes as well. You can #include oracle-common and th
 In the example below after build datasource.url=jdbc:oracle:thin:@**100.30.162.80**:1521:ARMSDEV
  
 **orders-db/application.dev.properties** 
-```*.properties   
+```properties   
      #include oracle-common    
      #var oracle.host=100.30.162.80                 
 ```  
@@ -394,7 +394,7 @@ You can specify a default value for placeholder using syntax ${component@propert
 Let's set default value for oracle host
 
 **oracle-common/application.properties**
-```*.properties    
+```properties    
     datasource.maximum-pool-size=10
     datasource.url=jdbc:oracle:thin:@${this@oracle.host:172.30.162.20}:1521:${this@oracle.sid}        
     #var oracle.sid=ARMSDEV
@@ -415,11 +415,11 @@ Using #var you can remove properties from the result config file. You can includ
 Let's remove 'payments.system.retries' property for dev env:
 
 **payments/application.properties**
-```*.properties
+```properties
     payments.system.retries=3        
 ```
 **payments/application.dev.properties**
-```*.properties
+```properties
     #var payments.system.retries=  // will not be included into result config        
 ```
 ## Specials placeholders
@@ -443,12 +443,12 @@ Note, if you use special placeholders with ${this@...} than value will be contex
 Initial:
 
 **orders/application.properties**
-```*.properties
+```properties
     #include service-discovery-client    
     application.name=orders    
 ```
 **payments/application.properties**
-```*.properties
+```properties
     #include service-discovery-client    
     application.name=payments
 ```
@@ -456,15 +456,15 @@ Initial:
 Refactored:
 
 **orders/application.properties**
-```*.properties
+```properties
     #include service-discovery-client    
 ```
 **payments/application.properties**
-```*.properties
+```properties
     #include service-discovery-client
 ```
 **service-discovery-client/application.properties**
-```*.properties            
+```properties            
     application.name=${this@name}
 ```                 
 
@@ -501,7 +501,7 @@ Microconfig supports a powerful expression language based on [Spring EL](https:/
 
 Let's see some examples:
 
-```*.properties
+```properties
 #Better than 300000
 connection.timeoutInMs=#{5 * 60 * 1000}
 
@@ -531,13 +531,13 @@ order-db
 ```
 
 **orders-db/application.dev.properties**
-```*.properties   
+```properties   
     datasource.maximum-pool-size=15   
     hibernate.show-sql=true    
 ```
 
 **orders-db/application.prod.properties**
-```*.properties   
+```properties   
     datasource.maximum-pool-size=50    
 ```
 
@@ -553,7 +553,7 @@ order-db
 ```
 
 **orders-db/application.dev.dev2.test.properties**
-```*.properties   
+```properties   
     hibernate.show-sql=true    
 ```
 
@@ -568,18 +568,18 @@ As we discussed you can create env specific properties using filename pattern: a
 For example, you can create a folder for http client timeout settings:
 
 **timeout-settings/application.properties**
-```*.properties    
+```properties    
     timeouts.connectTimeoutMs=1000    
     timeouts.readTimeoutMs=5000    
 ```
 And some services can include this configuration:
 
 **orders/application.properties**
-```*.properties
+```properties
     #include timeout-settings    
 ```
 **payments/application.properties**
-```*.properties
+```properties
     #include timeout-settings
 ```
 
@@ -591,18 +591,18 @@ timeout-settings
 └───application.huge.properties
 ```
 **timeout-settings/application.long.properties**
-```*.properties
+```properties
     timeouts.readTimeoutMs=30000    
 ```
 **timeout-settings/application.huge.properties**
-```*.properties
+```properties
     timeouts.readTimeoutMs=600000    
 ```
 
 And specify profile name with include:
 
 **payments/application.properties**
-```*.properties
+```properties
     #include timeout-settings[long]
 ```
 
@@ -641,13 +641,13 @@ So we want every service to have its own logback.xml with resolved `${applicatio
 Let's configure order and payment services to use this template.
 
 **orders/application.properties**
-```*.properties
+```properties
     #include service-disconvery-client
     template.logback.fromFile=${logback@configDir}/logback.xml # full path to logback.xml, @configDir - special placeholder property
 ```
 
 **payments/application.properties**
-```*.properties
+```properties
     #include service-disconvery-client
     template.logback.fromFile=${logback@configDir}/logback.xml
 ```  
@@ -662,16 +662,16 @@ repo
 |     	 └───application.properties
 ```    
 **logback-template/application.properties**
-```*.properties   
+```properties   
     template.logback.fromFile=${logback@configDir}/logback.xml    
 ```
 **orders-template/application.properties**
-```*.properties
+```properties
     #include service-disconvery-client
     #include logback-template
 ```
 **payments-template/application.properties**
-```*.properties
+```properties
     #include service-disconvery-client
     #include logback-template
 ```  
@@ -689,7 +689,7 @@ If you want to declare a property for a template only and don't want this proper
 If you want to override template destination filename you can use `template.${templateName}.toFile=${someFile}` property. For example:  
  
  **logback-template/application.properties**
- ```*.properties   
+ ```properties   
      template.logback.fromFile=${logback@configDir}/logback.xml    
      template.logback.toFile=logs/logback-descriptor.xml
  ``` 
@@ -714,7 +714,7 @@ repo
 |     	 └───application.prod.properties
 ```
 **logback-template/application.prod.properties**
-```*.properties   
+```properties   
     template.logback.fromFile=${logback@configDir}/logback-prod.xml        
 ``` 
 
@@ -740,7 +740,7 @@ repo
 Let's see env descriptor format:
  
  **envs/base.yaml**
-```*.yaml
+```yaml
 orders:  
   components:  
     - order-db-patcher
@@ -766,7 +766,7 @@ monitoring:
 ```  
 
 Env name = file name
-```*.yaml
+```yaml
 orders: # component group name
   components:  
     - order-db-patcher # component name(folder)
@@ -777,7 +777,7 @@ orders: # component group name
 One env can include another one and add/remove/override component groups:
 
 **envs/test.yaml**
-```*.yaml
+```yaml
 include: # include all groups from 'base' env except 'monitoring'
   env: base
   exclude:
@@ -797,7 +797,7 @@ tests_dashboard: # aded new component group 'tests_dashboard'
 You can use optional param `ip` for env and component groups and then use placeholder `${componentName@ip}`.
 
 For instance, `${order-service@ip}` will be resolved to 12.53.12.67, `${payment-ui@ip}` will be resolved to 170.53.12.80.   
-```*.yaml
+```yaml
 ip: 170.53.12.80 # default ip
 
 orders:  
@@ -911,7 +911,7 @@ configs
 Diff file format:
 
 **diff-application.properties**
-```*.properties     
+```properties     
 +security.client.protocol=SSL # property has been added
 -connection.timeoutMs=1000 # property has been removed
  server.max-threads=10 -> 35 # value has been changed from '10' to '35'
@@ -933,7 +933,7 @@ repo
 ```
 
 Yaml configs can have nested properties:
-```*.yaml
+```yaml
 datasource:  
   minimum-pool-size: 2  
   maximum-pool-size: 5    
@@ -942,7 +942,7 @@ datasource:
 ```      
 
 and lists:
-```*.yaml
+```yaml
 cluster.gateway:
   hosts:
     - 10.20.30.47
