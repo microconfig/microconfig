@@ -426,17 +426,17 @@ Let's remove 'payments.system.retries' property for dev env:
 As we discussed syntax for placeholders looks like `${component@property}`.
 Microconfig has several special useful placeholders:
 
-* ${this@env} - returns current env name 
-* ${...@name} - returns component's name
-* ${...@configDir} - returns full path of component's config dir 
-* ${...@resultDir} - returns full path of component's destination dir (result files will be put into this dir)
-* ${this@configRoot} - returns full path of config repo's root dir (see `root` build param )   
+* `${this@env}` - returns current env name 
+* `${...@name}` - returns component's name
+* `${...@configDir}` - returns full path of component's config dir 
+* `${...@resultDir}` - returns full path of component's destination dir (result files will be put into this dir)
+* `${this@configRoot}` - returns full path of config repo's root dir (see `root` build param )   
 
 There are some other env descriptor related properties, we will discuss them later:
-* ${...@ip}
-* ${...@portOffset}
-* ${...@group}
-* ${...@order}
+* `${...@ip}`
+* `${...@portOffset}`
+* `${...@group}`
+* `${...@order}`
 
 Note, if you use special placeholders with ${this@...} than value will be context dependent. Let's apply ${this@name} to see why it's useful.
 
