@@ -832,7 +832,7 @@ To build configs not for the whole environment but only for specific services yo
 * `services` - comma-separated list of services to build configs for. 
 
 
-Command line params example (requires Java 8+):
+Command line params example (Java 8+ required):
 ```
 java -jar microconfig.jar root=repo dest=configs env=prod
 ```
