@@ -363,7 +363,7 @@ Refactored:
 
 As you can see using placeholders we can override not the whole property but only a part of it. 
 
-## Temp properties with #var
+## Temp properties
 
 If you want to declare temp properties that will be used for placeholders and you don't want them to be included in a result config file, you can declare them with `#var` keyword.
 
