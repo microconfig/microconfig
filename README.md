@@ -617,7 +617,7 @@ ${kafka[test]@bootstrap-servers}
 
 The difference between env-specific files and profiles is only logical. Microconfig handles it the same way.
 
-# Arbitrary template files
+# Template files
 Microconfig allows to keep configuration files for any libraries in their specific format and resolve placeholders inside them.
 For example, you want to keep logback.xml (or some other descriptor for your log library) and reuse this file with resolved placeholders for all your services. 
 
