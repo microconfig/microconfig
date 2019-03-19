@@ -740,7 +740,7 @@ repo
 Let's see env descriptor format:
  
  **envs/base.yaml**
-```*.yml
+```*.yaml
 orders:  
   components:  
     - order-db-patcher
@@ -766,7 +766,7 @@ monitoring:
 ```  
 
 Env name = file name
-```*.yml
+```*.yaml
 orders: # component group name
   components:  
     - order-db-patcher # component name(folder)
@@ -777,7 +777,7 @@ orders: # component group name
 One env can include another one and add/remove/override component groups:
 
 **envs/test.yaml**
-```*.yml
+```*.yaml
 include: # include all groups from 'base' env except 'monitoring'
   env: base
   exclude:
@@ -797,7 +797,7 @@ tests_dashboard: # aded new component group 'tests_dashboard'
 You can use optional param `ip` for env and component groups and then use placeholder `${componentName@ip}`.
 
 For instance, `${order-service@ip}` will be resolved to 12.53.12.67, `${payment-ui@ip}` will be resolved to 170.53.12.80.   
-```*.yml
+```*.yaml
 ip: 170.53.12.80 # default ip
 
 orders:  
@@ -933,7 +933,7 @@ repo
 ```
 
 Yaml configs can have nested properties:
-```*.yml
+```*.yaml
 datasource:  
   minimum-pool-size: 2  
   maximum-pool-size: 5    
@@ -942,7 +942,7 @@ datasource:
 ```      
 
 and lists:
-```*.yml
+```*.yaml
 cluster.gateway:
   hosts:
     - 10.20.30.47
