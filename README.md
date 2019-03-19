@@ -495,6 +495,27 @@ Example:
  -DtaskId=3456 -DsomeParam3=value
 ```
 Then you can access it: `${system@taskId}` or `${system@someParam3}`
+
+# Expression language
+Microconfig supports a powerful expression language based on [Spring EL](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#expressions).    
+
+Let's see some examples:
+
+```*.properties
+#Better than 300000
+connection.timeoutInMs=#{5 * 60 * 1000}
+
+#Microconfig placeholder and simple math
+datasource.maximum-pool-size=#{${this@datasource.minimum-pool-size} + 10} 
+
+#Using placeholder and Java String API
+healthcheck.logSucessMarker=Started ${this@mainClassNameWithoutPackage}
+#var mainClassNameWithoutPackage=#{'${this@java.main}'.substring('${this@java.main}'.lastIndexOf('.') + 1)}
+
+#Using Java import and Base64 API
+sessionKey=#{T(java.util.Base64).getEncoder().encodeToString('Some value'.bytes)}  
+```
+Inside EL you can write any Java code in one line and Microconfig placeholders. Of course, you shouldn't overuse it to keep configuration readable.
  
 # Env specific properties
 Microconfig allows specifying env specific properties (add/remove/override). For instance, you want to increase connection-pool-size for dbs and increase the amount of memory for prod env.
@@ -592,28 +613,7 @@ ${timeout-settings[long]@readTimeoutMs}
 ${kafka[test]@bootstrap-servers}
 ```
 
-The difference between env-specific files and profiles is only logical. Microconfig handles it the same way.  
-
-# Expression language
-Microconfig supports a powerful expression language based on [Spring EL](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#expressions).    
-
-Let's see some examples:
-
-```*.properties
-#Better than 300000
-connection.timeoutInMs=#{5 * 60 * 1000}
-
-#Microconfig placeholder and simple math
-datasource.maximum-pool-size=#{${this@datasource.minimum-pool-size} + 10} 
-
-#Using placeholder and Java String API
-healthcheck.logSucessMarker=Started ${this@mainClassNameWithoutPackage}
-#var mainClassNameWithoutPackage=#{'${this@java.main}'.substring('${this@java.main}'.lastIndexOf('.') + 1)}
-
-#Using Java import and Base64 API
-sessionKey=#{T(java.util.Base64).getEncoder().encodeToString('Some value'.bytes)}  
-```
-Inside EL you can write any Java code in one line and Microconfig placeholders. Of course, you shouldn't overuse it to keep configuration readable.
+The difference between env-specific files and profiles is only logical. Microconfig handles it the same way.
 
 # Arbitrary template files
 Microconfig allows to keep configuration files for any libraries in their specific format and resolve placeholders inside them.
