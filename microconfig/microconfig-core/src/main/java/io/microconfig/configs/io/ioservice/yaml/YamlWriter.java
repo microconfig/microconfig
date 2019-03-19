@@ -24,7 +24,7 @@ public class YamlWriter implements ConfigWriter {
 
     @Override
     public void write(Map<String, String> properties) {
-        doWrite(yamlTree.toYaml(properties));
+        doWrite(serializeMap(properties));
     }
 
     @Override
@@ -34,16 +34,20 @@ public class YamlWriter implements ConfigWriter {
 
     @Override
     public void append(Map<String, String> properties) {
-        doWrite(yamlTree.toYaml(properties), APPEND);//todo can break yaml format
+        doWrite(serializeMap(properties), APPEND);//todo can break yaml format
     }
 
     @Override
     public String serialize(Collection<Property> properties) {
-        return yamlTree.toYaml(
+        return serializeMap(
                 properties.stream()
                         .filter(p -> !p.isTemp())
                         .collect(toSortedMap(Property::getKey, Property::getValue))
         );
+    }
+
+    private String serializeMap(Map<String, String> properties) {
+        return yamlTree.toYaml(properties);
     }
 
     private void doWrite(String yaml, OpenOption... openOptions) {
