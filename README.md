@@ -644,13 +644,13 @@ Let's configure order and payment services to use this template.
 
 **orders/application.properties**
 ```properties
-    #include service-disconvery-client
+    #include service-discovery-client
     template.logback.fromFile=${logback@configDir}/logback.xml # full path to logback.xml, @configDir - special placeholder property
 ```
 
 **payments/application.properties**
 ```properties
-    #include service-disconvery-client
+    #include service-discovery-client
     template.logback.fromFile=${logback@configDir}/logback.xml
 ```  
    
@@ -669,13 +669,11 @@ repo
 ```
 **orders-template/application.properties**
 ```properties
-    #include service-disconvery-client
-    #include logback-template
+    #include service-discovery-client, logback-template
 ```
 **payments-template/application.properties**
 ```properties
-    #include service-disconvery-client
-    #include logback-template
+    #include service-discovery-client, logback-template
 ```  
 
 As you could notice the placeholder syntax inside template `${propName}`  differs from Micronfig one `${component@propName}`, it doesn't specify a component name.
