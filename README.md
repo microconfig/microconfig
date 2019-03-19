@@ -296,51 +296,6 @@ Also includes can be in one line:
     #include service-discovery-client, oracle-db-client    
 ```
 
-# Env specific properties
-Microconfig allows specifying env specific properties (add/remove/override). For instance, you want to increase connection-pool-size for dbs and increase the amount of memory for prod env.
-To add/remove/override properties for env, you can create application.**${ENVNAME}**.properties file in the config folder. 
-
-Let's override connection pool size for dev and prod and add one new param for dev. 
-
-```
-order-db
-└───application.properties
-└───application.dev.properties
-└───application.prod.properties
-```
-
-**orders-db/application.dev.properties**
-```*.properties   
-    datasource.maximum-pool-size=15   
-    hibernate.show-sql=true    
-```
-
-**orders-db/application.prod.properties**
-```*.properties   
-    datasource.maximum-pool-size=50    
-```
-
-Also, you can declare common properties for several environments in a single file.  You can use the following file name pattern: application.**${ENV1.ENV2.ENV3...}**.properties
-Let's create common props for dev, dev2 and test envs.
-
-```
-order-db
-└───application.properties
-└───application.dev.properties
-└───application.dev.dev2.test.properties
-└───application.prod.properties
-```
-
-**orders-db/application.dev.dev2.test.properties**
-```*.properties   
-    hibernate.show-sql=true    
-```
-
-When you build properties for specific env (for example 'dev') Microconfig will collect properties from:
-* application.properties 
-* then add/override properties from application.dev.{anotherEnv}.properties.
-* then add/override properties from application.dev.properties.
-
 # Placeholders
 
 Instead of copy-paste value of some property, Microconfig allows to have a link (placeholder) to this value. 
@@ -541,7 +496,52 @@ Example:
 ```
 Then you can access it: `${system@taskId}` or `${system@someParam3}`
  
-# Profiles and explicit env name for includes and placeholders
+# Env specific properties
+Microconfig allows specifying env specific properties (add/remove/override). For instance, you want to increase connection-pool-size for dbs and increase the amount of memory for prod env.
+To add/remove/override properties for env, you can create application.**${ENVNAME}**.properties file in the config folder. 
+
+Let's override connection pool size for dev and prod and add one new param for dev. 
+
+```
+order-db
+└───application.properties
+└───application.dev.properties
+└───application.prod.properties
+```
+
+**orders-db/application.dev.properties**
+```*.properties   
+    datasource.maximum-pool-size=15   
+    hibernate.show-sql=true    
+```
+
+**orders-db/application.prod.properties**
+```*.properties   
+    datasource.maximum-pool-size=50    
+```
+
+Also, you can declare common properties for several environments in a single file.  You can use the following file name pattern: application.**${ENV1.ENV2.ENV3...}**.properties
+Let's create common props for dev, dev2 and test envs.
+
+```
+order-db
+└───application.properties
+└───application.dev.properties
+└───application.dev.dev2.test.properties
+└───application.prod.properties
+```
+
+**orders-db/application.dev.dev2.test.properties**
+```*.properties   
+    hibernate.show-sql=true    
+```
+
+When you build properties for specific env (for example 'dev') Microconfig will collect properties from:
+* application.properties 
+* then add/override properties from application.dev.{anotherEnv}.properties.
+* then add/override properties from application.dev.properties.
+ 
+## Profiles and explicit env name for includes and placeholders
 As we discussed you can create env specific properties using filename pattern: application.${ENV}.properties. You can use the same approach for creating profile specific properties.
 
 For example, you can create a folder for http client timeout settings:
@@ -893,7 +893,7 @@ configs
 
 You can try to build configs from the dedicated example repo: https://github.com/microconfig/configs-layout-example 
 
-# Viewing differences between config's versions 
+## Viewing differences between config's versions 
 During config build, Micronfig compares newly generated files to files generated during the previous build for each service for each config type.
 Micronconfig can detect added/removed/changed properties. 
 
