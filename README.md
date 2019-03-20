@@ -955,7 +955,16 @@ Yaml format configs will be built into *.yaml, property ones will be built into 
 
 Microconfig can detect config's format based on separators (if config file has extension neither *.yaml nor *.properties). If you use `:` key-value separator, Microconfig will handle it like *.yaml (`=` for *.properties).
 
+# Intellij IDEA plugin
+To make configuration management a little bit easier you can use Microconfig Intellij IDEA plugin.
+
+See documentation here: https://github.com/microconfig/microconfig-idea-plugin 
+
 # Contributing
 If you want to contribute to the project and make it better, your help is very welcome. You can request a feature or submit a bug via issues. Or submit a pull request.
 
-Contributing to the documentation is very welcome too.  
+Contributing to the documentation is very welcome too.
+
+https://github.com/microconfig/microconfig
+
+support@microconfig.io  
