@@ -5,6 +5,7 @@
 
 
 ![mclogo](https://raw.githubusercontent.com/microconfig/microconfig/master/logo.png)
+![mclogo](https://raw.githubusercontent.com/microconfig/microconfig/master/logo2.png)
 
 Microconfig is intended to make it easy and convenient to manage configuration for microservices (or just for a big amount of services) and reuse the common part.
 
