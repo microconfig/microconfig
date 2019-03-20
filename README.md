@@ -560,7 +560,7 @@ order-db
     hibernate.show-sql=true    
 ```
 
-When you build properties for specific env (for example 'dev') Microconfig will collect properties from:
+When you build properties for a specific env (for example 'dev') Microconfig will collect properties from:
 * application.properties 
 * then add/override properties from application.dev.{anotherEnv}.properties.
 * then add/override properties from application.dev.properties.
