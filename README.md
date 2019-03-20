@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 
-![logo](https://raw.githubusercontent.com/microconfig/microconfig/master/logo.png)
+![mclogo](https://raw.githubusercontent.com/microconfig/microconfig/master/logo.png)
 
 Microconfig is intended to make it easy and convenient to manage configuration for microservices (or just for a big amount of services) and reuse the common part.
 
