@@ -394,7 +394,7 @@ In the example below after build datasource.url=jdbc:oracle:thin:@**100.30.162.8
 ## Placeholder's default value
 You can specify a default value for placeholder using syntax ${component@property:**defaultValue**}
 
-Let's set default value for oracle host
+Let's set a default value for 'oracle host'
 
 **oracle-common/application.properties**
 ```properties    
