@@ -676,7 +676,7 @@ repo
     #include service-discovery-client, logback-template
 ```  
 
-As you could notice the placeholder syntax inside template `${propName}`  differs from Micronfig one `${component@propName}`, it doesn't specify a component name.
+As you could notice the placeholder syntax inside template `${propName}`  differs from Microconfig one `${component@propName}`, it doesn't specify a component name.
 You can use the standard Microconfig syntax for placeholder as well. ${propName} == ${**this**@propName}.
 
 If Microconfig can't resolve a template placeholder, Microconfig logs warn and leaves unresolved template text.
@@ -787,9 +787,9 @@ infra:
   exclude:
     - ssl-api-gateway # excluded ssl-api-gateway component from 'infra' group  
   append:
-    - local-proxy # added new componet into 'infra' group
+    - local-proxy # added new component into 'infra' group
 
-tests_dashboard: # aded new component group 'tests_dashboard'  
+tests_dashboard: # added new component group 'tests_dashboard'
   components:
     - test-statistic-collector
 ``` 
@@ -801,7 +801,7 @@ For instance, `${order-service@ip}` will be resolved to 12.53.12.67, `${payment-
 ip: 170.53.12.80 # default ip
 
 orders:  
-  ip: 12.53.12.67 # ip overriden for the group
+  ip: 12.53.12.67 # ip overridden for the group
   components:  
     - order-db-patcher
     - order-service
@@ -817,8 +817,8 @@ payments:
 Consider configuring your deployment tool to read env descriptor to know which services to deploy.
 
 # Running config build
-As we discussed Micronfig has its own format for configuration sources. 
-During config build Micronfig inlines all includes, resolves placeholders, evaluates expression language, copies templates, and stores the result values into plain *.properties or *.yaml files to a dedicated folder for each service.
+As we discussed Microconfig has its own format for configuration sources. 
+During config build Microconfig inlines all includes, resolves placeholders, evaluates expression language, copies templates, and stores the result values into plain *.properties or *.yaml files to a dedicated folder for each service.
 
 To run build you can download Microconfig release from https://github.com/microconfig/microconfig/releases.
 
@@ -894,8 +894,8 @@ configs
 You can try to build configs from the dedicated example repo: https://github.com/microconfig/configs-layout-example 
 
 ## Viewing differences between config's versions 
-During config build, Micronfig compares newly generated files to files generated during the previous build for each service for each config type.
-Micronconfig can detect added/removed/changed properties. 
+During config build, Microconfig compares newly generated files to files generated during the previous build for each service for each config type.
+Microconfig can detect added/removed/changed properties. 
 
 Diff for application.properties is stored in diff-application.properties, diff for process.properties is stored in diff-process.properties, etc.
 ```
