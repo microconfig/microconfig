@@ -7,48 +7,48 @@ Microconfig is intended to make it easy and convenient to manage configuration f
 
 If your project consists of tens or hundreds of services you have to:
 
-Keep configuration for each service, ideally separately from code.
+Keep configuration for each service ideally separate from code.
 * Configuration for different services can have common and specific parts. Also, the configuration for the same service in different environments can have common and specific parts as well.
-* Common part for different services (or for one service in different environments) should not be copy-pasted and must be easy to reuse.
-* It must be easy to understand how the result file is generated and based on what placeholders are resolved.
+* A common part for different services (or for one service in different environments) should not be copied and pasted and must be easy to reuse.
+* It must be easy to understand how the result configuration is generated and based on what placeholders are resolved.
 * Some configuration properties must be dynamic, calculated using an expression language.
 
-Microconfig is written in Java, but it designed to be used with systems written in any language. Microconfig just describes a format of configuration sources, syntax for placeholders, includes, excludes, overrides, expression language for dynamic properties and engine that can build it to plain *.yaml or *.properties. Also it can resolve placeholders in arbitrary template files and show diff between config releases.
+Microconfig is written in Java, but it's designed to be used with systems written in any language. Microconfig just describes a format of configuration sources, syntax for placeholders, includes, excludes, overrides, an expression language for dynamic properties and an engine that can transform the config sources into simple *.yaml or *.properties formats. Also it can resolve placeholders in arbitrary template files and show differences between config releases.
 
-## Difference between Microconfig and popular devops tools
-**Comparing to config servers** (like Spring cloud config server or Zookeeper):
+## The difference between Microconfig and popular devops tools
+**Compared to config servers** (like Spring cloud config server or Zookeeper):
 
-Config servers solve the problem of dynamic distribution of configuration in runtime (can use http endpoints), but to distribute configuration you have to store it, ideally with change history and without duplication of common part.
+Config servers solve the problem of dynamic distribution of configuration in runtime (can use http endpoints), but to distribute configuration you have to store it, ideally with changes in history and without duplication of the common part.
 
-**Comparing to Ansible**:
+**Compared to Ansible**:
 
-Ansible is a powerful but too general engine for deployment management and doesn't provide a common and clean way to store configuration for microservices. And a lot of teams have to invent their own solutions based on Ansible.
+Ansible is a powerful but much too general engine for deployment management and doesn't provide a common and clean way to store configuration for microservices. And a lot of teams have to invent their own solutions based on Ansible.
 
-Microconfig does one thing and does it well. It provides an approach, best practices how to keep configuration for a big amount of services and engine to build config sources into result files.
+Microconfig does one thing and does it well. It provides an approach, best practices for how to keep configuration for a big amount of services and an engine to build config sources into result files.
 
-You can use Microconfig together with config servers and deployment frameworks. Configuration can be built during deploy phase and the resulting plain config files can be copied to the filesystem, where your services can access it directly(for instance, Spring Boot can read configuration from *.yaml or *.properties), or you can distribute result configuration using any config servers. Also, you can store not only application configuration but configuration how to run your services. And deployments frameworks can read configuration from Microconfig to start your services with right params and settings.
+You can use Microconfig together with any config servers and deployment frameworks. Configuration can be built during the deployment phase and the resulting plain config files can be copied to the filesystem, where your services can access it directly(for instance, Spring Boot can read configuration from *.yaml or *.properties), or you can distribute result configuration using any config servers. Also, you can store not only application configuration but configuration used to run your services. And deployment frameworks can read configuration from Microconfig to start your services with the right parameteres and settings.
 
 ## Where to store configuration
-It’s a good practice to keep service configuration separated from code. It allows not to rebuild your services any time configuration is changed and use the same service artifacts (for instance, *.jar) for all environments because it doesn’t contain any env specific configuration. Configuration can be updated even in runtime without service' source code changes.
+It’s a good practice to keep service configuration separate from code. It doesn't require you to rebuild services every time the configuration is changed and allows you to use the same service artifacts (for instance, *.jar) for all environments because it doesn’t contain any environment specific configuration. The configuration can be updated even in runtime without service source code changes.
 
 So the best way to follow this principle is to have a dedicated repository for configuration in your favorite version control system.  You can store configuration for all microservices in the same repository to make it easy to reuse a common part and be sure the common part is consistent for all your services.
 
 ## Service configuration types
 
 It's convenient to have different kinds of configuration and keep it in different files:
-* Process configuration (the configuration used by deployment tools to start your service, like memory limit, VM params, etc.
-* Application configuration (the configuration that your service reads after startup and uses in runtime)
-* OS ENV variables
-* Lib specific templates (for instance, your logger specific descriptor (logback.xml), kafka.conf, cassandra.yaml, etc)
-* Static files/scripts to run before/after your service start
-* Secrets configuration (Note, you should not store in VCS any sensitive information, like passwords. In VCS you can store references(keys) to passwords, and keep passwords in special secured stores(like Vault) or at least in encrypted files on env machines)
+* Process configuration (the configuration used by deployment tools to start your services, like memory limit, VM params, etc.).
+* Application configuration (the configuration that your service reads after startup and uses in runtime).
+* OS ENV variables.
+* Library specific templates (for instance, your logger specific descriptor (logback.xml), kafka.conf, cassandra.yaml, etc.)
+* Static files/scripts to run before/after your service startup.
+* Secret configuration (Note, you should not store in a VCS any sensitive information, like passwords. In a VCS you can store references(keys) to passwords, and keep passwords in special secured stores(like Vault) or at least in encrypted files on environment machines)
 
 # Basic folder layout
-Let’s see a basic folder layout that you can keep in a dedicated repository.
+Let’s take a look at a basic folder layout that you can keep in a dedicated repository.
 
-For every service, you have to create a folder with a unique name(name of the service). In the service directory, we will keep common and env specific configuration.
+For every service, you have to create a folder with a unique name( the name of the service). In the service directory, we will keep common and env specific configurations.
 
-So let’s imagine we have 4 microservices: order service, payment service,  service-discovery, and api-gateway. For convenience we can group services by layers: 'infra' for infrastructure services and 'core' for our business domain services. The resulting layout will look like:
+So let’s imagine we have 4 microservices: 'order-service', 'payment-service', 'service-discovery', and 'api-gateway'. For convenience, we can group services by layers: 'infra' for infrastructure services and 'core' for our business domain services. The resulting layout will look like:
 
 ```
 repo
@@ -63,16 +63,18 @@ repo
 
 ## Configuration sources
 
-Inside the service folder, you can create a configuration in key=value format. For examples we will use *.properties, but Microconfig also supports *.yaml. 
+Inside the service folder, you can create a configuration in key=value format. For the following examples, we will use *.properties, but Microconfig also supports *.yaml. 
 
 Let’s create basic application and process configuration files for each service.
-You can split configuration among several files, but for simplicity, we will create single application.properties and process.proc for each service. Anyway, after configuration build for each service for each config type, a single result file will be generated despite the number of base source files.
+You can split configuration among several files, but for simplicity, we will create single `application.properties` and `process.proc` for each service. No matter how many base files are used, after the configuration build for each service and each config type, a single result file will be generated.
 
 ```
 repo
 └───core  
 │    └───orders
-│    │   └───application.properties
+│    │   └───application1.properties
+│    │   └───application2.properties
+│    │   └───application3.properties
 │    │   └───process.proc
 │    └───payments
 │        └───application.properties
