@@ -12,11 +12,15 @@ import java.io.File;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class SpecialSource implements PropertySource {
+    public static final String ENV_DESCRIPTOR_SOURCE = "env_descriptor";
+    public static final String ENV_OS_SOURCE = "env";
+    public static final String SYSTEM_SOURCE = "system";
+
     private final Component component;
     private final String value;
 
     public static PropertySource envSource(Component component) {
-        return new SpecialSource(component, "ENV_DESCRIPTOR");
+        return new SpecialSource(component, ENV_DESCRIPTOR_SOURCE);
     }
 
     public static PropertySource templateSource(Component component, File template) {
@@ -26,5 +30,9 @@ public class SpecialSource implements PropertySource {
     @Override
     public String toString() {
         return value;
+    }
+
+    public boolean isSystem() {
+        return SYSTEM_SOURCE.equals(value);
     }
 }

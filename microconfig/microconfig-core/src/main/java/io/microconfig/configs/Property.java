@@ -1,10 +1,14 @@
 package io.microconfig.configs;
 
+import io.microconfig.configs.sources.SpecialSource;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import static io.microconfig.utils.OsUtil.isWindows;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.IntStream.range;
@@ -83,6 +87,20 @@ public class Property {
 
     public Property withNewValue(String value) {
         return new Property(key, value, envContext, temp, source);
+    }
+
+    public Property escapeOnWindows() {
+        if (isWindows() && source instanceof SpecialSource && ((SpecialSource) source).isSystem()) {
+            return withNewValue(escapeValue());
+        }
+
+        return this;
+    }
+
+    String escapeValue() {
+        String one = "\\";
+        String two = "\\\\";
+        return value.replace(two, one).replace(one, two);
     }
 
     //used by plugin

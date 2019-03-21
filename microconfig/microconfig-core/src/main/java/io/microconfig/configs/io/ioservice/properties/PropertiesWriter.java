@@ -33,6 +33,7 @@ class PropertiesWriter implements ConfigWriter {
     public String serialize(Collection<Property> properties) {
         return properties.stream()
                 .filter(p -> !p.isTemp())
+                .map(Property::escapeOnWindows)
                 .map(Property::toString)
                 .collect(joining(LINES_SEPARATOR));
     }

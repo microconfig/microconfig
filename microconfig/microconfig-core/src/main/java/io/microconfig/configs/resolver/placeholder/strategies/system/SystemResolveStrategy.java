@@ -10,6 +10,8 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static io.microconfig.configs.Property.tempProperty;
+import static io.microconfig.configs.sources.SpecialSource.ENV_OS_SOURCE;
+import static io.microconfig.configs.sources.SpecialSource.SYSTEM_SOURCE;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 
@@ -19,11 +21,11 @@ public class SystemResolveStrategy implements PlaceholderResolveStrategy {
     private final Function<String, ?> keyToValue;
 
     public static PlaceholderResolveStrategy systemPropertiesResolveStrategy() {
-        return new SystemResolveStrategy("system", System::getProperty);
+        return new SystemResolveStrategy(SYSTEM_SOURCE, System::getProperty);
     }
 
     public static PlaceholderResolveStrategy envVariablesResolveStrategy() {
-        return new SystemResolveStrategy("env", System::getenv);
+        return new SystemResolveStrategy(ENV_OS_SOURCE, System::getenv);
     }
 
     @Override
