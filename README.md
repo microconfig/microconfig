@@ -7,7 +7,7 @@ Microconfig is intended to make it easy and convenient to manage configuration f
 
 If your project consists of tens or hundreds of services you have to:
 
-Keep configuration for each service ideally separate from code.
+* Keep configuration for each service ideally separate from code.
 * Configuration for different services can have common and specific parts. Also, the configuration for the same service in different environments can have common and specific parts as well.
 * A common part for different services (or for one service in different environments) should not be copied and pasted and must be easy to reuse.
 * It must be easy to understand how the result configuration is generated and based on what placeholders are resolved.
