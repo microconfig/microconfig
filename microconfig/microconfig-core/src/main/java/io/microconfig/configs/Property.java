@@ -90,11 +90,7 @@ public class Property {
     }
 
     public Property escapeOnWindows() {
-        if (isWindows() && source instanceof SpecialSource && ((SpecialSource) source).isSystem()) {
-            return withNewValue(escapeValue());
-        }
-
-        return this;
+        return isWindows() ? withNewValue(escapeValue()) : this;
     }
 
     String escapeValue() {

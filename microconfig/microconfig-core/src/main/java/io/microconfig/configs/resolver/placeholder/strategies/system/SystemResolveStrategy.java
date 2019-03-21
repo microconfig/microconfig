@@ -34,6 +34,7 @@ public class SystemResolveStrategy implements PlaceholderResolveStrategy {
 
         return ofNullable(keyToValue.apply(propertyKey))
                 .map(Object::toString)
-                .map(value -> tempProperty(propertyKey, value, environment, new SpecialSource(component, name)));
+                .map(value -> tempProperty(propertyKey, value, environment, new SpecialSource(component, name)))
+                .map(Property::escapeOnWindows);
     }
 }
