@@ -55,7 +55,7 @@ class TemplateTest {
         Map.Entry<String, String> entry = System.getenv().entrySet().iterator().next();
         Template template = new Template(source, "${env@" + entry.getKey() + "}");
         String result = template.resolvePlaceholders(envComponent, getPropertyResolver(), templatePattern);
-        assertEquals(entry.getValue(), result);
+        assertEquals(entry.getValue().replaceAll("\\\\+", "/"), result.replaceAll("\\\\+", "/"));
     }
 
     @Test
