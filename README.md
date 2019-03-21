@@ -72,9 +72,7 @@ You can split configuration among several files, but for simplicity, we will cre
 repo
 └───core  
 │    └───orders
-│    │   └───application1.properties
-│    │   └───application2.properties
-│    │   └───application3.properties
+│    │   └───application.properties
 │    │   └───process.proc
 │    └───payments
 │        └───application.properties
