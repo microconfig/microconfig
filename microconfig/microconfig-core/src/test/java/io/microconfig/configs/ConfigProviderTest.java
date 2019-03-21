@@ -14,6 +14,7 @@ import java.util.TreeMap;
 import static io.microconfig.configs.Property.property;
 import static io.microconfig.environments.Component.byNameAndType;
 import static io.microconfig.environments.Component.byType;
+import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static io.microconfig.utils.MicronconfigTestFactory.getConfigProvider;
 import static io.microconfig.utils.MicronconfigTestFactory.getPropertyResolver;
 import static java.util.Arrays.asList;
@@ -169,11 +170,11 @@ class ConfigProviderTest {
     @Test
     void testListMerge() {
         Map<String, Property> properties = provider.getProperties(byType("mergeLists"), "some");
-        assertEquals("- v1\n" +
-                "- v2\n" +
-                "- v3\n" +
-                "- v4\n" +
-                "- v5\n", properties.get("level_1.level_2").getValue());
+        assertEquals("- v1" + LINES_SEPARATOR +
+                "- v2" + LINES_SEPARATOR +
+                "- v3" + LINES_SEPARATOR +
+                "- v4" + LINES_SEPARATOR +
+                "- v5" + LINES_SEPARATOR, properties.get("level_1.level_2").getValue());
     }
 
     private void doTestAliases(String componentName, String ip) {

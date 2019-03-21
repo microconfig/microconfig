@@ -15,7 +15,7 @@ Keep configuration for each service, ideally separately from code.
 
 Microconfig is written in Java, but it designed to be used with systems written in any language. Microconfig just describes a format of configuration sources, syntax for placeholders, includes, excludes, overrides, expression language for dynamic properties and engine that can build it to plain *.yaml or *.properties. Also it can resolve placeholders in arbitrary template files and show diff between config releases.
 
-# Difference between Microconfig and popular devops tools
+## Difference between Microconfig and popular devops tools
 **Comparing to config servers** (like Spring cloud config server or Zookeeper):
 
 Config servers solve the problem of dynamic distribution of configuration in runtime (can use http endpoints), but to distribute configuration you have to store it, ideally with change history and without duplication of common part.
@@ -28,12 +28,12 @@ Microconfig does one thing and does it well. It provides an approach, best pract
 
 You can use Microconfig together with config servers and deployment frameworks. Configuration can be built during deploy phase and the resulting plain config files can be copied to the filesystem, where your services can access it directly(for instance, Spring Boot can read configuration from *.yaml or *.properties), or you can distribute result configuration using any config servers. Also, you can store not only application configuration but configuration how to run your services. And deployments frameworks can read configuration from Microconfig to start your services with right params and settings.
 
-# Where to store configuration
+## Where to store configuration
 It’s a good practice to keep service configuration separated from code. It allows not to rebuild your services any time configuration is changed and use the same service artifacts (for instance, *.jar) for all environments because it doesn’t contain any env specific configuration. Configuration can be updated even in runtime without service' source code changes.
 
 So the best way to follow this principle is to have a dedicated repository for configuration in your favorite version control system.  You can store configuration for all microservices in the same repository to make it easy to reuse a common part and be sure the common part is consistent for all your services.
 
-# Service configuration types
+## Service configuration types
 
 It's convenient to have different kinds of configuration and keep it in different files:
 * Process configuration (the configuration used by deployment tools to start your service, like memory limit, VM params, etc.
@@ -61,9 +61,9 @@ repo
     └───api-gateway
 ```
 
-# Service configuration files
+## Configuration sources
 
-Inside the service folder, you can create a configuration in key=value format.
+Inside the service folder, you can create a configuration in key=value format. For examples we will use *.properties, but Microconfig also supports *.yaml. 
 
 Let’s create basic application and process configuration files for each service.
 You can split configuration among several files, but for simplicity, we will create single application.properties and process.proc for each service. Anyway, after configuration build for each service for each config type, a single result file will be generated despite the number of base source files.
@@ -90,20 +90,20 @@ repo
 Inside process.proc we will store configuration that describes what is your service and how to run it (Your config files can have other properties, so don't pay attention to concrete values).
 
 **orders/process.proc**
-```*.properties
-    artifact=org.example:orders:19.4.2 # artifact in maven format groupId:artifactId:version
-    java.main=org.example.orders.OrdersStarter # main class to run
-    java.opts.mem=-Xms1024M -Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log # vm params
+```properties
+    artifact=org.example:orders:19.4.2 # partial duplication
+    java.main=org.example.orders.OrdersStarter
+    java.opts.mem=-Xms1024M -Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log # duplication
 ```
 **payments/process.proc**
-```*.properties
+```properties
     artifact=org.example:payments:19.4.2 # partial duplication
     java.main=org.example.payments.PaymentStarter
     java.opts.mem=-Xms1024M -Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log # duplication
     instance.count=2
 ```
 **service-discovery/process.proc**
-```*.properties
+```properties
     artifact=org.example.discovery:eureka:19.4.2 # partial duplication         
     java.main=org.example.discovery.EurekaStarter
     java.opts.mem=-Xms1024M -Xmx2048M # partial duplication         
@@ -114,7 +114,7 @@ As you can see we already have some small copy-paste (all services have 19.4.2 v
 Let's see how application properties can look like. In comments we note what can be improved.
 
 **orders/application.properties**
-```*.properties
+```properties
     server.port=9000
     application.name=orders # better to get name from folder
     orders.personalRecommendation=true
@@ -127,10 +127,10 @@ Let's see how application properties can look like. In comments we note what can
     jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true  # duplication
 ```
 **payments/application.properties**
-```*.properties
+```properties
     server.port=8080
     application.name=payments # better to get name from folder
-    payments.booktimeoutInMs=900000 # how long in min ?
+    payments.booktimeoutInMs=900000 # difficult to read. how long in min ?
     payments.system.retries=3
     consistency.validateConsistencyIntervalInMs=420000 # difficult to read. how long in min ?
     service-discovery.url=http://10.12.172.11:6781 # are you sure url is consistent with eureka configuration?
@@ -141,7 +141,7 @@ Let's see how application properties can look like. In comments we note what can
     jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true # duplication
 ```
 **service-discovery/application.properties**
-```*.properties
+```properties
     server.port=6781
     application.name=eureka
     eureka.client.fetchRegistry=false
@@ -182,13 +182,13 @@ repo
         ***
 ```
 **service-discovery-client/application.properties**
-```*.properties
+```properties
 service-discovery.url=http://10.12.172.11:6781 # are you sure url is consistent with eureka configuration?
 eureka.instance.prefer-ip-address=true 
 ```
 
 **oracle-client/application.properties**
-```*.properties
+```properties
 datasource.minimum-pool-size=2  
 datasource.maximum-pool-size=5    
 datasource.url=jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV  
@@ -198,7 +198,7 @@ jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
 And replace explicit configs with includes
 
 **orders/application.properties**
-```*.properties
+```properties
     #include service-discovery-client
     #include oracle-db-client
     
@@ -209,7 +209,7 @@ And replace explicit configs with includes
 ```
 
 **payments/application.properties**
-```*.properties
+```properties
     #include service-discovery-client
     #include oracle-db-client
     
@@ -228,7 +228,7 @@ You can override any properties from your dependencies.
 Let's override order's connection pool size.
 
 **orders/application.properties**
-```*.properties        
+```properties        
     #include oracle-db-client
     datasource.maximum-pool-size=10
     ***    
@@ -259,32 +259,32 @@ repo
 ```
 
 **oracle-common/application.properties**
-```*.properties
+```properties
 datasource.minimum-pool-size=2  
 datasource.maximum-pool-size=5    
 connection.timeoutInMs=300000
 jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
 ```
 **orders-db/application.properties**
-```*.properties
+```properties
     #include oracle-common
     datasource.maximum-pool-size=10
     datasource.url=jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV #partial duplication
 ```
 **payment-db/application.properties**
-```*.properties
+```properties
     #include oracle-common
     datasource.url=jdbc:oracle:thin:@172.30.162.127:1521:ARMSDEV #partial duplication
 ```
 
 **orders/application.properties**
-```*.properties
+```properties
     #include order-db
     ***
 ```
 
 **payments/application.properties**
-```*.properties
+```properties
     #include payment-db
 ```
 
@@ -292,54 +292,9 @@ jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
 Also includes can be in one line:
 
 **payments/application.properties**
-```*.properties
+```properties
     #include service-discovery-client, oracle-db-client    
 ```
-
-# Env specific properties
-Microconfig allows specifying env specific properties (add/remove/override). For instance, you want to increase connection-pool-size for dbs and increase the amount of memory for prod env.
-To add/remove/override properties for env, you can create application.**${ENVNAME}**.properties file in the config folder. 
-
-Let's override connection pool size for dev and prod and add one new param for dev. 
-
-```
-order-db
-└───application.properties
-└───application.dev.properties
-└───application.prod.properties
-```
-
-**orders-db/application.dev.properties**
-```*.properties   
-    datasource.maximum-pool-size=15   
-    hibernate.show-sql=true    
-```
-
-**orders-db/application.prod.properties**
-```*.properties   
-    datasource.maximum-pool-size=50    
-```
-
-Also, you can declare common properties for several environments in a single file.  You can use the following file name pattern: application.**${ENV1.ENV2.ENV3...}**.properties
-Let's create common props for dev, dev2 and test envs.
-
-```
-order-db
-└───application.properties
-└───application.dev.properties
-└───application.dev.dev2.test.properties
-└───application.prod.properties
-```
-
-**orders-db/application.dev.dev2.test.properties**
-```*.properties   
-    hibernate.show-sql=true    
-```
-
-When you build properties for specific env (for example 'dev') Microconfig will collect properties from:
-* application.properties 
-* then add/override properties from application.dev.{anotherEnv}.properties.
-* then add/override properties from application.dev.properties.
 
 # Placeholders
 
@@ -350,22 +305,22 @@ Let's refactor service-discovery-client config.
 Initial:
 
 **service-discovery-client/application.properties**
-```*.properties
+```properties
 service-discovery.url=http://10.12.172.11:6781 # are you sure host and port are consistent with SD configuration? 
 ```
 **service-discovery/application.properties**
-```*.properties
+```properties
 server.port=6761 
 ```
 
 Refactored:
 
 **service-discovery-client/application.properties**
-```*.properties
+```properties
 service-discovery.url=http://${service-discovery@ip}:${service-discovery@server.port}
 ```
 **service-discovery/application.properties**
-```*.properties
+```properties
 server.port=6761
 ip=10.12.172.11 
 ```
@@ -381,7 +336,7 @@ Let's refactor oracle db config using placeholders and env specific overrides.
 Initial:
 
 **oracle-common/application.properties**
-```*.properties    
+```properties    
     datasource.maximum-pool-size=10
     datasource.url=jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV 
 ```   
@@ -389,35 +344,40 @@ Initial:
 Refactored:
 
 **oracle-common/application.properties**
-```*.properties    
+```properties    
     datasource.maximum-pool-size=10
     datasource.url=jdbc:oracle:thin:@${this@oracle.host}:1521:${this@oracle.sid}
     oracle.host=172.30.162.20    
     oracle.sid=ARMSDEV
 ```
 **oracle-common/application.uat.properties**
-```*.properties    
+```properties    
     oracle.host=172.30.162.80
 ```    
     
 **oracle-common/application.prod.properties**
-```*.properties    
+```properties    
     oracle.host=10.17.14.18    
     oracle.sid=ARMSPROD    
 ```        
 
-As you can see using placeholders we can override not the whole property but only a part of it. 
+As you can see using placeholders we can override not the whole property but only a part of it.
 
-If you want to declare temp properties that will be used for placeholders and you don't want them to be included in the result config file, you can declare them with #var keyword.
+
+Placeholder can link to another placeholder. Microconfig can resolve them recursively and detect cyclic dependencies.
+
+## Temp properties
+
+If you want to declare temp properties that will be used for placeholders and you don't want them to be included in a result config file, you can declare them with `#var` keyword.
 
 **oracle-common/application.properties**
-```*.properties
+```properties
     datasource.url=jdbc:oracle:thin:@${this@oracle.host}:1521:${this@oracle.sid}
     #var oracle.host=172.30.162.20    
     #var oracle.sid=ARMSDEV
 ```
 **oracle-common/application.uat.properties**
-```*.properties    
+```properties    
     #var oracle.host=172.30.162.80
 ``` 
 
@@ -426,26 +386,24 @@ This approach works with includes as well. You can #include oracle-common and th
 In the example below after build datasource.url=jdbc:oracle:thin:@**100.30.162.80**:1521:ARMSDEV
  
 **orders-db/application.dev.properties** 
-```*.properties   
+```properties   
      #include oracle-common    
      #var oracle.host=100.30.162.80                 
-```  
+```
 
-Placeholder can link to another placeholder. Microconfig can resolve them recursively and detect cyclic dependencies.
-
-# Placeholder's default value
+## Placeholder's default value
 You can specify a default value for placeholder using syntax ${component@property:**defaultValue**}
 
-Let's set default value for oracle host
+Let's set a default value for 'oracle host'
 
 **oracle-common/application.properties**
-```*.properties    
+```properties    
     datasource.maximum-pool-size=10
     datasource.url=jdbc:oracle:thin:@${this@oracle.host:172.30.162.20}:1521:${this@oracle.sid}        
     #var oracle.sid=ARMSDEV
 ```
 Note, a default value can be a placeholder:
- ${component@property:${component2@property7:Missing value}}
+ `${component@property:${component2@property7:Missing value}}`
  
 Microconfig will try to:
 * resolve `${component@property}`
@@ -454,46 +412,46 @@ Microconfig will try to:
 
 If a placeholder doesn't have a default value and that placeholder can't be resolved Microconfig throws an exception with the detailed problem description.    
 
-# Removing  base properties
+## Removing base properties
 Using #var you can remove properties from the result config file. You can include some config and override any property with #var to exclude it from the result config file. 
 
 Let's remove 'payments.system.retries' property for dev env:
 
 **payments/application.properties**
-```*.properties
+```properties
     payments.system.retries=3        
 ```
 **payments/application.dev.properties**
-```*.properties
+```properties
     #var payments.system.retries=  // will not be included into result config        
 ```
-# Specials placeholders
+## Specials placeholders
 As we discussed syntax for placeholders looks like `${component@property}`.
 Microconfig has several special useful placeholders:
 
-* ${this@env} - returns current env name 
-* ${...@name} - returns component's name
-* ${...@configDir} - returns full path of component's config dir 
-* ${...@resultDir} - returns full path of component's destination dir (result files will be put into this dir)
-* ${this@configRoot} - returns full path of config repo's root dir (see `root` build param )   
+* `${this@env}` - returns current env name 
+* `${...@name}` - returns component's name
+* `${...@configDir}` - returns full path of component's config dir 
+* `${...@resultDir}` - returns full path of component's destination dir (result files will be put into this dir)
+* `${this@configRoot}` - returns full path of config repo's root dir (see `root` build param )   
 
 There are some other env descriptor related properties, we will discuss them later:
-* ${...@ip}
-* ${...@portOffset}
-* ${...@group}
-* ${...@order}
+* `${...@ip}`
+* `${...@portOffset}`
+* `${...@group}`
+* `${...@order}`
 
 Note, if you use special placeholders with ${this@...} than value will be context dependent. Let's apply ${this@name} to see why it's useful.
 
 Initial:
 
 **orders/application.properties**
-```*.properties
+```properties
     #include service-discovery-client    
     application.name=orders    
 ```
 **payments/application.properties**
-```*.properties
+```properties
     #include service-discovery-client    
     application.name=payments
 ```
@@ -501,19 +459,19 @@ Initial:
 Refactored:
 
 **orders/application.properties**
-```*.properties
+```properties
     #include service-discovery-client    
 ```
 **payments/application.properties**
-```*.properties
+```properties
     #include service-discovery-client
 ```
 **service-discovery-client/application.properties**
-```*.properties            
+```properties            
     application.name=${this@name}
 ```                 
 
-# Env variables and system properties 
+## Env variables and system properties 
 To resolve env variables use the following syntax: `${env@variableName}`
 
 For example:
@@ -540,66 +498,13 @@ Example:
  -DtaskId=3456 -DsomeParam3=value
 ```
 Then you can access it: `${system@taskId}` or `${system@someParam3}`
- 
-# Profiles and explicit env name for includes and placeholders
-As we discussed you can create env specific properties using filename pattern: application.${ENV}.properties. You can use the same approach for creating profile specific properties.
-
-For example, you can create a folder for http client timeout settings:
-
-**timeout-settings/application.properties**
-```*.properties    
-    timeouts.connectTimeoutMs=1000    
-    timeouts.readTimeoutMs=5000    
-```
-And some services can include this configuration:
-
-**orders/application.properties**
-```*.properties
-    #include timeout-settings    
-```
-**payments/application.properties**
-```*.properties
-    #include timeout-settings
-```
-
-But what if you want some services to be configured with long timeout? Instead of env you can use profile name in the filename:
-```
-timeout-settings
-└───application.properties
-└───application.long.properties
-└───application.huge.properties
-```
-**timeout-settings/application.long.properties**
-```*.properties
-    timeouts.readTimeoutMs=30000    
-```
-**timeout-settings/application.huge.properties**
-```*.properties
-    timeouts.readTimeoutMs=600000    
-```
-
-And specify profile name with include:
-
-**payments/application.properties**
-```*.properties
-    #include timeout-settings[long]
-```
-
-You can use profile/env name with placeholders as well:
-
-```
-${timeout-settings[long]@readTimeoutMs}
-${kafka[test]@bootstrap-servers}
-```
-
-The difference between env-specific files and profiles is only logical. Microconfig handles it the same way.  
 
 # Expression language
 Microconfig supports a powerful expression language based on [Spring EL](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#expressions).    
 
 Let's see some examples:
 
-```*.properties
+```properties
 #Better than 300000
 connection.timeoutInMs=#{5 * 60 * 1000}
 
@@ -614,8 +519,106 @@ healthcheck.logSucessMarker=Started ${this@mainClassNameWithoutPackage}
 sessionKey=#{T(java.util.Base64).getEncoder().encodeToString('Some value'.bytes)}  
 ```
 Inside EL you can write any Java code in one line and Microconfig placeholders. Of course, you shouldn't overuse it to keep configuration readable.
+ 
+# Env specific properties
+Microconfig allows specifying env specific properties (add/remove/override). For instance, you want to increase connection-pool-size for dbs and increase the amount of memory for prod env.
+To add/remove/override properties for env, you can create application.**${ENVNAME}**.properties file in the config folder. 
 
-# Arbitrary template files
+Let's override connection pool size for dev and prod and add one new param for dev. 
+
+```
+order-db
+└───application.properties
+└───application.dev.properties
+└───application.prod.properties
+```
+
+**orders-db/application.dev.properties**
+```properties   
+    datasource.maximum-pool-size=15   
+    hibernate.show-sql=true    
+```
+
+**orders-db/application.prod.properties**
+```properties   
+    datasource.maximum-pool-size=50    
+```
+
+Also, you can declare common properties for several environments in a single file.  You can use the following file name pattern: application.**${ENV1.ENV2.ENV3...}**.properties
+Let's create common props for dev, dev2 and test envs.
+
+```
+order-db
+└───application.properties
+└───application.dev.properties
+└───application.dev.dev2.test.properties
+└───application.prod.properties
+```
+
+**orders-db/application.dev.dev2.test.properties**
+```properties   
+    hibernate.show-sql=true    
+```
+
+When you build properties for a specific env (for example 'dev') Microconfig will collect properties from:
+* application.properties 
+* then add/override properties from application.dev.{anotherEnv}.properties.
+* then add/override properties from application.dev.properties.
+ 
+## Profiles and explicit env name for includes and placeholders
+As we discussed you can create env specific properties using filename pattern: application.${ENV}.properties. You can use the same approach for creating profile specific properties.
+
+For example, you can create a folder for http client timeout settings:
+
+**timeout-settings/application.properties**
+```properties    
+    timeouts.connectTimeoutMs=1000    
+    timeouts.readTimeoutMs=5000    
+```
+And some services can include this configuration:
+
+**orders/application.properties**
+```properties
+    #include timeout-settings    
+```
+**payments/application.properties**
+```properties
+    #include timeout-settings
+```
+
+But what if you want some services to be configured with long timeout? Instead of env you can use profile name in the filename:
+```
+timeout-settings
+└───application.properties
+└───application.long.properties
+└───application.huge.properties
+```
+**timeout-settings/application.long.properties**
+```properties
+    timeouts.readTimeoutMs=30000    
+```
+**timeout-settings/application.huge.properties**
+```properties
+    timeouts.readTimeoutMs=600000    
+```
+
+And specify profile name with include:
+
+**payments/application.properties**
+```properties
+    #include timeout-settings[long]
+```
+
+You can use profile/env name with placeholders as well:
+
+```
+${timeout-settings[long]@readTimeoutMs}
+${kafka[test]@bootstrap-servers}
+```
+
+The difference between env-specific files and profiles is only logical. Microconfig handles it the same way.
+
+# Template files
 Microconfig allows to keep configuration files for any libraries in their specific format and resolve placeholders inside them.
 For example, you want to keep logback.xml (or some other descriptor for your log library) and reuse this file with resolved placeholders for all your services. 
 
@@ -641,14 +644,14 @@ So we want every service to have its own logback.xml with resolved `${applicatio
 Let's configure order and payment services to use this template.
 
 **orders/application.properties**
-```*.properties
-    #include service-disconvery-client
+```properties
+    #include service-discovery-client
     template.logback.fromFile=${logback@configDir}/logback.xml # full path to logback.xml, @configDir - special placeholder property
 ```
 
 **payments/application.properties**
-```*.properties
-    #include service-disconvery-client
+```properties
+    #include service-discovery-client
     template.logback.fromFile=${logback@configDir}/logback.xml
 ```  
    
@@ -662,22 +665,20 @@ repo
 |     	 └───application.properties
 ```    
 **logback-template/application.properties**
-```*.properties   
+```properties   
     template.logback.fromFile=${logback@configDir}/logback.xml    
 ```
 **orders-template/application.properties**
-```*.properties
-    #include service-disconvery-client
-    #include logback-template
+```properties
+    #include service-discovery-client, logback-template
 ```
 **payments-template/application.properties**
-```*.properties
-    #include service-disconvery-client
-    #include logback-template
+```properties
+    #include service-discovery-client, logback-template
 ```  
 
-As you could notice the placeholder syntax inside template `${propName}`  differs from Micronfig one `${component@propName}`, it doesn't specify a component name.
-You can use standard Microconfig syntax for placeholder as well. For short sytax ${propName} == ${**this**@propName}.
+As you could notice the placeholder syntax inside template `${propName}`  differs from Microconfig one `${component@propName}`, it doesn't specify a component name.
+You can use the standard Microconfig syntax for placeholder as well. ${propName} == ${**this**@propName}.
 
 If Microconfig can't resolve a template placeholder, Microconfig logs warn and leaves unresolved template text.
 
@@ -689,7 +690,7 @@ If you want to declare a property for a template only and don't want this proper
 If you want to override template destination filename you can use `template.${templateName}.toFile=${someFile}` property. For example:  
  
  **logback-template/application.properties**
- ```*.properties   
+ ```properties   
      template.logback.fromFile=${logback@configDir}/logback.xml    
      template.logback.toFile=logs/logback-descriptor.xml
  ``` 
@@ -714,7 +715,7 @@ repo
 |     	 └───application.prod.properties
 ```
 **logback-template/application.prod.properties**
-```*.properties   
+```properties   
     template.logback.fromFile=${logback@configDir}/logback-prod.xml        
 ``` 
 
@@ -740,7 +741,7 @@ repo
 Let's see env descriptor format:
  
  **envs/base.yaml**
-```*.yml
+```yaml
 orders:  
   components:  
     - order-db-patcher
@@ -766,7 +767,7 @@ monitoring:
 ```  
 
 Env name = file name
-```*.yml
+```yaml
 orders: # component group name
   components:  
     - order-db-patcher # component name(folder)
@@ -777,7 +778,7 @@ orders: # component group name
 One env can include another one and add/remove/override component groups:
 
 **envs/test.yaml**
-```*.yml
+```yaml
 include: # include all groups from 'base' env except 'monitoring'
   env: base
   exclude:
@@ -787,9 +788,9 @@ infra:
   exclude:
     - ssl-api-gateway # excluded ssl-api-gateway component from 'infra' group  
   append:
-    - local-proxy # added new componet into 'infra' group
+    - local-proxy # added new component into 'infra' group
 
-tests_dashboard: # aded new component group 'tests_dashboard'  
+tests_dashboard: # added new component group 'tests_dashboard'
   components:
     - test-statistic-collector
 ``` 
@@ -797,11 +798,11 @@ tests_dashboard: # aded new component group 'tests_dashboard'
 You can use optional param `ip` for env and component groups and then use placeholder `${componentName@ip}`.
 
 For instance, `${order-service@ip}` will be resolved to 12.53.12.67, `${payment-ui@ip}` will be resolved to 170.53.12.80.   
-```*.yml
+```yaml
 ip: 170.53.12.80 # default ip
 
 orders:  
-  ip: 12.53.12.67 # ip overriden for the group
+  ip: 12.53.12.67 # ip overridden for the group
   components:  
     - order-db-patcher
     - order-service
@@ -817,8 +818,8 @@ payments:
 Consider configuring your deployment tool to read env descriptor to know which services to deploy.
 
 # Running config build
-As we discussed Micronfig has its own format for configuration sources. 
-During config build Micronfig inlines all includes, resolves placeholders, evaluates expression language, copies templates, and stores the result values into plain *.properties or *.yaml files to a dedicated folder for each service.
+As we discussed Microconfig has its own format for configuration sources. 
+During config build Microconfig inlines all includes, resolves placeholders, evaluates expression language, copies templates, and stores the result values into plain *.properties or *.yaml files to a dedicated folder for each service.
 
 To run build you can download Microconfig release from https://github.com/microconfig/microconfig/releases.
 
@@ -830,7 +831,6 @@ Required build params:
 To build configs not for the whole environment but only for specific services you can use following optional params: 
 * `groups` - comma-separated list of component groups to build configs for. 
 * `services` - comma-separated list of services to build configs for. 
-
 
 Command line params example (Java 8+ required):
 ```
@@ -894,9 +894,9 @@ configs
 
 You can try to build configs from the dedicated example repo: https://github.com/microconfig/configs-layout-example 
 
-# Viewing differences between config's versions 
-During config build, Micronfig compares newly generated files to files generated during the previous build for each service for each config type.
-Micronconfig can detect added/removed/changed properties. 
+## Viewing differences between config's versions 
+During config build, Microconfig compares newly generated files to files generated during the previous build for each service for each config type.
+Microconfig can detect added/removed/changed properties. 
 
 Diff for application.properties is stored in diff-application.properties, diff for process.properties is stored in diff-process.properties, etc.
 ```
@@ -912,7 +912,7 @@ configs
 Diff file format:
 
 **diff-application.properties**
-```*.properties     
+```properties     
 +security.client.protocol=SSL # property has been added
 -connection.timeoutMs=1000 # property has been removed
  server.max-threads=10 -> 35 # value has been changed from '10' to '35'
@@ -934,7 +934,7 @@ repo
 ```
 
 Yaml configs can have nested properties:
-```*.yml
+```yaml
 datasource:  
   minimum-pool-size: 2  
   maximum-pool-size: 5    
@@ -943,7 +943,7 @@ datasource:
 ```      
 
 and lists:
-```*.yml
+```yaml
 cluster.gateway:
   hosts:
     - 10.20.30.47
@@ -955,7 +955,16 @@ Yaml format configs will be built into *.yaml, property ones will be built into 
 
 Microconfig can detect config's format based on separators (if config file has extension neither *.yaml nor *.properties). If you use `:` key-value separator, Microconfig will handle it like *.yaml (`=` for *.properties).
 
-### Contributing
+# Intellij IDEA plugin
+To make configuration management a little bit easier you can use Microconfig Intellij IDEA plugin.
+
+See documentation here: https://github.com/microconfig/microconfig-idea-plugin 
+
+# Contributing
 If you want to contribute to the project and make it better, your help is very welcome. You can request a feature or submit a bug via issues. Or submit a pull request.
 
-Contributing to the documentation is very welcome too.  
+Contributing to the documentation is very welcome too.
+
+https://github.com/microconfig/microconfig
+
+support@microconfig.io  
