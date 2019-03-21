@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
 import static io.microconfig.environments.Component.byType;
@@ -55,7 +56,8 @@ class TemplateTest {
         Map.Entry<String, String> entry = System.getenv().entrySet().iterator().next();
         Template template = new Template(source, "${env@" + entry.getKey() + "}");
         String result = template.resolvePlaceholders(envComponent, getPropertyResolver(), templatePattern);
-        assertEquals(entry.getValue().replaceAll("\\\\+", "/"), result.replaceAll("\\\\+", "/"));
+        UnaryOperator<String> escape = v -> v.replaceAll("\\\\+", "/");
+        assertEquals(escape.apply(entry.getValue()), escape.apply(result));
     }
 
     @Test
