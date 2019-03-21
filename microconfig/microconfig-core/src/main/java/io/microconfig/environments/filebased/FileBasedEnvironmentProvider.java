@@ -9,13 +9,14 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static io.microconfig.utils.CollectionUtils.singleValue;
 import static io.microconfig.utils.FileUtils.walk;
+import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 public class FileBasedEnvironmentProvider implements EnvironmentProvider {
     private final File envDir;
@@ -37,7 +38,7 @@ public class FileBasedEnvironmentProvider implements EnvironmentProvider {
         try (Stream<File> envStream = envFiles(null)) {
             return envStream
                     .map(f -> f.getName().substring(0, f.getName().indexOf('.')))
-                    .collect(toSet());
+                    .collect(toCollection(TreeSet::new));
         }
     }
 
