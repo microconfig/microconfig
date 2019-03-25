@@ -793,7 +793,7 @@ tests_dashboard: # added new component group 'tests_dashboard'
     - test-statistic-collector
 ``` 
 
-You can use the optional param `ip` for an environment or for component groups and then use it via `${componentName@ip}`.
+You can use the optional param `ip` for the environment or component groups and then use it via `${componentName@ip}`.
 
 For instance, `${order-service@ip}` will be resolved to 12.53.12.67, `${payment-ui@ip}` will be resolved to 170.53.12.80.   
 ```yaml
