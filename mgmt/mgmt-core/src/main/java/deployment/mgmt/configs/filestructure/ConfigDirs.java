@@ -5,7 +5,7 @@ import java.io.File;
 public interface ConfigDirs {
     File getConfigsRootDir();
 
-    File getConfigSourcesRootDir();
+    File getMicroconfigSourcesRootDir();
 
     File getConfigVersionFile();
 

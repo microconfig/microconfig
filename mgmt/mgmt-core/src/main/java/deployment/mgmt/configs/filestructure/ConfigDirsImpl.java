@@ -14,7 +14,7 @@ public class ConfigDirsImpl implements ConfigDirs {
     }
 
     @Override
-    public File getConfigSourcesRootDir() {
+    public File getMicroconfigSourcesRootDir() {
         return createDir(new File(getConfigsRootDir(), "repo"));
     }
 
@@ -52,6 +52,6 @@ public class ConfigDirsImpl implements ConfigDirs {
     }
 
     private File configFile(String file) {
-        return new File(getConfigSourcesRootDir(), file);
+        return new File(getMicroconfigSourcesRootDir(), file);
     }
 }

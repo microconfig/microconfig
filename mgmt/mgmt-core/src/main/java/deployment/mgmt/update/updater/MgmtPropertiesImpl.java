@@ -47,7 +47,7 @@ public class MgmtPropertiesImpl implements MgmtProperties {
 
     private MicroconfigFactory initBuildCommands() {
         return MicroconfigFactory.init(
-                deployFileStructure.configs().getConfigSourcesRootDir(),
+                deployFileStructure.configs().getMicroconfigSourcesRootDir(),
                 deployFileStructure.service().getComponentsDir()
         );
     }

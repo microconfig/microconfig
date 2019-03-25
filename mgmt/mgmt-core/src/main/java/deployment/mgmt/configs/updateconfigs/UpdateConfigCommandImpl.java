@@ -55,16 +55,15 @@ public class UpdateConfigCommandImpl implements UpdateConfigCommand {
     private void buildConfigs() {
         GroupDescription groupDescription = componentGroupService.getDescription();
 
-        File repoDir = deployFileStructure.configs().getConfigSourcesRootDir();
+        File repoDir = deployFileStructure.configs().getMicroconfigSourcesRootDir();
         File componentsDir = deployFileStructure.service().getComponentsDir();
         info("Source: " + repoDir + ". Destination: " + componentsDir);
 
         MgmtMicroConfigAdapter.execute(
                 groupDescription.getEnv(),
                 singletonList(groupDescription.getGroup()),
-                repoDir,
-                componentsDir,
-                emptyList()
+                emptyList(), repoDir,
+                componentsDir
         );
     }
 

@@ -79,7 +79,7 @@ public class MicroconfigFactory {
     public ConfigProvider newConfigProvider(ConfigType configType) {
         ConfigProvider fileBasedProvider = newFileBasedProvider(configType);
         return cache(
-                new ResolvedConfigProvider(fileBasedProvider, newExpressionResolver(fileBasedProvider))
+                new ResolvedConfigProvider(fileBasedProvider, newResolver(fileBasedProvider))
         );
     }
 
@@ -89,7 +89,7 @@ public class MicroconfigFactory {
         );
     }
 
-    public PropertyResolver newExpressionResolver(ConfigProvider simpleProvider) {
+    public PropertyResolver newResolver(ConfigProvider simpleProvider) {
         return cache(new ExpressionResolver(cache(newPlaceholderResolver(simpleProvider))));
     }
 

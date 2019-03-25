@@ -43,11 +43,11 @@ class Template {
             return;
         }
 
-        String value = resolveValue(currentComponent, propertyResolver, m);
+        String value = resolveValue(m, currentComponent, propertyResolver);
         m.appendReplacement(result, value == null ? "$0" : quoteReplacement(value));
     }
 
-    private String resolveValue(EnvComponent currentComponent, PropertyResolver propertyResolver, Matcher matcher) {
+    private String resolveValue(Matcher matcher, EnvComponent currentComponent, PropertyResolver propertyResolver) {
         String placeholder = toPlaceholder(matcher);
         Property property = tempProperty("key", placeholder, currentComponent.getEnvironment(), templateSource(currentComponent.getComponent(), source));
         try {

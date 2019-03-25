@@ -1,17 +1,28 @@
 package deployment.mgmt.configs.updateconfigs;
 
 import deployment.mgmt.atrifacts.ClasspathService;
+import deployment.mgmt.configs.componentgroup.ComponentGroupService;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.filestructure.ProcessDirs;
 import deployment.mgmt.configs.service.properties.ProcessProperties;
 import deployment.mgmt.configs.service.properties.PropertyService;
+import deployment.mgmt.microconfig.MgmtMicroConfigAdapter;
 import deployment.mgmt.process.runner.ScriptRunner;
+import io.microconfig.commands.buildconfig.factory.MicroconfigFactory;
+import io.microconfig.commands.buildconfig.factory.StandardConfigType;
+import io.microconfig.configs.resolver.EnvComponent;
+import io.microconfig.environments.Component;
+import io.microconfig.features.templates.CopyTemplatesService;
+import io.microconfig.features.templates.CopyTemplatesServiceImpl;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static io.microconfig.commands.buildconfig.factory.StandardConfigType.SERVICE;
+import static io.microconfig.environments.Component.byType;
+import static io.microconfig.features.templates.TemplatePattern.defaultPattern;
 import static io.microconfig.utils.FileUtils.copy;
 import static io.microconfig.utils.Logger.error;
 
@@ -21,6 +32,7 @@ public class NewServicePreparerImpl implements NewServicePreparer {
     private final DeployFileStructure deployFileStructure;
     private final PropertyService propertyService;
     private final ScriptRunner scriptRunner;
+    private final TemplateService templateService;
 
     @Override
     public void prepare(List<String> services, boolean skipClasspathBuildForSnapshot) {
@@ -34,6 +46,7 @@ public class NewServicePreparerImpl implements NewServicePreparer {
             copyLogDescriptorsToServiceDir(service);
             buildClasspath(service, processProperties, skipClasspathBuildForSnapshot);
             runPrepareDirScript(service, processProperties);
+            copyTemplates(service);
         } catch (RuntimeException e) {
             error("Can't prepare " + service, e);
         }
@@ -60,5 +73,9 @@ public class NewServicePreparerImpl implements NewServicePreparer {
 
     private void runPrepareDirScript(String service, ProcessProperties processProperties) {
         scriptRunner.runScript(processProperties.getPrepareDirScriptName(), service);
+    }
+
+    private void copyTemplates(String service) {
+        templateService.copyTemplates(service);
     }
 }

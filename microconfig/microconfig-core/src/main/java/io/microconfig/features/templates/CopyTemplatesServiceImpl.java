@@ -9,6 +9,8 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static io.microconfig.features.templates.RelativePathResolver.empty;
+import static io.microconfig.features.templates.TemplatePattern.defaultPattern;
 import static io.microconfig.utils.FilePermissionUtils.copyPermissions;
 import static io.microconfig.utils.FileUtils.write;
 import static io.microconfig.utils.Logger.*;
@@ -17,6 +19,10 @@ import static io.microconfig.utils.Logger.*;
 public class CopyTemplatesServiceImpl implements CopyTemplatesService {
     private final TemplatePattern templatePattern;
     private final RelativePathResolver relativePathResolver;
+
+    public CopyTemplatesServiceImpl() {
+        this(defaultPattern(), empty());
+    }
 
     @Override
     public void copyTemplates(EnvComponent currentComponent,
@@ -69,8 +75,7 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
         private String fromFile;
         private String toFile;
 
-        private void resolveAndCopy(PropertyResolver propertyResolver, EnvComponent currentComponent,
-                                    File destinationDir) {
+        private void resolveAndCopy(PropertyResolver propertyResolver, EnvComponent currentComponent, File destinationDir) {
             if (!isCorrect()) {
                 warn("Incomplete template def " + this);
                 return;

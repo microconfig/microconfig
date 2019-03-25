@@ -36,9 +36,7 @@ import deployment.mgmt.configs.service.metadata.MetadataProviderImpl;
 import deployment.mgmt.configs.service.properties.PropertyService;
 import deployment.mgmt.configs.service.properties.impl.PropertyServiceImpl;
 import deployment.mgmt.configs.servicenameresolver.ServiceNameResolverImpl;
-import deployment.mgmt.configs.updateconfigs.NewServicePreparerImpl;
-import deployment.mgmt.configs.updateconfigs.UpdateConfigCommand;
-import deployment.mgmt.configs.updateconfigs.UpdateConfigCommandImpl;
+import deployment.mgmt.configs.updateconfigs.*;
 import deployment.mgmt.init.*;
 import deployment.mgmt.lock.LockService;
 import deployment.mgmt.lock.OsLockService;
@@ -76,10 +74,12 @@ import io.microconfig.configs.io.ioservice.properties.PropertiesConfigIoService;
 import io.microconfig.configs.io.ioservice.selector.ConfigFormatDetectorImpl;
 import io.microconfig.configs.io.ioservice.selector.ConfigIoServiceSelector;
 import io.microconfig.configs.io.ioservice.yaml.YamlConfigIoService;
+import io.microconfig.features.templates.CopyTemplatesServiceImpl;
 import io.microconfig.utils.reader.FilesReader;
 import io.microconfig.utils.reader.FsFilesReader;
 import lombok.Getter;
 
+import static io.microconfig.features.templates.TemplatePattern.defaultPattern;
 import static io.microconfig.utils.CacheHandler.cache;
 import static java.util.Arrays.asList;
 import static java.util.List.of;
@@ -157,7 +157,8 @@ public class MgmtFactory {
                         classpathService,
                         deployFileStructure,
                         propertyService,
-                        scriptRunner
+                        scriptRunner,
+                        microconfigTemplateService()
                 ),
                 mgmtScriptGenerator
         );
@@ -173,6 +174,18 @@ public class MgmtFactory {
                 new NexusConfigStrategy(nexusClient, deploySettings)
         );
         this.readyReleasesService = new ReadyReleasesServiceImpl(propertyService, deploySettings, nexusClient, configFetcher);
+    }
+
+    private TemplateService microconfigTemplateService() {
+        return new TemplateServiceImpl(
+                new CopyTemplatesServiceImpl(
+                        defaultPattern().withTemplatePrefix("mgmt.template."),
+                        new OldConfigsRelativePathResolver(deployFileStructure.configs().getConfigsRootDir())
+                ),
+                componentGroupService,
+                deployFileStructure,
+                propertyService
+        );
     }
 
     public Mgmt getMgmt() {

@@ -25,15 +25,16 @@ public class OldConfigsRelativePathResolver implements RelativePathResolver {
         };
 
         if (oldConfigPath.test(path)) {
-            warn(warnMessage(serviceConfigDir));
+            warn(warnMessage(path, serviceConfigDir));
             return new File(repoRootDir, path.substring(prefix.length()));
         }
 
         return new File(path);
     }
 
-    private String warnMessage(File serviceDir) {
-        return "Overriding template path for " + serviceDir.getName() + " " + this +
-                ". Please, replace relative path with absolute using ${this@configRoot}\\.. or ${component_name@configDir}\\..";
+    private String warnMessage(String path, File serviceDir) {
+        return "Overriding relative template path '../../' for " + serviceDir.getName() + "(" + path + ")."
+                + " RELATIVE PATH IS DEPRECATED AND UNSUPPORTED. The support will be removed during next MGMT release."
+                + " Please, replace relative path with absolute using ${this@configRoot}/.. or ${component_name@configDir}/.. ";
     }
 }
