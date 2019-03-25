@@ -10,7 +10,6 @@ import java.util.TreeMap;
 import static io.microconfig.utils.ClasspathUtils.classpathFile;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PropertiesConfigIoServiceTest {
     private final PropertiesConfigIoService ioService = new PropertiesConfigIoService(new FsFilesReader());
@@ -23,7 +22,7 @@ class PropertiesConfigIoServiceTest {
     }
 
     private Map<String, String> expectedMap(boolean resolveEscape) {
-        String multilineEscape = resolveEscape ? "": "\\" + LINES_SEPARATOR;
+        String multilineEscape = resolveEscape ? "" : "\\" + LINES_SEPARATOR;
         Map<String, String> expected = new TreeMap<>();
         expected.put("p", "p_v");
         expected.put("p2", "p2_v");

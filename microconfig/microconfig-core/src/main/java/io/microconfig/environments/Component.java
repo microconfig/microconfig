@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 
 @Getter
-@EqualsAndHashCode(of = "name")
+@EqualsAndHashCode
 @RequiredArgsConstructor
 public class Component {
     private final String name; //alias, must be unique among env

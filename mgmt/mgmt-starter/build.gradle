@@ -3,8 +3,8 @@ apply plugin: 'com.github.johnrengelman.shadow'
 mainClassName = 'deployment.mgmt.MgmtMain'
 group = 'jdeployment'
 
-shadowJar {    
-    classifier = null    
+shadowJar {
+    classifier = null
 }
 
 publishing {

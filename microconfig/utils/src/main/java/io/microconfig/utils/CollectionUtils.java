@@ -11,14 +11,14 @@ public class CollectionUtils {
         return values.iterator().next();
     }
 
-    public static<T> List<T> join(Collection<T> first, Collection<T> second) {
+    public static <T> List<T> join(Collection<T> first, Collection<T> second) {
         List<T> list = new ArrayList<>();
         list.addAll(first);
         list.addAll(second);
         return list;
     }
 
-    public static<T> Set<T> joinToSet(Collection<T> first, Collection<T> second) {
+    public static <T> Set<T> joinToSet(Collection<T> first, Collection<T> second) {
         Set<T> list = new HashSet<>();
         list.addAll(first);
         list.addAll(second);

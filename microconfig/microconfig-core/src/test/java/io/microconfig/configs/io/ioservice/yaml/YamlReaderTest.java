@@ -32,9 +32,9 @@ class YamlReaderTest {
         assertEquals(expected, read.propertiesAsMap());
 
         List<Property> properties = read.properties("");
-        assertEquals(0, ((FileSource)properties.get(0).getSource()).getLineNumber());
-        assertEquals(6, ((FileSource)properties.get(1).getSource()).getLineNumber());
-        assertEquals(8, ((FileSource)properties.get(2).getSource()).getLineNumber());
+        assertEquals(0, ((FileSource) properties.get(0).getSource()).getLineNumber());
+        assertEquals(6, ((FileSource) properties.get(1).getSource()).getLineNumber());
+        assertEquals(8, ((FileSource) properties.get(2).getSource()).getLineNumber());
     }
 
     @Test
@@ -90,7 +90,7 @@ class YamlReaderTest {
                         "  countryCodes: BE" + LINES_SEPARATOR +
                         "  enabled: true"
         );
-        map.put("psp.adyen.value","v2");
+        map.put("psp.adyen.value", "v2");
         map.put("server.port", "8080");
 
         Map<String, String> expected = yaml.read(classpathFile("files/yaml/multilines.yaml")).propertiesAsMap();

@@ -13,6 +13,7 @@ import static io.microconfig.configs.Property.tempProperty;
 import static io.microconfig.configs.resolver.placeholder.Placeholder.isSinglePlaceholder;
 import static io.microconfig.configs.sources.SpecialSource.templateSource;
 import static io.microconfig.utils.IoUtils.readFully;
+import static io.microconfig.utils.Logger.info;
 import static io.microconfig.utils.Logger.warn;
 import static java.util.regex.Matcher.quoteReplacement;
 
@@ -45,6 +46,7 @@ class Template {
 
         String value = resolveValue(m.group(), currentComponent, propertyResolver);
         if (value == null) return;
+        info("Resolved " + m.group() + " -> " + value);
         m.appendReplacement(result, quoteReplacement(value));
     }
 

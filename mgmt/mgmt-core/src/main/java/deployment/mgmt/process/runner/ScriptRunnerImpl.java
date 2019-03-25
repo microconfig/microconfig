@@ -1,12 +1,10 @@
 package deployment.mgmt.process.runner;
 
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
-import io.microconfig.utils.FilePermissionUtils;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
-import static io.microconfig.utils.FilePermissionUtils.allowExecution;
 import static io.microconfig.utils.FilePermissionUtils.allowExecutionIfExists;
 import static io.microconfig.utils.Logger.info;
 import static mgmt.utils.ProcessUtil.startAndWait;

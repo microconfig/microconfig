@@ -1,30 +1,20 @@
 package deployment.mgmt.configs.updateconfigs;
 
 import deployment.mgmt.atrifacts.ClasspathService;
-import deployment.mgmt.configs.componentgroup.ComponentGroupService;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.filestructure.ProcessDirs;
 import deployment.mgmt.configs.service.properties.ProcessProperties;
 import deployment.mgmt.configs.service.properties.PropertyService;
-import deployment.mgmt.microconfig.MgmtMicroConfigAdapter;
 import deployment.mgmt.process.runner.ScriptRunner;
-import io.microconfig.commands.buildconfig.factory.MicroconfigFactory;
-import io.microconfig.commands.buildconfig.factory.StandardConfigType;
-import io.microconfig.configs.resolver.EnvComponent;
-import io.microconfig.environments.Component;
-import io.microconfig.features.templates.CopyTemplatesService;
-import io.microconfig.features.templates.CopyTemplatesServiceImpl;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static io.microconfig.commands.buildconfig.factory.StandardConfigType.SERVICE;
-import static io.microconfig.environments.Component.byType;
-import static io.microconfig.features.templates.TemplatePattern.defaultPattern;
 import static io.microconfig.utils.FileUtils.copy;
 import static io.microconfig.utils.Logger.error;
+import static io.microconfig.utils.SystemPropertiesUtils.hasSystemFlag;
 
 @RequiredArgsConstructor
 public class NewServicePreparerImpl implements NewServicePreparer {
@@ -72,6 +62,8 @@ public class NewServicePreparerImpl implements NewServicePreparer {
     }
 
     private void runPrepareDirScript(String service, ProcessProperties processProperties) {
+        if (hasSystemFlag("skipScripts")) return;
+
         scriptRunner.runScript(processProperties.getPrepareDirScriptName(), service);
     }
 

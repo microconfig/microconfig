@@ -15,7 +15,6 @@ import static deployment.mgmt.configs.updateconfigs.UpdateConfigOption.*;
 import static io.microconfig.utils.FileUtils.delete;
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.Logger.info;
-import static io.microconfig.utils.SystemPropertiesUtils.hasSystemFlag;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
@@ -80,8 +79,6 @@ public class UpdateConfigCommandImpl implements UpdateConfigCommand {
     }
 
     private void prepareNewServices(UpdateConfigOption... options) {
-        if (hasSystemFlag("simple")) return;
-
         newServicePreparer.prepare(componentGroupService.getServices(), isPresent(SKIP_CLASSPATH_BUILD_FOR_SNAPSHOT, options));
     }
 }

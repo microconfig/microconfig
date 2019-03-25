@@ -38,6 +38,6 @@ public class TemplateServiceImpl implements TemplateService {
                 deployFileStructure.configs().getMicroconfigSourcesRootDir(),
                 deployFileStructure.service().getComponentsDir()
         );
-        return factory.newResolver(factory.newConfigProvider(SERVICE.getConfigType()));
+        return factory.newResolver(factory.newFileBasedProvider(SERVICE.getConfigType()));
     }
 }
