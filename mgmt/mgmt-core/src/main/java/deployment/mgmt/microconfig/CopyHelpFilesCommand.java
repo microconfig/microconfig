@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
+import static deployment.mgmt.microconfig.MgmtMicroConfigAdapter.MGMT;
 import static io.microconfig.utils.FileUtils.copy;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -19,6 +20,8 @@ import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 class CopyHelpFilesCommand implements Command {
+    private static final String FILE_NAME = "help.txt";
+
     private final EnvironmentProvider environmentProvider;
     private final ComponentTree componentTree;
     private final Path destRootDir;
@@ -32,11 +35,11 @@ class CopyHelpFilesCommand implements Command {
     private void processComponent(Component component) {
         String componentName = component.getName();
         findSourceHelpFile(componentName)
-                .ifPresent(path -> copy(path.toPath(), resolveDestHelpFile(componentName)));
+                .ifPresent(path -> copy(path.toPath(), destinationPath(componentName)));
     }
 
     private Optional<File> findSourceHelpFile(String componentName) {
-        List<File> helpFiles = componentTree.getConfigFiles(componentName, p -> p.getName().equals("help.txt"))
+        List<File> helpFiles = componentTree.getConfigFiles(componentName, p -> p.getName().equals(FILE_NAME))
                 .collect(toList());
 
         if (helpFiles.isEmpty()) return empty();
@@ -44,9 +47,10 @@ class CopyHelpFilesCommand implements Command {
         throw new IllegalArgumentException("Multiple help files found for component " + componentName);
     }
 
-    private Path resolveDestHelpFile(String componentName) {
-        Path componentRootPath = destRootDir.resolve(componentName);
-        Path mgmtSubdir = componentRootPath.resolve(".mgmt");
-        return mgmtSubdir.resolve("help.txt");
+    private Path destinationPath(String componentName) {
+        return destRootDir
+                .resolve(componentName)
+                .resolve(MGMT)
+                .resolve(FILE_NAME);
     }
 }

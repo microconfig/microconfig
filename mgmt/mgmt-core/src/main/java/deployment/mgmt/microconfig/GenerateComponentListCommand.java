@@ -10,6 +10,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
+import static deployment.mgmt.microconfig.MgmtMicroConfigAdapter.MGMT;
 import static io.microconfig.utils.FileUtils.write;
 import static java.util.stream.Collectors.toList;
 
@@ -29,6 +30,6 @@ class GenerateComponentListCommand implements Command {
     }
 
     private Path componentListPath() {
-        return new File(new File(serviceDir, ".mgmt"), "mgmt.clist").toPath();
+        return new File(new File(serviceDir, MGMT), "mgmt.clist").toPath();
     }
 }

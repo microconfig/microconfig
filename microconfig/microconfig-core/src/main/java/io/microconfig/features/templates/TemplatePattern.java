@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 @Getter
 @Builder(toBuilder = true)
 public class TemplatePattern {
-    private static final String DEFAULT_TEMPLATE_PREFIX = "template.";
+    private static final String DEFAULT_TEMPLATE_PREFIX = "microconfig.template.";
     private static final String DEFAULT_FROM_FILE_SUFFIX = ".fromFile";
     private static final String DEFAULT_TO_FILE_SUFFIX = ".toFile";
     private static final String DEFAULT_PATTERN = "(?<escaped>\\\\)?(?<placeholder>\\$\\{(?<name>.+?)(?::(?<defuvalue>.*?))??})";

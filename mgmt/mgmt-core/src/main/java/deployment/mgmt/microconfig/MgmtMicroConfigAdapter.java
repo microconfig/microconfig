@@ -20,6 +20,8 @@ import static io.microconfig.commands.buildconfig.factory.StandardConfigType.*;
 import static io.microconfig.features.templates.TemplatePattern.defaultPattern;
 
 public class MgmtMicroConfigAdapter {
+    public static final String MGMT = ".mgmt";
+
     public static void execute(String env, List<String> groups, File root, File componentsDir, List<String> components) {
         Command command = newBuildPropertiesCommand(root, componentsDir);
         BuildConfigMain.execute(command, env, groups, components);
@@ -29,7 +31,7 @@ public class MgmtMicroConfigAdapter {
         MicroconfigFactory factory = MicroconfigFactory.init(repoDir, componentsDir);
 
         BuildConfigCommand serviceCommon = factory.newBuildCommand(SERVICE.type(), copyTemplatesPostProcessor(repoDir));
-        factory = factory.withServiceInnerDir(".mgmt");
+        factory = factory.withServiceInnerDir(MGMT);
         return composite(
                 serviceCommon,
                 factory.newBuildCommand(PROCESS.type(), new WebappPostProcessor()),
