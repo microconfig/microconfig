@@ -17,6 +17,7 @@ import static io.microconfig.configs.sources.SpecialSource.templateSource;
 import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.Logger.info;
 import static io.microconfig.utils.Logger.warn;
+import static java.lang.String.join;
 import static java.util.regex.Matcher.quoteReplacement;
 
 @RequiredArgsConstructor
@@ -43,7 +44,7 @@ class Template {
         m.appendTail(result);
 
         if (!resolved.isEmpty()) {
-            info("Resolved template placeholders: " + resolved);
+            info("Resolved template placeholders: " + join(", ", resolved));
         }
         return result.toString();
     }
