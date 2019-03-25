@@ -720,9 +720,9 @@ repo
 # Environment descriptor
 As we discussed every service can have default and environment-specific configurations, also we can extract a common configuration to some components. 
 During the build phase we want to build configs only for a subset of our components, only for real services on a concrete environment.    
-Of course you can pass the environment name and the list of service names as parameters to build the configuration for each service. But this is not very convenient if you want to build configuration for a large number of services. 
+Of course you can pass the environment name and the list of service names as parameters to build the configuration for. But this is not very convenient if you want to build configuration for a large number of services.
 
-So Microconfig allows specifying list of service names on a special environment descriptor and then use only env name to build configs for all services listed on that descriptor.
+So Microconfig allows specifying a list of service names on a special environment descriptor and then use only the environment name to build configs for all services listed on that descriptor.
 
 Environments descriptors must be in `${configRoot}/envs` folder.
 ``` 
