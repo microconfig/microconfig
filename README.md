@@ -956,7 +956,7 @@ Microconfig can detect config's format based on separators (if config file has e
 # Intellij IDEA plugin
 To make configuration management a little bit easier you can use Microconfig Intellij IDEA plugin.
 
-See documentation here: https://github.com/microconfig/microconfig-idea-plugin 
+See the documentation here: https://github.com/microconfig/microconfig-idea-plugin
 
 # Contributing
 If you want to contribute to the project and make it better, your help is very welcome. You can request a feature or submit a bug via issues. Or submit a pull request.
