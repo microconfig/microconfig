@@ -43,23 +43,27 @@ class Template {
             return;
         }
 
-        String value = resolveValue(m, currentComponent, propertyResolver);
-        m.appendReplacement(result, value == null ? "$0" : quoteReplacement(value));
+        String value = resolveValue(m.group(), currentComponent, propertyResolver);
+        if (value == null) return;
+        m.appendReplacement(result, quoteReplacement(value));
     }
 
-    private String resolveValue(Matcher matcher, EnvComponent currentComponent, PropertyResolver propertyResolver) {
-        String placeholder = toPlaceholder(matcher);
+    private String resolveValue(String initialPlaceholder, EnvComponent currentComponent, PropertyResolver propertyResolver) {
+        boolean microconfigFormatPlaceholder = isSinglePlaceholder(initialPlaceholder);
+        String placeholder = normalize(initialPlaceholder, microconfigFormatPlaceholder);
+
         Property property = tempProperty("key", placeholder, currentComponent.getEnvironment(), templateSource(currentComponent.getComponent(), source));
         try {
             return propertyResolver.resolve(property, currentComponent);
         } catch (RuntimeException e) {
-            warn("Template placeholder error: " + e.getMessage());
+            if (microconfigFormatPlaceholder) {
+                warn("Template placeholder error: " + e.getMessage());
+            }
             return null;
         }
     }
 
-    private String toPlaceholder(Matcher matcher) {
-        String full = matcher.group();
-        return isSinglePlaceholder(full) ? full : "${this@" + full.substring("${".length());
+    private String normalize(String initialPlaceholder, boolean microconfigFormatPlaceholder) {
+        return microconfigFormatPlaceholder ? initialPlaceholder : "${this@" + initialPlaceholder.substring("${".length());
     }
 }
