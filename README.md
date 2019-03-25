@@ -330,7 +330,7 @@ Microconfig has another approach to store service's ip. We will discuss it later
 Microconfig syntax for placeholders ${**componentName**@**propertyName**}. Microconfig forces us to specify the component name(folder). This syntax matches better than just the property name 
 (like ${serviceDiscoveryPortName}), because it makes it obvious based on which placeholder will be resolved and where to find initial placeholder value.
 
-Let's refactor oracle db config using placeholders and env specific overrides.
+Let's refactor oracle db config using placeholders and environment specific overrides.
 
 Initial:
 
@@ -607,7 +607,7 @@ And specify the profile name with include:
     #include timeout-settings[long]
 ```
 
-You can use the profile/env name with placeholders as well:
+You can use the profile/environment name with placeholders as well:
 
 ```
 ${timeout-settings[long]@readTimeoutMs}
@@ -736,7 +736,7 @@ repo
     └───prod.yaml
 ```
 
-Let's see env descriptor format:
+Let's see the environment descriptor format:
  
  **envs/base.yaml**
 ```yaml
@@ -764,7 +764,7 @@ monitoring:
     - prometheus    
 ```  
 
-Env name = file name
+environment name = filename
 ```yaml
 orders: # component group name
   components:  
@@ -773,11 +773,11 @@ orders: # component group name
     - order-ui # component name
 ``` 
 
-One env can include another one and add/remove/override component groups:
+One environment can include another one and add/remove/override component groups:
 
 **envs/test.yaml**
 ```yaml
-include: # include all groups from 'base' env except 'monitoring'
+include: # include all groups from 'base' environment except 'monitoring'
   env: base
   exclude:
    - monitoring
@@ -793,7 +793,7 @@ tests_dashboard: # added new component group 'tests_dashboard'
     - test-statistic-collector
 ``` 
 
-You can use optional param `ip` for env and component groups and then use placeholder `${componentName@ip}`.
+You can use the optional param `ip` for an environment or for component groups and then use it via `${componentName@ip}`.
 
 For instance, `${order-service@ip}` will be resolved to 12.53.12.67, `${payment-ui@ip}` will be resolved to 170.53.12.80.   
 ```yaml
@@ -813,7 +813,7 @@ payments:
     - payment-ui    
 ```
 
-Consider configuring your deployment tool to read env descriptor to know which services to deploy.
+Consider configuring your deployment tool to read the environment descriptor to know which services to deploy.
 
 # Running config build
 As we discussed Microconfig has its own format for configuration sources. 
@@ -840,7 +840,7 @@ To add system properties use `-D`
 java -DtaskId=3456 -DsomeParam=value -jar microconfig.jar root=repo dest=configs env=prod
 ```
 
-To speedup build up to 3 times you can add `-Xverify:none` and `-XX:TieredStopAtLevel=1` Java VM params. Although build time for even big projects with hungdreds of services is about 1-4 seconds.
+To speedup the build up to 3 times you can add `-Xverify:none` and `-XX:TieredStopAtLevel=1` Java VM params. Although build time for even big projects with hungdreds of services is about 1-4 seconds.
 ```
 java -Xverify:none -XX:TieredStopAtLevel=1 -jar microconfig.jar root=repo dest=configs env=prod
 ```
