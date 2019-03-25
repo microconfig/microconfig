@@ -76,8 +76,8 @@ import io.microconfig.configs.io.ioservice.properties.PropertiesConfigIoService;
 import io.microconfig.configs.io.ioservice.selector.ConfigFormatDetectorImpl;
 import io.microconfig.configs.io.ioservice.selector.ConfigIoServiceSelector;
 import io.microconfig.configs.io.ioservice.yaml.YamlConfigIoService;
-import io.microconfig.utils.reader.ConfigFileReader;
-import io.microconfig.utils.reader.FsConfigFileReader;
+import io.microconfig.utils.reader.FilesReader;
+import io.microconfig.utils.reader.FsFilesReader;
 import lombok.Getter;
 
 import static io.microconfig.utils.CacheHandler.cache;
@@ -113,7 +113,7 @@ public class MgmtFactory {
     public MgmtFactory() {
         this.deployFileStructure = DeployFileStructureImpl.init();
         this.lockService = new OsLockService(deployFileStructure);
-        ConfigFileReader fileReader = new FsConfigFileReader();
+        FilesReader fileReader = new FsFilesReader();
         this.configIoService = new ConfigIoServiceSelector(
                 cache(new ConfigFormatDetectorImpl(fileReader)),
                 new YamlConfigIoService(fileReader),

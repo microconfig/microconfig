@@ -16,10 +16,10 @@ public class InitConfigsCommandImpl implements InitConfigsCommand {
 
     @Override
     public void initConfigs(String configVersion, String projectFullVersionOrPostfix,
-                            Runnable configFetchCallback,
+                            Runnable postFetchCallback,
                             UpdateConfigOption... options) {
         configFetcher.fetchConfigs(configVersion);
-        configFetchCallback.run();
+        postFetchCallback.run();
 
         componentGroupService.cleanAlteredVersions();
         componentGroupService.updateConfigVersion(configVersion);

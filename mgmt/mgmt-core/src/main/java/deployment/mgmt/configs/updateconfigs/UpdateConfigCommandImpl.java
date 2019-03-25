@@ -69,7 +69,7 @@ public class UpdateConfigCommandImpl implements UpdateConfigCommand {
     }
 
     private void applyAlteredVersions(UpdateConfigOption... options) {
-        if (in(options, CLEAN_ALTERED_VERSIONS)) {
+        if (isPresent(CLEAN_ALTERED_VERSIONS, options)) {
             componentGroupService.cleanAlteredVersions();
         } else {
             componentGroupService.replaceServiceVersionWithAltered();
@@ -83,6 +83,6 @@ public class UpdateConfigCommandImpl implements UpdateConfigCommand {
     private void prepareNewServices(UpdateConfigOption... options) {
         if (hasSystemFlag("simple")) return;
 
-        newServicePreparer.prepare(componentGroupService.getServices(), in(options, SKIP_CLASSPATH_BUILD_FOR_SNAPSHOT));
+        newServicePreparer.prepare(componentGroupService.getServices(), isPresent(SKIP_CLASSPATH_BUILD_FOR_SNAPSHOT, options));
     }
 }

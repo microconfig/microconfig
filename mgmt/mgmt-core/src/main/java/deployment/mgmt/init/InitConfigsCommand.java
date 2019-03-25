@@ -4,6 +4,6 @@ import deployment.mgmt.configs.updateconfigs.UpdateConfigOption;
 
 public interface InitConfigsCommand {
     void initConfigs(String configVersion, String projectFullVersionOrPostfix,
-                     Runnable configFetchCallback,
+                     Runnable postFetchCallback,
                      UpdateConfigOption... options);
 }

@@ -23,6 +23,12 @@ public class FilePermissionUtils {
         }
     }
 
+    public static void allowExecutionIfExists(File script) {
+        if (!script.exists()) return;
+
+        allowExecution(script.toPath());
+    }
+
     public static void allowExecution(Path file) {
         if (OsUtil.isWindows()) return;
 

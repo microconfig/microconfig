@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public interface ConfigFileReader {
+public interface FilesReader {
     String read(File file);
 
     List<String> readLines(File file);

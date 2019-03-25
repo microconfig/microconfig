@@ -24,14 +24,14 @@ public class NewServicePreparerImpl implements NewServicePreparer {
 
     @Override
     public void prepare(List<String> services, boolean skipClasspathBuildForSnapshot) {
-        services.forEach(s -> doPrepare(s, skipClasspathBuildForSnapshot));
+        services.forEach(service -> doPrepare(service, skipClasspathBuildForSnapshot));
     }
 
     private void doPrepare(String service, boolean skipClasspathBuildForSnapshot) {
         try {
             ProcessProperties processProperties = propertyService.getProcessProperties(service);
 
-            copyLogConfigToServiceDir(service);
+            copyLogDescriptorsToServiceDir(service);
             buildClasspath(service, processProperties, skipClasspathBuildForSnapshot);
             runPrepareDirScript(service, processProperties);
         } catch (RuntimeException e) {
@@ -39,7 +39,7 @@ public class NewServicePreparerImpl implements NewServicePreparer {
         }
     }
 
-    private void copyLogConfigToServiceDir(String service) {
+    private void copyLogDescriptorsToServiceDir(String service) {
         Consumer<File> copyToParent = source -> {
             File serviceRoot = source.getParentFile().getParentFile();
             File logConfigDestination = new File(serviceRoot, source.getName());

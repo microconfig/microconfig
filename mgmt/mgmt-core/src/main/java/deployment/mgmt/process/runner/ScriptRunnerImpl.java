@@ -1,11 +1,13 @@
 package deployment.mgmt.process.runner;
 
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
+import io.microconfig.utils.FilePermissionUtils;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
 import static io.microconfig.utils.FilePermissionUtils.allowExecution;
+import static io.microconfig.utils.FilePermissionUtils.allowExecutionIfExists;
 import static io.microconfig.utils.Logger.info;
 import static mgmt.utils.ProcessUtil.startAndWait;
 
@@ -17,20 +19,17 @@ public class ScriptRunnerImpl implements ScriptRunner {
     public void runScript(String scriptName, String service) {
         if (scriptName == null) return;
 
-        String fullName = scriptName.startsWith("/") ? scriptName : new File(deployFileStructure.configs().getScriptsDir(), scriptName).getAbsolutePath();
-        makeExecutable(new File(fullName));
+        String scriptPath = getScriptFullPath(scriptName);
+        info("Running script " + scriptPath + " for " + service);
 
-        info("Running script " + fullName + " for " + service);
-
-        startAndWait(new ProcessBuilder(fullName)
+        allowExecutionIfExists(new File(scriptPath));
+        startAndWait(new ProcessBuilder(scriptPath)
                 .directory(deployFileStructure.service().getServiceDir(service))
                 .inheritIO()
         );
     }
 
-    private void makeExecutable(File script) {
-        if (script.exists()) {
-            allowExecution(script.toPath());
-        }
+    private String getScriptFullPath(String scriptName) {
+        return scriptName.startsWith("/") ? scriptName : new File(deployFileStructure.configs().getScriptsDir(), scriptName).getAbsolutePath();
     }
 }
