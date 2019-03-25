@@ -6,6 +6,8 @@ import io.microconfig.configs.resolver.PropertyResolver;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,31 +32,40 @@ class Template {
         Matcher m = pattern.matcher(text);
         if (!m.find()) return text;
 
+        Set<String> resolved = new LinkedHashSet<>();
         StringBuffer result = new StringBuffer();
         do {
-            doResolve(m, result, propertyResolver, currentComponent);
+            String placeholder = doResolve(m, result, propertyResolver, currentComponent);
+            if (placeholder != null) {
+                resolved.add(placeholder);
+            }
         } while (m.find());
         m.appendTail(result);
+
+        if (!resolved.isEmpty()) {
+            info("Resolved template placeholders: " + resolved);
+        }
         return result.toString();
     }
 
-    private void doResolve(Matcher m, StringBuffer result, PropertyResolver propertyResolver, EnvComponent currentComponent) {
+    private String doResolve(Matcher m, StringBuffer result, PropertyResolver propertyResolver, EnvComponent currentComponent) {
         if (m.group("escaped") != null) {
             m.appendReplacement(result, quoteReplacement(m.group("placeholder")));
-            return;
+            return null;
         }
 
-        String value = resolveValue(m.group(), currentComponent, propertyResolver);
-        if (value == null) return;
-        info("Resolved " + m.group() + " -> " + value);
+        String placeholder = m.group();
+        String value = resolveValue(placeholder, currentComponent, propertyResolver);
+        if (value == null) return null;
         m.appendReplacement(result, quoteReplacement(value));
+        return placeholder;
     }
 
     private String resolveValue(String placeholder, EnvComponent currentComponent, PropertyResolver propertyResolver) {
         boolean microconfigFormatPlaceholder = isSinglePlaceholder(placeholder);
         if (!microconfigFormatPlaceholder) {
             String newFormat = "${this@" + placeholder.substring("${".length());
-            if (!isSinglePlaceholder(newFormat)) return null; //shouldn't try to resolve ${BASH_SOURCE-$0}
+            if (!isSinglePlaceholder(newFormat)) return null;
             placeholder = newFormat;
         }
 
