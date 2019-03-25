@@ -379,7 +379,7 @@ If you want to declare temp properties that will be used by placeholders only an
     #var oracle.host=172.30.162.80
 ``` 
 
-This approach works with includes as well. You can #include oracle-common and then override 'oracle.host', and 'datasource.url' will be resolved based on overridden value.
+This approach works with includes as well. You can #include oracle-common and then override 'oracle.host', and 'datasource.url' will be resolved based on the overridden value.
 
 In the example below after the build process: `datasource.url=jdbc:oracle:thin:@**100.30.162.80**:1521:ARMSDEV`
  
