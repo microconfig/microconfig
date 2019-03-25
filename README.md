@@ -10,7 +10,7 @@ If your project consists of tens or hundreds of services you have to:
 * Keep configuration for each service ideally separate from code.
 * Configuration for different services can have common and specific parts. Also, the configuration for the same service in different environments can have common and specific parts as well.
 * A common part for different services (or for one service in different environments) should not be copied and pasted and must be easy to reuse.
-* It must be easy to understand how the resulting configuration is generated and based on what the placeholders are resolved.
+* It must be easy to understand how the resulting configuration is generated and based on which values the config placeholders are resolved.
 * Some configuration properties must be dynamic, calculated using an expression language.
 
 Microconfig is written in Java, but it's designed to be used with systems written in any language. Microconfig just describes a format of configuration sources, syntax for placeholders, includes, excludes, overrides, an expression language for dynamic properties and an engine that can transform the config sources into simple *.yaml or *.properties formats. Also it can resolve placeholders in arbitrary template files and show differences between config releases.
