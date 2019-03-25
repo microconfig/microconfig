@@ -48,13 +48,16 @@ class Template {
         m.appendReplacement(result, quoteReplacement(value));
     }
 
-    private String resolveValue(String initialPlaceholder, EnvComponent currentComponent, PropertyResolver propertyResolver) {
-        boolean microconfigFormatPlaceholder = isSinglePlaceholder(initialPlaceholder);
-        String placeholder = normalize(initialPlaceholder, microconfigFormatPlaceholder);
+    private String resolveValue(String placeholder, EnvComponent currentComponent, PropertyResolver propertyResolver) {
+        boolean microconfigFormatPlaceholder = isSinglePlaceholder(placeholder);
+        if (!microconfigFormatPlaceholder) {
+            String newFormat = "${this@" + placeholder.substring("${".length());
+            if (!isSinglePlaceholder(newFormat)) return null; //shouldn't try to resolve ${BASH_SOURCE-$0}
+            placeholder = newFormat;
+        }
 
-        Property property = tempProperty("key", placeholder, currentComponent.getEnvironment(), templateSource(currentComponent.getComponent(), source));
         try {
-            return propertyResolver.resolve(property, currentComponent);
+            return doResolve(currentComponent, propertyResolver, placeholder);
         } catch (RuntimeException e) {
             if (microconfigFormatPlaceholder) {
                 warn("Template placeholder error: " + e.getMessage());
@@ -63,7 +66,8 @@ class Template {
         }
     }
 
-    private String normalize(String initialPlaceholder, boolean microconfigFormatPlaceholder) {
-        return microconfigFormatPlaceholder ? initialPlaceholder : "${this@" + initialPlaceholder.substring("${".length());
+    private String doResolve(EnvComponent currentComponent, PropertyResolver propertyResolver, String placeholder) {
+        Property property = tempProperty("key", placeholder, currentComponent.getEnvironment(), templateSource(currentComponent.getComponent(), source));
+        return propertyResolver.resolve(property, currentComponent);
     }
 }
