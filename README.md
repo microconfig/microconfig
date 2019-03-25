@@ -815,18 +815,18 @@ payments:
 
 Consider configuring your deployment tool to read the environment descriptor to know which services to deploy.
 
-# Running config build
+# Running the config build
 As we discussed Microconfig has its own format for configuration sources. 
-During config build Microconfig inlines all includes, resolves placeholders, evaluates expression language, copies templates, and stores the result values into plain *.properties or *.yaml files to a dedicated folder for each service.
+During the config build Microconfig inlines all includes, resolves placeholders, evaluates expression language, copies templates, and stores the result values into plain *.properties or *.yaml files to a dedicated folder for each service.
 
-To run build you can download Microconfig release from https://github.com/microconfig/microconfig/releases.
+To run the build you can download Microconfig release from https://github.com/microconfig/microconfig/releases.
 
-Required build params:
+The required build params:
 * `root` - full or relative config root dir. 
 * `dest` - full or relative build destination dir.
 * `env` - environment name (Environment is used as a config profile, also as a group of services to build configs for).
 
-To build configs not for the whole environment but only for specific services you can use following optional params: 
+To build configs not for the whole environment but only for specific services you can use the following optional params:
 * `groups` - comma-separated list of component groups to build configs for. 
 * `services` - comma-separated list of services to build configs for. 
 
@@ -893,7 +893,7 @@ configs
 You can try to build configs from the dedicated example repo: https://github.com/microconfig/configs-layout-example 
 
 ## Viewing differences between config's versions 
-During config build, Microconfig compares newly generated files to files generated during the previous build for each service for each config type.
+During the config build, Microconfig compares newly generated files to files generated during the previous build for each service for each config type.
 Microconfig can detect added/removed/changed properties. 
 
 Diff for application.properties is stored in diff-application.properties, diff for process.properties is stored in diff-process.properties, etc.
@@ -907,7 +907,7 @@ configs
 |   └───logback.xml
 ```
 
-Diff file format:
+The Diff format:
 
 **diff-application.properties**
 ```properties     
@@ -918,7 +918,7 @@ Diff file format:
 
 # YAML format support
 Microconfig supports YAML format for source and result configs.
-You can keep part of configuration in *.yaml files and another part in *.properties.
+You can keep a part of configuration in *.yaml files and another part in *.properties.
 
 ```
 repo
@@ -949,9 +949,9 @@ cluster.gateway:
     
 ```
 
-Yaml format configs will be built into *.yaml, property ones will be built into *.properties. If *.properties configs include *.yaml configs, result file will be *.yaml.
+Yaml format configs will be built into *.yaml, property configs will be built into *.properties. If *.properties configs include *.yaml configs, the resulting file will be *.yaml.
 
-Microconfig can detect config's format based on separators (if config file has extension neither *.yaml nor *.properties). If you use `:` key-value separator, Microconfig will handle it like *.yaml (`=` for *.properties).
+Microconfig can detect the format based on separators (if a config file has extension neither *.yaml nor *.properties). If you use `:` key-value separator, Microconfig will handle it like *.yaml (`=` for *.properties).
 
 # Intellij IDEA plugin
 To make configuration management a little bit easier you can use Microconfig Intellij IDEA plugin.
