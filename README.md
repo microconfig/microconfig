@@ -411,9 +411,9 @@ Microconfig will try to:
 If a placeholder doesn't have a default value and that placeholder can't be resolved, Microconfig throws an exception with the detailed problem description.
 
 ## Removing base properties
-Using #var you can remove properties from the result config file. You can include some config and override any property with #var to exclude it from the result config file. 
+Using `#var` you can remove properties from the result config file. You can include some config and override any property with #var to exclude it from the result config file.
 
-Let's remove 'payments.system.retries' property for dev env:
+Let's remove 'payments.system.retries' property for 'dev' environment:
 
 **payments/application.properties**
 ```properties
