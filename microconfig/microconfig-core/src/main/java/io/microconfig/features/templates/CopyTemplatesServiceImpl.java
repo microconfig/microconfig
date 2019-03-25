@@ -12,6 +12,7 @@ import java.util.Map;
 import static io.microconfig.features.templates.RelativePathResolver.empty;
 import static io.microconfig.features.templates.TemplatePattern.defaultPattern;
 import static io.microconfig.utils.FilePermissionUtils.copyPermissions;
+import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static io.microconfig.utils.FileUtils.write;
 import static io.microconfig.utils.Logger.*;
 
@@ -91,7 +92,7 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
             write(toFile, content);
             copyPermissions(fromFile.toPath(), toFile.toPath());
 
-            info("Copied template: " + fromFile + " -> " + toFile);
+            info("Copied template: " + fromFile + " -> " + toFile + LINES_SEPARATOR);
         }
 
         private boolean isCorrect() {
