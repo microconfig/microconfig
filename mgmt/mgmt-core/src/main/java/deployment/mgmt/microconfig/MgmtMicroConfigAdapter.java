@@ -8,7 +8,6 @@ import io.microconfig.commands.buildconfig.entry.BuildConfigMain;
 import io.microconfig.commands.buildconfig.factory.MicroconfigFactory;
 import io.microconfig.features.templates.CopyTemplatesPostProcessor;
 import io.microconfig.features.templates.CopyTemplatesServiceImpl;
-import io.microconfig.features.templates.TemplatePattern;
 
 import java.io.File;
 import java.util.List;
@@ -20,7 +19,7 @@ import static io.microconfig.commands.buildconfig.factory.StandardConfigType.*;
 import static io.microconfig.features.templates.TemplatePattern.defaultPattern;
 
 public class MgmtMicroConfigAdapter {
-    public static final String MGMT = ".mgmt";
+    static final String MGMT = ".mgmt";
 
     public static void execute(String env, List<String> groups, File root, File componentsDir, List<String> components) {
         Command command = newBuildPropertiesCommand(root, componentsDir);
@@ -47,7 +46,11 @@ public class MgmtMicroConfigAdapter {
     }
 
     private static BuildConfigPostProcessor copyTemplatesPostProcessor(File configsRoot) {
-        TemplatePattern template = defaultPattern().toBuilder().templatePrefix("mgmt.template.").build();
-        return new CopyTemplatesPostProcessor(new CopyTemplatesServiceImpl(template, new OldConfigsRelativePathResolver(configsRoot.getParentFile())));
+        return new CopyTemplatesPostProcessor(
+                new CopyTemplatesServiceImpl(
+                        defaultPattern().withTemplatePrefix("mgmt.template."),
+                        new OldConfigsRelativePathResolver(configsRoot.getParentFile())
+                )
+        );
     }
 }
