@@ -646,16 +646,16 @@ Let's configure order and payment services to use this template.
 **orders/application.properties**
 ```properties
     #include service-discovery-client
-    template.logback.fromFile=${logback@configDir}/logback.xml # full path to logback.xml, @configDir - special placeholder property
+    microconfig.template.logback.fromFile=${logback@configDir}/logback.xml # full path to logback.xml, @configDir - special placeholder property
 ```
 
 **payments/application.properties**
 ```properties
     #include service-discovery-client
-    template.logback.fromFile=${logback@configDir}/logback.xml
+    microconfig.template.logback.fromFile=${logback@configDir}/logback.xml
 ```  
    
-It's better to extract the common property `template.logback.fromFile` to logback-template/application.properties and than use #include.
+It's better to extract the common property `microconfig.template.logback.fromFile` to logback-template/application.properties and than use #include.
 
 ```
 repo
@@ -666,7 +666,7 @@ repo
 ```    
 **logback-template/application.properties**
 ```properties   
-    template.logback.fromFile=${logback@configDir}/logback.xml    
+    microconfig.template.logback.fromFile=${logback@configDir}/logback.xml    
 ```
 **orders-template/application.properties**
 ```properties
@@ -687,20 +687,20 @@ During config build Microconfig will replace `${application.name}` inside logbac
 
 If you want to declare a property for a template only and don't want this property to be included into the result config file you can use `#var` keyword. 
 
-If you want to override template destination filename you can use `template.${templateName}.toFile=${someFile}` property. For example:  
+If you want to override template destination filename you can use `microconfig.template.${templateName}.toFile=${someFile}` property. For example:  
  
  **logback-template/application.properties**
  ```properties   
-     template.logback.fromFile=${logback@configDir}/logback.xml    
-     template.logback.toFile=logs/logback-descriptor.xml
+     microconfig.template.logback.fromFile=${logback@configDir}/logback.xml    
+     microconfig.template.logback.toFile=logs/logback-descriptor.xml
  ``` 
  
 You can use absolute or relative path for `toFile` property. The relative path starts from the resulting service config dir (See 'Running config build' section).
 
 So template dependency declaration syntax looks like:   
 ```
-template.${templateName}.fromFile=${sourceTemplateFile}    
-template.${templateName}.toFile=${resolvedTemplateDestinationFile}
+microconfig.template.${templateName}.fromFile=${sourceTemplateFile}    
+microconfig.template.${templateName}.toFile=${resolvedTemplateDestinationFile}
 ```
 `${templateName}` - is used only for mapping `fromFile` and `toFile` properties.
 
@@ -716,7 +716,7 @@ repo
 ```
 **logback-template/application.prod.properties**
 ```properties   
-    template.logback.fromFile=${logback@configDir}/logback-prod.xml        
+    microconfig.template.logback.fromFile=${logback@configDir}/logback-prod.xml        
 ``` 
 
 # Environment descriptor
