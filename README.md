@@ -240,7 +240,7 @@ order: datasource.url=jdbc:oracle:thin:@172.30.162.<b>31</b>:1521:ARMSDEV
 payment: datasource.url=jdbc:oracle:thin:@172.30.162.<b>127</b>:1521:ARMSDEV  
 And oracle-client contains settings for .31.
 
-Of course, you can override datasource.url in payment/application.properties. But this overridden property will contain a copy of another part of jdbc url and you will get all standard duplication problems. We would like to override only a part of the property. 
+Of course, you can override datasource.url in payment/application.properties. But this overridden property will contain a copy of another part of jdbc url and you will get all standard 'copy-and-paste' problems. We would like to override only a part of the property. 
 
 Also it's better to create a dedicated configuration for order db and payment db. Both db configuration will include common-db config and override the 'ip' part of url. After that, we will migrate 'datasource.maximum-pool-size' from order-service to order-db, so order-service will contain only links to its dependencies and service-specific configs.
 
