@@ -954,7 +954,7 @@ Yaml format configs will be built into *.yaml, property configs will be built in
 Microconfig can detect the format based on separators (if a config file has extension neither *.yaml nor *.properties). If you use `:` key-value separator, Microconfig will handle it like *.yaml (`=` for *.properties).
 
 # Intellij IDEA plugin
-To make configuration management a little bit easier you can use Microconfig Intellij IDEA plugin.
+To make configuration management a little bit easier you can use Microconfig Intellij IDEA plugin. The plugin can navigate to #include and placeholders' sources, show hints with resolved placeholders, build configs from IDE.
 
 See the documentation here: https://github.com/microconfig/microconfig-idea-plugin
 
