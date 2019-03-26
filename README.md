@@ -39,7 +39,7 @@ It's convenient to have different kinds of configuration and keep it in differen
 * Process configuration (the configuration used by deployment tools to start your services, like memory limit, VM params, etc.).
 * Application configuration (the configuration that your service reads after startup and uses in runtime).
 * OS environment variables.
-* Library specific templates (for instance, your logger specific descriptor (logback.xml), kafka.conf, cassandra.yaml, etc.)
+* Library specific templates (for instance, Dockerfile, kafka.conf, cassandra.yaml, etc.)
 * Static files/scripts to run before/after your service startup.
 * Secret configuration (Note, you should not store in a VCS any sensitive information, like passwords. In a VCS you can store references(keys) to passwords, and keep passwords in special secured stores(like Vault) or at least in encrypted files on environment machines)
 
