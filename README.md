@@ -327,7 +327,7 @@ So if you change service-discovery port, all dependent services will get this up
 
 Microconfig has another approach to store service's ip. We will discuss it later. For now, it's better to set the 'ip' property in the service-discovery config file. 
 
-The Microconfig syntax for placeholders: ${**componentName**@**propertyName**}. Microconfig forces us to specify the component name. This syntax is better than just a property name
+The Microconfig syntax for placeholders: `${componentName@propertyName}`. Microconfig forces us to specify the component name. This syntax is better than just a property name
 (like `${connectionSize}`), because it makes it obvious where to find the original placeholder value.
 
 Let's refactor oracle db config using placeholders and environment specific overrides.
