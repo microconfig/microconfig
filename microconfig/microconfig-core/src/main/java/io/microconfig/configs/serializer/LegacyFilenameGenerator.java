@@ -27,8 +27,12 @@ public class LegacyFilenameGenerator implements FilenameGenerator {
     private boolean shouldRename(File original, String envName) {
         Predicate<File> applicationFile = f -> filename(f).equals(APPLICATION.type().getResultFileName());
         Predicate<String> legacyJsonEnv = env -> {
-            Object source = environmentProvider.getByName(envName).getSource();
-            return source != null && source.toString().endsWith(".json");
+            try {
+                Object source = environmentProvider.getByName(envName).getSource();
+                return source != null && source.toString().endsWith(".json");
+            } catch (RuntimeException e) {
+                return false;
+            }
         };
 
         return applicationFile.test(original) && legacyJsonEnv.test(envName);
