@@ -39,7 +39,7 @@ It's convenient to have different kinds of configuration and keep it in differen
 * Process configuration (the configuration used by deployment tools to start your services, like memory limit, VM params, etc.).
 * Application configuration (the configuration that your service reads after startup and uses in runtime).
 * OS environment variables.
-* Library specific templates (for instance, your logger specific descriptor (logback.xml), kafka.conf, cassandra.yaml, etc.)
+* Library specific templates (for instance, Dockerfile, kafka.conf, cassandra.yaml, etc.)
 * Static files/scripts to run before/after your service startup.
 * Secret configuration (Note, you should not store in a VCS any sensitive information, like passwords. In a VCS you can store references(keys) to passwords, and keep passwords in special secured stores(like Vault) or at least in encrypted files on environment machines)
 
@@ -63,7 +63,7 @@ repo
 
 ## Configuration sources
 
-Inside the service folder, you can create a configuration in key=value format. For the following examples, we will use *.properties, but Microconfig also supports *.yaml. 
+Inside the service folder, you can create a configuration in `key=value` format. For the following examples, we will use *.properties, but Microconfig also supports *.yaml. 
 
 Let’s create basic application and process configuration files for each service.
 You can split configuration among several files, but for simplicity, we will create `application.properties` and `process.proc` for each service. No matter how many base files are used, after the configuration build for each service and each config type, a single result file will be generated.
@@ -240,7 +240,7 @@ order: datasource.url=jdbc:oracle:thin:@172.30.162.<b>31</b>:1521:ARMSDEV
 payment: datasource.url=jdbc:oracle:thin:@172.30.162.<b>127</b>:1521:ARMSDEV  
 And oracle-client contains settings for .31.
 
-Of course, you can override datasource.url in payment/application.properties. But this overridden property will contain a copy of another part of jdbc url and you will get all standard duplication problems. We would like to override only a part of the property. 
+Of course, you can override datasource.url in payment/application.properties. But this overridden property will contain a copy of another part of jdbc url and you will get all standard 'copy-and-paste' problems. We would like to override only a part of the property. 
 
 Also it's better to create a dedicated configuration for order db and payment db. Both db configuration will include common-db config and override the 'ip' part of url. After that, we will migrate 'datasource.maximum-pool-size' from order-service to order-db, so order-service will contain only links to its dependencies and service-specific configs.
 
@@ -327,7 +327,7 @@ So if you change service-discovery port, all dependent services will get this up
 
 Microconfig has another approach to store service's ip. We will discuss it later. For now, it's better to set the 'ip' property in the service-discovery config file. 
 
-The Microconfig syntax for placeholders: ${**componentName**@**propertyName**}. Microconfig forces us to specify the component name. This syntax is better than just a property name
+The Microconfig syntax for placeholders: `${componentName@propertyName}`. Microconfig forces us to specify the component name. This syntax is better than just a property name
 (like `${connectionSize}`), because it makes it obvious where to find the original placeholder value.
 
 Let's refactor oracle db config using placeholders and environment specific overrides.
@@ -510,7 +510,7 @@ connection.timeoutInMs=#{5 * 60 * 1000}
 datasource.maximum-pool-size=#{${this@datasource.minimum-pool-size} + 10} 
 
 #Using placeholder and Java String API
-healthcheck.logSucessMarker=Started ${this@mainClassNameWithoutPackage}
+healthcheck.logSuccessMarker=Started ${this@mainClassNameWithoutPackage}
 #var mainClassNameWithoutPackage=#{'${this@java.main}'.substring('${this@java.main}'.lastIndexOf('.') + 1)}
 
 #Using Java import and Base64 API
@@ -954,7 +954,7 @@ Yaml format configs will be built into *.yaml, property configs will be built in
 Microconfig can detect the format based on separators (if a config file has extension neither *.yaml nor *.properties). If you use `:` key-value separator, Microconfig will handle it like *.yaml (`=` for *.properties).
 
 # Intellij IDEA plugin
-To make configuration management a little bit easier you can use Microconfig Intellij IDEA plugin.
+To make configuration management a little bit easier you can use Microconfig Intellij IDEA plugin. The plugin can navigate to #include and placeholders' sources, show hints with resolved placeholders, build configs from IDE.
 
 See the documentation here: https://github.com/microconfig/microconfig-idea-plugin
 
