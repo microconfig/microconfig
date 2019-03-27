@@ -41,7 +41,7 @@ public class BuildConfigCommand implements Command {
 
     private int processComponent(Component component, String env) {
         Map<String, Property> properties = configProvider.getProperties(component, env);
-        Optional<File> outputFile = configSerializer.serialize(component.getName(), properties.values());
+        Optional<File> outputFile = configSerializer.serialize(component.getName(), env, properties.values());
 
         outputFile.ifPresent(f -> {
             postProcessor.process(new EnvComponent(component, env), properties, configProvider, f);

@@ -48,6 +48,7 @@ public class FileBasedEnvironmentProvider implements EnvironmentProvider {
 
         return environmentParserSelector.selectParser(envFile)
                 .parse(name, fileReader.read(envFile))
+                .withSource(envFile)
                 .processInclude(this)
                 .verifyUniqueComponentNames();
     }

@@ -12,7 +12,7 @@ import static io.microconfig.commands.buildconfig.factory.ConfigType.extensionAs
 @Getter
 @RequiredArgsConstructor
 public enum StandardConfigType {
-    SERVICE(byNameAndTypes("service", ".properties", ".yaml")),
+    APPLICATION(byNameAndTypes("application", ".properties", ".yaml")),
     PROCESS(byNameAndTypes("process", ".process", ".proc")),
     DEPLOY(byNameAndTypes("deploy", ".deploy")),
     ENV(extensionAsName("env")),
@@ -21,14 +21,6 @@ public enum StandardConfigType {
     LOG4J2(extensionAsName("log4j2"));
 
     private final ConfigType configType;
-
-    public String getResultFileName() {
-        return configType.getResultFileName();
-    }
-
-    public Set<String> getConfigExtensions() {
-        return configType.getConfigExtensions();
-    }
 
     public ConfigType type() {
         return configType;

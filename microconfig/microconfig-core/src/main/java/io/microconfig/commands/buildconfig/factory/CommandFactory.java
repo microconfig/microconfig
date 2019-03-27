@@ -19,7 +19,7 @@ public class CommandFactory {
         MicroconfigFactory factory = MicroconfigFactory.init(rootDir, destinationComponentDir);
 
         return composite(
-                factory.newBuildCommand(SERVICE.type(), copyTemplatesPostProcessor()),
+                factory.newBuildCommand(APPLICATION.type(), copyTemplatesPostProcessor()),
                 factory.newBuildCommand(PROCESS.type()),
                 factory.newBuildCommand(DEPLOY.type()),
                 factory.newBuildCommand(ENV.type()),
@@ -34,7 +34,7 @@ public class CommandFactory {
     }
 
     public static BuildConfigPostProcessor updateSecretsPostProcessor(ConfigIoService configIoService) {
-        File secretFile = new File(userHome(), "/secret/" + SECRET.getResultFileName() + ".properties");
+        File secretFile = new File(userHome(), "/secret/" + SECRET.type().getResultFileName() + ".properties");
         return new UpdateSecretsPostProcessor(new SecretServiceImpl(secretFile, configIoService));
     }
 }

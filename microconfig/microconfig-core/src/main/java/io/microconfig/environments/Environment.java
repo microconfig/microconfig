@@ -1,6 +1,7 @@
 package io.microconfig.environments;
 
 import lombok.Getter;
+import lombok.experimental.Wither;
 
 import java.util.*;
 
@@ -20,15 +21,20 @@ public class Environment {
     private final Optional<Integer> portOffset;
     private final Optional<EnvInclude> include;
 
+    @Wither
+    private final Object source;
+
     public Environment(String name,
                        List<ComponentGroup> componentGroups,
                        Optional<String> ip, Optional<Integer> portOffset,
-                       Optional<EnvInclude> include) {
+                       Optional<EnvInclude> include,
+                       Object source) {
         this.name = requireNonNull(name);
         this.componentGroups = unmodifiableList(requireNonNull(componentGroups));
         this.ip = requireNonNull(ip);
         this.portOffset = requireNonNull(portOffset);
         this.include = requireNonNull(include);
+        this.source = source;
     }
 
     public List<ComponentGroup> getGroupByIp(String serverIp) {
@@ -88,6 +94,17 @@ public class Environment {
                 });
 
         return this;
+    }
+
+    public Environment withIncludedGroups(List<ComponentGroup> includedGroups) {
+        return new Environment(
+                name,
+                includedGroups,
+                ip,
+                portOffset,
+                empty(),
+                source
+        );
     }
 
     public Environment verifyIpsPresent() {

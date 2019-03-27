@@ -36,12 +36,15 @@ public class StatusCommandImpl implements StatusCommand {
         String configVersion = processProperties.getConfigVersion();
         ServiceType serviceType = processProperties.isPatcher() ? PATCHER : (processProperties.isWebapp() || processProperties.isTask()) ? TASK : SERVICE;
 
-        if (!metadataProvider.isLastRunSucceed(sd.getName()))
+        if (!metadataProvider.isLastRunSucceed(sd.getName())) {
             return new ServiceStatus(sd, configVersion, serviceType, FAILED);
+        }
+
         Optional<Long> pid = metadataProvider.lastPid(sd.getName());
         if (!pid.isPresent()) {
             return new ServiceStatus(sd, configVersion, serviceType, serviceType == PATCHER ? NOT_EXECUTED : STOPPED);
         }
+
         Optional<ProcessHandle> processHandle = pid.flatMap(ProcessHandle::of);
         if (belongsToCurrentUser(processHandle)) {
             return ServiceStatus.fromProcess(sd, configVersion, serviceType, RUNNING, processHandle.orElseThrow());

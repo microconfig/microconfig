@@ -6,8 +6,6 @@ import io.microconfig.configs.resolver.PropertyResolver;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,9 +13,7 @@ import static io.microconfig.configs.Property.tempProperty;
 import static io.microconfig.configs.resolver.placeholder.Placeholder.isSinglePlaceholder;
 import static io.microconfig.configs.sources.SpecialSource.templateSource;
 import static io.microconfig.utils.IoUtils.readFully;
-import static io.microconfig.utils.Logger.info;
 import static io.microconfig.utils.Logger.warn;
-import static java.lang.String.join;
 import static java.util.regex.Matcher.quoteReplacement;
 
 @RequiredArgsConstructor
@@ -33,33 +29,24 @@ class Template {
         Matcher m = pattern.matcher(text);
         if (!m.find()) return text;
 
-        Set<String> resolved = new LinkedHashSet<>();
         StringBuffer result = new StringBuffer();
         do {
-            String placeholder = doResolve(m, result, propertyResolver, currentComponent);
-            if (placeholder != null) {
-                resolved.add(placeholder);
-            }
+            doResolve(m, result, propertyResolver, currentComponent);
         } while (m.find());
         m.appendTail(result);
-
-        if (!resolved.isEmpty()) {
-            info("Resolved template placeholders: " + join(", ", resolved));
-        }
         return result.toString();
     }
 
-    private String doResolve(Matcher m, StringBuffer result, PropertyResolver propertyResolver, EnvComponent currentComponent) {
+    private void doResolve(Matcher m, StringBuffer result, PropertyResolver propertyResolver, EnvComponent currentComponent) {
         if (m.group("escaped") != null) {
             m.appendReplacement(result, quoteReplacement(m.group("placeholder")));
-            return null;
+            return;
         }
 
         String placeholder = m.group();
         String value = resolveValue(placeholder, currentComponent, propertyResolver);
-        if (value == null) return null;
+        if (value == null) return;
         m.appendReplacement(result, quoteReplacement(value));
-        return placeholder;
     }
 
     private String resolveValue(String placeholder, EnvComponent currentComponent, PropertyResolver propertyResolver) {

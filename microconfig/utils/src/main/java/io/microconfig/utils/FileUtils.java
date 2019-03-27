@@ -141,4 +141,11 @@ public class FileUtils {
             throw new RuntimeException(e);
         }
     }
+
+    public static String extension(File fileName) {
+        int beginIndex = fileName.getName().indexOf('.');
+        if (beginIndex < 0) return "";
+
+        return fileName.getName().substring(beginIndex);
+    }
 }

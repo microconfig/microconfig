@@ -23,12 +23,12 @@ public class DiffSerializer implements ConfigSerializer {
     private final ConfigIoService configIoService;
 
     @Override
-    public Optional<File> serialize(String component, Collection<Property> currentProperties) {
-        File current = configDestination(component, currentProperties);
+    public Optional<File> serialize(String component, String env, Collection<Property> currentProperties) {
+        File current = configDestination(component, env, currentProperties);
         File diffFile = diffFile(current);
 
         Map<String, String> oldProperties = readOldConfig(current);
-        Optional<File> result = delegate.serialize(component, currentProperties);
+        Optional<File> result = delegate.serialize(component, env, currentProperties);
         Map<String, String> diff = compare(oldProperties, currentProperties);
 
         if (!diff.isEmpty()) {
@@ -92,7 +92,7 @@ public class DiffSerializer implements ConfigSerializer {
     }
 
     @Override
-    public File configDestination(String component, Collection<Property> properties) {
-        return delegate.configDestination(component, properties);
+    public File configDestination(String component, String env, Collection<Property> properties) {
+        return delegate.configDestination(component, env, properties);
     }
 }

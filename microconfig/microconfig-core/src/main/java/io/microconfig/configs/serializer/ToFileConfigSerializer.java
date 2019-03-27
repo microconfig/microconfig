@@ -18,8 +18,8 @@ public class ToFileConfigSerializer implements ConfigSerializer {
     private final ConfigIoService configIoService;
 
     @Override
-    public Optional<File> serialize(String component, Collection<Property> properties) {
-        File file = configDestination(component, properties);
+    public Optional<File> serialize(String component, String env, Collection<Property> properties) {
+        File file = configDestination(component, env, properties);
         delete(file);
 
         if (properties.isEmpty()) return empty();
@@ -29,7 +29,7 @@ public class ToFileConfigSerializer implements ConfigSerializer {
     }
 
     @Override
-    public File configDestination(String component, Collection<Property> properties) {
-        return filenameGenerator.fileFor(component, properties);
+    public File configDestination(String component, String env, Collection<Property> properties) {
+        return filenameGenerator.fileFor(component, env, properties);
     }
 }

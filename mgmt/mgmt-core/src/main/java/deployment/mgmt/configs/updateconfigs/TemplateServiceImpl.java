@@ -9,7 +9,7 @@ import io.microconfig.configs.resolver.PropertyResolver;
 import io.microconfig.features.templates.CopyTemplatesService;
 import lombok.RequiredArgsConstructor;
 
-import static io.microconfig.commands.buildconfig.factory.StandardConfigType.SERVICE;
+import static io.microconfig.commands.buildconfig.factory.StandardConfigType.APPLICATION;
 import static io.microconfig.environments.Component.byType;
 import static java.lang.ThreadLocal.withInitial;
 
@@ -38,6 +38,6 @@ public class TemplateServiceImpl implements TemplateService {
                 deployFileStructure.configs().getMicroconfigSourcesRootDir(),
                 deployFileStructure.service().getComponentsDir()
         );
-        return factory.newResolver(factory.newFileBasedProvider(SERVICE.getConfigType()));
+        return factory.newResolver(factory.newFileBasedProvider(APPLICATION.getConfigType()));
     }
 }

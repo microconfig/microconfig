@@ -10,7 +10,6 @@ import java.util.Set;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 
@@ -37,9 +36,7 @@ public class EnvInclude {
                 .map(g -> overrideComponentGroup(g, groupToIncludeByName.get(g.getName())))
                 .forEach(g -> groupToIncludeByName.put(g.getName(), g));
 
-        return new Environment(destinationEnv.getName(), new ArrayList<>(groupToIncludeByName.values()),
-                destinationEnv.getIp(), destinationEnv.getPortOffset(), empty()
-        );
+        return destinationEnv.withIncludedGroups(new ArrayList<>(groupToIncludeByName.values()));
     }
 
     private ComponentGroup overrideIpFromEnv(ComponentGroup baseGroup, Environment baseEnv, Environment destinationEnv) {

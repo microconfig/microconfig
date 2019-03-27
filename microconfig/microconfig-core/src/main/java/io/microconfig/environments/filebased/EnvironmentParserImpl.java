@@ -56,7 +56,7 @@ public class EnvironmentParserImpl implements EnvironmentParser {
         Optional<String> envIp = parseIp(map);
         List<ComponentGroup> componentGroups = parseComponentGroups(map, envIp, name);
 
-        return new Environment(name, componentGroups, envIp, portOffset, envInclude);
+        return new Environment(name, componentGroups, envIp, portOffset, envInclude, null);
     }
 
     @SuppressWarnings("unchecked")
