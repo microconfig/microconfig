@@ -2,7 +2,6 @@ package io.microconfig.configs.serializer;
 
 import io.microconfig.configs.Property;
 import io.microconfig.environments.EnvironmentProvider;
-import io.microconfig.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -27,12 +26,12 @@ public class LegacyFilenameGenerator implements FilenameGenerator {
 
     private boolean shouldRename(File original, String envName) {
         Predicate<File> applicationFile = f -> filename(f).equals(APPLICATION.type().getResultFileName());
-        Predicate<String> jsonEnv = env -> {
+        Predicate<String> legacyJsonEnv = env -> {
             Object source = environmentProvider.getByName(envName).getSource();
             return source != null && source.toString().endsWith(".json");
         };
 
-        return applicationFile.test(original) && jsonEnv.test(envName);
+        return applicationFile.test(original) && legacyJsonEnv.test(envName);
     }
 
     private File renameToLegacy(File original) {
