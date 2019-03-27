@@ -3,11 +3,8 @@ package io.microconfig.commands.buildconfig.factory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Set;
-
 import static io.microconfig.commands.buildconfig.factory.ConfigType.byNameAndTypes;
 import static io.microconfig.commands.buildconfig.factory.ConfigType.extensionAsName;
-
 
 @Getter
 @RequiredArgsConstructor

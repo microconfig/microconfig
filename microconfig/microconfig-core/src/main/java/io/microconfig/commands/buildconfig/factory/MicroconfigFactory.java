@@ -135,7 +135,7 @@ public class MicroconfigFactory {
     //public for plugin
     public FilenameGenerator getFilenameGenerator(ConfigType configType) {
         return new LegacyFilenameGenerator(
-                new FilenameGeneratorImpl(destinationComponentDir, serviceInnerDir, configType),
+                new FilenameGeneratorImpl(destinationComponentDir, serviceInnerDir, configType.getResultFileName()),
                 environmentProvider
         );
     }
