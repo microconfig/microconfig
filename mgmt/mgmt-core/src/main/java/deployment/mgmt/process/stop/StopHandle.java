@@ -39,7 +39,9 @@ public class StopHandle {
 
     private void collectChildProcess(ProcessHandle processHandle, Deque<ProcessHandle> destination) {
         destination.addFirst(processHandle);
-        processHandle.children().forEach(c -> collectChildProcess(c, destination));
+
+        processHandle.children()
+                .forEach(c -> collectChildProcess(c, destination));
     }
 
     private void doStop(ProcessHandle processHandle) {
