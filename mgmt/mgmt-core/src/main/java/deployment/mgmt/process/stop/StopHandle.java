@@ -4,13 +4,13 @@ import deployment.mgmt.configs.service.metadata.MetadataProvider;
 import lombok.RequiredArgsConstructor;
 import mgmt.utils.ProcessUtil;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Optional;
 
 import static io.microconfig.utils.Logger.*;
 import static io.microconfig.utils.TimeUtils.secAfter;
 import static java.lang.System.currentTimeMillis;
-import static java.util.stream.Stream.concat;
-import static java.util.stream.Stream.of;
 import static mgmt.utils.ProcessUtil.waitTermination;
 
 @RequiredArgsConstructor
@@ -31,8 +31,15 @@ public class StopHandle {
     //todo2 process.stop.exec
     public void stop() {
         info("Stopping " + service);
-        concat(processHandle.children(), of(processHandle))
-                .forEach(this::doStop);
+
+        Deque<ProcessHandle> destination = new ArrayDeque<>();
+        collectChildProcess(processHandle, destination);
+        destination.forEach(this::doStop);
+    }
+
+    private void collectChildProcess(ProcessHandle processHandle, Deque<ProcessHandle> destination) {
+        destination.addFirst(processHandle);
+        processHandle.children().forEach(c -> collectChildProcess(c, destination));
     }
 
     private void doStop(ProcessHandle processHandle) {
