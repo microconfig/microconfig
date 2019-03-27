@@ -1,14 +1,14 @@
-package io.microconfig.commands.buildconfig.factory;
+package io.microconfig.commands.buildconfig.configtypes;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import static io.microconfig.commands.buildconfig.factory.ConfigType.byNameAndTypes;
-import static io.microconfig.commands.buildconfig.factory.ConfigType.extensionAsName;
+import static io.microconfig.commands.buildconfig.configtypes.ConfigType.byNameAndTypes;
+import static io.microconfig.commands.buildconfig.configtypes.ConfigType.extensionAsName;
 
 @Getter
 @RequiredArgsConstructor
-public enum StandardConfigType {
+public enum StandardConfigTypes {
     APPLICATION(byNameAndTypes("application", ".properties", ".yaml")),
     PROCESS(byNameAndTypes("process", ".process", ".proc")),
     DEPLOY(byNameAndTypes("deploy", ".deploy")),

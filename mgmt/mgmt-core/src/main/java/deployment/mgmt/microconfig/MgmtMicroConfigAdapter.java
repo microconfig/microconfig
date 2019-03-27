@@ -10,8 +10,8 @@ import java.util.List;
 
 import static io.microconfig.commands.Command.composite;
 import static io.microconfig.commands.buildconfig.factory.CommandFactory.updateSecretsPostProcessor;
-import static io.microconfig.commands.buildconfig.factory.ConfigType.extensionAsName;
-import static io.microconfig.commands.buildconfig.factory.StandardConfigType.*;
+import static io.microconfig.commands.buildconfig.configtypes.ConfigType.extensionAsName;
+import static io.microconfig.commands.buildconfig.configtypes.StandardConfigTypes.*;
 
 public class MgmtMicroConfigAdapter {
     static final String MGMT = ".mgmt";

@@ -8,7 +8,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.function.Predicate;
 
-import static io.microconfig.commands.buildconfig.factory.StandardConfigType.APPLICATION;
+import static io.microconfig.commands.buildconfig.configtypes.StandardConfigTypes.APPLICATION;
 import static io.microconfig.utils.FileUtils.extension;
 
 @RequiredArgsConstructor

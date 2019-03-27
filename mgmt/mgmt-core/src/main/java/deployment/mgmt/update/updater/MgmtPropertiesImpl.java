@@ -5,7 +5,7 @@ import deployment.mgmt.configs.componentgroup.GroupDescription;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.service.properties.NexusRepository;
 import deployment.mgmt.configs.service.properties.impl.ProcessPropertiesImpl;
-import io.microconfig.commands.buildconfig.factory.ConfigType;
+import io.microconfig.commands.buildconfig.configtypes.ConfigType;
 import io.microconfig.commands.buildconfig.factory.MicroconfigFactory;
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.Property;
@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
 
-import static io.microconfig.commands.buildconfig.factory.StandardConfigType.PROCESS;
+import static io.microconfig.commands.buildconfig.configtypes.StandardConfigTypes.PROCESS;
 import static io.microconfig.configs.Property.withoutTempValues;
 import static io.microconfig.environments.Component.byType;
 import static io.microconfig.utils.Logger.info;

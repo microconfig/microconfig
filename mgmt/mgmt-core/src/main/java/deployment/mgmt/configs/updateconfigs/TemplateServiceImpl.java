@@ -9,7 +9,7 @@ import io.microconfig.configs.resolver.PropertyResolver;
 import io.microconfig.features.templates.CopyTemplatesService;
 import lombok.RequiredArgsConstructor;
 
-import static io.microconfig.commands.buildconfig.factory.StandardConfigType.APPLICATION;
+import static io.microconfig.commands.buildconfig.configtypes.StandardConfigTypes.APPLICATION;
 import static io.microconfig.environments.Component.byType;
 import static java.lang.ThreadLocal.withInitial;
 

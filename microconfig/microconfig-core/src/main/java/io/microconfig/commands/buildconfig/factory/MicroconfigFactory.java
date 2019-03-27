@@ -2,6 +2,7 @@ package io.microconfig.commands.buildconfig.factory;
 
 import io.microconfig.commands.buildconfig.BuildConfigCommand;
 import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
+import io.microconfig.commands.buildconfig.configtypes.ConfigType;
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.io.ioservice.ConfigIoService;
 import io.microconfig.configs.io.ioservice.properties.PropertiesConfigIoService;

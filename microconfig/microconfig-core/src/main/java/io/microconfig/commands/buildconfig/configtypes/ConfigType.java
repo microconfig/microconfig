@@ -1,4 +1,4 @@
-package io.microconfig.commands.buildconfig.factory;
+package io.microconfig.commands.buildconfig.configtypes;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
