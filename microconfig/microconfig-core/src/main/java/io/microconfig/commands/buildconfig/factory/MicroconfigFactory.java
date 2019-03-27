@@ -22,10 +22,7 @@ import io.microconfig.configs.resolver.placeholder.strategies.component.properti
 import io.microconfig.configs.resolver.placeholder.strategies.envdescriptor.EnvDescriptorResolveStrategy;
 import io.microconfig.configs.resolver.placeholder.strategies.envdescriptor.properties.EnvDescriptorPropertiesFactory;
 import io.microconfig.configs.resolver.placeholder.strategies.standard.StandardResolveStrategy;
-import io.microconfig.configs.serializer.ConfigSerializer;
-import io.microconfig.configs.serializer.DiffSerializer;
-import io.microconfig.configs.serializer.FilenameGeneratorImpl;
-import io.microconfig.configs.serializer.ToFileConfigSerializer;
+import io.microconfig.configs.serializer.*;
 import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.environments.filebased.EnvironmentParserSelectorImpl;
 import io.microconfig.environments.filebased.FileBasedEnvironmentProvider;
@@ -128,11 +125,16 @@ public class MicroconfigFactory {
     private ConfigSerializer configSerializer(ConfigType configType) {
         return new DiffSerializer(
                 new ToFileConfigSerializer(
-                        new FilenameGeneratorImpl(destinationComponentDir, serviceInnerDir, configType.getResultFileName()),
+                        getFilenameGenerator(configType),
                         configIoService
                 ),
                 configIoService
         );
+    }
+
+    //public for plugin
+    public FilenameGenerator getFilenameGenerator(ConfigType configType) {
+        return new FilenameGeneratorImpl(destinationComponentDir, serviceInnerDir, configType.getResultFileName());
     }
 
     private static EnvironmentProvider newEnvProvider(File root, FilesReader fileReader) {
