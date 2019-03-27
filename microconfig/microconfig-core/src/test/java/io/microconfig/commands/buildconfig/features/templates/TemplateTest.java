@@ -1,4 +1,4 @@
-package io.microconfig.features.templates;
+package io.microconfig.commands.buildconfig.features.templates;
 
 import io.microconfig.configs.resolver.EnvComponent;
 import org.junit.jupiter.api.Test;

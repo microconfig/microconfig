@@ -1,4 +1,4 @@
-package io.microconfig.features.secrets;
+package io.microconfig.commands.buildconfig.features.secrets;
 
 import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
 import io.microconfig.configs.ConfigProvider;

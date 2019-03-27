@@ -6,7 +6,7 @@ import deployment.mgmt.configs.service.properties.PropertyService;
 import io.microconfig.factory.MicroconfigFactory;
 import io.microconfig.configs.resolver.EnvComponent;
 import io.microconfig.configs.resolver.PropertyResolver;
-import io.microconfig.features.templates.CopyTemplatesService;
+import io.microconfig.commands.buildconfig.features.templates.CopyTemplatesService;
 import lombok.RequiredArgsConstructor;
 
 import static io.microconfig.factory.StandardConfigTypes.APPLICATION;

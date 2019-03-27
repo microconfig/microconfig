@@ -1,7 +1,7 @@
 package deployment.mgmt.configs.updateconfigs;
 
 import deployment.mgmt.init.LegacyMgmtStructureImpl;
-import io.microconfig.features.templates.RelativePathResolver;
+import io.microconfig.commands.buildconfig.features.templates.RelativePathResolver;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

@@ -1,4 +1,4 @@
-package io.microconfig.features.secrets;
+package io.microconfig.commands.buildconfig.features.secrets;
 
 import io.microconfig.configs.Property;
 import io.microconfig.configs.io.ioservice.ConfigIoService;

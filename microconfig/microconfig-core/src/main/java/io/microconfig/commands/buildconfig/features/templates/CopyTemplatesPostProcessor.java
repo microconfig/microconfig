@@ -1,4 +1,4 @@
-package io.microconfig.features.templates;
+package io.microconfig.commands.buildconfig.features.templates;
 
 import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
 import io.microconfig.configs.ConfigProvider;

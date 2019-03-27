@@ -3,10 +3,10 @@ package io.microconfig.factory;
 import io.microconfig.commands.Command;
 import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
 import io.microconfig.configs.io.ioservice.ConfigIoService;
-import io.microconfig.features.secrets.SecretServiceImpl;
-import io.microconfig.features.secrets.UpdateSecretsPostProcessor;
-import io.microconfig.features.templates.CopyTemplatesPostProcessor;
-import io.microconfig.features.templates.CopyTemplatesServiceImpl;
+import io.microconfig.commands.buildconfig.features.secrets.SecretServiceImpl;
+import io.microconfig.commands.buildconfig.features.secrets.UpdateSecretsPostProcessor;
+import io.microconfig.commands.buildconfig.features.templates.CopyTemplatesPostProcessor;
+import io.microconfig.commands.buildconfig.features.templates.CopyTemplatesServiceImpl;
 
 import java.io.File;
 
