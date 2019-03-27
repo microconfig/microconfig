@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.function.Predicate;
 
 import static io.microconfig.commands.buildconfig.factory.StandardConfigType.APPLICATION;
+import static io.microconfig.utils.FileUtils.extension;
 
 @RequiredArgsConstructor
 public class LegacyFilenameGenerator implements FilenameGenerator {
@@ -35,7 +36,7 @@ public class LegacyFilenameGenerator implements FilenameGenerator {
     }
 
     private File renameToLegacy(File original) {
-        return new File(original.getParent(), LEGACY_APPLICATION_NAME + FileUtils.extension(original));
+        return new File(original.getParent(), LEGACY_APPLICATION_NAME + extension(original));
     }
 
     private String filename(File original) {
