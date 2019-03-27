@@ -32,9 +32,9 @@ public class StopHandle {
     public void stop() {
         info("Stopping " + service);
 
-        Deque<ProcessHandle> destination = new ArrayDeque<>();
-        collectChildProcess(processHandle, destination);
-        destination.forEach(this::doStop);
+        Deque<ProcessHandle> allProcess = new ArrayDeque<>();
+        collectChildProcess(processHandle, allProcess);
+        allProcess.forEach(this::doStop);
     }
 
     private void collectChildProcess(ProcessHandle processHandle, Deque<ProcessHandle> destination) {
