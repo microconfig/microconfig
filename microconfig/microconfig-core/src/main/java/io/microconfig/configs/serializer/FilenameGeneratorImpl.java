@@ -1,12 +1,12 @@
 package io.microconfig.configs.serializer;
 
 import io.microconfig.configs.Property;
-import io.microconfig.configs.sources.FileSource;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.util.Collection;
 
+import static io.microconfig.configs.Property.containsYamlProperties;
 import static io.microconfig.configs.io.ioservice.selector.FileFormat.PROPERTIES;
 import static io.microconfig.configs.io.ioservice.selector.FileFormat.YAML;
 
@@ -32,13 +32,6 @@ public class FilenameGeneratorImpl implements FilenameGenerator {
     private String extension(Collection<Property> properties) {
         String outputFormat = System.getProperty("outputFormat");
         if (outputFormat != null) return outputFormat;
-
-        return properties
-                .stream()
-                .map(Property::getSource)
-                .filter(s -> s instanceof FileSource)
-                .map(FileSource.class::cast)
-                .anyMatch(FileSource::isYaml) ?
-                YAML.extension() : PROPERTIES.extension();
+        return containsYamlProperties(properties) ? YAML.extension() : PROPERTIES.extension();
     }
 }

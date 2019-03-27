@@ -1,8 +1,10 @@
 package io.microconfig.configs;
 
+import io.microconfig.configs.sources.FileSource;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.util.Collection;
 import java.util.Map;
 
 import static io.microconfig.utils.OsUtil.isWindows;
@@ -81,6 +83,15 @@ public class Property {
         return properties.entrySet()
                 .stream()
                 .collect(toLinkedMap(Map.Entry::getKey, e -> e.getValue().getValue()));
+    }
+
+    public static boolean containsYamlProperties(Collection<Property> properties) {
+        return properties
+                .stream()
+                .map(Property::getSource)
+                .filter(s -> s instanceof FileSource)
+                .map(FileSource.class::cast)
+                .anyMatch(FileSource::isYaml);
     }
 
     public Property withNewValue(String value) {
