@@ -8,13 +8,13 @@ import java.io.File;
 import java.util.Collection;
 import java.util.function.Predicate;
 
-import static io.microconfig.commands.buildconfig.configtypes.StandardConfigTypes.APPLICATION;
 import static io.microconfig.utils.FileUtils.extension;
 
 @RequiredArgsConstructor
 public class LegacyFilenameGenerator implements FilenameGenerator {
     private static final String LEGACY_APPLICATION_NAME = "service";
 
+    private final String resultFileName;
     private final FilenameGenerator filenameGenerator;
     private final EnvironmentProvider environmentProvider;
 
@@ -25,7 +25,7 @@ public class LegacyFilenameGenerator implements FilenameGenerator {
     }
 
     private boolean shouldRename(File original, String envName) {
-        Predicate<File> applicationFile = f -> filename(f).equals(APPLICATION.type().getResultFileName());
+        Predicate<File> applicationFile = f -> filename(f).equals(resultFileName);
         Predicate<String> legacyJsonEnv = env -> {
             try {
                 Object source = environmentProvider.getByName(envName).getSource();

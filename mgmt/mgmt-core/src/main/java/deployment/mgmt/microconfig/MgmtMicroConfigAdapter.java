@@ -2,16 +2,16 @@ package deployment.mgmt.microconfig;
 
 import io.microconfig.commands.Command;
 import io.microconfig.commands.buildconfig.BuildConfigCommand;
-import io.microconfig.commands.buildconfig.entry.BuildConfigMain;
-import io.microconfig.commands.buildconfig.factory.MicroconfigFactory;
+import io.microconfig.factory.BuildConfigMain;
+import io.microconfig.factory.MicroconfigFactory;
 
 import java.io.File;
 import java.util.List;
 
 import static io.microconfig.commands.Command.composite;
-import static io.microconfig.commands.buildconfig.factory.CommandFactory.updateSecretsPostProcessor;
-import static io.microconfig.commands.buildconfig.configtypes.ConfigType.extensionAsName;
-import static io.microconfig.commands.buildconfig.configtypes.StandardConfigTypes.*;
+import static io.microconfig.factory.CommandFactory.updateSecretsPostProcessor;
+import static io.microconfig.factory.ConfigType.extensionAsName;
+import static io.microconfig.factory.StandardConfigTypes.*;
 
 public class MgmtMicroConfigAdapter {
     static final String MGMT = ".mgmt";

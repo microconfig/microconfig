@@ -1,10 +1,10 @@
-package io.microconfig.commands.buildconfig.configtypes;
+package io.microconfig.factory;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import static io.microconfig.commands.buildconfig.configtypes.ConfigType.byNameAndTypes;
-import static io.microconfig.commands.buildconfig.configtypes.ConfigType.extensionAsName;
+import static io.microconfig.factory.ConfigType.byNameAndTypes;
+import static io.microconfig.factory.ConfigType.extensionAsName;
 
 @Getter
 @RequiredArgsConstructor

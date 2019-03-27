@@ -1,8 +1,7 @@
-package io.microconfig.commands.buildconfig.factory;
+package io.microconfig.factory;
 
 import io.microconfig.commands.buildconfig.BuildConfigCommand;
 import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
-import io.microconfig.commands.buildconfig.configtypes.ConfigType;
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.io.ioservice.ConfigIoService;
 import io.microconfig.configs.io.ioservice.properties.PropertiesConfigIoService;
@@ -136,6 +135,7 @@ public class MicroconfigFactory {
     //public for plugin
     public FilenameGenerator getFilenameGenerator(ConfigType configType) {
         return new LegacyFilenameGenerator(
+                StandardConfigTypes.APPLICATION.type().getResultFileName(),
                 new FilenameGeneratorImpl(destinationComponentDir, serviceInnerDir, configType.getResultFileName()),
                 environmentProvider
         );

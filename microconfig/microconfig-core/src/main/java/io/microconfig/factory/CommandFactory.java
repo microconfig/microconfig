@@ -1,4 +1,4 @@
-package io.microconfig.commands.buildconfig.factory;
+package io.microconfig.factory;
 
 import io.microconfig.commands.Command;
 import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
@@ -11,7 +11,7 @@ import io.microconfig.features.templates.CopyTemplatesServiceImpl;
 import java.io.File;
 
 import static io.microconfig.commands.Command.composite;
-import static io.microconfig.commands.buildconfig.configtypes.StandardConfigTypes.*;
+import static io.microconfig.factory.StandardConfigTypes.*;
 import static io.microconfig.utils.FileUtils.userHome;
 
 public class CommandFactory {
