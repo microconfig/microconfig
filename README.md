@@ -963,6 +963,8 @@ If you want to contribute to the project and make it better, your help is very w
 
 Contributing to the documentation is very welcome too.
 
+Your 'Star' is appreciated!
+
 https://github.com/microconfig/microconfig
 
-support@microconfig.io  
+support@microconfig.io
