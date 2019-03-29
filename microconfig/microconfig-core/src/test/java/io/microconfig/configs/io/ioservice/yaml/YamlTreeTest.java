@@ -20,6 +20,15 @@ class YamlTreeTest {
     }
 
     @Test
+    void testDottedKey() {
+        Map<String, String> initial = singletonMap("metadata.annotations.\"kubernetes.io/ingress.class\"", "internal");
+        Map<String, Object> actual = new YamlTreeImpl().toTree(initial);
+
+        Map<String, Object> expected = singletonMap("metadata", singletonMap("annotations", singletonMap("\"kubernetes.io/ingress.class\"", "internal")));
+        assertEquals(expected, actual);
+    }
+
+    @Test
     void testWriteInner() {
         Map<String, String> initial = new HashMap<>();
         initial.put("tfs.out.archiveDir", "dirV");

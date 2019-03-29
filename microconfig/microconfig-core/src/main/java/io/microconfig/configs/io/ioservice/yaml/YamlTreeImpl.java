@@ -1,5 +1,6 @@
 package io.microconfig.configs.io.ioservice.yaml;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -51,7 +52,31 @@ public class YamlTreeImpl implements YamlTree {
     }
 
     private String[] splitKey(String key) {
-        return key.split("\\.(?![^\\[]*])"); // split on '.' that are not inside of []
+        if (key.isEmpty()) return new String[0];
+
+        boolean insideBrackets = false;
+        boolean insideQuotes = false;
+        int last = 0;
+
+        ArrayList<String> results = new ArrayList<>();
+
+        for (int i = 0; i < key.length(); i++) {
+            if (key.charAt(i) == '[') insideBrackets = true;
+            if (key.charAt(i) == ']') insideBrackets = false;
+            if (key.charAt(i) == '"') insideQuotes = !insideQuotes;
+
+            if (key.charAt(i) == '.' && !insideBrackets && !insideQuotes) {
+                results.add(key.substring(last, i));
+                if (i + 1 < key.length()) {
+                    last = i + 1;
+                } else {
+                    results.toArray(new String[0]);
+                }
+            }
+        }
+        results.add(key.substring(last));
+
+        return results.toArray(new String[0]);
     }
 
     private String offsetForMultilineValue(int parts, String value) {
