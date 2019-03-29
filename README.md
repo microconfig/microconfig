@@ -132,7 +132,7 @@ Let's see how application properties can look like. In comments we note what can
     server.port: 8080
     application.name: payments # better to get name from folder
     payments:
-      booktimeoutInMs: 900000 # difficult to read. how long in min ?
+      bookTimeoutInMs: 900000 # difficult to read. how long in min ?
       system.retries: 3
     consistency.validateConsistencyIntervalInMs: 420000 # difficult to read. how long in min ?
     service-discovery.url: http://10.12.172.11:6781 # are you sure url is consistent with eureka configuration?
@@ -222,7 +222,7 @@ And replace explicit configs with includes
     server.port: 8080
     application.name: payments # better to get name from folder
     payments:
-      booktimeoutInMs: 900000 # how long in min ?
+      bookTimeoutInMs: 900000 # how long in min ?
       system.retries: 3
     consistency.validateConsistencyIntervalInMs: 420000 # difficult to read. how long in min ?    
 ```
