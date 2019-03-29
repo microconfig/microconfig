@@ -236,6 +236,7 @@ Let's override order's connection pool size.
 **orders/application.yaml**
 ```yaml        
     #include oracle-db-client
+    
     datasource.maximum-pool-size: 10
     ***    
 ```
@@ -275,6 +276,7 @@ jpa.properties.hibernate.id.optimizer.pooled.prefer_lo: true
 **orders-db/application.yaml**
 ```yaml
     #include oracle-common
+    
     datasource:
       maximum-pool-size: 10
       url: jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV #partial duplication
@@ -282,6 +284,7 @@ jpa.properties.hibernate.id.optimizer.pooled.prefer_lo: true
 **payment-db/application.yaml**
 ```yaml
     #include oracle-common
+    
     datasource.url: jdbc:oracle:thin:@172.30.162.127:1521:ARMSDEV #partial duplication
 ```
 
@@ -399,6 +402,7 @@ In the example below after the build process: `datasource.url: jdbc:oracle:thin:
 **orders-db/application.dev.yaml** 
 ```yaml   
      #include oracle-common    
+     
      #var oracle.host: 100.30.162.80                 
 ```
 
@@ -460,11 +464,13 @@ Initial:
 **orders/application.yaml**
 ```yaml
     #include service-discovery-client    
+    
     application.name: orders    
 ```
 **payments/application.yaml**
 ```yaml
     #include service-discovery-client    
+    
     application.name: payments
 ```
 
@@ -658,12 +664,14 @@ Let's configure order and payment services to use this template.
 **orders/application.yaml**
 ```yaml
     #include service-discovery-client
+    
     microconfig.template.logback.fromFile: ${logback@configDir}/logback.xml # full path to logback.xml, @configDir - special placeholder property
 ```
 
 **payments/application.yaml**
 ```yaml
     #include service-discovery-client
+    
     microconfig.template.logback.fromFile: ${logback@configDir}/logback.xml
 ```  
    
