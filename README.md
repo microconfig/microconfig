@@ -933,7 +933,7 @@ The Diff format:
 ```
 
 # YAML and Properties format support
-Microconfig supports Properties and YAML format for source and result configs.
+Microconfig supports *.yaml and *.properties format for source and result configs.
 You can keep a part of configuration in *.yaml files and another part in *.properties.
 
 ```
