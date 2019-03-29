@@ -63,27 +63,27 @@ repo
 
 ## Configuration sources
 
-Inside the service folder, you can create a configuration in `key=value` format. For the following examples, we will use *.properties, but Microconfig also supports *.yaml. 
+Inside the service folder, you can create a configuration in `key=value` format. For the following examples, we will use *.yaml, but Microconfig also supports *.properties. 
 
 Let’s create basic application and process configuration files for each service.
-You can split configuration among several files, but for simplicity, we will create `application.properties` and `process.proc` for each service. No matter how many base files are used, after the configuration build for each service and each config type, a single result file will be generated.
+You can split configuration among several files, but for simplicity, we will create `application.yaml` and `process.proc` for each service. No matter how many base files are used, after the configuration build for each service and each config type, a single result file will be generated.
 
 ```
 repo
 └───core  
 │    └───orders
-│    │   └───application.properties
+│    │   └───application.yaml
 │    │   └───process.proc
 │    └───payments
-│        └───application.properties
+│        └───application.yaml
 │        └───process.proc
 │	
 └───infra
     └───service-discovery
-    │   └───application.properties
+    │   └───application.yaml
     │   └───process.proc
     └───api-gateway
-        └───application.properties
+        └───application.yaml
         └───process.proc
 ```
 
@@ -113,40 +113,45 @@ As you can see we already have some small duplication (all services have '19.4.2
 
 Let's see how application properties can look like. In comments we note what can be improved.
 
-**orders/application.properties**
-```properties
-    server.port=9000
-    application.name=orders # better to get name from folder
-    orders.personalRecommendation=true
-    statistics.enableExtendedStatistics=true
-    service-discovery.url=http://10.12.172.11:6781 # are you sure url is consistent with SD configuration?
-    eureka.instance.prefer-ip-address=true  # duplication        
-    datasource.minimum-pool-size=2  # duplication
-    datasource.maximum-pool-size=10
-    datasource.url=jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV  # partial duplication
-    jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true  # duplication
+**orders/application.yaml**
+```yaml
+    server.port: 9000
+    application.name: orders # better to get name from folder
+    orders.personalRecommendation: true
+    statistics.enableExtendedStatistics: true
+    service-discovery.url: http://10.12.172.11:6781 # are you sure url is consistent with SD configuration?
+    eureka.instance.prefer-ip-address: true  # duplication        
+    datasource:
+      minimum-pool-size: 2  # duplication
+      maximum-pool-size: 10
+      url: jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV  # partial duplication
+    jpa.properties.hibernate.id.optimizer.pooled.prefer_lo: true  # duplication
 ```
-**payments/application.properties**
-```properties
-    server.port=8080
-    application.name=payments # better to get name from folder
-    payments.booktimeoutInMs=900000 # difficult to read. how long in min ?
-    payments.system.retries=3
-    consistency.validateConsistencyIntervalInMs=420000 # difficult to read. how long in min ?
-    service-discovery.url=http://10.12.172.11:6781 # are you sure url is consistent with eureka configuration?
-    eureka.instance.prefer-ip-address=true  # duplication            
-    datasource.minimum-pool-size=2  # duplication
-    datasource.maximum-pool-size=5    
-    datasource.url=jdbc:oracle:thin:@172.30.162.127:1521:ARMSDEV  # partial duplication
-    jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true # duplication
+**payments/application.yaml**
+```yaml
+    server.port: 8080
+    application.name: payments # better to get name from folder
+    payments:
+      booktimeoutInMs: 900000 # difficult to read. how long in min ?
+      system.retries: 3
+    consistency.validateConsistencyIntervalInMs: 420000 # difficult to read. how long in min ?
+    service-discovery.url: http://10.12.172.11:6781 # are you sure url is consistent with eureka configuration?
+    eureka.instance.prefer-ip-address: true  # duplication            
+    datasource:
+      minimum-pool-size: 2  # duplication
+      maximum-pool-size: 5    
+    datasource.url: jdbc:oracle:thin:@172.30.162.127:1521:ARMSDEV  # partial duplication
+    jpa.properties.hibernate.id.optimizer.pooled.prefer_lo: true # duplication
 ```
-**service-discovery/application.properties**
-```properties
-    server.port=6781
-    application.name=eureka
-    eureka.client.fetchRegistry=false
-    eureka.server.eviction-interval-timer-in-ms=15000 # difficult to read
-    eureka.server.enable-self-preservation=false    
+**service-discovery/application.yaml**
+```yaml
+    server.port: 6781
+    application.name: eureka
+    eureka:
+      client.fetchRegistry: false
+      server:
+        eviction-interval-timer-in-ms: 15000 # difficult to read
+        enable-self-preservation: false    
 ```
 
 The first bad thing - application files contain duplication. 
@@ -165,9 +170,9 @@ Our services have a common configuration for service-discovery and database. To 
 repo
 └───common
 |    └───service-discovery-client 
-|    | 	 └───application.properties
+|    | 	 └───application.yaml
 |    └───oracle-client
-|        └───application.properties
+|        └───application.yaml
 |	
 └───core  
 │    └───orders
@@ -181,43 +186,45 @@ repo
     └───api-gateway
         ***
 ```
-**service-discovery-client/application.properties**
-```properties
-service-discovery.url=http://10.12.172.11:6781 # are you sure url is consistent with eureka configuration?
-eureka.instance.prefer-ip-address=true 
+**service-discovery-client/application.yaml**
+```yaml
+service-discovery.url: http://10.12.172.11:6781 # are you sure url is consistent with eureka configuration?
+eureka.instance.prefer-ip-address: true 
 ```
 
-**oracle-client/application.properties**
-```properties
-datasource.minimum-pool-size=2  
-datasource.maximum-pool-size=5    
-datasource.url=jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV  
-jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
+**oracle-client/application.yaml**
+```yaml
+datasource:
+  minimum-pool-size: 2  
+  maximum-pool-size: 5    
+  url: jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV  
+jpa.properties.hibernate.id.optimizer.pooled.prefer_lo: true
 ```
 
 And replace explicit configs with includes
 
-**orders/application.properties**
-```properties
+**orders/application.yaml**
+```yaml
     #include service-discovery-client
     #include oracle-db-client
     
-    server.port=9000
-    application.name=orders # better to get name from folder
-    orders.personalRecommendation=true
-    statistics.enableExtendedStatistics=true    
+    server.port: 9000
+    application.name: orders # better to get name from folder
+    orders.personalRecommendation: true
+    statistics.enableExtendedStatistics: true    
 ```
 
-**payments/application.properties**
-```properties
+**payments/application.yaml**
+```yaml
     #include service-discovery-client
     #include oracle-db-client
     
-    server.port=8080
-    application.name=payments # better to get name from folder
-    payments.booktimeoutInMs=900000 # how long in min ?
-    payments.system.retries=3
-    consistency.validateConsistencyIntervalInMs=420000 # difficult to read. how long in min ?    
+    server.port: 8080
+    application.name: payments # better to get name from folder
+    payments:
+      booktimeoutInMs: 900000 # how long in min ?
+      system.retries: 3
+    consistency.validateConsistencyIntervalInMs: 420000 # difficult to read. how long in min ?    
 ```
 To include a component's configuration you need to specify only the component name, you don't need to specify the path to it. It makes config layout refactoring easy. Microconfig will find a folder with the component's name and include the configuration from its files (If the folder name is not unique, Microconfig includes configs from each folder, but it's a good idea to keep a component name unique).
 
@@ -226,21 +233,21 @@ Some problems still here, but we removed duplication and made it easy to underst
 You can override any properties from your dependencies.
 Let's override order's connection pool size.
 
-**orders/application.properties**
-```properties        
+**orders/application.yaml**
+```yaml        
     #include oracle-db-client
-    datasource.maximum-pool-size=10
+    datasource.maximum-pool-size: 10
     ***    
 ```
 
 Nice. But order-service has a small part of its db configuration(pool-size), it's not that bad, but we can make the config semantically better.
 Also you can see that order and payment services have a different ip for oracle.
 
-order: datasource.url=jdbc:oracle:thin:@172.30.162.<b>31</b>:1521:ARMSDEV  
-payment: datasource.url=jdbc:oracle:thin:@172.30.162.<b>127</b>:1521:ARMSDEV  
+order: datasource.url: jdbc:oracle:thin:@172.30.162.<b>31</b>:1521:ARMSDEV  
+payment: datasource.url: jdbc:oracle:thin:@172.30.162.<b>127</b>:1521:ARMSDEV  
 And oracle-client contains settings for .31.
 
-Of course, you can override datasource.url in payment/application.properties. But this overridden property will contain a copy of another part of jdbc url and you will get all standard 'copy-and-paste' problems. We would like to override only a part of the property. 
+Of course, you can override datasource.url in payment/application.yaml. But this overridden property will contain a copy of another part of jdbc url and you will get all standard 'copy-and-paste' problems. We would like to override only a part of the property. 
 
 Also it's better to create a dedicated configuration for order db and payment db. Both db configuration will include common-db config and override the 'ip' part of url. After that, we will migrate 'datasource.maximum-pool-size' from order-service to order-db, so order-service will contain only links to its dependencies and service-specific configs.
 
@@ -250,48 +257,50 @@ repo
 └───common
 |    └───oracle
 |        └───oracle-common
-|        |   └───application.properties
+|        |   └───application.yaml
 |        └───order-db
-|        |   └───application.properties
+|        |   └───application.yaml
 |        └───payment-db
-|            └───application.properties
+|            └───application.yaml
 ```
 
-**oracle-common/application.properties**
-```properties
-datasource.minimum-pool-size=2  
-datasource.maximum-pool-size=5    
-connection.timeoutInMs=300000
-jpa.properties.hibernate.id.optimizer.pooled.prefer_lo=true
+**oracle-common/application.yaml**
+```yaml
+datasource:
+  minimum-pool-size: 2  
+  maximum-pool-size: 5    
+connection.timeoutInMs: 300000
+jpa.properties.hibernate.id.optimizer.pooled.prefer_lo: true
 ```
-**orders-db/application.properties**
-```properties
+**orders-db/application.yaml**
+```yaml
     #include oracle-common
-    datasource.maximum-pool-size=10
-    datasource.url=jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV #partial duplication
+    datasource:
+      maximum-pool-size: 10
+      url: jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV #partial duplication
 ```
-**payment-db/application.properties**
-```properties
+**payment-db/application.yaml**
+```yaml
     #include oracle-common
-    datasource.url=jdbc:oracle:thin:@172.30.162.127:1521:ARMSDEV #partial duplication
+    datasource.url: jdbc:oracle:thin:@172.30.162.127:1521:ARMSDEV #partial duplication
 ```
 
-**orders/application.properties**
-```properties
+**orders/application.yaml**
+```yaml
     #include order-db
     ***
 ```
 
-**payments/application.properties**
-```properties
+**payments/application.yaml**
+```yaml
     #include payment-db
 ```
 
 
 Also includes can be in one line:
 
-**payments/application.properties**
-```properties
+**payments/application.yaml**
+```yaml
     #include service-discovery-client, oracle-db-client    
 ```
 
@@ -303,25 +312,25 @@ Let's refactor service-discovery-client config.
 
 Initial:
 
-**service-discovery-client/application.properties**
-```properties
-service-discovery.url=http://10.12.172.11:6781 # are you sure host and port are consistent with SD configuration? 
+**service-discovery-client/application.yaml**
+```yaml
+service-discovery.url: http://10.12.172.11:6781 # are you sure host and port are consistent with SD configuration? 
 ```
-**service-discovery/application.properties**
-```properties
-server.port=6761 
+**service-discovery/application.yaml**
+```yaml
+server.port: 6761 
 ```
 
 Refactored:
 
-**service-discovery-client/application.properties**
-```properties
-service-discovery.url=http://${service-discovery@ip}:${service-discovery@server.port}
+**service-discovery-client/application.yaml**
+```yaml
+service-discovery.url: http://${service-discovery@ip}:${service-discovery@server.port}
 ```
-**service-discovery/application.properties**
-```properties
-server.port=6761
-ip=10.12.172.11 
+**service-discovery/application.yaml**
+```yaml
+server.port: 6761
+ip: 10.12.172.11 
 ```
 So if you change service-discovery port, all dependent services will get this update.
 
@@ -334,30 +343,34 @@ Let's refactor oracle db config using placeholders and environment specific over
 
 Initial:
 
-**oracle-common/application.properties**
-```properties    
-    datasource.maximum-pool-size=10
-    datasource.url=jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV 
+**oracle-common/application.yaml**
+```yaml    
+    datasource:
+      maximum-pool-size: 10
+      url: jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV 
 ```   
 
 Refactored:
 
-**oracle-common/application.properties**
-```properties    
-    datasource.maximum-pool-size=10
-    datasource.url=jdbc:oracle:thin:@${this@oracle.host}:1521:${this@oracle.sid}
-    oracle.host=172.30.162.20    
-    oracle.sid=ARMSDEV
+**oracle-common/application.yaml**
+```yaml    
+    datasource:
+      maximum-pool-size: 10
+      url: jdbc:oracle:thin:@${this@oracle.host}:1521:${this@oracle.sid}
+    oracle:
+      host: 172.30.162.20    
+      sid: ARMSDEV
 ```
-**oracle-common/application.uat.properties**
-```properties    
-    oracle.host=172.30.162.80
+**oracle-common/application.uat.yaml**
+```yaml    
+    oracle.host: 172.30.162.80
 ```    
     
-**oracle-common/application.prod.properties**
-```properties    
-    oracle.host=10.17.14.18    
-    oracle.sid=ARMSPROD    
+**oracle-common/application.prod.yaml**
+```yaml    
+    oracle:
+      host: 10.17.14.18    
+      sid: ARMSPROD    
 ```        
 
 As you can see using placeholders we can override not only the whole property but also part of it.
@@ -368,25 +381,25 @@ A placeholder can link to another placeholder. Microconfig can resolve them recu
 
 If you want to declare temp properties that will be used by placeholders only and you don't want them to be included in the result config file, you can declare them with `#var` keyword.
 
-**oracle-common/application.properties**
-```properties
-    datasource.url=jdbc:oracle:thin:@${this@oracle.host}:1521:${this@oracle.sid}
-    #var oracle.host=172.30.162.20    
-    #var oracle.sid=ARMSDEV
+**oracle-common/application.yaml**
+```yaml
+    datasource.url: jdbc:oracle:thin:@${this@oracle.host}:1521:${this@oracle.sid}
+    #var oracle.host: 172.30.162.20    
+    #var oracle.sid: ARMSDEV
 ```
-**oracle-common/application.uat.properties**
-```properties    
-    #var oracle.host=172.30.162.80
+**oracle-common/application.uat.yaml**
+```yaml    
+    #var oracle.host: 172.30.162.80
 ``` 
 
 This approach works with includes as well. You can #include oracle-common and then override 'oracle.host', and 'datasource.url' will be resolved based on the overridden value.
 
-In the example below after the build process: `datasource.url=jdbc:oracle:thin:@**100.30.162.80**:1521:ARMSDEV`
+In the example below after the build process: `datasource.url: jdbc:oracle:thin:@**100.30.162.80**:1521:ARMSDEV`
  
-**orders-db/application.dev.properties** 
-```properties   
+**orders-db/application.dev.yaml** 
+```yaml   
      #include oracle-common    
-     #var oracle.host=100.30.162.80                 
+     #var oracle.host: 100.30.162.80                 
 ```
 
 ## Placeholder's default value
@@ -394,11 +407,12 @@ You can specify a default value for a placeholder using the following syntax: ${
 
 Let's set a default value for 'oracle host'
 
-**oracle-common/application.properties**
-```properties    
-    datasource.maximum-pool-size=10
-    datasource.url=jdbc:oracle:thin:@${this@oracle.host:172.30.162.20}:1521:${this@oracle.sid}        
-    #var oracle.sid=ARMSDEV
+**oracle-common/application.yaml**
+```yaml    
+    datasource:
+      maximum-pool-size: 10
+      url: jdbc:oracle:thin:@${this@oracle.host:172.30.162.20}:1521:${this@oracle.sid}        
+    #var oracle.sid: ARMSDEV
 ```
 Note, a default value can be a placeholder:
  `${component@property:${component2@property7:Missing value}}`
@@ -415,13 +429,13 @@ Using `#var` you can remove properties from the result config file. You can incl
 
 Let's remove 'payments.system.retries' property for 'dev' environment:
 
-**payments/application.properties**
-```properties
-    payments.system.retries=3        
+**payments/application.yaml**
+```yaml
+    payments.system.retries: 3        
 ```
-**payments/application.dev.properties**
-```properties
-    #var payments.system.retries=  // will not be included into result config        
+**payments/application.dev.yaml**
+```yaml
+    #var payments.system.retries:   // will not be included into result config        
 ```
 ## Specials placeholders
 As we discussed syntax for placeholders looks like `${component@property}`.
@@ -443,30 +457,30 @@ Note, if you use special placeholders with `${this@...}` then the value will be 
 
 Initial:
 
-**orders/application.properties**
-```properties
+**orders/application.yaml**
+```yaml
     #include service-discovery-client    
-    application.name=orders    
+    application.name: orders    
 ```
-**payments/application.properties**
-```properties
+**payments/application.yaml**
+```yaml
     #include service-discovery-client    
-    application.name=payments
+    application.name: payments
 ```
 
 Refactored:
 
-**orders/application.properties**
-```properties
+**orders/application.yaml**
+```yaml
     #include service-discovery-client    
 ```
-**payments/application.properties**
-```properties
+**payments/application.yaml**
+```yaml
     #include service-discovery-client
 ```
-**service-discovery-client/application.properties**
-```properties            
-    application.name=${this@name}
+**service-discovery-client/application.yaml**
+```yaml            
+    application.name: ${this@name}
 ```                 
 
 ## Environment variables and system properties 
@@ -502,108 +516,108 @@ Microconfig supports a powerful expression language based on [Spring EL](https:/
 
 Let's see some examples:
 
-```properties
+```yaml
 #Better than 300000
-connection.timeoutInMs=#{5 * 60 * 1000}
+connection.timeoutInMs: #{5 * 60 * 1000}
 
 #Microconfig placeholder and simple math
-datasource.maximum-pool-size=#{${this@datasource.minimum-pool-size} + 10} 
+datasource.maximum-pool-size: #{${this@datasource.minimum-pool-size} + 10} 
 
 #Using placeholder and Java String API
-healthcheck.logSuccessMarker=Started ${this@mainClassNameWithoutPackage}
-#var mainClassNameWithoutPackage=#{'${this@java.main}'.substring('${this@java.main}'.lastIndexOf('.') + 1)}
+healthcheck.logSuccessMarker: Started ${this@mainClassNameWithoutPackage}
+#var mainClassNameWithoutPackage: #{'${this@java.main}'.substring('${this@java.main}'.lastIndexOf('.') + 1)}
 
 #Using Java import and Base64 API
-sessionKey=#{T(java.util.Base64).getEncoder().encodeToString('Some value'.bytes)}  
+sessionKey: #{T(java.util.Base64).getEncoder().encodeToString('Some value'.bytes)}  
 ```
 Inside EL you can write any Java code in one line and Microconfig placeholders. Of course, you shouldn't overuse this to keep configuration readable.
  
 # Environment specific properties
 Microconfig allows specifying environment specific properties (add/remove/override). For instance, you want to increase connection-pool-size for dbs and increase the amount of memory for prod env.
-To add/remove/override properties for the environment, you can create application.**${ENVNAME}**.properties file in the config folder. 
+To add/remove/override properties for the environment, you can create application.**${ENVNAME}**.yaml file in the config folder. 
 
 Let's override connection pool size for 'dev' and 'prod' and add one new param for 'dev'. 
 
 ```
 order-db
-└───application.properties
-└───application.dev.properties
-└───application.prod.properties
+└───application.yaml
+└───application.dev.yaml
+└───application.prod.yaml
 ```
 
-**orders-db/application.dev.properties**
-```properties   
-    datasource.maximum-pool-size=15   
-    hibernate.show-sql=true    
+**orders-db/application.dev.yaml**
+```yaml   
+    datasource.maximum-pool-size: 15   
+    hibernate.show-sql: true    
 ```
 
-**orders-db/application.prod.properties**
-```properties   
-    datasource.maximum-pool-size=50    
+**orders-db/application.prod.yaml**
+```yaml   
+    datasource.maximum-pool-size: 50    
 ```
 
-Also, you can declare common properties for several environments in a single file. You can use the following filename pattern: application.**${ENV1.ENV2.ENV3...}**.properties
+Also, you can declare common properties for several environments in a single file. You can use the following filename pattern: application.**${ENV1.ENV2.ENV3...}**.yaml
 Let's create common properties for dev, dev2 and test environments.
 
 ```
 order-db
-└───application.properties
-└───application.dev.properties
-└───application.dev.dev2.test.properties
-└───application.prod.properties
+└───application.yaml
+└───application.dev.yaml
+└───application.dev.dev2.test.yaml
+└───application.prod.yaml
 ```
 
-**orders-db/application.dev.dev2.test.properties**
-```properties   
-    hibernate.show-sql=true    
+**orders-db/application.dev.dev2.test.yaml**
+```yaml   
+    hibernate.show-sql: true    
 ```
 
-When you build properties for a specific environment (for example 'dev') Microconfig will collect properties from:
-* application.properties 
-* then add/override properties from application.dev.{anotherEnv}.properties.
-* then add/override properties from application.dev.properties.
+When you build configs for a specific environment (for example 'dev') Microconfig will collect properties from:
+* application.yaml 
+* then add/override properties from application.dev.{anotherEnv}.yaml.
+* then add/override properties from application.dev.yaml.
  
 ## Profiles and explicit environment name for includes and placeholders
-As we discussed you can create environment specific properties using the filename pattern: application.${ENV}.properties. You can use the same approach for creating profile specific properties.
+As we discussed you can create environment specific properties using the filename pattern: application.${ENV}.yaml. You can use the same approach for creating profile specific properties.
 
 For example, you can create a folder for http client timeout settings:
 
-**timeout-settings/application.properties**
-```properties    
-    timeouts.connectTimeoutMs=1000    
-    timeouts.readTimeoutMs=5000    
+**timeout-settings/application.yaml**
+```yaml    
+    timeouts.connectTimeoutMs: 1000    
+    timeouts.readTimeoutMs: 5000    
 ```
 And some services can include this configuration:
 
-**orders/application.properties**
-```properties
+**orders/application.yaml**
+```yaml
     #include timeout-settings    
 ```
-**payments/application.properties**
-```properties
+**payments/application.yaml**
+```yaml
     #include timeout-settings
 ```
 
 But what if you want some services to be configured with a long timeout? Instead of the environment you can use the profile name in the filename:
 ```
 timeout-settings
-└───application.properties
-└───application.long.properties
-└───application.huge.properties
+└───application.yaml
+└───application.long.yaml
+└───application.huge.yaml
 ```
-**timeout-settings/application.long.properties**
-```properties
-    timeouts.readTimeoutMs=30000    
+**timeout-settings/application.long.yaml**
+```yaml
+    timeouts.readTimeoutMs: 30000    
 ```
-**timeout-settings/application.huge.properties**
-```properties
-    timeouts.readTimeoutMs=600000    
+**timeout-settings/application.huge.yaml**
+```yaml
+    timeouts.readTimeoutMs: 600000    
 ```
 
 And specify the profile name with include:
 
-**payments/application.properties**
-```properties
+**payments/application.yaml**
+```yaml
     #include timeout-settings[long]
 ```
 
@@ -641,42 +655,42 @@ repo
 So we want every service to have its own logback.xml with resolved `${application.name}`. 
 Let's configure order and payment services to use this template.
 
-**orders/application.properties**
-```properties
+**orders/application.yaml**
+```yaml
     #include service-discovery-client
-    microconfig.template.logback.fromFile=${logback@configDir}/logback.xml # full path to logback.xml, @configDir - special placeholder property
+    microconfig.template.logback.fromFile: ${logback@configDir}/logback.xml # full path to logback.xml, @configDir - special placeholder property
 ```
 
-**payments/application.properties**
-```properties
+**payments/application.yaml**
+```yaml
     #include service-discovery-client
-    microconfig.template.logback.fromFile=${logback@configDir}/logback.xml
+    microconfig.template.logback.fromFile: ${logback@configDir}/logback.xml
 ```  
    
-It's better to extract the common property `microconfig.template.logback.fromFile` to logback-template/application.properties and then use #include.
+It's better to extract the common property `microconfig.template.logback.fromFile` to logback-template/application.yaml and then use #include.
 
 ```
 repo
 └───common
 |    └───logback-template 
 |     	 └───logback.xml
-|     	 └───application.properties
+|     	 └───application.yaml
 ```    
-**logback-template/application.properties**
-```properties   
-    microconfig.template.logback.fromFile=${logback@configDir}/logback.xml    
+**logback-template/application.yaml**
+```yaml   
+    microconfig.template.logback.fromFile: ${logback@configDir}/logback.xml    
 ```
-**orders-template/application.properties**
-```properties
+**orders-template/application.yaml**
+```yaml
     #include service-discovery-client, logback-template
 ```
-**payments-template/application.properties**
-```properties
+**payments-template/application.yaml**
+```yaml
     #include service-discovery-client, logback-template
 ```  
 
 As you can see the placeholder syntax inside template `${propName}`  differs from the Microconfig syntax `${component@propName}`, it doesn't specify a component name.
-You can use the standard Microconfig syntax for placeholder as well. ${propName} == ${**this**@propName}.
+You can use the standard Microconfig syntax for placeholder as well. ${propName} = ${**this**@propName}.
 
 If Microconfig can't resolve a template placeholder, Microconfig logs a warning and leaves the template text unresolved.
 
@@ -687,18 +701,20 @@ If you want to declare a property for a template only and don't want this proper
 
 If you want to override the template destination filename you can use `microconfig.template.${templateName}.toFile=${someFile}` property. For example:  
  
- **logback-template/application.properties**
- ```properties   
-     microconfig.template.logback.fromFile=${logback@configDir}/logback.xml    
-     microconfig.template.logback.toFile=logs/logback-descriptor.xml
+ **logback-template/application.yaml**
+ ```yaml   
+     microconfig.template.logback:
+       fromFile: ${logback@configDir}/logback.xml    
+       toFile: logs/logback-descriptor.xml
  ``` 
  
 You can use the absolute or the relative path for `toFile` property. The relative path starts from the resulting service config dir (See 'Running config build' section).
 
 So the template dependency declaration syntax looks like:   
 ```
-microconfig.template.${templateName}.fromFile=${sourceTemplateFile}    
-microconfig.template.${templateName}.toFile=${resolvedTemplateDestinationFile}
+microconfig.template.${templateName}:
+  fromFile: ${sourceTemplateFile}    
+  toFile: ${resolvedTemplateDestinationFile}
 ```
 `${templateName}` - is used only for mapping `fromFile` and `toFile` properties.
 
@@ -709,12 +725,12 @@ repo
 |    └───logback-template 
 |     	 └───logback.xml
 |     	 └───logback-prod.xml
-|     	 └───application.properties
-|     	 └───application.prod.properties
+|     	 └───application.yaml
+|     	 └───application.prod.yaml
 ```
-**logback-template/application.prod.properties**
-```properties   
-    microconfig.template.logback.fromFile=${logback@configDir}/logback-prod.xml        
+**logback-template/application.prod.yaml**
+```yaml   
+    microconfig.template.logback.fromFile: ${logback@configDir}/logback-prod.xml        
 ``` 
 
 # Environment descriptor
@@ -817,7 +833,7 @@ Consider configuring your deployment tool to read the environment descriptor to 
 
 # Running the config build
 As we discussed Microconfig has its own format for configuration sources. 
-During the config build Microconfig inlines all includes, resolves placeholders, evaluates expression language, copies templates, and stores the result values into plain *.properties or *.yaml files to a dedicated folder for each service.
+During the config build Microconfig inlines all includes, resolves placeholders, evaluates expression language, copies templates, and stores the result values into plain *.yaml or *.properties files to a dedicated folder for each service.
 
 To run the build you can download Microconfig release from https://github.com/microconfig/microconfig/releases.
 
@@ -855,38 +871,38 @@ repo
 |     	 └───logback.xml
 └───core  
 │    └───orders
-│    │   └───application.properties
+│    │   └───application.yaml
 │    │   └───process.proc
 │    └───payments
-│        └───application.properties
+│        └───application.yaml
 │        └───process.proc
 │	
 └───infra
     └───service-discovery
-    │   └───application.properties
+    │   └───application.yaml
     │   └───process.proc
     └───api-gateway
-        └───application.properties
+        └───application.yaml
         └───process.proc
 ```
 After build:
 ```
 configs
 └───orders
-│   └───application.properties
-│   └───process.properties
+│   └───application.yaml
+│   └───process.yaml
 |   └───logback.xml
 └───payments
-│   └───application.properties
-│   └───process.properties
+│   └───application.yaml
+│   └───process.yaml
 |   └───logback.xml
 └───service-discovery
-│   └───application.properties
-│   └───process.properties
+│   └───application.yaml
+│   └───process.yaml
 |   └───logback.xml
 └───api-gateway
-    └───application.properties
-    └───process.properties
+    └───application.yaml
+    └───process.yaml
     └───logback.xml
 ```
 
@@ -896,28 +912,28 @@ You can try to build configs from the dedicated example repo: https://github.com
 During the config build, Microconfig compares newly generated files to files generated during the previous build for each service for each config type.
 Microconfig can detect added/removed/changed properties. 
 
-Diff for application.properties is stored in diff-application.properties, diff for process.properties is stored in diff-process.properties, etc.
+Diff for application.yaml is stored in diff-application.yaml, diff for process.yaml is stored in diff-process.yaml, etc.
 ```
 configs
 └───orders
-│   └───application.properties
-│   └───diff-application.properties
-│   └───process.properties
-│   └───diff-process.properties
+│   └───application.yaml
+│   └───diff-application.yaml
+│   └───process.yaml
+│   └───diff-process.yaml
 |   └───logback.xml
 ```
 
 The Diff format:
 
-**diff-application.properties**
-```properties     
-+security.client.protocol=SSL # property has been added
--connection.timeoutMs=1000 # property has been removed
- server.max-threads=10 -> 35 # value has been changed from '10' to '35'
+**diff-application.yaml**
+```yaml     
++security.client.protocol: SSL # property has been added
+-connection.timeoutMs: 1000 # property has been removed
+ server.max-threads: 10 -> 35 # value has been changed from '10' to '35'
 ```
 
-# YAML format support
-Microconfig supports YAML format for source and result configs.
+# YAML and Properties format support
+Microconfig supports Properties and YAML format for source and result configs.
 You can keep a part of configuration in *.yaml files and another part in *.properties.
 
 ```
@@ -950,7 +966,6 @@ cluster.gateway:
 ```
 
 Yaml format configs will be built into *.yaml, property configs will be built into *.properties. If *.properties configs include *.yaml configs, the resulting file will be *.yaml.
-
 Microconfig can detect the format based on separators (if a config file has extension neither *.yaml nor *.properties). If you use `:` key-value separator, Microconfig will handle it like *.yaml (`=` for *.properties).
 
 # Intellij IDEA plugin
