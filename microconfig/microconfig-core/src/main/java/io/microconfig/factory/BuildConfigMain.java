@@ -17,8 +17,7 @@ import static java.util.Optional.of;
  * VM speedup params:
  * -Xverify:none -XX:TieredStopAtLevel=1
  * <p>
- * Command line params example:
- * root=C:\Users\amatorin\Desktop\microconfig\configs-layout-example dest=C:\Users\amatorin\Desktop\microconfig\output env=dev
+ * Command line params example: *
  * root=C:\Projects\config\repo dest=C:\Projects\configs env=cr-dev6
  */
 public class BuildConfigMain {
