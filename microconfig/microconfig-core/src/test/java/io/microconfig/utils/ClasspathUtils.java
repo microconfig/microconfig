@@ -5,6 +5,8 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.File;
 import java.io.IOException;
 
+import static io.microconfig.utils.IoUtils.readFully;
+
 public class ClasspathUtils {
     public static File classpathFile(String name) {
         try {
@@ -16,7 +18,7 @@ public class ClasspathUtils {
 
     public static String read(String file) {
         try {
-            return IoUtils.readFully(new ClassPathResource(file).getInputStream());
+            return readFully(new ClassPathResource(file).getInputStream());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
