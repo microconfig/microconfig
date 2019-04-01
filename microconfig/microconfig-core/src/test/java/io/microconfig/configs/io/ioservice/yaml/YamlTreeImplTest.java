@@ -38,7 +38,7 @@ class YamlTreeImplTest {
     }
 
     private void doCompare(String expected, Map<String, String> initial) {
-        assertEquals(read(expected).replace("\n", LINES_SEPARATOR), new YamlTreeImpl().toYaml(initial));
+        assertEquals(read(expected), new YamlTreeImpl().toYaml(initial));
     }
 
     @Test
