@@ -1,11 +1,14 @@
 package io.microconfig.configs.io.ioservice.yaml;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static io.microconfig.utils.StringUtils.addOffsets;
+import static java.lang.Math.max;
+import static java.util.Collections.emptyList;
 
 public class YamlTreeImpl implements YamlTree {
     private static final int OFFSET = 2;
@@ -33,9 +36,9 @@ public class YamlTreeImpl implements YamlTree {
 
     @SuppressWarnings("unchecked")
     private void propertyToTree(String key, String value, Map<String, Object> result) {
-        String[] parts = splitKey(key);
-        for (int i = 0; i < parts.length - 1; i++) {
-            String part = parts[i];
+        List<String> parts = splitKey(key);
+        for (int i = 0; i < parts.size() - 1; i++) {
+            String part = parts.get(i);
             Object oldValue = result.get(part);
             if (oldValue == null) {
                 Map<String, Object> newMap = new TreeMap<>();
@@ -44,39 +47,37 @@ public class YamlTreeImpl implements YamlTree {
             } else if (oldValue instanceof Map) {
                 result = (Map<String, Object>) oldValue;
             } else {
-                parts[i + 1] = part + "." + parts[i + 1];
+                parts.set(i + 1, part + "." + parts.get(i + 1));
             }
         }
 
-        result.put(parts[parts.length - 1], offsetForMultilineValue(parts.length, value));
+        result.put(parts.get(parts.size() - 1), offsetForMultilineValue(parts.size(), value));
     }
 
-    private String[] splitKey(String key) {
-        if (key.isEmpty()) return new String[0];
+    //split on '.' that are not inside of [] or ""
+    private List<String> splitKey(String key) {
+        if (key.isEmpty()) return emptyList();
 
-        boolean insideBrackets = false;
+        int insideBrackets = 0;
         boolean insideQuotes = false;
         int last = 0;
 
-        ArrayList<String> results = new ArrayList<>();
-
+        List<String> results = new ArrayList<>();
         for (int i = 0; i < key.length(); i++) {
-            if (key.charAt(i) == '[') insideBrackets = true;
-            if (key.charAt(i) == ']') insideBrackets = false;
+            if (key.charAt(i) == '[') ++insideBrackets;
+            if (key.charAt(i) == ']') insideBrackets = max(0, insideBrackets - 1);
             if (key.charAt(i) == '"') insideQuotes = !insideQuotes;
 
-            if (key.charAt(i) == '.' && !insideBrackets && !insideQuotes) {
+            if (key.charAt(i) == '.' && insideBrackets == 0 && !insideQuotes) {
                 results.add(key.substring(last, i));
-                if (i + 1 < key.length()) {
-                    last = i + 1;
-                } else {
-                    results.toArray(new String[0]);
-                }
+                if (i + 1 >= key.length()) return results;
+
+                last = i + 1;
             }
         }
-        results.add(key.substring(last));
 
-        return results.toArray(new String[0]);
+        results.add(key.substring(last));
+        return results;
     }
 
     private String offsetForMultilineValue(int parts, String value) {
