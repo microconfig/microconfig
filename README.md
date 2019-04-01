@@ -38,9 +38,9 @@ So the best way to follow this principle is to have a dedicated repository for c
 It's convenient to have different kinds of configuration and keep it in different files:
 * Process configuration (the configuration used by deployment tools to start your services, like memory limit, VM params, etc.).
 * Application configuration (the configuration that your service reads after start-up and uses in runtime).
-* OS environment variables.
 * Library specific templates (for instance, Dockerfile, kafka.conf, cassandra.yaml, etc.)
 * Static files/scripts to run before/after your service start-up.
+* Environment variables.
 * Secret configuration (note, you should not store in a VCS any sensitive information, like passwords. In a VCS you can store references(keys) to passwords, and keep passwords in special secured stores(like Vault) or at least in encrypted files on environment machines).
 
 # Basic folder layout
