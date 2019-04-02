@@ -1,13 +1,14 @@
 package io.microconfig.configs.io.ioservice.yaml;
 
+import io.microconfig.utils.reader.FsFilesReader;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static io.microconfig.utils.ClasspathUtils.classpathFile;
 import static io.microconfig.utils.ClasspathUtils.read;
-import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class YamlTreeImplTest {
@@ -22,7 +23,7 @@ class YamlTreeImplTest {
             }
         };
 
-        doCompare("files/tree/escapedResult.yaml", initial);
+        doCompare("files/yaml/tree/escapedResult.yaml", initial);
     }
 
     @Test
@@ -34,7 +35,13 @@ class YamlTreeImplTest {
             }
         };
 
-        doCompare("files/tree/doubleEscapedResult.yaml", initial);
+        doCompare("files/yaml/tree/doubleEscapedResult.yaml", initial);
+    }
+
+    @Test
+    void testSortOrder() {
+        Map<String, String> initial = new YamlReader(classpathFile("files/yaml/sortOrder/result.yaml"), new FsFilesReader()).propertiesAsMap();
+        assertEquals(read("files/yaml/sortOrder/result.yaml"), new YamlTreeImpl().toYaml(initial));
     }
 
     private void doCompare(String expected, Map<String, String> initial) {
@@ -48,7 +55,6 @@ class YamlTreeImplTest {
         initial.put("tfs.out", "outV");
         initial.put("tfs.out.shouldArchive", "true");
 
-
         Map<String, Object> expected = new TreeMap<>();
         Map<String, Object> level2 = new TreeMap<>();
         expected.put("tfs", level2);
@@ -56,7 +62,7 @@ class YamlTreeImplTest {
         level2.put("out", "outV");
         level2.put("out.shouldArchive", "true");
 
-        Map<String, Object> actual = new YamlTreeImpl().toTree(initial);
+        Map<String, Object> actual = new YamlTreeImpl.TreeCreator().toTree(initial);
         assertEquals(expected, actual);
     }
 }

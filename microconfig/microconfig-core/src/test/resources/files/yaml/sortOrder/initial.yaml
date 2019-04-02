@@ -1,0 +1,7 @@
+cloud:
+  kubernetes:
+    discovery:
+      catalog-services-watch:
+        catalogServicesWatchDelay: 10000
+          enabled: true
+      enabled: true
