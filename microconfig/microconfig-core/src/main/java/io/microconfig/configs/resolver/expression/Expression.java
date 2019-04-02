@@ -19,8 +19,8 @@ import java.util.regex.Pattern;
 @Getter
 @RequiredArgsConstructor
 public class Expression {
+    private static final Pattern PATTERN = Pattern.compile("#\\{(?<value>[^{]+?)}");
     private static final ExpressionParser parser = new SpelExpressionParser();
-    final static Pattern PATTERN = Pattern.compile("#\\{(?<value>[^{]+?)}");
 
     private final String value;
 
@@ -29,6 +29,10 @@ public class Expression {
         if (matcher.find()) return new Expression(matcher.group("value"));
 
         throw PropertyResolveException.badSpellFormat(value);
+    }
+
+    static Matcher matcher(String value) {
+        return PATTERN.matcher(value);
     }
 
     public String evaluate() {

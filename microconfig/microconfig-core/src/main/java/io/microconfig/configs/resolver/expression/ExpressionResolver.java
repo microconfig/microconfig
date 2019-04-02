@@ -26,7 +26,7 @@ public class ExpressionResolver implements PropertyResolver {
     private String resolveSpels(String placeholders, EnvComponent root) {
         StringBuilder currentValue = new StringBuilder(placeholders);
         while (true) {
-            Matcher matcher = Expression.PATTERN.matcher(currentValue.toString());
+            Matcher matcher = Expression.matcher(currentValue.toString());
             if (!matcher.find()) break;
 
             String resolvedValue = doResolve(matcher.group(), root);
