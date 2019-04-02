@@ -3,5 +3,5 @@ cloud:
     discovery:
       catalog-services-watch:
         catalogServicesWatchDelay: 10000
-          enabled: true
+        enabled: true
       enabled: true
