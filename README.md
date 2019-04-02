@@ -590,8 +590,9 @@ For example, you can create a folder for http client timeout settings:
 
 **timeout-settings/application.yaml**
 ```yaml    
-    timeouts.connectTimeoutMs: 1000    
-    timeouts.readTimeoutMs: 5000    
+    timeouts:
+      connectTimeoutMs: 1000
+      readTimeoutMs: 5000
 ```
 And some services can include this configuration:
 
