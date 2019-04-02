@@ -89,10 +89,6 @@ public class PlaceholderResolver implements PropertyResolver {
                 : empty();
     }
 
-    /**
-     * @param placeholderToOverride - placeholder to override
-     * @param orderedVisited        - last placeholder in the set - last visited
-     */
     private Optional<Placeholder> tryOverrideForParent(Placeholder placeholderToOverride, Set<Placeholder> orderedVisited) {
         if (orderedVisited.isEmpty()) return empty();
 
