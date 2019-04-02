@@ -2,6 +2,10 @@ package deployment.mgmt.microconfig;
 
 import io.microconfig.commands.Command;
 import io.microconfig.commands.buildconfig.BuildConfigCommand;
+import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
+import io.microconfig.commands.buildconfig.features.secrets.SecretServiceImpl;
+import io.microconfig.commands.buildconfig.features.secrets.UpdateSecretsPostProcessor;
+import io.microconfig.configs.io.ioservice.ConfigIoService;
 import io.microconfig.factory.BuildConfigMain;
 import io.microconfig.factory.MicroconfigFactory;
 
@@ -9,9 +13,9 @@ import java.io.File;
 import java.util.List;
 
 import static io.microconfig.commands.Command.composite;
-import static io.microconfig.factory.CommandFactory.updateSecretsPostProcessor;
 import static io.microconfig.factory.ConfigType.extensionAsName;
 import static io.microconfig.factory.StandardConfigTypes.*;
+import static io.microconfig.utils.FileUtils.userHome;
 
 public class MgmtMicroConfigAdapter {
     static final String MGMT = ".mgmt";
@@ -38,5 +42,10 @@ public class MgmtMicroConfigAdapter {
                 new GenerateComponentListCommand(destinationComponentDir, factory.getEnvironmentProvider()),
                 new CopyHelpFilesCommand(factory.getEnvironmentProvider(), factory.getComponentTree(), destinationComponentDir.toPath())
         );
+    }
+
+    private static BuildConfigPostProcessor updateSecretsPostProcessor(ConfigIoService configIoService) {
+        File secretFile = new File(userHome(), "/secret/" + SECRET.type().getResultFileName() + ".properties");
+        return new UpdateSecretsPostProcessor(new SecretServiceImpl(secretFile, configIoService));
     }
 }
