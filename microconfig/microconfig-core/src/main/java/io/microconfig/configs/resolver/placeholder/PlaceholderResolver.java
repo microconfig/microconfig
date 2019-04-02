@@ -40,27 +40,12 @@ public class PlaceholderResolver implements PropertyResolver {
 
             Placeholder placeholder = newPlaceholder(matcher.group(), sourceOfPlaceholders, root, visited);
             Optional<Property> resolvedProperty = resolveToProperty(placeholder);
-
-            String resolvedValue;
-            if (resolvedProperty.isPresent()) {
-                resolvedValue = doResolve(resolvedProperty.get(), root, updateVisited(visited, placeholder));
-            } else {
-                resolvedValue = placeholder.getDefaultValue()
-                        .orElseThrow(() -> new PropertyResolveException(placeholder.toString(), sourceOfPlaceholders, root));
-            }
+            String resolvedValue = resolveValue(resolvedProperty, root, placeholder, visited, sourceOfPlaceholders);
 
             currentPropertyValue.replace(matcher.start(), matcher.end(), resolvedValue);
         }
 
         return currentPropertyValue.toString();
-    }
-
-    private Set<Placeholder> updateVisited(Set<Placeholder> visited, Placeholder placeholder) {
-        Set<Placeholder> updated = new LinkedHashSet<>(visited);
-        if (!updated.add(placeholder)) {
-            throw new PropertyResolveException("Found cyclic dependencies: " + updated);
-        }
-        return unmodifiableSet(updated);
     }
 
     private Placeholder newPlaceholder(String innerPlaceholder, Property sourceOfPlaceholder, EnvComponent root, Set<Placeholder> visited) {
@@ -134,5 +119,22 @@ public class PlaceholderResolver implements PropertyResolver {
         } catch (EnvironmentNotExistException e) {
             return byType(componentName);
         }
+    }
+
+    private String resolveValue(Optional<Property> property, EnvComponent root, Placeholder placeholder, Set<Placeholder> visited, Property sourceOfPlaceholders) {
+        if (property.isPresent()) {
+            return doResolve(property.get(), root, updateVisited(visited, placeholder));
+        }
+
+        return placeholder.getDefaultValue()
+                .orElseThrow(() -> new PropertyResolveException(placeholder.toString(), sourceOfPlaceholders, root));
+    }
+
+    private Set<Placeholder> updateVisited(Set<Placeholder> visited, Placeholder placeholder) {
+        Set<Placeholder> updated = new LinkedHashSet<>(visited);
+        if (!updated.add(placeholder)) {
+            throw new PropertyResolveException("Found cyclic dependencies: " + updated);
+        }
+        return unmodifiableSet(updated);
     }
 }
