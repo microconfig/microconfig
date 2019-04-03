@@ -33,7 +33,7 @@ public class Placeholder {
         return SINGE_PLACEHOLDER.matcher(value).matches();
     }
 
-    public static Matcher placeholderMatcher(CharSequence line) {
+    public static Matcher matcher(CharSequence line) {
         return PLACEHOLDER_INSIDE_LINE.matcher(line);
     }
 

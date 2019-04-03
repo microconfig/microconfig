@@ -36,7 +36,7 @@ public class PlaceholderResolver implements PropertyResolver {
         StringBuilder resultValue = new StringBuilder(sourceOfPlaceholders.getValue());
 
         while (true) {
-            Matcher matcher = Placeholder.placeholderMatcher(resultValue);
+            Matcher matcher = Placeholder.matcher(resultValue);
             if (!matcher.find()) break;
 
             try {
