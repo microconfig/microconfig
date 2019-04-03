@@ -1,2 +1,4 @@
 p1: ${process::this@p2}
 p2: app
+p3: ${this@p2}
+p4: ${app::this@p2}

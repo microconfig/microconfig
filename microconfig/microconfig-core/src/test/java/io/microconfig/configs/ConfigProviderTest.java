@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -189,7 +190,14 @@ class ConfigProviderTest {
     @Test
     void testConfigTypeChange() {
         Map<String, Property> properties = provider.getProperties(byType("configType"), "dev");
-        assertEquals("pro", properties.get("p1").getValue());
+        assertEquals(new HashMap<String, String>(){
+            {
+                put("p1", "pro");
+                put("p2", "app");
+                put("p3", "app");
+                put("p4", "app");
+            }
+        }, Property.asStringMap(properties));
     }
 
     private void doTestAliases(String componentName, String ip) {
