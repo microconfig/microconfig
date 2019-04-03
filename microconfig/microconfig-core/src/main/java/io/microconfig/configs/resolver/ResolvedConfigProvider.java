@@ -27,8 +27,7 @@ public class ResolvedConfigProvider implements ConfigProvider, PropertyResolverH
     }
 
     private Map<String, Property> resolveAll(Map<String, Property> properties, EnvComponent root) {
-        return properties
-                .values()
+        return properties.values()
                 .stream()
                 .map(p -> resolve(p, root))
                 .collect(toSortedMap(Property::getKey, identity()));
