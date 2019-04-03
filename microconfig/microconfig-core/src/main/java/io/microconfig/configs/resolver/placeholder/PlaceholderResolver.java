@@ -64,8 +64,8 @@ public class PlaceholderResolver implements PropertyResolver {
 
     /**
      * if component has a placeholder to itself, the placeholder value can be overridden.
-     * Example: 'commons' has the property: java.opts = '${commons@java.opts.PermSize} ${commons@java.opts.mem}'
-     * If some component includes commons (or has placeholder to commons!) and overrides ${java.opts.PermSize} or ${java.opts.mem} - java.opts will be resolved with overridden values.
+     * Example: 'commons' has property: java.opts = '${commons@java.opts.PermSize} ${commons@java.opts.mem}'
+     * If some component includes commons (or has placeholder to commons!) and overrides ${java.opts.PermSize} or ${java.opts.mem} - 'java.opts' will be resolved with overridden values.
      */
     private Optional<Property> tryResolve(Placeholder placeholder, Property sourceOfPlaceholder, EnvComponent root, Set<Placeholder> visited) {
         boolean selfReference = placeholder.isSelfReferenced();
@@ -106,7 +106,8 @@ public class PlaceholderResolver implements PropertyResolver {
     //must be public for plugin
     public Optional<Property> resolveToProperty(Placeholder placeholder) {
         Component component = findComponent(placeholder.getComponent(), placeholder.getEnvironment());
-        return selectStrategy(placeholder).resolve(component, placeholder.getValue(), placeholder.getEnvironment());
+        return selectStrategy(placeholder)
+                .resolve(component, placeholder.getValue(), placeholder.getEnvironment());
     }
 
     private Component findComponent(String componentNameOrType, String env) {
