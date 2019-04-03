@@ -23,12 +23,10 @@ public class Placeholder {
     static final Pattern PLACEHOLDER_INSIDE_LINE = compile("\\$\\{(?<comp>[\\w\\-_:]+)(\\[(?<env>[\\w\\-_]+)])?@(?<value>[\\w\\-._]+)(:(?<default>[^$}]+))?}");
     static final Pattern SINGE_PLACEHOLDER = compile("^\\$\\{((?<type>\\w+)::)?(?<comp>[\\s\\w._-]+)(\\[(?<env>.+)])?@(?<value>[\\w._-]+)(:(?<default>.+))?}$");
 
-    private final Optional<String> type;
-
+    private final Optional<String> configType;
     private final String component;
     private final String environment;
     private final String value;
-
     private final Optional<String> defaultValue;
 
     public static boolean isSinglePlaceholder(String value) {
@@ -49,7 +47,7 @@ public class Placeholder {
             throw PropertyResolveException.badPlaceholderFormat(value);
         }
 
-        this.type = ofNullable(matcher.group("type"));
+        this.configType = ofNullable(matcher.group("type"));
         this.component = requireNonNull(matcher.group("comp"));
         this.environment = requireNonNull(ofNullable(matcher.group("env")).orElse(defaultEnv));
         this.value = requireNonNull(matcher.group("value"));
@@ -61,7 +59,7 @@ public class Placeholder {
     }
 
     public Placeholder changeComponentAndEnv(String component, String environment) {
-        return new Placeholder(type, component, environment, value, defaultValue);
+        return new Placeholder(configType, component, environment, value, defaultValue);
     }
 
     public boolean isSelfReferenced() {

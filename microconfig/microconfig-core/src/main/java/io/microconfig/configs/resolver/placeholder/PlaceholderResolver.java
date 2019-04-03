@@ -120,7 +120,7 @@ public class PlaceholderResolver implements PropertyResolver {
     }
 
     private PlaceholderResolveStrategy selectStrategy(Placeholder placeholder) {
-        return strategySelector.selectStrategy(placeholder.getType().orElse(null));
+        return strategySelector.selectStrategy(placeholder.getConfigType().orElse(null));
     }
 
     private Set<Placeholder> updateVisited(Set<Placeholder> visited, Placeholder placeholder) {
