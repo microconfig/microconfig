@@ -24,17 +24,17 @@ public class ExpressionResolver implements PropertyResolver {
     }
 
     private String evaluate(String value, EnvComponent root) {
-        StringBuilder currentValue = new StringBuilder(value);
+        StringBuilder resultValue = new StringBuilder(value);
 
         while (true) {
-            Matcher matcher = Expression.matcher(currentValue.toString());
+            Matcher matcher = Expression.matcher(resultValue.toString());
             if (!matcher.find()) break;
 
             String evaluatedValue = doEvaluate(matcher.group(), root);
-            currentValue.replace(matcher.start(), matcher.end(), evaluatedValue);
+            resultValue.replace(matcher.start(), matcher.end(), evaluatedValue);
         }
 
-        return currentValue.toString();
+        return resultValue.toString();
     }
 
     private String doEvaluate(String value, EnvComponent root) {
