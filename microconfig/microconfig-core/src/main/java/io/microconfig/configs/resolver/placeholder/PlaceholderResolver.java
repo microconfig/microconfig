@@ -24,7 +24,7 @@ import static java.util.Optional.empty;
 @RequiredArgsConstructor
 public class PlaceholderResolver implements PropertyResolver {
     private final EnvironmentProvider environmentProvider;
-    private final PlaceholderResolveStrategy resolveStrategy;
+    private final StrategySelector strategySelector;
     private final Set<String> nonOverridableKeys;
 
     @Override
@@ -59,7 +59,7 @@ public class PlaceholderResolver implements PropertyResolver {
     /**
      * if component has a placeholder to itself, the placeholder value can be overridden.
      * Example: 'commons' has the property: java.opts = '${commons@java.opts.PermSize} ${commons@java.opts.mem}'
-     * If some component includes commons (or has placeholder to commons!!!) and overrides ${java.opts.PermSize} or ${java.opts.mem} - java.opts will be resolved with overridden values.
+     * If some component includes commons (or has placeholder to commons!) and overrides ${java.opts.PermSize} or ${java.opts.mem} - java.opts will be resolved with overridden values.
      */
     private Optional<Property> tryResolve(Placeholder placeholder, Property sourceOfPlaceholder, EnvComponent root, Set<Placeholder> visited) {
         boolean selfReference = placeholder.isSelfReferenced();
@@ -68,10 +68,7 @@ public class PlaceholderResolver implements PropertyResolver {
         }
 
         if (selfReference || canBeOverridden(placeholder, sourceOfPlaceholder)) {
-            Optional<Property> resolved = resolveStrategy.resolve(root.getComponent(), placeholder.getValue(), root.getEnvironment());
-            if (resolved.isPresent()) return resolved;
-
-            resolved = tryResolveForParents(placeholder, root, visited);
+            Optional<Property> resolved = tryResolveForParents(placeholder, root, visited);
             if (resolved.isPresent()) return resolved;
         }
 
@@ -87,11 +84,11 @@ public class PlaceholderResolver implements PropertyResolver {
     }
 
     private Optional<Property> tryResolveForParents(Placeholder placeholderToOverride, EnvComponent root, Set<Placeholder> orderedVisited) {
-        Optional<Property> forRoot = resolveStrategy.resolve(root.getComponent(), placeholderToOverride.getValue(), root.getEnvironment());
+        Optional<Property> forRoot = selectStrategy(placeholderToOverride).resolve(root.getComponent(), placeholderToOverride.getValue(), root.getEnvironment());
         if (forRoot.isPresent()) return forRoot;
 
         for (Placeholder visited : orderedVisited) {
-            Placeholder overridden = placeholderToOverride.changeComponentAndEnv(visited.getComponent(), visited.getEnvironment());  //todo change env?
+            Placeholder overridden = placeholderToOverride.changeComponentAndEnv(visited.getComponent(), visited.getEnvironment());
             Optional<Property> resolved = resolveToProperty(overridden);
             if (resolved.isPresent()) return resolved;
         }
@@ -102,7 +99,7 @@ public class PlaceholderResolver implements PropertyResolver {
     //must be public for plugin
     public Optional<Property> resolveToProperty(Placeholder placeholder) {
         Component component = findComponent(placeholder.getComponent(), placeholder.getEnvironment());
-        return resolveStrategy.resolve(component, placeholder.getValue(), placeholder.getEnvironment());
+        return selectStrategy(placeholder).resolve(component, placeholder.getValue(), placeholder.getEnvironment());
     }
 
     private Component findComponent(String componentNameOrType, String env) {
@@ -113,6 +110,10 @@ public class PlaceholderResolver implements PropertyResolver {
         } catch (EnvironmentNotExistException e) {
             return byType(componentNameOrType);
         }
+    }
+
+    private PlaceholderResolveStrategy selectStrategy(Placeholder placeholder) {
+        return strategySelector.selectStrategy(placeholder);
     }
 
     private Set<Placeholder> updateVisited(Set<Placeholder> visited, Placeholder placeholder) {

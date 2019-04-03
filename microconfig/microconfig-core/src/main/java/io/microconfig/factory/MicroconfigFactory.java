@@ -17,6 +17,7 @@ import io.microconfig.configs.resolver.ResolvedConfigProvider;
 import io.microconfig.configs.resolver.expression.ExpressionResolver;
 import io.microconfig.configs.resolver.placeholder.PlaceholderResolveStrategy;
 import io.microconfig.configs.resolver.placeholder.PlaceholderResolver;
+import io.microconfig.configs.resolver.placeholder.StrategySelectorImpl;
 import io.microconfig.configs.resolver.placeholder.strategies.component.ComponentResolveStrategy;
 import io.microconfig.configs.resolver.placeholder.strategies.component.properties.ComponentPropertiesFactory;
 import io.microconfig.configs.resolver.placeholder.strategies.envdescriptor.EnvDescriptorResolveStrategy;
@@ -33,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Wither;
 
 import java.io.File;
+import java.util.Collections;
 
 import static io.microconfig.commands.buildconfig.BuildConfigPostProcessor.emptyPostProcessor;
 import static io.microconfig.configs.resolver.placeholder.PlaceholderResolveStrategy.composite;
@@ -43,6 +45,7 @@ import static io.microconfig.environments.filebased.EnvironmentParserImpl.yamlPa
 import static io.microconfig.utils.CacheHandler.cache;
 import static io.microconfig.utils.CollectionUtils.joinToSet;
 import static io.microconfig.utils.FileUtils.canonical;
+import static java.util.Collections.emptyMap;
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
@@ -104,7 +107,7 @@ public class MicroconfigFactory {
 
         return new PlaceholderResolver(
                 environmentProvider,
-                strategy,
+                new StrategySelectorImpl(strategy, emptyMap()),
                 joinToSet(componentProperties.get().keySet(), envProperties.get().keySet())
         );
     }

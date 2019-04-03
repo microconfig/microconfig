@@ -5,6 +5,7 @@ import io.microconfig.configs.resolver.PropertyResolveException;
 import io.microconfig.configs.resolver.PropertyResolver;
 import io.microconfig.configs.sources.SpecialSource;
 import io.microconfig.environments.Component;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -175,6 +176,12 @@ class ConfigProviderTest {
                 "- v3" + LINES_SEPARATOR +
                 "- v4" + LINES_SEPARATOR +
                 "- v5" + LINES_SEPARATOR, properties.get("level_1.level_2").getValue());
+    }
+
+    @Test
+    void testContextChange() {
+        Map<String, Property> properties = provider.getProperties(byType("contextChange"), "dev");
+        assertEquals("prod c_prod", properties.get("prop4").getValue());
     }
 
     private void doTestAliases(String componentName, String ip) {
