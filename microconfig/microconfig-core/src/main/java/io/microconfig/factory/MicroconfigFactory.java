@@ -17,7 +17,7 @@ import io.microconfig.configs.resolver.ResolvedConfigProvider;
 import io.microconfig.configs.resolver.expression.ExpressionResolver;
 import io.microconfig.configs.resolver.placeholder.PlaceholderResolveStrategy;
 import io.microconfig.configs.resolver.placeholder.PlaceholderResolver;
-import io.microconfig.configs.resolver.placeholder.StrategySelectorImpl;
+import io.microconfig.configs.resolver.placeholder.strategies.selector.StrategySelectorImpl;
 import io.microconfig.configs.resolver.placeholder.strategies.component.ComponentResolveStrategy;
 import io.microconfig.configs.resolver.placeholder.strategies.component.properties.ComponentPropertiesFactory;
 import io.microconfig.configs.resolver.placeholder.strategies.envdescriptor.EnvDescriptorResolveStrategy;
