@@ -12,7 +12,10 @@ class PlaceholderTest {
     void testIsPlaceholder() {
         assertTrue(Placeholder.isSinglePlaceholder("${this@property:false}"));
         assertTrue(Placeholder.isSinglePlaceholder("${this[dev]@property:false}"));
+        assertTrue(Placeholder.isSinglePlaceholder("${app::this@property:false}"));
+        assertFalse(Placeholder.isSinglePlaceholder("${app:this@property:false}"));
         assertFalse(Placeholder.isSinglePlaceholder("#{${this@property:false}}"));
+
 //        assertFalse(Placeholder.isSinglePlaceholder("${this@property:false} this2property2}"));
 //        assertFalse(Placeholder.isSinglePlaceholder("${this@property:false} ${this@property:false}"));
 //        assertFalse(Placeholder.isSinglePlaceholder("${this@property:${this@property2}}"));

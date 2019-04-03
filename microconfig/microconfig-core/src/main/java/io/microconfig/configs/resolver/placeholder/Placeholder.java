@@ -20,8 +20,10 @@ import static lombok.AccessLevel.PRIVATE;
 public class Placeholder {
     private static final String SELF_REFERENCE = "this";
 
-    static final Pattern PLACEHOLDER_INSIDE_LINE = compile("\\$\\{(?<comp>[\\w\\-_]+)(\\[(?<env>[\\w\\-_]+)])?@(?<value>[\\w\\-._]+)(:(?<default>[^$}]+))?}");
-    static final Pattern SINGE_PLACEHOLDER = compile("^\\$\\{(?<comp>[\\s\\w._-]+)(\\[(?<env>.+)])?@(?<value>[\\w._-]+)(:(?<default>.+))?}$");
+    static final Pattern PLACEHOLDER_INSIDE_LINE = compile("\\$\\{(?<comp>[\\w\\-_:]+)(\\[(?<env>[\\w\\-_]+)])?@(?<value>[\\w\\-._]+)(:(?<default>[^$}]+))?}");
+    static final Pattern SINGE_PLACEHOLDER = compile("^\\$\\{((?<type>\\w+)::)?(?<comp>[\\s\\w._-]+)(\\[(?<env>.+)])?@(?<value>[\\w._-]+)(:(?<default>.+))?}$");
+
+    private final Optional<String> type;
 
     private final String component;
     private final String environment;
@@ -47,6 +49,7 @@ public class Placeholder {
             throw PropertyResolveException.badPlaceholderFormat(value);
         }
 
+        this.type = ofNullable(matcher.group("type"));
         this.component = requireNonNull(matcher.group("comp"));
         this.environment = requireNonNull(ofNullable(matcher.group("env")).orElse(defaultEnv));
         this.value = requireNonNull(matcher.group("value"));
@@ -58,7 +61,7 @@ public class Placeholder {
     }
 
     public Placeholder changeComponent(String component, String environment) {
-        return new Placeholder(component, environment, value, defaultValue);
+        return new Placeholder(type, component, environment, value, defaultValue);
     }
 
     public boolean isSelfReferenced() {
