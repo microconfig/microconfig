@@ -40,12 +40,12 @@ class YamlTreeImplTest {
 
     @Test
     void testSortOrder() {
-        Map<String, String> initial = new YamlReader(classpathFile("files/yaml/sortOrder/result.yaml"), new FsFilesReader()).propertiesAsMap();
-        assertEquals(read("files/yaml/sortOrder/result.yaml"), new YamlTreeImpl().toYaml(initial));
+        assertEquals(read("files/yaml/sortOrder/result.yaml"), toYaml("files/yaml/sortOrder/initial.yaml"));
     }
 
-    private void doCompare(String expected, Map<String, String> initial) {
-        assertEquals(read(expected), new YamlTreeImpl().toYaml(initial));
+    @Test
+    void testList() {
+        assertEquals(read("files/yaml/list/resultList.yaml"), toYaml("files/yaml/list/list.yaml").replace("services: ", "services:"));
     }
 
     @Test
@@ -64,5 +64,15 @@ class YamlTreeImplTest {
 
         Map<String, Object> actual = new YamlTreeImpl.TreeCreator().toTree(initial);
         assertEquals(expected, actual);
+    }
+
+    private void doCompare(String expected, Map<String, String> initial) {
+        assertEquals(read(expected), new YamlTreeImpl().toYaml(initial));
+    }
+
+    private String toYaml(String file) {
+        return new YamlTreeImpl().toYaml(
+                new YamlReader(classpathFile(file), new FsFilesReader()).propertiesAsMap()
+        );
     }
 }

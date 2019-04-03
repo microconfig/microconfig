@@ -1,10 +1,10 @@
 package io.microconfig.utils;
 
-import io.microconfig.factory.MicroconfigFactory;
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.resolver.PropertyResolver;
 import io.microconfig.configs.resolver.PropertyResolverHolder;
 import io.microconfig.environments.EnvironmentProvider;
+import io.microconfig.factory.MicroconfigFactory;
 
 import java.io.File;
 

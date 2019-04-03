@@ -89,6 +89,8 @@ public class YamlTreeImpl implements YamlTree {
 
         String toYamlFromTree(Map<String, Object> tree) {
             dump(tree, 0, true);
+
+            result.setLength(result.length() - LINES_SEPARATOR.length());
             return result.toString();
         }
 
