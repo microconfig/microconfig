@@ -1,4 +1,4 @@
-package io.microconfig.configs.io.tree;
+package io.microconfig.configs.io.components;
 
 import lombok.RequiredArgsConstructor;
 

@@ -9,9 +9,11 @@ import java.util.Collection;
 import java.util.function.Predicate;
 
 import static io.microconfig.utils.FileUtils.extension;
+import static io.microconfig.utils.FileUtils.filename;
 
 @RequiredArgsConstructor
 public class LegacyFilenameGenerator implements FilenameGenerator {
+    private static final String LEGACY_ENV_EXTENSION = ".json";
     private static final String LEGACY_APPLICATION_NAME = "service";
 
     private final String resultFileName;
@@ -29,7 +31,7 @@ public class LegacyFilenameGenerator implements FilenameGenerator {
         Predicate<String> legacyJsonEnv = env -> {
             try {
                 Object source = environmentProvider.getByName(envName).getSource();
-                return source != null && source.toString().endsWith(".json");
+                return source != null && source.toString().endsWith(LEGACY_ENV_EXTENSION);
             } catch (RuntimeException e) {
                 return false;
             }
@@ -40,10 +42,5 @@ public class LegacyFilenameGenerator implements FilenameGenerator {
 
     private File renameToLegacy(File original) {
         return new File(original.getParent(), LEGACY_APPLICATION_NAME + extension(original));
-    }
-
-    private String filename(File original) {
-        String name = original.getName();
-        return name.substring(0, name.lastIndexOf('.'));
     }
 }

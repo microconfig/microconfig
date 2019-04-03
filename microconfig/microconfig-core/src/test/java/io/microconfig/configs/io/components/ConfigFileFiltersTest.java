@@ -1,11 +1,11 @@
-package io.microconfig.configs.io.tree;
+package io.microconfig.configs.io.components;
 
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.function.Predicate;
 
-import static io.microconfig.configs.io.tree.ConfigFileFilters.*;
+import static io.microconfig.configs.io.components.ConfigFileFilters.*;
 import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

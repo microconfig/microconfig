@@ -2,7 +2,7 @@ package io.microconfig.configs.provider;
 
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.Property;
-import io.microconfig.configs.io.tree.ComponentTree;
+import io.microconfig.configs.io.components.ComponentTree;
 import io.microconfig.environments.Component;
 import lombok.RequiredArgsConstructor;
 
@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static io.microconfig.configs.io.tree.ConfigFileFilters.*;
+import static io.microconfig.configs.io.components.ConfigFileFilters.*;
 import static io.microconfig.environments.Component.byType;
 
 @RequiredArgsConstructor

@@ -27,6 +27,11 @@ public class FileUtils {
         return System.getProperty("user.home");
     }
 
+    public static String filename(File original) {
+        String name = original.getName();
+        return name.substring(0, name.lastIndexOf('.'));
+    }
+
     public static void truncate(File dir) {
         delete(dir);
         createDir(dir);

@@ -30,8 +30,8 @@ public class ExpressionResolver implements PropertyResolver {
             Matcher matcher = Expression.matcher(resultValue.toString());
             if (!matcher.find()) break;
 
-            String evaluatedValue = doEvaluate(matcher.group(), root);
-            resultValue.replace(matcher.start(), matcher.end(), evaluatedValue);
+            String evaluated = doEvaluate(matcher.group(), root);
+            resultValue.replace(matcher.start(), matcher.end(), evaluated);
         }
 
         return resultValue.toString();
@@ -39,6 +39,7 @@ public class ExpressionResolver implements PropertyResolver {
 
     private String doEvaluate(String value, EnvComponent root) {
         Expression expression = Expression.parse(value);
+
         try {
             return expression.evaluate();
         } catch (RuntimeException e) {
