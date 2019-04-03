@@ -15,14 +15,14 @@ public class PropertyResolveException extends RuntimeException {
         super(message, cause);
     }
 
-    public PropertyResolveException(String innerPlaceholder, Property sourceOfPlaceholder,
+    public PropertyResolveException(String unresolvedPlaceholder, Property sourceOfPlaceholder,
                                     EnvComponent root, Throwable cause) {
-        this(placeholderResolveExceptionMessage(innerPlaceholder, sourceOfPlaceholder, root), cause);
+        this(resolveExceptionMessage(unresolvedPlaceholder, sourceOfPlaceholder, root), cause);
     }
 
-    public PropertyResolveException(String innerPlaceholder, Property sourceOfPlaceholder,
+    public PropertyResolveException(String unresolvedPlaceholder, Property sourceOfPlaceholder,
                                     EnvComponent root) {
-        super(placeholderResolveExceptionMessage(innerPlaceholder, sourceOfPlaceholder, root));
+        super(resolveExceptionMessage(unresolvedPlaceholder, sourceOfPlaceholder, root));
     }
 
     public PropertyResolveException(Expression expression, EnvComponent root, Throwable cause) {
@@ -33,9 +33,9 @@ public class PropertyResolveException extends RuntimeException {
     }
 
     // Root component -> %s[%s]
-    private static String placeholderResolveExceptionMessage(String innerPlaceholder, Property sourceOfPlaceholder, EnvComponent root) {
+    private static String resolveExceptionMessage(String unresolvedPlaceholder, Property sourceOfPlaceholder, EnvComponent root) {
         return format("Can't resolve placeholder '%s' defined in " + LINES_SEPARATOR + "'%s', that property is a transitive dependency of '%s'.",
-                innerPlaceholder,
+                unresolvedPlaceholder,
                 sourceOfPlaceholder.getSource().sourceInfo(),
                 root);
     }
