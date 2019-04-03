@@ -1,0 +1,1 @@
+p1: ${context2[dev]@prop1}
