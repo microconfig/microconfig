@@ -56,11 +56,11 @@ public class Placeholder {
         this.defaultValue = ofNullable(matcher.group("default"));
     }
 
-    public Placeholder changeComponent(String componentName) {
-        return changeComponent(componentName, environment);
+    public Placeholder changeComponent(String component) {
+        return changeComponentAndEnv(component, environment);
     }
 
-    public Placeholder changeComponent(String component, String environment) {
+    public Placeholder changeComponentAndEnv(String component, String environment) {
         return new Placeholder(type, component, environment, value, defaultValue);
     }
 

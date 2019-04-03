@@ -17,12 +17,12 @@ public class PropertyResolveException extends RuntimeException {
 
     public PropertyResolveException(String innerPlaceholder, Property sourceOfPlaceholder,
                                     EnvComponent root, Throwable cause) {
-        this(getMessage(innerPlaceholder, sourceOfPlaceholder, root), cause);
+        this(placeholderResolveExceptionMessage(innerPlaceholder, sourceOfPlaceholder, root), cause);
     }
 
     public PropertyResolveException(String innerPlaceholder, Property sourceOfPlaceholder,
                                     EnvComponent root) {
-        super(getMessage(innerPlaceholder, sourceOfPlaceholder, root));
+        super(placeholderResolveExceptionMessage(innerPlaceholder, sourceOfPlaceholder, root));
     }
 
     public PropertyResolveException(Expression expression, EnvComponent root, Throwable cause) {
@@ -33,7 +33,7 @@ public class PropertyResolveException extends RuntimeException {
     }
 
     // Root component -> %s[%s]
-    private static String getMessage(String innerPlaceholder, Property sourceOfPlaceholder, EnvComponent root) {
+    private static String placeholderResolveExceptionMessage(String innerPlaceholder, Property sourceOfPlaceholder, EnvComponent root) {
         return format("Can't resolve placeholder '%s' defined in " + LINES_SEPARATOR + "'%s', that property is a transitive dependency of '%s'.",
                 innerPlaceholder,
                 sourceOfPlaceholder.getSource().sourceInfo(),

@@ -39,28 +39,21 @@ public class PlaceholderResolver implements PropertyResolver {
             Matcher matcher = Placeholder.placeholderMatcher(resultValue);
             if (!matcher.find()) break;
 
-            try {
-                Placeholder placeholder = parse(matcher.group(), sourceOfPlaceholders.getEnvContext());
-                String resolvedValue = resolve(placeholder, sourceOfPlaceholders, root, visited);
-
-                resultValue.replace(matcher.start(), matcher.end(), resolvedValue);
-            } catch (RuntimeException e) {
-                throw new PropertyResolveException(matcher.group(), sourceOfPlaceholders, root, e);
-            }
+            Placeholder placeholder = parse(matcher.group(), sourceOfPlaceholders.getEnvContext());
+            String resolvedValue = resolve(placeholder, sourceOfPlaceholders, root, visited);
+            resultValue.replace(matcher.start(), matcher.end(), resolvedValue);
         }
 
         return resultValue.toString();
     }
 
     private String resolve(Placeholder placeholder, Property sourceOfPlaceholder, EnvComponent root, Set<Placeholder> visited) {
+        Supplier<String> defaultValue = () -> placeholder.getDefaultValue()
+                .orElseThrow(() -> new PropertyResolveException(placeholder.toString(), sourceOfPlaceholder, root));
+
         return tryResolve(placeholder, sourceOfPlaceholder, root, visited)
                 .map(value -> doResolve(value, root, updateVisited(visited, placeholder)))
-                .orElseGet(placeholderDefaultValue(placeholder, sourceOfPlaceholder, root));
-    }
-
-    private Supplier<String> placeholderDefaultValue(Placeholder placeholder, Property sourceOfPlaceholder, EnvComponent root) {
-        return () -> placeholder.getDefaultValue()
-                .orElseThrow(() -> new PropertyResolveException(placeholder.toString(), sourceOfPlaceholder, root));
+                .orElseGet(defaultValue);
     }
 
     /**
@@ -97,12 +90,10 @@ public class PlaceholderResolver implements PropertyResolver {
         Optional<Property> forRoot = resolveStrategy.resolve(root.getComponent(), placeholderToOverride.getValue(), root.getEnvironment());
         if (forRoot.isPresent()) return forRoot;
 
-        if (orderedVisited.isEmpty()) return empty();
-
         for (Placeholder visited : orderedVisited) {
-            Component component = findComponent(visited.getComponent(), visited.getEnvironment());
-            Optional<Property> property = resolveStrategy.resolve(component, placeholderToOverride.getValue(), visited.getEnvironment());
-            if (property.isPresent()) return property;
+            Placeholder overridden = placeholderToOverride.changeComponentAndEnv(visited.getComponent(), visited.getEnvironment());  //todo change env?
+            Optional<Property> resolved = resolveToProperty(overridden);
+            if (resolved.isPresent()) return resolved;
         }
 
         return empty();
