@@ -9,6 +9,7 @@ import io.microconfig.factory.MicroconfigFactory;
 import java.io.File;
 
 import static io.microconfig.factory.StandardConfigTypes.APPLICATION;
+import static io.microconfig.factory.StandardConfigTypes.PROCESS;
 import static io.microconfig.utils.ClasspathUtils.classpathFile;
 
 public class MicronconfigTestFactory {
@@ -16,6 +17,10 @@ public class MicronconfigTestFactory {
     private static final MicroconfigFactory factory = MicroconfigFactory.init(rootDir, new File(rootDir, "output"));
     private static final ConfigProvider configProvider = factory.newConfigProvider(APPLICATION.type());
     private static final EnvironmentProvider envProvider = factory.getEnvironmentProvider();
+
+    static {
+        factory.newConfigProvider(PROCESS.getConfigType());
+    }
 
     public static EnvironmentProvider getEnvProvider() {
         return envProvider;

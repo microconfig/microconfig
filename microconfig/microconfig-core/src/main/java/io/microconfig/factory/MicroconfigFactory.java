@@ -34,7 +34,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Wither;
 
 import java.io.File;
-import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static io.microconfig.commands.buildconfig.BuildConfigPostProcessor.emptyPostProcessor;
 import static io.microconfig.configs.resolver.placeholder.PlaceholderResolveStrategy.composite;
@@ -45,7 +46,6 @@ import static io.microconfig.environments.filebased.EnvironmentParserImpl.yamlPa
 import static io.microconfig.utils.CacheHandler.cache;
 import static io.microconfig.utils.CollectionUtils.joinToSet;
 import static io.microconfig.utils.FileUtils.canonical;
-import static java.util.Collections.emptyMap;
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
@@ -59,6 +59,8 @@ public class MicroconfigFactory {
     private final File destinationComponentDir;
     @Wither
     private final String serviceInnerDir;
+    
+    private final Map<String, PlaceholderResolveStrategy> strategyByType = new TreeMap<>();
 
     public static MicroconfigFactory init(File sourcesRootDir, File destinationComponentDir) {
         return init(sourcesRootDir, destinationComponentDir, new FsFilesReader());
@@ -79,7 +81,7 @@ public class MicroconfigFactory {
     public ConfigProvider newConfigProvider(ConfigType configType) {
         ConfigProvider fileBasedProvider = newFileBasedProvider(configType);
         return cache(
-                new ResolvedConfigProvider(fileBasedProvider, newResolver(fileBasedProvider))
+                new ResolvedConfigProvider(fileBasedProvider, newResolver(fileBasedProvider, configType))
         );
     }
 
@@ -89,11 +91,11 @@ public class MicroconfigFactory {
         );
     }
 
-    public PropertyResolver newResolver(ConfigProvider simpleProvider) {
-        return cache(new ExpressionResolver(cache(newPlaceholderResolver(simpleProvider))));
+    public PropertyResolver newResolver(ConfigProvider simpleProvider, ConfigType configType) {
+        return cache(new ExpressionResolver(cache(newPlaceholderResolver(simpleProvider, configType))));
     }
 
-    public PlaceholderResolver newPlaceholderResolver(ConfigProvider simpleProvider) {
+    public PlaceholderResolver newPlaceholderResolver(ConfigProvider simpleProvider, ConfigType configType) {
         ComponentPropertiesFactory componentProperties = new ComponentPropertiesFactory(componentTree, destinationComponentDir);
         EnvDescriptorPropertiesFactory envProperties = new EnvDescriptorPropertiesFactory();
 
@@ -104,10 +106,11 @@ public class MicroconfigFactory {
                 new StandardResolveStrategy(simpleProvider),
                 envVariablesResolveStrategy()
         );
+        strategyByType.put(configType.getName(), strategy);
 
         return new PlaceholderResolver(
                 environmentProvider,
-                new StrategySelectorImpl(strategy, emptyMap()),
+                new StrategySelectorImpl(strategy, strategyByType),
                 joinToSet(componentProperties.get().keySet(), envProperties.get().keySet())
         );
     }

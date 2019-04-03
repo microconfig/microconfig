@@ -1,0 +1,2 @@
+p1: ${process::this@p2}
+p2: app

@@ -2,6 +2,8 @@ package io.microconfig.utils;
 
 import java.util.*;
 
+import static java.util.Arrays.asList;
+
 public class CollectionUtils {
     public static <T> T singleValue(Collection<T> values) {
         if (values.size() != 1) {
@@ -23,5 +25,9 @@ public class CollectionUtils {
         list.addAll(first);
         list.addAll(second);
         return list;
+    }
+
+    public static <T> Set<T> setOf(T... t) {
+        return new LinkedHashSet<>(asList(t));
     }
 }

@@ -185,6 +185,13 @@ class ConfigProviderTest {
         assertEquals("prod", properties.get("prop1").getValue());
     }
 
+    //todo test env context change
+    @Test
+    void testConfigTypeChange() {
+        Map<String, Property> properties = provider.getProperties(byType("configType"), "dev");
+        assertEquals("pro", properties.get("p1").getValue());
+    }
+
     private void doTestAliases(String componentName, String ip) {
         Component component = byNameAndType(componentName, "node");
         assertEquals(ip, resolveValue("aliases", component, "ip"));

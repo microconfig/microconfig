@@ -39,9 +39,15 @@ public class PlaceholderResolver implements PropertyResolver {
             Matcher matcher = Placeholder.placeholderMatcher(resultValue);
             if (!matcher.find()) break;
 
-            Placeholder placeholder = parse(matcher.group(), sourceOfPlaceholders.getEnvContext());
-            String resolvedValue = resolve(placeholder, sourceOfPlaceholders, root, visited);
-            resultValue.replace(matcher.start(), matcher.end(), resolvedValue);
+            try {
+                Placeholder placeholder = parse(matcher.group(), sourceOfPlaceholders.getEnvContext());
+                String resolvedValue = resolve(placeholder, sourceOfPlaceholders, root, visited);
+                resultValue.replace(matcher.start(), matcher.end(), resolvedValue);
+            } catch (PropertyResolveException e) {
+                throw e;
+            } catch (RuntimeException e) {
+                throw new PropertyResolveException(matcher.group(), sourceOfPlaceholders, root, e);
+            }
         }
 
         return resultValue.toString();
