@@ -19,24 +19,25 @@ public class ExpressionResolver implements PropertyResolver {
 
     @Override
     public String resolve(Property property, EnvComponent root) {
-        String resolvedPlaceholders = delegate.resolve(property, root);
-        return resolveSpels(resolvedPlaceholders, root);
+        String resolvedValue = delegate.resolve(property, root);
+        return evaluate(resolvedValue, root);
     }
 
-    private String resolveSpels(String placeholders, EnvComponent root) {
-        StringBuilder currentValue = new StringBuilder(placeholders);
+    private String evaluate(String value, EnvComponent root) {
+        StringBuilder currentValue = new StringBuilder(value);
+
         while (true) {
             Matcher matcher = Expression.matcher(currentValue.toString());
             if (!matcher.find()) break;
 
-            String resolvedValue = doResolve(matcher.group(), root);
-            currentValue.replace(matcher.start(), matcher.end(), resolvedValue);
+            String evaluatedValue = doEvaluate(matcher.group(), root);
+            currentValue.replace(matcher.start(), matcher.end(), evaluatedValue);
         }
 
         return currentValue.toString();
     }
 
-    private String doResolve(String value, EnvComponent root) {
+    private String doEvaluate(String value, EnvComponent root) {
         Expression expression = Expression.parse(value);
         try {
             return expression.evaluate();
