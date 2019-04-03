@@ -127,7 +127,7 @@ public class PlaceholderResolver implements PropertyResolver {
     private Set<Placeholder> updateVisited(Set<Placeholder> visited, Placeholder placeholder) {
         Set<Placeholder> updated = new LinkedHashSet<>(visited);
         if (!updated.add(placeholder)) {
-            throw new PropertyResolveException("Found placeholder cyclic dependencies: " + updated);
+            throw new PropertyResolveException("Found cyclic dependencies: " + updated);
         }
         return unmodifiableSet(updated);
     }
