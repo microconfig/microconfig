@@ -24,10 +24,4 @@ public class ComponentResolveStrategy implements PlaceholderResolveStrategy {
                 .flatMap(p -> p.value(component))
                 .map(value -> tempProperty(propertyKey, value, envName, new SpecialSource(component, "COMPONENT")));
     }
-
-    public interface ComponentProperty {
-        String key();
-
-        Optional<String> value(Component component);
-    }
 }

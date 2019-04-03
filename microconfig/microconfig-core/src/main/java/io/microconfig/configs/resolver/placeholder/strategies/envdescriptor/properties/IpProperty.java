@@ -1,6 +1,6 @@
 package io.microconfig.configs.resolver.placeholder.strategies.envdescriptor.properties;
 
-import io.microconfig.configs.resolver.placeholder.strategies.envdescriptor.EnvDescriptorResolveStrategy.EnvProperty;
+import io.microconfig.configs.resolver.placeholder.strategies.envdescriptor.EnvProperty;
 import io.microconfig.environments.Component;
 import io.microconfig.environments.ComponentGroup;
 import io.microconfig.environments.Environment;

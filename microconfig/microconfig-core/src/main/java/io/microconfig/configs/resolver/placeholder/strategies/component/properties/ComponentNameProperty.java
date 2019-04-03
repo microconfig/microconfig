@@ -1,6 +1,6 @@
 package io.microconfig.configs.resolver.placeholder.strategies.component.properties;
 
-import io.microconfig.configs.resolver.placeholder.strategies.component.ComponentResolveStrategy.ComponentProperty;
+import io.microconfig.configs.resolver.placeholder.strategies.component.ComponentProperty;
 import io.microconfig.environments.Component;
 
 import java.util.Optional;

@@ -1,7 +1,7 @@
 package io.microconfig.configs.resolver.placeholder.strategies.component.properties;
 
 import io.microconfig.configs.io.components.ComponentTree;
-import io.microconfig.configs.resolver.placeholder.strategies.component.ComponentResolveStrategy.ComponentProperty;
+import io.microconfig.configs.resolver.placeholder.strategies.component.ComponentProperty;
 import io.microconfig.environments.Component;
 import io.microconfig.utils.StringUtils;
 import lombok.RequiredArgsConstructor;

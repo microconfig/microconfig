@@ -40,9 +40,4 @@ public class EnvDescriptorResolveStrategy implements PlaceholderResolveStrategy 
         }
     }
 
-    public interface EnvProperty {
-        String key();
-
-        Optional<String> value(Component component, Environment environment);
-    }
 }
