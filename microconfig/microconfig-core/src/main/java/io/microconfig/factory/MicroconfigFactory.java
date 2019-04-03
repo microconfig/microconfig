@@ -59,7 +59,7 @@ public class MicroconfigFactory {
     private final File destinationComponentDir;
     @Wither
     private final String serviceInnerDir;
-    
+
     private final Map<String, PlaceholderResolveStrategy> strategyByType = new TreeMap<>();
 
     public static MicroconfigFactory init(File sourcesRootDir, File destinationComponentDir) {
@@ -95,6 +95,7 @@ public class MicroconfigFactory {
         return cache(new ExpressionResolver(cache(newPlaceholderResolver(simpleProvider, configType))));
     }
 
+    //todo configure all config type for plugin
     public PlaceholderResolver newPlaceholderResolver(ConfigProvider simpleProvider, ConfigType configType) {
         ComponentPropertiesFactory componentProperties = new ComponentPropertiesFactory(componentTree, destinationComponentDir);
         EnvDescriptorPropertiesFactory envProperties = new EnvDescriptorPropertiesFactory();
