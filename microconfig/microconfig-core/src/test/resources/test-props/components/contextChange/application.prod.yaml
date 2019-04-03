@@ -1,2 +1,1 @@
-prop4: ${this@env} ${this@context}
-context: c_prod
+prop2: prod

@@ -1,5 +1,2 @@
-prop1: ${this@prop2}
-prop2: ${this[test]@prop3}
-prop3: ${this[prod]@prop4}
-prop4: default
-context: default
+prop1: ${this[prod]@prop2}
+prop2: default

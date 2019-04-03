@@ -181,7 +181,7 @@ class ConfigProviderTest {
     @Test
     void testContextChange() {
         Map<String, Property> properties = provider.getProperties(byType("contextChange"), "dev");
-        assertEquals("prod c_prod", properties.get("prop4").getValue());
+        assertEquals("prod", properties.get("prop2").getValue());
     }
 
     private void doTestAliases(String componentName, String ip) {
