@@ -34,8 +34,7 @@ public class ComponentParserImpl implements ComponentParser {
     }
 
     private List<Property> parseTempProperties(Map<Integer, String> comments, File file, String env) {
-        return comments
-                .entrySet()
+        return comments.entrySet()
                 .stream()
                 .filter(e -> isTempProperty(e.getValue()))
                 .map(e -> Property.parse(e.getValue(), env, FileSource.fileSource(file, e.getKey(), false)))

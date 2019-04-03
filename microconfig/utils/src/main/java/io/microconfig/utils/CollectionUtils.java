@@ -27,6 +27,7 @@ public class CollectionUtils {
         return list;
     }
 
+    @SafeVarargs
     public static <T> Set<T> setOf(T... t) {
         return new LinkedHashSet<>(asList(t));
     }
