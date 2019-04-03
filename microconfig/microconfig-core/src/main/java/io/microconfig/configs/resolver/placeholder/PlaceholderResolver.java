@@ -85,7 +85,7 @@ public class PlaceholderResolver implements PropertyResolver {
 
     private Optional<Property> tryResolveForParents(Placeholder placeholderToOverride, EnvComponent root, Set<Placeholder> orderedVisited) {
         Optional<Property> forRoot = selectStrategy(placeholderToOverride)
-                .resolve(root.getComponent(), placeholderToOverride.getValue(), placeholderToOverride.getEnvironment());
+                .resolve(root.getComponent(), placeholderToOverride.getValue(), root.getEnvironment());
         if (forRoot.isPresent()) return forRoot;
 
         for (Placeholder visited : orderedVisited) {
