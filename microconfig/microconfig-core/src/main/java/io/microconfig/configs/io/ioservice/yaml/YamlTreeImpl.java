@@ -1,7 +1,10 @@
 package io.microconfig.configs.io.ioservice.yaml;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static io.microconfig.utils.StringUtils.addOffsets;
@@ -118,7 +121,7 @@ public class YamlTreeImpl implements YamlTree {
                     .append(LINES_SEPARATOR);
         }
 
-        private Collection<Entry<String, Object>> sort(Map<String, Object> original) {
+        private List<Entry<String, Object>> sort(Map<String, Object> original) {
             return original
                     .entrySet()
                     .stream()
