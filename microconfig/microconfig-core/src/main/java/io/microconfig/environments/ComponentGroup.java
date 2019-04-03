@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static io.microconfig.utils.CollectionUtils.join;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -51,10 +52,7 @@ public class ComponentGroup {
     }
 
     public ComponentGroup appendComponents(List<Component> newAppendedComponents) {
-        List<Component> newComponents = new ArrayList<>(this.components);
-        newComponents.addAll(newAppendedComponents);
-
-        return new ComponentGroup(name, ip, newComponents, excludedComponents, emptyList());
+        return new ComponentGroup(name, ip, join(this.components, newAppendedComponents), excludedComponents, emptyList());
     }
 
     public Optional<Component> getComponentByName(String name) {

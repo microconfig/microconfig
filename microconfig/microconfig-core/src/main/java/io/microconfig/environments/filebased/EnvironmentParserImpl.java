@@ -109,12 +109,9 @@ public class EnvironmentParserImpl implements EnvironmentParser {
     @SuppressWarnings("unchecked")
     private List<Component> parseComponents(Map<String, Object> properties, String property) {
         List<String> values = (List<String>) properties.get(property);
-        if (values == null) {
-            return emptyList();
-        }
+        if (values == null) return emptyList();
 
-        return values
-                .stream()
+        return values.stream()
                 .filter(Objects::nonNull)
                 .map(s -> {
                     String[] parts = s.split(":");
