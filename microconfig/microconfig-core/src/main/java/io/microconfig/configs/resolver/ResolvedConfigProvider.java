@@ -18,7 +18,7 @@ public class ResolvedConfigProvider implements ConfigProvider, PropertyResolverH
     @Override
     public Map<String, Property> getProperties(Component rootComponent, String environment) {
         Map<String, Property> properties = delegate.getProperties(rootComponent, environment);
-        return resolveProperties(properties, new EnvComponent(rootComponent, environment));
+        return resolveAll(properties, new EnvComponent(rootComponent, environment));
     }
 
     @Override
@@ -26,14 +26,15 @@ public class ResolvedConfigProvider implements ConfigProvider, PropertyResolverH
         return resolver;
     }
 
-    private Map<String, Property> resolveProperties(Map<String, Property> properties, EnvComponent root) {
-        return properties.values()
+    private Map<String, Property> resolveAll(Map<String, Property> properties, EnvComponent root) {
+        return properties
+                .values()
                 .stream()
-                .map(p -> resolveProperty(p, root))
+                .map(p -> resolve(p, root))
                 .collect(toSortedMap(Property::getKey, identity()));
     }
 
-    private Property resolveProperty(Property property, EnvComponent root) {
+    private Property resolve(Property property, EnvComponent root) {
         String resolvedValue = resolver.resolve(property, root);
         return property.withNewValue(resolvedValue);
     }
