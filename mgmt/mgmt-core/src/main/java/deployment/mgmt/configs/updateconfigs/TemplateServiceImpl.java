@@ -3,6 +3,7 @@ package deployment.mgmt.configs.updateconfigs;
 import deployment.mgmt.configs.componentgroup.ComponentGroupService;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.service.properties.PropertyService;
+import io.microconfig.factory.ConfigType;
 import io.microconfig.factory.MicroconfigFactory;
 import io.microconfig.configs.resolver.EnvComponent;
 import io.microconfig.configs.resolver.PropertyResolver;
@@ -38,6 +39,7 @@ public class TemplateServiceImpl implements TemplateService {
                 deployFileStructure.configs().getMicroconfigSourcesRootDir(),
                 deployFileStructure.service().getComponentsDir()
         );
-        return factory.newResolver(factory.newFileBasedProvider(APPLICATION.getConfigType()));
+        ConfigType configType = APPLICATION.getConfigType();
+        return factory.newResolver(factory.newFileBasedProvider(configType), configType);
     }
 }

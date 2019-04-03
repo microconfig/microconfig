@@ -6,8 +6,9 @@ import deployment.mgmt.configs.componentgroup.ComponentGroupService;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.service.properties.NexusRepository;
 import deployment.mgmt.update.updater.MgmtProperties;
-import io.microconfig.factory.ConfigType;
 import io.microconfig.configs.ConfigProvider;
+import io.microconfig.factory.ConfigType;
+import io.microconfig.factory.ConfigTypeImpl;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -17,9 +18,9 @@ import java.util.Map;
 
 import static deployment.mgmt.atrifacts.Artifact.fromMavenString;
 import static deployment.mgmt.utils.ZipUtils.unzip;
-import static io.microconfig.factory.ConfigType.extensionAsName;
 import static io.microconfig.configs.Property.withoutTempValues;
 import static io.microconfig.environments.Component.byType;
+import static io.microconfig.factory.ConfigTypeImpl.byName;
 import static io.microconfig.utils.Logger.*;
 import static io.microconfig.utils.OsUtil.isWindows;
 import static io.microconfig.utils.TimeUtils.secAfter;
@@ -38,7 +39,7 @@ public class EnvDependenciesDownloaderImpl implements EnvDependenciesDownloader 
         if (isWindows()) return;
 
         String componentName = "dependencies";
-        ConfigType dependenciesType = extensionAsName(componentName);
+        ConfigType dependenciesType = byName(componentName);
         ConfigProvider configProvider = mgmtProperties.getConfigProvider(dependenciesType);
         Map<String, String> dependencies = withoutTempValues(configProvider.getProperties(byType(componentName), componentGroup.getEnv()));
 

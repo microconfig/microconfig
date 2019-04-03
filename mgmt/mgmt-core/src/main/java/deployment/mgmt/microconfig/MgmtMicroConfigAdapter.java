@@ -13,7 +13,7 @@ import java.io.File;
 import java.util.List;
 
 import static io.microconfig.commands.Command.composite;
-import static io.microconfig.factory.ConfigType.extensionAsName;
+import static io.microconfig.factory.ConfigTypeImpl.byName;
 import static io.microconfig.factory.StandardConfigTypes.*;
 import static io.microconfig.utils.FileUtils.userHome;
 
@@ -38,7 +38,7 @@ public class MgmtMicroConfigAdapter {
                 factory.newBuildCommand(SECRET.type(), updateSecretsPostProcessor(factory.getConfigIoService())),
                 factory.newBuildCommand(LOG4j.type()),
                 factory.newBuildCommand(LOG4J2.type()),
-                factory.newBuildCommand(extensionAsName("sap")),
+                factory.newBuildCommand(byName("sap")),
                 new GenerateComponentListCommand(destinationComponentDir, factory.getEnvironmentProvider()),
                 new CopyHelpFilesCommand(factory.getEnvironmentProvider(), factory.getComponentTree(), destinationComponentDir.toPath())
         );
