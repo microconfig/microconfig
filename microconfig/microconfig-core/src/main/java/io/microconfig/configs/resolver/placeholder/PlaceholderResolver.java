@@ -132,7 +132,6 @@ public class PlaceholderResolver implements PropertyResolver {
     }
 
     //must be public for plugin
-    //todo test for different configTypes
     public Optional<Property> resolveToProperty(Placeholder placeholder) {
         Component component = findComponent(placeholder.getComponent(), placeholder.getEnvironment());
         return strategy.resolve(component, placeholder.getValue(), placeholder.getEnvironment());
