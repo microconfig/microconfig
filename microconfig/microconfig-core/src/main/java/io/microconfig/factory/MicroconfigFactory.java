@@ -21,7 +21,6 @@ import io.microconfig.configs.resolver.placeholder.strategies.component.Componen
 import io.microconfig.configs.resolver.placeholder.strategies.component.properties.ComponentPropertiesFactory;
 import io.microconfig.configs.resolver.placeholder.strategies.envdescriptor.EnvDescriptorResolveStrategy;
 import io.microconfig.configs.resolver.placeholder.strategies.envdescriptor.properties.EnvDescriptorPropertiesFactory;
-import io.microconfig.configs.resolver.placeholder.strategies.selector.StrategySelectorImpl;
 import io.microconfig.configs.resolver.placeholder.strategies.standard.StandardResolveStrategy;
 import io.microconfig.configs.serializer.*;
 import io.microconfig.environments.EnvironmentProvider;
@@ -38,7 +37,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static io.microconfig.commands.buildconfig.BuildConfigPostProcessor.emptyPostProcessor;
-import static io.microconfig.configs.resolver.placeholder.PlaceholderResolveStrategy.composite;
+import static io.microconfig.configs.resolver.placeholder.strategies.composite.CompositeResolveStrategy.composite;
 import static io.microconfig.configs.resolver.placeholder.strategies.system.SystemResolveStrategy.envVariablesResolveStrategy;
 import static io.microconfig.configs.resolver.placeholder.strategies.system.SystemResolveStrategy.systemPropertiesResolveStrategy;
 import static io.microconfig.environments.filebased.EnvironmentParserImpl.jsonParser;
@@ -111,7 +110,7 @@ public class MicroconfigFactory {
 
         return new PlaceholderResolver(
                 environmentProvider,
-                new StrategySelectorImpl(strategy, strategyByType),
+                strategy,
                 joinToSet(componentProperties.get().keySet(), envProperties.get().keySet())
         );
     }

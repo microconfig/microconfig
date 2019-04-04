@@ -24,7 +24,7 @@ import static java.util.Optional.empty;
 @RequiredArgsConstructor
 public class PlaceholderResolver implements PropertyResolver {
     private final EnvironmentProvider environmentProvider;
-    private final StrategySelector strategySelector;
+    private final PlaceholderResolveStrategy strategy;
     private final Set<String> nonOverridableKeys;
 
     @Override
@@ -39,21 +39,25 @@ public class PlaceholderResolver implements PropertyResolver {
             Matcher matcher = Placeholder.matcher(resultValue);
             if (!matcher.find()) break;
 
-            try {
-                Placeholder placeholder = parse(matcher.group(), sourceOfPlaceholders.getEnvContext());
-                String resolvedValue = resolve(placeholder, sourceOfPlaceholders, root, visited);
-                resultValue.replace(matcher.start(), matcher.end(), resolvedValue);
-            } catch (PropertyResolveException e) {
-                throw e;
-            } catch (RuntimeException e) {
-                throw new PropertyResolveException(matcher.group(), sourceOfPlaceholders, root, e);
-            }
+            String resolved = doResolve(matcher.group(), sourceOfPlaceholders, root, visited);
+            resultValue.replace(matcher.start(), matcher.end(), resolved);
         }
 
         return resultValue.toString();
     }
 
-    private String resolve(Placeholder placeholder, Property sourceOfPlaceholder, EnvComponent root, Set<Placeholder> visited) {
+    private String doResolve(String value, Property sourceOfPlaceholders, EnvComponent root, Set<Placeholder> visited) {
+        try {
+            Placeholder placeholder = parse(value, sourceOfPlaceholders.getEnvContext());
+            return resolvePlaceholder(placeholder, sourceOfPlaceholders, root, visited);
+        } catch (PropertyResolveException e) {
+            throw e;
+        } catch (RuntimeException e) {
+            throw new PropertyResolveException(value, sourceOfPlaceholders, root, e);
+        }
+    }
+
+    private String resolvePlaceholder(Placeholder placeholder, Property sourceOfPlaceholder, EnvComponent root, Set<Placeholder> visited) {
         Supplier<String> defaultValue = () -> placeholder.getDefaultValue()
                 .orElseThrow(() -> new PropertyResolveException(placeholder.toString(), sourceOfPlaceholder, root));
 
@@ -90,8 +94,7 @@ public class PlaceholderResolver implements PropertyResolver {
     }
 
     private Optional<Property> tryResolveForParents(Placeholder placeholderToOverride, EnvComponent root, Set<Placeholder> orderedVisited) {
-        Optional<Property> forRoot = selectStrategy(placeholderToOverride)
-                .resolve(root.getComponent(), placeholderToOverride.getValue(), root.getEnvironment());
+        Optional<Property> forRoot = strategy.resolve(root.getComponent(), placeholderToOverride.getValue(), root.getEnvironment());
         if (forRoot.isPresent()) return forRoot;
 
         for (Placeholder visited : orderedVisited) {
@@ -104,10 +107,10 @@ public class PlaceholderResolver implements PropertyResolver {
     }
 
     //must be public for plugin
+    //todo test for different configTypes
     public Optional<Property> resolveToProperty(Placeholder placeholder) {
         Component component = findComponent(placeholder.getComponent(), placeholder.getEnvironment());
-        return selectStrategy(placeholder)
-                .resolve(component, placeholder.getValue(), placeholder.getEnvironment());
+        return strategy.resolve(component, placeholder.getValue(), placeholder.getEnvironment());
     }
 
     private Component findComponent(String componentNameOrType, String env) {
@@ -118,10 +121,6 @@ public class PlaceholderResolver implements PropertyResolver {
         } catch (EnvironmentNotExistException e) {
             return byType(componentNameOrType);
         }
-    }
-
-    private PlaceholderResolveStrategy selectStrategy(Placeholder placeholder) {
-        return strategySelector.selectStrategy(placeholder.getConfigType().orElse(null));
     }
 
     private Set<Placeholder> updateVisited(Set<Placeholder> visited, Placeholder placeholder) {
