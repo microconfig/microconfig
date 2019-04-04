@@ -200,9 +200,9 @@ class ConfigProviderTest {
 
         assertEquals(new HashMap<String, String>(){
             {
-                put("p1", "pro");
-                put("p2", "app");
-                put("p3", "app");
+                put("p1", "pro3");
+                put("p2", "app2");
+                put("p3", "app3");
             }
         }, asStringMap(provider.getProperties(byType("appType"), "dev")));
     }
