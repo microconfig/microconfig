@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.regex.Matcher;
 
+import static io.microconfig.configs.resolver.placeholder.Placeholder.parse;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlaceholderTest {
@@ -19,6 +20,13 @@ class PlaceholderTest {
 //        assertFalse(Placeholder.isSinglePlaceholder("${this@property:false} this2property2}"));
 //        assertFalse(Placeholder.isSinglePlaceholder("${this@property:false} ${this@property:false}"));
 //        assertFalse(Placeholder.isSinglePlaceholder("${this@property:${this@property2}}"));
+    }
+
+    @Test
+    void testToString() {
+        assertEquals("${component[dev]@property}", parse("${component@property}", "dev").toString());
+        assertEquals("${component[prod]@property}", parse("${component[prod]@property}", "dev").toString());
+        assertEquals("${component[test]@property:default}", parse("${component[test]@property:default}", "dev").toString());
     }
 
     @Test
@@ -39,7 +47,7 @@ class PlaceholderTest {
         Matcher matcher = Placeholder.PLACEHOLDER_INSIDE_LINE.matcher(value);
         assertTrue(matcher.find());
 
-        Placeholder propValue = Placeholder.parse(matcher.group(), getEnv());
+        Placeholder propValue = parse(matcher.group(), getEnv());
         assertEquals("property", propValue.getValue());
         assertEquals("false", propValue.getDefaultValue().orElse(null));
     }
@@ -47,7 +55,7 @@ class PlaceholderTest {
     @Test
     void testPropertyValuePlaceholder() {
         String value = "${component@property.name}";
-        Placeholder propValue = Placeholder.parse(value, getEnv());
+        Placeholder propValue = parse(value, getEnv());
         assertEquals("component", propValue.getComponent());
         assertEquals("property.name", propValue.getValue());
     }
@@ -55,7 +63,7 @@ class PlaceholderTest {
     @Test
     void testPropertyValuePlaceholderWithEnv() {
         String value = "${component[dev]@property.name}";
-        Placeholder propValue = Placeholder.parse(value, null);
+        Placeholder propValue = parse(value, null);
         assertEquals("component", propValue.getComponent());
         assertEquals("dev", propValue.getEnvironment());
         assertEquals("property.name", propValue.getValue());
@@ -63,7 +71,7 @@ class PlaceholderTest {
 
     @Test
     void testSimplePropertyValue() {
-        assertThrows(PropertyResolveException.class, () -> Placeholder.parse("123", null));
+        assertThrows(PropertyResolveException.class, () -> parse("123", null));
     }
 
     @Test

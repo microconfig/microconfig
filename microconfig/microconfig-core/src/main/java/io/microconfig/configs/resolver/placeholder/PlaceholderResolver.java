@@ -1,6 +1,7 @@
 package io.microconfig.configs.resolver.placeholder;
 
 import io.microconfig.configs.Property;
+import io.microconfig.configs.PropertySource;
 import io.microconfig.configs.resolver.EnvComponent;
 import io.microconfig.configs.resolver.PropertyResolveException;
 import io.microconfig.configs.resolver.PropertyResolver;
@@ -10,11 +11,13 @@ import io.microconfig.environments.EnvironmentProvider;
 import lombok.RequiredArgsConstructor;
 
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 
+import static io.microconfig.configs.Property.tempProperty;
 import static io.microconfig.configs.resolver.placeholder.Placeholder.parse;
 import static io.microconfig.environments.Component.byType;
 import static java.util.Collections.emptySet;
@@ -24,6 +27,7 @@ import static java.util.Optional.empty;
 @RequiredArgsConstructor
 public class PlaceholderResolver implements PropertyResolver {
     private final EnvironmentProvider environmentProvider;
+    private final Map<String, PropertyResolver> resolverByType;
     private final PlaceholderResolveStrategy strategy;
     private final Set<String> nonOverridableKeys;
 
@@ -49,12 +53,32 @@ public class PlaceholderResolver implements PropertyResolver {
     private String doResolve(String value, Property sourceOfPlaceholders, EnvComponent root, Set<Placeholder> visited) {
         try {
             Placeholder placeholder = parse(value, sourceOfPlaceholders.getEnvContext());
+            if (hasAnotherConfigType(placeholder)) {
+                return resolveForAnotherType(placeholder, sourceOfPlaceholders.getSource(), root);
+            }
+
             return resolvePlaceholder(placeholder, sourceOfPlaceholders, root, visited);
         } catch (PropertyResolveException e) {
             throw e;
         } catch (RuntimeException e) {
             throw new PropertyResolveException(value, sourceOfPlaceholders, root, e);
         }
+    }
+
+    private boolean hasAnotherConfigType(Placeholder placeholder) {
+        return placeholder.getConfigType().isPresent()
+                && !placeholder.getConfigType().get().equals("current"); //todo
+    }
+
+    private String resolveForAnotherType(Placeholder placeholder, PropertySource source, EnvComponent root) {
+        String configType = placeholder.getConfigType().orElseThrow(IllegalStateException::new);
+        PropertyResolver resolver = resolverByType.get(configType);
+        if (resolver == null) {
+            throw new IllegalStateException("Unsupported config type '" + configType + "'. Configured types: " + resolverByType.keySet());
+        }
+
+        return resolver.resolve(tempProperty("key", placeholder.toString(), "", source), root);
+
     }
 
     private String resolvePlaceholder(Placeholder placeholder, Property sourceOfPlaceholder, EnvComponent root, Set<Placeholder> visited) {

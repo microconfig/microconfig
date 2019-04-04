@@ -68,6 +68,6 @@ public class Placeholder {
 
     @Override
     public String toString() {
-        return "${" + component + "[" + environment + "]@" + value + "}";
+        return "${" + component + "[" + environment + "]@" + value + (defaultValue.map(v -> ":" + v)).orElse("") + "}";
     }
 }

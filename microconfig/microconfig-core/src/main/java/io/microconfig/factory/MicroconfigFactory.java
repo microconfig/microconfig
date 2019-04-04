@@ -33,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Wither;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -45,6 +46,7 @@ import static io.microconfig.environments.filebased.EnvironmentParserImpl.yamlPa
 import static io.microconfig.utils.CacheHandler.cache;
 import static io.microconfig.utils.CollectionUtils.joinToSet;
 import static io.microconfig.utils.FileUtils.canonical;
+import static java.util.Collections.emptyMap;
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
@@ -110,6 +112,7 @@ public class MicroconfigFactory {
 
         return new PlaceholderResolver(
                 environmentProvider,
+                emptyMap(),
                 strategy,
                 joinToSet(componentProperties.get().keySet(), envProperties.get().keySet())
         );
