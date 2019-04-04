@@ -33,7 +33,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Wither;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -46,7 +45,6 @@ import static io.microconfig.environments.filebased.EnvironmentParserImpl.yamlPa
 import static io.microconfig.utils.CacheHandler.cache;
 import static io.microconfig.utils.CollectionUtils.joinToSet;
 import static io.microconfig.utils.FileUtils.canonical;
-import static java.util.Collections.emptyMap;
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
@@ -61,7 +59,7 @@ public class MicroconfigFactory {
     @Wither
     private final String serviceInnerDir;
 
-    private final Map<String, PlaceholderResolveStrategy> strategyByType = new TreeMap<>();
+    private final Map<String, PropertyResolver> resolverByType = new TreeMap<>();
 
     public static MicroconfigFactory init(File sourcesRootDir, File destinationComponentDir) {
         return init(sourcesRootDir, destinationComponentDir, new FsFilesReader());
@@ -92,11 +90,13 @@ public class MicroconfigFactory {
         );
     }
 
+    //todo configure all config type for plugin
     public PropertyResolver newResolver(ConfigProvider simpleProvider, ConfigType configType) {
-        return cache(new ExpressionResolver(cache(newPlaceholderResolver(simpleProvider, configType))));
+        PropertyResolver resolver = cache(new ExpressionResolver(cache(newPlaceholderResolver(simpleProvider, configType))));
+        resolverByType.put(configType.getName(), resolver);
+        return resolver;
     }
 
-    //todo configure all config type for plugin
     public PlaceholderResolver newPlaceholderResolver(ConfigProvider simpleProvider, ConfigType configType) {
         ComponentPropertiesFactory componentProperties = new ComponentPropertiesFactory(componentTree, destinationComponentDir);
         EnvDescriptorPropertiesFactory envProperties = new EnvDescriptorPropertiesFactory();
@@ -108,13 +108,13 @@ public class MicroconfigFactory {
                 new StandardResolveStrategy(simpleProvider),
                 envVariablesResolveStrategy()
         );
-        strategyByType.put(configType.getName(), strategy);
 
         return new PlaceholderResolver(
                 environmentProvider,
-                emptyMap(),
                 strategy,
-                joinToSet(componentProperties.get().keySet(), envProperties.get().keySet())
+                joinToSet(componentProperties.get().keySet(), envProperties.get().keySet()),
+                configType.getName(),
+                resolverByType
         );
     }
 

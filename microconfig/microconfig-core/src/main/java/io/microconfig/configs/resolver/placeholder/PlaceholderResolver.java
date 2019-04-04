@@ -27,9 +27,11 @@ import static java.util.Optional.empty;
 @RequiredArgsConstructor
 public class PlaceholderResolver implements PropertyResolver {
     private final EnvironmentProvider environmentProvider;
-    private final Map<String, PropertyResolver> resolverByType;
     private final PlaceholderResolveStrategy strategy;
     private final Set<String> nonOverridableKeys;
+
+    private final String currentConfigType;
+    private final Map<String, PropertyResolver> resolverByType;
 
     @Override
     public String resolve(Property sourceOfPlaceholders, EnvComponent root) {
@@ -67,7 +69,7 @@ public class PlaceholderResolver implements PropertyResolver {
 
     private boolean hasAnotherConfigType(Placeholder placeholder) {
         return placeholder.getConfigType().isPresent()
-                && !placeholder.getConfigType().get().equals("current"); //todo
+                && !placeholder.getConfigType().get().equals(currentConfigType);
     }
 
     private String resolveForAnotherType(Placeholder placeholder, PropertySource source, EnvComponent root) {
@@ -78,7 +80,6 @@ public class PlaceholderResolver implements PropertyResolver {
         }
 
         return resolver.resolve(tempProperty("key", placeholder.toString(), "", source), root);
-
     }
 
     private String resolvePlaceholder(Placeholder placeholder, Property sourceOfPlaceholder, EnvComponent root, Set<Placeholder> visited) {
