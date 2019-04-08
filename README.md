@@ -546,6 +546,7 @@ orderPort: ${order-service@server.port} # doesn’t work
 If you need to declare a placeholder to a property from another config type you have to specify the config type using the following syntax: ${**configType**::component@property}.
 
 For our example the correct syntax:
+
 **someComponent/application.process**
 ```yaml
 orderPort: ${app::order-service@server.port}
