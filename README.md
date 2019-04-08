@@ -41,8 +41,7 @@ It's convenient to have different kinds of configuration and keep it in differen
 * Application configuration (the configuration that your service reads after start-up and uses in runtime).
 * Environment variables.
 * Secret configuration (note, you should not store in a VCS any sensitive information, like passwords. In a VCS you can store references(keys) to passwords, and keep passwords in special secured stores(like Vault) or at least in encrypted files on environment machines).
-* Library specific templates (for instance, Dockerfile, kafka.conf, cassandra.yaml, etc.)
-* Static files/scripts to run before/after your service start-up.
+* Library specific templates (for instance, Dockerfile, kafka.conf, cassandra.yaml, some scripts to run before/after your service start-up, etc.)
 
 Microconfig detects the configuration type by the config file extension. The default configuration for config types:
 * .yaml or *.properties for the application configuration.
