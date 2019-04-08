@@ -526,7 +526,7 @@ Example:
 ```
 Then you can access it: `${system@taskId}` or `${system@someParam3}`
 
-## Placeholders to another config types
+## Placeholders to another config type
 
 As we discussed Microconfig supports different config types. Microconfig resolves placeholders based on properties of the **same config type** only.
 
