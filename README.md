@@ -466,7 +466,7 @@ There are some other environment descriptor related properties, we will discuss 
 * `${...@group}`
 * `${...@order}`
 
-Note, if you use special placeholders with `${this@...}` then the value will be context dependent. Let's apply `${this@name}` to see why it's useful.
+Note, if you use a special placeholder with `${this@...}` then the value will be context dependent. Let's apply `${this@name}` to see why it's useful.
 
 Initial:
 
