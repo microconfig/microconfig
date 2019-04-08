@@ -530,7 +530,7 @@ Then you can access it: `${system@taskId}` or `${system@someParam3}`
 
 As we discussed Microconfig supports different config types and detects the type by file extensions. Microconfig resolves placeholders based on properties of the **same config type** only.
 
-Let’s see an example how it works:
+Let’s see the example how it works:
 
 ‘Order-service’ has ‘service.port’ property in application.**yaml**, so you can declare a placeholder to this property from application config types only (*.yaml or *.properties). If you declare that placeholder in, for example, *.process files, Microconfig will not resolve it and throw an exception.
 
