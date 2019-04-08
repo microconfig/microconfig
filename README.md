@@ -51,7 +51,7 @@ Microconfig detects the configuration type by the config file extension. The def
 * `*.secret` for the secret configuration.
 * For static files - see the 'Templates files' section.
 
-You can use all the configuration types or only some of them. Also you can override the default extensions or add your own.
+You can use all the configuration types or only some of them. Also you can override the default extensions or add your own config types.
 
 # Basic folder layout
 Let’s take a look at a basic folder layout that you can keep in a dedicated repository.
