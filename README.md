@@ -44,8 +44,8 @@ It's convenient to have different kinds of configuration and keep it in differen
 * Library specific templates (for instance, Dockerfile, kafka.conf, cassandra.yaml, some scripts to run before/after your service start-up, etc.)
 
 Microconfig detects the configuration type by the config file extension. The default configuration for config types:
-* .yaml or *.properties for the application configuration.
-* .proc or *.process for the process configuration.
+* *.yaml or *.properties for the application configuration.
+* *.proc or *.process for the process configuration.
 * *.deploy for the deployment configuration.
 * *.env for environment variables.
 * *.secret for the secret configuration.
