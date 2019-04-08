@@ -532,7 +532,7 @@ As we discussed Microconfig supports different config types. Microconfig resolve
 
 Let’s see an example how it works:
 
-‘Order-service’ has ‘service.port’ property in application.yaml, so you can declare a placeholder to this property from application config types only (*.yaml or *.properties). If you declare that placeholder in, for example, *.process file, Microconfig will not resolve it and throw an exception.
+‘Order-service’ has ‘service.port’ property in application.yaml, so you can declare a placeholder to this property from application config types only (*.yaml or *.properties). If you declare that placeholder in, for example, a *.process file, Microconfig will not resolve it and throw an exception.
 
 **someComponent/application.yaml**
 ```yaml
