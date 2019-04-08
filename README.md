@@ -36,12 +36,23 @@ So the best way to follow this principle is to have a dedicated repository for c
 ## Service configuration types
 
 It's convenient to have different kinds of configuration and keep it in different files:
-* Process configuration (the configuration used by deployment tools to start your services, like memory limit, VM params, etc.).
+* Deploy configuration (the configuration used by deployment tools that describes where/how to deploy your service, like artifact repository settings, container params).
+* Process configuration (the configuration used by deployment tools to start your service with right params, like memory limits, VM params, etc.).
 * Application configuration (the configuration that your service reads after start-up and uses in runtime).
-* Library specific templates (for instance, Dockerfile, kafka.conf, cassandra.yaml, etc.)
-* Static files/scripts to run before/after your service start-up.
 * Environment variables.
 * Secret configuration (note, you should not store in a VCS any sensitive information, like passwords. In a VCS you can store references(keys) to passwords, and keep passwords in special secured stores(like Vault) or at least in encrypted files on environment machines).
+* Library specific templates (for instance, Dockerfile, kafka.conf, cassandra.yaml, etc.)
+* Static files/scripts to run before/after your service start-up.
+
+Microconfig detects the configuration type by the config file extension. The default configuration for config types:
+* .yaml or *.properties for the application configuration.
+* .proc or *.process for the process configuration.
+* *.deploy for the deployment configuration.
+* *.env for environment variables.
+* *.secret for the secret configuration.
+* For static files - see the 'Templates files' section.
+
+You can use all the configuration types or only some of them. Also you can override the default extensions or add your own.
 
 # Basic folder layout
 Let’s take a look at a basic folder layout that you can keep in a dedicated repository.
@@ -196,7 +207,7 @@ eureka.instance.prefer-ip-address: true
 ```yaml
 datasource:
   minimum-pool-size: 2  
-  maximum-pool-size: 5    
+  maximum-pool-size: 5
   url: jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV  
 jpa.properties.hibernate.id.optimizer.pooled.prefer_lo: true
 ```
@@ -298,7 +309,6 @@ jpa.properties.hibernate.id.optimizer.pooled.prefer_lo: true
 ```yaml
     #include payment-db
 ```
-
 
 Also includes can be in one line:
 
@@ -516,6 +526,38 @@ Example:
  -DtaskId=3456 -DsomeParam3=value
 ```
 Then you can access it: `${system@taskId}` or `${system@someParam3}`
+
+## Placeholders to another config types
+
+As we discussed Microconfig supports different config types. Microconfig resolves placeholders based on properties of the same config type.
+
+Let’s see an example how it works:
+
+‘Order-service’ has ‘service.port’ property in application.yaml, so you can declare a placeholder to this property from application config types only (*.yaml or *.properties). If you declare that placeholder in, for example, *.process files, Microconfig will not resolve it and throw an exception.
+
+**someComponent/application.yaml**
+```yaml
+orderPort: ${order-service@server.port} # works
+```
+**someComponent/application.process**
+```yaml
+orderPort: ${order-service@server.port} # doesn’t work
+```
+
+If you need to declare a placeholder to a property from another config type you have to specify the config type using the following syntax: ${**configType**::component@property}.
+
+For our example the correct syntax:
+**someComponent/application.process**
+```yaml
+orderPort: ${app::order-service@server.port}
+```
+
+Microconfig default config types:
+•	app – for *.yaml or *.propeperties
+•	process – for *.proc or *.process
+•	deploy – for *.deploy
+•	secret – for *.secret
+•	env – for *.env
 
 # Expression language
 Microconfig supports a powerful expression language based on [Spring EL](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#expressions).    
