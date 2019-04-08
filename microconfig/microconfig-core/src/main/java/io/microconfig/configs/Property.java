@@ -98,6 +98,10 @@ public class Property {
         return new Property(key, value, envContext, temp, source);
     }
 
+    public Property withNewEnv(String env) {
+        return new Property(key, value, env, temp, source);
+    }
+
     public Property escapeOnWindows() {
         if (!isWindows()) return this;
 
@@ -110,11 +114,7 @@ public class Property {
         String two = "\\\\";
         return value.replace(two, one).replace(one, two);
     }
-
     //used by plugin
-    public Property withNewEnv(String env) {
-        return new Property(key, value, env, temp, source);
-    }
 
     @Override
     public String toString() {
