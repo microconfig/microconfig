@@ -553,11 +553,11 @@ orderPort: ${app::order-service@server.port}
 ```
 
 Microconfig default config types:
-•	app – for *.yaml or *.propeperties
-•	process – for *.proc or *.process
-•	deploy – for *.deploy
-•	secret – for *.secret
-•	env – for *.env
+* app – for *.yaml or *.properties
+* process – for *.proc or *.process
+* deploy – for *.deploy
+* secret – for *.secret
+* env – for *.env
 
 # Expression language
 Microconfig supports a powerful expression language based on [Spring EL](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#expressions).    
