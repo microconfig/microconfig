@@ -31,7 +31,7 @@ You can use Microconfig together with any config servers and deployment framewor
 ## Where to store the configuration
 It’s a good practice to keep service configuration separate from code. It doesn't require you to rebuild services every time the configuration is changed and allows you to use the same service artefacts (for instance, *.jar) for all environments because it doesn’t contain any environment specific configuration. The configuration can be updated even in runtime without service source code changes.
 
-So the best way to follow this principle is to have a dedicated repository for configuration in your favorite version control system.  You can store configuration for all microservices in the same repository to make it easy to reuse a common part and be sure the common part is consistent for all your services.
+The best way to follow this principle is to have a dedicated repository for configuration in your favorite version control system.  You can store configuration for all microservices in the same repository to make it easy to reuse a common part and be sure the common part is consistent for all your services.
 
 ## Service configuration types
 
