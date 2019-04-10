@@ -98,6 +98,7 @@ public class Property {
         return new Property(key, value, envContext, temp, source);
     }
 
+    //used by plugin
     public Property withNewEnv(String env) {
         return new Property(key, value, env, temp, source);
     }
@@ -114,7 +115,6 @@ public class Property {
         String two = "\\\\";
         return value.replace(two, one).replace(one, two);
     }
-    //used by plugin
 
     @Override
     public String toString() {
