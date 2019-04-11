@@ -186,15 +186,15 @@ repo
 |	
 └───core  
 │    └───orders
-│    │   ***
+│    │     ***
 │    └───payments
-│        ***
+│          ***
 │	
 └───infra
     └───service-discovery
-    │   ***
+    │     ***
     └───api-gateway
-        ***
+          ***
 ```
 **service-discovery-client/application.yaml**
 ```yaml
