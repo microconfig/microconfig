@@ -90,7 +90,6 @@ public class MicroconfigFactory {
         );
     }
 
-    //todo configure all config type for plugin
     public PropertyResolver newResolver(ConfigProvider simpleProvider, ConfigType configType) {
         PropertyResolver resolver = cache(new ExpressionResolver(cache(newPlaceholderResolver(simpleProvider, configType))));
         resolverByType.put(configType.getName(), resolver);
