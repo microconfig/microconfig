@@ -236,7 +236,7 @@ And replace explicit configs with includes
       system.retries: 3
     consistency.validateConsistencyIntervalInMs: 420000 # difficult to read. How long in minutes?    
 ```
-To include a component's configuration you need to specify only the component name, you don't need to specify its path. This makes the config layout refactoring easy. Microconfig will find a folder with the component's name and include the configuration from its files (if the folder name is not unique, Microconfig includes configs from each folder, but it's a good idea to keep a component name unique).
+To include a component's configuration you need to specify only the component name, you don't need to specify its path. This makes the config layout refactoring easier. Microconfig will find a folder with the component's name and include the configuration from its files (if the folder name is not unique, Microconfig includes configs from each folder, but it's a good idea to keep a component name unique).
 
 Some problems still here, but we removed the duplication and made it easier to understand the service's dependencies.
 
