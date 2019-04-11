@@ -174,7 +174,7 @@ For instance, payment-service contains settings for:
 Of course, you can separate a group of settings by an empty line. But we can make it more readable and understandable.
 
 # Better config structure using #include
-Our services have a common configuration for service-discovery and database. To make it easy to understand the service's dependencies, let’s create folders for service-discovery-client and oracle-client and specify links to these dependencies from core services.
+Our services have a common configuration for service-discovery and database. To make it easy to understand the service's dependencies, let’s create folders for service-discovery-client and oracle-client and specify links to these dependencies from the core services.
 
 ```
 repo
