@@ -23,59 +23,42 @@ public class EnvInclude {
         this.excludeGroups = unmodifiableSet(requireNonNull(excludeGroups));
     }
 
-    public Environment includeTo(Environment destinationEnv, EnvironmentProvider environmentProvider) {
-        Environment baseEnv = environmentProvider.getByName(env);
+    public Environment includeTo(Environment includeTo, EnvironmentProvider environmentProvider) {
+        Environment includeFrom = environmentProvider.getByName(env);
 
-        Map<String, ComponentGroup> groupToIncludeByName = getGroupsToInclude(baseEnv.getComponentGroups())
+        Map<String, ComponentGroup> groupToIncludeByName = collectGroupsToInclude(includeFrom)
                 .stream()
-                .map(g -> overrideIpFromEnv(g, baseEnv, destinationEnv))
+                .map(groupToInclude -> overrideIp(groupToInclude, includeFrom, includeTo))
                 .collect(toLinkedMap(ComponentGroup::getName, identity()));
 
-        destinationEnv.getComponentGroups()
+        includeTo.getComponentGroups()
                 .stream()
-                .map(g -> overrideComponentGroup(g, groupToIncludeByName.get(g.getName())))
+                .map(overriddenGroup -> override(groupToIncludeByName.get(overriddenGroup.getName()), overriddenGroup))
                 .forEach(g -> groupToIncludeByName.put(g.getName(), g));
 
-        return destinationEnv.withIncludedGroups(new ArrayList<>(groupToIncludeByName.values()));
+        return includeTo.withIncludedGroups(new ArrayList<>(groupToIncludeByName.values()));
     }
 
-    private ComponentGroup overrideIpFromEnv(ComponentGroup baseGroup, Environment baseEnv, Environment destinationEnv) {
-        if (baseEnv.getIp().isPresent() && !baseGroup.getIp().isPresent()) {
-            baseGroup = baseGroup.changeIp(baseEnv.getIp().get());
-        }
-        if (destinationEnv.getIp().isPresent()) {
-            baseGroup = baseGroup.changeIp(destinationEnv.getIp().get());
-        }
-        return baseGroup;
-    }
-
-    private ComponentGroup overrideComponentGroup(ComponentGroup overriddenGroup, ComponentGroup baseGroup) {
-        return baseGroup == null ? overriddenGroup : overrideIpAndComponents(overriddenGroup, baseGroup);
-    }
-
-    private ComponentGroup overrideIpAndComponents(ComponentGroup overridenGroup, ComponentGroup baseGroup) {
-        if (overridenGroup.getIp().isPresent()) {
-            baseGroup = baseGroup.changeIp(overridenGroup.getIp().get());
-        }
-
-        if (!overridenGroup.getComponents().isEmpty()) {
-            baseGroup = baseGroup.changeComponents(overridenGroup.getComponents());
-        }
-
-        if (!overridenGroup.getExcludedComponents().isEmpty()) {
-            baseGroup = baseGroup.excludeComponents(overridenGroup.getExcludedComponents());
-        }
-
-        if (!overridenGroup.getAppendedComponents().isEmpty()) {
-            baseGroup = baseGroup.appendComponents(overridenGroup.getAppendedComponents());
-        }
-
-        return baseGroup;
-    }
-
-    private List<ComponentGroup> getGroupsToInclude(List<ComponentGroup> componentGroups) {
-        return componentGroups.stream()
+    private List<ComponentGroup> collectGroupsToInclude(Environment includeFrom) {
+        return includeFrom.getComponentGroups()
+                .stream()
                 .filter(g -> !excludeGroups.contains(g.getName()))
                 .collect(toList());
+    }
+
+    private ComponentGroup overrideIp(ComponentGroup groupToInclude, Environment includeFrom, Environment includeTo) {
+        if (includeTo.getIp().isPresent()) {
+            return groupToInclude.changeIp(includeTo.getIp().get());
+        }
+
+        if (!groupToInclude.getIp().isPresent() && includeFrom.getIp().isPresent()) {
+            return groupToInclude.changeIp(includeFrom.getIp().get());
+        }
+
+        return groupToInclude;
+    }
+
+    private ComponentGroup override(ComponentGroup includedGroup, ComponentGroup overriddenGroup) {
+        return includedGroup == null ? overriddenGroup : includedGroup.override(overriddenGroup);
     }
 }

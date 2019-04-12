@@ -39,20 +39,20 @@ public class Environment {
 
     public List<ComponentGroup> getGroupByIp(String serverIp) {
         return componentGroups.stream()
-                .filter(g -> of(serverIp).equals(g.getIp()))
+                .filter(g -> g.getIp().filter(serverIp::equals).isPresent())
                 .collect(toList());
     }
 
     public ComponentGroup getGroupByName(String groupName) {
-        List<ComponentGroup> collect = componentGroups.stream()
+        List<ComponentGroup> groups = componentGroups.stream()
                 .filter(g -> g.getName().equals(groupName))
                 .collect(toList());
 
-        if (collect.isEmpty()) {
+        if (groups.isEmpty()) {
             throw new IllegalArgumentException("Can't find group with name [" + groupName + "] in env [" + name + "]");
         }
 
-        return singleValue(collect);
+        return singleValue(groups);
     }
 
     public Optional<ComponentGroup> getGroupByComponentName(String componentName) {
@@ -82,6 +82,17 @@ public class Environment {
                 .findFirst();
     }
 
+    public Environment withIncludedGroups(List<ComponentGroup> includedGroups) {
+        return new Environment(
+                name,
+                includedGroups,
+                ip,
+                portOffset,
+                empty(),
+                source
+        );
+    }
+
     public Environment verifyUniqueComponentNames() {
         Set<String> unique = new HashSet<>();
         componentGroups.stream()
@@ -96,30 +107,9 @@ public class Environment {
         return this;
     }
 
-    public Environment withIncludedGroups(List<ComponentGroup> includedGroups) {
-        return new Environment(
-                name,
-                includedGroups,
-                ip,
-                portOffset,
-                empty(),
-                source
-        );
-    }
-
-    public Environment verifyIpsPresent() {
-        componentGroups.stream()
-                .filter(g -> !ip.isPresent() && !g.getIp().isPresent())
-                .findFirst()
-                .ifPresent(g -> {
-                    throw new IllegalArgumentException("Env [" + name + "] doesn't have ip for [" + g.getName() + "] componentGroup");
-                });
-
-        return this;
-    }
-
     public Environment processInclude(EnvironmentProvider environmentProvider) {
-        return include.isPresent() ? include.get().includeTo(this, environmentProvider) : this;
+        return include.map(include -> include.includeTo(this, environmentProvider))
+                .orElse(this);
     }
 
     @Override

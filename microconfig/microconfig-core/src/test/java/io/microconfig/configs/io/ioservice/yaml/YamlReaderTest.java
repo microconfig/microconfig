@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static io.microconfig.utils.ClasspathUtils.classpathFile;
+import static io.microconfig.testutils.ClasspathUtils.classpathFile;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

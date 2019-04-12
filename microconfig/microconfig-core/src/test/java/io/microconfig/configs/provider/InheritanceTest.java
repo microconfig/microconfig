@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static io.microconfig.utils.MicronconfigTestFactory.getEnvProvider;
+import static io.microconfig.testutils.MicronconfigTestFactory.getEnvProvider;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

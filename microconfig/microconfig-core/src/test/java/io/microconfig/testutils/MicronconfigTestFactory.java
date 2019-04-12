@@ -1,4 +1,4 @@
-package io.microconfig.utils;
+package io.microconfig.testutils;
 
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.resolver.PropertyResolver;
@@ -10,7 +10,7 @@ import java.io.File;
 
 import static io.microconfig.factory.StandardConfigTypes.APPLICATION;
 import static io.microconfig.factory.StandardConfigTypes.PROCESS;
-import static io.microconfig.utils.ClasspathUtils.classpathFile;
+import static io.microconfig.testutils.ClasspathUtils.classpathFile;
 
 public class MicronconfigTestFactory {
     private static final File rootDir = classpathFile("test-props");

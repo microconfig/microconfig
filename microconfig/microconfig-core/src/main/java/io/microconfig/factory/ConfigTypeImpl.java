@@ -8,7 +8,6 @@ import java.util.Set;
 
 import static java.util.Collections.singleton;
 
-@ToString
 @Getter
 @RequiredArgsConstructor
 public class ConfigTypeImpl implements ConfigType {
@@ -21,7 +20,7 @@ public class ConfigTypeImpl implements ConfigType {
                 .filter(ext -> !ext.startsWith("."))
                 .findFirst()
                 .ifPresent(ext -> {
-                    throw new IllegalStateException("File extension must start with '.'. Bad extension:" + ext);
+                    throw new IllegalArgumentException("File extension must start with '.'. Bad extension:" + ext);
                 });
 
         return new ConfigTypeImpl(name, resultFileName, configExtensions);

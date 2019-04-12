@@ -42,6 +42,7 @@ import static io.microconfig.configs.resolver.placeholder.strategies.system.Syst
 import static io.microconfig.configs.resolver.placeholder.strategies.system.SystemResolveStrategy.systemPropertiesResolveStrategy;
 import static io.microconfig.environments.filebased.EnvironmentParserImpl.jsonParser;
 import static io.microconfig.environments.filebased.EnvironmentParserImpl.yamlParser;
+import static io.microconfig.factory.StandardConfigTypes.APPLICATION;
 import static io.microconfig.utils.CacheHandler.cache;
 import static io.microconfig.utils.CollectionUtils.joinToSet;
 import static io.microconfig.utils.FileUtils.canonical;
@@ -143,7 +144,7 @@ public class MicroconfigFactory {
     //public for plugin
     public FilenameGenerator getFilenameGenerator(ConfigType configType) {
         return new LegacyFilenameGenerator(
-                StandardConfigTypes.APPLICATION.type().getResultFileName(),
+                APPLICATION.type().getResultFileName(),
                 new FilenameGeneratorImpl(destinationComponentDir, serviceInnerDir, configType.getResultFileName()),
                 environmentProvider
         );

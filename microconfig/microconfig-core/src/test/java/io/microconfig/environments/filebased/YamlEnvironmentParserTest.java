@@ -4,6 +4,7 @@ import io.microconfig.environments.Component;
 import io.microconfig.environments.ComponentGroup;
 import io.microconfig.environments.EnvInclude;
 import io.microconfig.environments.Environment;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.stream.Stream;
 
 import static io.microconfig.environments.Component.byType;
 import static io.microconfig.environments.filebased.EnvironmentParserImpl.yamlParser;
-import static io.microconfig.utils.ClasspathUtils.read;
+import static io.microconfig.testutils.ClasspathUtils.read;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Optional.of;
@@ -20,6 +21,7 @@ import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+@Disabled
 class YamlEnvironmentParserTest {
     private final EnvironmentParser parser = yamlParser();
 
