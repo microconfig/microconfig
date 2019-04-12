@@ -5,12 +5,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermission;
-import java.util.HashSet;
 
+import static io.microconfig.utils.CollectionUtils.setOf;
 import static io.microconfig.utils.FileUtils.write;
 import static io.microconfig.utils.Logger.error;
 import static java.nio.file.Files.setPosixFilePermissions;
-import static java.util.Arrays.asList;
 
 public class FilePermissionUtils {
     public static void copyPermissions(Path from, Path to) {
@@ -33,7 +32,7 @@ public class FilePermissionUtils {
         if (OsUtil.isWindows()) return;
 
         try {
-            setPosixFilePermissions(file, new HashSet<>(asList(PosixFilePermission.values())));
+            setPosixFilePermissions(file, setOf(PosixFilePermission.values()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

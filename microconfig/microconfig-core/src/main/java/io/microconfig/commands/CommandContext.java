@@ -3,27 +3,24 @@ package io.microconfig.commands;
 import io.microconfig.environments.Component;
 import io.microconfig.environments.Environment;
 import io.microconfig.environments.EnvironmentProvider;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.Optional;
 
-import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toList;
 
+@RequiredArgsConstructor
 public class CommandContext {
     private final String env;
-    private final Optional<String> componentGroup;
+    private final String componentGroup;
     private final List<String> components;
 
     public CommandContext(String env, List<String> components) {
-        this(env, empty(), components);
+        this(env, null, components);
     }
 
-    public CommandContext(String env, Optional<String> componentGroup, List<String> components) {
-        this.env = requireNonNull(env, "Env is null");
-        this.componentGroup = requireNonNull(componentGroup, "Component group optional is null");
-        this.components = requireNonNull(components);
+    public String env() {
+        return env;
     }
 
     public List<Component> components(EnvironmentProvider environmentProvider) {
@@ -31,15 +28,11 @@ public class CommandContext {
         return components.isEmpty() ? envComponents : filterByName(envComponents);
     }
 
-    public String env() {
-        return env;
-    }
-
     private List<Component> componentsByEnvAndGroups(EnvironmentProvider environmentProvider) {
         Environment environment = environmentProvider.getByName(env);
 
-        return componentGroup.isPresent() ?
-                environment.getComponentsByGroup(componentGroup.get())
+        return componentGroup != null ?
+                environment.getComponentsByGroup(componentGroup)
                 : environment.getAllComponents();
     }
 

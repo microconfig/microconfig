@@ -11,7 +11,6 @@ import static io.microconfig.factory.CommandFactory.newBuildCommand;
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.TimeUtils.msAfter;
 import static java.lang.System.currentTimeMillis;
-import static java.util.Optional.of;
 
 /**
  * VM speedup params:
@@ -47,7 +46,7 @@ public class BuildConfigMain {
         if (groups.isEmpty()) {
             command.execute(new CommandContext(env, components));
         } else {
-            groups.forEach(group -> command.execute(new CommandContext(env, of(group), components)));
+            groups.forEach(group -> command.execute(new CommandContext(env, group, components)));
         }
 
         announce("Generated configs in " + msAfter(t));
