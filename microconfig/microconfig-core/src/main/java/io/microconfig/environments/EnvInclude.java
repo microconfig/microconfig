@@ -46,19 +46,19 @@ public class EnvInclude {
                 .collect(toList());
     }
 
-    private ComponentGroup overrideIp(ComponentGroup groupToInclude, Environment includeFrom, Environment includeTo) {
+    private ComponentGroup overrideIp(ComponentGroup groupToInclude, Environment included, Environment includeTo) {
         if (includeTo.getIp().isPresent()) {
             return groupToInclude.changeIp(includeTo.getIp().get());
         }
 
-        if (!groupToInclude.getIp().isPresent() && includeFrom.getIp().isPresent()) {
-            return groupToInclude.changeIp(includeFrom.getIp().get());
+        if (!groupToInclude.getIp().isPresent() && included.getIp().isPresent()) {
+            return groupToInclude.changeIp(included.getIp().get());
         }
 
         return groupToInclude;
     }
 
-    private ComponentGroup override(ComponentGroup includedGroup, ComponentGroup overriddenGroup) {
-        return includedGroup == null ? overriddenGroup : includedGroup.override(overriddenGroup);
+    private ComponentGroup override(ComponentGroup included, ComponentGroup override) {
+        return included == null ? override : included.override(override);
     }
 }

@@ -108,7 +108,7 @@ public class Environment {
     }
 
     public Environment processInclude(EnvironmentProvider environmentProvider) {
-        return include.map(include -> include.includeTo(this, environmentProvider))
+        return include.map(env -> env.includeTo(this, environmentProvider))
                 .orElse(this);
     }
 

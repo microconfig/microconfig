@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ComponentGroupTest {
     private Component payment = byType("payment");
     private Component paymentUi = byType("payment-ui");
+    private Component patcher = byType("patcher");
 
     @Test
     void testConstructorExceptions() {
@@ -38,9 +39,19 @@ class ComponentGroupTest {
         assertEquals(asList(payment, paymentUi), paymentGroup.getComponents());
         assertEquals(emptyList(), paymentGroup.getExcludedComponents());
         assertEquals(emptyList(), paymentGroup.getAppendedComponents());
+        assertEquals("payments", paymentGroup.toString());
+    }
 
+    @Test
+    void testOverride() {
+        ComponentGroup original = paymentGroup();
         String newIp = "5.6.7.8";
-        assertEquals(of(newIp), paymentGroup.changeIp(newIp).getIp());
+        assertEquals(of(newIp), original.changeIp(newIp).getIp());
+
+        ComponentGroup afterOverride = original.override(overriddenGroup());
+        assertEquals(asList(payment, patcher), afterOverride.getComponents());
+        assertEquals(original.getComponents(), afterOverride.override(original).getComponents());
+        assertSame(original, original.override(new ComponentGroup("empty", empty(), emptyList(), emptyList(), emptyList())));
     }
 
     private ComponentGroup paymentGroup() {
@@ -50,6 +61,16 @@ class ComponentGroupTest {
                 asList(payment, paymentUi),
                 emptyList(),
                 emptyList()
+        );
+    }
+
+    private ComponentGroup overriddenGroup() {
+        return new ComponentGroup(
+                "payments",
+                of("3.8.9.10"),
+                emptyList(),
+                singletonList(paymentUi),
+                singletonList(patcher)
         );
     }
 }

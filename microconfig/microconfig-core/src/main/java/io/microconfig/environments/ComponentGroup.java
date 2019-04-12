@@ -53,20 +53,20 @@ public class ComponentGroup {
         return new ComponentGroup(name, of(ip), components, excludedComponents, appendedComponents);
     }
 
-    public ComponentGroup override(ComponentGroup overrideFrom) {
+    public ComponentGroup override(ComponentGroup override) {
         ComponentGroup baseGroup = this;
 
-        if (overrideFrom.ip.isPresent()) {
-            baseGroup = baseGroup.changeIp(overrideFrom.ip.get());
+        if (override.ip.isPresent()) {
+            baseGroup = baseGroup.changeIp(override.ip.get());
         }
-        if (!overrideFrom.components.isEmpty()) {
-            baseGroup = baseGroup.changeComponents(overrideFrom.components);
+        if (!override.components.isEmpty()) {
+            baseGroup = baseGroup.changeComponents(override.components);
         }
-        if (!overrideFrom.excludedComponents.isEmpty()) {
-            baseGroup = baseGroup.excludeComponents(overrideFrom.excludedComponents);
+        if (!override.excludedComponents.isEmpty()) {
+            baseGroup = baseGroup.excludeComponents(override.excludedComponents);
         }
-        if (!overrideFrom.appendedComponents.isEmpty()) {
-            baseGroup = baseGroup.appendComponents(overrideFrom.appendedComponents);
+        if (!override.appendedComponents.isEmpty()) {
+            baseGroup = baseGroup.appendComponents(override.appendedComponents);
         }
 
         return baseGroup;
