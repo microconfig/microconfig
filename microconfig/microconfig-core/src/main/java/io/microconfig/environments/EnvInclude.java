@@ -28,7 +28,7 @@ public class EnvInclude {
 
         Map<String, ComponentGroup> groupToIncludeByName = collectGroupsToInclude(includeFrom)
                 .stream()
-                .map(groupToInclude -> overrideIp(groupToInclude, includeFrom, includeTo))
+                .map(includedGroup -> overrideIp(includedGroup, includeFrom, includeTo))
                 .collect(toLinkedMap(ComponentGroup::getName, identity()));
 
         includeTo.getComponentGroups()
@@ -46,19 +46,19 @@ public class EnvInclude {
                 .collect(toList());
     }
 
-    private ComponentGroup overrideIp(ComponentGroup groupToInclude, Environment included, Environment includeTo) {
-        if (includeTo.getIp().isPresent()) {
-            return groupToInclude.changeIp(includeTo.getIp().get());
+    private ComponentGroup overrideIp(ComponentGroup includedGroup, Environment includedEnv, Environment destinationEnv) {
+        if (destinationEnv.getIp().isPresent()) {
+            return includedGroup.changeIp(destinationEnv.getIp().get());
         }
 
-        if (!groupToInclude.getIp().isPresent() && included.getIp().isPresent()) {
-            return groupToInclude.changeIp(included.getIp().get());
+        if (!includedGroup.getIp().isPresent() && includedEnv.getIp().isPresent()) {
+            return includedGroup.changeIp(includedEnv.getIp().get());
         }
 
-        return groupToInclude;
+        return includedGroup;
     }
 
-    private ComponentGroup override(ComponentGroup included, ComponentGroup override) {
-        return included == null ? override : included.override(override);
+    private ComponentGroup override(ComponentGroup includedGroup, ComponentGroup override) {
+        return includedGroup == null ? override : includedGroup.override(override);
     }
 }

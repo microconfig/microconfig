@@ -3,13 +3,12 @@ package io.microconfig.environments;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.Optional;
-
 import static io.microconfig.environments.Component.byType;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Optional.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 class EnvIncludeTest {
@@ -20,7 +19,7 @@ class EnvIncludeTest {
     @Test
     void includeTo() {
         Environment base = baseEnv();
-        Environment dev = devEnv(of("3.4.5.6"));
+        Environment dev = devEnv("3.4.5.6");
 
         EnvironmentProvider provider = Mockito.mock(EnvironmentProvider.class);
         when(provider.getByName("base")).thenReturn(base);
@@ -30,8 +29,8 @@ class EnvIncludeTest {
         assertNotNull(processed.getGroupByName("newGroup"));
         assertEquals(of("3.4.5.6"), processed.getGroupByName("ipGroup").getIp());
 
-        Environment processed2 = devEnv(empty()).processInclude(provider);
-        assertEquals(of("6.7.8.9"), processed2.getGroupByName("ipGroup").getIp());
+        Environment processed2 = devEnv(null).processInclude(provider);
+        assertEquals(of("1.1.1.2"), processed2.getGroupByName("ipGroup").getIp());
 
     }
 
@@ -43,7 +42,7 @@ class EnvIncludeTest {
                 emptyList(),
                 emptyList()
         );
-        ComponentGroup ipGroup = new ComponentGroup("ipGroup", of("6.7.8.9"), emptyList(), emptyList(), emptyList());
+        ComponentGroup ipGroup = new ComponentGroup("ipGroup", empty(), emptyList(), emptyList(), emptyList());
 
         return new Environment(
                 "base",
@@ -55,7 +54,7 @@ class EnvIncludeTest {
         );
     }
 
-    private Environment devEnv(Optional<String> ip) {
+    private Environment devEnv(String ip) {
         ComponentGroup infra = new ComponentGroup(
                 "infra",
                 of("1.2.3.4"),
@@ -64,12 +63,11 @@ class EnvIncludeTest {
                 singletonList(monitoring)
         );
         ComponentGroup newGroup = new ComponentGroup("newGroup", empty(), emptyList(), emptyList(), emptyList());
-        ComponentGroup ipGroup = new ComponentGroup("ipGroup", empty(), emptyList(), emptyList(), emptyList());
 
         return new Environment(
                 "dev",
-                asList(infra, newGroup, ipGroup),
-                ip,
+                asList(infra, newGroup),
+                ofNullable(ip),
                 of(1),
                 of(new EnvInclude("base", emptySet())),
                 ""
