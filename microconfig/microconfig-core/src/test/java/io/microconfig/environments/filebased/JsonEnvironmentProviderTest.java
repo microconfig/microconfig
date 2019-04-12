@@ -4,7 +4,6 @@ import io.microconfig.environments.ComponentGroup;
 import io.microconfig.environments.Environment;
 import io.microconfig.environments.EnvironmentNotExistException;
 import io.microconfig.environments.EnvironmentProvider;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -17,15 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class JsonEnvironmentProviderTest {
     private final EnvironmentProvider environmentProvider = getEnvProvider();
-
-    @Test
-    void testEnvName() {
-        Set<String> environmentNames = environmentProvider.getEnvironmentNames();
-        assertEquals(new HashSet<>(asList("test-component-exclude1", "p1", "test-component-exclude2",
-                "aliases", "base-env", "var", "uat", "demo", "dev2", "dev", "test-env-include", "test-include-abstract-env",
-                "duplicate-components", "e1", "e2", "e3", "e4", "baseYaml", "includeYaml")),
-                environmentNames);
-    }
 
     @Test
     void testGetEnv() {
@@ -53,25 +43,25 @@ class JsonEnvironmentProviderTest {
     void testIncludesOverrides() {
         Environment env = environmentProvider.getByName("test-env-include");
 
-        assertTrue(!env.getIp().isPresent());
-        // overriden ip
+        assertFalse(env.getIp().isPresent());
+        // overridden ip
         assertEquals("172.30.162.8", env.getGroupByName("fnd1").getIp().get());
-        // overriden ip and components
+        // overridden ip and components
         assertEquals("172.30.162.9", env.getGroupByName("fnd2").getIp().get());
         assertEquals(singletonList("th-cache-node7"), env.getGroupByName("fnd2").getComponentNames());
-        // overriden components/original ip
+        // overridden components/original ip
         assertEquals("1.1.1.1", env.getGroupByName("c3").getIp().get());
         assertEquals(asList("override1", "override2"), env.getGroupByName("c3").getComponentNames());
         // original components/original ip
         assertEquals("2.2.2.2", env.getGroupByName("override1").getIp().get());
-        assertEquals(singletonList("tov1"), env.getGroupByName("override1").getComponentNames());// overriden components
+        assertEquals(singletonList("tov1"), env.getGroupByName("override1").getComponentNames());
     }
 
     @Test
     void testIncludeAbstractEnvAndIpOverrides() {
         Environment env = environmentProvider.getByName("test-include-abstract-env");
 
-        assertTrue(!env.getIp().isPresent());
+        assertFalse(env.getIp().isPresent());
         assertEquals("172.30.162.8", env.getGroupByName("fnd1").getIp().get());
         assertEquals("172.30.162.9", env.getGroupByName("fnd2").getIp().get());
     }
