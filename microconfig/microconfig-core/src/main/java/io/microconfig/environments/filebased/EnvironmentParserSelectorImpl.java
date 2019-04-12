@@ -6,6 +6,8 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Arrays.asList;
+
 @RequiredArgsConstructor
 public class EnvironmentParserSelectorImpl implements EnvironmentParserSelector {
     private static final String JSON_EXT = ".json";
@@ -24,6 +26,6 @@ public class EnvironmentParserSelectorImpl implements EnvironmentParserSelector 
 
     @Override
     public List<String> supportedFormats() {
-        return Arrays.asList(JSON_EXT, YAML_EXT);
+        return asList(JSON_EXT, YAML_EXT);
     }
 }

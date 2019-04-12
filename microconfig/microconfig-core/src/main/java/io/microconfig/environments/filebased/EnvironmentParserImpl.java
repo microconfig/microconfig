@@ -44,7 +44,7 @@ public class EnvironmentParserImpl implements EnvironmentParser {
         try {
             return doParse(name, content);
         } catch (RuntimeException e) {
-            throw new RuntimeException("Can't parse '" + name + "' env", e);
+            throw new IllegalArgumentException("Can't parse '" + name + "' env", e);
         }
     }
 

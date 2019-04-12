@@ -15,7 +15,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled
 class JsonEnvironmentProviderTest {
     private final EnvironmentProvider environmentProvider = getEnvProvider();
 

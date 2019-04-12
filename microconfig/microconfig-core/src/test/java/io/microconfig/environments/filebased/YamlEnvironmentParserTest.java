@@ -20,8 +20,8 @@ import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@Disabled
 class YamlEnvironmentParserTest {
     private final EnvironmentParser parser = yamlParser();
 
@@ -35,6 +35,11 @@ class YamlEnvironmentParserTest {
         assertEquals(1, (int) environment.getPortOffset().get());
         assertFalse(environment.getInclude().isPresent());
         compareGroups(baseGroups(of(ip)), environment.getComponentGroups());
+    }
+
+    @Test
+    void testException() {
+        assertThrows(IllegalArgumentException.class, () -> parser.parse("dev", ":("));
     }
 
     @Test
