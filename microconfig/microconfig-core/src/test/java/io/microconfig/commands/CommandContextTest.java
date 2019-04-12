@@ -29,7 +29,7 @@ class CommandContextTest {
     );
 
     @Test
-    void components() {
+    void textComponents() {
         EnvironmentProvider provider = mockProvider();
 
         CommandContext groupContext = new CommandContext(envName, group, emptyList());
@@ -46,7 +46,7 @@ class CommandContextTest {
     }
 
     @Test
-    void env() {
+    void testEnv() {
         assertEquals(envName, new CommandContext(envName, emptyList()).env());
     }
 
