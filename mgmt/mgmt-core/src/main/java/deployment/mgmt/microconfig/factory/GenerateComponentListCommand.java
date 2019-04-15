@@ -1,4 +1,4 @@
-package deployment.mgmt.microconfig;
+package deployment.mgmt.microconfig.factory;
 
 import io.microconfig.commands.Command;
 import io.microconfig.commands.CommandContext;
@@ -10,7 +10,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
-import static deployment.mgmt.microconfig.MgmtMicroConfigAdapter.MGMT;
+import static deployment.mgmt.microconfig.factory.MgmtMicroConfigAdapter.MGMT;
 import static io.microconfig.utils.FileUtils.write;
 import static java.util.stream.Collectors.toList;
 

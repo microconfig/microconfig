@@ -1,10 +1,10 @@
-package deployment.mgmt.microconfig;
+package deployment.mgmt.microconfig.factory;
 
 import io.microconfig.commands.Command;
 import io.microconfig.commands.buildconfig.BuildConfigCommand;
 import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
-import io.microconfig.commands.buildconfig.features.secrets.SecretServiceImpl;
-import io.microconfig.commands.buildconfig.features.secrets.UpdateSecretsPostProcessor;
+import deployment.mgmt.microconfig.secrets.SecretServiceImpl;
+import deployment.mgmt.microconfig.secrets.UpdateSecretsPostProcessor;
 import io.microconfig.configs.io.ioservice.ConfigIoService;
 import io.microconfig.factory.BuildConfigMain;
 import io.microconfig.factory.MicroconfigFactory;

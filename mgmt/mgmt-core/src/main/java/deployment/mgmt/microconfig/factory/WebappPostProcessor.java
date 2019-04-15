@@ -1,4 +1,4 @@
-package deployment.mgmt.microconfig;
+package deployment.mgmt.microconfig.factory;
 
 import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
 import io.microconfig.configs.ConfigProvider;
@@ -14,7 +14,7 @@ import static io.microconfig.utils.FileUtils.delete;
 import static io.microconfig.utils.FileUtils.write;
 import static io.microconfig.utils.Logger.error;
 
-class WebappPostProcessor implements BuildConfigPostProcessor {
+public class WebappPostProcessor implements BuildConfigPostProcessor {
     private static final String WEBAPP_FILE = "mgmt.webapp";
     private static final String DEPENDSON_FILE = "mgmt.dependson.list";
     private static final String FORCED_STATUS_FILE = "mgmt.forced.status";

@@ -1,4 +1,4 @@
-package deployment.mgmt.microconfig;
+package deployment.mgmt.microconfig.factory;
 
 import io.microconfig.commands.Command;
 import io.microconfig.commands.CommandContext;
@@ -12,14 +12,14 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
-import static deployment.mgmt.microconfig.MgmtMicroConfigAdapter.MGMT;
+import static deployment.mgmt.microconfig.factory.MgmtMicroConfigAdapter.MGMT;
 import static io.microconfig.utils.FileUtils.copy;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
-class CopyHelpFilesCommand implements Command {
+public class CopyHelpFilesCommand implements Command {
     private static final String FILE_NAME = "help.txt";
 
     private final EnvironmentProvider environmentProvider;
