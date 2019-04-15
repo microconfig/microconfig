@@ -22,6 +22,6 @@ class ConfigRootDirPropertyTest {
 
     @Test
     void value() {
-        assertEquals(path.replace("\\", "/"), configRootDirProperty.value(byType("c2")).get());
+        assertEquals(new File(path).getAbsolutePath().replace("\\", "/"), configRootDirProperty.value(byType("c2")).get());
     }
 }

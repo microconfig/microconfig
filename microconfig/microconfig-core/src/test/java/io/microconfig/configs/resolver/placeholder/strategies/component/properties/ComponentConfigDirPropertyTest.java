@@ -28,8 +28,8 @@ class ComponentConfigDirPropertyTest {
     @Test
     void value() {
         String c1 = "c1";
-        String path = "c:\\configs\\root";
+        String path = "\\configs\\root";
         when(componentTree.getFolder(c1)).thenReturn(of(new File(path)));
-        assertEquals(path.replace("\\", "/"), componentConfigDirProperty.value(byType(c1)).get());
+        assertEquals(new File(path).getAbsolutePath().replace("\\", "/"), componentConfigDirProperty.value(byType(c1)).get());
     }
 }

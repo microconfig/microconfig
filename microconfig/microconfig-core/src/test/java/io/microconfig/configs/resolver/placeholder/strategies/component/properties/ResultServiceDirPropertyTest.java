@@ -19,6 +19,6 @@ class ResultServiceDirPropertyTest {
 
     @Test
     void value() {
-        assertEquals(path.replace("\\", "/") + "/c2", resultServiceDirProperty.value(byType("c2")).get());
+        assertEquals(new File(path).getAbsolutePath().replace("\\", "/") + "/c2", resultServiceDirProperty.value(byType("c2")).get());
     }
 }
