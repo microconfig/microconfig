@@ -1,7 +1,6 @@
 package io.microconfig.configs.resolver.expression;
 
 import io.microconfig.configs.resolver.PropertyResolveException;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -16,7 +15,6 @@ import java.util.regex.Pattern;
  * #{1+2} resolves to 3.
  * #{th@prop1 + th@prop2} sum value of this properties
  */
-@Getter
 @RequiredArgsConstructor
 public class Expression {
     private static final Pattern PATTERN = Pattern.compile("#\\{(?<value>[^{]+?)}");

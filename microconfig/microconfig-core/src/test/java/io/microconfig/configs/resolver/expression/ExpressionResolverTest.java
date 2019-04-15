@@ -2,6 +2,7 @@ package io.microconfig.configs.resolver.expression;
 
 import io.microconfig.configs.Property;
 import io.microconfig.configs.resolver.EnvComponent;
+import io.microconfig.configs.resolver.PropertyResolveException;
 import io.microconfig.configs.resolver.PropertyResolver;
 import io.microconfig.configs.sources.SpecialSource;
 import io.microconfig.environments.Component;
@@ -10,7 +11,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static io.microconfig.configs.resolver.expression.Expression.parse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -55,6 +58,18 @@ class ExpressionResolverTest {
         PropertyResolver resolver = new ExpressionResolver(placeholderResolver);
         String result = resolver.resolve(spel, context);
         assertEquals("connparams1", result);
+    }
+
+    @Test
+    void testException() {
+        assertThrows(PropertyResolveException.class, () -> parse("fsdfd"));
+    }
+
+    @Test
+    void testToString() {
+        String value = "#{ 1 + 2}";
+        Expression expression = parse(value);
+        assertEquals(value, expression.toString());
     }
 
     private Property prop(String value) {

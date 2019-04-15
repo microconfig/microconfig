@@ -39,5 +39,4 @@ public class EnvDescriptorResolveStrategy implements PlaceholderResolveStrategy 
             return null;
         }
     }
-
 }
