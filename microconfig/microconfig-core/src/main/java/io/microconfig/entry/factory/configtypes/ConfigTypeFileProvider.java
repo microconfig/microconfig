@@ -14,6 +14,7 @@ import java.util.Set;
 import static io.microconfig.entry.factory.configtypes.ConfigTypeImpl.byName;
 import static io.microconfig.entry.factory.configtypes.ConfigTypeImpl.byNameAndExtensions;
 import static io.microconfig.utils.IoUtils.readFully;
+import static io.microconfig.utils.Logger.announce;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static java.util.stream.Collectors.toList;
@@ -25,7 +26,14 @@ public class ConfigTypeFileProvider implements ConfigsTypeProvider {
     @Override
     public List<ConfigType> getConfigTypes(File rootDir) {
         File file = configFile(rootDir);
-        return file.exists() ? parse(file) : emptyList();
+        if (!file.exists()) return emptyList();
+
+        List<ConfigType> configs = parse(file);
+        if (!configs.isEmpty()) {
+            announce("Using settings from " + MICROCONFIG_SETTINGS);
+        }
+        return configs;
+
     }
 
     private File configFile(File rootDir) {
