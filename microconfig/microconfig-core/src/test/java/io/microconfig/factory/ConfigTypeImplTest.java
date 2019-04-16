@@ -16,7 +16,7 @@ class ConfigTypeImplTest {
         assertEquals("app", app.getType());
         assertEquals("application", app.getResultFileName());
         assertEquals(singleton(".yaml"), app.getSourceExtensions());
-        assertEquals("ConfigTypeImpl(type=app, sourceExtensions=[.yaml], resultFileName=application)", app.toString());
+        assertEquals("{type=app, sourceExtensions=[.yaml], resultFileName=application}", app.toString());
     }
 
     @Test
