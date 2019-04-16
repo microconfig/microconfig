@@ -1,4 +1,4 @@
-package io.microconfig.factory;
+package io.microconfig.entry.factory;
 
 import io.microconfig.commands.buildconfig.BuildConfigCommand;
 import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
@@ -40,9 +40,9 @@ import static io.microconfig.commands.buildconfig.BuildConfigPostProcessor.empty
 import static io.microconfig.configs.resolver.placeholder.strategies.composite.CompositeResolveStrategy.composite;
 import static io.microconfig.configs.resolver.placeholder.strategies.system.SystemResolveStrategy.envVariablesResolveStrategy;
 import static io.microconfig.configs.resolver.placeholder.strategies.system.SystemResolveStrategy.systemPropertiesResolveStrategy;
+import static io.microconfig.entry.factory.configtypes.StandardConfigTypes.APPLICATION;
 import static io.microconfig.environments.filebased.EnvironmentParserImpl.jsonParser;
 import static io.microconfig.environments.filebased.EnvironmentParserImpl.yamlParser;
-import static io.microconfig.factory.StandardConfigTypes.APPLICATION;
 import static io.microconfig.utils.CacheHandler.cache;
 import static io.microconfig.utils.CollectionUtils.joinToSet;
 import static io.microconfig.utils.FileUtils.canonical;
@@ -87,13 +87,13 @@ public class MicroconfigFactory {
 
     public ConfigProvider newFileBasedProvider(ConfigType configType) {
         return cache(
-                new FileBasedConfigProvider(configType.getConfigExtensions(), componentTree, new ComponentParserImpl(configIoService))
+                new FileBasedConfigProvider(configType.getSourceExtensions(), componentTree, new ComponentParserImpl(configIoService))
         );
     }
 
     public PropertyResolver newResolver(ConfigProvider simpleProvider, ConfigType configType) {
         PropertyResolver resolver = cache(new ExpressionResolver(cache(newPlaceholderResolver(simpleProvider, configType))));
-        resolverByType.put(configType.getName(), resolver);
+        resolverByType.put(configType.getType(), resolver);
         return resolver;
     }
 
@@ -113,7 +113,7 @@ public class MicroconfigFactory {
                 environmentProvider,
                 strategy,
                 joinToSet(componentProperties.get().keySet(), envProperties.get().keySet()),
-                configType.getName(),
+                configType.getType(),
                 resolverByType
         );
     }
@@ -144,7 +144,7 @@ public class MicroconfigFactory {
     //public for plugin
     public FilenameGenerator getFilenameGenerator(ConfigType configType) {
         return new LegacyFilenameGenerator(
-                APPLICATION.type().getResultFileName(),
+                APPLICATION.getType().getResultFileName(),
                 new FilenameGeneratorImpl(destinationComponentDir, serviceInnerDir, configType.getResultFileName()),
                 environmentProvider
         );

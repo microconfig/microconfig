@@ -5,8 +5,8 @@ import deployment.mgmt.configs.componentgroup.GroupDescription;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.service.properties.NexusRepository;
 import deployment.mgmt.configs.service.properties.impl.ProcessPropertiesImpl;
-import io.microconfig.factory.ConfigType;
-import io.microconfig.factory.MicroconfigFactory;
+import io.microconfig.entry.factory.ConfigType;
+import io.microconfig.entry.factory.MicroconfigFactory;
 import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.Property;
 import io.microconfig.environments.EnvironmentProvider;
@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
 
-import static io.microconfig.factory.StandardConfigTypes.PROCESS;
+import static io.microconfig.entry.factory.configtypes.StandardConfigTypes.PROCESS;
 import static io.microconfig.configs.Property.withoutTempValues;
 import static io.microconfig.environments.Component.byType;
 import static io.microconfig.utils.Logger.info;
@@ -28,7 +28,7 @@ public class MgmtPropertiesImpl implements MgmtProperties {
     @Override //todo migrate  for DeploySettings::getMgmtNexusRepository
     public List<NexusRepository> resolveNexusRepositories() {
         MicroconfigFactory microconfigFactory = initBuildCommands();
-        ConfigProvider configProvider = microconfigFactory.newConfigProvider(PROCESS.type());
+        ConfigProvider configProvider = microconfigFactory.newConfigProvider(PROCESS.getType());
         EnvironmentProvider environmentProvider = microconfigFactory.getEnvironmentProvider();
 
         String serviceName = anyServiceFromCurrentGroup(environmentProvider);
@@ -68,6 +68,7 @@ public class MgmtPropertiesImpl implements MgmtProperties {
         return environmentProvider.getByName(cg.getEnv())
                 .getGroupByName(cg.getGroup())
                 .getComponents()
-                .get(0).getType();
+                .get(0)
+                .getType();
     }
 }

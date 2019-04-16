@@ -1,0 +1,18 @@
+configTypes:
+  - app:
+      resultFileName: application
+      sourceExtensions:
+        - .properties
+        - .yaml
+
+  - process:
+      resultFileName: process
+      sourceExtensions:
+        - .process
+        - .proc
+
+  - deploy
+  - env
+  - secret
+  - log4j
+  - log4j2

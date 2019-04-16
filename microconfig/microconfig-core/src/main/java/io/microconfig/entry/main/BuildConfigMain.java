@@ -1,13 +1,16 @@
-package io.microconfig.factory;
+package io.microconfig.entry.main;
 
 import io.microconfig.commands.Command;
 import io.microconfig.commands.CommandContext;
+import io.microconfig.entry.factory.BuildConfigCommandFactory;
+import io.microconfig.entry.factory.configtypes.ConfigTypeFileProvider;
+import io.microconfig.entry.factory.configtypes.StandardConfigTypes;
 import io.microconfig.utils.CommandLineParams;
 
 import java.io.File;
 import java.util.List;
 
-import static io.microconfig.factory.CommandFactory.newBuildCommand;
+import static io.microconfig.entry.factory.configtypes.CompositeConfigTypeProvider.composite;
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.TimeUtils.msAfter;
 import static java.lang.System.currentTimeMillis;
@@ -36,8 +39,12 @@ public class BuildConfigMain {
         List<String> components = clp.listValue(SERVICES);
         clp.putToSystem("outputFormat");
 
-        Command command = newBuildCommand(new File(root), new File(destination));
+        Command command = commandFactory().newCommand(new File(root), new File(destination));
         execute(command, env, groups, components);
+    }
+
+    private static BuildConfigCommandFactory commandFactory() {
+        return new BuildConfigCommandFactory(composite(new ConfigTypeFileProvider(), StandardConfigTypes.asProvider()));
     }
 
     public static void execute(Command command, String env, List<String> groups, List<String> components) {
