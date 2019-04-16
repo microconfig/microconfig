@@ -4,12 +4,12 @@ import io.microconfig.configs.ConfigProvider;
 import io.microconfig.configs.resolver.PropertyResolver;
 import io.microconfig.configs.resolver.PropertyResolverHolder;
 import io.microconfig.environments.EnvironmentProvider;
-import io.microconfig.entry.factory.MicroconfigFactory;
+import io.microconfig.factory.MicroconfigFactory;
 
 import java.io.File;
 
-import static io.microconfig.entry.factory.configtypes.StandardConfigTypes.APPLICATION;
-import static io.microconfig.entry.factory.configtypes.StandardConfigTypes.PROCESS;
+import static io.microconfig.factory.configtypes.StandardConfigTypes.APPLICATION;
+import static io.microconfig.factory.configtypes.StandardConfigTypes.PROCESS;
 import static io.microconfig.testutils.ClasspathUtils.classpathFile;
 
 public class MicronconfigTestFactory {

@@ -7,8 +7,8 @@ import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.service.properties.NexusRepository;
 import deployment.mgmt.update.updater.MgmtProperties;
 import io.microconfig.configs.ConfigProvider;
-import io.microconfig.entry.factory.ConfigType;
-import io.microconfig.entry.factory.configtypes.ConfigTypeImpl;
+import io.microconfig.factory.ConfigType;
+import io.microconfig.factory.configtypes.ConfigTypeImpl;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

@@ -1,4 +1,4 @@
-package io.microconfig.entry.factory;
+package io.microconfig.factory;
 
 import io.microconfig.commands.buildconfig.BuildConfigCommand;
 import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
@@ -40,9 +40,9 @@ import static io.microconfig.commands.buildconfig.BuildConfigPostProcessor.empty
 import static io.microconfig.configs.resolver.placeholder.strategies.composite.CompositeResolveStrategy.composite;
 import static io.microconfig.configs.resolver.placeholder.strategies.system.SystemResolveStrategy.envVariablesResolveStrategy;
 import static io.microconfig.configs.resolver.placeholder.strategies.system.SystemResolveStrategy.systemPropertiesResolveStrategy;
-import static io.microconfig.entry.factory.configtypes.StandardConfigTypes.APPLICATION;
 import static io.microconfig.environments.filebased.EnvironmentParserImpl.jsonParser;
 import static io.microconfig.environments.filebased.EnvironmentParserImpl.yamlParser;
+import static io.microconfig.factory.configtypes.StandardConfigTypes.APPLICATION;
 import static io.microconfig.utils.CacheHandler.cache;
 import static io.microconfig.utils.CollectionUtils.joinToSet;
 import static io.microconfig.utils.FileUtils.canonical;

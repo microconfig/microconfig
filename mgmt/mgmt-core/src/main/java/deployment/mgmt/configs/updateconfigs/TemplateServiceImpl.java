@@ -3,14 +3,14 @@ package deployment.mgmt.configs.updateconfigs;
 import deployment.mgmt.configs.componentgroup.ComponentGroupService;
 import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.service.properties.PropertyService;
-import io.microconfig.entry.factory.ConfigType;
-import io.microconfig.entry.factory.MicroconfigFactory;
+import io.microconfig.factory.ConfigType;
+import io.microconfig.factory.MicroconfigFactory;
 import io.microconfig.configs.resolver.EnvComponent;
 import io.microconfig.configs.resolver.PropertyResolver;
 import io.microconfig.commands.buildconfig.features.templates.CopyTemplatesService;
 import lombok.RequiredArgsConstructor;
 
-import static io.microconfig.entry.factory.configtypes.StandardConfigTypes.APPLICATION;
+import static io.microconfig.factory.configtypes.StandardConfigTypes.APPLICATION;
 import static io.microconfig.environments.Component.byType;
 import static java.lang.ThreadLocal.withInitial;
 

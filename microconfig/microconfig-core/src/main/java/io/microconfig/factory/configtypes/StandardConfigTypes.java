@@ -1,14 +1,14 @@
-package io.microconfig.entry.factory.configtypes;
+package io.microconfig.factory.configtypes;
 
-import io.microconfig.entry.factory.ConfigType;
-import io.microconfig.entry.factory.ConfigsTypeProvider;
+import io.microconfig.factory.ConfigType;
+import io.microconfig.factory.ConfigsTypeProvider;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
-import static io.microconfig.entry.factory.configtypes.ConfigTypeImpl.byName;
-import static io.microconfig.entry.factory.configtypes.ConfigTypeImpl.byNameAndExtensions;
+import static io.microconfig.factory.configtypes.ConfigTypeImpl.byName;
+import static io.microconfig.factory.configtypes.ConfigTypeImpl.byNameAndExtensions;
 import static io.microconfig.utils.CollectionUtils.setOf;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.of;

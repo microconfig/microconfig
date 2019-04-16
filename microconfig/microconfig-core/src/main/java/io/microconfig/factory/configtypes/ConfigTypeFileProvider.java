@@ -1,7 +1,7 @@
-package io.microconfig.entry.factory.configtypes;
+package io.microconfig.factory.configtypes;
 
-import io.microconfig.entry.factory.ConfigType;
-import io.microconfig.entry.factory.ConfigsTypeProvider;
+import io.microconfig.factory.ConfigType;
+import io.microconfig.factory.ConfigsTypeProvider;
 import lombok.RequiredArgsConstructor;
 import org.yaml.snakeyaml.Yaml;
 
@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static io.microconfig.entry.factory.configtypes.ConfigTypeImpl.byName;
-import static io.microconfig.entry.factory.configtypes.ConfigTypeImpl.byNameAndExtensions;
+import static io.microconfig.factory.configtypes.ConfigTypeImpl.byName;
+import static io.microconfig.factory.configtypes.ConfigTypeImpl.byNameAndExtensions;
 import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.Logger.announce;
 import static java.util.Collections.emptyList;

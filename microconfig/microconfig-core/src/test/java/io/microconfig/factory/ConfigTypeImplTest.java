@@ -1,10 +1,9 @@
 package io.microconfig.factory;
 
-import io.microconfig.entry.factory.configtypes.ConfigTypeImpl;
-import io.microconfig.entry.factory.ConfigType;
+import io.microconfig.factory.configtypes.ConfigTypeImpl;
 import org.junit.jupiter.api.Test;
 
-import static io.microconfig.entry.factory.configtypes.ConfigTypeImpl.byNameAndExtensions;
+import static io.microconfig.factory.configtypes.ConfigTypeImpl.byNameAndExtensions;
 import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

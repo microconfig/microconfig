@@ -1,6 +1,6 @@
-package io.microconfig.entry.factory.configtypes;
+package io.microconfig.factory.configtypes;
 
-import io.microconfig.entry.factory.ConfigType;
+import io.microconfig.factory.ConfigType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

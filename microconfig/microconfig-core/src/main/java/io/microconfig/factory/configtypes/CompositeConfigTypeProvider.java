@@ -1,7 +1,7 @@
-package io.microconfig.entry.factory.configtypes;
+package io.microconfig.factory.configtypes;
 
-import io.microconfig.entry.factory.ConfigType;
-import io.microconfig.entry.factory.ConfigsTypeProvider;
+import io.microconfig.factory.ConfigType;
+import io.microconfig.factory.ConfigsTypeProvider;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

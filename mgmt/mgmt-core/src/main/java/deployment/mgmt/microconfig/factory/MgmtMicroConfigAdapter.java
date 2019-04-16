@@ -6,15 +6,15 @@ import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
 import deployment.mgmt.microconfig.secrets.SecretServiceImpl;
 import deployment.mgmt.microconfig.secrets.UpdateSecretsPostProcessor;
 import io.microconfig.configs.io.ioservice.ConfigIoService;
-import io.microconfig.entry.main.BuildConfigMain;
-import io.microconfig.entry.factory.MicroconfigFactory;
+import io.microconfig.entry.BuildConfigMain;
+import io.microconfig.factory.MicroconfigFactory;
 
 import java.io.File;
 import java.util.List;
 
 import static io.microconfig.commands.Command.composite;
-import static io.microconfig.entry.factory.configtypes.ConfigTypeImpl.byName;
-import static io.microconfig.entry.factory.configtypes.StandardConfigTypes.*;
+import static io.microconfig.factory.configtypes.ConfigTypeImpl.byName;
+import static io.microconfig.factory.configtypes.StandardConfigTypes.*;
 import static io.microconfig.utils.FileUtils.userHome;
 
 public class MgmtMicroConfigAdapter {

@@ -1,4 +1,4 @@
-package io.microconfig.entry.factory;
+package io.microconfig.factory;
 
 import java.util.Set;
 

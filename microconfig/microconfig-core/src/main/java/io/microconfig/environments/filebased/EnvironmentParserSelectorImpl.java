@@ -3,7 +3,6 @@ package io.microconfig.environments.filebased;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.asList;

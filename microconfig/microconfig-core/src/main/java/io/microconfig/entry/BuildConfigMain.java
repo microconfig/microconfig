@@ -1,16 +1,16 @@
-package io.microconfig.entry.main;
+package io.microconfig.entry;
 
 import io.microconfig.commands.Command;
 import io.microconfig.commands.CommandContext;
-import io.microconfig.entry.factory.BuildConfigCommandFactory;
-import io.microconfig.entry.factory.configtypes.ConfigTypeFileProvider;
-import io.microconfig.entry.factory.configtypes.StandardConfigTypes;
+import io.microconfig.factory.BuildConfigCommandFactory;
+import io.microconfig.factory.configtypes.ConfigTypeFileProvider;
+import io.microconfig.factory.configtypes.StandardConfigTypes;
 import io.microconfig.utils.CommandLineParams;
 
 import java.io.File;
 import java.util.List;
 
-import static io.microconfig.entry.factory.configtypes.CompositeConfigTypeProvider.composite;
+import static io.microconfig.factory.configtypes.CompositeConfigTypeProvider.composite;
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.TimeUtils.msAfter;
 import static java.lang.System.currentTimeMillis;

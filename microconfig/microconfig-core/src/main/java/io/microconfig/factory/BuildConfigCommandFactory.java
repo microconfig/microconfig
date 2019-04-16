@@ -1,4 +1,4 @@
-package io.microconfig.entry.factory;
+package io.microconfig.factory;
 
 import io.microconfig.commands.Command;
 import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
