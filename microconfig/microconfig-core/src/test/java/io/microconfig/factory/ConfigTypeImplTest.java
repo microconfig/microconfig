@@ -16,11 +16,7 @@ class ConfigTypeImplTest {
         assertEquals("app", app.getType());
         assertEquals("application", app.getResultFileName());
         assertEquals(singleton(".yaml"), app.getSourceExtensions());
-    }
-
-    @Test
-    void testExtension() {
-        assertThrows(IllegalArgumentException.class, () -> byNameAndExtensions("app", singleton("yaml"), "application"));
+        assertEquals("ConfigTypeImpl(type=app, sourceExtensions=[.yaml], resultFileName=application)", app.toString());
     }
 
     @Test
@@ -29,5 +25,10 @@ class ConfigTypeImplTest {
         assertEquals("app", app.getType());
         assertEquals("app", app.getResultFileName());
         assertEquals(singleton(".app"), app.getSourceExtensions());
+    }
+
+    @Test
+    void testExtension() {
+        assertThrows(IllegalArgumentException.class, () -> byNameAndExtensions("app", singleton("yaml"), "application"));
     }
 }

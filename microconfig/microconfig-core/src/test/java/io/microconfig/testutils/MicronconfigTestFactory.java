@@ -19,7 +19,7 @@ public class MicronconfigTestFactory {
     private static final EnvironmentProvider envProvider = factory.getEnvironmentProvider();
 
     static {
-        factory.newConfigProvider(PROCESS.getConfigType());
+        factory.newConfigProvider(PROCESS.getType());
     }
 
     public static EnvironmentProvider getEnvProvider() {
@@ -32,9 +32,5 @@ public class MicronconfigTestFactory {
 
     public static PropertyResolver getPropertyResolver() {
         return ((PropertyResolverHolder) configProvider).getResolver();
-    }
-
-    public static MicroconfigFactory getFactory() {
-        return factory;
     }
 }

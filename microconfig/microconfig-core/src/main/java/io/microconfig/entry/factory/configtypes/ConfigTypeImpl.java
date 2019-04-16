@@ -3,12 +3,14 @@ package io.microconfig.entry.factory.configtypes;
 import io.microconfig.entry.factory.ConfigType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import java.util.Set;
 
 import static java.util.Collections.singleton;
 
 @Getter
+@ToString
 @RequiredArgsConstructor
 public class ConfigTypeImpl implements ConfigType {
     private final String type;
