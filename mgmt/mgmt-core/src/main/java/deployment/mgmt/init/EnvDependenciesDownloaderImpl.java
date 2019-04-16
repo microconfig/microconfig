@@ -7,8 +7,7 @@ import deployment.mgmt.configs.filestructure.DeployFileStructure;
 import deployment.mgmt.configs.service.properties.NexusRepository;
 import deployment.mgmt.update.updater.MgmtProperties;
 import io.microconfig.configs.ConfigProvider;
-import io.microconfig.factory.ConfigType;
-import io.microconfig.factory.ConfigTypeImpl;
+import io.microconfig.entry.factory.ConfigType;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -20,7 +19,7 @@ import static deployment.mgmt.atrifacts.Artifact.fromMavenString;
 import static deployment.mgmt.utils.ZipUtils.unzip;
 import static io.microconfig.configs.Property.withoutTempValues;
 import static io.microconfig.environments.Component.byType;
-import static io.microconfig.factory.ConfigTypeImpl.byName;
+import static io.microconfig.entry.factory.configtypes.ConfigTypeImpl.byName;
 import static io.microconfig.utils.Logger.*;
 import static io.microconfig.utils.OsUtil.isWindows;
 import static io.microconfig.utils.TimeUtils.secAfter;
