@@ -8,7 +8,7 @@ import java.io.File;
 import java.util.List;
 
 import static deployment.mgmt.utils.ZipUtils.unzip;
-import static io.microconfig.utils.Logger.error;
+import static io.microconfig.utils.Logger.announce;
 
 @RequiredArgsConstructor
 public class ExtractServiceImpl implements ExtractService {
@@ -19,11 +19,8 @@ public class ExtractServiceImpl implements ExtractService {
         String extractToDir = processProperties.getMavenSettings().getExtractToDir();
         if (extractToDir == null) return;
 
-        List<File> files = classpathService.classpathFor(service).current().asFiles();
-        if (files.size() != 1) {
-            error("Mgmt can unzip only a single artifact. Remove 'extractTo' setting or configure using a single artifact.");
-        }
-        unzip(new File(extractToDir));
+        List<File> files = classpathService.classpathFor(service).current().onlyServiceArtifacts().asFiles();
+        announce("Extracting " + service + " artifact to " + extractToDir);
+        unzip(files.get(0), new File(extractToDir));
     }
-
 }

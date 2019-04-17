@@ -105,7 +105,7 @@ public class ZipUtils {
 
             }
         } catch (IOException | ArchiveException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Can't unzip " + archive, e);
         }
     }
 

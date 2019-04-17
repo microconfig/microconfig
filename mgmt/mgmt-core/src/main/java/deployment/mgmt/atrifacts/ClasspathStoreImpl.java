@@ -33,14 +33,15 @@ public class ClasspathStoreImpl implements ClasspathStore {
     private final PropertyService propertyService;
 
     @Override
-    public String getClasspath(String service) {
-        String classpath = readFullyOrEmpty(classpathPrependFile(service)) + readFullyOrEmpty(classpathFile(service));
+    public String getClasspath(String service, boolean onlyServiceArtifacts) {
+        String classpath = (onlyServiceArtifacts ? "" : readFullyOrEmpty(classpathPrependFile(service)))
+                + readFullyOrEmpty(classpathFile(service));
         return classpath.replace(LINE_SEPARATOR, "");
     }
 
     @Override
-    public List<File> getClasspathAsFiles(String service) {
-        String classpath = getClasspath(service);
+    public List<File> getClasspathAsFiles(String service, boolean onlyServiceArtifacts) {
+        String classpath = getClasspath(service, onlyServiceArtifacts);
         if (isEmpty(classpath)) return emptyList();
 
         File serviceDir = deployFileStructure.service().getServiceDir(service);

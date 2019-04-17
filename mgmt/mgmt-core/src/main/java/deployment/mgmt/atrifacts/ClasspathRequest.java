@@ -13,6 +13,8 @@ public interface ClasspathRequest {
     Classpath buildUsing(ProcessProperties processProperties);
 
     interface Classpath {
+        Classpath onlyServiceArtifacts();
+
         String asString();
 
         List<File> asFiles();

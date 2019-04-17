@@ -103,15 +103,22 @@ public class ClasspathServiceImpl implements ClasspathService {
     @RequiredArgsConstructor
     private class ClasspathImpl implements Classpath {
         private final String service;
+        private boolean onlyServiceArtifacts;
+
+        @Override
+        public Classpath onlyServiceArtifacts() {
+            onlyServiceArtifacts = true;
+            return this;
+        }
 
         @Override
         public String asString() {
-            return classpathStore.getClasspath(service);
+            return classpathStore.getClasspath(service, onlyServiceArtifacts);
         }
 
         @Override
         public List<File> asFiles() {
-            return classpathStore.getClasspathAsFiles(service);
+            return classpathStore.getClasspathAsFiles(service, onlyServiceArtifacts);
         }
     }
 }
