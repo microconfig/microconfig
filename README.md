@@ -107,16 +107,16 @@ java.opts.mem=-Xms1024M -Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/
 ```
 **payments/process.proc**
 ```properties
-    artifact=org.example:payments:19.4.2 # partial duplication
-    java.main=org.example.payments.PaymentStarter
-    java.opts.mem=-Xms1024M -Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log # duplication
-    instance.count=2
+artifact=org.example:payments:19.4.2 # partial duplication
+java.main=org.example.payments.PaymentStarter
+java.opts.mem=-Xms1024M -Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log # duplication
+instance.count=2
 ```
 **service-discovery/process.proc**
 ```properties
-    artifact=org.example.discovery:eureka:19.4.2 # partial duplication         
-    java.main=org.example.discovery.EurekaStarter
-    java.opts.mem=-Xms1024M -Xmx2048M # partial duplication         
+artifact=org.example.discovery:eureka:19.4.2 # partial duplication 
+java.main=org.example.discovery.EurekaStarter
+java.opts.mem=-Xms1024M -Xmx2048M # partial duplication 
 ```
 
 As you can see we already have some small duplication (all services have '19.4.2' version, and two of them have the same java.ops params).  Configuration duplication is as bad as code duplication. We will see later how to do this in a better way.
@@ -125,43 +125,43 @@ Let's see what application properties look like. In the comments we note what ca
 
 **orders/application.yaml**
 ```yaml
-    server.port: 9000
-    application.name: orders # better to get name from folder
-    orders.personalRecommendation: true
-    statistics.enableExtendedStatistics: true
-    service-discovery.url: http://10.12.172.11:6781 # are you sure url is consistent with SD configuration?
-    eureka.instance.prefer-ip-address: true  # duplication        
-    datasource:
-      minimum-pool-size: 2  # duplication
-      maximum-pool-size: 10
-      url: jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV  # partial duplication
-    jpa.properties.hibernate.id.optimizer.pooled.prefer_lo: true  # duplication
+server.port: 9000
+application.name: orders # better to get name from folder
+orders.personalRecommendation: true
+statistics.enableExtendedStatistics: true
+service-discovery.url: http://10.12.172.11:6781 # are you sure url is consistent with SD configuration?
+eureka.instance.prefer-ip-address: true  # duplication
+datasource:
+  minimum-pool-size: 2  # duplication
+  maximum-pool-size: 10
+  url: jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV  # partial duplication
+jpa.properties.hibernate.id.optimizer.pooled.prefer_lo: true  # duplication
 ```
 **payments/application.yaml**
 ```yaml
-    server.port: 8080
-    application.name: payments # better to get name from folder
-    payments:
-      bookTimeoutInMs: 900000 # difficult to read. How long in minutes?
-      system.retries: 3
-    consistency.validateConsistencyIntervalInMs: 420000 # difficult to read. How long in minutes?
-    service-discovery.url: http://10.12.172.11:6781 # are you sure url is consistent with eureka configuration?
-    eureka.instance.prefer-ip-address: true  # duplication            
-    datasource:
-      minimum-pool-size: 2  # duplication
-      maximum-pool-size: 5    
-    datasource.url: jdbc:oracle:thin:@172.30.162.127:1521:ARMSDEV  # partial duplication
-    jpa.properties.hibernate.id.optimizer.pooled.prefer_lo: true # duplication
+server.port: 8080
+application.name: payments # better to get name from folder
+payments:
+  bookTimeoutInMs: 900000 # difficult to read. How long in minutes?
+  system.retries: 3
+consistency.validateConsistencyIntervalInMs: 420000 # difficult to read. How long in minutes?
+service-discovery.url: http://10.12.172.11:6781 # are you sure url is consistent with eureka configuration?
+eureka.instance.prefer-ip-address: true  # duplication
+datasource:
+  minimum-pool-size: 2  # duplication
+  maximum-pool-size: 5
+datasource.url: jdbc:oracle:thin:@172.30.162.127:1521:ARMSDEV  # partial duplication
+jpa.properties.hibernate.id.optimizer.pooled.prefer_lo: true # duplication
 ```
 **service-discovery/application.yaml**
 ```yaml
-    server.port: 6781
-    application.name: eureka
-    eureka:
-      client.fetchRegistry: false
-      server:
-        eviction-interval-timer-in-ms: 15000 # difficult to read
-        enable-self-preservation: false    
+server.port: 6781
+application.name: eureka
+eureka:
+  client.fetchRegistry: false
+  server:
+    eviction-interval-timer-in-ms: 15000 # difficult to read
+    enable-self-preservation: false    
 ```
 
 The first bad thing - application files contain duplication. 
@@ -182,7 +182,7 @@ repo
 |   └───service-discovery-client 
 |   |   └───application.yaml
 |   └───oracle-client
-|       └───application.yaml
+|   └───application.yaml
 |	
 └───core  
 │   └───orders
@@ -215,26 +215,26 @@ And replace explicit configs with includes
 
 **orders/application.yaml**
 ```yaml
-    #include service-discovery-client
-    #include oracle-db-client
-    
-    server.port: 9000
-    application.name: orders # better to get name from folder
-    orders.personalRecommendation: true
-    statistics.enableExtendedStatistics: true    
+#include service-discovery-client
+#include oracle-db-client
+
+server.port: 9000
+application.name: orders # better to get name from folder
+orders.personalRecommendation: true
+statistics.enableExtendedStatistics: true
 ```
 
 **payments/application.yaml**
 ```yaml
-    #include service-discovery-client
-    #include oracle-db-client
-    
-    server.port: 8080
-    application.name: payments # better to get name from folder
-    payments:
-      bookTimeoutInMs: 900000 # how long in minutes?
-      system.retries: 3
-    consistency.validateConsistencyIntervalInMs: 420000 # difficult to read. How long in minutes?    
+#include service-discovery-client
+#include oracle-db-client
+
+server.port: 8080
+application.name: payments # better to get name from folder
+consistency.validateConsistencyIntervalInMs: 420000 # difficult to read. How long in minutes?
+payments:
+  bookTimeoutInMs: 900000 # how long in minutes?
+  system.retries: 3
 ```
 To include a component's configuration you need to specify only the component name, you don't need to specify its path. This makes the config layout refactoring easier. Microconfig will find a folder with the component's name and include the configuration from its files (if the folder name is not unique, Microconfig includes configs from each folder, but it's a good idea to keep a component name unique).
 
@@ -244,11 +244,11 @@ You can override any properties from your dependencies.
 Let's override the order's connection pool size.
 
 **orders/application.yaml**
-```yaml        
-    #include oracle-db-client
-    
-    datasource.maximum-pool-size: 10
-    ***    
+```yaml    
+#include oracle-db-client
+
+datasource.maximum-pool-size: 10
+***
 ```
 
 Nice. But order-service has a small part of its db configuration(pool-size), it's not that bad, but we can make the config semantically better.
@@ -285,35 +285,35 @@ jpa.properties.hibernate.id.optimizer.pooled.prefer_lo: true
 ```
 **orders-db/application.yaml**
 ```yaml
-    #include oracle-common
+#include oracle-common
     
-    datasource:
-      maximum-pool-size: 10
-      url: jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV #partial duplication
+datasource:
+  maximum-pool-size: 10
+  url: jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV #partial duplication
 ```
 **payment-db/application.yaml**
 ```yaml
-    #include oracle-common
+#include oracle-common
     
-    datasource.url: jdbc:oracle:thin:@172.30.162.127:1521:ARMSDEV #partial duplication
+datasource.url: jdbc:oracle:thin:@172.30.162.127:1521:ARMSDEV #partial duplication
 ```
 
 **orders/application.yaml**
 ```yaml
-    #include order-db
-    ***
+#include order-db
+***
 ```
 
 **payments/application.yaml**
 ```yaml
-    #include payment-db
+#include payment-db
 ```
 
 Also includes can be in one line:
 
 **payments/application.yaml**
 ```yaml
-    #include service-discovery-client, oracle-db-client    
+#include service-discovery-client, oracle-db-client    
 ```
 
 # Placeholders
@@ -357,33 +357,33 @@ Initial:
 
 **oracle-common/application.yaml**
 ```yaml    
-    datasource:
-      maximum-pool-size: 10
-      url: jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV 
+datasource:
+  maximum-pool-size: 10
+  url: jdbc:oracle:thin:@172.30.162.31:1521:ARMSDEV 
 ```   
 
 Refactored:
 
 **oracle-common/application.yaml**
-```yaml    
-    datasource:
-      maximum-pool-size: 10
-      url: jdbc:oracle:thin:@${this@oracle.host}:1521:${this@oracle.sid}
-    oracle:
-      host: 172.30.162.20    
-      sid: ARMSDEV
+```yaml
+datasource:
+  maximum-pool-size: 10
+  url: jdbc:oracle:thin:@${this@oracle.host}:1521:${this@oracle.sid}
+oracle:
+  host: 172.30.162.20
+  sid: ARMSDEV
 ```
 **oracle-common/application.uat.yaml**
-```yaml    
-    oracle.host: 172.30.162.80
-```    
-    
+```yaml
+oracle.host: 172.30.162.80
+```
+
 **oracle-common/application.prod.yaml**
-```yaml    
-    oracle:
-      host: 10.17.14.18    
-      sid: ARMSPROD    
-```        
+```yaml
+oracle:
+  host: 10.17.14.18
+  sid: ARMSPROD
+```
 
 As you can see using placeholders we can override not only the whole property but also part of it.
 
@@ -395,13 +395,13 @@ If you want to declare temp properties that will be used by placeholders only an
 
 **oracle-common/application.yaml**
 ```yaml
-    datasource.url: jdbc:oracle:thin:@${this@oracle.host}:1521:${this@oracle.sid}
-    #var oracle.host: 172.30.162.20    
-    #var oracle.sid: ARMSDEV
+datasource.url: jdbc:oracle:thin:@${this@oracle.host}:1521:${this@oracle.sid}
+#var oracle.host: 172.30.162.20
+#var oracle.sid: ARMSDEV
 ```
 **oracle-common/application.uat.yaml**
-```yaml    
-    #var oracle.host: 172.30.162.80
+```yaml
+#var oracle.host: 172.30.162.80
 ``` 
 
 This approach works with includes as well. You can #include oracle-common and then override 'oracle.host', and 'datasource.url' will be resolved based on the overridden value.
@@ -411,9 +411,9 @@ In the example below after the build process: datasource.url: jdbc:oracle:thin:@
  
 **orders-db/application.dev.yaml** 
 ```yaml   
-     #include oracle-common    
-     
-     #var oracle.host: 100.30.162.80                 
+#include oracle-common
+ 
+#var oracle.host: 100.30.162.80         
 ```
 
 ## Placeholder's default value
@@ -422,11 +422,11 @@ You can specify a default value for a placeholder using the following syntax: ${
 Let's set a default value for 'oracle host'
 
 **oracle-common/application.yaml**
-```yaml    
-    datasource:
-      maximum-pool-size: 10
-      url: jdbc:oracle:thin:@${this@oracle.host:172.30.162.20}:1521:${this@oracle.sid}        
-    #var oracle.sid: ARMSDEV
+```yaml
+datasource:
+  maximum-pool-size: 10
+  url: jdbc:oracle:thin:@${this@oracle.host:172.30.162.20}:1521:${this@oracle.sid}
+#var oracle.sid: ARMSDEV
 ```
 Note, a default value can be a placeholder:
  `${component@property:${component2@property7:Missing value}}`
@@ -445,11 +445,11 @@ Let's remove 'payments.system.retries' property for 'dev' environment:
 
 **payments/application.yaml**
 ```yaml
-    payments.system.retries: 3        
+payments.system.retries: 3
 ```
 **payments/application.dev.yaml**
 ```yaml
-    #var payments.system.retries:   // will not be included into result config        
+#var payments.system.retries: // will not be included into result config    
 ```
 ## Specials placeholders
 As we discussed the syntax for placeholders looks like `${component@property}`.
@@ -473,31 +473,31 @@ Initial:
 
 **orders/application.yaml**
 ```yaml
-    #include service-discovery-client    
-    
-    application.name: orders    
+#include service-discovery-client
+
+application.name: orders
 ```
 **payments/application.yaml**
 ```yaml
-    #include service-discovery-client    
-    
-    application.name: payments
+#include service-discovery-client
+
+application.name: payments
 ```
 
 Refactored:
 
 **orders/application.yaml**
 ```yaml
-    #include service-discovery-client    
+#include service-discovery-client
 ```
 **payments/application.yaml**
 ```yaml
-    #include service-discovery-client
+#include service-discovery-client
 ```
 **service-discovery-client/application.yaml**
-```yaml            
-    application.name: ${this@name}
-```                 
+```yaml
+application.name: ${this@name}
+``` 
 
 ## Environment variables and system properties 
 To resolve environment variables use the following syntax: `${env@variableName}`
@@ -561,7 +561,7 @@ Microconfig default config types:
 * `env` – for *.env
 
 # Expression language
-Microconfig supports a powerful expression language based on [Spring EL](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#expressions).    
+Microconfig supports a powerful expression language based on [Spring EL](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#expressions).
 
 Let's see some examples:
 
@@ -596,13 +596,13 @@ order-db
 
 **orders-db/application.dev.yaml**
 ```yaml   
-    datasource.maximum-pool-size: 15   
-    hibernate.show-sql: true    
+datasource.maximum-pool-size: 15   
+hibernate.show-sql: true
 ```
 
 **orders-db/application.prod.yaml**
 ```yaml   
-    datasource.maximum-pool-size: 50    
+datasource.maximum-pool-size: 50
 ```
 
 Also, you can declare common properties for several environments in a single file. You can use the following filename pattern: application.**${ENV1.ENV2.ENV3...}**.yaml
@@ -619,7 +619,7 @@ order-db
 
 **orders-db/application.dev.dev2.test.yaml**
 ```yaml   
-    hibernate.show-sql: true    
+hibernate.show-sql: true
 ```
 
 When you build config for a specific environment (for example 'dev') Microconfig will collect properties from:
@@ -633,20 +633,20 @@ As we discussed you can create environment specific properties using the filenam
 For example, you can create a folder for http client timeout settings:
 
 **timeout-settings/application.yaml**
-```yaml    
-    timeouts:
-      connectTimeoutMs: 1000
-      readTimeoutMs: 5000
+```yaml
+timeouts:
+  connectTimeoutMs: 1000
+  readTimeoutMs: 5000
 ```
 And some services can include this configuration:
 
 **orders/application.yaml**
 ```yaml
-    #include timeout-settings    
+#include timeout-settings
 ```
 **payments/application.yaml**
 ```yaml
-    #include timeout-settings
+#include timeout-settings
 ```
 
 But what if you want some services to be configured with a long timeout? Instead of the environment you can use the profile name in the filename:
@@ -658,18 +658,18 @@ timeout-settings
 ```
 **timeout-settings/application.long.yaml**
 ```yaml
-    timeouts.readTimeoutMs: 30000    
+timeouts.readTimeoutMs: 30000
 ```
 **timeout-settings/application.huge.yaml**
 ```yaml
-    timeouts.readTimeoutMs: 600000    
+timeouts.readTimeoutMs: 600000
 ```
 
 And specify the profile name with include:
 
 **payments/application.yaml**
 ```yaml
-    #include timeout-settings[long]
+#include timeout-settings[long]
 ```
 
 You can use the profile/environment name with placeholders as well:
@@ -708,16 +708,16 @@ Let's configure the order and payment services to use this template.
 
 **orders/application.yaml**
 ```yaml
-    #include service-discovery-client
-    
-    microconfig.template.logback.fromFile: ${logback@configDir}/logback.xml # full path to logback.xml, @configDir - special placeholder property
+#include service-discovery-client
+
+microconfig.template.logback.fromFile: ${logback@configDir}/logback.xml # full path to logback.xml, @configDir - special placeholder property
 ```
 
 **payments/application.yaml**
 ```yaml
-    #include service-discovery-client
-    
-    microconfig.template.logback.fromFile: ${logback@configDir}/logback.xml
+#include service-discovery-client
+
+microconfig.template.logback.fromFile: ${logback@configDir}/logback.xml
 ```  
    
 It's better to extract the common property `microconfig.template.logback.fromFile` to logback-template/application.yaml and then use #include.
@@ -731,15 +731,15 @@ repo
 ```    
 **logback-template/application.yaml**
 ```yaml   
-    microconfig.template.logback.fromFile: ${logback@configDir}/logback.xml    
+microconfig.template.logback.fromFile: ${logback@configDir}/logback.xml
 ```
 **orders-template/application.yaml**
 ```yaml
-    #include service-discovery-client, logback-template
+#include service-discovery-client, logback-template
 ```
 **payments-template/application.yaml**
 ```yaml
-    #include service-discovery-client, logback-template
+#include service-discovery-client, logback-template
 ```  
 
 As you can see the placeholder syntax inside template `${propName}`  differs from the Microconfig syntax `${component@propName}`, it doesn't specify a component name.
@@ -756,9 +756,9 @@ If you want to override the template destination filename you can use `microconf
  
  **logback-template/application.yaml**
  ```yaml   
-     microconfig.template.logback:
-       fromFile: ${logback@configDir}/logback.xml    
-       toFile: logs/logback-descriptor.xml
+ microconfig.template.logback:
+   fromFile: ${logback@configDir}/logback.xml
+   toFile: logs/logback-descriptor.xml
  ``` 
  
 You can use the absolute or the relative path for `toFile` property. The relative path starts from the resulting service config dir (see 'Running config build' section).
@@ -766,7 +766,7 @@ You can use the absolute or the relative path for `toFile` property. The relativ
 So the template dependency declaration syntax looks like:   
 ```
 microconfig.template.${templateName}:
-  fromFile: ${sourceTemplateFile}    
+  fromFile: ${sourceTemplateFile}
   toFile: ${resolvedTemplateDestinationFile}
 ```
 `${templateName}` - is used only for mapping `fromFile` and `toFile` properties.
@@ -783,7 +783,7 @@ repo
 ```
 **logback-template/application.prod.yaml**
 ```yaml   
-    microconfig.template.logback.fromFile: ${logback@configDir}/logback-prod.xml        
+microconfig.template.logback.fromFile: ${logback@configDir}/logback-prod.xml
 ``` 
 
 # Environment descriptor
