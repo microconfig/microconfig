@@ -182,7 +182,7 @@ repo
 |   └───service-discovery-client 
 |   |   └───application.yaml
 |   └───oracle-client
-|   └───application.yaml
+|       └───application.yaml
 |	
 └───core  
 │   └───orders
