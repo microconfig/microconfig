@@ -973,7 +973,7 @@ configs
 │   └───diff-application.yaml
 │   └───process.yaml
 │   └───diff-process.yaml
-|   └───logback.xml
+│   └───logback.xml
 ```
 
 The Diff format:
