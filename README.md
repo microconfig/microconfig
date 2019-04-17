@@ -63,8 +63,8 @@ So, let’s imagine we have 4 microservices: 'order-service', 'payment-service',
 ```
 repo
 └───core  
-│    └───orders
-│    └───payments
+│   └───orders
+│   └───payments
 │	
 └───infra
     └───service-discovery
@@ -179,22 +179,22 @@ Our services have a common configuration for service-discovery and database. To 
 ```
 repo
 └───common
-|    └───service-discovery-client 
-|    |   └───application.yaml
-|    └───oracle-client
-|        └───application.yaml
+|   └───service-discovery-client 
+|   |   └───application.yaml
+|   └───oracle-client
+|       └───application.yaml
 |	
 └───core  
-│    └───orders
-│    │     ***
-│    └───payments
-│          ***
+│   └───orders
+│   │   ***
+│   └───payments
+│       ***
 │	
 └───infra
     └───service-discovery
-    │     ***
+    │   ***
     └───api-gateway
-          ***
+        ***
 ```
 **service-discovery-client/application.yaml**
 ```yaml
@@ -266,13 +266,13 @@ Let’s refactor.
 ```
 repo
 └───common
-|    └───oracle
-|        └───oracle-common
-|        |   └───application.yaml
-|        └───order-db
-|        |   └───application.yaml
-|        └───payment-db
-|            └───application.yaml
+|   └───oracle
+|       └───oracle-common
+|       |   └───application.yaml
+|       └───order-db
+|       |   └───application.yaml
+|       └───payment-db
+|           └───application.yaml
 ```
 
 **oracle-common/application.yaml**
@@ -689,8 +689,8 @@ Let's create this file:
 ```
 repo
 └───common
-|    └───logback-template 
-|     	 └───logback.xml
+|   └───logback-template 
+|       └───logback.xml
 ```
 **logback-template/logback.xml**
 ```xml
@@ -725,9 +725,9 @@ It's better to extract the common property `microconfig.template.logback.fromFil
 ```
 repo
 └───common
-|    └───logback-template 
-|     	 └───logback.xml
-|     	 └───application.yaml
+|   └───logback-template 
+|   └───logback.xml
+|   └───application.yaml
 ```    
 **logback-template/application.yaml**
 ```yaml   
@@ -775,11 +775,11 @@ Let's override the file that will be copied on the prod environment:
 ```
 repo
 └───common
-|    └───logback-template 
-|     	 └───logback.xml
-|     	 └───logback-prod.xml
-|     	 └───application.yaml
-|     	 └───application.prod.yaml
+|   └───logback-template 
+|       └───logback.xml
+|     	└───logback-prod.xml
+|     	└───application.yaml
+|       └───application.prod.yaml
 ```
 **logback-template/application.prod.yaml**
 ```yaml   
@@ -920,15 +920,15 @@ Initial source layout:
 ```
 repo
 └───common
-|    └───logback-template 
-|     	 └───logback.xml
+|   └───logback-template 
+|       └───logback.xml
 └───core  
-│    └───orders
-│    │   └───application.yaml
-│    │   └───process.proc
-│    └───payments
-│        └───application.yaml
-│        └───process.proc
+│   └───orders
+│   │   └───application.yaml
+│   │   └───process.proc
+│   └───payments
+│       └───application.yaml
+│       └───process.proc
 │	
 └───infra
     └───service-discovery
@@ -992,12 +992,12 @@ You can keep a part of configuration in *.yaml files and another part in *.prope
 ```
 repo
 └───core  
-│    └───orders
-│    │   └───application.yaml
-│    │   └───process.proc
-│    └───payments
-│        └───application.properties
-│        └───process.proc
+│   └───orders
+│   │   └───application.yaml
+│   │   └───process.proc
+│   └───payments
+│       └───application.properties
+│       └───process.proc
 ```
 
 Yaml configs can have nested properties:
