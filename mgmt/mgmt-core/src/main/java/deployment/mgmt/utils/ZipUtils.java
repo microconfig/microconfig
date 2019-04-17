@@ -104,7 +104,7 @@ public class ZipUtils {
                 }
 
             }
-        } catch (IOException | ArchiveException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Can't unzip " + archive, e);
         }
     }
@@ -171,10 +171,21 @@ public class ZipUtils {
                 .collect(toSet());
     }
 
-    private static ArchiveInputStream createArchiveInputStream(File archive) throws IOException, ArchiveException {
+    private static ArchiveInputStream createArchiveInputStream(File archive) throws IOException {
         InputStream inputStream = new BufferedInputStream(new FileInputStream(archive));
-        return archive.getName().endsWith(".gz") ? new TarArchiveInputStream(new GzipCompressorInputStream(inputStream))
-                : new ArchiveStreamFactory().createArchiveInputStream(inputStream);
+        if (archive.getName().endsWith(".gz")) {
+            return tarArchive(inputStream);
+        }
+
+        try {
+            return new ArchiveStreamFactory().createArchiveInputStream(inputStream);
+        } catch (ArchiveException e) {
+            return tarArchive(inputStream);
+        }
+    }
+
+    private static TarArchiveInputStream tarArchive(InputStream inputStream) throws IOException {
+        return new TarArchiveInputStream(new GzipCompressorInputStream(inputStream));
     }
 
     private static ZipInputStream newZipStream(File zipArchive) throws FileNotFoundException {
