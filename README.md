@@ -606,6 +606,7 @@ order-db
 ```
 
 Also, you can declare common properties for several environments in a single file. You can use the following filename pattern: application.**${ENV1.ENV2.ENV3...}**.yaml
+
 Let's create common properties for dev, dev2 and test environments.
 
 ```
