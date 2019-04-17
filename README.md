@@ -689,8 +689,8 @@ Let's create this file:
 ```
 repo
 └───common
-|   └───logback-template 
-|       └───logback.xml
+|    └───logback-template 
+|         └───logback.xml
 ```
 **logback-template/logback.xml**
 ```xml
