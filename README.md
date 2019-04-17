@@ -777,8 +777,8 @@ repo
 └───common
 |   └───logback-template 
 |       └───logback.xml
-|     	└───logback-prod.xml
-|     	└───application.yaml
+|       └───logback-prod.xml
+|       └───application.yaml
 |       └───application.prod.yaml
 ```
 **logback-template/application.prod.yaml**
