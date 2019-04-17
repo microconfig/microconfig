@@ -180,7 +180,7 @@ Our services have a common configuration for service-discovery and database. To 
 repo
 └───common
 |    └───service-discovery-client 
-|    | 	 └───application.yaml
+|    |   └───application.yaml
 |    └───oracle-client
 |        └───application.yaml
 |	
