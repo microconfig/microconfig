@@ -101,9 +101,9 @@ Inside process.proc we will store configuration that describes what your service
 
 **orders/process.proc**
 ```properties
-    artifact=org.example:orders:19.4.2 # partial duplication
-    java.main=org.example.orders.OrdersStarter
-    java.opts.mem=-Xms1024M -Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log # duplication
+artifact=org.example:orders:19.4.2 # partial duplication
+java.main=org.example.orders.OrdersStarter
+java.opts.mem=-Xms1024M -Xmx2048M -XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:logs/gc.log # duplication
 ```
 **payments/process.proc**
 ```properties
