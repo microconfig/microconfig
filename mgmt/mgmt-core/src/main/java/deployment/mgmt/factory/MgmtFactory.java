@@ -69,12 +69,12 @@ import deployment.mgmt.update.updater.MgmtAutoUpdater;
 import deployment.mgmt.update.updater.MgmtAutoUpdaterImpl;
 import deployment.mgmt.update.updater.MgmtProperties;
 import deployment.mgmt.update.updater.MgmtPropertiesImpl;
+import io.microconfig.commands.buildconfig.features.templates.CopyTemplatesServiceImpl;
 import io.microconfig.configs.io.ioservice.ConfigIoService;
 import io.microconfig.configs.io.ioservice.properties.PropertiesConfigIoService;
 import io.microconfig.configs.io.ioservice.selector.ConfigFormatDetectorImpl;
 import io.microconfig.configs.io.ioservice.selector.ConfigIoServiceSelector;
 import io.microconfig.configs.io.ioservice.yaml.YamlConfigIoService;
-import io.microconfig.commands.buildconfig.features.templates.CopyTemplatesServiceImpl;
 import io.microconfig.utils.reader.FilesReader;
 import io.microconfig.utils.reader.FsFilesReader;
 import lombok.Getter;
@@ -154,9 +154,10 @@ public class MgmtFactory {
                 deployFileStructure,
                 stopCommand,
                 new NewServicePreparerImpl(
-                        classpathService,
-                        deployFileStructure,
                         propertyService,
+                        deployFileStructure,
+                        classpathService,
+                        new ExtractServiceImpl(classpathService),
                         scriptRunner,
                         microconfigTemplateService()
                 ),

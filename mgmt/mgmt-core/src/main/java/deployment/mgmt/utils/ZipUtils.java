@@ -87,11 +87,11 @@ public class ZipUtils {
         Stream.of(sources).forEach(FileUtils::delete);
     }
 
-    public static void unzip(File archive, File destination) {
+    public static void unzip(File archive, File destinationDir) {
         try (ArchiveInputStream i = createArchiveInputStream(archive)) {
             ArchiveEntry entry;
             while ((entry = i.getNextEntry()) != null) {
-                File f = new File(destination, entry.getName());
+                File f = new File(destinationDir, entry.getName());
                 if (entry.isDirectory()) {
                     delete(f);
                     createDirWithPermissions(f);

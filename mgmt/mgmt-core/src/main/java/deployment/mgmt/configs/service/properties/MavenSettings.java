@@ -10,6 +10,8 @@ public interface MavenSettings {
 
     boolean resolveSingleArtifact();
 
+    String getExtractToDir();
+
     File getLocalRepositoryDir();
 
     List<NexusRepository> getNexusRepositories();

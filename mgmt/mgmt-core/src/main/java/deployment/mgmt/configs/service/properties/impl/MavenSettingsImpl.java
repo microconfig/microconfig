@@ -35,6 +35,11 @@ public class MavenSettingsImpl implements MavenSettings {
     }
 
     @Override
+    public String getExtractToDir() {
+        return processProperties.get("maven.artifact.extractTo");
+    }
+
+    @Override
     public File getLocalRepositoryDir() {
         return new File(processProperties.getOrDefault("maven.local.repo", LOCAL_REPO_DIR));
     }
