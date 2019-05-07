@@ -52,6 +52,10 @@ public class InitServiceImpl implements InitService {
 
     @Override
     public void init(String configVersion, String projectFullVersionOrPostfix) {
+        if (projectFullVersionOrPostfix.equals(".")) {
+            configVersion = projectFullVersionOrPostfix;
+        }
+
         announce("Init with configs: " + configVersion + ", project: " + projectFullVersionOrPostfix);
         long t = currentTimeMillis();
 
