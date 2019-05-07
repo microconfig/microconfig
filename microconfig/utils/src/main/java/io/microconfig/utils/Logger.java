@@ -6,6 +6,8 @@ import java.io.StringWriter;
 import static io.microconfig.utils.ConsoleColor.*;
 
 public class Logger {
+    private static volatile boolean errorOccurred;
+
     public static void error(Throwable e) {
         if (e != null) {
             error(null, e);
@@ -27,6 +29,7 @@ public class Logger {
 
     public static void error(String message) {
         info(red(message));
+        errorOccurred = true;
     }
 
     public static void warn(String message) {
@@ -47,5 +50,9 @@ public class Logger {
 
     public static String align(String value, int spacesCount) {
         return String.format("%1$-" + spacesCount + "s", value);
+    }
+
+    public static boolean isErrorOccurred() {
+        return errorOccurred;
     }
 }

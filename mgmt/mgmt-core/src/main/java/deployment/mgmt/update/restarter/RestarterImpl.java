@@ -19,7 +19,6 @@ public class RestarterImpl implements Restarter {
     private final LockService lockService;
     private volatile String[] registeredCommand;
 
-
     public void restart(File jar, String[] command) {
         command = chooseCommand(command);
 

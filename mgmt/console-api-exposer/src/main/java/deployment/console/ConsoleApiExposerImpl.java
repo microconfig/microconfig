@@ -32,10 +32,10 @@ public class ConsoleApiExposerImpl implements ConsoleApiExposer {
         if (command.length > 0) {
             for (Object service : services) {
                 Method method = chooseMethod(service.getClass(), command);
-                if (method != null) {
-                    invoke(service, method, command);
-                    return;
-                }
+                if (method == null) continue;
+
+                invoke(service, method, command);
+                return;
             }
         }
 
@@ -70,6 +70,10 @@ public class ConsoleApiExposerImpl implements ConsoleApiExposer {
             error("Exception during execution: " + (toLowerHyphen(method.getName()) + " " + argsInfo(method)) + ", " + e.getMessage());
         } catch (InvocationTargetException e) {
             error(e.getCause());
+        } finally {
+            if (isErrorOccurred()) {
+                exit(-1);
+            }
         }
     }
 
@@ -130,6 +134,6 @@ public class ConsoleApiExposerImpl implements ConsoleApiExposer {
             info(green((number < 10 ? " " + number : number) + ") ") + methodInfo.get(i));
         }
 
-        exit(0);
+        exit(-1);
     }
 }
