@@ -65,13 +65,16 @@ public class MgmtScriptGeneratorImpl implements MgmtScriptGenerator {
                 currentJavaPath()
                         + " -Djava.security.egd=file:/dev/./urandom -XX:TieredStopAtLevel=1 -Xverify:none"
                         + " -jar " + deployFileStructure.deploy().getMgmtJarFile().getAbsolutePath()
-                        + " $@\n\n";
+                        + " $@\n" +
+                        "status=$?\n\n";
 
         Supplier<String> executePostScript = () ->
                 "if [ -f $post_mgmt_script ]; then\n"
                         + "  script=$(<$post_mgmt_script)\n"
                         + "  rm -rf $post_mgmt_script\n"
                         + "  $script\n"
+                        + "else\n"
+                        +"  exit ${status}"
                         + "fi";
 
         return isWindows() ? mgmtRun.get()
