@@ -74,7 +74,7 @@ public class MgmtScriptGeneratorImpl implements MgmtScriptGenerator {
                         + "  rm -rf $post_mgmt_script\n"
                         + "  $script\n"
                         + "else\n"
-                        +"  exit ${status}"
+                        +"  exit ${status}\n"
                         + "fi";
 
         return isWindows() ? mgmtRun.get()
