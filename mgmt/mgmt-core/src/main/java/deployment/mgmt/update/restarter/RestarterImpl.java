@@ -16,6 +16,7 @@ import static mgmt.utils.ProcessUtil.startAndWait;
 @RequiredArgsConstructor
 public class RestarterImpl implements Restarter {
     public static final String UPDATE = "upgrade";
+
     private final LockService lockService;
     private volatile String[] registeredCommand;
 

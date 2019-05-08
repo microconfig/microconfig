@@ -52,6 +52,8 @@ public class InitServiceImpl implements InitService {
 
     @Override
     public void init(String configVersion, String projectFullVersionOrPostfix) {
+        projectFullVersionOrPostfix = normalizeProjectVersion(configVersion, projectFullVersionOrPostfix);
+
         announce("Init with configs: " + configVersion + ", project: " + projectFullVersionOrPostfix);
         long t = currentTimeMillis();
 
@@ -87,5 +89,9 @@ public class InitServiceImpl implements InitService {
 
     private void saveConfigVersion(String configVersion) {
         deploySettings.setConfigVersion(configVersion);
+    }
+
+    private String normalizeProjectVersion(String configVersion, String projectFullVersionOrPostfix) {
+        return projectFullVersionOrPostfix.equals(".") ? configVersion : projectFullVersionOrPostfix;
     }
 }

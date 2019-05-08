@@ -107,19 +107,11 @@ public class MgmtImpl implements Mgmt {
 
     @Override
     public void init(String configVersion, String projectFullVersionOrPostfix) {
-        if (projectFullVersionOrPostfix.equals(".")) {
-            projectFullVersionOrPostfix = configVersion;
-        }
-
         initService.init(configVersion, projectFullVersionOrPostfix);
     }
 
     @Override
     public void smartDeploy(String configVersion, String projectFullVersionOrPostfix) {
-        if (projectFullVersionOrPostfix.equals(".")) {
-            projectFullVersionOrPostfix = configVersion;
-        }
-
         announce("Smart deploy with configs: " + configVersion + ", project: " + projectFullVersionOrPostfix);
         long t = currentTimeMillis();
 
