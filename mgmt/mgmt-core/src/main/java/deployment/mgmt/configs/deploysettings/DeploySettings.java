@@ -29,6 +29,8 @@ public interface DeploySettings {
 
     NexusRepository getNexusReleaseRepository();
 
+    void setNexusReleaseRepository(String nexusReleaseRepository);
+
     Credentials getNexusCredentials();
 
     void setNexusCredentials(String credentials);

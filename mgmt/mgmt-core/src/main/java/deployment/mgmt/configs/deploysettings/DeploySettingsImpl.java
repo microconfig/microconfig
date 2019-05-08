@@ -55,6 +55,12 @@ public class DeploySettingsImpl implements DeploySettings {
     }
 
     @Override
+    public void setNexusReleaseRepository(String nexusReleaseRepository) {
+        setProperty(NEXUS_RELEASE_REPOSITORY, nexusReleaseRepository);
+        getNexusReleaseRepository();
+    }
+
+    @Override
     public String getConfigGitUrl() {
         return systemPropertyOrFileValue(CONFIG_GIT_URL, gitUrlFile(), true);
     }
