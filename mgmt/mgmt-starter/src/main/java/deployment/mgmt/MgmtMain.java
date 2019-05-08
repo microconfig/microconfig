@@ -20,7 +20,7 @@ public class MgmtMain {
     }
 
     private static void update(MgmtFactory mgmtFactory, String[] args) {
-        boolean skip = args.length == 0 || args.length == 1 && "status".equals(args[0]);
+        boolean skip = args.length == 0 || args.length == 1 && ("status".equals(args[0]) || "full-init".equals(args[0]));
         if (skip) return;
 
         if (hasSystemFlag(UPDATE)) {
