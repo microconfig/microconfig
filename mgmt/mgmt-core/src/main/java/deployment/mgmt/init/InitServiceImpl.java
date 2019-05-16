@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.function.BiConsumer;
 
+import static deployment.mgmt.atrifacts.Artifact.SNAPSHOT;
 import static deployment.mgmt.configs.updateconfigs.UpdateConfigOption.SKIP_CLASSPATH_BUILD_FOR_SNAPSHOT;
 import static deployment.mgmt.init.InitParams.*;
 import static io.microconfig.utils.Logger.announce;
@@ -92,6 +93,9 @@ public class InitServiceImpl implements InitService {
     }
 
     private String normalizeProjectVersion(String configVersion, String projectFullVersionOrPostfix) {
-        return projectFullVersionOrPostfix.equals(".") ? configVersion : projectFullVersionOrPostfix;
+        if (projectFullVersionOrPostfix.isEmpty()) return SNAPSHOT;
+        if (projectFullVersionOrPostfix.equals(".")) return configVersion;
+
+        return projectFullVersionOrPostfix;
     }
 }
