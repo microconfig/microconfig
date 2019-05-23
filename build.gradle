@@ -35,6 +35,11 @@ allprojects {
     }
 
     publishing {
+        publications {
+            nexus(MavenPublication) {
+                from components.java
+            }
+        }
     }
 
     dependencies {
