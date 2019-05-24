@@ -1,12 +1,31 @@
 package io.microconfig.utils;
 
 import org.junit.jupiter.api.Test;
+import java.util.ArrayList;
 
-import static io.microconfig.utils.StringUtils.like;
-import static io.microconfig.utils.StringUtils.toLowerHyphen;
+import static io.microconfig.utils.StringUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class StringUtilsTest {
+
+    @Test
+    void testIsEmpty() {
+        assertTrue(StringUtils.isEmpty(""));
+        assertTrue(StringUtils.isEmpty(null));
+
+        assertFalse(StringUtils.isEmpty("foo"));
+    }
+
+    @Test
+    void testUnixLikePath() {
+        assertEquals("B/ar", unixLikePath("B\\ar"));
+    }
+
+    @Test
+    void testReplaceMultipleSpaces() {
+        assertEquals("B a r", replaceMultipleSpaces("  B a r  "));
+    }
+
     @Test
     void testLike() {
         assertFalse(like(null, null));
@@ -62,12 +81,35 @@ class StringUtilsTest {
         assertFalse(like("abc", "abc%_"));
         assertFalse(like("abc", "_%bc%_"));
         assertTrue(like("abc", "_%b%_"));
-        assertTrue(like("ru.sbt.risk.hmds.local.jdbc.password", "ru.sbt.risk.hmds.local%"));
+        assertTrue(like("ru.sbt.risk.hmds.local.jdbc.password",
+                "ru.sbt.risk.hmds.local%"));
+    }
+
+    @Test
+    void testSplitToList() {
+        ArrayList<String> list = new ArrayList<>();
+        list.add("f");
+        list.add("o");
+        list.add("o");
+        assertEquals(list, splitToList("f,o,o", ","));
     }
 
     @Test
     void testToLowerHyphen() {
         assertEquals("hello-world", toLowerHyphen("helloWorld"));
         assertEquals("yes", toLowerHyphen("yes"));
+        assertEquals("foo-bar-baz", toLowerHyphen("fooBarBaz"));
+    }
+
+    @Test
+    void testIndexOfFirstDigitOr() {
+        assertEquals(2, indexOfFirstDigitOr("foobar", 2));
+        assertEquals(5, indexOfFirstDigitOr("fooba3r", 2));
+    }
+
+    @Test
+    void testAddOffsets() {
+        assertEquals("foo", addOffsets("foo", 0));
+        assertEquals("foo   ", addOffsets("foo", 3));
     }
 }
