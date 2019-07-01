@@ -96,7 +96,7 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
             write(toFile, content);
             copyPermissions(fromFile.toPath(), toFile.toPath());
 
-            info("Copied template: " + fromFile + " -> " + toFile + LINES_SEPARATOR);
+            info("Copied template: " + fromFile + " -> " + toFile);
         }
 
         private boolean isCorrect() {
