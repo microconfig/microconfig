@@ -77,7 +77,8 @@ class YamlReader extends AbstractConfigReader {
     }
 
     private boolean multilineValueEnd(String nextLine, int currentOffset) {
-        if (skip(nextLine)) return false;
+        if (skip(nextLine) && !isComment(nextLine)) return false;
+
         int nextOffset = offsetIndex(nextLine);
         if (currentOffset > nextOffset) return true;
         return currentOffset == nextOffset && !isMultilineValue(nextLine, nextOffset);
