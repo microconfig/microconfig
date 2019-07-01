@@ -65,7 +65,7 @@ public class Property {
     }
 
     public static boolean isTempProperty(String line) {
-        return line.startsWith(TEMP_VALUE);
+        return line.startsWith(TEMP_VALUE + " ");
     }
 
     public static boolean isComment(String line) {

@@ -46,7 +46,8 @@ class PropertyTest {
         assertEquals(-1, separatorIndex("keyValue"));
         assertEquals(3, separatorIndex("key: Value"));
         assertEquals(3, separatorIndex("key=Value"));
-        assertTrue(isTempProperty("#var"));
+        assertFalse(isTempProperty("#var"));
+        assertTrue(isTempProperty("#var "));
         assertFalse(isTempProperty("#Var"));
         assertTrue(isComment("#comment"));
         assertFalse(isComment("comment"));
