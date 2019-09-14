@@ -12,7 +12,6 @@ import java.util.Map;
 import static io.microconfig.commands.buildconfig.features.templates.RelativePathResolver.empty;
 import static io.microconfig.commands.buildconfig.features.templates.TemplatePattern.defaultPattern;
 import static io.microconfig.utils.FilePermissionUtils.copyPermissions;
-import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static io.microconfig.utils.FileUtils.write;
 import static io.microconfig.utils.Logger.*;
 
@@ -43,7 +42,7 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
         Map<String, TemplateDefinition> templateByName = new LinkedHashMap<>();
 
         serviceProperties.forEach((key, value) -> {
-            if (!key.startsWith(templatePattern.getTemplatePrefix())) return;
+            if (!templatePattern.startsWithTemplatePrefix(key)) return;
 
             String fromFileSuffix = templatePattern.getFromFileSuffix();
             String toFileSuffix = templatePattern.getToFileSuffix();
@@ -52,25 +51,17 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
                     info("Ignoring template '" + key + "' cause value is empty");
                     return;
                 }
-                getOrCreate(key, fromFileSuffix, templateByName).setFromFile(value);
+                getOrCreate(key, templateByName).setFromFile(value);
             } else if (key.endsWith(toFileSuffix)) {
-                getOrCreate(key, toFileSuffix, templateByName).setToFile(value);
+                getOrCreate(key, templateByName).setToFile(value);
             }
         });
 
         return templateByName.values();
     }
 
-    private TemplateDefinition getOrCreate(String key, String suffix, Map<String, TemplateDefinition> templates) {
-        return templates.computeIfAbsent(extractTemplateName(key, suffix), TemplateDefinition::new);
-    }
-
-    private String extractTemplateName(String str, String suffix) {
-        try {
-            return str.substring(templatePattern.getTemplatePrefix().length(), str.length() - suffix.length());
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Incorrect template: " + str);
-        }
+    private TemplateDefinition getOrCreate(String key, Map<String, TemplateDefinition> templates) {
+        return templates.computeIfAbsent(templatePattern.extractTemplateName(key), TemplateDefinition::new);
     }
 
     @RequiredArgsConstructor
