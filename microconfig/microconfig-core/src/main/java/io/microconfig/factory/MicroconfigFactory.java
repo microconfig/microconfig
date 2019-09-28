@@ -60,7 +60,7 @@ public class MicroconfigFactory {
     @Wither
     private final String serviceInnerDir;
 
-    private final Map<String, PropertyResolver> resolverByType = new TreeMap<>();
+    private final Map<String, PropertyResolver> resolverByType;
 
     public static MicroconfigFactory init(File sourcesRootDir, File destinationComponentDir) {
         return init(sourcesRootDir, destinationComponentDir, new FsFilesReader());
@@ -74,7 +74,8 @@ public class MicroconfigFactory {
                 newEnvProvider(fullSourcesRootDir, fileReader),
                 newConfigIoService(fileReader),
                 destinationComponentDir,
-                ""
+                "",
+                new TreeMap<>()
         );
     }
 
