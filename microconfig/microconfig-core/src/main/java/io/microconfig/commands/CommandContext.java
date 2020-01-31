@@ -32,16 +32,20 @@ public class CommandContext {
         Environment environment = environmentProvider.getByName(env);
 
         return componentGroup != null ?
-                environment.getComponentsByGroup(componentGroup)
-                : environment.getAllComponents();
+                environment.getComponentsByGroup(componentGroup) :
+                environment.getAllComponents();
     }
 
     private List<Component> filterByName(List<Component> envComponents) {
         return components.stream()
-                .map(name -> envComponents.stream()
-                        .filter(c -> c.getName().equals(name))
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalArgumentException("Component '" + name + "' is not configured for " + env + " env")))
+                .map(name -> findByName(name, envComponents))
                 .collect(toList());
+    }
+
+    private Component findByName(String name, List<Component> envComponents) {
+        return envComponents.stream()
+                .filter(c -> c.getName().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Component '" + name + "' is not configured for " + env + " env"));
     }
 }

@@ -46,6 +46,7 @@ class Template {
         String placeholder = m.group();
         String value = resolveValue(placeholder, currentComponent, propertyResolver);
         if (value == null) return;
+
         m.appendReplacement(result, quoteReplacement(value));
     }
 

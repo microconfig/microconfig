@@ -55,10 +55,10 @@ public class FileUtils {
         createDir(file.getParentFile());
         try {
             Files.createFile(file.toPath());
+            return file;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return file;
     }
 
     public static void write(File file, String content) {

@@ -54,22 +54,22 @@ public class ComponentGroup {
     }
 
     public ComponentGroup override(ComponentGroup override) {
-        ComponentGroup baseGroup = this;
+        ComponentGroup result = this;
 
         if (override.ip.isPresent()) {
-            baseGroup = baseGroup.changeIp(override.ip.get());
+            result = result.changeIp(override.ip.get());
         }
         if (!override.components.isEmpty()) {
-            baseGroup = baseGroup.changeComponents(override.components);
+            result = result.changeComponents(override.components);
         }
         if (!override.excludedComponents.isEmpty()) {
-            baseGroup = baseGroup.excludeComponents(override.excludedComponents);
+            result = result.excludeComponents(override.excludedComponents);
         }
         if (!override.appendedComponents.isEmpty()) {
-            baseGroup = baseGroup.appendComponents(override.appendedComponents);
+            result = result.appendComponents(override.appendedComponents);
         }
 
-        return baseGroup;
+        return result;
     }
 
     private ComponentGroup changeComponents(List<Component> newComponents) {

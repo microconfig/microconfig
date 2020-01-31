@@ -46,6 +46,7 @@ public class CopyTemplatesServiceImpl implements CopyTemplatesService {
 
             String fromFileSuffix = templatePattern.getFromFileSuffix();
             String toFileSuffix = templatePattern.getToFileSuffix();
+
             if (key.endsWith(fromFileSuffix)) {
                 if (value.trim().isEmpty()) {
                     info("Ignoring template '" + key + "' cause value is empty");

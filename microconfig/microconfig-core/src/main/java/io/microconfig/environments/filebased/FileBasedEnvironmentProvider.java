@@ -54,10 +54,7 @@ public class FileBasedEnvironmentProvider implements EnvironmentProvider {
     }
 
     private File findEnvFile(String name) {
-        List<File> files;
-        try (Stream<File> envStream = envFiles(name)) {
-            files = envStream.collect(toList());
-        }
+        List<File> files = getEnvFiles(name);
 
         if (files.size() > 1) {
             throw new IllegalArgumentException("Found several env files with name " + name);
@@ -66,6 +63,12 @@ public class FileBasedEnvironmentProvider implements EnvironmentProvider {
             throw new EnvironmentNotExistException("Can't find env with name " + name);
         }
         return singleValue(files);
+    }
+
+    private List<File> getEnvFiles(String name) {
+        try (Stream<File> envStream = envFiles(name)) {
+            return envStream.collect(toList());
+        }
     }
 
     private Stream<File> envFiles(String envName) {

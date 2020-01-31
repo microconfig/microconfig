@@ -14,10 +14,10 @@ public class CollectionUtils {
     }
 
     public static <T> List<T> join(Collection<T> first, Collection<T> second) {
-        List<T> list = new ArrayList<>();
-        list.addAll(first);
-        list.addAll(second);
-        return list;
+        List<T> result = new ArrayList<>();
+        result.addAll(first);
+        result.addAll(second);
+        return result;
     }
 
     public static <T> Set<T> joinToSet(Collection<T> first, Collection<T> second) {

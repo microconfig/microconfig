@@ -25,18 +25,18 @@ public class StringUtils {
     public static boolean like(String value, String like) {
         if (value == null || like == null) return false;
 
-        String pattern = Pattern.quote(like);
-        pattern = pattern.replace("_", "\\E.\\Q");
-        pattern = pattern.replace("%", "\\E.*\\Q");
+        String pattern = Pattern.quote(like)
+                .replace("_", "\\E.\\Q")
+                .replace("%", "\\E.*\\Q");
         return value.matches(pattern);
     }
 
     public static List<String> splitToList(String value, String separator) {
-        return isEmpty(value) ? emptyList()
-                : of(value.split(separator))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .collect(toList());
+        return isEmpty(value) ? emptyList() :
+                of(value.split(separator))
+                        .map(String::trim)
+                        .filter(s -> !s.isEmpty())
+                        .collect(toList());
     }
 
     public static String toLowerHyphen(String name) {
@@ -53,8 +53,7 @@ public class StringUtils {
     }
 
     public static String addOffsets(String value, int spacesCount) {
-        StringBuilder result = new StringBuilder();
-        result.append(value);
+        StringBuilder result = new StringBuilder(value);
         for (int i = 0; i < spacesCount; i++) {
             result.append(' ');
         }

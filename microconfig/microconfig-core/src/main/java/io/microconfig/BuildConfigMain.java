@@ -1,4 +1,4 @@
-package io.microconfig.entry;
+package io.microconfig;
 
 import io.microconfig.commands.Command;
 import io.microconfig.commands.CommandContext;

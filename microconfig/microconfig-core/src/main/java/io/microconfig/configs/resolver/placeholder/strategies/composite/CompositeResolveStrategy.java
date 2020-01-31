@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;
-import static java.util.Optional.empty;
 
 @RequiredArgsConstructor
 public class CompositeResolveStrategy implements PlaceholderResolveStrategy {
@@ -21,11 +20,10 @@ public class CompositeResolveStrategy implements PlaceholderResolveStrategy {
 
     @Override
     public Optional<Property> resolve(Component component, String propertyKey, String environment) {
-        for (PlaceholderResolveStrategy strategy : strategies) {
-            Optional<Property> value = strategy.resolve(component, propertyKey, environment);
-            if (value.isPresent()) return value;
-        }
-
-        return empty();
+        return strategies.stream()
+                .map(s -> s.resolve(component, propertyKey, environment))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst();
     }
 }

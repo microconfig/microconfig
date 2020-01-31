@@ -17,10 +17,14 @@ public class EnvironmentParserSelectorImpl implements EnvironmentParserSelector 
 
     @Override
     public EnvironmentParser selectParser(File envFile) {
-        if (envFile.getName().endsWith(JSON_EXT)) return jsonParser;
-        if (envFile.getName().endsWith(YAML_EXT)) return yamlParser;
+        if (endsWith(JSON_EXT, envFile)) return jsonParser;
+        if (endsWith(YAML_EXT, envFile)) return yamlParser;
 
-        throw new IllegalArgumentException("Env file must be in .json or .yaml format: " + envFile);
+        throw new IllegalArgumentException("Env file must be in " + JSON_EXT + " or " + YAML_EXT + " format. Actual: " + envFile);
+    }
+
+    private boolean endsWith(String jsonExt, File envFile) {
+        return envFile.getName().endsWith(jsonExt);
     }
 
     @Override

@@ -37,7 +37,8 @@ class PropertiesReader extends AbstractConfigReader {
                 continue;
             }
 
-            result.add(Property.parse(currentLine.toString(), env, fileSource(file, index, false)));
+            Property property = Property.parse(currentLine.toString(), env, fileSource(file, index, false));
+            result.add(property);
             currentLine.setLength(0);
         }
 

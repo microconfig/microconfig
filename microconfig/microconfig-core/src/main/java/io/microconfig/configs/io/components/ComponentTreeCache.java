@@ -27,34 +27,27 @@ public class ComponentTreeCache implements ComponentTree {
         if (!rootDir.exists()) {
             throw new IllegalArgumentException("Root directory doesnt exists: " + rootDir);
         }
+
         File components = new File(rootDir, COMPONENTS_DIR);
         if (!components.exists()) {
             throw new IllegalArgumentException("Root directory must contain 'components' dir");
         }
 
         try (Stream<Path> pathStream = walk(components.toPath())) {
-            Map<String, List<File>> cache = pathStream
-                    .parallel()
-                    .map(Path::toFile)
-                    .filter(isDirectory())
-                    .collect(groupingBy(File::getName));
-
-            return new ComponentTreeCache(rootDir, cache);
+            return new ComponentTreeCache(rootDir, filesByDirName(pathStream));
         }
+    }
+
+    private static Map<String, List<File>> filesByDirName(Stream<Path> pathStream) {
+        return pathStream.parallel()
+                .map(Path::toFile)
+                .filter(isDirectory())
+                .collect(groupingBy(File::getName));
     }
 
     @Override
     public File getRootDir() {
         return rootDir;
-    }
-
-    private static Predicate<File> isDirectory() {
-        return f -> {
-            /*Filter by ext works way faster than File::isDirectory.
-             Implementation is correct because File::listFiles for file will return null and we handle it in getConfigFiles()
-             */
-            return !f.getName().contains(".");
-        };
     }
 
     @Override
@@ -71,5 +64,14 @@ public class ComponentTreeCache implements ComponentTree {
     public Optional<File> getFolder(String component) {
         List<File> files = foldersByComponentType.getOrDefault(component, emptyList());
         return files.size() == 1 ? Optional.of(files.get(0)) : empty();
+    }
+
+    private static Predicate<File> isDirectory() {
+        return f -> {
+            /*Filter by ext works way faster than File::isDirectory.
+             Implementation is correct because File::listFiles for file will return null and we handle it in getConfigFiles()
+             */
+            return !f.getName().contains(".");
+        };
     }
 }

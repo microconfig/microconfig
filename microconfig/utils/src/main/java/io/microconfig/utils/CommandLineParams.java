@@ -19,12 +19,8 @@ public class CommandLineParams {
     public static CommandLineParams parse(String[] args) {
         Map<String, String> keyToValue = of(args)
                 .map(a -> a.split("="))
-                .peek(pair -> {
-                    if (pair.length != 2) {
-                        error("Incorrect command line param " + Arrays.toString(pair));
-                        System.exit(-1);
-                    }
-                }).collect(toMap(p -> p[0], p -> p[1]));
+                .peek(CommandLineParams::checkKeyAndValue)
+                .collect(toMap(p -> p[0], p -> p[1]));
 
         return new CommandLineParams(keyToValue);
     }
@@ -40,12 +36,13 @@ public class CommandLineParams {
 
     public String requiredValue(String key, String npeMessage) {
         String value = value(key);
-        if (value == null) {
-            error(npeMessage);
-            System.exit(-1);
+        if (value != null) {
+            return value.startsWith("\"") && value.endsWith("\"") ?
+                    value.substring(1, value.length() - 1) : value;
         }
-        return value.startsWith("\"")
-                && value.endsWith("\"") ? value.substring(1, value.length() - 1) : value;
+
+        printErrorAndExit(npeMessage);
+        throw new AssertionError("Impossible");
     }
 
     public void putToSystem(String key) {
@@ -53,5 +50,16 @@ public class CommandLineParams {
         if (value != null) {
             System.setProperty(key, value);
         }
+    }
+
+    private static void checkKeyAndValue(String[] pair) {
+        if (pair.length != 2) {
+            printErrorAndExit("Incorrect command line param " + Arrays.toString(pair));
+        }
+    }
+
+    private static void printErrorAndExit(String npeMessage) {
+        error(npeMessage);
+        System.exit(-1);
     }
 }

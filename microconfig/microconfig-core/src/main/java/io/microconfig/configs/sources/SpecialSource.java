@@ -27,12 +27,12 @@ public class SpecialSource implements PropertySource {
         return new SpecialSource(component, template.getAbsolutePath());
     }
 
+    public boolean isSystem() {
+        return SYSTEM_SOURCE.equals(value);
+    }
+
     @Override
     public String toString() {
         return value;
-    }
-
-    public boolean isSystem() {
-        return SYSTEM_SOURCE.equals(value);
     }
 }

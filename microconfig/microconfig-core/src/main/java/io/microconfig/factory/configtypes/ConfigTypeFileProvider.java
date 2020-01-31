@@ -64,6 +64,7 @@ public class ConfigTypeFileProvider implements ConfigsTypeProvider {
         Map<String, Object> attributes = (Map<String, Object>) configType.get(type);
         Set<String> sourceExtensions = attributes.containsKey("sourceExtensions") ? new LinkedHashSet<>((List<String>) attributes.get("sourceExtensions")) : singleton(type);
         String resultFileName = (String) attributes.getOrDefault("resultFileName", type);
+
         return byNameAndExtensions(type, sourceExtensions, resultFileName);
     }
 }

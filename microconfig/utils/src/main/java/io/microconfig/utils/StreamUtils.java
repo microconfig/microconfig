@@ -12,11 +12,15 @@ import static java.util.stream.Collectors.toList;
 
 public class StreamUtils {
     public static <T, R> List<R> map(Collection<T> collection, Function<? super T, ? extends R> function) {
-        return collection.stream().map(function).collect(toList());
+        return collection.stream()
+                .map(function)
+                .collect(toList());
     }
 
     public static <T> List<T> filter(Collection<T> collection, Predicate<? super T> predicate) {
-        return collection.stream().filter(predicate).collect(toList());
+        return collection.stream()
+                .filter(predicate)
+                .collect(toList());
     }
 
     public static <T, K, U> Collector<T, ?, Map<K, U>> toLinkedMap(Function<? super T, ? extends K> keyMapper,

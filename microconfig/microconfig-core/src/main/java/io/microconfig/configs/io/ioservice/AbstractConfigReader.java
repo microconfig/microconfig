@@ -49,9 +49,9 @@ public abstract class AbstractConfigReader implements ConfigReader {
         Map<Integer, String> result = new TreeMap<>();
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i).trim();
-            if (isComment(line)) {
-                result.put(i, line);
-            }
+            if (!isComment(line)) continue;
+
+            result.put(i, line);
         }
         return result;
     }
