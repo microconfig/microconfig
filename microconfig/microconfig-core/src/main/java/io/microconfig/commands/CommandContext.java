@@ -1,8 +1,8 @@
 package io.microconfig.commands;
 
-import io.microconfig.environments.Component;
-import io.microconfig.environments.Environment;
-import io.microconfig.environments.EnvironmentProvider;
+import io.microconfig.core.environments.Component;
+import io.microconfig.core.environments.Environment;
+import io.microconfig.core.environments.EnvironmentProvider;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;

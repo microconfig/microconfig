@@ -1,9 +1,9 @@
 package io.microconfig.testutils;
 
-import io.microconfig.properties.ConfigProvider;
-import io.microconfig.properties.resolver.PropertyResolver;
-import io.microconfig.properties.resolver.PropertyResolverHolder;
-import io.microconfig.environments.EnvironmentProvider;
+import io.microconfig.core.environments.EnvironmentProvider;
+import io.microconfig.core.properties.ConfigProvider;
+import io.microconfig.core.properties.resolver.PropertyResolver;
+import io.microconfig.core.properties.resolver.PropertyResolverHolder;
 import io.microconfig.factory.MicroconfigFactory;
 
 import java.io.File;

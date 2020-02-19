@@ -1,11 +1,11 @@
 package io.microconfig.commands.buildconfig.features.templates;
 
-import io.microconfig.properties.ConfigProvider;
-import io.microconfig.properties.Property;
-import io.microconfig.properties.resolver.EnvComponent;
-import io.microconfig.properties.resolver.PropertyResolver;
-import io.microconfig.properties.resolver.ResolvedConfigProvider;
-import io.microconfig.environments.Component;
+import io.microconfig.core.environments.Component;
+import io.microconfig.core.properties.ConfigProvider;
+import io.microconfig.core.properties.Property;
+import io.microconfig.core.properties.resolver.EnvComponent;
+import io.microconfig.core.properties.resolver.PropertyResolver;
+import io.microconfig.core.properties.resolver.ResolvedConfigProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,9 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.File;
 import java.util.Map;
 
-import static io.microconfig.properties.Property.asStringMap;
-import static io.microconfig.properties.Property.property;
-import static io.microconfig.properties.sources.FileSource.fileSource;
+import static io.microconfig.core.properties.Property.asStringMap;
+import static io.microconfig.core.properties.Property.property;
+import static io.microconfig.core.properties.sources.FileSource.fileSource;
 import static java.util.Collections.singletonMap;
 import static org.mockito.Mockito.*;
 

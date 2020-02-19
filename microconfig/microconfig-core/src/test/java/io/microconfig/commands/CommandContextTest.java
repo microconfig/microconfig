@@ -1,15 +1,15 @@
 package io.microconfig.commands;
 
-import io.microconfig.environments.Component;
-import io.microconfig.environments.ComponentGroup;
-import io.microconfig.environments.Environment;
-import io.microconfig.environments.EnvironmentProvider;
+import io.microconfig.core.environments.Component;
+import io.microconfig.core.environments.ComponentGroup;
+import io.microconfig.core.environments.Environment;
+import io.microconfig.core.environments.EnvironmentProvider;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.List;
 
-import static io.microconfig.environments.Component.byType;
+import static io.microconfig.core.environments.Component.byType;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;

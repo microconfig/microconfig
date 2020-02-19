@@ -1,6 +1,6 @@
 package io.microconfig.commands.buildconfig.features.templates;
 
-import io.microconfig.properties.resolver.EnvComponent;
+import io.microconfig.core.properties.resolver.EnvComponent;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
-import static io.microconfig.environments.Component.byType;
+import static io.microconfig.core.environments.Component.byType;
 import static io.microconfig.testutils.MicronconfigTestFactory.getPropertyResolver;
 import static io.microconfig.utils.OsUtil.currentUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;

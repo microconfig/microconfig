@@ -1,8 +1,8 @@
 package io.microconfig.commands.buildconfig;
 
-import io.microconfig.properties.ConfigProvider;
-import io.microconfig.properties.Property;
-import io.microconfig.properties.resolver.EnvComponent;
+import io.microconfig.core.properties.ConfigProvider;
+import io.microconfig.core.properties.Property;
+import io.microconfig.core.properties.resolver.EnvComponent;
 
 import java.io.File;
 import java.util.Map;

@@ -1,13 +1,13 @@
 package io.microconfig.commands.buildconfig;
 
 import io.microconfig.commands.CommandContext;
-import io.microconfig.properties.ConfigProvider;
-import io.microconfig.properties.Property;
-import io.microconfig.properties.resolver.EnvComponent;
-import io.microconfig.properties.serializer.ConfigSerializer;
-import io.microconfig.properties.sources.SpecialSource;
-import io.microconfig.environments.Component;
-import io.microconfig.environments.EnvironmentProvider;
+import io.microconfig.core.environments.Component;
+import io.microconfig.core.environments.EnvironmentProvider;
+import io.microconfig.core.properties.ConfigProvider;
+import io.microconfig.core.properties.Property;
+import io.microconfig.core.properties.resolver.EnvComponent;
+import io.microconfig.core.properties.serializer.ConfigSerializer;
+import io.microconfig.core.properties.sources.SpecialSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.File;
 import java.util.Map;
 
-import static io.microconfig.environments.Component.byType;
+import static io.microconfig.core.environments.Component.byType;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static java.util.Optional.of;
