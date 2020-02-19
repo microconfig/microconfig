@@ -1,6 +1,6 @@
 package io.microconfig.core.properties.resolver.placeholder.strategies.component.properties;
 
-import io.microconfig.core.properties.io.components.ComponentTree;
+import io.microconfig.core.properties.io.tree.ComponentTree;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

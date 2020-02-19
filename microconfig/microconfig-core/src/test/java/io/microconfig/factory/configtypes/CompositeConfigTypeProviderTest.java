@@ -9,13 +9,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static io.microconfig.factory.configtypes.CompositeConfigTypeProvider.composite;
 import static io.microconfig.factory.configtypes.StandardConfigTypes.APPLICATION;
-import static io.microconfig.factory.configtypes.StandardConfigTypes.PROCESS;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertSame;

@@ -6,13 +6,13 @@ import io.microconfig.core.environments.EnvironmentProvider;
 import io.microconfig.core.environments.filebased.EnvironmentParserSelectorImpl;
 import io.microconfig.core.environments.filebased.FileBasedEnvironmentProvider;
 import io.microconfig.core.properties.ConfigProvider;
-import io.microconfig.core.properties.io.components.ComponentTree;
-import io.microconfig.core.properties.io.components.ComponentTreeCache;
 import io.microconfig.core.properties.io.ioservice.ConfigIoService;
 import io.microconfig.core.properties.io.ioservice.properties.PropertiesConfigIoService;
 import io.microconfig.core.properties.io.ioservice.selector.ConfigFormatDetectorImpl;
 import io.microconfig.core.properties.io.ioservice.selector.ConfigIoServiceSelector;
 import io.microconfig.core.properties.io.ioservice.yaml.YamlConfigIoService;
+import io.microconfig.core.properties.io.tree.CachedComponentTree;
+import io.microconfig.core.properties.io.tree.ComponentTree;
 import io.microconfig.core.properties.provider.ComponentParserImpl;
 import io.microconfig.core.properties.provider.FileBasedConfigProvider;
 import io.microconfig.core.properties.resolver.PropertyResolver;
@@ -25,7 +25,12 @@ import io.microconfig.core.properties.resolver.placeholder.strategies.component.
 import io.microconfig.core.properties.resolver.placeholder.strategies.envdescriptor.EnvDescriptorResolveStrategy;
 import io.microconfig.core.properties.resolver.placeholder.strategies.envdescriptor.properties.EnvDescriptorPropertiesFactory;
 import io.microconfig.core.properties.resolver.placeholder.strategies.standard.StandardResolveStrategy;
-import io.microconfig.core.properties.serializer.*;
+import io.microconfig.core.properties.serializer.ConfigSerializer;
+import io.microconfig.core.properties.serializer.diff.DiffSerializer;
+import io.microconfig.core.properties.serializer.file.FilenameGenerator;
+import io.microconfig.core.properties.serializer.file.FilenameGeneratorImpl;
+import io.microconfig.core.properties.serializer.file.LegacyFilenameGenerator;
+import io.microconfig.core.properties.serializer.file.ToFileConfigSerializer;
 import io.microconfig.utils.reader.FilesReader;
 import io.microconfig.utils.reader.FsFilesReader;
 import lombok.Getter;
@@ -70,7 +75,7 @@ public class MicroconfigFactory {
         File fullSourcesRootDir = canonical(sourcesRootDir);
 
         return new MicroconfigFactory(
-                ComponentTreeCache.prepare(fullSourcesRootDir),
+                CachedComponentTree.prepare(fullSourcesRootDir),
                 newEnvProvider(fullSourcesRootDir, fileReader),
                 newConfigIoService(fileReader),
                 destinationComponentDir,

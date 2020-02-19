@@ -1,4 +1,4 @@
-package io.microconfig.core.properties.serializer;
+package io.microconfig.core.properties.serializer.file;
 
 import io.microconfig.core.environments.EnvironmentProvider;
 import io.microconfig.core.properties.Property;

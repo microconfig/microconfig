@@ -189,7 +189,7 @@ class ConfigProviderTest {
 
     @Test
     void testConfigTypeChange() {
-        assertEquals(new HashMap<String, String>(){
+        assertEquals(new HashMap<String, String>() {
             {
                 put("p1", "pro");
                 put("p2", "app");
@@ -198,7 +198,7 @@ class ConfigProviderTest {
             }
         }, asStringMap(provider.getProperties(byType("configType"), "dev")));
 
-        assertEquals(new HashMap<String, String>(){
+        assertEquals(new HashMap<String, String>() {
             {
                 put("p1", "pro3");
                 put("p2", "app2");

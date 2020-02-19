@@ -1,4 +1,4 @@
-package io.microconfig.core.properties.io.components;
+package io.microconfig.core.properties.io.tree;
 
 import java.io.File;
 import java.util.Optional;

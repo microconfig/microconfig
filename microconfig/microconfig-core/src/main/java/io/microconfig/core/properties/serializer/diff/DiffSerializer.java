@@ -1,7 +1,8 @@
-package io.microconfig.core.properties.serializer;
+package io.microconfig.core.properties.serializer.diff;
 
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.io.ioservice.ConfigIoService;
+import io.microconfig.core.properties.serializer.ConfigSerializer;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

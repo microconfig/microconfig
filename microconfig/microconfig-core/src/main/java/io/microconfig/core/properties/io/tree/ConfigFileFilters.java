@@ -1,9 +1,8 @@
-package io.microconfig.core.properties.io.components;
+package io.microconfig.core.properties.io.tree;
 
 import java.io.File;
 import java.util.Set;
 import java.util.function.Predicate;
-
 
 public class ConfigFileFilters {
     public static Predicate<File> defaultFilter(Set<String> fileExtensions) {

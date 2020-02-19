@@ -3,7 +3,7 @@ package io.microconfig.core.properties.provider;
 import io.microconfig.core.environments.Component;
 import io.microconfig.core.properties.ConfigProvider;
 import io.microconfig.core.properties.Property;
-import io.microconfig.core.properties.io.components.ComponentTree;
+import io.microconfig.core.properties.io.tree.ComponentTree;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -12,7 +12,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static io.microconfig.core.environments.Component.byType;
-import static io.microconfig.core.properties.io.components.ConfigFileFilters.*;
+import static io.microconfig.core.properties.io.tree.ConfigFileFilters.*;
 
 @RequiredArgsConstructor
 public class FileBasedConfigProvider implements ConfigProvider {

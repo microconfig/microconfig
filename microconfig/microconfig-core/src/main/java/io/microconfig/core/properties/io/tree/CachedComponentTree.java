@@ -1,4 +1,4 @@
-package io.microconfig.core.properties.io.components;
+package io.microconfig.core.properties.io.tree;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +17,7 @@ import static java.util.Optional.empty;
 import static java.util.stream.Collectors.groupingBy;
 
 @RequiredArgsConstructor
-public class ComponentTreeCache implements ComponentTree {
+public class CachedComponentTree implements ComponentTree {
     public static final String COMPONENTS_DIR = "components";
 
     private final File rootDir;
@@ -34,7 +34,7 @@ public class ComponentTreeCache implements ComponentTree {
         }
 
         try (Stream<Path> pathStream = walk(components.toPath())) {
-            return new ComponentTreeCache(rootDir, filesByDirName(pathStream));
+            return new CachedComponentTree(rootDir, filesByDirName(pathStream));
         }
     }
 
