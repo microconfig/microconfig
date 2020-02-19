@@ -15,6 +15,8 @@ k09: ${app::this@k1:#{1 + 20}
 #k09+: ${this@k1:${this@k100}}
 k009: ${this@k1:${this@k100:}}
 k0009: ${this@k156:${this@k100:}}
+#k66: ${this@k1:${1 + 20}}
+#k67: ${this@k1:{1 + 20}}
 
 k010: ${this@k1:${this@k100:1}}
 k0010: ${this@k1:${this@456:145}}
