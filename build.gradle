@@ -43,7 +43,7 @@ allprojects {
     }
 
     dependencies {
-        implementation platform("org.springframework.boot:spring-boot-dependencies:2.1.8.RELEASE")
+        implementation platform("org.springframework.boot:spring-boot-dependencies:2.2.2.RELEASE")
 
         compileOnly lib.lombok
         annotationProcessor lib.lombok

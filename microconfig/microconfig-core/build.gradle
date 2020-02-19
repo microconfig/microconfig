@@ -12,7 +12,8 @@ publishing {
 }
 
 dependencies {
-    implementation project(':microconfig:utils'),
+    implementation project(':microconfig:microconfig-plugin-api'),
+            project(':microconfig:utils'),
             lib.snakeyaml,
             'com.google.code.gson:gson',
             'org.springframework:spring-expression',
