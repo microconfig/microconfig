@@ -1,6 +1,6 @@
-package io.microconfig.factory;
+package io.microconfig.factory.configtypes;
 
-import io.microconfig.factory.configtypes.ConfigTypeImpl;
+import io.microconfig.factory.ConfigType;
 import org.junit.jupiter.api.Test;
 
 import static io.microconfig.factory.configtypes.ConfigTypeImpl.byNameAndExtensions;

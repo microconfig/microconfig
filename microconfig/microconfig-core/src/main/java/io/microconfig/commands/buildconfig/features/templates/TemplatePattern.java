@@ -2,7 +2,7 @@ package io.microconfig.commands.buildconfig.features.templates;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.experimental.Wither;
+import lombok.With;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -11,7 +11,7 @@ import static java.util.Collections.singletonList;
 import static java.util.regex.Pattern.compile;
 
 @Getter
-@Wither
+@With
 @Builder
 public class TemplatePattern {
     public static final String DEFAULT_TEMPLATE_PREFIX = "microconfig.template.";

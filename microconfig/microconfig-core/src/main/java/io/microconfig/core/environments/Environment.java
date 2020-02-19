@@ -1,7 +1,7 @@
 package io.microconfig.core.environments;
 
 import lombok.Getter;
-import lombok.experimental.Wither;
+import lombok.With;
 
 import java.util.*;
 
@@ -21,7 +21,7 @@ public class Environment {
     private final Optional<Integer> portOffset;
     private final Optional<EnvInclude> include;
 
-    @Wither
+    @With
     private final Object source;
 
     public Environment(String name,

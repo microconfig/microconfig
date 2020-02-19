@@ -30,7 +30,7 @@ import io.microconfig.utils.reader.FilesReader;
 import io.microconfig.utils.reader.FsFilesReader;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.Wither;
+import lombok.With;
 
 import java.io.File;
 import java.util.Map;
@@ -57,7 +57,7 @@ public class MicroconfigFactory {
     private final EnvironmentProvider environmentProvider;
     private final ConfigIoService configIoService;
     private final File destinationComponentDir;
-    @Wither
+    @With
     private final String serviceInnerDir;
 
     private final Map<String, PropertyResolver> resolverByType;
@@ -142,7 +142,7 @@ public class MicroconfigFactory {
         );
     }
 
-    //public for plugin
+    //public for ide plugin
     public FilenameGenerator getFilenameGenerator(ConfigType configType) {
         return new LegacyFilenameGenerator(
                 APPLICATION.getType().getResultFileName(),

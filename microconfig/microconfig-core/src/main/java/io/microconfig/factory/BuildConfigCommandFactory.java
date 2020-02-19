@@ -22,7 +22,7 @@ public class BuildConfigCommandFactory {
         MicroconfigFactory factory = MicroconfigFactory.init(rootDir, destinationComponentDir);
         return composite(
                 configTypes.stream()
-                        .map(ct -> factory.newBuildCommand(ct, postProcessor))
+                        .map(type -> factory.newBuildCommand(type, postProcessor))
                         .toArray(Command[]::new)
         );
     }
