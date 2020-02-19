@@ -1,8 +1,8 @@
 package io.microconfig.testutils;
 
-import io.microconfig.configs.ConfigProvider;
-import io.microconfig.configs.resolver.PropertyResolver;
-import io.microconfig.configs.resolver.PropertyResolverHolder;
+import io.microconfig.properties.ConfigProvider;
+import io.microconfig.properties.resolver.PropertyResolver;
+import io.microconfig.properties.resolver.PropertyResolverHolder;
 import io.microconfig.environments.EnvironmentProvider;
 import io.microconfig.factory.MicroconfigFactory;
 

@@ -1,11 +1,11 @@
 package io.microconfig.commands.buildconfig;
 
 import io.microconfig.commands.CommandContext;
-import io.microconfig.configs.ConfigProvider;
-import io.microconfig.configs.Property;
-import io.microconfig.configs.resolver.EnvComponent;
-import io.microconfig.configs.serializer.ConfigSerializer;
-import io.microconfig.configs.sources.SpecialSource;
+import io.microconfig.properties.ConfigProvider;
+import io.microconfig.properties.Property;
+import io.microconfig.properties.resolver.EnvComponent;
+import io.microconfig.properties.serializer.ConfigSerializer;
+import io.microconfig.properties.sources.SpecialSource;
 import io.microconfig.environments.Component;
 import io.microconfig.environments.EnvironmentProvider;
 import org.junit.jupiter.api.BeforeEach;

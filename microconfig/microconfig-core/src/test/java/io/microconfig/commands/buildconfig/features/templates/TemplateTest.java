@@ -1,6 +1,6 @@
 package io.microconfig.commands.buildconfig.features.templates;
 
-import io.microconfig.configs.resolver.EnvComponent;
+import io.microconfig.properties.resolver.EnvComponent;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

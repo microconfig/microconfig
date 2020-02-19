@@ -1,17 +1,17 @@
 package io.microconfig.commands.buildconfig.features.templates;
 
-import io.microconfig.configs.Property;
-import io.microconfig.configs.resolver.EnvComponent;
-import io.microconfig.configs.resolver.PropertyResolver;
+import io.microconfig.properties.Property;
+import io.microconfig.properties.resolver.EnvComponent;
+import io.microconfig.properties.resolver.PropertyResolver;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static io.microconfig.configs.Property.tempProperty;
-import static io.microconfig.configs.resolver.placeholder.Placeholder.isSinglePlaceholder;
-import static io.microconfig.configs.sources.SpecialSource.templateSource;
+import static io.microconfig.properties.Property.tempProperty;
+import static io.microconfig.properties.resolver.placeholder.Placeholder.isSinglePlaceholder;
+import static io.microconfig.properties.sources.SpecialSource.templateSource;
 import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.Logger.warn;
 import static java.util.regex.Matcher.quoteReplacement;

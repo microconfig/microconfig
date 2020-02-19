@@ -1,6 +1,7 @@
 package io.microconfig.utils;
 
 import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 
 import static io.microconfig.utils.StringUtils.*;
