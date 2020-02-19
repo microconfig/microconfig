@@ -45,6 +45,38 @@ class ConfigProviderTest {
     }
 
     @Test
+    void testPlaceholderAsDefaultValue() {
+        Map<String, Property> props = provider.getProperties(byType("placeholderAsDefaultValue"), "placeholderAsDefaultValue");
+        assertEquals("simple" , props.get("k0").getValue());
+        assertEquals("v1" , props.get("k1").getValue());
+        assertEquals("v2" , props.get("k2").getValue());
+        assertEquals("v1" , props.get("k3").getValue());
+        assertEquals("v1" , props.get("k4").getValue());
+        assertEquals("v2" , props.get("k5").getValue());
+        assertEquals("v1" , props.get("k6").getValue());
+        assertEquals("v1" , props.get("k7").getValue());
+        assertEquals("v1" , props.get("k8").getValue());
+
+        assertEquals("v1" , props.get("k9").getValue());//todo
+        assertEquals("v1" , props.get("k09").getValue());//todo
+//        assertEquals("v1" , props.get("k09+").getValue());//todo
+//        assertEquals("v1" , props.get("k009").getValue());//todo
+//        assertEquals("" , props.get("k0009").getValue());//todo
+
+        assertEquals("v1" , props.get("k010").getValue());
+        assertEquals("v1" , props.get("k0010").getValue());
+        assertEquals("1" , props.get("k00010").getValue());
+        assertEquals("21" , props.get("k20").getValue());
+        assertEquals("v1" , props.get("k22").getValue());
+        assertEquals("v2" , props.get("k23").getValue());
+        assertEquals("144" , props.get("k24").getValue());
+        assertEquals("v2" , props.get("k25").getValue());
+        assertEquals("v2" , props.get("k26").getValue());
+        assertEquals("21" , props.get("k27").getValue());
+        assertEquals("v1hello" , props.get("k28").getValue());
+    }
+
+    @Test
     void testVar() {
         Map<String, Property> props = provider.getProperties(byType("var"), "var");
         assertEquals(1, props.values().stream()

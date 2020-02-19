@@ -25,7 +25,7 @@ class FileBasedEnvironmentProviderTest {
     @Test
     void testEnvName() {
         Set<String> environmentNames = environmentProvider.getEnvironmentNames();
-        assertEquals(setOf("test-component-exclude1", "p1", "test-component-exclude2",
+        assertEquals(setOf("test-component-exclude1", "p1", "placeholderAsDefaultValue", "test-component-exclude2",
                 "aliases", "base-env", "var", "uat", "demo", "dev2", "dev", "test-env-include", "test-include-abstract-env",
                 "duplicate-components", "e1", "e2", "e3", "e4", "baseYaml", "includeYaml"),
                 environmentNames);

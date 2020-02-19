@@ -1,0 +1,37 @@
+k0: ${this@k100:simple}
+k1: v1
+k2: v2
+
+k3: ${this@k1:${this@k1}}
+k4: ${this@k1:${this@k2}}
+k5: ${this@k2:${this@k1}}
+
+k6: ${this@k1:${this@k7}}
+k7: ${app::this@k1:${this@k2}}
+k8: ${app::this@k1:${app::this@k2}}
+
+k9: ${this@k1:#{1 + 20}
+k09: ${app::this@k1:#{1 + 20}
+#k09+: ${this@k1:${this@k100}}
+k009: ${this@k1:${this@k100:}}
+k0009: ${this@k156:${this@k100:}}
+
+k010: ${this@k1:${this@k100:1}}
+k0010: ${this@k1:${this@456:145}}
+k00010: ${this@k15:${this@k100:1}}
+
+k20: ${this@k100:#{1 + 20}}
+
+k22: ${this@k100:${this@k1}}
+k23: ${this@k100:${this@k2}}
+
+k24: ${this@k100:144}
+k25: ${app::this@k100:${this@k2}}
+k26: ${app::this@k100:${app::this@k2}}
+k27: ${app::this@k100:#{1 + 20}}
+k28: ${this@k100:${this@k101:${this@k102:${this@k1}hello}}}
+
+
+
+
+#test ref to another type
