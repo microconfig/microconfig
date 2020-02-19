@@ -24,7 +24,9 @@ public class Expression {
 
     public static Expression parse(String value) {
         Matcher matcher = PATTERN.matcher(value);
-        if (matcher.find()) return new Expression(matcher.group("value"));
+        if (matcher.find()) {
+            return new Expression(matcher.group("value"));
+        }
 
         throw PropertyResolveException.badSpellFormat(value);
     }

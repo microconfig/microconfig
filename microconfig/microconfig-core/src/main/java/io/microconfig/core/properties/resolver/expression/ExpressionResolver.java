@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.regex.Matcher;
 
 /**
- * Resolves placeholders in format of spring EL
+ * Resolves placeholders in format of Spring EL
  *
  * @see Expression
  */
@@ -30,14 +30,14 @@ public class ExpressionResolver implements PropertyResolver {
             Matcher matcher = Expression.matcher(resultValue.toString());
             if (!matcher.find()) break;
 
-            String evaluated = doEvaluate(matcher.group(), root);
-            resultValue.replace(matcher.start(), matcher.end(), evaluated);
+            String resolved = doResolve(matcher.group(), root);
+            resultValue.replace(matcher.start(), matcher.end(), resolved);
         }
 
         return resultValue.toString();
     }
 
-    private String doEvaluate(String value, EnvComponent root) {
+    private String doResolve(String value, EnvComponent root) {
         Expression expression = Expression.parse(value);
 
         try {
