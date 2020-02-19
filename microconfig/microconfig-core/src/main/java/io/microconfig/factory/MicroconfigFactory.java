@@ -38,6 +38,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.With;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -49,8 +50,11 @@ import static io.microconfig.core.properties.resolver.placeholder.strategies.sys
 import static io.microconfig.core.properties.resolver.placeholder.strategies.system.SystemResolveStrategy.systemPropertiesResolveStrategy;
 import static io.microconfig.factory.configtypes.StandardConfigTypes.APPLICATION;
 import static io.microconfig.utils.CacheHandler.cache;
+import static io.microconfig.utils.CollectionUtils.join;
 import static io.microconfig.utils.CollectionUtils.joinToSet;
 import static io.microconfig.utils.FileUtils.canonical;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
@@ -66,6 +70,8 @@ public class MicroconfigFactory {
     private final String serviceInnerDir;
 
     private final Map<String, PropertyResolver> resolverByType;
+    @With
+    private final List<PlaceholderResolveStrategy> additionalResolvers;
 
     public static MicroconfigFactory init(File sourcesRootDir, File destinationComponentDir) {
         return init(sourcesRootDir, destinationComponentDir, new FsFilesReader());
@@ -80,7 +86,8 @@ public class MicroconfigFactory {
                 newConfigIoService(fileReader),
                 destinationComponentDir,
                 "",
-                new TreeMap<>()
+                new TreeMap<>(),
+                emptyList()
         );
     }
 
@@ -108,11 +115,16 @@ public class MicroconfigFactory {
         EnvDescriptorPropertiesFactory envProperties = new EnvDescriptorPropertiesFactory();
 
         PlaceholderResolveStrategy strategy = composite(
-                systemPropertiesResolveStrategy(),
-                new ComponentResolveStrategy(componentProperties.get()),
-                new EnvDescriptorResolveStrategy(environmentProvider, envProperties.get()),
-                new StandardResolveStrategy(simpleProvider),
-                envVariablesResolveStrategy()
+                join(
+                        asList(
+                                systemPropertiesResolveStrategy(),
+                                new ComponentResolveStrategy(componentProperties.get()),
+                                new EnvDescriptorResolveStrategy(environmentProvider, envProperties.get()),
+                                new StandardResolveStrategy(simpleProvider),
+                                envVariablesResolveStrategy()
+                        ),
+                        additionalResolvers
+                )
         );
 
         return new PlaceholderResolver(
