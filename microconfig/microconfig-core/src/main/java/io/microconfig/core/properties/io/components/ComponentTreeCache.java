@@ -25,7 +25,7 @@ public class ComponentTreeCache implements ComponentTree {
 
     public static ComponentTree prepare(File rootDir) {
         if (!rootDir.exists()) {
-            throw new IllegalArgumentException("Root directory doesnt exists: " + rootDir);
+            throw new IllegalArgumentException("Root directory doesn't exist: " + rootDir);
         }
 
         File components = new File(rootDir, COMPONENTS_DIR);
