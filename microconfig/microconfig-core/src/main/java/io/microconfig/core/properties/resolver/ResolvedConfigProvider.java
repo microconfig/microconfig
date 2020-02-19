@@ -5,6 +5,7 @@ import io.microconfig.core.properties.ConfigProvider;
 import io.microconfig.core.properties.Property;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Collection;
 import java.util.Map;
 
 import static io.microconfig.utils.StreamUtils.toSortedMap;
@@ -18,7 +19,7 @@ public class ResolvedConfigProvider implements ConfigProvider, PropertyResolverH
     @Override
     public Map<String, Property> getProperties(Component rootComponent, String environment) {
         Map<String, Property> properties = delegate.getProperties(rootComponent, environment);
-        return resolveAll(properties, new EnvComponent(rootComponent, environment));
+        return resolveAll(properties.values(), new EnvComponent(rootComponent, environment));
     }
 
     @Override
@@ -26,9 +27,8 @@ public class ResolvedConfigProvider implements ConfigProvider, PropertyResolverH
         return resolver;
     }
 
-    private Map<String, Property> resolveAll(Map<String, Property> properties, EnvComponent root) {
-        return properties.values()
-                .stream()
+    private Map<String, Property> resolveAll(Collection<Property> properties, EnvComponent root) {
+        return properties.stream()
                 .map(p -> resolve(p, root))
                 .collect(toSortedMap(Property::getKey, identity()));
     }
