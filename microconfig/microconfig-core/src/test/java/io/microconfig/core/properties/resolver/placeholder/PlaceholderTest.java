@@ -4,6 +4,7 @@ import io.microconfig.core.properties.resolver.PropertyResolveException;
 import org.junit.jupiter.api.Test;
 
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static io.microconfig.core.properties.resolver.placeholder.Placeholder.parse;
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,6 +15,7 @@ class PlaceholderTest {
         assertTrue(Placeholder.isSinglePlaceholder("${this@property:false}"));
         assertTrue(Placeholder.isSinglePlaceholder("${this[dev]@property:false}"));
         assertTrue(Placeholder.isSinglePlaceholder("${app::this@property:false}"));
+        assertTrue(Placeholder.isSinglePlaceholder("${VAULT@/secret/prod/db.user}"));
         assertFalse(Placeholder.isSinglePlaceholder("${app:this@property:false}"));
         assertFalse(Placeholder.isSinglePlaceholder("#{${this@property:false}}"));
 
