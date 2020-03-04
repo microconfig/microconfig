@@ -1,6 +1,8 @@
 package io.microconfig.commands.buildconfig.features.templates;
 
+import io.microconfig.core.environments.Component;
 import io.microconfig.core.properties.resolver.EnvComponent;
+import io.microconfig.testutils.ClasspathUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -10,6 +12,7 @@ import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
 import static io.microconfig.core.environments.Component.byType;
+import static io.microconfig.testutils.ClasspathUtils.classpathFile;
 import static io.microconfig.testutils.MicronconfigTestFactory.getPropertyResolver;
 import static io.microconfig.utils.OsUtil.currentUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -65,5 +68,12 @@ class TemplateTest {
         Template template = new Template(source, "${system@user.name}");
         String result = template.resolvePlaceholders(envComponent, getPropertyResolver(), templatePattern);
         assertEquals(currentUser(), result);
+    }
+
+    @Test
+    void testMultiLinePlaceholderInTemplate() {
+        Template template = new Template(classpathFile("templates/templateWithMultiLines.yaml"));
+        String result = template.resolvePlaceholders(new EnvComponent(byType("mergeLists"), "some"), getPropertyResolver(), templatePattern);
+        System.out.println(result);
     }
 }

@@ -14,6 +14,7 @@ import static io.microconfig.core.properties.resolver.placeholder.Placeholder.is
 import static io.microconfig.core.properties.sources.SpecialSource.templateSource;
 import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.Logger.warn;
+import static io.microconfig.utils.StringUtils.addOffsets;
 import static java.util.regex.Matcher.quoteReplacement;
 
 @RequiredArgsConstructor
@@ -47,7 +48,15 @@ class Template {
         String value = resolveValue(placeholder, currentComponent, propertyResolver);
         if (value == null) return;
 
-        m.appendReplacement(result, quoteReplacement(value));
+        String finalValue = addOffsetForMultiLineValue(m, value);
+        m.appendReplacement(result, quoteReplacement(finalValue));
+    }
+
+    private String addOffsetForMultiLineValue(Matcher m, String value) {
+        int lineBeginIndex = text.lastIndexOf("\n", m.start());
+        int placeholderOffset = m.start() - lineBeginIndex - 1;
+        String offset = addOffsets("", placeholderOffset);
+        return value.replace("\n", "\n" + offset);
     }
 
     private String resolveValue(String placeholder, EnvComponent currentComponent, PropertyResolver propertyResolver) {
