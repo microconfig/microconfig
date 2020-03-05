@@ -8,14 +8,16 @@ import static java.lang.Character.isLetterOrDigit;
 @ToString
 @RequiredArgsConstructor
 public class PlaceholderBorders {
-    private static final PlaceholderBorders empty = new PlaceholderBorders(null, -1, -1);
+    private static final PlaceholderBorders empty = new PlaceholderBorders(null, -1, -1, -1, -1);
 
     private final String value;
-    private final int start;
-    private final int end;
+    private final int startIndex;
+    private final int valueIndex;
+    private final int defaultValueIndex;
+    private final int endIndex;
 
     public String placeholder() {
-        return start < 0 ? null : value.substring(start, end);
+        return defaultValueIndex < 0 ? null : value.substring(startIndex, endIndex + 1);
     }
 
     public static PlaceholderBorders borders(String line) {
@@ -43,10 +45,30 @@ public class PlaceholderBorders {
         public PlaceholderBorders process(String value, int placeholderStart, int currentIndex) {
             for (int i = currentIndex; i < value.length(); i++) {
                 char c = value.charAt(i);
+                if (c == '[') {
+                    return new ParsingEvnName().process(value, placeholderStart, i + 1);
+                }
                 if (c == '@') {
                     return new ParsingValue().process(value, placeholderStart, i + 1);
                 }
-                if (!isLetterOrDigit(c) && c != ':' && c != '[' && c != ']' && c != '.' && c != '_' && c != '-') {
+                if (!isLetterOrDigit(c) && c != ':' && c != '.' && c != '_' && c != '-') {
+                    return new SearchingOpenSign().process(value, currentIndex + 1, currentIndex + 1);
+                }
+            }
+
+            return empty;
+        }
+    }
+
+    private static class ParsingEvnName implements PlaceholderParserState {
+        @Override
+        public PlaceholderBorders process(String value, int placeholderStart, int currentIndex) {
+            for (int i = currentIndex; i < value.length(); i++) {
+                char c = value.charAt(i);
+                if (c == ']' && i + 1 < value.length() && value.charAt(i + 1) == '@') {
+                    return new ParsingValue().process(value, placeholderStart, i + 2);
+                }
+                if (!isLetterOrDigit(c) && c != '.' && c != '_' && c != '-') {
                     return new SearchingOpenSign().process(value, currentIndex + 1, currentIndex + 1);
                 }
             }
@@ -64,7 +86,8 @@ public class PlaceholderBorders {
                     return new ParsingDefaultValue().process(value, placeholderStart, currentIndex + 1);
                 }
                 if (c == '}') {
-                    return new PlaceholderBorders(value, placeholderStart, i + 1);
+                    return new PlaceholderBorders(value, placeholderStart, 0, 0, i);
+
                 }
                 if (!isLetterOrDigit(c) && c != '/' && c != '\\' && c != '.' && c != '_' && c != '-') {
                     return new SearchingOpenSign().process(value, currentIndex + 1, currentIndex + 1);
@@ -88,7 +111,7 @@ public class PlaceholderBorders {
                     }
                     if (c == '}') {
                         if (--openBrackets == 0) {
-                            return new PlaceholderBorders(value, placeholderStart, i + 1);
+                            return new PlaceholderBorders(value, placeholderStart, 0, 0, i);
                         }
                     }
                 }
