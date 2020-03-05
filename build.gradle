@@ -1,5 +1,4 @@
 apply from: 'lib.gradle'
-version = "${major}.${minor}.${patch}${versionPostfix}"
 
 buildscript {
     repositories {
@@ -11,7 +10,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.github.jengelman.gradle.plugins:shadow:4.0.4"
+        classpath "com.github.jengelman.gradle.plugins:shadow:5.2.0"
     }
 }
 
@@ -43,7 +42,7 @@ allprojects {
     }
 
     dependencies {
-        implementation platform("org.springframework.boot:spring-boot-dependencies:2.2.2.RELEASE")
+        implementation platform("org.springframework.boot:spring-boot-dependencies:2.2.5.RELEASE")
 
         compileOnly lib.lombok
         annotationProcessor lib.lombok
