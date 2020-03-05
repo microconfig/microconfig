@@ -21,7 +21,7 @@ public enum StandardConfigTypes {
     DEPLOY(byName("deploy")),
     ENV(byName("env")),
     SECRET(byName("secret")),
-    LOG4j(byName("log4j")),
+    LOG4J(byName("log4j")),
     LOG4J2(byName("log4j2"));
 
     private final ConfigType type;

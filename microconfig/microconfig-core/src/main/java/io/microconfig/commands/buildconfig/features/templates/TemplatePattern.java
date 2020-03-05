@@ -44,6 +44,5 @@ public class TemplatePattern {
                     int endIndex = str.endsWith(fromFileSuffix) ? fromFileSuffix.length() : toFileSuffix.length();
                     return str.substring(p.length(), str.length() - endIndex);
                 }).findFirst().get();
-
     }
 }

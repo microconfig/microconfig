@@ -55,8 +55,7 @@ class Template {
     private String addOffsetForMultiLineValue(Matcher m, String value) {
         int lineBeginIndex = text.lastIndexOf("\n", m.start());
         int placeholderOffset = m.start() - lineBeginIndex - 1;
-        String offset = addOffsets("", placeholderOffset);
-        return value.replace("\n", "\n" + offset);
+        return value.replace("\n", addOffsets("\n", placeholderOffset));
     }
 
     private String resolveValue(String placeholder, EnvComponent currentComponent, PropertyResolver propertyResolver) {
