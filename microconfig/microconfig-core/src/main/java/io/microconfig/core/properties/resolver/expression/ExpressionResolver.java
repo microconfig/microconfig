@@ -24,20 +24,20 @@ public class ExpressionResolver implements PropertyResolver {
     }
 
     private String evaluate(String value, EnvComponent root) {
-        StringBuilder resultValue = new StringBuilder(value);
+        StringBuilder result = new StringBuilder(value);
 
         while (true) {
-            Matcher matcher = Expression.matcher(resultValue.toString());
+            Matcher matcher = Expression.matcher(result);
             if (!matcher.find()) break;
 
-            String resolved = doResolve(matcher.group(), root);
-            resultValue.replace(matcher.start(), matcher.end(), resolved);
+            String evaluated = doEvaluate(matcher.group(), root);
+            result.replace(matcher.start(), matcher.end(), evaluated);
         }
 
-        return resultValue.toString();
+        return result.toString();
     }
 
-    private String doResolve(String value, EnvComponent root) {
+    private String doEvaluate(String value, EnvComponent root) {
         Expression expression = Expression.parse(value);
 
         try {

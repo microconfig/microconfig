@@ -1,62 +1,78 @@
 package io.microconfig.core.properties.resolver.placeholder;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+
+import java.util.Optional;
 
 import static java.lang.Character.isLetterOrDigit;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
-@ToString
 @RequiredArgsConstructor
 public class PlaceholderBorders {
-    private static final PlaceholderBorders empty = new PlaceholderBorders(null, -1, -1, -1, -1);
+    private static final PlaceholderBorders empty = new PlaceholderBorders(null);
 
-    private final String value;
-    private final int startIndex;
-    private final int valueIndex;
-    private final int defaultValueIndex;
-    private final int endIndex;
+    private final StringBuilder line; //to char sequence
 
-    public String placeholder() {
-        return defaultValueIndex < 0 ? null : value.substring(startIndex, endIndex + 1);
+    @Getter
+    private int startIndex = -1;
+    private int envIndex;
+    private int valueIndex;
+    private int defaultValueIndex;
+    @Getter
+    private int endIndex;
+
+    public static PlaceholderBorders parse(CharSequence line) {
+        return parse(new StringBuilder(line));
     }
 
-    public static PlaceholderBorders borders(String line) {
-        return new SearchingOpenSign().process(line, 0, 0);
+    public static PlaceholderBorders parse(StringBuilder line) {
+        return new PlaceholderBorders(line).new SearchingOpenSign().process();
     }
 
     interface PlaceholderParserState {
-        PlaceholderBorders process(String value, int placeholderStart, int currentIndex);
+        PlaceholderBorders process();
     }
 
     @RequiredArgsConstructor
-    private static class SearchingOpenSign implements PlaceholderParserState {
+    private class SearchingOpenSign implements PlaceholderParserState {
         @Override
-        public PlaceholderBorders process(String value, int ignore, int currentIndex) {
-            int startIndex = value.indexOf("${", currentIndex);
-            if (startIndex < 0) {
-                return empty;
+        public PlaceholderBorders process() {
+            startIndex = line.indexOf("${", startIndex);
+            reset();
+            if (startIndex >= 0) {
+                return new ParsingComponentName().process();
             }
-            return new ParsingComponentName().process(value, startIndex, startIndex + 2);
+
+            return empty;
+        }
+
+        private void reset() {
+            envIndex = valueIndex = defaultValueIndex = endIndex = -1;
         }
     }
 
-    private static class ParsingComponentName implements PlaceholderParserState {
+    private class ParsingComponentName implements PlaceholderParserState {
         @Override
-        public PlaceholderBorders process(String value, int placeholderStart, int currentIndex) {
-            for (int i = currentIndex; i < value.length(); ++i) {
-                char c = value.charAt(i);
+        public PlaceholderBorders process() {
+            for (int i = startIndex + 2; i < line.length(); ++i) {
+                char c = line.charAt(i);
                 if (c == '[') {
-                    return new ParsingEvnName().process(value, placeholderStart, i + 1);
+                    envIndex = i + 1;
+                    return new ParsingEvnName().process();
                 }
                 if (c == '@') {
-                    return new ParsingValue().process(value, placeholderStart, i + 1);
+                    valueIndex = i + 1;
+                    return new ParsingValue().process();
                 }
                 if (c == ':') {
                     continue;
                     //todo
                 }
                 if (!isAllowedSymbol(c)) {
-                    return new SearchingOpenSign().process(value, currentIndex, currentIndex);
+                    startIndex = i;
+                    return new SearchingOpenSign().process();
                 }
             }
 
@@ -64,16 +80,18 @@ public class PlaceholderBorders {
         }
     }
 
-    private static class ParsingEvnName implements PlaceholderParserState {
+    private class ParsingEvnName implements PlaceholderParserState {
         @Override
-        public PlaceholderBorders process(String value, int placeholderStart, int currentIndex) {
-            for (int i = currentIndex; i < value.length(); ++i) {
-                char c = value.charAt(i);
-                if (c == ']' && i + 1 < value.length() && value.charAt(i + 1) == '@') {
-                    return new ParsingValue().process(value, placeholderStart, i + 2);
+        public PlaceholderBorders process() {
+            for (int i = envIndex; i < line.length(); ++i) {
+                char c = line.charAt(i);
+                if (c == ']' && i + 1 < line.length() && line.charAt(i + 1) == '@') {
+                    valueIndex = i + 2;
+                    return new ParsingValue().process();
                 }
                 if (!isAllowedSymbol(c)) {
-                    return new SearchingOpenSign().process(value, currentIndex, currentIndex);
+                    startIndex = i;
+                    return new SearchingOpenSign().process();
                 }
             }
 
@@ -81,40 +99,44 @@ public class PlaceholderBorders {
         }
     }
 
-    private static class ParsingValue implements PlaceholderParserState {
+    private class ParsingValue implements PlaceholderParserState {
         @Override
-        public PlaceholderBorders process(String value, int placeholderStart, int currentIndex) {
-            for (int i = currentIndex; i < value.length(); ++i) {
-                char c = value.charAt(i);
+        public PlaceholderBorders process() {
+            for (int i = valueIndex; i < line.length(); ++i) {
+                char c = line.charAt(i);
                 if (c == ':') {
-                    return new ParsingDefaultValue().process(value, placeholderStart, currentIndex + 1);
+                    defaultValueIndex = i + 1;
+                    return new ParsingDefaultValue().process();
                 }
                 if (c == '}') {
-                    return new PlaceholderBorders(value, placeholderStart, currentIndex, -1, i);
+                    endIndex = i;
+                    return PlaceholderBorders.this;
                 }
                 if (!isAllowedSymbol(c) && c != '/' && c != '\\') {
-                    return new SearchingOpenSign().process(value, currentIndex, currentIndex);
+                    startIndex = i;
+                    return new SearchingOpenSign().process();
                 }
             }
 
             return empty;
         }
 
-        private static class ParsingDefaultValue implements PlaceholderParserState {
+        private class ParsingDefaultValue implements PlaceholderParserState {
             @Override
-            public PlaceholderBorders process(String value, int placeholderStart, int currentIndex) {
+            public PlaceholderBorders process() {
                 int openBrackets = 1;
-                for (int i = currentIndex; i < value.length(); ++i) {
-                    char c = value.charAt(i);
+                for (int i = defaultValueIndex; i < line.length(); ++i) {
+                    char c = line.charAt(i);
                     if (c == '{') {
-                        char prevChar = value.charAt(i - 1);
+                        char prevChar = line.charAt(i - 1);
                         if (prevChar == '$' || prevChar == '#') {
                             ++openBrackets;
                         }
                         continue;
                     }
                     if (c == '}' && --openBrackets == 0) {
-                        return new PlaceholderBorders(value, placeholderStart, 0, currentIndex, i);
+                        endIndex = i;
+                        return PlaceholderBorders.this;
                     }
                 }
 
@@ -123,7 +145,21 @@ public class PlaceholderBorders {
         }
     }
 
-    private static boolean isAllowedSymbol(char c) {
+    private boolean isAllowedSymbol(char c) {
         return isLetterOrDigit(c) || c == '.' || c == '_' || c == '-';
+    }
+
+    public Optional<Placeholder> toPlaceholder(String contextEnv) {
+//        return startIndex < 0 ?
+//                empty() :
+//                of(new Placeholder(
+//                        empty(),
+//                        line.subSequence(startIndex + 2, envIndex < 0 ? valueIndex - 1 : envIndex - 1).toString(),
+//                        envIndex < 0 ? contextEnv : line.subSequence(envIndex, valueIndex - 2).toString(),
+//                        line.subSequence(valueIndex, defaultValueIndex < 0 ? endIndex : defaultValueIndex - 1).toString(),
+//                        ofNullable(defaultValueIndex < 0 ? null : line.subSequence(defaultValueIndex, endIndex).toString())
+//                ));
+
+        return startIndex < 0 ? empty() : of(Placeholder.parse(line.substring(startIndex, endIndex + 1), contextEnv));
     }
 }

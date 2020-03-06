@@ -5,8 +5,10 @@ import org.junit.jupiter.api.Test;
 class PlaceholderBordersTest {
     @Test
     void test() {
-        PlaceholderBorders borders = PlaceholderBorders.borders("hello ${rf} ${c1 ${c2 } @fsd}  ${app::component[dev]@value:${another}#{1+2}} ${}");
-        System.out.println(borders.placeholder());
+        PlaceholderBorders borders = PlaceholderBorders.parse(new StringBuilder("hello ${rf} ${c1 ${c2 } @fsd}  ${app::component[dev]@value:${another}#{1+2}} ${}"));
+        System.out.println(borders.toPlaceholder("prod").get());
+
+        //"${hello@fds${ }
 
 //        PlaceholderBorders borders = PlaceholderBorders.borders("hello ${rf} ${c1 ${c2 } @fsd}  ${app:component@value:${another}#{1+2}} ${}");
         //find @

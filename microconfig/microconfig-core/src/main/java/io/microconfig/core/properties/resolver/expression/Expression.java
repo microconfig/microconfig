@@ -31,7 +31,7 @@ public class Expression {
         throw PropertyResolveException.badSpellFormat(value);
     }
 
-    static Matcher matcher(String value) {
+    static Matcher matcher(CharSequence value) {
         return PATTERN.matcher(value);
     }
 

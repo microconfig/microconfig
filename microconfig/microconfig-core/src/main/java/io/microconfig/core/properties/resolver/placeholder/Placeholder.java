@@ -12,15 +12,14 @@ import java.util.regex.Pattern;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.regex.Pattern.compile;
-import static lombok.AccessLevel.PRIVATE;
+import static lombok.AccessLevel.PROTECTED;
 
 @Getter
-@RequiredArgsConstructor(access = PRIVATE)
+@RequiredArgsConstructor(access = PROTECTED)
 @EqualsAndHashCode(exclude = "defaultValue")
 public class Placeholder {
     private static final String SELF_REFERENCE = "this";
 
-    static final Pattern PLACEHOLDER_INSIDE_LINE = compile("\\$\\{(?<comp>[\\w\\-_:]+)(\\[(?<env>[\\w\\-_]+)])?@(?<value>[\\w\\-._/]+)(:(?<default>[^$}]+))?}");
     static final Pattern SINGE_PLACEHOLDER = compile("^\\$\\{((?<type>\\w+)::)?(?<comp>[\\s\\w._-]+)(\\[(?<env>.+)])?@(?<value>[\\w._/-]+)(:(?<default>.+))?}$");
 
     private final Optional<String> configType;
@@ -31,10 +30,6 @@ public class Placeholder {
 
     public static boolean isSinglePlaceholder(String value) {
         return SINGE_PLACEHOLDER.matcher(value).matches();
-    }
-
-    public static Matcher matcher(CharSequence line) {
-        return PLACEHOLDER_INSIDE_LINE.matcher(line);
     }
 
     public static Placeholder parse(String value, String defaultEnv) {
