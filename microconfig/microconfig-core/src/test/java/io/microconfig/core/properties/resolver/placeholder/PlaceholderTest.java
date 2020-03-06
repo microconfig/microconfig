@@ -46,7 +46,7 @@ class PlaceholderTest {
     }
 
     private void doTestSpel(String value) {
-        Placeholder propValue = PlaceholderBorders.parse(value).toPlaceholder(getEnv());
+        Placeholder propValue = PlaceholderBorders.parse(new StringBuilder(value)).toPlaceholder(getEnv());
 
         assertEquals("property", propValue.getValue());
         assertEquals("false", propValue.getDefaultValue().orElse(null));
