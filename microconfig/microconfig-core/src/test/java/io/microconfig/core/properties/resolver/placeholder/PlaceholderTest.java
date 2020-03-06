@@ -1,28 +1,11 @@
 package io.microconfig.core.properties.resolver.placeholder;
 
-import io.microconfig.core.properties.resolver.PropertyResolveException;
 import org.junit.jupiter.api.Test;
 
-import java.util.regex.Matcher;
-
-import static io.microconfig.core.properties.resolver.placeholder.Placeholder.parse;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PlaceholderTest {
-    @Test
-    void testIsPlaceholder() {
-        assertTrue(Placeholder.isSinglePlaceholder("${this@property:false}"));
-        assertTrue(Placeholder.isSinglePlaceholder("${this[dev]@property:false}"));
-        assertTrue(Placeholder.isSinglePlaceholder("${app::this@property:false}"));
-        assertTrue(Placeholder.isSinglePlaceholder("${VAULT@/secret/prod/db.user}"));
-        assertFalse(Placeholder.isSinglePlaceholder("${app:this@property:false}"));
-        assertFalse(Placeholder.isSinglePlaceholder("#{${this@property:false}}"));
-
-//        assertFalse(Placeholder.isSinglePlaceholder("${this@property:false} this2property2}"));
-//        assertFalse(Placeholder.isSinglePlaceholder("${this@property:false} ${this@property:false}"));
-//        assertFalse(Placeholder.isSinglePlaceholder("${this@property:${this@property2}}"));
-    }
-
     @Test
     void testToString() {
         assertEquals("${component[dev]@property}", parse("${component@property}", "dev").toString());
@@ -69,36 +52,15 @@ class PlaceholderTest {
     }
 
     @Test
-    void testSimplePropertyValue() {
-        assertThrows(PropertyResolveException.class, () -> parse("123", null));
-    }
-
-    @Test
-    void testRegex() {
-        Matcher matcher = Placeholder.SINGE_PLACEHOLDER.matcher("${th-server2[dev]@th-server.poolSize}");
-
-        assertTrue(matcher.find());
-        assertEquals("th-server2", matcher.group("comp"));
-        assertEquals("dev", matcher.group("env"));
-        assertEquals("th-server.poolSize", matcher.group("value"));
-        assertNull(matcher.group("default"));
-
-        matcher = Placeholder.SINGE_PLACEHOLDER.matcher("${th-server2@th-server.poolSize}");
-        assertTrue(matcher.find());
-        assertEquals("th-server2", matcher.group("comp"));
-        assertNull(matcher.group("env"));
-        assertEquals("th-server.poolSize", matcher.group("value"));
-        assertNull(matcher.group("default"));
-
-        matcher = Placeholder.SINGE_PLACEHOLDER.matcher("${unknown@prop:defValue123}");
-        assertTrue(matcher.find());
-        assertEquals("unknown", matcher.group("comp"));
-        assertNull(matcher.group("env"));
-        assertEquals("prop", matcher.group("value"));
-        assertEquals("defValue123", matcher.group("default"));
+    void testException() {
+        assertThrows(IllegalStateException.class, () -> parse("123", null));
     }
 
     String getEnv() {
         return "uat";
+    }
+
+    private Placeholder parse(String line, String env) {
+        return PlaceholderBorder.parse(new StringBuilder(line)).toPlaceholder(env);
     }
 }

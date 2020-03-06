@@ -53,11 +53,10 @@ public class PlaceholderResolver implements PropertyResolver {
     private String resolve(PlaceholderBorder borders, Property sourceOfPlaceholders, EnvComponent root, Set<Placeholder> visited) {
         try {
             Placeholder placeholder = borders.toPlaceholder(sourceOfPlaceholders.getEnvContext());
-            if (hasAnotherConfigType(placeholder)) {
-                return resolveForAnotherType(placeholder, sourceOfPlaceholders.getSource(), root);
-            }
+            return hasAnotherConfigType(placeholder) ?
+                    resolveForAnotherType(placeholder, sourceOfPlaceholders.getSource(), root) :
+                    resolvePlaceholder(placeholder, sourceOfPlaceholders, root, visited);
 
-            return resolvePlaceholder(placeholder, sourceOfPlaceholders, root, visited);
         } catch (RuntimeException e) {
             throw new PropertyResolveException(borders.toString(), sourceOfPlaceholders, root, e);
         }

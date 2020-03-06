@@ -11,7 +11,7 @@ import static lombok.AccessLevel.PRIVATE;
 @With(PRIVATE)
 @RequiredArgsConstructor
 public class PlaceholderBorder {
-    private static final PlaceholderBorder empty = new PlaceholderBorder(null);
+    private static final PlaceholderBorder NOT_VALID = new PlaceholderBorder(new StringBuilder());
 
     private final StringBuilder line;
 
@@ -40,7 +40,7 @@ public class PlaceholderBorder {
                     .parseComponentName();
         }
 
-        return empty;
+        return NOT_VALID;
     }
 
     private PlaceholderBorder parseComponentName() {
@@ -60,7 +60,7 @@ public class PlaceholderBorder {
             }
         }
 
-        return empty;
+        return NOT_VALID;
     }
 
     private PlaceholderBorder parseEnvName() {
@@ -74,7 +74,7 @@ public class PlaceholderBorder {
             }
         }
 
-        return empty;
+        return NOT_VALID;
     }
 
     private PlaceholderBorder parseValue() {
@@ -91,7 +91,7 @@ public class PlaceholderBorder {
             }
         }
 
-        return empty;
+        return NOT_VALID;
     }
 
     private PlaceholderBorder parseDefaultValue() {
@@ -110,7 +110,7 @@ public class PlaceholderBorder {
             }
         }
 
-        return empty;
+        return NOT_VALID;
     }
 
     private boolean isAllowedSymbol(char c) {
@@ -118,6 +118,10 @@ public class PlaceholderBorder {
     }
 
     public Placeholder toPlaceholder(String contextEnv) {
+        if (!isValid()) {
+            throw new IllegalStateException("Invalid placeholder: " + line);
+        }
+
         return new Placeholder(
                 ofNullable(configTypeEndIndex < 0 ? null : line.substring(startIndex + 2, configTypeEndIndex + 1)),
                 line.substring(Math.max(startIndex + 2, configTypeEndIndex + 3), envIndex < 0 ? valueIndex - 1 : envIndex - 1),

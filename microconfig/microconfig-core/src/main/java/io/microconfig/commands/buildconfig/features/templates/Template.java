@@ -10,15 +10,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.microconfig.core.properties.Property.tempProperty;
-import static io.microconfig.core.properties.resolver.placeholder.Placeholder.isSinglePlaceholder;
 import static io.microconfig.core.properties.sources.SpecialSource.templateSource;
 import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.Logger.warn;
 import static io.microconfig.utils.StringUtils.addOffsets;
 import static java.util.regex.Matcher.quoteReplacement;
+import static java.util.regex.Pattern.compile;
 
 @RequiredArgsConstructor
 class Template {
+    //todo rewrite
+    private static final Pattern SINGE_PLACEHOLDER = compile("^\\$\\{((?<type>\\w+)::)?(?<comp>[\\s\\w._-]+)(\\[(?<env>.+)])?@(?<value>[\\w._/-]+)(:(?<default>.*))?}$");
+
     private final File source;
     private final String text;
 
@@ -74,6 +77,10 @@ class Template {
             }
             return null;
         }
+    }
+
+    public static boolean isSinglePlaceholder(String value) {
+        return SINGE_PLACEHOLDER.matcher(value).matches();
     }
 
     private String doResolve(EnvComponent currentComponent, PropertyResolver propertyResolver, String placeholder) {
