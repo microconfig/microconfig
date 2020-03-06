@@ -43,7 +43,7 @@ public class PlaceholderBorders {
     private static class ParsingComponentName implements PlaceholderParserState {
         @Override
         public PlaceholderBorders process(String value, int placeholderStart, int currentIndex) {
-            for (int i = currentIndex; i < value.length(); i++) {
+            for (int i = currentIndex; i < value.length(); ++i) {
                 char c = value.charAt(i);
                 if (c == '[') {
                     return new ParsingEvnName().process(value, placeholderStart, i + 1);
@@ -51,7 +51,10 @@ public class PlaceholderBorders {
                 if (c == '@') {
                     return new ParsingValue().process(value, placeholderStart, i + 1);
                 }
-                if (!isLetterOrDigit(c) && c != ':' && c != '.' && c != '_' && c != '-') {
+                if (c == ':') {
+                    //todo
+                }
+                if (isAllowedSymbol(c)) {
                     return new SearchingOpenSign().process(value, currentIndex + 1, currentIndex + 1);
                 }
             }
@@ -63,12 +66,12 @@ public class PlaceholderBorders {
     private static class ParsingEvnName implements PlaceholderParserState {
         @Override
         public PlaceholderBorders process(String value, int placeholderStart, int currentIndex) {
-            for (int i = currentIndex; i < value.length(); i++) {
+            for (int i = currentIndex; i < value.length(); ++i) {
                 char c = value.charAt(i);
                 if (c == ']' && i + 1 < value.length() && value.charAt(i + 1) == '@') {
                     return new ParsingValue().process(value, placeholderStart, i + 2);
                 }
-                if (!isLetterOrDigit(c) && c != '.' && c != '_' && c != '-') {
+                if (isAllowedSymbol(c)) {
                     return new SearchingOpenSign().process(value, currentIndex + 1, currentIndex + 1);
                 }
             }
@@ -80,7 +83,7 @@ public class PlaceholderBorders {
     private static class ParsingValue implements PlaceholderParserState {
         @Override
         public PlaceholderBorders process(String value, int placeholderStart, int currentIndex) {
-            for (int i = currentIndex; i < value.length(); i++) {
+            for (int i = currentIndex; i < value.length(); ++i) {
                 char c = value.charAt(i);
                 if (c == ':') {
                     return new ParsingDefaultValue().process(value, placeholderStart, currentIndex + 1);
@@ -89,10 +92,11 @@ public class PlaceholderBorders {
                     return new PlaceholderBorders(value, placeholderStart, 0, 0, i);
 
                 }
-                if (!isLetterOrDigit(c) && c != '/' && c != '\\' && c != '.' && c != '_' && c != '-') {
+                if (!isAllowedSymbol(c) && c != '/' && c != '\\') {
                     return new SearchingOpenSign().process(value, currentIndex + 1, currentIndex + 1);
                 }
             }
+
             return empty;
         }
 
@@ -100,7 +104,7 @@ public class PlaceholderBorders {
             @Override
             public PlaceholderBorders process(String value, int placeholderStart, int currentIndex) {
                 int openBrackets = 1;
-                for (int i = currentIndex; i < value.length(); i++) {
+                for (int i = currentIndex; i < value.length(); ++i) {
                     char c = value.charAt(i);
                     if (c == '{') {
                         char prevChar = value.charAt(i - 1);
@@ -119,5 +123,9 @@ public class PlaceholderBorders {
                 return empty;
             }
         }
+    }
+
+    private static boolean isAllowedSymbol(char c) {
+        return isLetterOrDigit(c) || c == '.' || c == '_' || c == '-';
     }
 }
