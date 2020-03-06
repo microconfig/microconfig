@@ -41,27 +41,25 @@ public class PlaceholderResolver implements PropertyResolver {
 
         while (true) {
             PlaceholderBorders borders = PlaceholderBorders.parse(result);
-            Optional<Placeholder> placeholder = borders.toPlaceholder(sourceOfPlaceholders.getEnvContext());
-            if (!placeholder.isPresent()) break;
+            if (!borders.isValid()) break;
 
-            String resolved = resolve(placeholder.get(), sourceOfPlaceholders, root, visited);
+            String resolved = resolve(borders, sourceOfPlaceholders, root, visited);
             result.replace(borders.getStartIndex(), borders.getEndIndex() + 1, resolved);
         }
 
         return result.toString();
     }
 
-    private String resolve(Placeholder placeholder, Property sourceOfPlaceholders, EnvComponent root, Set<Placeholder> visited) {
+    private String resolve(PlaceholderBorders borders, Property sourceOfPlaceholders, EnvComponent root, Set<Placeholder> visited) {
         try {
+            Placeholder placeholder = borders.toPlaceholder(sourceOfPlaceholders.getEnvContext());
             if (hasAnotherConfigType(placeholder)) {
                 return resolveForAnotherType(placeholder, sourceOfPlaceholders.getSource(), root);
             }
 
             return resolvePlaceholder(placeholder, sourceOfPlaceholders, root, visited);
-        } catch (PropertyResolveException e) {
-            throw e;
         } catch (RuntimeException e) {
-            throw new PropertyResolveException(placeholder.toString(), sourceOfPlaceholders, root, e);
+            throw new PropertyResolveException(borders.toString(), sourceOfPlaceholders, root, e);
         }
     }
 

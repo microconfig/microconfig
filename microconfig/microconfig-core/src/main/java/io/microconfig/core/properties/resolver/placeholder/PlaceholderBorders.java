@@ -3,11 +3,7 @@ package io.microconfig.core.properties.resolver.placeholder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Optional;
-
 import static java.lang.Character.isLetterOrDigit;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 
 @RequiredArgsConstructor
 public class PlaceholderBorders {
@@ -149,7 +145,7 @@ public class PlaceholderBorders {
         return isLetterOrDigit(c) || c == '.' || c == '_' || c == '-';
     }
 
-    public Optional<Placeholder> toPlaceholder(String contextEnv) {
+    public Placeholder toPlaceholder(String contextEnv) {
 //        return startIndex < 0 ?
 //                empty() :
 //                of(new Placeholder(
@@ -160,6 +156,15 @@ public class PlaceholderBorders {
 //                        ofNullable(defaultValueIndex < 0 ? null : line.subSequence(defaultValueIndex, endIndex).toString())
 //                ));
 
-        return startIndex < 0 ? empty() : of(Placeholder.parse(line.substring(startIndex, endIndex + 1), contextEnv));
+        return Placeholder.parse(line.substring(startIndex, endIndex + 1), contextEnv);
+    }
+
+    public boolean isValid() {
+        return startIndex >= 0;
+    }
+
+    @Override
+    public String toString() {
+        return line.substring(startIndex, endIndex + 1);
     }
 }

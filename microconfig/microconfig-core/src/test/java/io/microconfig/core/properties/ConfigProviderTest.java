@@ -57,11 +57,14 @@ class ConfigProviderTest {
         assertEquals("v1" , props.get("k7").getValue());
         assertEquals("v1" , props.get("k8").getValue());
 
-        assertEquals("v1" , props.get("k9").getValue());//todo
-        assertEquals("v1" , props.get("k09").getValue());//todo
-//        assertEquals("v1" , props.get("k09+").getValue());//todo
-//        assertEquals("v1" , props.get("k009").getValue());//todo
-//        assertEquals("" , props.get("k0009").getValue());//todo
+        assertEquals("v1" , props.get("k9").getValue());
+        assertEquals("v1" , props.get("k09").getValue());
+        assertEquals("v1" , props.get("k09+").getValue());
+        assertEquals("v1" , props.get("k009").getValue());
+        assertEquals("" , props.get("k0009").getValue());
+
+        assertEquals("v1" , props.get("k66").getValue());
+        assertEquals("v1}" , props.get("k67").getValue());
 
         assertEquals("v1" , props.get("k010").getValue());
         assertEquals("v1" , props.get("k0010").getValue());
