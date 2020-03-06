@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.With;
 
 import static java.lang.Character.isLetterOrDigit;
+import static java.util.Optional.empty;
+import static java.util.Optional.ofNullable;
 import static lombok.AccessLevel.PRIVATE;
 
 @With(PRIVATE)
@@ -117,15 +119,13 @@ public class PlaceholderBorders {
     }
 
     public Placeholder toPlaceholder(String contextEnv) {
-//        return startIndex < 0 ?
-//                empty() :
-//                of(new Placeholder(
+//        return new Placeholder(
 //                        empty(),
 //                        line.subSequence(startIndex + 2, envIndex < 0 ? valueIndex - 1 : envIndex - 1).toString(),
 //                        envIndex < 0 ? contextEnv : line.subSequence(envIndex, valueIndex - 2).toString(),
 //                        line.subSequence(valueIndex, defaultValueIndex < 0 ? endIndex : defaultValueIndex - 1).toString(),
 //                        ofNullable(defaultValueIndex < 0 ? null : line.subSequence(defaultValueIndex, endIndex).toString())
-//                ));
+//                );
 
         return Placeholder.parse(line.substring(startIndex, endIndex + 1), contextEnv);
     }
