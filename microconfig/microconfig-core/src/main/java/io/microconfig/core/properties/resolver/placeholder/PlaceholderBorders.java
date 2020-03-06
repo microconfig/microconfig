@@ -14,7 +14,7 @@ import static lombok.AccessLevel.PRIVATE;
 public class PlaceholderBorders {
     private static final PlaceholderBorders empty = new PlaceholderBorders(null);
 
-    private final StringBuilder line; //to char sequence
+    private final StringBuilder line;
 
     @Getter
     private final int startIndex;
