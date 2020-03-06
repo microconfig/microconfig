@@ -118,10 +118,6 @@ public class PlaceholderBorder {
     }
 
     public Placeholder toPlaceholder(String contextEnv) {
-        if (!isValid()) {
-            throw new IllegalStateException("Invalid placeholder: " + line);
-        }
-
         return new Placeholder(
                 ofNullable(configTypeEndIndex < 0 ? null : line.substring(startIndex + 2, configTypeEndIndex + 1)),
                 line.substring(Math.max(startIndex + 2, configTypeEndIndex + 3), envIndex < 0 ? valueIndex - 1 : envIndex - 1),

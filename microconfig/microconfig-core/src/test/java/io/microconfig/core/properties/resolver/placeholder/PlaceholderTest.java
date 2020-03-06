@@ -51,11 +51,6 @@ class PlaceholderTest {
         assertEquals("property.name", propValue.getValue());
     }
 
-    @Test
-    void testException() {
-        assertThrows(IllegalStateException.class, () -> parse("123", null));
-    }
-
     String getEnv() {
         return "uat";
     }
