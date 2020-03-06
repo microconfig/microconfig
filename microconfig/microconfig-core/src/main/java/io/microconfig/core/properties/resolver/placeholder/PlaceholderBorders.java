@@ -52,9 +52,10 @@ public class PlaceholderBorders {
                     return new ParsingValue().process(value, placeholderStart, i + 1);
                 }
                 if (c == ':') {
+                    continue;
                     //todo
                 }
-                if (isAllowedSymbol(c)) {
+                if (!isAllowedSymbol(c)) {
                     return new SearchingOpenSign().process(value, currentIndex + 1, currentIndex + 1);
                 }
             }
@@ -71,7 +72,7 @@ public class PlaceholderBorders {
                 if (c == ']' && i + 1 < value.length() && value.charAt(i + 1) == '@') {
                     return new ParsingValue().process(value, placeholderStart, i + 2);
                 }
-                if (isAllowedSymbol(c)) {
+                if (!isAllowedSymbol(c)) {
                     return new SearchingOpenSign().process(value, currentIndex + 1, currentIndex + 1);
                 }
             }
@@ -90,7 +91,6 @@ public class PlaceholderBorders {
                 }
                 if (c == '}') {
                     return new PlaceholderBorders(value, placeholderStart, 0, 0, i);
-
                 }
                 if (!isAllowedSymbol(c) && c != '/' && c != '\\') {
                     return new SearchingOpenSign().process(value, currentIndex + 1, currentIndex + 1);
