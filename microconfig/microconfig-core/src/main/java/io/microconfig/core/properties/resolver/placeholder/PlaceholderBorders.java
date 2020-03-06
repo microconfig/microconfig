@@ -19,10 +19,6 @@ public class PlaceholderBorders {
     @Getter
     private int endIndex;
 
-    public static PlaceholderBorders parse(CharSequence line) {
-        return parse(new StringBuilder(line));
-    }
-
     public static PlaceholderBorders parse(StringBuilder line) {
         return new PlaceholderBorders(line).new SearchingOpenSign().process();
     }
