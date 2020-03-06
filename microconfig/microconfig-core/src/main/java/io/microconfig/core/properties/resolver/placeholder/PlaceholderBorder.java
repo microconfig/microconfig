@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.With;
 
 import static java.lang.Character.isLetterOrDigit;
+import static java.lang.Math.max;
 import static java.util.Optional.ofNullable;
 import static lombok.AccessLevel.PRIVATE;
 
@@ -44,7 +45,7 @@ public class PlaceholderBorder {
     }
 
     private PlaceholderBorder parseComponentName() {
-        for (int i = Math.max(startIndex + 2, configTypeEndIndex + 3); i < line.length(); ++i) {
+        for (int i = max(startIndex + 2, configTypeEndIndex + 3); i < line.length(); ++i) {
             char c = line.charAt(i);
             if (c == ':' && i + 1 < line.length() && line.charAt(i + 1) == ':') {
                 return withConfigTypeEndIndex(i - 1).parseComponentName();
@@ -120,7 +121,7 @@ public class PlaceholderBorder {
     public Placeholder toPlaceholder(String contextEnv) {
         return new Placeholder(
                 ofNullable(configTypeEndIndex < 0 ? null : line.substring(startIndex + 2, configTypeEndIndex + 1)),
-                line.substring(Math.max(startIndex + 2, configTypeEndIndex + 3), envIndex < 0 ? valueIndex - 1 : envIndex - 1),
+                line.substring(max(startIndex + 2, configTypeEndIndex + 3), envIndex < 0 ? valueIndex - 1 : envIndex - 1),
                 envIndex < 0 ? contextEnv : line.subSequence(envIndex, valueIndex - 2).toString(),
                 line.substring(valueIndex, defaultValueIndex < 0 ? endIndex : defaultValueIndex - 1),
                 ofNullable(defaultValueIndex < 0 ? null : line.substring(defaultValueIndex, endIndex))
