@@ -56,7 +56,7 @@ public class PlaceholderBorders {
                     //todo
                 }
                 if (!isAllowedSymbol(c)) {
-                    return new SearchingOpenSign().process(value, currentIndex + 1, currentIndex + 1);
+                    return new SearchingOpenSign().process(value, currentIndex, currentIndex);
                 }
             }
 
@@ -73,7 +73,7 @@ public class PlaceholderBorders {
                     return new ParsingValue().process(value, placeholderStart, i + 2);
                 }
                 if (!isAllowedSymbol(c)) {
-                    return new SearchingOpenSign().process(value, currentIndex + 1, currentIndex + 1);
+                    return new SearchingOpenSign().process(value, currentIndex, currentIndex);
                 }
             }
 
@@ -90,10 +90,10 @@ public class PlaceholderBorders {
                     return new ParsingDefaultValue().process(value, placeholderStart, currentIndex + 1);
                 }
                 if (c == '}') {
-                    return new PlaceholderBorders(value, placeholderStart, 0, 0, i);
+                    return new PlaceholderBorders(value, placeholderStart, currentIndex, -1, i);
                 }
                 if (!isAllowedSymbol(c) && c != '/' && c != '\\') {
-                    return new SearchingOpenSign().process(value, currentIndex + 1, currentIndex + 1);
+                    return new SearchingOpenSign().process(value, currentIndex, currentIndex);
                 }
             }
 
@@ -113,10 +113,8 @@ public class PlaceholderBorders {
                         }
                         continue;
                     }
-                    if (c == '}') {
-                        if (--openBrackets == 0) {
-                            return new PlaceholderBorders(value, placeholderStart, 0, 0, i);
-                        }
+                    if (c == '}' && --openBrackets == 0) {
+                        return new PlaceholderBorders(value, placeholderStart, 0, currentIndex, i);
                     }
                 }
 
