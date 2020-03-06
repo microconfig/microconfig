@@ -5,37 +5,37 @@ import lombok.RequiredArgsConstructor;
 import lombok.With;
 
 import static java.lang.Character.isLetterOrDigit;
-import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static lombok.AccessLevel.PRIVATE;
 
 @With(PRIVATE)
 @RequiredArgsConstructor
-public class PlaceholderBorders {
-    private static final PlaceholderBorders empty = new PlaceholderBorders(null);
+public class PlaceholderBorder {
+    private static final PlaceholderBorder empty = new PlaceholderBorder(null);
 
     private final StringBuilder line;
 
     @Getter
     private final int startIndex;
+    private final int configTypeEndIndex;
     private final int envIndex;
     private final int valueIndex;
     private final int defaultValueIndex;
     @Getter
     private final int endIndex;
 
-    private PlaceholderBorders(StringBuilder line) {
-        this(line, -1, -1, -1, -1, -1);
+    private PlaceholderBorder(StringBuilder line) {
+        this(line, -1, -1, -1, -1, -1, -1);
     }
 
-    public static PlaceholderBorders parse(StringBuilder line) {
-        return new PlaceholderBorders(line).searchOpenSign();
+    public static PlaceholderBorder parse(StringBuilder line) {
+        return new PlaceholderBorder(line).searchOpenSign();
     }
 
-    private PlaceholderBorders searchOpenSign() {
+    private PlaceholderBorder searchOpenSign() {
         int index = line.indexOf("${", startIndex);
         if (index >= 0) {
-            return new PlaceholderBorders(line)
+            return new PlaceholderBorder(line)
                     .withStartIndex(index)
                     .parseComponentName();
         }
@@ -43,18 +43,17 @@ public class PlaceholderBorders {
         return empty;
     }
 
-    private PlaceholderBorders parseComponentName() {
-        for (int i = startIndex + 2; i < line.length(); ++i) {
+    private PlaceholderBorder parseComponentName() {
+        for (int i = Math.max(startIndex + 2, configTypeEndIndex + 3); i < line.length(); ++i) {
             char c = line.charAt(i);
+            if (c == ':' && i + 1 < line.length() && line.charAt(i + 1) == ':') {
+                return withConfigTypeEndIndex(i - 1).parseComponentName();
+            }
             if (c == '[') {
                 return withEnvIndex(i + 1).parseEnvName();
             }
             if (c == '@') {
                 return withValueIndex(i + 1).parseValue();
-            }
-            if (c == ':') {
-                continue;
-                //todo
             }
             if (!isAllowedSymbol(c)) {
                 return withStartIndex(i).searchOpenSign();
@@ -64,7 +63,7 @@ public class PlaceholderBorders {
         return empty;
     }
 
-    private PlaceholderBorders parseEnvName() {
+    private PlaceholderBorder parseEnvName() {
         for (int i = envIndex; i < line.length(); ++i) {
             char c = line.charAt(i);
             if (c == ']' && i + 1 < line.length() && line.charAt(i + 1) == '@') {
@@ -78,7 +77,7 @@ public class PlaceholderBorders {
         return empty;
     }
 
-    private PlaceholderBorders parseValue() {
+    private PlaceholderBorder parseValue() {
         for (int i = valueIndex; i < line.length(); ++i) {
             char c = line.charAt(i);
             if (c == ':') {
@@ -95,7 +94,7 @@ public class PlaceholderBorders {
         return empty;
     }
 
-    private PlaceholderBorders parseDefaultValue() {
+    private PlaceholderBorder parseDefaultValue() {
         int openBrackets = 1;
         for (int i = defaultValueIndex; i < line.length(); ++i) {
             char c = line.charAt(i);
@@ -119,15 +118,13 @@ public class PlaceholderBorders {
     }
 
     public Placeholder toPlaceholder(String contextEnv) {
-//        return new Placeholder(
-//                        empty(),
-//                        line.subSequence(startIndex + 2, envIndex < 0 ? valueIndex - 1 : envIndex - 1).toString(),
-//                        envIndex < 0 ? contextEnv : line.subSequence(envIndex, valueIndex - 2).toString(),
-//                        line.subSequence(valueIndex, defaultValueIndex < 0 ? endIndex : defaultValueIndex - 1).toString(),
-//                        ofNullable(defaultValueIndex < 0 ? null : line.subSequence(defaultValueIndex, endIndex).toString())
-//                );
-
-        return Placeholder.parse(line.substring(startIndex, endIndex + 1), contextEnv);
+        return new Placeholder(
+                ofNullable(configTypeEndIndex < 0 ? null : line.substring(startIndex + 2, configTypeEndIndex + 1)),
+                line.substring(Math.max(startIndex + 2, configTypeEndIndex + 3), envIndex < 0 ? valueIndex - 1 : envIndex - 1),
+                envIndex < 0 ? contextEnv : line.subSequence(envIndex, valueIndex - 2).toString(),
+                line.substring(valueIndex, defaultValueIndex < 0 ? endIndex : defaultValueIndex - 1),
+                ofNullable(defaultValueIndex < 0 ? null : line.substring(defaultValueIndex, endIndex))
+        );
     }
 
     public boolean isValid() {

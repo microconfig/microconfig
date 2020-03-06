@@ -40,17 +40,17 @@ public class PlaceholderResolver implements PropertyResolver {
         StringBuilder result = new StringBuilder(sourceOfPlaceholders.getValue());
 
         while (true) {
-            PlaceholderBorders borders = PlaceholderBorders.parse(result);
-            if (!borders.isValid()) break;
+            PlaceholderBorder border = PlaceholderBorder.parse(result);
+            if (!border.isValid()) break;
 
-            String resolved = resolve(borders, sourceOfPlaceholders, root, visited);
-            result.replace(borders.getStartIndex(), borders.getEndIndex() + 1, resolved);
+            String resolved = resolve(border, sourceOfPlaceholders, root, visited);
+            result.replace(border.getStartIndex(), border.getEndIndex() + 1, resolved);
         }
 
         return result.toString();
     }
 
-    private String resolve(PlaceholderBorders borders, Property sourceOfPlaceholders, EnvComponent root, Set<Placeholder> visited) {
+    private String resolve(PlaceholderBorder borders, Property sourceOfPlaceholders, EnvComponent root, Set<Placeholder> visited) {
         try {
             Placeholder placeholder = borders.toPlaceholder(sourceOfPlaceholders.getEnvContext());
             if (hasAnotherConfigType(placeholder)) {

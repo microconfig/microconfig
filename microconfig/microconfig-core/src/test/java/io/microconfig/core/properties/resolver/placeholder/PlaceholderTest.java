@@ -4,7 +4,6 @@ import io.microconfig.core.properties.resolver.PropertyResolveException;
 import org.junit.jupiter.api.Test;
 
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static io.microconfig.core.properties.resolver.placeholder.Placeholder.parse;
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,7 +45,7 @@ class PlaceholderTest {
     }
 
     private void doTestSpel(String value) {
-        Placeholder propValue = PlaceholderBorders.parse(new StringBuilder(value)).toPlaceholder(getEnv());
+        Placeholder propValue = PlaceholderBorder.parse(new StringBuilder(value)).toPlaceholder(getEnv());
 
         assertEquals("property", propValue.getValue());
         assertEquals("false", propValue.getDefaultValue().orElse(null));
