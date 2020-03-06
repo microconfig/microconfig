@@ -2,6 +2,7 @@ package io.microconfig.utils;
 
 import java.util.*;
 
+import static java.lang.Math.max;
 import static java.util.Arrays.asList;
 
 public class CollectionUtils {
@@ -21,7 +22,7 @@ public class CollectionUtils {
     }
 
     public static <T> Set<T> joinToSet(Collection<T> first, Collection<T> second) {
-        Set<T> list = new HashSet<>(Math.max(first.size(), second.size()));
+        Set<T> list = new HashSet<>(max(first.size(), second.size()));
         list.addAll(first);
         list.addAll(second);
         return list;

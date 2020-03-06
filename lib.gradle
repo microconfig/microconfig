@@ -1,7 +1,6 @@
 ext {
     lib = [            
-            snakeyaml         : 'org.yaml:snakeyaml:1.23',
-            guava             : 'com.google.guava:guava:20.0',
+            snakeyaml         : 'org.yaml:snakeyaml:1.26',
             lombok            : 'org.projectlombok:lombok:1.18.12'
     ].withDefault({ key -> throw new IllegalArgumentException("Unknown library '$key'") })
 }

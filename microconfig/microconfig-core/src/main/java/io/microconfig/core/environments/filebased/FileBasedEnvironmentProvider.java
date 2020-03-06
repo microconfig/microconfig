@@ -74,8 +74,8 @@ public class FileBasedEnvironmentProvider implements EnvironmentProvider {
     private Stream<File> envFiles(String envName) {
         List<String> supportedFormats = environmentParserSelector.supportedFormats();
         Predicate<File> fileNamePredicate = envName == null ?
-                f -> supportedFormats.stream().anyMatch(format -> f.getName().endsWith(format))
-                : f -> supportedFormats.stream().anyMatch(format -> f.getName().equals(envName + format));
+                f -> supportedFormats.stream().anyMatch(format -> f.getName().endsWith(format)) :
+                f -> supportedFormats.stream().anyMatch(format -> f.getName().equals(envName + format));
 
         return walk(envDir.toPath())
                 .map(Path::toFile)
