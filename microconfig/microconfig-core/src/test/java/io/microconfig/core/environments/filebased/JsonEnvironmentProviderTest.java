@@ -2,7 +2,7 @@ package io.microconfig.core.environments.filebased;
 
 import io.microconfig.core.environments.ComponentGroup;
 import io.microconfig.core.environments.Environment;
-import io.microconfig.core.environments.EnvironmentNotExistException;
+import io.microconfig.core.environments.EnvironmentDoesNotExistException;
 import io.microconfig.core.environments.EnvironmentProvider;
 import org.junit.jupiter.api.Test;
 
@@ -87,6 +87,6 @@ class JsonEnvironmentProviderTest {
 
     @Test
     void testGetIncorrectEnv() {
-        assertThrows(EnvironmentNotExistException.class, () -> environmentProvider.getByName("not-exists"));
+        assertThrows(EnvironmentDoesNotExistException.class, () -> environmentProvider.getByName("not-exists"));
     }
 }

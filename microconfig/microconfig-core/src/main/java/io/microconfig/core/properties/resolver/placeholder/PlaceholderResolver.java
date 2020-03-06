@@ -1,7 +1,7 @@
 package io.microconfig.core.properties.resolver.placeholder;
 
 import io.microconfig.core.environments.Component;
-import io.microconfig.core.environments.EnvironmentNotExistException;
+import io.microconfig.core.environments.EnvironmentDoesNotExistException;
 import io.microconfig.core.environments.EnvironmentProvider;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.PropertySource;
@@ -137,7 +137,7 @@ public class PlaceholderResolver implements PropertyResolver {
             return environmentProvider.getByName(env)
                     .getComponentByName(componentNameOrType)
                     .orElse(byType(componentNameOrType));
-        } catch (EnvironmentNotExistException e) {
+        } catch (EnvironmentDoesNotExistException e) {
             return byType(componentNameOrType);
         }
     }
