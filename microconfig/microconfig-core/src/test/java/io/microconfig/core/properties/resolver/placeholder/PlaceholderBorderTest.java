@@ -8,7 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PlaceholderBorderTest {
     @Test
     void test() {
-        PlaceholderBorder borders = parse(new StringBuilder("hello ${rf} ${c1 ${c2 } @fsd}  ${app::component[dev]@value:${another}#{1+2}} ${}"));
-        assertEquals("${app::component[dev]@value:${another}#{1+2}}", borders.toString());
+        doTest("hello ${rf} ${c1 ${c2 } @fsd}  ${app::component[dev]@value:${another}#{1+2}} ${}", "${app::component[dev]@value:${another}#{1+2}}");
+        doTest("${app::comp${c2@v2}onent[dev]@value:${another}#{1+2}}", "${c2@v2}");
+        doTest("${component@value:${another}#{1+2}}", "${component@value:${another}#{1+2}}");
+    }
+
+    private void doTest(String line, String expected) {
+        PlaceholderBorder borders = parse(new StringBuilder(line));
+        assertEquals(expected, borders.toString());
     }
 }
