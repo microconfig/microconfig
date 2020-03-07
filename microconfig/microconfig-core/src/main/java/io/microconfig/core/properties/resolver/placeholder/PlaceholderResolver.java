@@ -106,11 +106,10 @@ public class PlaceholderResolver implements PropertyResolver {
     }
 
     private boolean canBeOverridden(Placeholder placeholder, Property sourceOfPlaceholder) {
-        Supplier<Boolean> placeholderToTheSameComponent = () -> placeholder.getComponent().equals(sourceOfPlaceholder.getSource().getComponent().getType())
-                && placeholder.getEnvironment().equals(sourceOfPlaceholder.getEnvContext()
-        );
+        boolean placeholderToTheSameComponent = placeholder.getComponent().equals(sourceOfPlaceholder.getSource().getComponent().getType())
+                && placeholder.getEnvironment().equals(sourceOfPlaceholder.getEnvContext());
 
-        return placeholderToTheSameComponent.get() && !nonOverridableKeys.contains(placeholder.getValue());
+        return placeholderToTheSameComponent && !nonOverridableKeys.contains(placeholder.getValue());
     }
 
     private Optional<Property> tryResolveForParents(Placeholder placeholderToOverride, EnvComponent root, Set<Placeholder> orderedVisited) {
