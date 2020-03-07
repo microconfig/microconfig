@@ -22,10 +22,10 @@ class Template {
     private static final Pattern SINGE_PLACEHOLDER = compile("^" +
             "\\$\\{" +
             "((?<type>\\w+)::)?" +
-            "(?<comp>[\\s\\w._-]+)" +
+            "(?<comp>[\\s\\w._\\-]+)" +
             "(\\[(?<env>.+)])?" +
             "@" +
-            "(?<value>[\\w._/-]+)" +
+            "(?<value>[\\w._/\\-]+)" +
             "(:(?<default>(\\$\\{@})*))?" +
             "}$"
     );
