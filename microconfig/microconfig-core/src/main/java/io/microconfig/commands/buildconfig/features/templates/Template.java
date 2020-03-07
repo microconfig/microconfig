@@ -3,6 +3,7 @@ package io.microconfig.commands.buildconfig.features.templates;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.resolver.EnvComponent;
 import io.microconfig.core.properties.resolver.PropertyResolver;
+import io.microconfig.core.properties.resolver.placeholder.PlaceholderBorder;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -15,21 +16,9 @@ import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.Logger.warn;
 import static io.microconfig.utils.StringUtils.addOffsets;
 import static java.util.regex.Matcher.quoteReplacement;
-import static java.util.regex.Pattern.compile;
 
 @RequiredArgsConstructor
 class Template {
-    private static final Pattern SINGE_PLACEHOLDER = compile("^" +
-            "\\$\\{" +
-            "((?<type>\\w+)::)?" +
-            "(?<comp>[\\s\\w._\\-]+)" +
-            "(\\[(?<env>.+)])?" +
-            "@" +
-            "(?<value>[\\w._/\\-]+)" +
-            "(:(?<default>(\\$\\{@})*))?" +
-            "}$"
-    );
-
     private final File source;
     private final String text;
 
@@ -70,10 +59,10 @@ class Template {
     }
 
     private String resolveValue(String placeholder, EnvComponent currentComponent, PropertyResolver propertyResolver) {
-        boolean microconfigFormatPlaceholder = isSinglePlaceholder(placeholder);
+        boolean microconfigFormatPlaceholder = isValidPlaceholder(placeholder);
         if (!microconfigFormatPlaceholder) {
             String newFormat = "${this@" + placeholder.substring("${".length());
-            if (!isSinglePlaceholder(newFormat)) return null;
+            if (!isValidPlaceholder(newFormat)) return null;
             placeholder = newFormat;
         }
 
@@ -87,8 +76,8 @@ class Template {
         }
     }
 
-    public static boolean isSinglePlaceholder(String value) {
-        return SINGE_PLACEHOLDER.matcher(value).matches();
+    public static boolean isValidPlaceholder(String value) {
+        return PlaceholderBorder.parse(new StringBuilder(value)).isValid();
     }
 
     private String doResolve(EnvComponent currentComponent, PropertyResolver propertyResolver, String placeholder) {
