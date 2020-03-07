@@ -96,6 +96,7 @@ public class PlaceholderBorder {
     }
 
     private PlaceholderBorder parseDefaultValue() {
+        int closeBracketLastIndex = -1;
         int openBrackets = 1;
         for (int i = defaultValueIndex; i < line.length(); ++i) {
             char c = line.charAt(i);
@@ -106,12 +107,15 @@ public class PlaceholderBorder {
                 }
                 continue;
             }
-            if (c == '}' && --openBrackets == 0) {
-                return withEndIndex(i);
+            if (c == '}') {
+                closeBracketLastIndex = i;
+                if (--openBrackets == 0) {
+                    return withEndIndex(closeBracketLastIndex);
+                }
             }
         }
 
-        return NOT_VALID;
+        return closeBracketLastIndex < 0 ? NOT_VALID : withEndIndex(closeBracketLastIndex);
     }
 
     private boolean isAllowedSymbol(char c) {
