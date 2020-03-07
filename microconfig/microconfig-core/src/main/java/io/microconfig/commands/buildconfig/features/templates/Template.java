@@ -19,8 +19,16 @@ import static java.util.regex.Pattern.compile;
 
 @RequiredArgsConstructor
 class Template {
-    //todo rewrite
-    private static final Pattern SINGE_PLACEHOLDER = compile("^\\$\\{((?<type>\\w+)::)?(?<comp>[\\s\\w._-]+)(\\[(?<env>.+)])?@(?<value>[\\w._/-]+)(:(?<default>.*))?}$");
+    private static final Pattern SINGE_PLACEHOLDER = compile("^" +
+            "\\$\\{" +
+            "((?<type>\\w+)::)?" +
+            "(?<comp>[\\s\\w._-]+)" +
+            "(\\[(?<env>.+)])?" +
+            "@" +
+            "(?<value>[\\w._/-]+)" +
+            "(:(?<default>.*))?" +
+            "}$"
+    );
 
     private final File source;
     private final String text;
