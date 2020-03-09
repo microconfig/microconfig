@@ -1,6 +1,5 @@
 package io.microconfig.commands.buildconfig;
 
-import io.microconfig.commands.BuildConfigCommand;
 import io.microconfig.commands.CommandContext;
 import io.microconfig.core.environments.Component;
 import io.microconfig.core.environments.EnvironmentProvider;
