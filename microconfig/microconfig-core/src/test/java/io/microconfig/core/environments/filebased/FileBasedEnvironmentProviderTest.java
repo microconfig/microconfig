@@ -1,7 +1,7 @@
 package io.microconfig.core.environments.filebased;
 
 import io.microconfig.core.environments.EnvironmentProvider;
-import io.microconfig.utils.reader.FilesReader;
+import io.microconfig.utils.reader.Io;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -19,7 +19,7 @@ class FileBasedEnvironmentProviderTest {
     @Test
     void testEnvDirExistCheck() {
         assertThrows(IllegalArgumentException.class,
-                () -> new FileBasedEnvironmentProvider(new File("badPath"), mock(EnvironmentParserSelector.class), mock(FilesReader.class)));
+                () -> new FileBasedEnvironmentProvider(new File("badPath"), mock(EnvironmentParserSelector.class), mock(Io.class)));
     }
 
     @Test

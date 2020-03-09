@@ -1,6 +1,6 @@
 package io.microconfig.core.properties.io.ioservice.properties;
 
-import io.microconfig.utils.reader.FsFilesReader;
+import io.microconfig.utils.reader.FsIo;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -12,7 +12,7 @@ import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PropertiesConfigIoServiceTest {
-    private final PropertiesConfigIoService ioService = new PropertiesConfigIoService(new FsFilesReader());
+    private final PropertiesConfigIoService ioService = new PropertiesConfigIoService(new FsIo());
 
     @Test
     void test() {

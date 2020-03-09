@@ -1,0 +1,14 @@
+a:
+  b[c.d]: a
+
+b:
+  b]c:
+    d[: a2
+
+metadata:
+  annotations:
+    "kubernetes.io/ingress.class": internal
+
+metrics:
+  distribution:
+    percentiles-histogram[http.server.requests]: true

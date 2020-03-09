@@ -1,0 +1,8 @@
+discovery:
+  enabled: true
+  services:
+    - account-product
+    - account-product-query
+    - account-product-rest
+  converter:
+    management-context-path: ${monitoring@management.endpoints.web.base-path}

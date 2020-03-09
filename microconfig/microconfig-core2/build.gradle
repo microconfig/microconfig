@@ -1,0 +1,19 @@
+apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+mainClassName = 'io.microconfig.BuildConfigMain'
+
+publishing {
+    publications {
+        shadow(MavenPublication) { publication ->
+            project.shadow.component(publication)
+        }
+    }
+}
+
+dependencies {
+    implementation project(':microconfig:utils'),
+            lib.snakeyaml,
+            'com.google.code.gson:gson',
+            'org.springframework:spring-expression'
+}

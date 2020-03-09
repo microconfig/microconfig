@@ -31,8 +31,8 @@ import io.microconfig.core.properties.serializer.file.FilenameGenerator;
 import io.microconfig.core.properties.serializer.file.FilenameGeneratorImpl;
 import io.microconfig.core.properties.serializer.file.LegacyFilenameGenerator;
 import io.microconfig.core.properties.serializer.file.ToFileConfigSerializer;
-import io.microconfig.utils.reader.FilesReader;
-import io.microconfig.utils.reader.FsFilesReader;
+import io.microconfig.utils.reader.Io;
+import io.microconfig.utils.reader.FsIo;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -74,10 +74,10 @@ public class MicroconfigFactory {
     private final List<PlaceholderResolveStrategy> additionalResolvers;
 
     public static MicroconfigFactory init(File sourcesRootDir, File destinationComponentDir) {
-        return init(sourcesRootDir, destinationComponentDir, new FsFilesReader());
+        return init(sourcesRootDir, destinationComponentDir, new FsIo());
     }
 
-    public static MicroconfigFactory init(File sourcesRootDir, File destinationComponentDir, FilesReader fileReader) {
+    public static MicroconfigFactory init(File sourcesRootDir, File destinationComponentDir, Io fileReader) {
         File fullSourcesRootDir = canonical(sourcesRootDir);
 
         return new MicroconfigFactory(
@@ -168,7 +168,7 @@ public class MicroconfigFactory {
         );
     }
 
-    private static EnvironmentProvider newEnvProvider(File root, FilesReader fileReader) {
+    private static EnvironmentProvider newEnvProvider(File root, Io fileReader) {
         return cache(
                 new FileBasedEnvironmentProvider(
                         new File(root, ENV_DIR),
@@ -178,7 +178,7 @@ public class MicroconfigFactory {
         );
     }
 
-    private static ConfigIoService newConfigIoService(FilesReader fileReader) {
+    private static ConfigIoService newConfigIoService(Io fileReader) {
         return new ConfigIoServiceSelector(
                 cache(new ConfigFormatDetectorImpl(fileReader)),
                 new YamlConfigIoService(fileReader),

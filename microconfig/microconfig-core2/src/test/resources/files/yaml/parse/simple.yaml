@@ -1,0 +1,13 @@
+p0: p0v
+
+p1:
+  p2:
+    p3:
+      p4:
+        p5: p5v
+
+server.port: 8080
+name:
+name.name2:
+displayName: dv
+

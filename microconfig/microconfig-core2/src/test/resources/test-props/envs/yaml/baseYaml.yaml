@@ -1,0 +1,25 @@
+portOffset: 1
+ip: 1.2.3.4
+
+orders:
+  components:
+    - order-db-patcher
+    - order-service
+    - order-ui
+    - recommendations
+
+payments:
+  components: [
+    payment-db-patcher,
+    payment-service,
+    payment-ui
+  ]
+
+infra:
+  ip: 17.44.48.45
+  components:
+    - service-discovery
+    - api-gateway
+
+kafka:
+  components: [zookeeper, kafka]

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public interface FilesReader {
+public interface Io {
     String read(File file);
 
     List<String> readLines(File file);

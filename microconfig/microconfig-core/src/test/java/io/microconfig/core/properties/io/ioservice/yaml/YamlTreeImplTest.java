@@ -1,6 +1,6 @@
 package io.microconfig.core.properties.io.ioservice.yaml;
 
-import io.microconfig.utils.reader.FsFilesReader;
+import io.microconfig.utils.reader.FsIo;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -72,7 +72,7 @@ class YamlTreeImplTest {
 
     private String toYaml(String file) {
         return new YamlTreeImpl().toYaml(
-                new YamlReader(classpathFile(file), new FsFilesReader()).propertiesAsMap()
+                new YamlReader(classpathFile(file), new FsIo()).propertiesAsMap()
         );
     }
 }

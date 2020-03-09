@@ -1,0 +1,3 @@
+prop1: ${this[prod]@prop2}
+prop2: ${this@context}
+context: default

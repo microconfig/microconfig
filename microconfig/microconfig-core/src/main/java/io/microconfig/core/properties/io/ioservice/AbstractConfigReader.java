@@ -1,7 +1,7 @@
 package io.microconfig.core.properties.io.ioservice;
 
 import io.microconfig.core.properties.Property;
-import io.microconfig.utils.reader.FilesReader;
+import io.microconfig.utils.reader.Io;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -17,7 +17,7 @@ public abstract class AbstractConfigReader implements ConfigReader {
     protected final File file;
     protected final List<String> lines;
 
-    protected AbstractConfigReader(File file, FilesReader fileReader) {
+    protected AbstractConfigReader(File file, Io fileReader) {
         this(file, fileReader.readLines(file));
     }
 

@@ -1,0 +1,13 @@
+{
+  include: {
+    env: "e2"
+  },
+  g1: {
+    exclude: [
+      "s1"
+    ],
+    append: [
+      "s4"
+    ]
+  }
+}
