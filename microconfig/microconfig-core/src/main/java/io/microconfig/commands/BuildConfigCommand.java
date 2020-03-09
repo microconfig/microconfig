@@ -1,7 +1,6 @@
-package io.microconfig.commands.buildconfig;
+package io.microconfig.commands;
 
-import io.microconfig.commands.Command;
-import io.microconfig.commands.CommandContext;
+import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
 import io.microconfig.core.environments.Component;
 import io.microconfig.core.environments.EnvironmentProvider;
 import io.microconfig.core.properties.ConfigProvider;
@@ -16,7 +15,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static io.microconfig.utils.Logger.info;
-import static io.microconfig.utils.Logger.logLineBreak;
 
 @RequiredArgsConstructor
 public class BuildConfigCommand implements Command {
@@ -35,7 +33,7 @@ public class BuildConfigCommand implements Command {
                 .sum();
 
         if (processedComponents > 0) {
-            logLineBreak();
+            info("Processed " + processedComponents + " components\n");
         }
     }
 

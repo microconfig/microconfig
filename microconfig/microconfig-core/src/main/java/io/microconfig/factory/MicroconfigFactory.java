@@ -1,6 +1,6 @@
 package io.microconfig.factory;
 
-import io.microconfig.commands.buildconfig.BuildConfigCommand;
+import io.microconfig.commands.BuildConfigCommand;
 import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
 import io.microconfig.core.environments.EnvironmentProvider;
 import io.microconfig.core.environments.filebased.EnvironmentParserSelectorImpl;
