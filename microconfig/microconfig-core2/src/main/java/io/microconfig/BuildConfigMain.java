@@ -1,11 +1,9 @@
 package io.microconfig;
 
-import io.microconfig.factory.MicroconfigFactory;
-
 import java.io.File;
 
 import static io.microconfig.factory.MicroconfigFactory.withSourceRoot;
-import static io.microconfig.factory.configtype.ConfigTypeSuppliers.configTypeByName;
+import static io.microconfig.factory.configtype.ConfigTypeSuppliers.configTypeFromFileName;
 import static io.microconfig.service.serializers.PropertiesSerializers.asString;
 
 public class BuildConfigMain {
@@ -16,7 +14,7 @@ public class BuildConfigMain {
         String result = withSourceRoot(sourceRoot)
                 .environments().byName("dev")
                 .getComponentByName("some", false)
-                .buildPropertiesFor(configTypeByName("app"))
+                .buildPropertiesFor(configTypeFromFileName(new File("someFile.yaml")))
                 .serialize(asString());
     }
 }

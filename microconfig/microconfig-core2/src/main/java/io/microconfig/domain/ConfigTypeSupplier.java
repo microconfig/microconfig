@@ -1,7 +1,7 @@
 package io.microconfig.domain;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface ConfigTypeSupplier {
-    ConfigType chooseType(List<ConfigType> supportedTypes);
+    ConfigType chooseType(Collection<ConfigType> supportedTypes);
 }
