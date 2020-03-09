@@ -11,6 +11,7 @@ import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static io.microconfig.service.ioservice.selector.ConfigFormat.YAML;
 import static io.microconfig.utils.CollectionUtils.singleValue;
 import static io.microconfig.utils.FileUtils.walk;
 import static java.nio.file.Files.exists;
@@ -31,26 +32,35 @@ public class FileBasedEnvironments implements Environments {
     }
 
     @Override
+    public List<Environment> all() {
+        return envFiles(withYamlExtension())
+                .stream()
+                .map(f -> parser.parse(getEnvName(f), f))
+                .collect(toList());
+    }
+
+    @Override
     public Set<String> environmentNames() {
-        try (Stream<File> envStream = envFilesStream(null)) {
-            return envStream
-                    .map(File::getName)
-                    .map(name -> name.substring(0, name.lastIndexOf('.')))
-                    .collect(toCollection(TreeSet::new));
-        }
+        return envFiles(withYamlExtension())
+                .stream()
+                .map(this::getEnvName)
+                .collect(toCollection(TreeSet::new));
     }
 
     @Override
     public Environment byName(String name) {
-        File envFile = getEnvFile(name);
-
-        return parser.parse(name, envFile);
+        return parser.parse(name, envFile(name));
 //                .processInclude(this)
 //                .verifyUniqueComponentNames();
     }
 
-    private File getEnvFile(String name) {
-        List<File> files = envFiles(name);
+    private String getEnvName(File file) {
+        String name = file.getName();
+        return name.substring(0, name.lastIndexOf('.'));
+    }
+
+    private File envFile(String name) {
+        List<File> files = envFiles(withName(name));
 
         if (files.size() > 1) {
             throw new IllegalArgumentException("Found several env files with name " + name);
@@ -61,24 +71,20 @@ public class FileBasedEnvironments implements Environments {
         return singleValue(files);
     }
 
-    private List<File> envFiles(String name) {
-        try (Stream<File> envStream = envFilesStream(name)) {
-            return envStream.collect(toList());
+    private List<File> envFiles(Predicate<File> predicate) {
+        try (Stream<Path> stream = walk(envDir)) {
+            return stream
+                    .map(Path::toFile)
+                    .filter(predicate)
+                    .collect(toList());
         }
     }
 
-    private Stream<File> envFilesStream(String env) {
-        Predicate<File> envNamePredicate = envFileNamePredicate(env);
-
-        return walk(envDir)
-                .map(Path::toFile)
-                .filter(envNamePredicate);
+    private Predicate<File> withName(String envName) {
+        return f -> f.getName().equals(envName + YAML.extension());
     }
 
-    private Predicate<File> envFileNamePredicate(String envName) {
-        String extension = ".yaml";
-        return envName == null ?
-                f -> f.getName().endsWith(extension) :
-                f -> f.getName().equals(envName + extension);
+    private Predicate<File> withYamlExtension() {
+        return f -> f.getName().endsWith(YAML.extension());
     }
 }
