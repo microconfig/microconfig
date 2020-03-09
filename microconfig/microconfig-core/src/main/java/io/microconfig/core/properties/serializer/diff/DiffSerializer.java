@@ -48,7 +48,7 @@ public class DiffSerializer implements ConfigSerializer {
 
     private Map<String, String> readOldConfig(File current) {
         try {
-            return configIoService.read(current).propertiesAsMap();
+            return configIoService.readFor(current).propertiesAsMap();
         } catch (RuntimeException e) {
             error("Can't read previous config '" + current + "' for comparison: " + e.getMessage());
             return emptyMap();

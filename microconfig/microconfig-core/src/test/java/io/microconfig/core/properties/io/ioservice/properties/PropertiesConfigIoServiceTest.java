@@ -17,8 +17,8 @@ class PropertiesConfigIoServiceTest {
     @Test
     void test() {
         File file = classpathFile("files/propLine.properties");
-        assertEquals(expectedMap(false), ioService.read(file).propertiesAsMap());
-        assertEquals(expectedMap(true), ioService.read(file).escapeResolvedPropertiesAsMap());
+        assertEquals(expectedMap(false), ioService.readFor(file).propertiesAsMap());
+        assertEquals(expectedMap(true), ioService.readFor(file).escapeResolvedPropertiesAsMap());
     }
 
     private Map<String, String> expectedMap(boolean resolveEscape) {

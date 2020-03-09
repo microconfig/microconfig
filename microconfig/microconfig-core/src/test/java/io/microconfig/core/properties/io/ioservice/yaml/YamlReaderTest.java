@@ -28,7 +28,7 @@ class YamlReaderTest {
         expected.put("name.name2", "");
         expected.put("displayName", "dv");
 
-        ConfigReader read = yaml.read(classpathFile("files/yaml/parse/simple.yaml"));
+        ConfigReader read = yaml.readFor(classpathFile("files/yaml/parse/simple.yaml"));
         assertEquals(expected, read.propertiesAsMap());
 
         List<Property> properties = read.properties("");
@@ -53,7 +53,7 @@ class YamlReaderTest {
         map.put("p1.p2_3", "p2_3v");
         map.put("p9", "p9v");
 
-        assertEquals(map, yaml.read(classpathFile("files/yaml/parse/inner.yaml")).propertiesAsMap());
+        assertEquals(map, yaml.readFor(classpathFile("files/yaml/parse/inner.yaml")).propertiesAsMap());
     }
 
     @Test
@@ -67,7 +67,7 @@ class YamlReaderTest {
         map.put("cr2.cf.tfs.out.shouldArchive", "true");
         map.put("cr2.cf.tfs.out.archiveDir", "dirV");
 
-        assertEquals(map, yaml.read(classpathFile("files/yaml/parse/inner2.yaml")).propertiesAsMap());
+        assertEquals(map, yaml.readFor(classpathFile("files/yaml/parse/inner2.yaml")).propertiesAsMap());
     }
 
     @Test
@@ -93,7 +93,7 @@ class YamlReaderTest {
         map.put("psp.adyen.value", "v2");
         map.put("server.port", "8080");
 
-        Map<String, String> expected = yaml.read(classpathFile("files/yaml/parse/multilines.yaml")).propertiesAsMap();
+        Map<String, String> expected = yaml.readFor(classpathFile("files/yaml/parse/multilines.yaml")).propertiesAsMap();
         assertEquals(map, expected);
     }
 }

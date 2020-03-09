@@ -22,15 +22,17 @@ public class ComponentParserImpl implements ComponentParser {
 
     @Override
     public ParsedComponent parse(File file, String env) {
-        ConfigReader reader = configIo.read(file);
+        ConfigReader reader = configIo.readFor(file);
 
-        Map<Integer, String> comments = reader.commentsByLineNumber();
+        Map<Integer, String> commentByLineNumber = reader.commentsByLineNumber();
+        List<Include> includes = parseIncludes(commentByLineNumber.values(), env);
+        if (ignoreComponent(commentByLineNumber.values())) {
+            return new ParsedComponent(includes, emptyList());
+        }
+
         List<Property> properties = reader.properties(env);
-        List<Property> tempProperties = parseTempProperties(comments, file, env);
-        List<Include> includes = parseIncludes(comments.values(), env);
-        boolean ignore = shouldIgnore(comments.values());
-
-        return new ParsedComponent(includes, ignore ? emptyList() : join(properties, tempProperties));
+        List<Property> tempProperties = parseTempProperties(commentByLineNumber, file, env);
+        return new ParsedComponent(includes, join(properties, tempProperties));
     }
 
     private List<Property> parseTempProperties(Map<Integer, String> comments, File file, String env) {
@@ -48,8 +50,7 @@ public class ComponentParserImpl implements ComponentParser {
                 .collect(toList());
     }
 
-    private boolean shouldIgnore(Collection<String> comments) {
-        return comments.stream()
-                .anyMatch(s -> s.startsWith("#@Ignore"));
+    private boolean ignoreComponent(Collection<String> comments) {
+        return comments.stream().anyMatch(s -> s.startsWith("#@Ignore"));
     }
 }
