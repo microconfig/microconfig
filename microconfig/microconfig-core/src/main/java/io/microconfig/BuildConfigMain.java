@@ -1,7 +1,7 @@
 package io.microconfig;
 
-import io.microconfig.commands.Command;
-import io.microconfig.commands.CommandContext;
+import io.microconfig.commands.ComponentsToProcess;
+import io.microconfig.commands.ConfigCommand;
 import io.microconfig.factory.BuildConfigCommandFactory;
 import io.microconfig.utils.CommandLineParams;
 
@@ -37,17 +37,17 @@ public class BuildConfigMain {
         List<String> components = clp.listValue(SERVICES);
         clp.putToSystem("outputFormat");
 
-        Command command = new BuildConfigCommandFactory(compositeProvider()).newCommand(new File(root), new File(destination));
-        execute(command, env, groups, components);
+        ConfigCommand configCommand = new BuildConfigCommandFactory(compositeProvider()).newCommand(new File(root), new File(destination));
+        execute(configCommand, env, groups, components);
     }
 
-    public static void execute(Command command, String env, List<String> groups, List<String> components) {
+    public static void execute(ConfigCommand configCommand, String env, List<String> groups, List<String> components) {
         long t = currentTimeMillis();
 
         if (groups.isEmpty()) {
-            command.execute(new CommandContext(env, components));
+            configCommand.execute(new ComponentsToProcess(env, components));
         } else {
-            groups.forEach(group -> command.execute(new CommandContext(env, group, components)));
+            groups.forEach(group -> configCommand.execute(new ComponentsToProcess(env, group, components)));
         }
 
         announce("Generated configs in " + msAfter(t));

@@ -1,6 +1,6 @@
-package io.microconfig.commands.buildconfig;
+package io.microconfig.commands.buildconfigs;
 
-import io.microconfig.commands.CommandContext;
+import io.microconfig.commands.ComponentsToProcess;
 import io.microconfig.core.environments.Component;
 import io.microconfig.core.environments.EnvironmentProvider;
 import io.microconfig.core.properties.ConfigProvider;
@@ -24,7 +24,7 @@ import static java.util.Optional.of;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class BuildConfigCommandTest {
+class BuildConfigsCommandTest {
     @Mock
     private EnvironmentProvider environmentProvider;
     @Mock
@@ -34,17 +34,17 @@ class BuildConfigCommandTest {
     @Mock
     private BuildConfigPostProcessor postProcessor;
 
-    private BuildConfigCommand command;
+    private BuildConfigsCommand command;
 
     @BeforeEach
     void setUp() {
-        command = new BuildConfigCommand(environmentProvider, configProvider, configSerializer, postProcessor);
+        command = new BuildConfigsCommand(environmentProvider, configProvider, configSerializer, postProcessor);
     }
 
     @Test
     void testExecute() {
         String env = "env";
-        CommandContext context = mock(CommandContext.class);
+        ComponentsToProcess context = mock(ComponentsToProcess.class);
         Component c1 = byType("c1");
         when(context.components(environmentProvider)).thenReturn(singletonList(c1));
         when(context.env()).thenReturn(env);

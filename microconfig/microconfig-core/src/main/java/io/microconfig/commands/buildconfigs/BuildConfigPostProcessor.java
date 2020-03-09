@@ -1,4 +1,4 @@
-package io.microconfig.commands.buildconfig;
+package io.microconfig.commands.buildconfigs;
 
 import io.microconfig.core.properties.ConfigProvider;
 import io.microconfig.core.properties.Property;

@@ -1,21 +1,21 @@
 package io.microconfig.factory;
 
-import io.microconfig.commands.Command;
-import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
-import io.microconfig.commands.buildconfig.features.templates.CopyTemplatesPostProcessor;
-import io.microconfig.commands.buildconfig.features.templates.CopyTemplatesServiceImpl;
+import io.microconfig.commands.ConfigCommand;
+import io.microconfig.commands.buildconfigs.BuildConfigPostProcessor;
+import io.microconfig.commands.buildconfigs.features.templates.CopyTemplatesPostProcessor;
+import io.microconfig.commands.buildconfigs.features.templates.CopyTemplatesServiceImpl;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.util.List;
 
-import static io.microconfig.commands.Command.composite;
+import static io.microconfig.commands.ConfigCommand.composite;
 
 @RequiredArgsConstructor
 public class BuildConfigCommandFactory {
     private final ConfigsTypeProvider configsTypeProvider;
 
-    public Command newCommand(File rootDir, File destinationComponentDir) {
+    public ConfigCommand newCommand(File rootDir, File destinationComponentDir) {
         List<ConfigType> configTypes = configsTypeProvider.getConfigTypes(rootDir);
         BuildConfigPostProcessor postProcessor = copyTemplatesPostProcessor();
 
@@ -23,7 +23,7 @@ public class BuildConfigCommandFactory {
         return composite(
                 configTypes.stream()
                         .map(type -> factory.newBuildCommand(type, postProcessor))
-                        .toArray(Command[]::new)
+                        .toArray(ConfigCommand[]::new)
         );
     }
 

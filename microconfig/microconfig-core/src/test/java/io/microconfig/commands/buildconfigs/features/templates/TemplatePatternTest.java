@@ -1,8 +1,8 @@
-package io.microconfig.commands.buildconfig.features.templates;
+package io.microconfig.commands.buildconfigs.features.templates;
 
 import org.junit.jupiter.api.Test;
 
-import static io.microconfig.commands.buildconfig.features.templates.TemplatePattern.DEFAULT_TEMPLATE_PREFIX;
+import static io.microconfig.commands.buildconfigs.features.templates.TemplatePattern.DEFAULT_TEMPLATE_PREFIX;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 

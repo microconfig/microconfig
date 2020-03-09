@@ -1,6 +1,6 @@
-package io.microconfig.commands.buildconfig.features.templates;
+package io.microconfig.commands.buildconfigs.features.templates;
 
-import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
+import io.microconfig.commands.buildconfigs.BuildConfigPostProcessor;
 import io.microconfig.core.properties.ConfigProvider;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.resolver.EnvComponent;

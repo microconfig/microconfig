@@ -1,7 +1,7 @@
-package io.microconfig.commands.buildconfig;
+package io.microconfig.commands.buildconfigs;
 
-import io.microconfig.commands.Command;
-import io.microconfig.commands.CommandContext;
+import io.microconfig.commands.ComponentsToProcess;
+import io.microconfig.commands.ConfigCommand;
 import io.microconfig.core.environments.Component;
 import io.microconfig.core.environments.EnvironmentProvider;
 import io.microconfig.core.properties.ConfigProvider;
@@ -18,7 +18,7 @@ import java.util.Optional;
 import static io.microconfig.utils.Logger.info;
 
 @RequiredArgsConstructor
-public class BuildConfigCommand implements Command {
+public class BuildConfigsCommand implements ConfigCommand {
     private final EnvironmentProvider environmentProvider;
     private final ConfigProvider configProvider;
     private final ConfigSerializer configSerializer;
@@ -26,7 +26,7 @@ public class BuildConfigCommand implements Command {
     private final BuildConfigPostProcessor postProcessor;
 
     @Override
-    public void execute(CommandContext context) {
+    public void execute(ComponentsToProcess context) {
         List<Component> componentsToBuild = context.components(environmentProvider);
 
         int processedComponents = componentsToBuild.parallelStream()
@@ -34,7 +34,7 @@ public class BuildConfigCommand implements Command {
                 .sum();
 
         if (processedComponents > 0) {
-            info("Processed " + processedComponents + " components\n");
+            info("Processed " + processedComponents + " component(s).\n");
         }
     }
 

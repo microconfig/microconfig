@@ -1,7 +1,7 @@
 package io.microconfig.factory;
 
-import io.microconfig.commands.buildconfig.BuildConfigCommand;
-import io.microconfig.commands.buildconfig.BuildConfigPostProcessor;
+import io.microconfig.commands.buildconfigs.BuildConfigPostProcessor;
+import io.microconfig.commands.buildconfigs.BuildConfigsCommand;
 import io.microconfig.core.environments.EnvironmentProvider;
 import io.microconfig.core.environments.filebased.EnvironmentParserSelectorImpl;
 import io.microconfig.core.environments.filebased.FileBasedEnvironmentProvider;
@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static io.microconfig.commands.buildconfig.BuildConfigPostProcessor.emptyPostProcessor;
+import static io.microconfig.commands.buildconfigs.BuildConfigPostProcessor.emptyPostProcessor;
 import static io.microconfig.core.environments.filebased.EnvironmentParserImpl.jsonParser;
 import static io.microconfig.core.environments.filebased.EnvironmentParserImpl.yamlParser;
 import static io.microconfig.core.properties.resolver.placeholder.strategies.composite.CompositeResolveStrategy.composite;
@@ -136,12 +136,12 @@ public class MicroconfigFactory {
         );
     }
 
-    public BuildConfigCommand newBuildCommand(ConfigType type) {
+    public BuildConfigsCommand newBuildCommand(ConfigType type) {
         return newBuildCommand(type, emptyPostProcessor());
     }
 
-    public BuildConfigCommand newBuildCommand(ConfigType type, BuildConfigPostProcessor buildConfigPostProcessor) {
-        return new BuildConfigCommand(
+    public BuildConfigsCommand newBuildCommand(ConfigType type, BuildConfigPostProcessor buildConfigPostProcessor) {
+        return new BuildConfigsCommand(
                 environmentProvider,
                 newConfigProvider(type),
                 configSerializer(type),

@@ -10,7 +10,7 @@ import static io.microconfig.utils.CollectionUtils.join;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.of;
+import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toList;
 
 @Getter
@@ -21,6 +21,10 @@ public class ComponentGroup {
 
     private final List<Component> excludedComponents;
     private final List<Component> appendedComponents;
+
+    public static ComponentGroup of(List<Component> components) {
+        return new ComponentGroup("fake", empty(), components, emptyList(), emptyList());
+    }
 
     public ComponentGroup(String name, Optional<String> ip,
                           List<Component> components,
@@ -50,7 +54,7 @@ public class ComponentGroup {
     }
 
     public ComponentGroup changeIp(String ip) {
-        return new ComponentGroup(name, of(ip), components, excludedComponents, appendedComponents);
+        return new ComponentGroup(name, Optional.of(ip), components, excludedComponents, appendedComponents);
     }
 
     public ComponentGroup override(ComponentGroup override) {

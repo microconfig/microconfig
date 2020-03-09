@@ -1,4 +1,4 @@
-package io.microconfig.commands.buildconfig.features.templates;
+package io.microconfig.commands.buildconfigs.features.templates;
 
 import io.microconfig.core.properties.resolver.EnvComponent;
 import io.microconfig.core.properties.resolver.PropertyResolver;
@@ -9,8 +9,8 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static io.microconfig.commands.buildconfig.features.templates.RelativePathResolver.empty;
-import static io.microconfig.commands.buildconfig.features.templates.TemplatePattern.defaultPattern;
+import static io.microconfig.commands.buildconfigs.features.templates.RelativePathResolver.empty;
+import static io.microconfig.commands.buildconfigs.features.templates.TemplatePattern.defaultPattern;
 import static io.microconfig.utils.FilePermissionUtils.copyPermissions;
 import static io.microconfig.utils.FileUtils.write;
 import static io.microconfig.utils.Logger.*;

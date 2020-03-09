@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-class CommandContextTest {
+class ComponentsToProcessTest {
     private final String group = "infra";
     private final String envName = "prod";
     private final Component zuul = byType("zuul");
@@ -32,22 +32,22 @@ class CommandContextTest {
     void textComponents() {
         EnvironmentProvider provider = mockProvider();
 
-        CommandContext groupContext = new CommandContext(envName, group, emptyList());
+        ComponentsToProcess groupContext = new ComponentsToProcess(envName, group, emptyList());
         assertEquals(components, groupContext.components(provider));
 
-        CommandContext componentContext = new CommandContext(envName, singletonList("zuul"));
+        ComponentsToProcess componentContext = new ComponentsToProcess(envName, singletonList("zuul"));
         assertEquals(singletonList(zuul), componentContext.components(provider));
 
-        CommandContext fullContext = new CommandContext(envName, group, singletonList("eureka"));
+        ComponentsToProcess fullContext = new ComponentsToProcess(envName, group, singletonList("eureka"));
         assertEquals(singletonList(eureka), fullContext.components(provider));
 
-        CommandContext fullContext2 = new CommandContext(envName, group, singletonList("missingService"));
+        ComponentsToProcess fullContext2 = new ComponentsToProcess(envName, group, singletonList("missingService"));
         assertThrows(IllegalArgumentException.class, () -> fullContext2.components(provider));
     }
 
     @Test
     void testEnv() {
-        assertEquals(envName, new CommandContext(envName, emptyList()).env());
+        assertEquals(envName, new ComponentsToProcess(envName, emptyList()).env());
     }
 
     private EnvironmentProvider mockProvider() {

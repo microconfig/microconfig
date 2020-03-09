@@ -1,4 +1,4 @@
-package io.microconfig.commands.buildconfig.features.templates;
+package io.microconfig.commands.buildconfigs.features.templates;
 
 import lombok.Builder;
 import lombok.Getter;
