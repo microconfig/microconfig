@@ -22,19 +22,19 @@ public class IoUtils {
     }
 
     public static String readFully(InputStream is) {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-
         try (InputStream input = is) {
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+
             byte[] buffer = new byte[1024 * 4];
             int n;
             while (-1 != (n = input.read(buffer))) {
                 output.write(buffer, 0, n);
             }
+
+            return output.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        return output.toString();
     }
 
     public static String firstLineOrEmpty(File file) {
