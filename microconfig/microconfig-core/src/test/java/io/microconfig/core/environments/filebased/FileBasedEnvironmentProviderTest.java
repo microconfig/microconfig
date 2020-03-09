@@ -19,7 +19,7 @@ class FileBasedEnvironmentProviderTest {
     @Test
     void testEnvDirExistCheck() {
         assertThrows(IllegalArgumentException.class,
-                () -> new FileBasedEnvironmentProvider(new File("badPath"), mock(EnvironmentParserSelector.class), mock(Io.class)));
+                () -> new FileBasedEnvironmentProvider(new File("badPath"), mock(EnvironmentParser.class), mock(Io.class)));
     }
 
     @Test

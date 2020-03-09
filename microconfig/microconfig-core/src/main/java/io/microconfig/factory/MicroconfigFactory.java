@@ -3,7 +3,6 @@ package io.microconfig.factory;
 import io.microconfig.commands.buildconfigs.BuildConfigPostProcessor;
 import io.microconfig.commands.buildconfigs.BuildConfigsCommand;
 import io.microconfig.core.environments.EnvironmentProvider;
-import io.microconfig.core.environments.filebased.EnvironmentParserSelectorImpl;
 import io.microconfig.core.environments.filebased.FileBasedEnvironmentProvider;
 import io.microconfig.core.properties.ConfigProvider;
 import io.microconfig.core.properties.io.ioservice.ConfigIoService;
@@ -31,8 +30,8 @@ import io.microconfig.core.properties.serializer.file.FilenameGenerator;
 import io.microconfig.core.properties.serializer.file.FilenameGeneratorImpl;
 import io.microconfig.core.properties.serializer.file.LegacyFilenameGenerator;
 import io.microconfig.core.properties.serializer.file.ToFileConfigSerializer;
-import io.microconfig.utils.reader.Io;
 import io.microconfig.utils.reader.FsIo;
+import io.microconfig.utils.reader.Io;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -43,7 +42,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static io.microconfig.commands.buildconfigs.BuildConfigPostProcessor.emptyPostProcessor;
-import static io.microconfig.core.environments.filebased.EnvironmentParserImpl.jsonParser;
 import static io.microconfig.core.environments.filebased.EnvironmentParserImpl.yamlParser;
 import static io.microconfig.core.properties.resolver.placeholder.strategies.composite.CompositeResolveStrategy.composite;
 import static io.microconfig.core.properties.resolver.placeholder.strategies.system.SystemResolveStrategy.envVariablesResolveStrategy;
@@ -172,7 +170,7 @@ public class MicroconfigFactory {
         return cache(
                 new FileBasedEnvironmentProvider(
                         new File(root, ENV_DIR),
-                        new EnvironmentParserSelectorImpl(jsonParser(), yamlParser()),
+                        yamlParser(),
                         fileReader
                 )
         );

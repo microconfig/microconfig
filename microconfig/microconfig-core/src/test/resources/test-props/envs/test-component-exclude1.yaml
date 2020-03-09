@@ -1,0 +1,5 @@
+include:
+  env: "uat"
+  fnd1:
+    exclude:
+      - "th-cache-node1"

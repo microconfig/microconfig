@@ -12,7 +12,7 @@ import java.util.Optional;
 public class ComponentGroupImpl implements ComponentGroup {
     @Getter
     private final String name;
-    private final String type;
+    private final String env;
 
     @Getter
     private final List<Component> components;

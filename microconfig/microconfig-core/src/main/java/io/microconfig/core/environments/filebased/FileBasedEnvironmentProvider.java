@@ -20,12 +20,12 @@ import static java.util.stream.Collectors.toList;
 
 public class FileBasedEnvironmentProvider implements EnvironmentProvider {
     private final File envDir;
-    private final EnvironmentParserSelector environmentParserSelector;
+    private final EnvironmentParser parser;
     private final Io fileReader;
 
-    public FileBasedEnvironmentProvider(File envDir, EnvironmentParserSelector environmentParserSelector, Io fileReader) {
+    public FileBasedEnvironmentProvider(File envDir, EnvironmentParser parser, Io fileReader) {
         this.envDir = envDir;
-        this.environmentParserSelector = environmentParserSelector;
+        this.parser = parser;
         this.fileReader = fileReader;
 
         if (!envDir.exists()) {
@@ -46,8 +46,7 @@ public class FileBasedEnvironmentProvider implements EnvironmentProvider {
     public Environment getByName(String name) {
         File envFile = findEnvFile(name);
 
-        return environmentParserSelector.selectParser(envFile)
-                .parse(name, fileReader.read(envFile))
+        return parser.parse(name, fileReader.read(envFile))
                 .withSource(envFile)
                 .processInclude(this)
                 .verifyUniqueComponentNames();
@@ -72,10 +71,9 @@ public class FileBasedEnvironmentProvider implements EnvironmentProvider {
     }
 
     private Stream<File> envFiles(String envName) {
-        List<String> supportedFormats = environmentParserSelector.supportedFormats();
         Predicate<File> fileNamePredicate = envName == null ?
-                f -> supportedFormats.stream().anyMatch(format -> f.getName().endsWith(format)) :
-                f -> supportedFormats.stream().anyMatch(format -> f.getName().equals(envName + format));
+                f -> f.getName().endsWith(".yaml") :
+                f -> f.getName().equals(envName + ".yaml");
 
         return walk(envDir.toPath())
                 .map(Path::toFile)

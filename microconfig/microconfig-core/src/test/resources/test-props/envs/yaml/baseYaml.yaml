@@ -10,8 +10,8 @@ orders:
 
 payments:
   components: [
-    payment-db-patcher,
-    payment-service,
+    payment-db-patcher
+    payment-service
     payment-ui
   ]
 

@@ -1,6 +1,5 @@
 package io.microconfig.core.environments.filebased;
 
-import com.google.gson.Gson;
 import io.microconfig.core.environments.Component;
 import io.microconfig.core.environments.ComponentGroup;
 import io.microconfig.core.environments.EnvInclude;
@@ -31,12 +30,6 @@ public class EnvironmentParserImpl implements EnvironmentParser {
 
     public static EnvironmentParser yamlParser() {
         return new EnvironmentParserImpl(new Yaml()::load);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static EnvironmentParser jsonParser() {
-        Gson gson = new Gson();
-        return new EnvironmentParserImpl(content -> gson.fromJson(content, Map.class));
     }
 
     @Override
