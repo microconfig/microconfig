@@ -1,6 +1,6 @@
 package io.microconfig.core.domain;
 
-import io.microconfig.core.domain.impl.ConfigType;
+import io.microconfig.core.domain.impl.configtypes.ConfigType;
 
 import java.util.Collection;
 

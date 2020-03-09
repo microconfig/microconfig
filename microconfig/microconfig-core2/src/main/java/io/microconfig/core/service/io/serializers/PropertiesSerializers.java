@@ -6,7 +6,7 @@ import io.microconfig.core.domain.Property;
 import java.io.File;
 import java.util.Collection;
 
-import static io.microconfig.core.domain.impl.PropertyImpl.containsYamlProperties;
+import static io.microconfig.core.domain.impl.properties.PropertyImpl.containsYamlProperties;
 import static io.microconfig.core.service.io.ioservice.factory.ConfigIoServiceFactory.configIoService;
 import static io.microconfig.core.service.io.ioservice.selector.FileFormat.PROPERTIES;
 import static io.microconfig.core.service.io.ioservice.selector.FileFormat.YAML;

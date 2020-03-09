@@ -1,12 +1,10 @@
 package io.microconfig.core;
 
-import io.microconfig.core.service.factory.MicroconfigFactory;
-
 import java.io.File;
 
 import static io.microconfig.core.service.io.serializers.PropertiesSerializers.toFileIn;
 
-public class Main {
+public class BuildConfigMain {
     public static void main(String[] args) {
         File sourceRoot = new File("/Users/u16805899/Desktop/projects/lm-configs/repo");
         File destinationRoot = new File(sourceRoot, "build");

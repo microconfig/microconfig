@@ -1,8 +1,7 @@
-package io.microconfig.core.service.impl;
+package io.microconfig.core.service.environments;
 
 
 import io.microconfig.core.domain.Environment;
-import io.microconfig.core.service.Environments;
 
 import java.io.File;
 import java.nio.file.Path;

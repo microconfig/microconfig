@@ -1,7 +1,8 @@
-package io.microconfig.core.domain.impl;
+package io.microconfig.core.domain.impl.environment;
 
 import io.microconfig.core.domain.Component;
 import io.microconfig.core.domain.ComponentProperties;
+import io.microconfig.core.domain.impl.properties.PropertiesProvider;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;

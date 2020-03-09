@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static io.microconfig.core.domain.impl.PropertyImpl.isComment;
+import static io.microconfig.core.domain.impl.properties.PropertyImpl.isComment;
 import static io.microconfig.utils.StreamUtils.toSortedMap;
 
 @RequiredArgsConstructor

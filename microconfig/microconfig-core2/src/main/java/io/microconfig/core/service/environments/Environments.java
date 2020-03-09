@@ -1,4 +1,4 @@
-package io.microconfig.core.service;
+package io.microconfig.core.service.environments;
 
 
 import io.microconfig.core.domain.Environment;

@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 import java.util.function.Predicate;
 
-import static io.microconfig.core.domain.impl.PropertyImpl.isComment;
+import static io.microconfig.core.domain.impl.properties.PropertyImpl.isComment;
 import static io.microconfig.core.service.io.ioservice.selector.FileFormat.PROPERTIES;
 import static io.microconfig.core.service.io.ioservice.selector.FileFormat.YAML;
 import static java.util.stream.IntStream.range;

@@ -1,4 +1,4 @@
-package io.microconfig.core.domain.impl;
+package io.microconfig.core.domain.impl.configtypes;
 
 import java.util.Set;
 

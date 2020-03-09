@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-import static io.microconfig.core.domain.impl.FileSource.fileSource;
-import static io.microconfig.core.domain.impl.PropertyImpl.isComment;
-import static io.microconfig.core.domain.impl.PropertyImpl.property;
+import static io.microconfig.core.domain.impl.properties.FileSource.fileSource;
+import static io.microconfig.core.domain.impl.properties.PropertyImpl.isComment;
+import static io.microconfig.core.domain.impl.properties.PropertyImpl.property;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static java.lang.Character.isWhitespace;
 import static java.util.stream.Collectors.joining;

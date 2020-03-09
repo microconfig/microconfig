@@ -1,6 +1,6 @@
-package io.microconfig.core.service.factory;
+package io.microconfig.core;
 
-import io.microconfig.core.service.Environments;
+import io.microconfig.core.service.environments.Environments;
 
 import java.io.File;
 

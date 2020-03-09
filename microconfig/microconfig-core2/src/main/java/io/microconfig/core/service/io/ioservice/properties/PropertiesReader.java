@@ -1,7 +1,7 @@
 package io.microconfig.core.service.io.ioservice.properties;
 
 import io.microconfig.core.domain.Property;
-import io.microconfig.core.domain.impl.PropertyImpl;
+import io.microconfig.core.domain.impl.properties.PropertyImpl;
 import io.microconfig.core.service.io.ioservice.AbstractConfigReader;
 import io.microconfig.utils.reader.Io;
 
@@ -9,8 +9,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.microconfig.core.domain.impl.FileSource.fileSource;
-import static io.microconfig.core.domain.impl.PropertyImpl.isComment;
+import static io.microconfig.core.domain.impl.properties.FileSource.fileSource;
+import static io.microconfig.core.domain.impl.properties.PropertyImpl.isComment;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 
 class PropertiesReader extends AbstractConfigReader {

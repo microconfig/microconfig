@@ -1,4 +1,4 @@
-package io.microconfig.core.domain.impl;
+package io.microconfig.core.domain.impl.properties;
 
 import io.microconfig.core.domain.ComponentProperties;
 import lombok.RequiredArgsConstructor;

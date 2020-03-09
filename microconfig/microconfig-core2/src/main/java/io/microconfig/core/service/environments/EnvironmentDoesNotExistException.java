@@ -1,4 +1,4 @@
-package io.microconfig.core.service.impl;
+package io.microconfig.core.service.environments;
 
 public class EnvironmentDoesNotExistException extends RuntimeException {
     public EnvironmentDoesNotExistException(String message) {

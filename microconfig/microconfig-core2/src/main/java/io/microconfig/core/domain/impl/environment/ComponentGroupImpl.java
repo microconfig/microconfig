@@ -1,4 +1,4 @@
-package io.microconfig.core.domain.impl;
+package io.microconfig.core.domain.impl.environment;
 
 import io.microconfig.core.domain.Component;
 import io.microconfig.core.domain.ComponentGroup;
