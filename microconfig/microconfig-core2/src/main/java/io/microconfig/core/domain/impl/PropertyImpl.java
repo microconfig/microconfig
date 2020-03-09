@@ -2,6 +2,8 @@ package io.microconfig.core.domain.impl;
 
 import io.microconfig.core.domain.Property;
 
+import java.util.Collection;
+
 import static java.util.stream.IntStream.range;
 
 public class PropertyImpl implements Property {
@@ -23,6 +25,17 @@ public class PropertyImpl implements Property {
     public static Property property(String key, String value, String envContext, PropertySource source) {
 //        return new Property(key, value, envContext, false, source);
         return null;
+    }
+
+    public static boolean containsYamlProperties(Collection<Property> properties) {
+//        return properties
+//                .stream()
+//                .map(Property::getSource)
+//                .filter(s -> s instanceof FileSource)
+//                .map(FileSource.class::cast)
+//                .anyMatch(FileSource::isYaml);
+
+        return true;//todo
     }
 
     @Override

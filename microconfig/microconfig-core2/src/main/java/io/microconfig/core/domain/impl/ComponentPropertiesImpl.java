@@ -18,37 +18,13 @@ public class ComponentPropertiesImpl implements ComponentProperties {
 
     private final Map<String, Property> propertyByKey;
 
-    private final FilenameGenerator filenameGenerator;
-    private final ConfigIoService configIoService;
-
     @Override
     public String getConfigType() {
         return configType.getName();
     }
 
     @Override
-    public Map<String, Property> propertyByKey() {
-        return propertyByKey;
-    }
-
-    @Override
-    public PropertiesSerializer save() {
-        return new PropertiesSerializer() {
-            @Override
-            public File toFile() {
-                File file = filenameGenerator.getFileName(componentName, propertyByKey.values());
-                delete(file);
-
-                if (!propertyByKey.isEmpty()) {
-                    configIoService.writeTo(file).write(propertyByKey.values());
-                }
-                return file;
-            }
-
-            @Override
-            public String asString() {
-                return null;
-            }
-        };
+    public <T> T serialize(PropertiesSerializer<T> serializer) {
+       return serializer.serialize(componentName, configType, propertyByKey.values());
     }
 }

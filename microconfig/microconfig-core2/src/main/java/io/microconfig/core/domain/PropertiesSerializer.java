@@ -1,9 +1,9 @@
 package io.microconfig.core.domain;
 
-import java.io.File;
+import io.microconfig.core.domain.impl.ConfigType;
 
-public interface PropertiesSerializer {
-    File toFile();
+import java.util.Collection;
 
-    String asString();
+public interface PropertiesSerializer<T> {
+    T serialize(String componentName, ConfigType configType, Collection<Property> properties);
 }

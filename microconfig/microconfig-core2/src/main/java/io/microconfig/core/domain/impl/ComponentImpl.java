@@ -31,15 +31,19 @@ public class ComponentImpl implements Component {
 
     @Override
     public ComponentProperties buildPropertiesForType(String configType) {
+        return buildProperties(getProviderByType(configType));
+    }
+
+    private ComponentProperties buildProperties(PropertiesProvider propertiesProvider) {
+        return propertiesProvider.buildProperties(name, type, env);
+    }
+
+    private PropertiesProvider getProviderByType(String configType) {
         PropertiesProvider provider = providerByConfigType.get(configType);
         if (provider == null) {
             throw new IllegalArgumentException("Config type '" + configType + "' is not configured." +
                     " Supported types: " + providerByConfigType.keySet());
         }
-        return buildProperties(provider);
-    }
-
-    private ComponentProperties buildProperties(PropertiesProvider propertiesProvider) {
-        return propertiesProvider.buildProperties(name, type, env);
+        return provider;
     }
 }

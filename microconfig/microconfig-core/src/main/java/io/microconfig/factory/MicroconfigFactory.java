@@ -176,11 +176,11 @@ public class MicroconfigFactory {
         );
     }
 
-    private static ConfigIoService newConfigIoService(Io fileReader) {
+    private static ConfigIoService newConfigIoService(Io io) {
         return new ConfigIoServiceSelector(
-                cache(new ConfigFormatDetectorImpl(fileReader)),
-                new YamlConfigIoService(fileReader),
-                new PropertiesConfigIoService(fileReader)
+                cache(new ConfigFormatDetectorImpl(io)),
+                new YamlConfigIoService(io),
+                new PropertiesConfigIoService(io)
         );
     }
 }
