@@ -13,7 +13,6 @@ publishing {
 
 dependencies {
     implementation project(':microconfig:utils'),
-            lib.snakeyaml,
-            'com.google.code.gson:gson',
+            lib.snakeyaml,//todo remove
             'org.springframework:spring-expression'
 }

@@ -10,7 +10,6 @@ import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 public class PropertiesProviderImpl implements PropertiesProvider {
-
     public ComponentProperties buildProperties(String componentName, String componentType, String env) {
         return null;
     }

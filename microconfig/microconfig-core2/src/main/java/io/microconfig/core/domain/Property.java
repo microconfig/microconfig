@@ -1,7 +1,9 @@
 package io.microconfig.core.domain;
 
 public interface Property {
-    String key();
+    String getKey();
 
-    String value();
+    String getValue();
+
+    boolean isTemp();
 }

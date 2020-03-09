@@ -1,4 +1,5 @@
 rootProject.name = 'microconfig-root'
 
 include ':microconfig:microconfig-core',
+        ':microconfig:microconfig-core2',
         ':microconfig:utils'
