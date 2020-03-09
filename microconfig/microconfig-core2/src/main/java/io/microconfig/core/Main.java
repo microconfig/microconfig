@@ -9,6 +9,6 @@ public class Main {
                 .getAllComponents()
                 .stream()
                 .flatMap(component -> component.buildPropertiesForEachConfigType().stream())
-                .forEach(component -> component.save().toFile());
+                .forEach(properties -> properties.save().toFile());
     }
 }
