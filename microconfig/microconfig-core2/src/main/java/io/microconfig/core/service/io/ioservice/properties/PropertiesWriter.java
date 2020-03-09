@@ -11,8 +11,6 @@ import java.util.Collection;
 import java.util.Map;
 
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
-import static java.nio.file.StandardOpenOption.APPEND;
-import static java.nio.file.StandardOpenOption.CREATE;
 import static java.util.stream.Collectors.joining;
 
 @RequiredArgsConstructor

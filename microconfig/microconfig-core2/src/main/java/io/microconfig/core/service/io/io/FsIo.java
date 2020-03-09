@@ -1,4 +1,4 @@
-package io.microconfig.core.service.io.impl;
+package io.microconfig.core.service.io.io;
 
 import io.microconfig.utils.IoUtils;
 

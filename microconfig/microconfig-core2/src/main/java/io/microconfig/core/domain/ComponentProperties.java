@@ -5,7 +5,7 @@ import java.util.Map;
 public interface ComponentProperties {
     String getConfigType();
 
-    Map<String, Property> propertyByKey();
+    Map<String, Property> getPropertyByKey();
 
     <T> T serialize(PropertiesSerializer<T> serializer);
 }

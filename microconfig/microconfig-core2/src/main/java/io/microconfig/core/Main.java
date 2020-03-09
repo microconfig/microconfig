@@ -4,7 +4,7 @@ import io.microconfig.core.service.factory.MicroconfigFactory;
 
 import java.io.File;
 
-import static io.microconfig.core.domain.impl.PropertiesSerializers.toFileIn;
+import static io.microconfig.core.service.io.serializers.PropertiesSerializers.toFileIn;
 
 public class Main {
     public static void main(String[] args) {

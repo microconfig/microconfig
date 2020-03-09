@@ -14,7 +14,7 @@ public class ConfigIoServiceFactory {
     private static final ConfigIoService CONFIG_IO_SERVICE = newConfigIoService(new FsIo());
 
     public static ConfigIoService configIoService() {
-       return CONFIG_IO_SERVICE;
+        return CONFIG_IO_SERVICE;
     }
 
     public static ConfigIoService newConfigIoService(Io io) {

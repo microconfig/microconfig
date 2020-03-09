@@ -3,7 +3,6 @@ package io.microconfig.core.service.io.ioservice;
 import io.microconfig.core.domain.Property;
 import io.microconfig.utils.reader.Io;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.env.PropertySource;
 
 import java.io.File;
 import java.util.List;
@@ -18,8 +17,8 @@ public abstract class AbstractConfigReader implements ConfigReader {
     protected final File file;
     protected final List<String> lines;
 
-    protected AbstractConfigReader(File file, Io fileReader) {
-        this(file, fileReader.readLines(file));
+    protected AbstractConfigReader(File file, Io io) {
+        this(file, io.readLines(file));
     }
 
     @Override

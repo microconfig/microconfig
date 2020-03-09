@@ -4,7 +4,6 @@ import io.microconfig.core.domain.Property;
 import io.microconfig.core.service.io.ioservice.AbstractConfigReader;
 import io.microconfig.utils.reader.Io;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.env.PropertySource;
 
 import java.io.File;
 import java.util.ArrayDeque;

@@ -1,4 +1,4 @@
-package io.microconfig.core.domain.impl;
+package io.microconfig.core.service.io.serializers;
 
 import io.microconfig.core.domain.PropertiesSerializer;
 import io.microconfig.core.domain.Property;
@@ -13,10 +13,10 @@ import static io.microconfig.core.service.io.ioservice.selector.FileFormat.YAML;
 import static io.microconfig.utils.FileUtils.delete;
 
 public class PropertiesSerializers {
-    public static PropertiesSerializer<File> toFileIn(File resultComponentDir) {
+    public static PropertiesSerializer<File> toFileIn(File dir) {
         return (componentName, configType, properties) -> {
-            String extension = getResultFileExtension(properties);
-            File file = new File(resultComponentDir, componentName + "/" + configType.getResultFileName() + extension);
+            String extension = extensionByContent(properties);
+            File file = new File(dir, componentName + "/" + configType.getResultFileName() + extension);
             delete(file);
 
             if (!properties.isEmpty()) {
@@ -28,10 +28,10 @@ public class PropertiesSerializers {
 
     public static PropertiesSerializer<String> asString() {
         return (componentName, configType, properties) ->
-                configIoService().writeTo(new File("", getResultFileExtension(properties))).serialize(properties);
+                configIoService().writeTo(new File("", extensionByContent(properties))).serialize(properties);
     }
 
-    private static String getResultFileExtension(Collection<Property> properties) {
+    private static String extensionByContent(Collection<Property> properties) {
         return properties.isEmpty() || containsYamlProperties(properties) ? YAML.extension() : PROPERTIES.extension();
     }
 }
