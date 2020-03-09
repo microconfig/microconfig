@@ -11,8 +11,8 @@ import static lombok.AccessLevel.PRIVATE;
 
 @With(PRIVATE)
 @RequiredArgsConstructor
-public class PlaceholderBorder {
-    private static final PlaceholderBorder NOT_VALID = new PlaceholderBorder(new StringBuilder());
+public class PlaceholderBorders {
+    private static final PlaceholderBorders NOT_VALID = new PlaceholderBorders(new StringBuilder());
 
     private final StringBuilder line;
 
@@ -25,18 +25,19 @@ public class PlaceholderBorder {
     @Getter
     private final int endIndex;
 
-    private PlaceholderBorder(StringBuilder line) {
+    static PlaceholderBorders findBorders(CharSequence sequence) {
+        StringBuilder line = sequence instanceof StringBuilder ? (StringBuilder) sequence : new StringBuilder(sequence);
+        return new PlaceholderBorders(line).searchOpenSign();
+    }
+
+    private PlaceholderBorders(StringBuilder line) {
         this(line, -1, -1, -1, -1, -1, -1);
     }
 
-    public static PlaceholderBorder parse(StringBuilder line) {
-        return new PlaceholderBorder(line).searchOpenSign();
-    }
-
-    private PlaceholderBorder searchOpenSign() {
+    private PlaceholderBorders searchOpenSign() {
         int index = line.indexOf("${", startIndex);
         if (index >= 0) {
-            return new PlaceholderBorder(line)
+            return new PlaceholderBorders(line)
                     .withStartIndex(index)
                     .parseComponentName();
         }
@@ -44,7 +45,7 @@ public class PlaceholderBorder {
         return NOT_VALID;
     }
 
-    private PlaceholderBorder parseComponentName() {
+    private PlaceholderBorders parseComponentName() {
         for (int i = max(startIndex + 2, configTypeEndIndex + 3); i < line.length(); ++i) {
             char c = line.charAt(i);
             if (c == ':' && i + 1 < line.length() && line.charAt(i + 1) == ':') {
@@ -64,7 +65,7 @@ public class PlaceholderBorder {
         return NOT_VALID;
     }
 
-    private PlaceholderBorder parseEnvName() {
+    private PlaceholderBorders parseEnvName() {
         for (int i = envIndex; i < line.length(); ++i) {
             char c = line.charAt(i);
             if (c == ']' && i + 1 < line.length() && line.charAt(i + 1) == '@') {
@@ -78,7 +79,7 @@ public class PlaceholderBorder {
         return NOT_VALID;
     }
 
-    private PlaceholderBorder parseValue() {
+    private PlaceholderBorders parseValue() {
         for (int i = valueIndex; i < line.length(); ++i) {
             char c = line.charAt(i);
             if (c == ':') {
@@ -95,7 +96,7 @@ public class PlaceholderBorder {
         return NOT_VALID;
     }
 
-    private PlaceholderBorder parseDefaultValue() {
+    private PlaceholderBorders parseDefaultValue() {
         int closeBracketLastIndex = -1;
         int openBrackets = 1;
         for (int i = defaultValueIndex; i < line.length(); ++i) {

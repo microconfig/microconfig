@@ -2,11 +2,10 @@ package io.microconfig.core.properties.resolver.placeholder;
 
 import org.junit.jupiter.api.Test;
 
-import static io.microconfig.core.properties.resolver.placeholder.PlaceholderBorder.parse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class PlaceholderBorderTest {
+class PlaceholderBordersTest {
     @Test
     void test() {
         doTest("hello ${rf} ${c1 ${c2 } @fsd}  ${app::component[dev]@value:${another}#{1+2}} ${}", "${app::component[dev]@value:${another}#{1+2}}");
@@ -21,7 +20,7 @@ class PlaceholderBorderTest {
     }
 
     private void doTest(String line, String expected) {
-        PlaceholderBorder border = parse(new StringBuilder(line));
+        PlaceholderBorders border = PlaceholderBorders.findBorders(line);
         assertTrue(border.isValid());
         assertEquals(expected, border.toString());
     }

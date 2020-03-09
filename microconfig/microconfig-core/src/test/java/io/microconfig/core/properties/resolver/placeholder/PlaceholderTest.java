@@ -3,7 +3,6 @@ package io.microconfig.core.properties.resolver.placeholder;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PlaceholderTest {
     @Test
@@ -28,7 +27,7 @@ class PlaceholderTest {
     }
 
     private void doTestSpel(String value) {
-        Placeholder propValue = PlaceholderBorder.parse(new StringBuilder(value)).toPlaceholder(getEnv());
+        Placeholder propValue = Placeholder.parse(value).toPlaceholder(getEnv());
 
         assertEquals("property", propValue.getValue());
         assertEquals("false", propValue.getDefaultValue().orElse(null));
@@ -56,6 +55,6 @@ class PlaceholderTest {
     }
 
     private Placeholder parse(String line, String env) {
-        return PlaceholderBorder.parse(new StringBuilder(line)).toPlaceholder(env);
+        return Placeholder.parse(line).toPlaceholder(env);
     }
 }

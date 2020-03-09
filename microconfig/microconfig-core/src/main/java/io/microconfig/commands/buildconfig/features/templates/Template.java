@@ -3,7 +3,7 @@ package io.microconfig.commands.buildconfig.features.templates;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.resolver.EnvComponent;
 import io.microconfig.core.properties.resolver.PropertyResolver;
-import io.microconfig.core.properties.resolver.placeholder.PlaceholderBorder;
+import io.microconfig.core.properties.resolver.placeholder.Placeholder;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -77,7 +77,7 @@ class Template {
     }
 
     public static boolean isValidPlaceholder(String value) {
-        return PlaceholderBorder.parse(new StringBuilder(value)).isValid();
+        return Placeholder.parse(value).isValid();
     }
 
     private String doResolve(EnvComponent currentComponent, PropertyResolver propertyResolver, String placeholder) {

@@ -40,7 +40,7 @@ public class PlaceholderResolver implements PropertyResolver {
         StringBuilder result = new StringBuilder(sourceOfPlaceholders.getValue());
 
         while (true) {
-            PlaceholderBorder border = PlaceholderBorder.parse(result);
+            PlaceholderBorders border = Placeholder.parse(result);
             if (!border.isValid()) break;
 
             String resolved = resolve(border, sourceOfPlaceholders, root, visited);
@@ -50,7 +50,7 @@ public class PlaceholderResolver implements PropertyResolver {
         return result.toString();
     }
 
-    private String resolve(PlaceholderBorder borders, Property sourceOfPlaceholders, EnvComponent root, Set<Placeholder> visited) {
+    private String resolve(PlaceholderBorders borders, Property sourceOfPlaceholders, EnvComponent root, Set<Placeholder> visited) {
         try {
             Placeholder placeholder = borders.toPlaceholder(sourceOfPlaceholders.getEnvContext());
             return hasAnotherConfigType(placeholder) ?

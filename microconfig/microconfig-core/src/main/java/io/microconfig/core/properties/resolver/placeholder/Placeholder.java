@@ -20,6 +20,10 @@ public class Placeholder {
     private final String value;
     private final Optional<String> defaultValue;
 
+    public static PlaceholderBorders parse(CharSequence line) {
+        return PlaceholderBorders.findBorders(line);
+    }
+
     public Placeholder changeComponent(String component) {
         return changeComponentAndEnv(component, environment);
     }
