@@ -17,6 +17,10 @@ public class CompositeConfigTypeProvider implements ConfigsTypeProvider {
         return new CompositeConfigTypeProvider(asList(providers));
     }
 
+    public static ConfigsTypeProvider compositeProvider() {
+        return composite(new ConfigTypeFileProvider(), StandardConfigTypes.asProvider());
+    }
+
     @Override
     public List<ConfigType> getConfigTypes(File rootDir) {
         return providers.stream()
