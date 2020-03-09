@@ -4,6 +4,7 @@ import io.microconfig.core.domain.ComponentProperties;
 import io.microconfig.core.domain.PropertiesSerializer;
 import io.microconfig.core.domain.Property;
 import io.microconfig.core.service.io.ioservice.ConfigIoService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -16,6 +17,7 @@ public class ComponentPropertiesImpl implements ComponentProperties {
     private final String componentName;
     private final ConfigType configType;
 
+    @Getter
     private final Map<String, Property> propertyByKey;
 
     @Override
