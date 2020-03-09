@@ -12,14 +12,13 @@ import java.util.Map;
 public class ComponentPropertiesImpl implements ComponentProperties {
     private final String componentName;
     private final ConfigType configType;
+    @Getter
+    private final Map<String, Property> propertyByKey;
 
     @Override
     public String getConfigType() {
         return configType.getName();
     }
-
-    @Getter
-    private final Map<String, Property> propertyByKey;
 
     @Override
     public <T> T serialize(PropertiesSerializer<T> serializer) {
