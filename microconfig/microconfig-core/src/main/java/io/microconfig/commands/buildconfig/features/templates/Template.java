@@ -3,6 +3,7 @@ package io.microconfig.commands.buildconfig.features.templates;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.resolver.EnvComponent;
 import io.microconfig.core.properties.resolver.PropertyResolver;
+import io.microconfig.core.properties.resolver.placeholder.Placeholder;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -10,7 +11,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.microconfig.core.properties.Property.tempProperty;
-import static io.microconfig.core.properties.resolver.placeholder.Placeholder.isSinglePlaceholder;
 import static io.microconfig.core.properties.sources.SpecialSource.templateSource;
 import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.Logger.warn;
@@ -59,10 +59,10 @@ class Template {
     }
 
     private String resolveValue(String placeholder, EnvComponent currentComponent, PropertyResolver propertyResolver) {
-        boolean microconfigFormatPlaceholder = isSinglePlaceholder(placeholder);
+        boolean microconfigFormatPlaceholder = isValidPlaceholder(placeholder);
         if (!microconfigFormatPlaceholder) {
             String newFormat = "${this@" + placeholder.substring("${".length());
-            if (!isSinglePlaceholder(newFormat)) return null;
+            if (!isValidPlaceholder(newFormat)) return null;
             placeholder = newFormat;
         }
 
@@ -74,6 +74,10 @@ class Template {
             }
             return null;
         }
+    }
+
+    public static boolean isValidPlaceholder(String value) {
+        return Placeholder.parse(value).isValid();
     }
 
     private String doResolve(EnvComponent currentComponent, PropertyResolver propertyResolver, String placeholder) {

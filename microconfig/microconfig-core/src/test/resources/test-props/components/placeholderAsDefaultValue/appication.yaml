@@ -3,20 +3,21 @@ k1: v1
 k2: v2
 
 k3: ${this@k1:${this@k1}}
-k4: ${this@k1:${this@k2}}
+k4: ${this@k1:${this@k2111111111}}
 k5: ${this@k2:${this@k1}}
 
 k6: ${this@k1:${this@k7}}
 k7: ${app::this@k1:${this@k2}}
 k8: ${app::this@k1:${app::this@k2}}
 
-k9: ${this@k1:#{1 + 20}
-k09: ${app::this@k1:#{1 + 20}
-#k09+: ${this@k1:${this@k100}}
+k9: ${this@k1:#{1 + 20}}
+k09: ${app::this@k1:#{0/0}}
+k09+: ${this@k1:${this@k100}}
 k009: ${this@k1:${this@k100:}}
 k0009: ${this@k156:${this@k100:}}
-#k66: ${this@k1:${1 + 20}}
-#k67: ${this@k1:{1 + 20}}
+
+k66: ${this@k1:${1 + 20}}
+k67: ${this@k1:{1 + 20}}
 
 k010: ${this@k1:${this@k100:1}}
 k0010: ${this@k1:${this@456:145}}

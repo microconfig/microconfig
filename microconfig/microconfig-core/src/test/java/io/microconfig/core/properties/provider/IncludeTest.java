@@ -14,7 +14,13 @@ class IncludeTest {
     void testSingleComponentParse() {
         testSingeInclude("#include  zeus[uat]", "uat");
         testSingeInclude("#@Include   zeus[uat]", "uat");
-        testSingeInclude("#@Include  zeus", "dev");
+        testSingeInclude("#@Include zeus", "dev");
+    }
+
+    @Test
+    void testSpecialSymbols() {
+        List<Include> include = Include.parse("#include c1.c2_c3-c4", "dev");
+        assertEquals(singletonList(new Include("c1.c2_c3-c4", "dev")), include);
     }
 
     @Test

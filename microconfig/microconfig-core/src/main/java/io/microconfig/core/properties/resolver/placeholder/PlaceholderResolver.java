@@ -1,7 +1,7 @@
 package io.microconfig.core.properties.resolver.placeholder;
 
 import io.microconfig.core.environments.Component;
-import io.microconfig.core.environments.EnvironmentNotExistException;
+import io.microconfig.core.environments.EnvironmentDoesNotExistException;
 import io.microconfig.core.environments.EnvironmentProvider;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.PropertySource;
@@ -15,11 +15,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
-import java.util.regex.Matcher;
 
 import static io.microconfig.core.environments.Component.byType;
 import static io.microconfig.core.properties.Property.tempProperty;
-import static io.microconfig.core.properties.resolver.placeholder.Placeholder.parse;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Optional.empty;
@@ -35,35 +33,32 @@ public class PlaceholderResolver implements PropertyResolver {
 
     @Override
     public String resolve(Property sourceOfPlaceholders, EnvComponent root) {
-        return doResolve(sourceOfPlaceholders, root, emptySet());
+        return resolve(sourceOfPlaceholders, root, emptySet());
     }
 
-    private String doResolve(Property sourceOfPlaceholders, EnvComponent root, Set<Placeholder> visited) {
-        StringBuilder resultValue = new StringBuilder(sourceOfPlaceholders.getValue());
+    private String resolve(Property sourceOfPlaceholders, EnvComponent root, Set<Placeholder> visited) {
+        StringBuilder result = new StringBuilder(sourceOfPlaceholders.getValue());
 
         while (true) {
-            Matcher matcher = Placeholder.matcher(resultValue);
-            if (!matcher.find()) break;
+            PlaceholderBorders border = Placeholder.parse(result);
+            if (!border.isValid()) break;
 
-            String resolved = doResolve(matcher.group(), sourceOfPlaceholders, root, visited);
-            resultValue.replace(matcher.start(), matcher.end(), resolved);
+            String resolved = resolve(border, sourceOfPlaceholders, root, visited);
+            result.replace(border.getStartIndex(), border.getEndIndex() + 1, resolved);
         }
 
-        return resultValue.toString();
+        return result.toString();
     }
 
-    private String doResolve(String value, Property sourceOfPlaceholders, EnvComponent root, Set<Placeholder> visited) {
+    private String resolve(PlaceholderBorders borders, Property sourceOfPlaceholders, EnvComponent root, Set<Placeholder> visited) {
         try {
-            Placeholder placeholder = parse(value, sourceOfPlaceholders.getEnvContext());
-            if (hasAnotherConfigType(placeholder)) {
-                return resolveForAnotherType(placeholder, sourceOfPlaceholders.getSource(), root);
-            }
+            Placeholder placeholder = borders.toPlaceholder(sourceOfPlaceholders.getEnvContext());
+            return hasAnotherConfigType(placeholder) ?
+                    resolveForAnotherType(placeholder, sourceOfPlaceholders.getSource(), root) :
+                    resolvePlaceholder(placeholder, sourceOfPlaceholders, root, visited);
 
-            return resolvePlaceholder(placeholder, sourceOfPlaceholders, root, visited);
-        } catch (PropertyResolveException e) {
-            throw e;
         } catch (RuntimeException e) {
-            throw new PropertyResolveException(value, sourceOfPlaceholders, root, e);
+            throw new PropertyResolveException(borders.toString(), sourceOfPlaceholders, root, e);
         }
     }
 
@@ -87,7 +82,7 @@ public class PlaceholderResolver implements PropertyResolver {
                 .orElseThrow(() -> new PropertyResolveException(placeholder.toString(), sourceOfPlaceholder, root));
 
         return tryResolve(placeholder, sourceOfPlaceholder, root, visited)
-                .map(value -> doResolve(value, root, updateVisited(visited, placeholder)))
+                .map(value -> resolve(value, root, updateVisited(visited, placeholder)))
                 .orElseGet(defaultValue);
     }
 
@@ -111,11 +106,10 @@ public class PlaceholderResolver implements PropertyResolver {
     }
 
     private boolean canBeOverridden(Placeholder placeholder, Property sourceOfPlaceholder) {
-        Supplier<Boolean> placeholderToTheSameComponent = () -> placeholder.getComponent().equals(sourceOfPlaceholder.getSource().getComponent().getType())
-                && placeholder.getEnvironment().equals(sourceOfPlaceholder.getEnvContext()
-        );
+        boolean placeholderToTheSameComponent = placeholder.getComponent().equals(sourceOfPlaceholder.getSource().getComponent().getType())
+                && placeholder.getEnvironment().equals(sourceOfPlaceholder.getEnvContext());
 
-        return placeholderToTheSameComponent.get() && !nonOverridableKeys.contains(placeholder.getValue());
+        return placeholderToTheSameComponent && !nonOverridableKeys.contains(placeholder.getValue());
     }
 
     private Optional<Property> tryResolveForParents(Placeholder placeholderToOverride, EnvComponent root, Set<Placeholder> orderedVisited) {
@@ -142,7 +136,7 @@ public class PlaceholderResolver implements PropertyResolver {
             return environmentProvider.getByName(env)
                     .getComponentByName(componentNameOrType)
                     .orElse(byType(componentNameOrType));
-        } catch (EnvironmentNotExistException e) {
+        } catch (EnvironmentDoesNotExistException e) {
             return byType(componentNameOrType);
         }
     }

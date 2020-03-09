@@ -2,7 +2,7 @@ package io.microconfig.core.properties.resolver.placeholder.strategies.envdescri
 
 import io.microconfig.core.environments.Component;
 import io.microconfig.core.environments.Environment;
-import io.microconfig.core.environments.EnvironmentNotExistException;
+import io.microconfig.core.environments.EnvironmentDoesNotExistException;
 import io.microconfig.core.environments.EnvironmentProvider;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.resolver.placeholder.PlaceholderResolveStrategy;
@@ -35,7 +35,7 @@ public class EnvDescriptorResolveStrategy implements PlaceholderResolveStrategy 
     private Environment getEnvironment(String environment) {
         try {
             return environmentProvider.getByName(environment);
-        } catch (EnvironmentNotExistException e) {
+        } catch (EnvironmentDoesNotExistException e) {
             return null;
         }
     }

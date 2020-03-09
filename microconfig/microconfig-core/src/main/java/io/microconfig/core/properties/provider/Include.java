@@ -20,7 +20,7 @@ import static java.util.stream.Collectors.toList;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class Include {
-    private static Pattern COMPONENT_PATTERN = compile("^(?<comp>[\\w\\d-_]+)(\\[(?<env>.+)])?$");
+    private static Pattern COMPONENT_PATTERN = compile("^(?<comp>[\\w-_.]+)(\\[(?<env>.+)])?$");
     private static final String PREFIX = "#include";
     private static final String PREFIX2 = "#@include";
 
@@ -35,30 +35,42 @@ public class Include {
 
     public static List<Include> parse(String line, String defaultEnv) {
         try {
-            IntSupplier componentStartIndex = () -> {
-                String lower = line.toLowerCase();
-                int start = lower.indexOf(PREFIX);
-                if (start >= 0) return start + PREFIX.length() + 1;
+            return parseIncludes(line, defaultEnv);
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException("Can't parse include '" + line + "'. " +
+                    "Supported format: #include component[optionalEnv], component2[optionalEnv]", e);
+        }
+    }
 
-                start = lower.indexOf(PREFIX2);
-                if (start >= 0) return start + PREFIX2.length() + 1;
-
-                throw new IllegalArgumentException("Include must start with " + PREFIX + " or " + PREFIX2);
-            };
-
-            String[] components = line.substring(componentStartIndex.getAsInt()).split(",");
-            if (components.length == 0) {
-                throw new IllegalArgumentException("Include must contain component names");
+    private static List<Include> parseIncludes(String line, String defaultEnv) {
+        IntSupplier componentStartIndex = () -> {
+            String lower = line.toLowerCase();
+            {
+                int index = tryPrefix(lower, PREFIX);
+                if (index >= 0) return index;
+            }
+            {
+                int index = tryPrefix(lower, PREFIX2);
+                if (index >= 0) return index;
             }
 
-            return stream(components)
-                    .map(String::trim)
-                    .map(comp -> parseComponent(comp, defaultEnv))
-                    .collect(toList());
-        } catch (RuntimeException e) {
-            throw new IllegalArgumentException("Can't parse include '" + line + "'."
-                    + " Supported format: #include component[optionalEnv], component2[optionalEnv]", e);
+            throw new IllegalArgumentException("Include must start with " + PREFIX + " or " + PREFIX2);
+        };
+
+        String[] components = line.substring(componentStartIndex.getAsInt()).split(",");
+        if (components.length == 0) {
+            throw new IllegalArgumentException("Include must contain component names");
         }
+
+        return stream(components)
+                .map(String::trim)
+                .map(comp -> parseComponent(comp, defaultEnv))
+                .collect(toList());
+    }
+
+    private static int tryPrefix(String value, String prefix) {
+        int start = value.indexOf(prefix);
+        return start >= 0 ? start + prefix.length() + 1 : -1;
     }
 
     private static Include parseComponent(String compLine, String defaultEnv) {

@@ -8,6 +8,8 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.regex.Pattern.compile;
+
 /**
  * Represents Spring EL. Supported format #{expression}
  * <p>
@@ -17,7 +19,7 @@ import java.util.regex.Pattern;
  */
 @RequiredArgsConstructor
 public class Expression {
-    private static final Pattern PATTERN = Pattern.compile("#\\{(?<value>[^{]+?)}");
+    private static final Pattern PATTERN = compile("#\\{(?<value>[^{]+?)}");
     private static final ExpressionParser parser = new SpelExpressionParser();
 
     private final String value;
@@ -31,7 +33,7 @@ public class Expression {
         throw PropertyResolveException.badSpellFormat(value);
     }
 
-    static Matcher matcher(String value) {
+    static Matcher matcher(CharSequence value) {
         return PATTERN.matcher(value);
     }
 

@@ -1,7 +1,7 @@
 package io.microconfig.core.environments.filebased;
 
 import io.microconfig.core.environments.Environment;
-import io.microconfig.core.environments.EnvironmentNotExistException;
+import io.microconfig.core.environments.EnvironmentDoesNotExistException;
 import io.microconfig.core.environments.EnvironmentProvider;
 import io.microconfig.utils.reader.FilesReader;
 
@@ -60,7 +60,7 @@ public class FileBasedEnvironmentProvider implements EnvironmentProvider {
             throw new IllegalArgumentException("Found several env files with name " + name);
         }
         if (files.isEmpty()) {
-            throw new EnvironmentNotExistException("Can't find env with name " + name);
+            throw new EnvironmentDoesNotExistException("Can't find env with name " + name);
         }
         return singleValue(files);
     }
@@ -74,8 +74,8 @@ public class FileBasedEnvironmentProvider implements EnvironmentProvider {
     private Stream<File> envFiles(String envName) {
         List<String> supportedFormats = environmentParserSelector.supportedFormats();
         Predicate<File> fileNamePredicate = envName == null ?
-                f -> supportedFormats.stream().anyMatch(format -> f.getName().endsWith(format))
-                : f -> supportedFormats.stream().anyMatch(format -> f.getName().equals(envName + format));
+                f -> supportedFormats.stream().anyMatch(format -> f.getName().endsWith(format)) :
+                f -> supportedFormats.stream().anyMatch(format -> f.getName().equals(envName + format));
 
         return walk(envDir.toPath())
                 .map(Path::toFile)
