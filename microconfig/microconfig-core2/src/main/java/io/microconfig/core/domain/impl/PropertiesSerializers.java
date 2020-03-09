@@ -13,7 +13,7 @@ import static io.microconfig.core.service.io.ioservice.selector.FileFormat.YAML;
 import static io.microconfig.utils.FileUtils.delete;
 
 public class PropertiesSerializers {
-    public static PropertiesSerializer<File> toFile(File resultComponentDir) {
+    public static PropertiesSerializer<File> toFileIn(File resultComponentDir) {
         return (componentName, configType, properties) -> {
             String extension = getFormat(properties);
             File file = new File(resultComponentDir, componentName + "/" + configType.getResultFileName() + extension);
