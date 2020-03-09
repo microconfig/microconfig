@@ -36,7 +36,6 @@ public class MicroconfigDescriptorProvider implements ConfigTypeProvider {
             announce("Using settings from " + MICROCONFIG_SETTINGS);
         }
         return configs;
-
     }
 
     private File microconfigDescriptor() {

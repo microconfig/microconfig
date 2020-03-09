@@ -3,6 +3,7 @@ package io.microconfig.factory.configtype;
 import io.microconfig.domain.ConfigType;
 import lombok.RequiredArgsConstructor;
 
+import java.io.File;
 import java.util.List;
 
 import static java.util.Arrays.asList;
