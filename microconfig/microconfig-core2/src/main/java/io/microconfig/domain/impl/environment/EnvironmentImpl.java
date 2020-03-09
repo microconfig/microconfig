@@ -46,7 +46,7 @@ public class EnvironmentImpl implements Environment {
     }
 
     @Override
-    public Component getComponentByName(String componentName, boolean declaredInEnvDescriptor) {
+    public Component getComponentByName(String componentName, boolean mustBeDeclaredInEnvDescriptor) {
         return componentGroups.stream()
                 .filter(g -> g.containsComponent(componentName))
                 .map(g -> g.getComponentByName(componentName))

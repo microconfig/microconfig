@@ -11,5 +11,5 @@ public interface Environment {
 
     List<Component> getAllComponents();
 
-    Component getComponentByName(String componentName, boolean declaredInEnvDescriptor);
+    Component getComponentByName(String componentName, boolean mustBeDeclaredInEnvDescriptor);
 }
