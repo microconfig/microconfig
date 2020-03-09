@@ -46,11 +46,11 @@ public class EnvironmentImpl implements Environment {
     }
 
     @Override
-    public Component getComponentByName(String componentName) {
+    public Component getComponentByName(String componentName, boolean declaredInEnvDescriptor) {
         return componentGroups.stream()
                 .filter(g -> g.containsComponent(componentName))
                 .map(g -> g.getComponentByName(componentName))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Can't find component '" + componentName + "' in env [" + name + "]"));
+                .orElseGet(() -> null);//todo
     }
 }
