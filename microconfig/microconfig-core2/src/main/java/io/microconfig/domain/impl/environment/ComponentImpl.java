@@ -31,7 +31,7 @@ public class ComponentImpl implements Component {
     }
 
     @Override
-    public ComponentProperties buildPropertiesForType(String configType) {
+    public ComponentProperties buildPropertiesFor(String configType) {
         return buildProperties(getProviderByType(configType));
     }
 

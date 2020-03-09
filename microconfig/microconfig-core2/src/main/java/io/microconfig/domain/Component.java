@@ -7,5 +7,5 @@ public interface Component {
 
     List<ComponentProperties> buildPropertiesForEachConfigType();
 
-    ComponentProperties buildPropertiesForType(String configType);
+    ComponentProperties buildPropertiesFor(ConfigTypeSupplier configTypeSupplier);
 }
