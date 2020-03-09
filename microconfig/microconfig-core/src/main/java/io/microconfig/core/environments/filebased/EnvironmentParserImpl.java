@@ -49,19 +49,19 @@ public class EnvironmentParserImpl implements EnvironmentParser {
     }
 
     private Environment doParse(String name, String content) {
-        Map<String, Object> map = parser.apply(content);
+        Map<String, Object> keyValue = parser.apply(content);
 
-        Optional<EnvInclude> envInclude = parseInclude(map);
-        Optional<Integer> portOffset = parsePortOffset(map);
-        Optional<String> envIp = parseIp(map);
-        List<ComponentGroup> componentGroups = parseComponentGroups(map, envIp, name);
+        Optional<EnvInclude> envInclude = parseInclude(keyValue);
+        Optional<Integer> portOffset = parsePortOffset(keyValue);
+        Optional<String> envIp = parseIp(keyValue);
+        List<ComponentGroup> componentGroups = parseComponentGroups(keyValue, name, envIp);
 
         return new Environment(name, componentGroups, envIp, portOffset, envInclude, null);
     }
 
     @SuppressWarnings("unchecked")
-    private Optional<EnvInclude> parseInclude(Map<String, Object> map) {
-        Map<String, Object> includeProps = (Map<String, Object>) map.remove(INCLUDE);
+    private Optional<EnvInclude> parseInclude(Map<String, Object> keyValue) {
+        Map<String, Object> includeProps = (Map<String, Object>) keyValue.remove(INCLUDE);
         if (includeProps == null) return empty();
 
         String name = (String) includeProps.get(INCLUDE_ENV);
@@ -69,18 +69,18 @@ public class EnvironmentParserImpl implements EnvironmentParser {
         return of(new EnvInclude(name, new LinkedHashSet<>(excludes)));
     }
 
-    private Optional<Integer> parsePortOffset(Map<String, ?> map) {
-        return ofNullable(map.remove(PORT_OFFSET))
+    private Optional<Integer> parsePortOffset(Map<String, ?> keyValue) {
+        return ofNullable(keyValue.remove(PORT_OFFSET))
                 .map(Number.class::cast)
                 .map(Number::intValue);
     }
 
-    private Optional<String> parseIp(Map<String, ?> map) {
-        return ofNullable(map.remove(IP)).map(Object::toString);
+    private Optional<String> parseIp(Map<String, ?> keyValue) {
+        return ofNullable(keyValue.remove(IP)).map(Object::toString);
     }
 
-    private List<ComponentGroup> parseComponentGroups(Map<String, Object> map, Optional<String> envIp, String envName) {
-        return map.entrySet()
+    private List<ComponentGroup> parseComponentGroups(Map<String, Object> keyValue, String envName, Optional<String> envIp) {
+        return keyValue.entrySet()
                 .stream()
                 .map(group -> {
                     try {
@@ -107,8 +107,8 @@ public class EnvironmentParserImpl implements EnvironmentParser {
     }
 
     @SuppressWarnings("unchecked")
-    private List<Component> parseComponents(Map<String, Object> properties, String property) {
-        List<String> values = (List<String>) properties.get(property);
+    private List<Component> parseComponents(Map<String, Object> keyValue, String property) {
+        List<String> values = (List<String>) keyValue.get(property);
         if (values == null) return emptyList();
 
         return values.stream()
