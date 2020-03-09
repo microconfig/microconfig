@@ -28,21 +28,21 @@ public class ComponentImpl implements Component {
     @Override
     public List<ComponentProperties> buildPropertiesForEachConfigType() {
         return providerByConfigType.values().stream()
-                .map(this::buildPropertiesUsing)
+                .map(this::buildProperties)
                 .collect(toList());
     }
 
     @Override
     public ComponentProperties buildPropertiesFor(ConfigTypeSupplier configTypeSupplier) {
         ConfigType configType = configTypeSupplier.chooseType(providerByConfigType.keySet());
-        return buildPropertiesUsing(providerFor(configType));
+        return buildProperties(usingProviderFor(configType));
     }
 
-    private ComponentProperties buildPropertiesUsing(PropertiesProvider propertiesProvider) {
+    private ComponentProperties buildProperties(PropertiesProvider propertiesProvider) {
         return propertiesProvider.buildProperties(name, type, env);
     }
 
-    private PropertiesProvider providerFor(ConfigType configType) {
+    private PropertiesProvider usingProviderFor(ConfigType configType) {
         PropertiesProvider provider = providerByConfigType.get(configType);
         if (provider == null) {
             throw new IllegalArgumentException("Config type '" + configType + "' is not configured." +
