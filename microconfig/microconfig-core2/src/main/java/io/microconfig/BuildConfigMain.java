@@ -12,7 +12,7 @@ import static io.microconfig.utils.CommandLineParams.parse;
 /**
  * VM speedup params:
  * -Xverify:none -XX:TieredStopAtLevel=1
- * <p>
+ *
  * Command line params example: *
  * -r C:\Projects\config\repo -d C:\Projects\configs -e dev
  */
