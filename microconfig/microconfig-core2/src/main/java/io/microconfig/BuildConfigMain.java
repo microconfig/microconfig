@@ -7,7 +7,7 @@ import java.util.List;
 
 import static io.microconfig.domain.impl.helpers.ConfigTypeFilters.withName;
 import static io.microconfig.domain.impl.helpers.PropertySerializers.toFileIn;
-import static io.microconfig.factory.MicroconfigFactory.findConfigsIn;
+import static io.microconfig.factory.MicroconfigFactory.buildConfigsIn;
 
 /**
  * VM speedup params:
@@ -34,9 +34,9 @@ public class BuildConfigMain {
         List<String> services = clp.listValue(SERVICES);
         clp.putToSystem("outputFormat");
 
-        findConfigsIn(rootDir)
+        buildConfigsIn(rootDir)
                 .inEnvironment(env).findComponentsFrom(groups, services)
-                .buildProperties().forConfigType(withName("app"))
+                .buildProperties().forEachConfigType()
                 .save(toFileIn(destinationDir));
     }
 }

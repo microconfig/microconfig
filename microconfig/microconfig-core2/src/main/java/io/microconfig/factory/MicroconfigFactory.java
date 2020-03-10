@@ -24,7 +24,7 @@ public class MicroconfigFactory {
     private Io io = new FsIo();
     private Environments environments;
 
-    public static MicroconfigFactory findConfigsIn(File rootDir) {
+    public static MicroconfigFactory buildConfigsIn(File rootDir) {
         return new MicroconfigFactory(canonical(rootDir));
     }
 
