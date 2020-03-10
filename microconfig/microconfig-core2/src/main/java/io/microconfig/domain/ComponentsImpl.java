@@ -15,7 +15,7 @@ public class ComponentsImpl implements Components {
     }
 
     @Override
-    public ComponentResolver resolveProperties() {
+    public ComponentResolver buildProperties() {
         return null;
     }
 }

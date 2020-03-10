@@ -3,14 +3,14 @@ package io.microconfig.domain.impl.properties;
 import io.microconfig.domain.ConfigType;
 import io.microconfig.domain.Property;
 import io.microconfig.domain.PropertySerializer;
-import io.microconfig.domain.ResolvedComponent;
+import io.microconfig.domain.ResultComponent;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 
 @RequiredArgsConstructor
-public class ResolvedComponentImpl implements ResolvedComponent {
+public class ResultComponentImpl implements ResultComponent {
     @Getter
     private final String componentName;
     private final ConfigType configType;

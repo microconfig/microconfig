@@ -2,7 +2,7 @@ package io.microconfig.domain;
 
 import java.util.Map;
 
-public interface ResolvedComponent {
+public interface ResultComponent {
     String getComponentName();
 
     String getConfigType();

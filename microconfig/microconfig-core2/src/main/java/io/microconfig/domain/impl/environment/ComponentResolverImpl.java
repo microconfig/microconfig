@@ -18,21 +18,21 @@ public class ComponentResolverImpl implements ComponentResolver {
     private final String env;
 
     @Override
-    public ResolvedComponents forEachConfigType() {
+    public ResultComponents forEachConfigType() {
         return forConfigType(t -> t);
     }
 
     @Override
-    public ResolvedComponents forConfigType(ConfigTypeFilter configTypeFilter) {
-        List<ResolvedComponent> components = configTypeFilter.filter(providerByConfigType.keySet())
+    public ResultComponents forConfigType(ConfigTypeFilter configTypeFilter) {
+        List<ResultComponent> components = configTypeFilter.filter(providerByConfigType.keySet())
                 .stream()
                 .map(this::providerForType)
                 .map(this::buildProperties)
                 .collect(toList());
-        return new ResolvedComponentsImpl(components);
+        return new BuiltComponentsImpl(components);
     }
 
-    private ResolvedComponent buildProperties(PropertiesProvider propertiesProvider) {
+    private ResultComponent buildProperties(PropertiesProvider propertiesProvider) {
         return propertiesProvider.buildProperties(componentName, componentType, env);
     }
 
