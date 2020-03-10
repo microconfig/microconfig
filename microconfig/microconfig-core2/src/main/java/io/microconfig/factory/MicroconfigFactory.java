@@ -1,9 +1,9 @@
 package io.microconfig.factory;
 
 import io.microconfig.domain.Environment;
-import io.microconfig.domain.impl.environment.filebased.EnvironmentParserImpl;
-import io.microconfig.domain.impl.environment.filebased.Environments;
-import io.microconfig.domain.impl.environment.filebased.FileBasedEnvironments;
+import io.microconfig.domain.impl.environment.provider.EnvironmentParserImpl;
+import io.microconfig.domain.impl.environment.provider.Environments;
+import io.microconfig.domain.impl.environment.provider.FileBasedEnvironments;
 import io.microconfig.utils.reader.FsIo;
 import io.microconfig.utils.reader.Io;
 import lombok.RequiredArgsConstructor;

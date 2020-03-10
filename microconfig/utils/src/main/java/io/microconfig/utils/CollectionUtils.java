@@ -1,9 +1,11 @@
 package io.microconfig.utils;
 
 import java.util.*;
+import java.util.function.Function;
 
 import static java.lang.Math.max;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 
 public class CollectionUtils {
     public static <T> T singleValue(Collection<T> values) {

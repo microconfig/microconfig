@@ -3,6 +3,7 @@ package io.microconfig.domain.impl.environment;
 import io.microconfig.domain.BuildPropertiesStep;
 import io.microconfig.domain.Component;
 import io.microconfig.domain.ConfigType;
+import io.microconfig.domain.impl.properties.BuildPropertiesStepImpl;
 import io.microconfig.domain.impl.properties.PropertiesProvider;
 import lombok.RequiredArgsConstructor;
 

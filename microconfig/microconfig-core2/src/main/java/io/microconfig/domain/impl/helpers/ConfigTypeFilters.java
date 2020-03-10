@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static io.microconfig.utils.StreamUtils.map;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
@@ -37,7 +38,7 @@ public class ConfigTypeFilters {
                     .collect(toList());
             if (result.isEmpty()) {
                 throw new IllegalArgumentException("Unsupported config type for '" + typeDescription + "'." +
-                        " Configured types: " + types.stream().map(ConfigType::getType).collect(toList()));
+                        " Configured types: " + map(types, ConfigType::getType));
             }
             return result;
         };

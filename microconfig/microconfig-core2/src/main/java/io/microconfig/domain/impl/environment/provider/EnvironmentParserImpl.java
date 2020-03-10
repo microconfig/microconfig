@@ -1,4 +1,4 @@
-package io.microconfig.domain.impl.environment.filebased;
+package io.microconfig.domain.impl.environment.provider;
 
 import io.microconfig.domain.Environment;
 import io.microconfig.utils.reader.Io;

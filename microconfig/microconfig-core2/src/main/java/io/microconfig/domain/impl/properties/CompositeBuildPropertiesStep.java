@@ -1,4 +1,4 @@
-package io.microconfig.domain.impl.environment;
+package io.microconfig.domain.impl.properties;
 
 import io.microconfig.domain.BuildPropertiesStep;
 import io.microconfig.domain.ConfigTypeFilter;

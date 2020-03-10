@@ -1,4 +1,4 @@
-package io.microconfig.domain.impl.environment.filebased;
+package io.microconfig.domain.impl.environment.provider;
 
 
 import io.microconfig.domain.Environment;
@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import static io.microconfig.service.ioservice.ConfigFormat.YAML;
 import static io.microconfig.utils.CollectionUtils.singleValue;
 import static io.microconfig.utils.FileUtils.walk;
+import static io.microconfig.utils.StreamUtils.map;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
@@ -32,10 +33,7 @@ public class FileBasedEnvironments implements Environments {
 
     @Override
     public List<Environment> all() {
-        return envFiles(withYamlExtension())
-                .stream()
-                .map(f -> parser.parse(getEnvName(f), f))
-                .collect(toList());
+        return map(envFiles(withYamlExtension()), f -> parser.parse(getEnvName(f), f));
     }
 
     @Override

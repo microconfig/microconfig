@@ -9,10 +9,12 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-import static io.microconfig.utils.CollectionUtils.singleValue;
+import static io.microconfig.utils.StreamUtils.filter;
+import static io.microconfig.utils.StreamUtils.map;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
@@ -26,37 +28,27 @@ public class EnvironmentImpl implements Environment {
 
     @Override
     public List<ComponentGroup> getGroupsWithIp(String ip) {
-        return componentGroups.stream()
-                .filter(g -> g.getIp().filter(ip::equals).isPresent())
-                .collect(toList());
+        return filter(componentGroups, g -> g.getIp().filter(ip::equals).isPresent());
     }
 
     @Override
     public ComponentGroup getGroupWithName(String groupName) {
-        List<ComponentGroup> groups = componentGroups.stream()
-                .filter(g -> g.getName().equals(groupName))
-                .collect(toList());
-
-        if (groups.isEmpty()) {
-            throw new IllegalArgumentException("Can't find group '" + groupName + "' in env [" + name + "]");
-        }
-
-        return singleValue(groups);
+        return filterGroup(g -> g.getName().equals(groupName), () -> "group name=" + groupName);
     }
 
     @Override
     public ComponentGroup getGroupWithComponent(String componentName) {
-        return componentGroups.stream()
-                .filter(g -> g.containsComponent(componentName))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Can't find group by component '" + componentName + "' in env [" + name + "]"));
+        return filterGroup(g -> g.containsComponent(componentName), () -> "component name=" + componentName);
     }
 
     @Override
     public Components getAllComponents() {
         return new ComponentsImpl(componentGroups.stream()
-                .flatMap(group -> group.getComponents().asList().stream())
-                .collect(toList()));
+                .map(ComponentGroup::getComponents)
+                .map(Components::asList)
+                .flatMap(List::stream)
+                .collect(toList())
+        );
     }
 
     @Override
@@ -84,13 +76,18 @@ public class EnvironmentImpl implements Environment {
 
             Map<String, Component> componentByName = componentFromGroups.stream()
                     .collect(toMap(Component::getName, identity()));
-            return components.stream()
-                    .map(name -> requireNonNull(componentByName.get(name),
-                            () -> "Component '" + name + "' is not configured for " + name + " env"))
-                    .collect(toList());
+            return map(components,
+                    name -> requireNonNull(componentByName.get(name), () -> "Component '" + name + "' is not configured for " + name + " env"));
         };
 
         List<Component> componentFromGroups = componentsFromGroups.get();
         return new ComponentsImpl(filterByComponents.apply(componentFromGroups));
+    }
+
+    private ComponentGroup filterGroup(Predicate<ComponentGroup> predicate, Supplier<String> filter) {
+        return componentGroups.stream()
+                .filter(predicate)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Can't find group by " + filter.get() + " in env [" + name + "]"));
     }
 }

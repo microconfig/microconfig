@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 import static io.microconfig.factory.configtype.ConfigTypeImpl.byName;
 import static io.microconfig.factory.configtype.ConfigTypeImpl.byNameAndExtensions;
 import static io.microconfig.utils.CollectionUtils.setOf;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Stream.of;
+import static io.microconfig.utils.StreamUtils.map;
+import static java.util.Arrays.asList;
 
 @RequiredArgsConstructor
 public enum StandardConfigTypes {
@@ -22,8 +22,6 @@ public enum StandardConfigTypes {
     private final ConfigType type;
 
     public static ConfigTypeProvider asProvider() {
-        return () -> of(StandardConfigTypes.values())
-                .map(StandardConfigTypes::getType)
-                .collect(toList());
+        return () -> map(asList(StandardConfigTypes.values()), StandardConfigTypes::getType);
     }
 }

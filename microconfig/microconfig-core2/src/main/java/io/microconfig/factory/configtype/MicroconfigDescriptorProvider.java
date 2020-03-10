@@ -15,9 +15,9 @@ import java.util.Set;
 import static io.microconfig.factory.configtype.ConfigTypeImpl.byName;
 import static io.microconfig.factory.configtype.ConfigTypeImpl.byNameAndExtensions;
 import static io.microconfig.utils.Logger.announce;
+import static io.microconfig.utils.StreamUtils.map;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
-import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 public class MicroconfigDescriptorProvider implements ConfigTypeProvider {
@@ -46,9 +46,7 @@ public class MicroconfigDescriptorProvider implements ConfigTypeProvider {
         try {
             Map<String, Object> types = new Yaml().load(io.readFully(file));
             List<Object> configTypes = (List<Object>) types.getOrDefault("configTypes", emptyList());
-            return configTypes.stream()
-                    .map(this::parseType)
-                    .collect(toList());
+            return map(configTypes, this::parseType);
         } catch (RuntimeException e) {
             throw new RuntimeException("Can't parse Microconfig descriptor '" + file + "'", e);
         }

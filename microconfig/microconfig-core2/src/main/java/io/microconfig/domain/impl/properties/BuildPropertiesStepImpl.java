@@ -1,13 +1,12 @@
-package io.microconfig.domain.impl.environment;
+package io.microconfig.domain.impl.properties;
 
 import io.microconfig.domain.*;
-import io.microconfig.domain.impl.properties.PropertiesProvider;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
-import static java.util.stream.Collectors.toList;
+import static io.microconfig.utils.StreamUtils.map;
 
 @RequiredArgsConstructor
 public class BuildPropertiesStepImpl implements BuildPropertiesStep {
@@ -24,19 +23,17 @@ public class BuildPropertiesStepImpl implements BuildPropertiesStep {
 
     @Override
     public ResultComponents forConfigType(ConfigTypeFilter configTypeFilter) {
-        List<ResultComponent> components = configTypeFilter.filter(providerByConfigType.keySet())
-                .stream()
-                .map(this::providerForType)
-                .map(this::buildProperties)
-                .collect(toList());
-        return new ResultComponentsImpl(components);
+        Collection<ConfigType> filteredTypes = configTypeFilter.filter(providerByConfigType.keySet());
+        return new ResultComponentsImpl(
+                map(filteredTypes, type -> buildPropertiesUsing(providerFor(type)))
+        );
     }
 
-    private ResultComponent buildProperties(PropertiesProvider propertiesProvider) {
+    private ResultComponent buildPropertiesUsing(PropertiesProvider propertiesProvider) {
         return propertiesProvider.buildProperties(componentName, componentType, env);
     }
 
-    private PropertiesProvider providerForType(ConfigType configType) {
+    private PropertiesProvider providerFor(ConfigType configType) {
         PropertiesProvider provider = providerByConfigType.get(configType);
         if (provider == null) {
             throw new IllegalArgumentException("Config type '" + configType + "' is not configured." +

@@ -1,4 +1,4 @@
-package io.microconfig.domain.impl.environment;
+package io.microconfig.domain.impl.properties;
 
 import io.microconfig.domain.PropertySerializer;
 import io.microconfig.domain.ResultComponent;
@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
+import static io.microconfig.utils.StreamUtils.map;
 
 @RequiredArgsConstructor
 public class ResultComponentsImpl implements ResultComponents {
@@ -25,8 +25,6 @@ public class ResultComponentsImpl implements ResultComponents {
 
     @Override
     public <T> List<T> save(PropertySerializer<T> serializer) {
-        return components.stream()
-                .map(c -> c.save(serializer))
-                .collect(toList());
+        return map(components, c -> c.save(serializer));
     }
 }

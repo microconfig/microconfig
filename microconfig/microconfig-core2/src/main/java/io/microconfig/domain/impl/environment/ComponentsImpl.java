@@ -3,11 +3,12 @@ package io.microconfig.domain.impl.environment;
 import io.microconfig.domain.BuildPropertiesStep;
 import io.microconfig.domain.Component;
 import io.microconfig.domain.Components;
+import io.microconfig.domain.impl.properties.CompositeBuildPropertiesStep;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
+import static io.microconfig.utils.StreamUtils.map;
 
 @RequiredArgsConstructor
 public class ComponentsImpl implements Components {
@@ -20,10 +21,6 @@ public class ComponentsImpl implements Components {
 
     @Override
     public BuildPropertiesStep buildProperties() {
-        return new CompositeBuildPropertiesStep(
-                components.stream()
-                        .map(Component::buildProperties)
-                        .collect(toList())
-        );
+        return new CompositeBuildPropertiesStep(map(components, Component::buildProperties));
     }
 }
