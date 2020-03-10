@@ -16,6 +16,7 @@ import static io.microconfig.factory.MicroconfigFactory.searchConfigsIn;
  * Command line params example: *
  * -r C:\Projects\config\repo -d C:\Projects\configs -e dev
  */
+//todo update documentation
 public class BuildConfigMain {
     private static final String ROOT = "r";
     private static final String DEST = "d";
