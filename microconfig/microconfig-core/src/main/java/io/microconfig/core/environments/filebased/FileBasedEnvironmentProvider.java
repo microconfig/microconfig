@@ -46,7 +46,7 @@ public class FileBasedEnvironmentProvider implements EnvironmentProvider {
     public Environment getByName(String name) {
         File envFile = findEnvFile(name);
 
-        return parser.parse(name, fileReader.read(envFile))
+        return parser.parse(name, fileReader.readFully(envFile))
                 .withSource(envFile)
                 .processInclude(this)
                 .verifyUniqueComponentNames();

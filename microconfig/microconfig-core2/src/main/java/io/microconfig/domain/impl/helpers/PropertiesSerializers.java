@@ -1,7 +1,7 @@
 package io.microconfig.domain.impl.helpers;
 
-import io.microconfig.domain.PropertiesSerializer;
 import io.microconfig.domain.Property;
+import io.microconfig.domain.PropertySerializer;
 
 import java.io.File;
 import java.util.Collection;
@@ -13,7 +13,7 @@ import static io.microconfig.service.ioservice.factory.ConfigIoServiceFactory.co
 import static io.microconfig.utils.FileUtils.delete;
 
 public class PropertiesSerializers {
-    public static PropertiesSerializer<File> toFileIn(File dir) {
+    public static PropertySerializer<File> toFileIn(File dir) {
         return (componentName, configType, properties) -> {
             String extension = extensionByContent(properties);
             File file = new File(dir, componentName + "/" + configType.getResultFileName() + extension);
@@ -26,7 +26,7 @@ public class PropertiesSerializers {
         };
     }
 
-    public static PropertiesSerializer<String> asString() {
+    public static PropertySerializer<String> asString() {
         return (componentName, configType, properties) ->
                 configIoService().writeTo(new File("", extensionByContent(properties))).serialize(properties);
     }

@@ -1,7 +1,7 @@
 package io.microconfig.domain;
 
 public interface ComponentResolver {
-    ResolvedProperties forEachConfigType();
+    ResolvedComponents forEachConfigType();
 
-    ResolvedProperties forConfigType(ConfigTypeFilter filter);
+    ResolvedComponent forConfigType(ConfigTypeFilter filter);
 }

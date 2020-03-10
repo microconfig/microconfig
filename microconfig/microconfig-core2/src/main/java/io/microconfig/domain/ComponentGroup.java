@@ -1,6 +1,7 @@
 package io.microconfig.domain;
 
-import java.util.List;
+import io.microconfig.domain.impl.environment.Components;
+
 import java.util.Optional;
 
 public interface ComponentGroup {
@@ -12,5 +13,5 @@ public interface ComponentGroup {
 
     Component getComponentByName(String name);
 
-    List<Component> getComponents();
+    Components getComponents();
 }

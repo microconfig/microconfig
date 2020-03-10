@@ -1,7 +1,7 @@
 package io.microconfig.domain.impl.properties;
 
-import io.microconfig.domain.ResolvedProperties;
+import io.microconfig.domain.ResolvedComponent;
 
 public interface PropertiesProvider {
-    ResolvedProperties buildProperties(String componentName, String componentType, String env);
+    ResolvedComponent buildProperties(String componentName, String componentType, String env);
 }

@@ -2,6 +2,7 @@ package io.microconfig.domain.impl.environment;
 
 import io.microconfig.domain.Component;
 import io.microconfig.domain.ComponentGroup;
+import io.microconfig.domain.ComponentsImpl;
 import io.microconfig.domain.Environment;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -52,10 +53,10 @@ public class EnvironmentImpl implements Environment {
     }
 
     @Override
-    public List<Component> getAllComponents() {
-        return componentGroups.stream()
-                .flatMap(group -> group.getComponents().stream())
-                .collect(toList());
+    public Components getAllComponents() {
+        return new ComponentsImpl(componentGroups.stream()
+                .flatMap(group -> group.getComponents().asList().stream())
+                .collect(toList()));
     }
 
     @Override
@@ -68,13 +69,13 @@ public class EnvironmentImpl implements Environment {
     }
 
     @Override
-    public List<Component> findComponentsFrom(List<String> groups, List<String> components) {
+    public Components findComponentsFrom(List<String> groups, List<String> components) {
         Supplier<List<Component>> componentsFromGroups = () -> {
-            if (groups.isEmpty()) return getAllComponents();
+            if (groups.isEmpty()) return getAllComponents().asList();
 
             return groups.stream()
                     .map(this::getGroupWithName)
-                    .flatMap(g -> g.getComponents().stream())
+                    .flatMap(g -> g.getComponents().asList().stream())
                     .collect(toList());
         };
 
@@ -90,6 +91,6 @@ public class EnvironmentImpl implements Environment {
         };
 
         List<Component> componentFromGroups = componentsFromGroups.get();
-        return filterByComponents.apply(componentFromGroups);
+        return new ComponentsImpl(filterByComponents.apply(componentFromGroups));
     }
 }

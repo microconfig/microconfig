@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 public interface Io {
-    String read(File file);
+    String readFully(File file);
 
     List<String> readLines(File file);
 
