@@ -1,4 +1,4 @@
-package io.microconfig.factory.configtype;
+package io.microconfig.domain.impl.helpers;
 
 import io.microconfig.domain.ConfigType;
 import io.microconfig.domain.ConfigTypeSupplier;
@@ -10,11 +10,11 @@ import java.util.function.Supplier;
 import static java.util.stream.Collectors.toList;
 
 public class ConfigTypeSuppliers {
-    public static ConfigTypeSupplier configTypeByName(String name) {
+    public static ConfigTypeSupplier withName(String name) {
         return getConfigType(t -> t.getType().equals(name), name);
     }
 
-    public static ConfigTypeSupplier configTypeFromFileName(File file) {
+    public static ConfigTypeSupplier fromFileExtension(File file) {
         Supplier<String> getExtension = () -> {
             int extIndex = file.getName().lastIndexOf('.');
             if (extIndex < 0) {

@@ -14,7 +14,6 @@ import java.util.Set;
 
 import static io.microconfig.factory.configtype.ConfigTypeImpl.byName;
 import static io.microconfig.factory.configtype.ConfigTypeImpl.byNameAndExtensions;
-import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.Logger.announce;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;

@@ -5,7 +5,7 @@ import java.util.List;
 public interface Component {
     String getName();
 
-    List<ComponentProperties> buildPropertiesForEachConfigType();
+    List<ResolvedProperties> resolvePropertiesForEachConfigType();
 
-    ComponentProperties buildPropertiesFor(ConfigTypeSupplier configTypeSupplier);
+    ResolvedProperties resolvePropertiesForConfigType(ConfigTypeSupplier configTypeSupplier);
 }

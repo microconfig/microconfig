@@ -1,5 +1,6 @@
 package io.microconfig.service.ioservice.selector;
 
+import io.microconfig.service.ioservice.ConfigFormat;
 import io.microconfig.service.ioservice.ConfigIoService;
 import io.microconfig.service.ioservice.ConfigReader;
 import io.microconfig.service.ioservice.ConfigWriter;
@@ -7,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
-import static io.microconfig.service.ioservice.selector.ConfigFormat.PROPERTIES;
-import static io.microconfig.service.ioservice.selector.ConfigFormat.YAML;
+import static io.microconfig.service.ioservice.ConfigFormat.PROPERTIES;
+import static io.microconfig.service.ioservice.ConfigFormat.YAML;
 
 @RequiredArgsConstructor
 public class ConfigIoServiceSelector implements ConfigIoService {

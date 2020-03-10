@@ -1,4 +1,4 @@
-package io.microconfig.service.ioservice.selector;
+package io.microconfig.service.ioservice;
 
 public enum ConfigFormat {
     YAML,

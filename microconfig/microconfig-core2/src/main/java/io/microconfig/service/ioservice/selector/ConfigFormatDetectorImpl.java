@@ -1,5 +1,6 @@
 package io.microconfig.service.ioservice.selector;
 
+import io.microconfig.service.ioservice.ConfigFormat;
 import io.microconfig.utils.reader.Io;
 import lombok.RequiredArgsConstructor;
 
@@ -7,8 +8,8 @@ import java.io.File;
 import java.util.function.Predicate;
 
 import static io.microconfig.domain.impl.properties.PropertyImpl.isComment;
-import static io.microconfig.service.ioservice.selector.ConfigFormat.PROPERTIES;
-import static io.microconfig.service.ioservice.selector.ConfigFormat.YAML;
+import static io.microconfig.service.ioservice.ConfigFormat.PROPERTIES;
+import static io.microconfig.service.ioservice.ConfigFormat.YAML;
 import static java.util.stream.IntStream.range;
 
 

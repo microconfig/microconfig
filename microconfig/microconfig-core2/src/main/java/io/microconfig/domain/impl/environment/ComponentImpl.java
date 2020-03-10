@@ -1,7 +1,7 @@
 package io.microconfig.domain.impl.environment;
 
 import io.microconfig.domain.Component;
-import io.microconfig.domain.ComponentProperties;
+import io.microconfig.domain.ResolvedProperties;
 import io.microconfig.domain.ConfigType;
 import io.microconfig.domain.ConfigTypeSupplier;
 import io.microconfig.domain.impl.properties.PropertiesProvider;
@@ -26,19 +26,19 @@ public class ComponentImpl implements Component {
     }
 
     @Override
-    public List<ComponentProperties> buildPropertiesForEachConfigType() {
+    public List<ResolvedProperties> resolvePropertiesForEachConfigType() {
         return providerByConfigType.values().stream()
                 .map(this::buildProperties)
                 .collect(toList());
     }
 
     @Override
-    public ComponentProperties buildPropertiesFor(ConfigTypeSupplier configTypeSupplier) {
+    public ResolvedProperties resolvePropertiesForConfigType(ConfigTypeSupplier configTypeSupplier) {
         ConfigType configType = configTypeSupplier.chooseType(providerByConfigType.keySet());
         return buildProperties(usingProviderFor(configType));
     }
 
-    private ComponentProperties buildProperties(PropertiesProvider propertiesProvider) {
+    private ResolvedProperties buildProperties(PropertiesProvider propertiesProvider) {
         return propertiesProvider.buildProperties(name, type, env);
     }
 

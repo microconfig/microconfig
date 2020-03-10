@@ -11,7 +11,7 @@ import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static io.microconfig.service.ioservice.selector.ConfigFormat.YAML;
+import static io.microconfig.service.ioservice.ConfigFormat.YAML;
 import static io.microconfig.utils.CollectionUtils.singleValue;
 import static io.microconfig.utils.FileUtils.walk;
 import static java.nio.file.Files.exists;
