@@ -45,13 +45,6 @@ public class CommandLineParams {
         throw new AssertionError("Impossible");
     }
 
-    public void putToSystem(String key) {
-        String value = value(key);
-        if (value != null) {
-            System.setProperty(key, value);
-        }
-    }
-
     private static void checkKeyAndValue(String[] pair) {
         if (pair.length != 2) {
             printErrorAndExit("Incorrect command line param " + Arrays.toString(pair));

@@ -30,9 +30,6 @@ public class FilenameGeneratorImpl implements FilenameGenerator {
     }
 
     private String extension(Collection<Property> properties) {
-        String outputFormat = System.getProperty("outputFormat");
-        if (outputFormat != null) return outputFormat;
-
         return containsYamlProperties(properties) ? YAML.extension() : PROPERTIES.extension();
     }
 }

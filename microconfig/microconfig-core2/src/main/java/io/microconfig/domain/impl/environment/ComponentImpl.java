@@ -1,7 +1,7 @@
 package io.microconfig.domain.impl.environment;
 
 import io.microconfig.domain.Component;
-import io.microconfig.domain.ComponentResolver;
+import io.microconfig.domain.BuildPropertiesStep;
 import io.microconfig.domain.ConfigType;
 import io.microconfig.domain.impl.properties.PropertiesProvider;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class ComponentImpl implements Component {
     }
 
     @Override
-    public ComponentResolver buildProperties() {
-        return new ComponentResolverImpl(providerByConfigType, name, type, env);
+    public BuildPropertiesStep buildProperties() {
+        return new BuildPropertiesStepImpl(providerByConfigType, name, type, env);
     }
 }

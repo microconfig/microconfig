@@ -10,7 +10,7 @@ import java.util.Map;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
-public class ComponentResolverImpl implements ComponentResolver {
+public class BuildPropertiesStepImpl implements BuildPropertiesStep {
     private final Map<ConfigType, PropertiesProvider> providerByConfigType;
 
     private final String componentName;

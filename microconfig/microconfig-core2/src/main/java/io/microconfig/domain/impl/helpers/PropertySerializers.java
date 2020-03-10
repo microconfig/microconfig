@@ -16,13 +16,13 @@ public class PropertySerializers {
     public static PropertySerializer<File> toFileIn(File dir) {
         return (componentName, configType, properties) -> {
             String extension = extensionByContent(properties);
-            File file = new File(dir, componentName + "/" + configType.getResultFileName() + extension);
-            delete(file);
+            File resultFile = new File(dir, componentName + "/" + configType.getResultFileName() + extension);
+            delete(resultFile);
 
             if (!properties.isEmpty()) {
-                configIoService().writeTo(file).write(properties);
+                configIoService().writeTo(resultFile).write(properties);
             }
-            return file;
+            return resultFile;
         };
     }
 

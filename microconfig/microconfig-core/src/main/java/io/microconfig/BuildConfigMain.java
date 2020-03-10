@@ -35,7 +35,6 @@ public class BuildConfigMain {
         String env = clp.requiredValue(ENV, "set env=");
         List<String> groups = clp.listValue(GROUPS);
         List<String> components = clp.listValue(SERVICES);
-        clp.putToSystem("outputFormat");
 
         ConfigCommand configCommand = new BuildConfigCommandFactory(compositeProvider()).newCommand(new File(root), new File(destination));
         execute(configCommand, env, groups, components);

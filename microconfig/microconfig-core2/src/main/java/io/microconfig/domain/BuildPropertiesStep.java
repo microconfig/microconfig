@@ -1,6 +1,6 @@
 package io.microconfig.domain;
 
-public interface ComponentResolver {
+public interface BuildPropertiesStep {
     ResultComponents forEachConfigType();
 
     ResultComponents forConfigType(ConfigTypeFilter filter);

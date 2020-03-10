@@ -1,7 +1,5 @@
 package io.microconfig.domain;
 
-import io.microconfig.domain.impl.environment.Components;
-
 import java.util.List;
 
 public interface Environment {
