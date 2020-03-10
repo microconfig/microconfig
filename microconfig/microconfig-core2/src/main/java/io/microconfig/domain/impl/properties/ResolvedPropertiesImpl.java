@@ -1,9 +1,9 @@
 package io.microconfig.domain.impl.properties;
 
-import io.microconfig.domain.ResolvedProperties;
 import io.microconfig.domain.ConfigType;
 import io.microconfig.domain.PropertiesSerializer;
 import io.microconfig.domain.Property;
+import io.microconfig.domain.ResolvedProperties;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

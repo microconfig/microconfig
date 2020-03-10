@@ -7,9 +7,15 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 import static io.microconfig.utils.CollectionUtils.singleValue;
+import static java.util.Objects.requireNonNull;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 @RequiredArgsConstructor
 public class EnvironmentImpl implements Environment {
@@ -18,7 +24,14 @@ public class EnvironmentImpl implements Environment {
     private final List<ComponentGroup> componentGroups;
 
     @Override
-    public ComponentGroup getGroupByName(String groupName) {
+    public List<ComponentGroup> getGroupsWithIp(String ip) {
+        return componentGroups.stream()
+                .filter(g -> g.getIp().filter(ip::equals).isPresent())
+                .collect(toList());
+    }
+
+    @Override
+    public ComponentGroup getGroupWithName(String groupName) {
         List<ComponentGroup> groups = componentGroups.stream()
                 .filter(g -> g.getName().equals(groupName))
                 .collect(toList());
@@ -31,7 +44,7 @@ public class EnvironmentImpl implements Environment {
     }
 
     @Override
-    public ComponentGroup getGroupByComponentName(String componentName) {
+    public ComponentGroup getGroupWithComponent(String componentName) {
         return componentGroups.stream()
                 .filter(g -> g.containsComponent(componentName))
                 .findFirst()
@@ -46,11 +59,37 @@ public class EnvironmentImpl implements Environment {
     }
 
     @Override
-    public Component getComponentByName(String componentName, boolean mustBeDeclaredInEnvDescriptor) {
+    public Component getComponentWithName(String componentName, boolean mustBeDeclaredInEnvDescriptor) {
         return componentGroups.stream()
                 .filter(g -> g.containsComponent(componentName))
                 .map(g -> g.getComponentByName(componentName))
                 .findFirst()
                 .orElseGet(() -> null);//todo
+    }
+
+    @Override
+    public List<Component> findComponentsFrom(List<String> groups, List<String> components) {
+        Supplier<List<Component>> componentsFromGroups = () -> {
+            if (groups.isEmpty()) return getAllComponents();
+
+            return groups.stream()
+                    .map(this::getGroupWithName)
+                    .flatMap(g -> g.getComponents().stream())
+                    .collect(toList());
+        };
+
+        UnaryOperator<List<Component>> filterByComponents = (componentFromGroups) -> {
+            if (components.isEmpty()) return componentFromGroups;
+
+            Map<String, Component> componentByName = componentFromGroups.stream()
+                    .collect(toMap(Component::getName, identity()));
+            return components.stream()
+                    .map(name -> requireNonNull(componentByName.get(name),
+                            () -> "Component '" + name + "' is not configured for " + name + " env"))
+                    .collect(toList());
+        };
+
+        List<Component> componentFromGroups = componentsFromGroups.get();
+        return filterByComponents.apply(componentFromGroups);
     }
 }

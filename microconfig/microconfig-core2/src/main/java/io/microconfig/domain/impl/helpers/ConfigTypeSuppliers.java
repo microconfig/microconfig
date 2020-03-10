@@ -1,7 +1,7 @@
 package io.microconfig.domain.impl.helpers;
 
 import io.microconfig.domain.ConfigType;
-import io.microconfig.domain.ConfigTypeSupplier;
+import io.microconfig.domain.ConfigTypeFilter;
 
 import java.io.File;
 import java.util.function.Predicate;
@@ -10,11 +10,11 @@ import java.util.function.Supplier;
 import static java.util.stream.Collectors.toList;
 
 public class ConfigTypeSuppliers {
-    public static ConfigTypeSupplier withName(String name) {
+    public static ConfigTypeFilter withName(String name) {
         return getConfigType(t -> t.getType().equals(name), name);
     }
 
-    public static ConfigTypeSupplier fromFileExtension(File file) {
+    public static ConfigTypeFilter fromFileExtension(File file) {
         Supplier<String> getExtension = () -> {
             int extIndex = file.getName().lastIndexOf('.');
             if (extIndex < 0) {
@@ -26,7 +26,7 @@ public class ConfigTypeSuppliers {
         return getConfigType(t -> t.getSourceExtensions().contains(ext), file.getName());
     }
 
-    private static ConfigTypeSupplier getConfigType(Predicate<ConfigType> predicate, String name) {
+    private static ConfigTypeFilter getConfigType(Predicate<ConfigType> predicate, String name) {
         return types -> types.stream()
                 .filter(predicate)
                 .findFirst()

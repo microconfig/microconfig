@@ -14,19 +14,18 @@ import java.util.stream.Stream;
 import static io.microconfig.service.ioservice.ConfigFormat.YAML;
 import static io.microconfig.utils.CollectionUtils.singleValue;
 import static io.microconfig.utils.FileUtils.walk;
-import static java.nio.file.Files.exists;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
 public class FileBasedEnvironments implements Environments {
-    private final Path envDir;
+    private final File envDir;
     private final EnvironmentParser parser;
 
-    public FileBasedEnvironments(Path envDir, EnvironmentParser parser) {
+    public FileBasedEnvironments(File envDir, EnvironmentParser parser) {
         this.envDir = envDir;
         this.parser = parser;
 
-        if (!exists(envDir)) {
+        if (!envDir.exists()) {
             throw new IllegalArgumentException("Env directory doesn't exist " + envDir);
         }
     }
@@ -72,7 +71,7 @@ public class FileBasedEnvironments implements Environments {
     }
 
     private List<File> envFiles(Predicate<File> predicate) {
-        try (Stream<Path> stream = walk(envDir)) {
+        try (Stream<Path> stream = walk(envDir.toPath())) {
             return stream
                     .map(Path::toFile)
                     .filter(predicate)

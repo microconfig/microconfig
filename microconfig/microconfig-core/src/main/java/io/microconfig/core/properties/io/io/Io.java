@@ -1,4 +1,4 @@
-package io.microconfig.service.io;
+package io.microconfig.core.properties.io.io;
 
 import java.io.File;
 import java.util.List;

@@ -6,9 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
-import static lombok.AccessLevel.PRIVATE;
-
-@RequiredArgsConstructor(access = PRIVATE)
+@RequiredArgsConstructor
 public class EnvironmentParserImpl implements EnvironmentParser {
     private static final String IP = "ip";
     private static final String PORT_OFFSET = "portOffset";

@@ -2,6 +2,6 @@ package io.microconfig.domain;
 
 import java.util.Collection;
 
-public interface ConfigTypeSupplier {
+public interface ConfigTypeFilter {
     ConfigType chooseType(Collection<ConfigType> supportedTypes);
 }

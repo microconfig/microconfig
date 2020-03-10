@@ -1,9 +1,9 @@
 package io.microconfig.domain.impl.environment;
 
 import io.microconfig.domain.Component;
-import io.microconfig.domain.ResolvedProperties;
 import io.microconfig.domain.ConfigType;
-import io.microconfig.domain.ConfigTypeSupplier;
+import io.microconfig.domain.ConfigTypeFilter;
+import io.microconfig.domain.ResolvedProperties;
 import io.microconfig.domain.impl.properties.PropertiesProvider;
 import lombok.RequiredArgsConstructor;
 
@@ -33,8 +33,8 @@ public class ComponentImpl implements Component {
     }
 
     @Override
-    public ResolvedProperties resolvePropertiesForConfigType(ConfigTypeSupplier configTypeSupplier) {
-        ConfigType configType = configTypeSupplier.chooseType(providerByConfigType.keySet());
+    public ResolvedProperties resolvePropertiesForConfigType(ConfigTypeFilter configTypeFilter) {
+        ConfigType configType = configTypeFilter.chooseType(providerByConfigType.keySet());
         return buildProperties(usingProviderFor(configType));
     }
 
