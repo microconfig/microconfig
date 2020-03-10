@@ -23,7 +23,7 @@ public class ResultComponentImpl implements ResultComponent {
     }
 
     @Override
-    public <T> T serialize(PropertySerializer<T> serializer) {
+    public <T> T save(PropertySerializer<T> serializer) {
         return serializer.serialize(componentName, configType, propertyByKey.values());
     }
 }

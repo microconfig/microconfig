@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 @RequiredArgsConstructor
 public class BuiltComponentsImpl implements ResultComponents {
     private final List<ResultComponent> components;
@@ -22,7 +24,9 @@ public class BuiltComponentsImpl implements ResultComponents {
     }
 
     @Override
-    public <T> T save(PropertySerializer<T> serializer) {
-        return null;
+    public <T> List<T> save(PropertySerializer<T> serializer) {
+        return components.stream()
+                .map(c -> c.save(serializer))
+                .collect(toList());
     }
 }

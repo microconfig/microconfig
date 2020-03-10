@@ -7,5 +7,5 @@ public interface ResultComponents {
 
     ResultComponent first();
 
-    <T> T save(PropertySerializer<T> serializer);
+    <T> List<T> save(PropertySerializer<T> serializer);
 }

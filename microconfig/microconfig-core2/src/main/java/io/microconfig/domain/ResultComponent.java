@@ -9,5 +9,5 @@ public interface ResultComponent {
 
     Map<String, Property> getPropertyByKey();
 
-    <T> T serialize(PropertySerializer<T> serializer);
+    <T> T save(PropertySerializer<T> serializer);
 }
