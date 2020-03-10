@@ -20,25 +20,26 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 
 @RequiredArgsConstructor
-public class MicroconfigDescriptorProvider implements ConfigTypeProvider {
-    private static final String MICROCONFIG_SETTINGS = "microconfig.yaml";
+public class YamlDescriptorConfigTypeProvider implements ConfigTypeProvider {
+    private static final String DESCRIPTOR = "microconfig.yaml";
+
     private final Path rootDir;
     private final Io io;
 
     @Override
     public List<ConfigType> getTypes() {
-        File file = microconfigDescriptor();
-        if (!file.exists()) return emptyList();
+        File descriptor = descriptorFile();
+        if (!descriptor.exists()) return emptyList();
 
-        List<ConfigType> configs = parse(file);
-        if (!configs.isEmpty()) {
-            announce("Using settings from " + MICROCONFIG_SETTINGS);
+        List<ConfigType> types = parse(descriptor);
+        if (!types.isEmpty()) {
+            announce("Using settings from " + DESCRIPTOR);
         }
-        return configs;
+        return types;
     }
 
-    private File microconfigDescriptor() {
-        return new File(rootDir.toFile(), MICROCONFIG_SETTINGS);
+    private File descriptorFile() {
+        return new File(rootDir.toFile(), DESCRIPTOR);
     }
 
     @SuppressWarnings("unchecked")
