@@ -3,26 +3,30 @@ package io.microconfig.utils;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static io.microconfig.utils.Logger.error;
 import static io.microconfig.utils.StringUtils.isEmpty;
 import static io.microconfig.utils.StringUtils.splitToList;
-import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Stream.of;
 
 @RequiredArgsConstructor
 public class CommandLineParams {
     private final Map<String, String> keyToValue;
 
-    public static CommandLineParams parse(String[] args) {
-        Map<String, String> keyToValue = of(args)
-                .map(a -> a.split("="))
-                .peek(CommandLineParams::checkKeyAndValue)
-                .collect(toMap(p -> p[0], p -> p[1]));
+    public static CommandLineParams parse(String... args) {
+        Map<String, String> params = new HashMap<>();
+        for (int i = 0; i < args.length - 1; i += 2) {
+            String key = args[i];
+            String value = args[i + 1];
+            if (!key.startsWith("-")) {
+                printErrorAndExit("key '" + key + "' must start with -");
+            }
 
-        return new CommandLineParams(keyToValue);
+            params.put(key.substring(1), value);
+        }
+        return new CommandLineParams(params);
     }
 
     public String value(String key) {

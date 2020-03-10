@@ -9,11 +9,12 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
 public class ConfigTypeFilters {
     public static ConfigTypeFilter withName(String... name) {
-        List<String> types = Arrays.asList(name);
+        List<String> types = asList(name);
         return getConfigType(t -> types.contains(t.getType()), Arrays.toString(name));
     }
 

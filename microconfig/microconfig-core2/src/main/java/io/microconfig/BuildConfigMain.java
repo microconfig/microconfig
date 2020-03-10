@@ -14,7 +14,7 @@ import static io.microconfig.factory.MicroconfigFactory.searchConfigsIn;
  * -Xverify:none -XX:TieredStopAtLevel=1
  * <p>
  * Command line params example: *
- * root=C:\Projects\config\repo dest=C:\Projects\configs env=cr-dev6
+ * -r C:\Projects\config\repo -d C:\Projects\configs -e dev
  */
 public class BuildConfigMain {
     private static final String ROOT = "r";

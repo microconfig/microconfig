@@ -29,7 +29,7 @@ public class BuildPropertiesStepImpl implements BuildPropertiesStep {
                 .map(this::providerForType)
                 .map(this::buildProperties)
                 .collect(toList());
-        return new BuiltComponentsImpl(components);
+        return new ResultComponentsImpl(components);
     }
 
     private ResultComponent buildProperties(PropertiesProvider propertiesProvider) {

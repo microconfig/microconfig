@@ -2,25 +2,23 @@ package io.microconfig.utils;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
+import static java.lang.reflect.Proxy.newProxyInstance;
 
 @RequiredArgsConstructor
 public class CacheHandler implements InvocationHandler {
-    private final ConcurrentMap<Key, Object> cache = new ConcurrentHashMap<>(512);
+    private final ConcurrentMap<Key, Object> cache = new ConcurrentHashMap<>(256);
     private final Object delegate;
 
     @SuppressWarnings("unchecked")
     public static <T> T cache(T delegate) {
-        return (T) Proxy.newProxyInstance(
+        return (T) newProxyInstance(
                 delegate.getClass().getClassLoader(),
                 delegate.getClass().getInterfaces(),
                 new CacheHandler(delegate)
@@ -29,9 +27,9 @@ public class CacheHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) {
-        return cache.computeIfAbsent(new Key(method, args), key1 -> {
+        return cache.computeIfAbsent(new Key(method, args), k -> {
             try {
-                return method.invoke(delegate, args);
+                return method.invoke(delegate, k.args);
             } catch (Exception e) {
                 handleExceptionCause(e);
                 throw new RuntimeException(e);
@@ -52,19 +50,11 @@ public class CacheHandler implements InvocationHandler {
         throw new RuntimeException(cause);
     }
 
+    @ToString
     @EqualsAndHashCode
+    @RequiredArgsConstructor
     private static class Key {
         private final Method method;
-        private final List<Object> args;
-
-        private Key(Method method, Object[] args) {
-            this.method = method;
-            this.args = args != null && args.length > 0 ? asList(args) : emptyList();
-        }
-
-        @Override
-        public String toString() {
-            return method.getName() + " " + args;
-        }
+        private final Object[] args;
     }
 }

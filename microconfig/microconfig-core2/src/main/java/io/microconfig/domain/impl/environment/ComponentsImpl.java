@@ -6,7 +6,6 @@ import io.microconfig.domain.Components;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -22,7 +21,9 @@ public class ComponentsImpl implements Components {
     @Override
     public BuildPropertiesStep buildProperties() {
         return new CompositeBuildPropertiesStep(
-                components.stream().map(Component::buildProperties).collect(toList())
+                components.stream()
+                        .map(Component::buildProperties)
+                        .collect(toList())
         );
     }
 }

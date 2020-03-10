@@ -10,7 +10,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
-public class BuiltComponentsImpl implements ResultComponents {
+public class ResultComponentsImpl implements ResultComponents {
     private final List<ResultComponent> components;
 
     @Override

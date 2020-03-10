@@ -2,10 +2,14 @@ package io.microconfig.domain.impl.environment;
 
 import io.microconfig.domain.BuildPropertiesStep;
 import io.microconfig.domain.ConfigTypeFilter;
+import io.microconfig.domain.ResultComponent;
 import io.microconfig.domain.ResultComponents;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.function.Function;
+
+import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 public class CompositeBuildPropertiesStep implements BuildPropertiesStep {
@@ -13,11 +17,23 @@ public class CompositeBuildPropertiesStep implements BuildPropertiesStep {
 
     @Override
     public ResultComponents forEachConfigType() {
-        return null;
+        return new ResultComponentsImpl(
+                forEachStep(BuildPropertiesStep::forEachConfigType)
+        );
     }
 
     @Override
     public ResultComponents forConfigType(ConfigTypeFilter filter) {
-        return null;
+        return new ResultComponentsImpl(
+                forEachStep(step -> step.forConfigType(filter))
+        );
+    }
+
+    private List<ResultComponent> forEachStep(Function<BuildPropertiesStep, ResultComponents> method) {
+        return steps.stream()
+                .map(method)
+                .map(ResultComponents::asList)
+                .flatMap(List::stream)
+                .collect(toList());
     }
 }
