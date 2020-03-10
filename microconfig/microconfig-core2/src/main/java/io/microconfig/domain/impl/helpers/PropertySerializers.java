@@ -44,7 +44,7 @@ public class PropertySerializers {
         return properties.isEmpty() || containsYamlProperties(properties) ? YAML.extension() : PROPERTIES.extension();
     }
 
-    public static Consumer<File> calculatePropertyDiff() {
+    public static Consumer<File> withPropertiesDiff() {
         return new PropertiesDiffSerializer();
     }
 }

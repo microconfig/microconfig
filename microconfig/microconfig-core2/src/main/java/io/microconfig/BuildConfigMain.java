@@ -1,12 +1,11 @@
 package io.microconfig;
 
-import io.microconfig.domain.impl.helpers.PropertySerializers;
 import io.microconfig.utils.CommandLineParams;
 
 import java.io.File;
 import java.util.List;
 
-import static io.microconfig.domain.impl.helpers.PropertySerializers.calculatePropertyDiff;
+import static io.microconfig.domain.impl.helpers.PropertySerializers.withPropertiesDiff;
 import static io.microconfig.domain.impl.helpers.PropertySerializers.toFileIn;
 import static io.microconfig.factory.MicroconfigFactory.searchConfigsIn;
 import static io.microconfig.utils.CommandLineParams.parse;
@@ -39,6 +38,6 @@ public class BuildConfigMain {
         searchConfigsIn(rootDir)
                 .inEnvironment(env).findComponentsFrom(groups, services)
                 .buildProperties().forEachConfigType()
-                .save(toFileIn(destinationDir, calculatePropertyDiff()));
+                .save(toFileIn(destinationDir, withPropertiesDiff()));
     }
 }
