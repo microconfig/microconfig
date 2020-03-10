@@ -12,7 +12,7 @@ import static io.microconfig.service.ioservice.ConfigFormat.YAML;
 import static io.microconfig.service.ioservice.factory.ConfigIoServiceFactory.configIoService;
 import static io.microconfig.utils.FileUtils.delete;
 
-public class PropertiesSerializers {
+public class PropertySerializers {
     public static PropertySerializer<File> toFileIn(File dir) {
         return (componentName, configType, properties) -> {
             String extension = extensionByContent(properties);

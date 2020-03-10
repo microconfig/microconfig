@@ -5,7 +5,8 @@ import io.microconfig.utils.CommandLineParams;
 import java.io.File;
 import java.util.List;
 
-import static io.microconfig.domain.impl.helpers.PropertiesSerializers.toFileIn;
+import static io.microconfig.domain.impl.helpers.ConfigTypeFilters.withName;
+import static io.microconfig.domain.impl.helpers.PropertySerializers.toFileIn;
 import static io.microconfig.factory.MicroconfigFactory.buildConfigsIn;
 
 /**
@@ -36,7 +37,7 @@ public class BuildConfigMain {
         buildConfigsIn(rootDir)
                 .inEnvironment(env)
                 .findComponentsFrom(groups, components)
-                .resolveProperties().forEachConfigType()
+                .resolveProperties().forConfigType(withName("app"))
                 .serialize(toFileIn(destinationDir));
     }
 }

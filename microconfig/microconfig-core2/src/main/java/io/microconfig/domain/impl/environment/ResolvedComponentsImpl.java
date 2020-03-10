@@ -17,6 +17,11 @@ public class ResolvedComponentsImpl implements ResolvedComponents {
     }
 
     @Override
+    public ResolvedComponent first() {
+        return resolvedComponents.get(0);
+    }
+
+    @Override
     public <T> T serialize(PropertySerializer<T> serializer) {
         return null;
     }
