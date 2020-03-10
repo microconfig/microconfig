@@ -1,7 +1,7 @@
 package io.microconfig.factory.configtype;
 
 import io.microconfig.domain.ConfigType;
-import io.microconfig.utils.reader.Io;
+import io.microconfig.service.io.Io;
 import lombok.RequiredArgsConstructor;
 import org.yaml.snakeyaml.Yaml;
 

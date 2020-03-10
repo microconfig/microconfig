@@ -1,7 +1,7 @@
 package io.microconfig.core.properties.io.ioservice;
 
 import io.microconfig.core.properties.Property;
-import io.microconfig.utils.reader.Io;
+import io.microconfig.service.io.Io;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

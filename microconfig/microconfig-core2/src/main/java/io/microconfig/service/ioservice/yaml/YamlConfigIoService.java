@@ -3,7 +3,7 @@ package io.microconfig.service.ioservice.yaml;
 import io.microconfig.service.ioservice.ConfigIoService;
 import io.microconfig.service.ioservice.ConfigReader;
 import io.microconfig.service.ioservice.ConfigWriter;
-import io.microconfig.utils.reader.Io;
+import io.microconfig.service.io.Io;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

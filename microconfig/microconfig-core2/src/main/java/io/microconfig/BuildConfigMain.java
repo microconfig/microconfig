@@ -8,6 +8,7 @@ import java.util.List;
 import static io.microconfig.domain.impl.helpers.ConfigTypeFilters.withName;
 import static io.microconfig.domain.impl.helpers.PropertySerializers.toFileIn;
 import static io.microconfig.factory.MicroconfigFactory.searchConfigsIn;
+import static io.microconfig.utils.CommandLineParams.parse;
 
 /**
  * VM speedup params:
@@ -25,7 +26,7 @@ public class BuildConfigMain {
     private static final String SERVICES = "s";
 
     public static void main(String[] args) {
-        CommandLineParams clp = CommandLineParams.parse(args);
+        CommandLineParams clp = parse(args);
 
         File rootDir = new File(clp.requiredValue(ROOT, "set -r param (folder with 'components' and 'envs' directories)"));
         File destinationDir = new File(clp.requiredValue(DEST, "set -d param (folder for config build output)"));
@@ -36,7 +37,7 @@ public class BuildConfigMain {
 
         searchConfigsIn(rootDir)
                 .inEnvironment(env).findComponentsFrom(groups, services)
-                .buildProperties().forConfigType(withName("app"))
+                .buildProperties().forEachConfigType()
                 .save(toFileIn(destinationDir));
     }
 }

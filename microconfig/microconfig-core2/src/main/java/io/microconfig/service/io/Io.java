@@ -1,4 +1,4 @@
-package io.microconfig.utils.reader;
+package io.microconfig.service.io;
 
 import java.io.File;
 import java.util.List;

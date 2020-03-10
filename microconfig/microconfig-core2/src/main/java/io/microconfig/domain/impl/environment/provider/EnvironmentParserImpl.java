@@ -1,7 +1,7 @@
 package io.microconfig.domain.impl.environment.provider;
 
 import io.microconfig.domain.Environment;
-import io.microconfig.utils.reader.Io;
+import io.microconfig.service.io.Io;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

@@ -2,7 +2,7 @@ package io.microconfig.service.ioservice.yaml;
 
 import io.microconfig.domain.Property;
 import io.microconfig.service.ioservice.AbstractConfigReader;
-import io.microconfig.utils.reader.Io;
+import io.microconfig.service.io.Io;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

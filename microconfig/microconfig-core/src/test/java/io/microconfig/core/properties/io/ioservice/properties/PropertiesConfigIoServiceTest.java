@@ -1,6 +1,6 @@
 package io.microconfig.core.properties.io.ioservice.properties;
 
-import io.microconfig.utils.reader.FsIo;
+import io.microconfig.service.io.FsIo;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

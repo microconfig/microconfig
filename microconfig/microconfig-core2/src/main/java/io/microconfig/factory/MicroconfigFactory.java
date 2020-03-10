@@ -4,8 +4,8 @@ import io.microconfig.domain.Environment;
 import io.microconfig.domain.impl.environment.provider.EnvironmentParserImpl;
 import io.microconfig.domain.impl.environment.provider.Environments;
 import io.microconfig.domain.impl.environment.provider.FileBasedEnvironments;
-import io.microconfig.utils.reader.FsIo;
-import io.microconfig.utils.reader.Io;
+import io.microconfig.service.io.FileSystemIo;
+import io.microconfig.service.io.Io;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -21,7 +21,7 @@ public class MicroconfigFactory {
 
     private final File rootDir;
     @Setter
-    private Io io = new FsIo();
+    private Io io = new FileSystemIo();
     private Environments environments;
 
     public static MicroconfigFactory searchConfigsIn(File rootDir) {

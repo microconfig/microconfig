@@ -5,13 +5,13 @@ import io.microconfig.service.ioservice.properties.PropertiesConfigIoService;
 import io.microconfig.service.ioservice.selector.ConfigFormatDetectorImpl;
 import io.microconfig.service.ioservice.selector.ConfigIoServiceSelector;
 import io.microconfig.service.ioservice.yaml.YamlConfigIoService;
-import io.microconfig.utils.reader.FsIo;
-import io.microconfig.utils.reader.Io;
+import io.microconfig.service.io.FileSystemIo;
+import io.microconfig.service.io.Io;
 
 import static io.microconfig.utils.CacheHandler.cache;
 
 public class ConfigIoServiceFactory {
-    private static final ConfigIoService CONFIG_IO_SERVICE = newConfigIoService(new FsIo());
+    private static final ConfigIoService CONFIG_IO_SERVICE = newConfigIoService(new FileSystemIo());
 
     public static ConfigIoService configIoService() {
         return CONFIG_IO_SERVICE;

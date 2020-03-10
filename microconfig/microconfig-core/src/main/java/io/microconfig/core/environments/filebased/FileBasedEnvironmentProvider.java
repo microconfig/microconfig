@@ -3,7 +3,7 @@ package io.microconfig.core.environments.filebased;
 import io.microconfig.core.environments.Environment;
 import io.microconfig.core.environments.EnvironmentDoesNotExistException;
 import io.microconfig.core.environments.EnvironmentProvider;
-import io.microconfig.utils.reader.Io;
+import io.microconfig.core.properties.io.io.Io;
 
 import java.io.File;
 import java.nio.file.Path;

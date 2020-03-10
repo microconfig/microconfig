@@ -1,4 +1,4 @@
-package io.microconfig.utils.reader;
+package io.microconfig.service.io;
 
 import io.microconfig.utils.IoUtils;
 
@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 import static io.microconfig.utils.IoUtils.lines;
 
-public class FsIo implements Io {
+public class FileSystemIo implements Io {
     @Override
     public String readFully(File file) {
         return IoUtils.readFully(file);

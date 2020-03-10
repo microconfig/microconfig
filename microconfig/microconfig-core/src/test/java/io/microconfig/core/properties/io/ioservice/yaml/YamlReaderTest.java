@@ -3,7 +3,7 @@ package io.microconfig.core.properties.io.ioservice.yaml;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.io.ioservice.ConfigReader;
 import io.microconfig.core.properties.sources.FileSource;
-import io.microconfig.utils.reader.FsIo;
+import io.microconfig.service.io.FsIo;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedHashMap;

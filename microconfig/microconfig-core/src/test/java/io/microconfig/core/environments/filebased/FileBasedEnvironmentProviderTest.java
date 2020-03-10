@@ -1,7 +1,7 @@
 package io.microconfig.core.environments.filebased;
 
 import io.microconfig.core.environments.EnvironmentProvider;
-import io.microconfig.utils.reader.Io;
+import io.microconfig.service.io.Io;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
