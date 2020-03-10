@@ -31,7 +31,7 @@ public class ComponentGroupImpl implements ComponentGroup {
     }
 
     @Override
-    public Component getComponentByName(String name) {
+    public Component getComponentWithName(String name) {
         return findComponentByName(name)
                 .orElseThrow(() -> new IllegalArgumentException("Can't find component '" + name + "' in group [" + name + "]"));
     }

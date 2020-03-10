@@ -11,7 +11,7 @@ public interface ComponentGroup {
 
     boolean containsComponent(String componentName);
 
-    Component getComponentByName(String name);
+    Component getComponentWithName(String name);
 
     Components getComponents();
 }

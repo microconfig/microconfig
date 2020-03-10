@@ -31,12 +31,11 @@ public class BuildConfigMain {
 
         String env = clp.requiredValue(ENV, "set env=");
         List<String> groups = clp.listValue(GROUPS);
-        List<String> components = clp.listValue(SERVICES);
+        List<String> services = clp.listValue(SERVICES);
         clp.putToSystem("outputFormat");
 
         findConfigsIn(rootDir)
-                .inEnvironment(env)
-                .findComponentsFrom(groups, components)
+                .inEnvironment(env).findComponentsFrom(groups, services)
                 .buildProperties().forConfigType(withName("app"))
                 .save(toFileIn(destinationDir));
     }

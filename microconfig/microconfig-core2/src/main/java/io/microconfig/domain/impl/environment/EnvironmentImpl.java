@@ -63,7 +63,7 @@ public class EnvironmentImpl implements Environment {
     public Component getComponentWithName(String componentName, boolean mustBeDeclaredInEnvDescriptor) {
         return componentGroups.stream()
                 .filter(g -> g.containsComponent(componentName))
-                .map(g -> g.getComponentByName(componentName))
+                .map(g -> g.getComponentWithName(componentName))
                 .findFirst()
                 .orElseGet(() -> null);//todo
     }

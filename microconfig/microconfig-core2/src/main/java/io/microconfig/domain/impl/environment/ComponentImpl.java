@@ -22,7 +22,7 @@ public class ComponentImpl implements Component {
     }
 
     @Override
-    public ComponentResolver resolveProperties() {
+    public ComponentResolver buildProperties() {
         return new ComponentResolverImpl(providerByConfigType, name, type, env);
     }
 }
