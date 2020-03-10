@@ -2,8 +2,8 @@ package io.microconfig.service.ioservice.properties;
 
 import io.microconfig.domain.Property;
 import io.microconfig.domain.impl.properties.PropertyImpl;
-import io.microconfig.service.ioservice.AbstractConfigReader;
 import io.microconfig.service.io.Io;
+import io.microconfig.service.ioservice.AbstractConfigReader;
 
 import java.io.File;
 import java.util.ArrayList;

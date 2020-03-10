@@ -5,7 +5,6 @@ import io.microconfig.utils.CommandLineParams;
 import java.io.File;
 import java.util.List;
 
-import static io.microconfig.domain.impl.helpers.ConfigTypeFilters.withName;
 import static io.microconfig.domain.impl.helpers.PropertySerializers.toFileIn;
 import static io.microconfig.factory.MicroconfigFactory.searchConfigsIn;
 import static io.microconfig.utils.CommandLineParams.parse;

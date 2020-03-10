@@ -18,22 +18,24 @@ public class BuildPropertiesStepImpl implements BuildPropertiesStep {
 
     @Override
     public ResultComponents forEachConfigType() {
-        return forConfigType(t -> t);
+        return new ResultComponentsImpl(
+                map(providerByConfigType.values(), this::buildProperties)
+        );
     }
 
     @Override
     public ResultComponents forConfigType(ConfigTypeFilter configTypeFilter) {
         Collection<ConfigType> filteredTypes = configTypeFilter.filter(providerByConfigType.keySet());
         return new ResultComponentsImpl(
-                map(filteredTypes, type -> buildPropertiesUsing(providerFor(type)))
+                map(filteredTypes, type -> buildProperties(usingProviderFor(type)))
         );
     }
 
-    private ResultComponent buildPropertiesUsing(PropertiesProvider propertiesProvider) {
+    private ResultComponent buildProperties(PropertiesProvider propertiesProvider) {
         return propertiesProvider.buildProperties(componentName, componentType, env);
     }
 
-    private PropertiesProvider providerFor(ConfigType configType) {
+    private PropertiesProvider usingProviderFor(ConfigType configType) {
         PropertiesProvider provider = providerByConfigType.get(configType);
         if (provider == null) {
             throw new IllegalArgumentException("Config type '" + configType + "' is not configured." +
