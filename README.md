@@ -1035,4 +1035,6 @@ Your Github 'Star' is appreciated!
 
 https://github.com/microconfig/microconfig
 
+[Join our Slack!](https://join.slack.com/t/microconfig/shared_invite/zt-couuwwuo-vt5miXcv5RMmuXlNv1oKEQ)
+
 support@microconfig.io
