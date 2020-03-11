@@ -5,7 +5,7 @@ import io.microconfig.domain.impl.properties.ConfigBuildResultImpl;
 import io.microconfig.service.tree.ComponentTree;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Map;
+import java.util.List;
 
 import static io.microconfig.domain.impl.properties.ConfigBuildResultsImpl.composite;
 import static java.util.stream.Collectors.toList;
@@ -37,7 +37,7 @@ public class FileBasedComponent implements Component {
         return new ConfigBuildResultImpl(componentName, type, readProperties(type));
     }
 
-    private Map<String, Property> readProperties(ConfigType type) {
+    private List<Property> readProperties(ConfigType type) {
         return null;
     }
 }

@@ -7,17 +7,17 @@ import io.microconfig.domain.PropertySerializer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Map;
+import java.util.List;
 import java.util.function.UnaryOperator;
 
-import static io.microconfig.utils.StreamUtils.toSortedMap;
+import static io.microconfig.utils.StreamUtils.map;
 
 @RequiredArgsConstructor
 public class ConfigBuildResultImpl implements ConfigBuildResult {
     private final String componentName;
     private final ConfigType configType;
     @Getter
-    private final Map<String, Property> propertyByKey;
+    private final List<Property> properties;
 
     @Override
     public String getConfigType() {
@@ -26,18 +26,11 @@ public class ConfigBuildResultImpl implements ConfigBuildResult {
 
     @Override
     public ConfigBuildResult applyForEachProperty(UnaryOperator<Property> operator) {
-        return new ConfigBuildResultImpl(componentName, configType, doApply(operator));
-    }
-
-    private Map<String, Property> doApply(UnaryOperator<Property> operator) {
-        return propertyByKey.values()
-                .stream()
-                .map(operator)
-                .collect(toSortedMap(Property::getKey, operator));
+        return new ConfigBuildResultImpl(componentName, configType, map(properties, operator));
     }
 
     @Override
     public <T> T save(PropertySerializer<T> serializer) {
-        return serializer.serialize(componentName, configType, propertyByKey.values());
+        return serializer.serialize(componentName, configType, properties);
     }
 }
