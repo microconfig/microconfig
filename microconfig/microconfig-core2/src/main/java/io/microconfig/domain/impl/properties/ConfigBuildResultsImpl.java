@@ -2,10 +2,12 @@ package io.microconfig.domain.impl.properties;
 
 import io.microconfig.domain.ConfigBuildResult;
 import io.microconfig.domain.ConfigBuildResults;
+import io.microconfig.domain.Property;
 import io.microconfig.domain.PropertySerializer;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 import static io.microconfig.utils.StreamUtils.map;
 import static lombok.AccessLevel.PRIVATE;
@@ -29,7 +31,12 @@ public class ConfigBuildResultsImpl implements ConfigBuildResults {
     }
 
     @Override
+    public ConfigBuildResults forEachProperty(UnaryOperator<Property> operator) {
+        return composite(map(results, r -> r.applyForEachProperty(operator)));
+    }
+
+    @Override
     public <T> List<T> save(PropertySerializer<T> serializer) {
-        return map(results, c -> c.save(serializer));
+        return map(results, r -> r.save(serializer));
     }
 }

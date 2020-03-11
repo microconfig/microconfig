@@ -23,7 +23,7 @@ public class ConfigBuildResultImpl implements ConfigBuildResult {
     }
 
     @Override
-    public ConfigBuildResult forEachProperty(UnaryOperator<Property> operator) {
+    public ConfigBuildResult applyForEachProperty(UnaryOperator<Property> operator) {
         return null;
     }
 

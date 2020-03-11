@@ -8,7 +8,7 @@ public interface ConfigBuildResult {
 
     Map<String, Property> getPropertyByKey();
 
-    ConfigBuildResult forEachProperty(UnaryOperator<Property> operator);
+    ConfigBuildResult applyForEachProperty(UnaryOperator<Property> operator);
 
     <T> T save(PropertySerializer<T> serializer);
 }

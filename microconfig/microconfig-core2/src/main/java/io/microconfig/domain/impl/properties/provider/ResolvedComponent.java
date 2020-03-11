@@ -1,13 +1,10 @@
 package io.microconfig.domain.impl.properties.provider;
 
-import io.microconfig.domain.*;
-import io.microconfig.domain.impl.properties.ConfigBuildResultImpl;
+import io.microconfig.domain.Component;
+import io.microconfig.domain.ConfigBuildResults;
+import io.microconfig.domain.ConfigTypeFilter;
+import io.microconfig.domain.Property;
 import lombok.RequiredArgsConstructor;
-
-import java.util.Collection;
-import java.util.Map;
-
-import static io.microconfig.domain.impl.properties.ConfigBuildResultsImpl.composite;
 
 @RequiredArgsConstructor
 public class ResolvedComponent implements Component {
@@ -20,14 +17,11 @@ public class ResolvedComponent implements Component {
 
     @Override
     public ConfigBuildResults buildPropertiesFor(ConfigTypeFilter filter) {
-        return composite(component.buildPropertiesFor(filter).save(this::resolve));
+        return component.buildPropertiesFor(filter)
+                .forEachProperty(this::resolve);
     }
 
-    private ConfigBuildResult resolve(String componentName, ConfigType configType, Collection<Property> properties) {
-        return new ConfigBuildResultImpl(componentName, configType, resolve(properties, configType.getType()));
-    }
-
-    private Map<String, Property> resolve(Collection<Property> properties, String type) {
+    private Property resolve(Property property) {
         return null;
     }
 }
