@@ -13,6 +13,6 @@ publishing {
 
 dependencies {
     implementation project(':microconfig:utils'),
-            lib.snakeyaml,//todo remove
-            'org.springframework:spring-expression'
+            lib.spring_el,
+            lib.snakeyaml
 }

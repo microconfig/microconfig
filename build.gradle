@@ -42,13 +42,10 @@ allprojects {
     }
 
     dependencies {
-        implementation platform("org.springframework.boot:spring-boot-dependencies:2.2.5.RELEASE")
-
         compileOnly lib.lombok
         annotationProcessor lib.lombok
 
-        testImplementation 'org.junit.jupiter:junit-jupiter-engine',
-                'org.mockito:mockito-junit-jupiter'
+        testImplementation lib.junit, lib.mokito
     }
 
     test {
