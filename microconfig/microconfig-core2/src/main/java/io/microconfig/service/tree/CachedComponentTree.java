@@ -63,7 +63,7 @@ public class CachedComponentTree implements ComponentTree {
     @Override
     public Optional<File> getFolder(String component) {
         List<File> files = foldersByComponentType.getOrDefault(component, emptyList());
-        return files.size() == 1 ? Optional.of(files.get(0)) : empty();
+        return files.size() == 1 ? Optional.of(files.get(0)) : empty();//todo warn
     }
 
     private static Predicate<File> isDirectory() {
