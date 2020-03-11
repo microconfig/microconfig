@@ -14,7 +14,7 @@ import static io.microconfig.utils.FileUtils.delete;
 
 public class PropertySerializers {
     public static PropertySerializer<File> toFileIn(File dir) {
-        return (componentName, configType, properties) -> {
+        return (componentName, __, configType, properties) -> {
             String extension = extensionByContent(properties);
             File resultFile = new File(dir, componentName + "/" + configType.getResultFileName() + extension);
             delete(resultFile);
@@ -27,7 +27,7 @@ public class PropertySerializers {
     }
 
     public static PropertySerializer<String> asString() {
-        return (componentName, configType, properties) ->
+        return (__1, __2, __3, properties) ->
                 configIoService().writeTo(new File("", extensionByContent(properties))).serialize(properties);
     }
 

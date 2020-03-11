@@ -10,16 +10,21 @@ import java.util.function.UnaryOperator;
 
 @RequiredArgsConstructor
 public class ResolvedComponent implements Component {
-    private final Component component;
+    private final Component original;
 
     @Override
     public String getName() {
-        return component.getName();
+        return original.getName();
+    }
+
+    @Override
+    public String getEnvironment() {
+        return original.getEnvironment();
     }
 
     @Override
     public ConfigBuildResults buildPropertiesFor(ConfigTypeFilter filter) {
-        return component.buildPropertiesFor(filter).forEachProperty(resolve());
+        return original.buildPropertiesFor(filter).forEachProperty(resolve());
     }
 
     private UnaryOperator<Property> resolve() {

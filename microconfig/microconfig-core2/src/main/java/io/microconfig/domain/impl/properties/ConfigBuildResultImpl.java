@@ -6,17 +6,21 @@ import io.microconfig.domain.Property;
 import io.microconfig.domain.PropertySerializer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.With;
 
 import java.util.List;
 import java.util.function.UnaryOperator;
 
 import static io.microconfig.utils.StreamUtils.map;
+import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor
 public class ConfigBuildResultImpl implements ConfigBuildResult {
-    private final String componentName;
+    private final String component;
+    private final String environment;
     private final ConfigType configType;
     @Getter
+    @With(PRIVATE)
     private final List<Property> properties;
 
     @Override
@@ -26,11 +30,11 @@ public class ConfigBuildResultImpl implements ConfigBuildResult {
 
     @Override
     public ConfigBuildResult forEachProperty(UnaryOperator<Property> operator) {
-        return new ConfigBuildResultImpl(componentName, configType, map(properties, operator));
+        return withProperties(map(properties, operator));
     }
 
     @Override
     public <T> T save(PropertySerializer<T> serializer) {
-        return serializer.serialize(componentName, configType, properties);
+        return serializer.serialize(component, environment, configType, properties);
     }
 }

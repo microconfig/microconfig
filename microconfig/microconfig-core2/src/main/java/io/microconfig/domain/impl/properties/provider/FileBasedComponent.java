@@ -15,12 +15,17 @@ public class FileBasedComponent implements Component {
     private final ConfigTypes types;
     private final ComponentTree componentTree;
 
-    private final String componentName;
-    private final String env;
+    private final String component;
+    private final String environment;
 
     @Override
     public String getName() {
-        return componentName;
+        return component;
+    }
+
+    @Override
+    public String getEnvironment() {
+        return environment;
     }
 
     @Override
@@ -30,7 +35,7 @@ public class FileBasedComponent implements Component {
     }
 
     private ConfigBuildResult readConfigsWithType(ConfigType type) {
-        return new ConfigBuildResultImpl(componentName, type, readPropertiesWith(type));
+        return new ConfigBuildResultImpl(component, environment, type, readPropertiesWith(type));
     }
 
     private List<Property> readPropertiesWith(ConfigType type) {
