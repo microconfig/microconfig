@@ -2,7 +2,6 @@ package io.microconfig.domain.impl.properties.provider;
 
 import io.microconfig.domain.*;
 import io.microconfig.domain.impl.properties.ConfigBuildResultImpl;
-import io.microconfig.domain.impl.properties.ConfigBuildResultsImpl;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;

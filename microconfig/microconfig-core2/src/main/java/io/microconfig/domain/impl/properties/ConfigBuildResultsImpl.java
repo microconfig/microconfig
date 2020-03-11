@@ -3,7 +3,6 @@ package io.microconfig.domain.impl.properties;
 import io.microconfig.domain.ConfigBuildResult;
 import io.microconfig.domain.ConfigBuildResults;
 import io.microconfig.domain.PropertySerializer;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
