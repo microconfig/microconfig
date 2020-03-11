@@ -1,7 +1,7 @@
 package io.microconfig.domain;
 
 public interface BuildPropertiesStep {
-    ResultComponents forEachConfigType();
+    ConfigBuildResults forEachConfigType();
 
-    ResultComponents forConfigType(ConfigTypeFilter filter);
+    ConfigBuildResults forConfigType(ConfigTypeFilter filter);
 }

@@ -1,9 +1,9 @@
 package io.microconfig.domain.impl.properties;
 
 import io.microconfig.domain.BuildPropertiesStep;
+import io.microconfig.domain.ConfigBuildResult;
+import io.microconfig.domain.ConfigBuildResults;
 import io.microconfig.domain.ConfigTypeFilter;
-import io.microconfig.domain.ResultComponent;
-import io.microconfig.domain.ResultComponents;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -16,23 +16,23 @@ public class CompositeBuildPropertiesStep implements BuildPropertiesStep {
     private final List<BuildPropertiesStep> steps;
 
     @Override
-    public ResultComponents forEachConfigType() {
-        return new ResultComponentsImpl(
+    public ConfigBuildResults forEachConfigType() {
+        return new ConfigBuildResultsImpl(
                 forEachStep(BuildPropertiesStep::forEachConfigType)
         );
     }
 
     @Override
-    public ResultComponents forConfigType(ConfigTypeFilter filter) {
-        return new ResultComponentsImpl(
+    public ConfigBuildResults forConfigType(ConfigTypeFilter filter) {
+        return new ConfigBuildResultsImpl(
                 forEachStep(step -> step.forConfigType(filter))
         );
     }
 
-    private List<ResultComponent> forEachStep(Function<BuildPropertiesStep, ResultComponents> method) {
+    private List<ConfigBuildResult> forEachStep(Function<BuildPropertiesStep, ConfigBuildResults> method) {
         return steps.stream()
                 .map(method)
-                .map(ResultComponents::asList)
+                .map(ConfigBuildResults::asList)
                 .flatMap(List::stream)
                 .collect(toList());
     }

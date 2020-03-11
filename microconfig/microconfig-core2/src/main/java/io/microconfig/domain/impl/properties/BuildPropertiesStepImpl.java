@@ -17,21 +17,21 @@ public class BuildPropertiesStepImpl implements BuildPropertiesStep {
     private final String env;
 
     @Override
-    public ResultComponents forEachConfigType() {
-        return new ResultComponentsImpl(
+    public ConfigBuildResults forEachConfigType() {
+        return new ConfigBuildResultsImpl(
                 map(providerByConfigType.values(), this::buildProperties)
         );
     }
 
     @Override
-    public ResultComponents forConfigType(ConfigTypeFilter configTypeFilter) {
+    public ConfigBuildResults forConfigType(ConfigTypeFilter configTypeFilter) {
         Collection<ConfigType> filteredTypes = configTypeFilter.filter(providerByConfigType.keySet());
-        return new ResultComponentsImpl(
+        return new ConfigBuildResultsImpl(
                 map(filteredTypes, type -> buildProperties(usingProviderFor(type)))
         );
     }
 
-    private ResultComponent buildProperties(PropertiesProvider propertiesProvider) {
+    private ConfigBuildResult buildProperties(PropertiesProvider propertiesProvider) {
         return propertiesProvider.buildProperties(componentName, componentType, env);
     }
 

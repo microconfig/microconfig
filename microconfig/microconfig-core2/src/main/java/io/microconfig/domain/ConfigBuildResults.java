@@ -2,10 +2,10 @@ package io.microconfig.domain;
 
 import java.util.List;
 
-public interface ResultComponents {
-    List<ResultComponent> asList();
+public interface ConfigBuildResults {
+    List<ConfigBuildResult> asList();
 
-    ResultComponent first();
+    ConfigBuildResult first();
 
     <T> List<T> save(PropertySerializer<T> serializer);
 }
