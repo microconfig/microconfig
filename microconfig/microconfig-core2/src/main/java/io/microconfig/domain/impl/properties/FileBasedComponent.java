@@ -30,11 +30,9 @@ public class FileBasedComponent implements Component {
     @Override
     public ConfigBuildResults buildPropertiesFor(ConfigTypeFilter filter) {
         List<ConfigType> filteredTypes = filter.selectTypes(types.getTypes());
-        return composite(map(filteredTypes, this::readConfigsWithType));
-    }
-
-    private ConfigBuildResult readConfigsWithType(ConfigType type) {
-        return new ConfigBuildResultImpl(component, environment, type, readPropertiesWith(type));
+        return composite(
+                map(filteredTypes, type -> new ConfigBuildResultImpl(component, environment, type, readPropertiesWith(type)))
+        );
     }
 
     private List<Property> readPropertiesWith(ConfigType type) {
