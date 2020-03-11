@@ -1,7 +1,5 @@
-package io.microconfig.domain.impl.environment.provider;
+package io.microconfig.domain;
 
-
-import io.microconfig.domain.Environment;
 
 import java.util.List;
 import java.util.Set;

@@ -1,8 +1,8 @@
 package io.microconfig.factory;
 
 import io.microconfig.domain.Environment;
+import io.microconfig.domain.Environments;
 import io.microconfig.domain.impl.environment.provider.EnvironmentParserImpl;
-import io.microconfig.domain.impl.environment.provider.Environments;
 import io.microconfig.domain.impl.environment.provider.FileBasedEnvironments;
 import io.microconfig.service.io.FileSystemIo;
 import io.microconfig.service.io.Io;
