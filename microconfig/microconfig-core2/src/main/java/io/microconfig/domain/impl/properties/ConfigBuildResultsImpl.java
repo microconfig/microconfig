@@ -3,13 +3,15 @@ package io.microconfig.domain.impl.properties;
 import io.microconfig.domain.ConfigBuildResult;
 import io.microconfig.domain.ConfigBuildResults;
 import io.microconfig.domain.PropertySerializer;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 import static io.microconfig.utils.StreamUtils.map;
+import static lombok.AccessLevel.PRIVATE;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = PRIVATE)
 public class ConfigBuildResultsImpl implements ConfigBuildResults {
     private final List<ConfigBuildResult> results;
 

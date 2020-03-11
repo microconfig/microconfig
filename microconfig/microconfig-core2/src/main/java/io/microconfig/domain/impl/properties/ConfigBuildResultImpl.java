@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
+import java.util.function.UnaryOperator;
 
 @RequiredArgsConstructor
 public class ConfigBuildResultImpl implements ConfigBuildResult {
@@ -19,6 +20,11 @@ public class ConfigBuildResultImpl implements ConfigBuildResult {
     @Override
     public String getConfigType() {
         return configType.getType();
+    }
+
+    @Override
+    public ConfigBuildResult forEachProperty(UnaryOperator<Property> operator) {
+        return null;
     }
 
     @Override

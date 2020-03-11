@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.Map;
 
 import static io.microconfig.domain.impl.properties.ConfigBuildResultsImpl.composite;
-import static io.microconfig.utils.StreamUtils.map;
+import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 public class FileBasedComponent implements Component {
@@ -25,7 +25,12 @@ public class FileBasedComponent implements Component {
 
     @Override
     public ConfigBuildResults buildPropertiesFor(ConfigTypeFilter filter) {
-        return composite(map(filter.filter(types.getTypes()), this::read));
+        return composite(
+                filter.selectTypes(types.getTypes())
+                        .stream()
+                        .map(this::read)
+                        .collect(toList())
+        );
     }
 
     private ConfigBuildResult read(ConfigType type) {
