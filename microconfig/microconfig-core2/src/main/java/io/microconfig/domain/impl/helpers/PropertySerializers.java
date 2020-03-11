@@ -27,8 +27,9 @@ public class PropertySerializers {
     }
 
     public static PropertySerializer<String> asString() {
-        return (properties, _2, _3, _4) ->
-                configIoService().writeTo(new File("", extensionByContent(properties))).serialize(properties);
+        return (properties, _2, _3, _4) -> configIoService()
+                .writeTo(new File(extensionByContent(properties)))
+                .serialize(properties);
     }
 
     private static String extensionByContent(List<Property> properties) {
