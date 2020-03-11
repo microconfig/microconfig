@@ -18,9 +18,9 @@ public class ComponentPropertiesFactory {
 
     public Map<String, ComponentProperty> get() {
         return of(
-                new ComponentConfigDirProperty(componentTree),
                 new ComponentNameProperty(),
-                new ResultServiceDirProperty(destinationComponentDir),
+                new ComponentConfigDirProperty(componentTree),
+                new ResultDirProperty(destinationComponentDir),
                 new ConfigRootDirProperty(componentTree.getRootDir())
         ).collect(toMap(ComponentProperty::key, identity()));
     }

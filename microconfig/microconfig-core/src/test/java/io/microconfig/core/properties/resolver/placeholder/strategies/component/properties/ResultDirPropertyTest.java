@@ -8,17 +8,17 @@ import java.io.File;
 import static io.microconfig.core.environments.Component.byType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ResultServiceDirPropertyTest {
+class ResultDirPropertyTest {
     private String path = "c:\\components";
-    private ResultServiceDirProperty resultServiceDirProperty;
+    private ResultDirProperty resultDirProperty;
 
     @BeforeEach
     void setUp() {
-        resultServiceDirProperty = new ResultServiceDirProperty(new File(path));
+        resultDirProperty = new ResultDirProperty(new File(path));
     }
 
     @Test
     void value() {
-        assertEquals(new File(path).getAbsolutePath().replace("\\", "/") + "/c2", resultServiceDirProperty.value(byType("c2")).get());
+        assertEquals(new File(path).getAbsolutePath().replace("\\", "/") + "/c2", resultDirProperty.value(byType("c2")).get());
     }
 }

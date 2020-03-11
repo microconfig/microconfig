@@ -12,8 +12,8 @@ public class EnvDescriptorPropertiesFactory {
     public Map<String, EnvProperty> get() {
         return of(
                 new EnvNameProperty(),
-                new GroupNameProperty(),
                 new IpProperty(),
+                new GroupNameProperty(),
                 new ComponentOrderProperty(),
                 new PortOffsetProperty()
         ).collect(toMap(EnvProperty::key, identity()));

@@ -11,7 +11,7 @@ import static io.microconfig.utils.StringUtils.unixLikePath;
 import static java.util.Optional.of;
 
 @RequiredArgsConstructor
-public class ResultServiceDirProperty implements ComponentProperty {
+public class ResultDirProperty implements ComponentProperty {
     private final File destinationComponentDir;
 
     @Override
