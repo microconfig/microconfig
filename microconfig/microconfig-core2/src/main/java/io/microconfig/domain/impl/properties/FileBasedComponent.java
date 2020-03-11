@@ -1,13 +1,12 @@
-package io.microconfig.domain.impl.properties.provider;
+package io.microconfig.domain.impl.properties;
 
 import io.microconfig.domain.*;
-import io.microconfig.domain.impl.properties.ConfigBuildResultImpl;
 import io.microconfig.service.tree.ComponentTree;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static io.microconfig.domain.impl.properties.ConfigBuildResultsImpl.composite;
+import static io.microconfig.domain.impl.properties.CompositeConfigBuildResult.composite;
 import static io.microconfig.utils.StreamUtils.map;
 
 @RequiredArgsConstructor

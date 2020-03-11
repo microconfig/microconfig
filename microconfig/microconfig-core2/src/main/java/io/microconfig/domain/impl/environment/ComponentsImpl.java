@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static io.microconfig.domain.impl.properties.ConfigBuildResultsImpl.composite;
+import static io.microconfig.domain.impl.properties.CompositeConfigBuildResult.composite;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor

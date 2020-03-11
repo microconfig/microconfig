@@ -6,4 +6,6 @@ public interface Property {
     String getValue();
 
     boolean isTemp();
+
+    Property withNewValue(String value);
 }

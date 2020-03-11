@@ -13,11 +13,11 @@ import static io.microconfig.utils.StreamUtils.map;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
-public class ConfigBuildResultsImpl implements ConfigBuildResults {
+public class CompositeConfigBuildResult implements ConfigBuildResults {
     private final List<ConfigBuildResult> results;
 
     public static ConfigBuildResults composite(List<ConfigBuildResult> results) {
-        return new ConfigBuildResultsImpl(results);
+        return new CompositeConfigBuildResult(results);
     }
 
     @Override

@@ -49,6 +49,11 @@ public class PropertyImpl implements Property {
     }
 
     @Override
+    public Property withNewValue(String value) {
+        return null;
+    }
+
+    @Override
     public boolean isTemp() {
         return false;
     }
