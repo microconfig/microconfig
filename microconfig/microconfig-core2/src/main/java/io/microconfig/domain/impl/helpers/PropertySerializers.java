@@ -15,22 +15,15 @@ import static io.microconfig.utils.FileUtils.delete;
 import static io.microconfig.utils.Logger.error;
 
 public class PropertySerializers {
-    public static PropertySerializer<File> toFileIn(File dir) {
-        return toFileIn(dir, __ -> {
-        });
-    }
-
-    public static PropertySerializer<File> toFileIn(File dir, Consumer<File> listener) {
+   public static PropertySerializer<File> toFileIn(File dir) {
         return (componentName, configType, properties) -> {
             String extension = extensionByContent(properties);
             File resultFile = new File(dir, componentName + "/" + configType.getResultFileName() + extension);
-            listener.accept(resultFile);
             delete(resultFile);
 
             if (!properties.isEmpty()) {
                 configIoService().writeTo(resultFile).write(properties);
             }
-            listener.accept(resultFile);
             return resultFile;
         };
     }
@@ -42,9 +35,5 @@ public class PropertySerializers {
 
     private static String extensionByContent(Collection<Property> properties) {
         return properties.isEmpty() || containsYamlProperties(properties) ? YAML.extension() : PROPERTIES.extension();
-    }
-
-    public static Consumer<File> withPropertiesDiff() {
-        return new PropertiesDiffSerializer();
     }
 }
