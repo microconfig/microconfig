@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
+import static io.microconfig.utils.StreamUtils.toSortedMap;
+
 @RequiredArgsConstructor
 public class ConfigBuildResultImpl implements ConfigBuildResult {
     private final String componentName;
@@ -24,7 +26,14 @@ public class ConfigBuildResultImpl implements ConfigBuildResult {
 
     @Override
     public ConfigBuildResult applyForEachProperty(UnaryOperator<Property> operator) {
-        return null;
+        return new ConfigBuildResultImpl(componentName, configType, doApply(operator));
+    }
+
+    private Map<String, Property> doApply(UnaryOperator<Property> operator) {
+        return propertyByKey.values()
+                .stream()
+                .map(operator)
+                .collect(toSortedMap(Property::getKey, operator));
     }
 
     @Override
