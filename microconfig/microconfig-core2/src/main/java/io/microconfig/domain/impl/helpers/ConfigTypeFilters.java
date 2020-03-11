@@ -5,7 +5,9 @@ import io.microconfig.domain.ConfigTypeFilter;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import static io.microconfig.utils.FileUtils.getExtension;
@@ -19,7 +21,7 @@ public class ConfigTypeFilters {
     }
 
     public static ConfigTypeFilter configTypeWithName(String... name) {
-        List<String> types = asList(name);
+        Set<String> types = new HashSet<>(asList(name));
         return filter(type -> types.contains(type.getType()), Arrays.toString(name));
     }
 
