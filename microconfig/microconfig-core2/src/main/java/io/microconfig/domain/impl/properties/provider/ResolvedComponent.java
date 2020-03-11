@@ -6,6 +6,8 @@ import io.microconfig.domain.ConfigTypeFilter;
 import io.microconfig.domain.Property;
 import lombok.RequiredArgsConstructor;
 
+import java.util.function.UnaryOperator;
+
 @RequiredArgsConstructor
 public class ResolvedComponent implements Component {
     private final Component component;
@@ -17,11 +19,10 @@ public class ResolvedComponent implements Component {
 
     @Override
     public ConfigBuildResults buildPropertiesFor(ConfigTypeFilter filter) {
-        return component.buildPropertiesFor(filter)
-                .applyForEachProperty(this::resolve);
+        return component.buildPropertiesFor(filter).forEachProperty(resolve());
     }
 
-    private Property resolve(Property property) {
-        return null;
+    private UnaryOperator<Property> resolve() {
+        return p -> p;
     }
 }

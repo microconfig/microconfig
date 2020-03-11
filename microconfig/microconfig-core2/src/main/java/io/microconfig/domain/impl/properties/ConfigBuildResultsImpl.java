@@ -31,8 +31,8 @@ public class ConfigBuildResultsImpl implements ConfigBuildResults {
     }
 
     @Override
-    public ConfigBuildResults applyForEachProperty(UnaryOperator<Property> operator) {
-        return composite(map(results, r -> r.applyForEachProperty(operator)));
+    public ConfigBuildResults forEachProperty(UnaryOperator<Property> operator) {
+        return composite(map(results, r -> r.forEachProperty(operator)));
     }
 
     @Override

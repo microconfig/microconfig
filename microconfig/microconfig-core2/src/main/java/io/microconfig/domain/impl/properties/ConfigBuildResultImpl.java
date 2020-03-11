@@ -25,7 +25,7 @@ public class ConfigBuildResultImpl implements ConfigBuildResult {
     }
 
     @Override
-    public ConfigBuildResult applyForEachProperty(UnaryOperator<Property> operator) {
+    public ConfigBuildResult forEachProperty(UnaryOperator<Property> operator) {
         return new ConfigBuildResultImpl(componentName, configType, map(properties, operator));
     }
 

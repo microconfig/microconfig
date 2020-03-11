@@ -1,7 +1,7 @@
 package io.microconfig.domain;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface ConfigTypeFilter {
-    Collection<ConfigType> selectTypes(Collection<ConfigType> supportedTypes);
+    List<ConfigType> selectTypes(List<ConfigType> supportedTypes);
 }

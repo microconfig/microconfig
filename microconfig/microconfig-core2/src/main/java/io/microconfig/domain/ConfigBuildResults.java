@@ -8,7 +8,7 @@ public interface ConfigBuildResults {
 
     ConfigBuildResult first();
 
-    ConfigBuildResults applyForEachProperty(UnaryOperator<Property> operator);
+    ConfigBuildResults forEachProperty(UnaryOperator<Property> operator);
 
     <T> List<T> save(PropertySerializer<T> serializer);
 }
