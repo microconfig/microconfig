@@ -8,7 +8,7 @@ import io.microconfig.service.ioservice.selector.ConfigFormatDetectorImpl;
 import io.microconfig.service.ioservice.selector.ConfigIoServiceSelector;
 import io.microconfig.service.ioservice.yaml.YamlConfigIoService;
 
-import static io.microconfig.utils.CacheHandler.cache;
+import static io.microconfig.utils.CacheProxy.cache;
 
 public class ConfigIoServiceFactory {
     private static final ConfigIoService CONFIG_IO_SERVICE = newConfigIoService(new FileSystemIo());

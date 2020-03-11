@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 import static io.microconfig.core.environments.Component.byType;
 import static io.microconfig.testutils.ClasspathUtils.classpathFile;
 import static io.microconfig.testutils.MicronconfigTestFactory.getPropertyResolver;
-import static io.microconfig.utils.OsUtil.currentUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TemplateTest {
@@ -65,7 +64,7 @@ class TemplateTest {
     void testSystemProperties() {
         Template template = new Template(source, "${system@user.name}");
         String result = template.resolvePlaceholders(envComponent, getPropertyResolver(), templatePattern);
-        assertEquals(currentUser(), result);
+        assertEquals(System.getProperty("user.name"), result);
     }
 
     @Test

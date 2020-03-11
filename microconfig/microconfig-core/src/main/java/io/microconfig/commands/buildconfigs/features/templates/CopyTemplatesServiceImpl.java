@@ -11,7 +11,7 @@ import java.util.Map;
 
 import static io.microconfig.commands.buildconfigs.features.templates.RelativePathResolver.empty;
 import static io.microconfig.commands.buildconfigs.features.templates.TemplatePattern.defaultPattern;
-import static io.microconfig.utils.FilePermissionUtils.copyPermissions;
+import static io.microconfig.utils.FileUtils.copyPermissions;
 import static io.microconfig.utils.FileUtils.write;
 import static io.microconfig.utils.Logger.*;
 

@@ -47,7 +47,7 @@ import static io.microconfig.core.properties.resolver.placeholder.strategies.com
 import static io.microconfig.core.properties.resolver.placeholder.strategies.system.SystemResolveStrategy.envVariablesResolveStrategy;
 import static io.microconfig.core.properties.resolver.placeholder.strategies.system.SystemResolveStrategy.systemPropertiesResolveStrategy;
 import static io.microconfig.factory.configtypes.StandardConfigTypes.APPLICATION;
-import static io.microconfig.utils.CacheHandler.cache;
+import static io.microconfig.utils.CacheProxy.cache;
 import static io.microconfig.utils.CollectionUtils.join;
 import static io.microconfig.utils.CollectionUtils.joinToSet;
 import static io.microconfig.utils.FileUtils.canonical;

@@ -8,8 +8,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.function.Predicate;
 
-import static io.microconfig.utils.FileUtils.extension;
-import static io.microconfig.utils.FileUtils.filename;
+import static io.microconfig.utils.FileUtils.getExtension;
 
 @RequiredArgsConstructor
 public class LegacyFilenameGenerator implements FilenameGenerator {
@@ -44,6 +43,11 @@ public class LegacyFilenameGenerator implements FilenameGenerator {
     }
 
     private File renameToLegacy(File original) {
-        return new File(original.getParent(), LEGACY_APPLICATION_NAME + extension(original));
+        return new File(original.getParent(), LEGACY_APPLICATION_NAME + getExtension(original));
+    }
+
+    private String filename(File original) {
+        String name = original.getName();
+        return name.substring(0, name.lastIndexOf('.'));
     }
 }

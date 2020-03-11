@@ -10,7 +10,6 @@ import java.util.List;
 
 import static io.microconfig.factory.configtypes.CompositeConfigTypeProvider.compositeProvider;
 import static io.microconfig.utils.Logger.announce;
-import static io.microconfig.utils.TimeUtils.msAfter;
 import static java.lang.System.currentTimeMillis;
 
 /**
@@ -49,6 +48,6 @@ public class BuildConfigMain {
             groups.forEach(group -> configCommand.execute(new ComponentsToProcess(env, group, components)));
         }
 
-        announce("Generated configs in " + msAfter(t));
+        announce("Generated configs in " + ((currentTimeMillis() - t) + " ms"));
     }
 }

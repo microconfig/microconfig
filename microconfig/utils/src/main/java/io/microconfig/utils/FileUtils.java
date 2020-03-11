@@ -8,10 +8,11 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.stream.Stream;
 
+import static io.microconfig.utils.Logger.error;
 import static io.microconfig.utils.Logger.warn;
+import static io.microconfig.utils.OsUtil.isWindows;
 import static java.nio.file.Files.createDirectories;
-import static java.nio.file.Files.exists;
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static java.nio.file.Files.setPosixFilePermissions;
 import static java.util.Arrays.stream;
 import static java.util.stream.Stream.of;
 
@@ -19,45 +20,13 @@ import static java.util.stream.Stream.of;
 public class FileUtils {
     public static final String LINES_SEPARATOR = System.getProperty("line.separator");
 
-    public static File userHome() {
-        return new File(userHomeString());
-    }
-
-    public static String userHomeString() {
-        return System.getProperty("user.home");
-    }
-
-    public static String filename(File original) {
-        String name = original.getName();
-        return name.substring(0, name.lastIndexOf('.'));
-    }
-
-    public static void truncate(File dir) {
-        delete(dir);
-        createDir(dir);
-    }
-
-    public static File createDir(File dir) {
-        if (dir.exists()) return dir;
+    public static void copyPermissions(Path from, Path to) {
+        if (isWindows()) return;
 
         try {
-            createDirectories(dir.toPath());
+            setPosixFilePermissions(to, Files.getPosixFilePermissions(from));
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return dir;
-    }
-
-    public static File createFile(File file) {
-        if (file.exists()) return file;
-
-        createDir(file.getParentFile());
-        try {
-            Files.createFile(file.toPath());
-            return file;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            error(String.format("Cannot copy file permissions from %s to %s", from, to), e);
         }
     }
 
@@ -83,10 +52,8 @@ public class FileUtils {
         }
     }
 
-    public static void delete(File... files) {
-        if (files != null) {
-            stream(files).forEach(FileUtils::delete);
-        }
+    public static void delete(File... paths) {
+        stream(paths).forEach(FileUtils::delete);
     }
 
     public static void delete(File path) {
@@ -110,33 +77,12 @@ public class FileUtils {
         return dir.delete();
     }
 
-    public static void copy(File from, File to) {
-        copy(from.toPath(), to.toPath());
-    }
-
-    public static void copy(Path src, Path dest) {
-        if (!exists(src)) {
-            delete(dest.toFile());
-            return;
-        }
-
-        try {
-            Files.copy(src, dest, REPLACE_EXISTING);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public static File canonical(File repoDir) {
         try {
             return repoDir.getCanonicalFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static boolean dirNotEmpty(File destination, int minFileCount) {
-        return destination.exists() && destination.list().length >= minFileCount;
     }
 
     public static Stream<Path> walk(Path path) {
@@ -147,7 +93,7 @@ public class FileUtils {
         }
     }
 
-    public static String extension(File fileName) {
+    public static String getExtension(File fileName) {
         int beginIndex = fileName.getName().indexOf('.');
         if (beginIndex < 0) return "";
 

@@ -8,8 +8,4 @@ public class OsUtil {
     public static boolean isWindows() {
         return windows;
     }
-
-    public static String currentUser() {
-        return System.getProperty("user.name");
-    }
 }

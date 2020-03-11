@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentMap;
 import static java.lang.reflect.Proxy.newProxyInstance;
 
 @RequiredArgsConstructor
-public class CacheHandler implements InvocationHandler {
+public class CacheProxy implements InvocationHandler {
     private final ConcurrentMap<Key, Object> cache = new ConcurrentHashMap<>(256);
     private final Object delegate;
 
@@ -21,7 +21,7 @@ public class CacheHandler implements InvocationHandler {
         return (T) newProxyInstance(
                 delegate.getClass().getClassLoader(),
                 delegate.getClass().getInterfaces(),
-                new CacheHandler(delegate)
+                new CacheProxy(delegate)
         );
     }
 

@@ -44,10 +44,6 @@ public class Logger {
         System.out.println(message);
     }
 
-    public static String align(String value, int spacesCount) {
-        return String.format("%1$-" + spacesCount + "s", value);
-    }
-
     public static boolean isErrorOccurred() {
         return errorOccurred;
     }
