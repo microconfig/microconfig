@@ -7,7 +7,7 @@ import java.util.Set;
 public interface Environments {
     List<Environment> all();
 
-    Environment byName(String name);
-
     Set<String> environmentNames();
+
+    Environment byName(String name);
 }
