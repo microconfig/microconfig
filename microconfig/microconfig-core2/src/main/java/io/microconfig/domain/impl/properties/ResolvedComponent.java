@@ -24,8 +24,8 @@ public class ResolvedComponent implements Component {
     }
 
     @Override
-    public ConfigBuildResults buildPropertiesFor(ConfigTypeFilter filter) {
-        return original.buildPropertiesFor(filter).forEachProperty(resolve());
+    public ConfigBuildResults buildPropertiesFor(ConfigTypeFilter configTypes) {
+        return original.buildPropertiesFor(configTypes).forEachProperty(resolve());
     }
 
     private UnaryOperator<Property> resolve() {
