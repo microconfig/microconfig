@@ -18,7 +18,7 @@ public class ResolvedComponent implements Component {
     @Override
     public ConfigBuildResults buildPropertiesFor(ConfigTypeFilter filter) {
         return component.buildPropertiesFor(filter)
-                .forEachProperty(this::resolve);
+                .applyForEachProperty(this::resolve);
     }
 
     private Property resolve(Property property) {
