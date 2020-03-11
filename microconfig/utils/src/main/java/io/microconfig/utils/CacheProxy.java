@@ -1,8 +1,7 @@
 package io.microconfig.utils;
 
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.Value;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -50,11 +49,9 @@ public class CacheProxy implements InvocationHandler {
         throw new RuntimeException(cause);
     }
 
-    @ToString
-    @EqualsAndHashCode
-    @RequiredArgsConstructor
+    @Value
     private static class Key {
-        private final Method method;
-        private final Object[] args;
+        Method method;
+        Object[] args;
     }
 }
