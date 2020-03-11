@@ -9,11 +9,12 @@ import java.util.Map;
 
 public interface BuildConfigPostProcessor {
     void process(EnvComponent currentComponent,
-                 Map<String, Property> componentProperties, ConfigProvider configProvider,
+                 Map<String, Property> componentProperties,
+                 ConfigProvider configProvider,
                  File resultFile);
 
     static BuildConfigPostProcessor emptyPostProcessor() {
-        return (p1, p3, p4, p2) -> {
+        return (_1, _2, _3, _4) -> {
         };
     }
 }
