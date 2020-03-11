@@ -1,9 +1,9 @@
 package io.microconfig.core.properties.io.ioservice.yaml;
 
 import io.microconfig.core.properties.Property;
+import io.microconfig.core.properties.io.io.FileSystemIo;
 import io.microconfig.core.properties.io.ioservice.ConfigReader;
 import io.microconfig.core.properties.sources.FileSource;
-import io.microconfig.service.io.FsIo;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedHashMap;
@@ -16,7 +16,7 @@ import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class YamlReaderTest {
-    private final YamlConfigIoService yaml = new YamlConfigIoService(new FsIo());
+    private final YamlConfigIoService yaml = new YamlConfigIoService(new FileSystemIo());
 
     @Test
     void testSimpleYaml() {

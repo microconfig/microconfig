@@ -1,6 +1,6 @@
 package io.microconfig.core.properties.io.ioservice.selector;
 
-import io.microconfig.service.io.Io;
+import io.microconfig.core.properties.io.io.Io;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

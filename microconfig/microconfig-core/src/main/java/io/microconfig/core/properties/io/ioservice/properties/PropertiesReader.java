@@ -1,8 +1,8 @@
 package io.microconfig.core.properties.io.ioservice.properties;
 
 import io.microconfig.core.properties.Property;
+import io.microconfig.core.properties.io.io.Io;
 import io.microconfig.core.properties.io.ioservice.AbstractConfigReader;
-import io.microconfig.service.io.Io;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,8 +13,8 @@ import static io.microconfig.core.properties.sources.FileSource.fileSource;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 
 class PropertiesReader extends AbstractConfigReader {
-    PropertiesReader(File file, Io fileReader) {
-        super(file, fileReader);
+    PropertiesReader(File file, Io io) {
+        super(file, io);
     }
 
     @Override

@@ -3,8 +3,6 @@ package io.microconfig.domain;
 import java.util.Map;
 
 public interface ConfigBuildResult {
-    String getComponentName();
-
     String getConfigType();
 
     Map<String, Property> getPropertyByKey();

@@ -27,8 +27,8 @@ public class ConfigTypeImpl implements ConfigType {
         List<String> badExtensions = filter(sourceExtensions, ext -> !ext.startsWith("."));
         if (!badExtensions.isEmpty()) {
             throw new IllegalArgumentException("File extension must start with '.'. Current: " + badExtensions);
-
         }
+
         return new ConfigTypeImpl(name, sourceExtensions, resultFileName);
     }
 }

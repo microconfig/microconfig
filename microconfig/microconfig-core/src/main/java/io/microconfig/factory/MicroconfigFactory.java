@@ -5,6 +5,8 @@ import io.microconfig.commands.buildconfigs.BuildConfigsCommand;
 import io.microconfig.core.environments.EnvironmentProvider;
 import io.microconfig.core.environments.filebased.FileBasedEnvironmentProvider;
 import io.microconfig.core.properties.ConfigProvider;
+import io.microconfig.core.properties.io.io.FileSystemIo;
+import io.microconfig.core.properties.io.io.Io;
 import io.microconfig.core.properties.io.ioservice.ConfigIoService;
 import io.microconfig.core.properties.io.ioservice.properties.PropertiesConfigIoService;
 import io.microconfig.core.properties.io.ioservice.selector.ConfigFormatDetectorImpl;
@@ -30,8 +32,6 @@ import io.microconfig.core.properties.serializer.file.FilenameGenerator;
 import io.microconfig.core.properties.serializer.file.FilenameGeneratorImpl;
 import io.microconfig.core.properties.serializer.file.LegacyFilenameGenerator;
 import io.microconfig.core.properties.serializer.file.ToFileConfigSerializer;
-import io.microconfig.service.io.FsIo;
-import io.microconfig.service.io.Io;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -72,16 +72,16 @@ public class MicroconfigFactory {
     private final List<PlaceholderResolveStrategy> additionalResolvers;
 
     public static MicroconfigFactory init(File sourcesRootDir, File destinationComponentDir) {
-        return init(sourcesRootDir, destinationComponentDir, new FsIo());
+        return init(sourcesRootDir, destinationComponentDir, new FileSystemIo());
     }
 
-    public static MicroconfigFactory init(File sourcesRootDir, File destinationComponentDir, Io fileReader) {
+    public static MicroconfigFactory init(File sourcesRootDir, File destinationComponentDir, Io io) {
         File fullSourcesRootDir = canonical(sourcesRootDir);
 
         return new MicroconfigFactory(
                 CachedComponentTree.prepare(fullSourcesRootDir),
-                newEnvProvider(fullSourcesRootDir, fileReader),
-                newConfigIoService(fileReader),
+                newEnvProvider(fullSourcesRootDir, io),
+                newConfigIoService(io),
                 destinationComponentDir,
                 "",
                 new TreeMap<>(),

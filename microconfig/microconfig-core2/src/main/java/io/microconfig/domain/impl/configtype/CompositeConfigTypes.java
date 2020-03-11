@@ -12,8 +12,8 @@ import static java.util.Arrays.asList;
 public class CompositeConfigTypes implements ConfigTypes {
     private final List<ConfigTypes> providers;
 
-    public static ConfigTypes composite(ConfigTypes... providers) {
-        return new CompositeConfigTypes(asList(providers));
+    public static ConfigTypes composite(ConfigTypes... types) {
+        return new CompositeConfigTypes(asList(types));
     }
 
     @Override

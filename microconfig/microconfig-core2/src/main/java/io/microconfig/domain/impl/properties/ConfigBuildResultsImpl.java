@@ -13,6 +13,10 @@ import static io.microconfig.utils.StreamUtils.map;
 public class ConfigBuildResultsImpl implements ConfigBuildResults {
     private final List<ConfigBuildResult> results;
 
+    public static ConfigBuildResults composite(List<ConfigBuildResult> results) {
+        return new ConfigBuildResultsImpl(results);
+    }
+
     @Override
     public List<ConfigBuildResult> asList() {
         return results;

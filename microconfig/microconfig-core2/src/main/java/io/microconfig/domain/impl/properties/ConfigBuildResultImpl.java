@@ -11,7 +11,6 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 public class ConfigBuildResultImpl implements ConfigBuildResult {
-    @Getter
     private final String componentName;
     private final ConfigType configType;
     @Getter
