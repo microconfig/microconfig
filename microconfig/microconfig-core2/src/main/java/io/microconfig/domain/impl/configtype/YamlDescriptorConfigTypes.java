@@ -29,7 +29,7 @@ public class YamlDescriptorConfigTypes implements ConfigTypes {
 
     @Override
     public List<ConfigType> getTypes() {
-        File descriptor = descriptorFile();
+        File descriptor = descriptor();
         if (!descriptor.exists()) return emptyList();
 
         List<ConfigType> types = parse(descriptor);
@@ -39,7 +39,7 @@ public class YamlDescriptorConfigTypes implements ConfigTypes {
         return types;
     }
 
-    private File descriptorFile() {
+    private File descriptor() {
         return new File(rootDir.toFile(), DESCRIPTOR);
     }
 
