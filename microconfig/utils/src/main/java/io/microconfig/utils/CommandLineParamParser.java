@@ -12,10 +12,10 @@ import static io.microconfig.utils.StringUtils.isEmpty;
 import static io.microconfig.utils.StringUtils.splitToList;
 
 @RequiredArgsConstructor
-public class CommandLineParams {
+public class CommandLineParamParser {
     private final Map<String, String> keyToValue;
 
-    public static CommandLineParams parse(String... args) {
+    public static CommandLineParamParser parse(String... args) {
         Map<String, String> params = new HashMap<>();
         for (int i = 0; i < args.length - 1; i += 2) {
             String key = args[i];
@@ -26,7 +26,7 @@ public class CommandLineParams {
 
             params.put(key.substring(1), value);
         }
-        return new CommandLineParams(params);
+        return new CommandLineParamParser(params);
     }
 
     public String value(String key) {

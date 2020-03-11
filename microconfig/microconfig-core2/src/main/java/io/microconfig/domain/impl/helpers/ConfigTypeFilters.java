@@ -14,12 +14,16 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
 public class ConfigTypeFilters {
-    public static ConfigTypeFilter withName(String... name) {
-        List<String> types = asList(name);
-        return getConfigType(t -> types.contains(t.getType()), Arrays.toString(name));
+    public static ConfigTypeFilter eachConfigType() {
+        return types -> types;
     }
 
-    public static ConfigTypeFilter fromFileExtension(File file) {
+    public static ConfigTypeFilter configTypeWithName(String... name) {
+        List<String> types = asList(name);
+        return filter(type -> types.contains(type.getType()), Arrays.toString(name));
+    }
+
+    public static ConfigTypeFilter configTypeFromExtensionOf(File file) {
         Supplier<String> getExtension = () -> {
             int extIndex = file.getName().lastIndexOf('.');
             if (extIndex < 0) {
@@ -28,10 +32,10 @@ public class ConfigTypeFilters {
             return file.getName().substring(extIndex);
         };
         String ext = getExtension.get();
-        return getConfigType(t -> t.getSourceExtensions().contains(ext), file.getName());
+        return filter(type -> type.getSourceExtensions().contains(ext), file.getName());
     }
 
-    private static ConfigTypeFilter getConfigType(Predicate<ConfigType> predicate, String typeDescription) {
+    private static ConfigTypeFilter filter(Predicate<ConfigType> predicate, String typeDescription) {
         return types -> {
             List<ConfigType> result = types.stream()
                     .filter(predicate)

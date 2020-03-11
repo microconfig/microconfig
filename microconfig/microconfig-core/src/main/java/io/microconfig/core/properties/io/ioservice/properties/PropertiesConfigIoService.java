@@ -13,7 +13,7 @@ public class PropertiesConfigIoService implements ConfigIoService {
     private final Io fileReader;
 
     @Override
-    public ConfigReader readFor(File file) {
+    public ConfigReader read(File file) {
         return new PropertiesReader(file, fileReader);
     }
 

@@ -1,11 +1,12 @@
-package io.microconfig.factory.configtype;
+package io.microconfig.domain.impl.configtype;
 
 import io.microconfig.domain.ConfigType;
+import io.microconfig.domain.ConfigTypes;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import static io.microconfig.factory.configtype.ConfigTypeImpl.byName;
-import static io.microconfig.factory.configtype.ConfigTypeImpl.byNameAndExtensions;
+import static io.microconfig.domain.impl.configtype.ConfigTypeImpl.byName;
+import static io.microconfig.domain.impl.configtype.ConfigTypeImpl.byNameAndExtensions;
 import static io.microconfig.utils.CollectionUtils.setOf;
 import static io.microconfig.utils.StreamUtils.map;
 import static java.util.Arrays.asList;
@@ -21,7 +22,7 @@ public enum StandardConfigTypes {
     @Getter
     private final ConfigType type;
 
-    public static ConfigTypeProvider asProvider() {
+    public static ConfigTypes asTypes() {
         return () -> map(asList(StandardConfigTypes.values()), StandardConfigTypes::getType);
     }
 }

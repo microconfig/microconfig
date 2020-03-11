@@ -3,7 +3,7 @@ package io.microconfig;
 import io.microconfig.commands.ComponentsToProcess;
 import io.microconfig.commands.ConfigCommand;
 import io.microconfig.factory.BuildConfigCommandFactory;
-import io.microconfig.utils.CommandLineParams;
+import io.microconfig.utils.CommandLineParamParser;
 
 import java.io.File;
 import java.util.List;
@@ -28,7 +28,7 @@ public class BuildConfigMain {
     private static final String SERVICES = "services";
 
     public static void main(String[] args) {
-        CommandLineParams clp = CommandLineParams.parse(args);
+        CommandLineParamParser clp = CommandLineParamParser.parse(args);
 
         String root = clp.requiredValue(ROOT, "set root=  param (folder with 'components' and 'envs' directories)");
         String destination = clp.requiredValue(DEST, "set dest= param (folder for config build output)");

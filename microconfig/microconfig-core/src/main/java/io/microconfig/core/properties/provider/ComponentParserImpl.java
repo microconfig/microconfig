@@ -22,7 +22,7 @@ public class ComponentParserImpl implements ComponentParser {
 
     @Override
     public ParsedComponent parse(File file, String env) {
-        ConfigReader reader = configIo.readFor(file);
+        ConfigReader reader = configIo.read(file);
 
         Map<Integer, String> commentByLineNumber = reader.commentsByLineNumber();
         List<Include> includes = parseIncludes(commentByLineNumber.values(), env);

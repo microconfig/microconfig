@@ -1,14 +1,12 @@
 package io.microconfig.domain.impl.environment;
 
-import io.microconfig.domain.BuildPropertiesStep;
-import io.microconfig.domain.Component;
-import io.microconfig.domain.Components;
-import io.microconfig.domain.impl.properties.CompositeBuildPropertiesStep;
+import io.microconfig.domain.*;
+import io.microconfig.domain.impl.properties.ConfigBuildResultsImpl;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static io.microconfig.utils.StreamUtils.map;
+import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 public class ComponentsImpl implements Components {
@@ -20,7 +18,11 @@ public class ComponentsImpl implements Components {
     }
 
     @Override
-    public BuildPropertiesStep buildProperties() {
-        return new CompositeBuildPropertiesStep(map(components, Component::buildProperties));
+    public ConfigBuildResults buildPropertiesFor(ConfigTypeFilter filter) {
+        List<ConfigBuildResult> results = components.stream()
+                .flatMap(c -> c.buildPropertiesFor(filter).asList().stream())
+                .collect(toList());
+
+        return new ConfigBuildResultsImpl(results);
     }
 }

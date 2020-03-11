@@ -1,4 +1,4 @@
-package io.microconfig.factory.configtype;
+package io.microconfig.domain.impl.configtype;
 
 import io.microconfig.domain.ConfigType;
 import lombok.Getter;

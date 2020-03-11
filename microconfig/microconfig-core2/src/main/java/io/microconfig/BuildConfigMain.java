@@ -1,13 +1,14 @@
 package io.microconfig;
 
-import io.microconfig.utils.CommandLineParams;
+import io.microconfig.utils.CommandLineParamParser;
+import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.util.List;
 
+import static io.microconfig.domain.impl.helpers.ConfigTypeFilters.eachConfigType;
 import static io.microconfig.domain.impl.helpers.PropertySerializers.toFileIn;
 import static io.microconfig.factory.MicroconfigFactory.searchConfigsIn;
-import static io.microconfig.utils.CommandLineParams.parse;
 
 /**
  * Command line params example: *
@@ -18,25 +19,47 @@ import static io.microconfig.utils.CommandLineParams.parse;
  */
 //todo update documentation
 public class BuildConfigMain {
-    private static final String ROOT = "r";
-    private static final String DEST = "d";
-    private static final String ENV = "e";
-    private static final String GROUPS = "g";
-    private static final String SERVICES = "s";
-
     public static void main(String[] args) {
-        CommandLineParams clp = parse(args);
+        MicroconfigParams params = MicroconfigParams.parse(args);
 
-        File rootDir = new File(clp.requiredValue(ROOT, "set -r param (folder with 'components' and 'envs' directories)"));
-        File destinationDir = new File(clp.requiredValue(DEST, "set -d param (folder for config build output)"));
-
-        String env = clp.requiredValue(ENV, "set -e (environment)");
-        List<String> groups = clp.listValue(GROUPS);
-        List<String> services = clp.listValue(SERVICES);
+        File rootDir = params.rootDir();
+        File destinationDir = params.destinationDir();
+        String env = params.env();
+        List<String> groups = params.groups();
+        List<String> services = params.services();
 
         searchConfigsIn(rootDir)
                 .inEnvironment(env).findComponentsFrom(groups, services)
-                .buildProperties().forEachConfigType()
+                .buildPropertiesFor(eachConfigType())
                 .save(toFileIn(destinationDir));
+    }
+
+    @RequiredArgsConstructor
+    private static class MicroconfigParams {
+        private final CommandLineParamParser parser;
+
+        public static MicroconfigParams parse(String... args) {
+            return new MicroconfigParams(CommandLineParamParser.parse(args));
+        }
+
+        public File rootDir() {
+            return new File(parser.requiredValue("r", "set -r param (folder with 'components' and 'envs' directories)"));
+        }
+
+        public File destinationDir() {
+            return new File(parser.requiredValue("d", "set -d param (folder for config build output)"));
+        }
+
+        public String env() {
+            return parser.requiredValue("e", "set -e (environment)");
+        }
+
+        public List<String> groups() {
+            return parser.listValue("g");
+        }
+
+        public List<String> services() {
+            return parser.listValue("s");
+        }
     }
 }

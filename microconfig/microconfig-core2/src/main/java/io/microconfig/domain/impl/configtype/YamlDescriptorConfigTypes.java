@@ -1,6 +1,7 @@
-package io.microconfig.factory.configtype;
+package io.microconfig.domain.impl.configtype;
 
 import io.microconfig.domain.ConfigType;
+import io.microconfig.domain.ConfigTypes;
 import io.microconfig.service.io.Io;
 import lombok.RequiredArgsConstructor;
 import org.yaml.snakeyaml.Yaml;
@@ -12,15 +13,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static io.microconfig.factory.configtype.ConfigTypeImpl.byName;
-import static io.microconfig.factory.configtype.ConfigTypeImpl.byNameAndExtensions;
+import static io.microconfig.domain.impl.configtype.ConfigTypeImpl.byName;
+import static io.microconfig.domain.impl.configtype.ConfigTypeImpl.byNameAndExtensions;
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.StreamUtils.map;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 
 @RequiredArgsConstructor
-public class YamlDescriptorConfigTypeProvider implements ConfigTypeProvider {
+public class YamlDescriptorConfigTypes implements ConfigTypes {
     private static final String DESCRIPTOR = "microconfig.yaml";
 
     private final Path rootDir;

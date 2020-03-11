@@ -18,8 +18,8 @@ public class ConfigIoServiceSelector implements ConfigIoService {
     private final ConfigIoService propertiesFormat;
 
     @Override
-    public ConfigReader readFor(File file) {
-        return select(file).readFor(file);
+    public ConfigReader read(File file) {
+        return select(file).read(file);
     }
 
     @Override
