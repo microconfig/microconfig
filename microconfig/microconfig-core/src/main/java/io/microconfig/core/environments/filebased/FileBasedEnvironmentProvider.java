@@ -13,7 +13,6 @@ import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static io.microconfig.utils.CollectionUtils.singleValue;
 import static io.microconfig.utils.FileUtils.walk;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
@@ -61,7 +60,7 @@ public class FileBasedEnvironmentProvider implements EnvironmentProvider {
         if (files.isEmpty()) {
             throw new EnvironmentDoesNotExistException("Can't find env with name " + name);
         }
-        return singleValue(files);
+        return files.get(0);
     }
 
     private List<File> getEnvFiles(String name) {

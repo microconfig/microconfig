@@ -13,7 +13,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static io.microconfig.service.ioservice.ConfigFormat.YAML;
-import static io.microconfig.utils.CollectionUtils.singleValue;
 import static io.microconfig.utils.FileUtils.walk;
 import static io.microconfig.utils.StreamUtils.map;
 import static java.util.stream.Collectors.toCollection;
@@ -66,7 +65,7 @@ public class FileBasedEnvironments implements Environments {
         if (files.isEmpty()) {
             throw new EnvironmentDoesNotExistException("Can't find env with name " + name);
         }
-        return singleValue(files);
+        return files.get(0);
     }
 
     private List<File> envFiles(Predicate<File> predicate) {
