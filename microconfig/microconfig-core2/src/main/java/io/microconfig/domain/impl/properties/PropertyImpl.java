@@ -2,7 +2,7 @@ package io.microconfig.domain.impl.properties;
 
 import io.microconfig.domain.Property;
 
-import java.util.Collection;
+import java.util.List;
 
 import static java.util.stream.IntStream.range;
 
@@ -27,7 +27,7 @@ public class PropertyImpl implements Property {
         return null;
     }
 
-    public static boolean containsYamlProperties(Collection<Property> properties) {
+    public static boolean containsYamlProperties(List<Property> properties) {
 //        return properties
 //                .stream()
 //                .map(Property::getSource)

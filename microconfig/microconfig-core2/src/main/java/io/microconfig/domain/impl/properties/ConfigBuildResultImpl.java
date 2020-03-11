@@ -35,6 +35,6 @@ public class ConfigBuildResultImpl implements ConfigBuildResult {
 
     @Override
     public <T> T save(PropertySerializer<T> serializer) {
-        return serializer.serialize(component, environment, configType, properties);
+        return serializer.serialize(properties, configType, component, environment);
     }
 }
