@@ -1,4 +1,4 @@
-package io.microconfig.service.ioservice;
+package io.microconfig.service.io;
 
 
 import io.microconfig.domain.Property;

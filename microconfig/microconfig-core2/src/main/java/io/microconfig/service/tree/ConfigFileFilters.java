@@ -6,21 +6,21 @@ import java.util.function.Predicate;
 
 public class ConfigFileFilters {
     public static Predicate<File> defaultFilter(Set<String> fileExtensions) {
-        return file -> hasExtension(file, fileExtensions)
+        return file -> endsWith(fileExtensions, file)
                 && file.getName().indexOf('.') == file.getName().lastIndexOf('.');
     }
 
     public static Predicate<File> envSharedFilter(Set<String> fileExtensions, String environment) {
-        return file -> hasExtension(file, fileExtensions)
+        return file -> endsWith(fileExtensions, file)
                 && containsEnvPart(file, environment, false);
     }
 
     public static Predicate<File> envSpecificFilter(Set<String> fileExtensions, String environment) {
-        return file -> hasExtension(file, fileExtensions)
+        return file -> endsWith(fileExtensions, file)
                 && containsEnvPart(file, environment, true);
     }
 
-    private static boolean hasExtension(File file, Set<String> fileExtensions) {
+    private static boolean endsWith(Set<String> fileExtensions, File file) {
         return fileExtensions
                 .stream()
                 .anyMatch(ext -> file.getName().endsWith(ext));

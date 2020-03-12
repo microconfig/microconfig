@@ -1,15 +1,15 @@
-package io.microconfig.service.ioservice.selector;
+package io.microconfig.service.io.selector;
 
-import io.microconfig.service.ioservice.ConfigFormat;
-import io.microconfig.service.ioservice.ConfigIoService;
-import io.microconfig.service.ioservice.ConfigReader;
-import io.microconfig.service.ioservice.ConfigWriter;
+import io.microconfig.service.io.ConfigFormat;
+import io.microconfig.service.io.ConfigIoService;
+import io.microconfig.service.io.ConfigReader;
+import io.microconfig.service.io.ConfigWriter;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
-import static io.microconfig.service.ioservice.ConfigFormat.PROPERTIES;
-import static io.microconfig.service.ioservice.ConfigFormat.YAML;
+import static io.microconfig.service.io.ConfigFormat.PROPERTIES;
+import static io.microconfig.service.io.ConfigFormat.YAML;
 
 @RequiredArgsConstructor
 public class ConfigIoServiceSelector implements ConfigIoService {

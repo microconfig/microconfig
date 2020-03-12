@@ -1,6 +1,6 @@
-package io.microconfig.service.ioservice.selector;
+package io.microconfig.service.io.selector;
 
-import io.microconfig.service.ioservice.ConfigFormat;
+import io.microconfig.service.io.ConfigFormat;
 
 import java.io.File;
 

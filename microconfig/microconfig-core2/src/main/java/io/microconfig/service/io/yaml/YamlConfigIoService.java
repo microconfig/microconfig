@@ -1,9 +1,9 @@
-package io.microconfig.service.ioservice.yaml;
+package io.microconfig.service.io.yaml;
 
+import io.microconfig.service.io.ConfigIoService;
+import io.microconfig.service.io.ConfigReader;
+import io.microconfig.service.io.ConfigWriter;
 import io.microconfig.service.io.Io;
-import io.microconfig.service.ioservice.ConfigIoService;
-import io.microconfig.service.ioservice.ConfigReader;
-import io.microconfig.service.ioservice.ConfigWriter;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

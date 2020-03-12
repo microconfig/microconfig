@@ -1,12 +1,12 @@
-package io.microconfig.service.ioservice.factory;
+package io.microconfig.service.io.factory;
 
+import io.microconfig.service.io.ConfigIoService;
 import io.microconfig.service.io.FileSystemIo;
 import io.microconfig.service.io.Io;
-import io.microconfig.service.ioservice.ConfigIoService;
-import io.microconfig.service.ioservice.properties.PropertiesConfigIoService;
-import io.microconfig.service.ioservice.selector.ConfigFormatDetectorImpl;
-import io.microconfig.service.ioservice.selector.ConfigIoServiceSelector;
-import io.microconfig.service.ioservice.yaml.YamlConfigIoService;
+import io.microconfig.service.io.properties.PropertiesConfigIoService;
+import io.microconfig.service.io.selector.ConfigFormatDetectorImpl;
+import io.microconfig.service.io.selector.ConfigIoServiceSelector;
+import io.microconfig.service.io.yaml.YamlConfigIoService;
 
 import static io.microconfig.utils.CacheProxy.cache;
 

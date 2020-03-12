@@ -1,4 +1,4 @@
-package io.microconfig.service.ioservice.yaml;
+package io.microconfig.service.io.yaml;
 
 import java.util.ArrayList;
 import java.util.List;

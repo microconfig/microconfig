@@ -1,15 +1,15 @@
-package io.microconfig.service.ioservice.selector;
+package io.microconfig.service.io.selector;
 
+import io.microconfig.service.io.ConfigFormat;
 import io.microconfig.service.io.Io;
-import io.microconfig.service.ioservice.ConfigFormat;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.util.function.Predicate;
 
 import static io.microconfig.domain.impl.properties.PropertyImpl.isComment;
-import static io.microconfig.service.ioservice.ConfigFormat.PROPERTIES;
-import static io.microconfig.service.ioservice.ConfigFormat.YAML;
+import static io.microconfig.service.io.ConfigFormat.PROPERTIES;
+import static io.microconfig.service.io.ConfigFormat.YAML;
 import static java.util.stream.IntStream.range;
 
 
