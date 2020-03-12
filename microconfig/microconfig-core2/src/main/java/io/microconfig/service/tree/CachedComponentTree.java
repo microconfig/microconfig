@@ -1,5 +1,6 @@
 package io.microconfig.service.tree;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -12,14 +13,17 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static io.microconfig.utils.FileUtils.walk;
+import static io.microconfig.utils.Logger.warn;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.stream.Collectors.groupingBy;
 
 @RequiredArgsConstructor
 public class CachedComponentTree implements ComponentTree {
     public static final String COMPONENTS_DIR = "components";
 
+    @Getter
     private final File rootDir;
     private final Map<String, List<File>> foldersByComponentType;
 
@@ -34,11 +38,11 @@ public class CachedComponentTree implements ComponentTree {
         }
 
         try (Stream<Path> pathStream = walk(components.toPath())) {
-            return new CachedComponentTree(rootDir, filesByDirName(pathStream));
+            return new CachedComponentTree(rootDir, collectFoldersByComponentType(pathStream));
         }
     }
 
-    private static Map<String, List<File>> filesByDirName(Stream<Path> pathStream) {
+    private static Map<String, List<File>> collectFoldersByComponentType(Stream<Path> pathStream) {
         return pathStream.parallel()
                 .map(Path::toFile)
                 .filter(isDirectory())
@@ -46,12 +50,7 @@ public class CachedComponentTree implements ComponentTree {
     }
 
     @Override
-    public File getRootDir() {
-        return rootDir;
-    }
-
-    @Override
-    public Stream<File> getConfigFiles(String component, Predicate<File> filter) {
+    public Stream<File> getConfigFilesFor(String component, Predicate<File> filter) {
         return foldersByComponentType.getOrDefault(component, emptyList())
                 .stream()
                 .map(File::listFiles)
@@ -61,16 +60,19 @@ public class CachedComponentTree implements ComponentTree {
     }
 
     @Override
-    public Optional<File> getFolder(String component) {
-        List<File> files = foldersByComponentType.getOrDefault(component, emptyList());
-        return files.size() == 1 ? Optional.of(files.get(0)) : empty();//todo warn
+    public Optional<File> getFolderOf(String component) {
+        List<File> folders = foldersByComponentType.getOrDefault(component, emptyList());
+        if (folders.size() > 1) {
+            warn("Found " + folders.size() + " folders with name " + component + ". " +
+                    "Consider renaming them, otherwise placeholder resolution can be incorrect");
+        }
+        return folders.isEmpty() ? empty() : of(folders.get(0));
     }
 
     private static Predicate<File> isDirectory() {
         return f -> {
-            /*Filter by ext works way faster than File::isDirectory.
-             Implementation is correct because File::listFiles for file will return null and we handle it in getConfigFiles()
-             */
+            //Filter by ext works way faster than File::isDirectory.
+            //Implementation is correct because File::listFiles for file will return null and we handle it in getConfigFiles()
             return !f.getName().contains(".");
         };
     }

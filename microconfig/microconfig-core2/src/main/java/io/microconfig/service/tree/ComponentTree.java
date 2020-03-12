@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 public interface ComponentTree {
     File getRootDir();
 
-    Optional<File> getFolder(String component);
+    Optional<File> getFolderOf(String component);
 
-    Stream<File> getConfigFiles(String component, Predicate<File> filter);
+    Stream<File> getConfigFilesFor(String component, Predicate<File> filter);
 }
