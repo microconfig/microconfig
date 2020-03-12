@@ -31,13 +31,13 @@ public class ConfigFileFilters {
         return file -> file.getName().contains(envPart);
     }
 
-    private static Predicate<File> environmentCountIs(Predicate<Long> countPredicate) {
+    private static Predicate<File> environmentCountIs(Predicate<Long> envCountPredicate) {
         return file -> {
-            long envCount = file.getName()
+            long dotCount = file.getName()
                     .chars()
                     .filter(c -> c == '.')
-                    .count() - 1;
-            return countPredicate.test(envCount);
+                    .count();
+            return envCountPredicate.test(dotCount - 1);
         };
     }
 }
