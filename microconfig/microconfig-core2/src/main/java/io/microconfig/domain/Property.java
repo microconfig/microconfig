@@ -7,5 +7,5 @@ public interface Property {
 
     boolean isTemp();
 
-    Property withNewValue(String value);
+    Property resolveBy(Resolver resolver);
 }
