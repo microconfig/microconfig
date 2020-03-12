@@ -5,36 +5,39 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 public class ConfigFileFilters {
-    public static Predicate<File> defaultFilter(Set<String> fileExtensions) {
-        return file -> endsWith(fileExtensions, file)
-                && file.getName().indexOf('.') == file.getName().lastIndexOf('.');
+    public static Predicate<File> defaultConfig(Set<String> extensions) {
+        return fileEndsWith(extensions)
+                .and(environmentCountIs(c -> c == 0));
     }
 
-    public static Predicate<File> envSharedFilter(Set<String> fileExtensions, String environment) {
-        return file -> endsWith(fileExtensions, file)
-                && containsEnvPart(file, environment, false);
+    public static Predicate<File> configForMultipleEnvironments(Set<String> extensions, String environment) {
+        return fileEndsWith(extensions)
+                .and(containsInName(environment))
+                .and(environmentCountIs(c -> c > 1));
     }
 
-    public static Predicate<File> envSpecificFilter(Set<String> fileExtensions, String environment) {
-        return file -> endsWith(fileExtensions, file)
-                && containsEnvPart(file, environment, true);
+    public static Predicate<File> configForOneEnvironment(Set<String> extensions, String environment) {
+        return fileEndsWith(extensions)
+                .and(containsInName(environment))
+                .and(environmentCountIs(c -> c == 1));
     }
 
-    private static boolean endsWith(Set<String> fileExtensions, File file) {
-        return fileExtensions
-                .stream()
-                .anyMatch(ext -> file.getName().endsWith(ext));
+    private static Predicate<File> fileEndsWith(Set<String> extensions) {
+        return file -> extensions.stream().anyMatch(ext -> file.getName().endsWith(ext));
     }
 
-    private static boolean containsEnvPart(File file, String environment, boolean singleEnv) {
-        String fileName = file.getName();
-        int indexOfEnv = fileName.indexOf('.' + environment + '.');
-        if (indexOfEnv < 0) return false;
+    private static Predicate<File> containsInName(String environment) {
+        String envPart = '.' + environment + '.';
+        return file -> file.getName().contains(envPart);
+    }
 
-        long envCount = file.getName()
-                .chars()
-                .filter(c -> c == '.')
-                .count() - 1;
-        return singleEnv == (envCount == 1);
+    private static Predicate<File> environmentCountIs(Predicate<Long> countPredicate) {
+        return file -> {
+            long envCount = file.getName()
+                    .chars()
+                    .filter(c -> c == '.')
+                    .count() - 1;
+            return countPredicate.test(envCount);
+        };
     }
 }

@@ -5,17 +5,17 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 public class ConfigFileFilters {
-    public static Predicate<File> defaultFilter(Set<String> fileExtensions) {
+    public static Predicate<File> defaultConfig(Set<String> fileExtensions) {
         return file -> hasExtension(file, fileExtensions)
                 && file.getName().indexOf('.') == file.getName().lastIndexOf('.');
     }
 
-    public static Predicate<File> envSharedFilter(Set<String> fileExtensions, String environment) {
+    public static Predicate<File> configForMultipleEnvironments(Set<String> fileExtensions, String environment) {
         return file -> hasExtension(file, fileExtensions)
                 && containsEnvPart(file, environment, false);
     }
 
-    public static Predicate<File> envSpecificFilter(Set<String> fileExtensions, String environment) {
+    public static Predicate<File> configForOneEnvironment(Set<String> fileExtensions, String environment) {
         return file -> hasExtension(file, fileExtensions)
                 && containsEnvPart(file, environment, true);
     }
