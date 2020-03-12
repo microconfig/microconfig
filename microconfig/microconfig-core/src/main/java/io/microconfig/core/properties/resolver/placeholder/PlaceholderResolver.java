@@ -97,6 +97,7 @@ public class PlaceholderResolver implements PropertyResolver {
             placeholder = placeholder.changeComponent(sourceOfPlaceholder.getSource().getComponent().getName());
         }
 
+        //todo for selfReference check env
         if (selfReference || canBeOverridden(placeholder, sourceOfPlaceholder)) {
             Optional<Property> resolved = tryResolveForParents(placeholder, root, visited);
             if (resolved.isPresent()) return resolved;
