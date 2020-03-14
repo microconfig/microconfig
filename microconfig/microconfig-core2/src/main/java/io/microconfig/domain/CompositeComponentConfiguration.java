@@ -3,10 +3,10 @@ package io.microconfig.domain;
 import java.util.List;
 import java.util.Optional;
 
-public interface CompositeCompositeConfigs {
-    List<ComponentConfigs> asList();
+public interface CompositeComponentConfiguration {
+    List<ComponentConfiguration> asList();
 
-    CompositeCompositeConfigs resolveBy(Resolver resolver);
+    CompositeComponentConfiguration resolveBy(Resolver resolver);
 
     List<Property> getProperties();
 
