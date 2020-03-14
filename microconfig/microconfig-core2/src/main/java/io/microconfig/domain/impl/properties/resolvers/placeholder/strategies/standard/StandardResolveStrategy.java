@@ -1,4 +1,4 @@
-package io.microconfig.domain.impl.properties.resolvers.placeholder.strategies;
+package io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.standard;
 
 import io.microconfig.domain.Environments;
 import io.microconfig.domain.Property;

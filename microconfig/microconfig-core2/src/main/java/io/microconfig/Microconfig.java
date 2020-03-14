@@ -14,7 +14,7 @@ import io.microconfig.domain.impl.properties.repository.ConfigParserImpl;
 import io.microconfig.domain.impl.properties.repository.FileSystemPropertyRepository;
 import io.microconfig.domain.impl.properties.resolvers.expression.ExpressionResolver;
 import io.microconfig.domain.impl.properties.resolvers.placeholder.PlaceholderResolver;
-import io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.StandardResolveStrategy;
+import io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.standard.StandardResolveStrategy;
 import io.microconfig.io.formats.FileSystemIo;
 import io.microconfig.io.formats.Io;
 import io.microconfig.io.fsgraph.CachedFileSystemGraph;

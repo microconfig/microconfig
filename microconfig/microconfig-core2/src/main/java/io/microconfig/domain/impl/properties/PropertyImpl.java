@@ -49,7 +49,7 @@ public class PropertyImpl implements Property {
         return new PropertyImpl(key, value, envContext, false, source);
     }
 
-    public static Property tempProperty(String key, String value, String envContext, PropertySource source) {
+    public static PropertyImpl tempProperty(String key, String value, String envContext, PropertySource source) {
         return new PropertyImpl(key, value, envContext, true, source);
     }
 
