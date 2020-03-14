@@ -19,7 +19,7 @@ import static io.microconfig.core.properties.Property.asStringMap;
 import static io.microconfig.core.properties.Property.property;
 import static io.microconfig.testutils.MicronconfigTestFactory.getConfigProvider;
 import static io.microconfig.testutils.MicronconfigTestFactory.getPropertyResolver;
-import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
+import static io.microconfig.io.FileUtils.LINES_SEPARATOR;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

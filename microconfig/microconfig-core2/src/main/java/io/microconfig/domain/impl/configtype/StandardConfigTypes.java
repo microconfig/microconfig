@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 
 import static io.microconfig.domain.impl.configtype.ConfigTypeImpl.byName;
 import static io.microconfig.domain.impl.configtype.ConfigTypeImpl.byNameAndExtensions;
-import static io.microconfig.utils.CollectionUtils.setOf;
-import static io.microconfig.utils.StreamUtils.map;
+import static io.microconfig.io.CollectionUtils.setOf;
+import static io.microconfig.io.StreamUtils.map;
 import static java.util.Arrays.asList;
 
 @RequiredArgsConstructor

@@ -1,14 +1,14 @@
 package io.microconfig.domain.impl.properties;
 
 import io.microconfig.domain.*;
-import io.microconfig.service.fsgraph.FileSystemGraph;
+import io.microconfig.io.fsgraph.FileSystemGraph;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 import static io.microconfig.domain.impl.properties.CompositeConfigBuildResult.composite;
-import static io.microconfig.utils.StreamUtils.map;
+import static io.microconfig.io.StreamUtils.map;
 
 @RequiredArgsConstructor
 public class FileBasedComponent implements Component {

@@ -5,7 +5,7 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.File;
 import java.io.IOException;
 
-import static io.microconfig.utils.IoUtils.readFully;
+import static io.microconfig.io.IoUtils.readFully;
 
 public class ClasspathUtils {
     public static File classpathFile(String name) {

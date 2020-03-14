@@ -2,7 +2,7 @@ package io.microconfig.domain.impl.configtype;
 
 import io.microconfig.domain.ConfigType;
 import io.microconfig.domain.ConfigTypes;
-import io.microconfig.service.io.Io;
+import io.microconfig.io.formats.Io;
 import lombok.RequiredArgsConstructor;
 import org.yaml.snakeyaml.Yaml;
 
@@ -15,8 +15,8 @@ import java.util.Set;
 
 import static io.microconfig.domain.impl.configtype.ConfigTypeImpl.byName;
 import static io.microconfig.domain.impl.configtype.ConfigTypeImpl.byNameAndExtensions;
-import static io.microconfig.utils.Logger.announce;
-import static io.microconfig.utils.StreamUtils.map;
+import static io.microconfig.io.Logger.announce;
+import static io.microconfig.io.StreamUtils.map;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 

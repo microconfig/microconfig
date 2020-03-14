@@ -4,15 +4,15 @@ import io.microconfig.domain.Environment;
 import io.microconfig.domain.Environments;
 import io.microconfig.domain.impl.environment.provider.EnvironmentParserImpl;
 import io.microconfig.domain.impl.environment.provider.FileBasedEnvironments;
-import io.microconfig.service.io.FileSystemIo;
-import io.microconfig.service.io.Io;
+import io.microconfig.io.formats.FileSystemIo;
+import io.microconfig.io.formats.Io;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.File;
 
-import static io.microconfig.utils.FileUtils.canonical;
+import static io.microconfig.io.FileUtils.canonical;
 
 @Accessors(fluent = true)
 @RequiredArgsConstructor

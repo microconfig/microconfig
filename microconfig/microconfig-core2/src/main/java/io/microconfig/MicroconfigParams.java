@@ -1,6 +1,6 @@
 package io.microconfig;
 
-import io.microconfig.utils.CommandLineParamParser;
+import io.microconfig.io.CommandLineParamParser;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -19,7 +19,7 @@ public class MicroconfigParams {
     }
 
     public File destinationDir() {
-        return new File(parser.requiredValue("d", "set -d param (folder for config build output)"));
+        return new File(parser.valueOr("d", "build"));
     }
 
     public String env() {

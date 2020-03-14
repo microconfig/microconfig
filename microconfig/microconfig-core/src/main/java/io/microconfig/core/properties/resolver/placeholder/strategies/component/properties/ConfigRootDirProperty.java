@@ -6,7 +6,7 @@ import io.microconfig.core.properties.resolver.placeholder.strategies.component.
 import java.io.File;
 import java.util.Optional;
 
-import static io.microconfig.utils.StringUtils.unixLikePath;
+import static io.microconfig.io.StringUtils.unixLikePath;
 import static java.util.Optional.of;
 
 public class ConfigRootDirProperty implements ComponentProperty {

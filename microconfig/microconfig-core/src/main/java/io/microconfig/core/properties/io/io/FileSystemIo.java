@@ -1,6 +1,6 @@
 package io.microconfig.core.properties.io.io;
 
-import io.microconfig.utils.IoUtils;
+import io.microconfig.io.IoUtils;
 
 import java.io.File;
 import java.io.IOException;

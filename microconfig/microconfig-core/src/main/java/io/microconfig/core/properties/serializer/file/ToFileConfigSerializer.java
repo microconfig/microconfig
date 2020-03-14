@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Optional;
 
-import static io.microconfig.utils.FileUtils.delete;
+import static io.microconfig.io.FileUtils.delete;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 

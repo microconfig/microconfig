@@ -1,7 +1,7 @@
 package io.microconfig.domain.impl.environment.provider;
 
 import io.microconfig.domain.Environment;
-import io.microconfig.service.io.Io;
+import io.microconfig.io.formats.Io;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

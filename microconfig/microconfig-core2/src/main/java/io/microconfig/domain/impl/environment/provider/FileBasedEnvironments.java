@@ -12,9 +12,9 @@ import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static io.microconfig.service.io.ConfigFormat.YAML;
-import static io.microconfig.utils.FileUtils.walk;
-import static io.microconfig.utils.StreamUtils.map;
+import static io.microconfig.io.formats.ConfigFormat.YAML;
+import static io.microconfig.io.FileUtils.walk;
+import static io.microconfig.io.StreamUtils.map;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 

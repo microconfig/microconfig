@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import static io.microconfig.utils.FileUtils.getExtension;
-import static io.microconfig.utils.StreamUtils.filter;
-import static io.microconfig.utils.StreamUtils.map;
+import static io.microconfig.io.FileUtils.getExtension;
+import static io.microconfig.io.StreamUtils.filter;
+import static io.microconfig.io.StreamUtils.map;
 import static java.util.Arrays.asList;
 
 public class ConfigTypeFilters {

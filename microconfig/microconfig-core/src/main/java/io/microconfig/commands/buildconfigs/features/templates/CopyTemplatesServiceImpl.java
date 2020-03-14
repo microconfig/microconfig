@@ -11,9 +11,9 @@ import java.util.Map;
 
 import static io.microconfig.commands.buildconfigs.features.templates.RelativePathResolver.empty;
 import static io.microconfig.commands.buildconfigs.features.templates.TemplatePattern.defaultPattern;
-import static io.microconfig.utils.FileUtils.copyPermissions;
-import static io.microconfig.utils.FileUtils.write;
-import static io.microconfig.utils.Logger.*;
+import static io.microconfig.io.FileUtils.copyPermissions;
+import static io.microconfig.io.FileUtils.write;
+import static io.microconfig.io.Logger.*;
 
 @RequiredArgsConstructor
 public class CopyTemplatesServiceImpl implements CopyTemplatesService {

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static io.microconfig.utils.Logger.info;
+import static io.microconfig.io.Logger.info;
 
 @RequiredArgsConstructor
 public class BuildConfigsCommand implements ConfigCommand {

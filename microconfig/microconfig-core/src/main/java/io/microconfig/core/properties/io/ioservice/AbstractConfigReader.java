@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static io.microconfig.core.properties.Property.isComment;
-import static io.microconfig.utils.StreamUtils.toSortedMap;
+import static io.microconfig.io.StreamUtils.toSortedMap;
 
 @RequiredArgsConstructor
 public abstract class AbstractConfigReader implements ConfigReader {

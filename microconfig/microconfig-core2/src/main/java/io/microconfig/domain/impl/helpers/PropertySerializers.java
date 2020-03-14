@@ -7,10 +7,10 @@ import java.io.File;
 import java.util.List;
 
 import static io.microconfig.domain.impl.properties.PropertyImpl.containsYamlProperties;
-import static io.microconfig.service.io.ConfigFormat.PROPERTIES;
-import static io.microconfig.service.io.ConfigFormat.YAML;
-import static io.microconfig.service.io.factory.ConfigIoServiceFactory.configIoService;
-import static io.microconfig.utils.FileUtils.delete;
+import static io.microconfig.io.formats.ConfigFormat.PROPERTIES;
+import static io.microconfig.io.formats.ConfigFormat.YAML;
+import static io.microconfig.io.formats.factory.ConfigIoServiceFactory.configIoService;
+import static io.microconfig.io.FileUtils.delete;
 
 public class PropertySerializers {
     public static PropertySerializer<File> toFileIn(File dir) {

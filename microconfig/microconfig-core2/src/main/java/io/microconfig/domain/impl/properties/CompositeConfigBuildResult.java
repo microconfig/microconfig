@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-import static io.microconfig.utils.StreamUtils.map;
+import static io.microconfig.io.StreamUtils.map;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
