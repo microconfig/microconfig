@@ -1,6 +1,6 @@
 package io.microconfig;
 
-import lombok.val;
+import lombok.var;
 
 import java.io.File;
 import java.util.List;
@@ -19,7 +19,7 @@ import static io.microconfig.domain.impl.helpers.PropertySerializers.toFileIn;
 //todo update documentation
 public class MicroconfigMain {
     public static void main(String[] args) {
-        MicroconfigParams params = MicroconfigParams.parse(args);
+        var params = MicroconfigParams.parse(args);
 
         File rootDir = params.rootDir();
         File destinationDir = params.destinationDir();
@@ -27,10 +27,10 @@ public class MicroconfigMain {
         List<String> groups = params.groups();
         List<String> services = params.services();
 
-        val microconfig = searchConfigsIn(rootDir);
-        microconfig.inEnvironment(env).findComponentsFrom(groups, services)
+        var configs = searchConfigsIn(rootDir);
+        configs.inEnvironment(env).findComponentsFrom(groups, services)
                 .getPropertiesFor(eachConfigType())
-                .resolveBy(microconfig.resolver())
+                .resolveBy(configs.resolver())
                 .save(toFileIn(destinationDir));
     }
 }
