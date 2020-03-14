@@ -13,7 +13,7 @@ public class YamlConfigIoService implements ConfigIoService {
     private final Io fileReader;
 
     @Override
-    public ConfigReader read(File file) {
+    public ConfigReader readFrom(File file) {
         return new YamlReader(file, fileReader);
     }
 

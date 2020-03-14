@@ -40,6 +40,10 @@ public class PropertyImpl implements Property {
         return line.startsWith("#");
     }
 
+    public static boolean isTempProperty(String value) {
+        return false;
+    }
+
     @Override
     public Property resolveBy(Resolver resolver) {
         return withValue(resolver.resolve(value));
