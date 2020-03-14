@@ -94,7 +94,7 @@ public class PlaceholderResolver implements Resolver {
                     return withDefaultValueIndex(i + 1).parseDefaultValue();
                 }
                 if (c == '}') {
-                    return of(withEndIndex(i));
+                    return of(withEndIndex(i + 1));
                 }
                 if (notAllowedSymbol(c) && c != '/' && c != '\\') {
                     return withStartIndex(i).searchOpenSign();
@@ -119,12 +119,12 @@ public class PlaceholderResolver implements Resolver {
                 if (c == '}') {
                     closeBracketLastIndex = i;
                     if (--openBrackets == 0) {
-                        return of(withEndIndex(closeBracketLastIndex));
+                        return of(withEndIndex(closeBracketLastIndex + 1));
                     }
                 }
             }
 
-            return closeBracketLastIndex < 0 ? empty() : of(withEndIndex(closeBracketLastIndex));
+            return closeBracketLastIndex < 0 ? empty() : of(withEndIndex(closeBracketLastIndex + 1));
         }
 
         private boolean notAllowedSymbol(char c) {
@@ -144,11 +144,11 @@ public class PlaceholderResolver implements Resolver {
         }
 
         private String getValue() {
-            return line.substring(valueIndex, defaultValueIndex < 0 ? endIndex : defaultValueIndex - 1);
+            return line.substring(valueIndex, defaultValueIndex < 0 ? endIndex - 1 : defaultValueIndex - 1);
         }
 
         private Optional<String> getDefaultValue() {
-            return ofNullable(defaultValueIndex < 0 ? null : line.substring(defaultValueIndex, endIndex));
+            return ofNullable(defaultValueIndex < 0 ? null : line.substring(defaultValueIndex, endIndex - 1));
         }
 
         public Placeholder toPlaceholder(String contextEnv) {
