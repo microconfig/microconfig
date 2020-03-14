@@ -50,24 +50,28 @@ public class Microconfig {
     public StatementResolver resolver() {
         return chainOf(
                 placeholderResolver(),
-                new ExpressionResolver()
+                expressionResolver()
         );
     }
 
-    private PlaceholderResolver placeholderResolver() {
+    private StatementResolver placeholderResolver() {
         return new PlaceholderResolver(
                 new StandardResolveStrategy(environments())
         );
     }
 
+    private StatementResolver expressionResolver() {
+        return new ExpressionResolver();
+    }
+
     private Environments environments() {
         return new FileBasedEnvironments(
                 rootDir,
-                new EnvironmentParserImpl(io, fileSystemComponentFactory())
+                new EnvironmentParserImpl(io, fsComponentFactory())
         );
     }
 
-    private ComponentFactory fileSystemComponentFactory() {
+    private ComponentFactory fsComponentFactory() {
         return new ComponentFactoryImpl(
                 configTypes(),
                 fsPropertyRepository()
