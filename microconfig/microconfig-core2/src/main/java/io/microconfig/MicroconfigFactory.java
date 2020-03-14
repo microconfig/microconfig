@@ -29,7 +29,7 @@ public class MicroconfigFactory {
     }
 
     public Environment inEnvironment(String name) {
-        return environments().get(name);
+        return environments().withName(name);
     }
 
     private Environments environments() {

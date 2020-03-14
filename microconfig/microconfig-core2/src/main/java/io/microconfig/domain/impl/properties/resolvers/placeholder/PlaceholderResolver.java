@@ -9,7 +9,8 @@ import java.util.Optional;
 
 import static java.lang.Character.isLetterOrDigit;
 import static java.lang.Math.max;
-import static java.util.Optional.*;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.function.Function.identity;
 import static lombok.AccessLevel.PRIVATE;
 
@@ -131,8 +132,8 @@ public class PlaceholderResolver implements Resolver {
             return !isLetterOrDigit(c) && c != '.' && c != '_' && c != '-';
         }
 
-        private Optional<String> getConfigType() {
-            return ofNullable(configTypeEndIndex < 0 ? null : line.substring(startIndex + 2, configTypeEndIndex + 1));
+        private String getConfigType() {
+            return configTypeEndIndex < 0 ? null : line.substring(startIndex + 2, configTypeEndIndex + 1);
         }
 
         private String getComponent() {
@@ -147,8 +148,8 @@ public class PlaceholderResolver implements Resolver {
             return line.substring(valueIndex, defaultValueIndex < 0 ? endIndex - 1 : defaultValueIndex - 1);
         }
 
-        private Optional<String> getDefaultValue() {
-            return ofNullable(defaultValueIndex < 0 ? null : line.substring(defaultValueIndex, endIndex - 1));
+        private String getDefaultValue() {
+            return defaultValueIndex < 0 ? null : line.substring(defaultValueIndex, endIndex - 1);
         }
 
         public Placeholder toPlaceholder(String contextEnv) {
@@ -165,7 +166,7 @@ public class PlaceholderResolver implements Resolver {
 
         @Override
         public String resolve() {
-            return toPlaceholder("dev").resolve();
+            return toPlaceholder("dev").resolve(null);
         }
     }
 }

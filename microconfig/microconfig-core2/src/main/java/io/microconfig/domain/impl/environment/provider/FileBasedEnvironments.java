@@ -33,36 +33,36 @@ public class FileBasedEnvironments implements Environments {
 
     @Override
     public List<Environment> all() {
-        return map(envFiles(withYamlExtension()), f -> parser.parse(getEnvName(f), f));
+        return map(envFiles(withYamlExtension()), f -> parser.parse(envName(f), f));
     }
 
     @Override
     public Set<String> environmentNames() {
         return envFiles(withYamlExtension())
                 .stream()
-                .map(this::getEnvName)
+                .map(this::envName)
                 .collect(toCollection(TreeSet::new));
     }
 
     @Override
-    public Environment get(String name) {
+    public Environment withName(String name) {
         return parser.parse(name, envFile(name));
 //                .processInclude(this)
 //                .verifyUniqueComponentNames();
     }
 
     @Override
-    public Environment getOrCreate(String name) {
-        return get(name);
+    public Environment getOrCreateWithName(String name) {
+        return withName(name);
     }
 
-    private String getEnvName(File file) {
+    private String envName(File file) {
         String name = file.getName();
         return name.substring(0, name.lastIndexOf('.'));
     }
 
     private File envFile(String name) {
-        List<File> files = envFiles(withName(name));
+        List<File> files = envFiles(withFileName(name));
 
         if (files.size() > 1) {
             throw new IllegalArgumentException("Found several env files with name " + name);
@@ -82,7 +82,7 @@ public class FileBasedEnvironments implements Environments {
         }
     }
 
-    private Predicate<File> withName(String envName) {
+    private Predicate<File> withFileName(String envName) {
         return f -> f.getName().equals(envName + YAML.extension());
     }
 

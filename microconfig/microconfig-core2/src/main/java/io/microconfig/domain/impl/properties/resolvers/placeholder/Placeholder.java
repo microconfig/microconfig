@@ -27,10 +27,10 @@ public class Placeholder {
     private final String defaultValue;
 
     public String resolve(Environments environments) {
-        return environments.getOrCreate(environment)
-                .getComponentWithName(component, false)
+        return environments.getOrCreateWithName(environment)
+                .findComponentWithName(component, false)
                 .getPropertiesFor(configTypeWithName(configType))
-                .getProperty(value)
+                .getPropertyWithKey(value)
                 .map(Property::getValue)
                 .orElse(defaultValue);
     }

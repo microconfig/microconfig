@@ -27,17 +27,17 @@ public class EnvironmentImpl implements Environment {
     private final List<ComponentGroup> componentGroups;
 
     @Override
-    public List<ComponentGroup> getGroupsWithIp(String ip) {
+    public List<ComponentGroup> findGroupsWithIp(String ip) {
         return filter(componentGroups, g -> g.getIp().filter(ip::equals).isPresent());
     }
 
     @Override
-    public ComponentGroup getGroupWithName(String groupName) {
+    public ComponentGroup findGroupWithName(String groupName) {
         return filterGroup(g -> g.getName().equals(groupName), () -> "group name=" + groupName);
     }
 
     @Override
-    public ComponentGroup getGroupWithComponent(String componentName) {
+    public ComponentGroup findGroupWithComponent(String componentName) {
         return filterGroup(g -> g.containsComponent(componentName), () -> "component name=" + componentName);
     }
 
@@ -52,7 +52,7 @@ public class EnvironmentImpl implements Environment {
     }
 
     @Override
-    public Component getComponentWithName(String componentName, boolean mustBeDeclaredInEnvDescriptor) {
+    public Component findComponentWithName(String componentName, boolean mustBeDeclaredInEnvDescriptor) {
         return componentGroups.stream()
                 .filter(g -> g.containsComponent(componentName))
                 .map(g -> g.getComponentWithName(componentName))
@@ -66,7 +66,7 @@ public class EnvironmentImpl implements Environment {
             if (groups.isEmpty()) return getAllComponents().asList();
 
             return groups.stream()
-                    .map(this::getGroupWithName)
+                    .map(this::findGroupWithName)
                     .flatMap(g -> g.getComponents().asList().stream())
                     .collect(toList());
         };

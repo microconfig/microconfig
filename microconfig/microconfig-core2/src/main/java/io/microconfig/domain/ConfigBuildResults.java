@@ -11,7 +11,7 @@ public interface ConfigBuildResults {
 
     List<Property> getProperties();
 
-    Optional<Property> getProperty(String key);
+    Optional<Property> getPropertyWithKey(String key);
 
     ConfigBuildResults forEachProperty(UnaryOperator<Property> operator);
 

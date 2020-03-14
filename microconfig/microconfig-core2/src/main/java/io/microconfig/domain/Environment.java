@@ -5,15 +5,15 @@ import java.util.List;
 public interface Environment {
     String getName();
 
-    List<ComponentGroup> getGroupsWithIp(String ip);
+    List<ComponentGroup> findGroupsWithIp(String ip);
 
-    ComponentGroup getGroupWithName(String groupName);
+    ComponentGroup findGroupWithName(String groupName);
 
-    ComponentGroup getGroupWithComponent(String componentName);
+    ComponentGroup findGroupWithComponent(String componentName);
 
-    Components getAllComponents();
-
-    Component getComponentWithName(String componentName, boolean mustBeDeclaredInEnvDescriptor);
+    Component findComponentWithName(String componentName, boolean mustBeDeclaredInEnvDescriptor);
 
     Components findComponentsFrom(List<String> groups, List<String> components);
+
+    Components getAllComponents();
 }

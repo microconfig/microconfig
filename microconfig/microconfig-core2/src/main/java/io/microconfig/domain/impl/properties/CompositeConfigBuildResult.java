@@ -38,7 +38,7 @@ public class CompositeConfigBuildResult implements ConfigBuildResults {
     }
 
     @Override
-    public Optional<Property> getProperty(String key) {
+    public Optional<Property> getPropertyWithKey(String key) {
         return results.stream()
                 .map(r -> r.getProperty(key))
                 .filter(Optional::isPresent)

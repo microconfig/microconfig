@@ -9,7 +9,7 @@ public interface Environments {
 
     Set<String> environmentNames();
 
-    Environment get(String name);
+    Environment withName(String name);
 
-    Environment getOrCreate(String name);
+    Environment getOrCreateWithName(String name);
 }
