@@ -6,23 +6,23 @@ import lombok.RequiredArgsConstructor;
 import java.util.function.UnaryOperator;
 
 @RequiredArgsConstructor
-public class ResolvedComponent implements Component {
-    private final Component original;
+public class ResolvableComponent implements Component {
+    private final Component component;
     private final Resolver resolver;
 
     @Override
     public String getName() {
-        return original.getName();
+        return component.getName();
     }
 
     @Override
     public String getEnvironment() {
-        return original.getEnvironment();
+        return component.getEnvironment();
     }
 
     @Override
     public ConfigBuildResults buildPropertiesFor(ConfigTypeFilter configTypes) {
-        return original.buildPropertiesFor(configTypes).forEachProperty(resolve());
+        return component.buildPropertiesFor(configTypes).forEachProperty(resolve());
     }
 
     private UnaryOperator<Property> resolve() {

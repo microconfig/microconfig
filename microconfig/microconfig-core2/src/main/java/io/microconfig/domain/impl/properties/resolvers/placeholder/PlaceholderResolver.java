@@ -15,8 +15,8 @@ import static lombok.AccessLevel.PRIVATE;
 
 public class PlaceholderResolver implements Resolver {
     @Override
-    public Optional<Statement> findStatementIn(CharSequence value) {
-        return PlaceholderBorders.findPlaceholderIn(value).map(identity());
+    public Optional<Statement> findStatementIn(CharSequence line) {
+        return PlaceholderBorders.findPlaceholderIn(line).map(identity());
     }
 
     @With(PRIVATE)

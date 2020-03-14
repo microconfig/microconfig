@@ -16,8 +16,8 @@ public class ExpressionResolver implements Resolver {
     private static final Pattern PATTERN = compile("#\\{(?<value>[^{]+?)}");
 
     @Override
-    public Optional<Statement> findStatementIn(CharSequence value) {
-        Matcher matcher = PATTERN.matcher(value);
+    public Optional<Statement> findStatementIn(CharSequence line) {
+        Matcher matcher = PATTERN.matcher(line);
         return matcher.find() ?
                 of(new Expression(matcher.group("value"), matcher.start(), matcher.end())) :
                 empty();
