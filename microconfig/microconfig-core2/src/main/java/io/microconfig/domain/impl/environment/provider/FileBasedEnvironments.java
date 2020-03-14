@@ -3,18 +3,24 @@ package io.microconfig.domain.impl.environment.provider;
 
 import io.microconfig.domain.Environment;
 import io.microconfig.domain.Environments;
+import io.microconfig.domain.impl.environment.EnvironmentImpl;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static io.microconfig.io.FileUtils.walk;
 import static io.microconfig.io.StreamUtils.map;
 import static io.microconfig.io.formats.ConfigFormat.YAML;
+import static java.util.Collections.emptyList;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
@@ -46,31 +52,33 @@ public class FileBasedEnvironments implements Environments {
 
     @Override
     public Environment withName(String name) {
-        return parser.parse(name, envFile(name));
-//                .processInclude(this)
-//                .verifyUniqueComponentNames();
+        return findEnv(name).orElseThrow(() -> {
+            throw new EnvironmentDoesNotExistException("Can't find env with name " + name);
+        });
     }
 
     @Override
     public Environment getOrCreateWithName(String name) {
-        return withName(name);
+        return findEnv(name).orElseGet(fakeEnvWithName(name));
     }
 
-    private String envName(File file) {
-        String name = file.getName();
-        return name.substring(0, name.lastIndexOf('.'));
+    private Optional<Environment> findEnv(String name) {
+        return envFile(name)
+                .map(envFile -> parser.parse(name, envFile));
+        //                .processInclude(this)
+//                .verifyUniqueComponentNames();
     }
 
-    private File envFile(String name) {
+    private Supplier<Environment> fakeEnvWithName(String name) {
+        return () -> new EnvironmentImpl(name, emptyList());
+    }
+
+    private Optional<File> envFile(String name) {
         List<File> files = envFiles(withFileName(name));
-
         if (files.size() > 1) {
             throw new IllegalArgumentException("Found several env files with name " + name);
         }
-        if (files.isEmpty()) {
-            throw new EnvironmentDoesNotExistException("Can't find env with name " + name);
-        }
-        return files.get(0);
+        return files.isEmpty() ? empty() : of(files.get(0));
     }
 
     private List<File> envFiles(Predicate<File> predicate) {
@@ -88,5 +96,10 @@ public class FileBasedEnvironments implements Environments {
 
     private Predicate<File> withYamlExtension() {
         return f -> f.getName().endsWith(YAML.extension());
+    }
+
+    private String envName(File file) {
+        String name = file.getName();
+        return name.substring(0, name.lastIndexOf('.'));
     }
 }

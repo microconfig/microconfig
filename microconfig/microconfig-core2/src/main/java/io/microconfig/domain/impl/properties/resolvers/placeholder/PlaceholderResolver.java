@@ -1,5 +1,6 @@
 package io.microconfig.domain.impl.properties.resolvers.placeholder;
 
+import io.microconfig.domain.Environments;
 import io.microconfig.domain.Resolver;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,15 +15,19 @@ import static java.util.Optional.of;
 import static java.util.function.Function.identity;
 import static lombok.AccessLevel.PRIVATE;
 
+@RequiredArgsConstructor
 public class PlaceholderResolver implements Resolver {
+    private final Environments environments;
+
     @Override
     public Optional<Statement> findStatementIn(CharSequence line) {
-        return PlaceholderBorders.findPlaceholderIn(line);
+        StringBuilder sb = line instanceof StringBuilder ? (StringBuilder) line : new StringBuilder(line);
+        return new PlaceholderBorders(sb).searchOpenSign().map(identity());
     }
 
     @With(PRIVATE)
     @RequiredArgsConstructor
-     static class PlaceholderBorders implements Statement {
+    private class PlaceholderBorders implements Statement {
         private final StringBuilder line;
 
         @Getter
@@ -33,11 +38,6 @@ public class PlaceholderResolver implements Resolver {
         private final int defaultValueIndex;
         @Getter
         private final int endIndex;
-
-        static Optional<Statement> findPlaceholderIn(CharSequence sequence) {
-            StringBuilder line = sequence instanceof StringBuilder ? (StringBuilder) sequence : new StringBuilder(sequence);
-            return new PlaceholderBorders(line).searchOpenSign().map(identity());
-        }
 
         private PlaceholderBorders(StringBuilder line) {
             this(line, -1, -1, -1, -1, -1, -1);
@@ -132,8 +132,8 @@ public class PlaceholderResolver implements Resolver {
             return !isLetterOrDigit(c) && c != '.' && c != '_' && c != '-';
         }
 
-        private String getConfigType() {
-            return configTypeEndIndex < 0 ? null : line.substring(startIndex + 2, configTypeEndIndex + 1);
+        private String getConfigType(String contextConfigType) {
+            return configTypeEndIndex < 0 ? contextConfigType : line.substring(startIndex + 2, configTypeEndIndex + 1);
         }
 
         private String getComponent() {
@@ -152,9 +152,9 @@ public class PlaceholderResolver implements Resolver {
             return defaultValueIndex < 0 ? null : line.substring(defaultValueIndex, endIndex - 1);
         }
 
-        public Placeholder toPlaceholder(String contextEnv) {
+        public Placeholder toPlaceholder(String contextConfigType, String contextEnv) {
             return new Placeholder(
-                    getConfigType(),
+                    getConfigType(contextConfigType),
                     getComponent(),
                     getEnvironment(contextEnv),
                     getValue(),
@@ -164,7 +164,7 @@ public class PlaceholderResolver implements Resolver {
 
         @Override
         public String resolve() {
-            return toPlaceholder("dev").resolve(null);
+            return toPlaceholder("app", "dev").resolve(environments);
         }
     }
 }
