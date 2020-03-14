@@ -4,6 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.function.Supplier;
+
 import static lombok.AccessLevel.PACKAGE;
 
 @Getter
@@ -17,6 +19,17 @@ public class Placeholder {
     private final String environment;
     private final String value;
     private final String defaultValue;
+
+    public String resolveUsing(PlaceholderResolveStrategy strategy) {
+        return null;
+    }
+
+    Supplier<String> defaultValue() {
+        return ()-> {
+            if (defaultValue != null) return defaultValue;
+            throw new PropertyResolveException("can't resolve " + toString());
+        };
+    }
 
     @Override
     public String toString() {
