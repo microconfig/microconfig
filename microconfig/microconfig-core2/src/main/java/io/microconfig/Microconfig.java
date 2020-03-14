@@ -31,17 +31,17 @@ import static io.microconfig.io.formats.factory.ConfigIoServiceFactory.configIoS
 
 @Accessors(fluent = true)
 @RequiredArgsConstructor
-public class MicroconfigFactory {
+public class Microconfig {
     private final File rootDir;
     @Setter
     private Io io = new FileSystemIo();
 
-    public static MicroconfigFactory searchConfigsIn(File rootDir) {
+    public static Microconfig searchConfigsIn(File rootDir) {
         File canonical = canonical(rootDir);
         if (!canonical.exists()) {
             throw new IllegalArgumentException("Root directory doesn't exist: " + rootDir);
         }
-        return new MicroconfigFactory(canonical);
+        return new Microconfig(canonical);
     }
 
     public Environment inEnvironment(String name) {

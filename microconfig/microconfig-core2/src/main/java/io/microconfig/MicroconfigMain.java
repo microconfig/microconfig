@@ -5,7 +5,7 @@ import lombok.val;
 import java.io.File;
 import java.util.List;
 
-import static io.microconfig.MicroconfigFactory.searchConfigsIn;
+import static io.microconfig.Microconfig.searchConfigsIn;
 import static io.microconfig.domain.impl.helpers.ConfigTypeFilters.eachConfigType;
 import static io.microconfig.domain.impl.helpers.PropertySerializers.toFileIn;
 
@@ -27,10 +27,10 @@ public class MicroconfigMain {
         List<String> groups = params.groups();
         List<String> services = params.services();
 
-        val configs = searchConfigsIn(rootDir);
-        configs.inEnvironment(env).findComponentsFrom(groups, services)
+        val microconfig = searchConfigsIn(rootDir);
+        microconfig.inEnvironment(env).findComponentsFrom(groups, services)
                 .getPropertiesFor(eachConfigType())
-                .resolveBy(configs.resolver())
+                .resolveBy(microconfig.resolver())
                 .save(toFileIn(destinationDir));
     }
 }

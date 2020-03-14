@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PropertyImplTest {
     @Test
     void testResolve() {
-        Property original = property("key", "I'm #{#{1 + 2} * #{10 - 4}}!");
+        Property original = property("key", "I'm #{#{1 + 2} * #{10 - 4}}!", "dev", null);
         Property resolved = original.resolveBy(new ExpressionResolver());
         assertEquals("I'm 18!", resolved.getValue());
     }
