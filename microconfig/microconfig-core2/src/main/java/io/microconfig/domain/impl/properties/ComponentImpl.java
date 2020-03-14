@@ -5,14 +5,16 @@ import io.microconfig.io.fsgraph.FileSystemGraph;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 
-import static io.microconfig.domain.impl.properties.CompositeConfigBuildResult.composite;
-import static io.microconfig.io.StreamUtils.map;
+import static io.microconfig.domain.impl.properties.ConfigBuildResultsImpl.resultsOf;
+import static io.microconfig.io.StreamUtils.toList;
 
 @RequiredArgsConstructor
-public class FileBasedComponent implements Component {
+public class ComponentImpl implements Component {
     private final ConfigTypes types;
+    private final Resolver resolver;
     private final FileSystemGraph fsGraph;
 
     @Getter
@@ -23,12 +25,14 @@ public class FileBasedComponent implements Component {
     @Override
     public ConfigBuildResults getPropertiesFor(ConfigTypeFilter filter) {
         List<ConfigType> filteredTypes = filter.selectTypes(types.getTypes());
-        return composite(
-                map(filteredTypes, type -> new ConfigBuildResultImpl(name, environment, type, readPropertiesWith(type)))
-        );
+        return resultsOf(toList(filteredTypes, this::readConfigs));
+    }
+
+    private ConfigBuildResult readConfigs(ConfigType type) {
+        return new ConfigBuildResultImpl(name, environment, type, resolver, readPropertiesWith(type));
     }
 
     private List<Property> readPropertiesWith(ConfigType type) {
-        return null;
+        return Collections.emptyList();
     }
 }

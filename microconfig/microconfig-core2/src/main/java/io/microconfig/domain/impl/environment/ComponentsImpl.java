@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static io.microconfig.domain.impl.properties.CompositeConfigBuildResult.composite;
+import static io.microconfig.domain.impl.properties.ConfigBuildResultsImpl.resultsOf;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
@@ -22,7 +22,7 @@ public class ComponentsImpl implements Components {
 
     @Override
     public ConfigBuildResults buildPropertiesFor(ConfigTypeFilter filter) {
-        return composite(
+        return resultsOf(
                 components.stream()
                         .map(c -> c.getPropertiesFor(filter))
                         .map(ConfigBuildResults::asList)

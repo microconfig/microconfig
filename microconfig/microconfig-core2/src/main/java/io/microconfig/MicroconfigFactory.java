@@ -63,7 +63,7 @@ public class MicroconfigFactory {
         return new ComponentFactoryImpl(
                 configTypes(),
                 fsGraph(),
-                getResolver()
+                null
 
         );
     }

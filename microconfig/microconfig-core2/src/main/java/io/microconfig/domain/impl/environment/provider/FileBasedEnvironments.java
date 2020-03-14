@@ -3,6 +3,7 @@ package io.microconfig.domain.impl.environment.provider;
 
 import io.microconfig.domain.Environment;
 import io.microconfig.domain.Environments;
+import io.microconfig.io.StreamUtils;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -15,7 +16,6 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static io.microconfig.io.FileUtils.walk;
-import static io.microconfig.io.StreamUtils.map;
 import static io.microconfig.io.formats.ConfigFormat.YAML;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -23,11 +23,13 @@ import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
 public class FileBasedEnvironments implements Environments {
+    private static final String ENV_DIR = "envs";
+
     private final File envDir;
     private final EnvironmentParser parser;
 
     public FileBasedEnvironments(File rootDir, EnvironmentParser parser) {
-        this.envDir = new File(rootDir, "env");
+        this.envDir = new File(rootDir, ENV_DIR);
         this.parser = parser;
 
         if (!rootDir.exists()) {
@@ -37,7 +39,7 @@ public class FileBasedEnvironments implements Environments {
 
     @Override
     public List<Environment> all() {
-        return map(envFiles(withYamlExtension()), f -> parser.parse(envName(f), f));
+        return StreamUtils.toList(envFiles(withYamlExtension()), f -> parser.parse(envName(f), f));
     }
 
     @Override
@@ -51,7 +53,7 @@ public class FileBasedEnvironments implements Environments {
     @Override
     public Environment withName(String name) {
         return findEnv(name).orElseThrow(() -> {
-            throw new EnvironmentDoesNotExistException("Can't find env with name " + name);
+            throw new EnvironmentDoesNotExistException("Can't find env with name '" + name + "'");
         });
     }
 

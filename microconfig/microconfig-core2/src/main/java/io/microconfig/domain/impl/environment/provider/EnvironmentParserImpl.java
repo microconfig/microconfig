@@ -27,7 +27,8 @@ public class EnvironmentParserImpl implements EnvironmentParser {
     public Environment parse(String name, File file) {
         try {
 //            return doParse(name, new Yaml().load(io.read(file)));
-            return null;
+            return fakeEnvWithName(name);
+//            return null;
         } catch (RuntimeException e) {
             throw new IllegalArgumentException("Can't parse '" + name + "' env", e);
         }

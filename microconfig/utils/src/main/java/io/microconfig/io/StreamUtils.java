@@ -8,26 +8,25 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
-import static java.util.stream.Collectors.toList;
 
 public class StreamUtils {
-    public static <K, V> List<V> map(Collection<K> collection, Function<? super K, ? extends V> function) {
+    public static <K, V> List<V> toList(Collection<K> collection, Function<? super K, ? extends V> function) {
         return collection.stream()
                 .map(function)
-                .collect(toList());
+                .collect(Collectors.toList());
     }
 
     public static <K, V> List<V> flatMap(Collection<K> collection,
                                          Function<? super K, ? extends Collection<? extends V>> function) {
         return collection.stream()
                 .flatMap(k -> function.apply(k).stream())
-                .collect(toList());
+                .collect(Collectors.toList());
     }
 
     public static <T> List<T> filter(Collection<T> collection, Predicate<? super T> predicate) {
         return collection.stream()
                 .filter(predicate)
-                .collect(toList());
+                .collect(Collectors.toList());
     }
 
     public static <T, K, U> Collector<T, ?, Map<K, U>> toLinkedMap(Function<? super T, ? extends K> keyMapper,

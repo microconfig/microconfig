@@ -4,6 +4,7 @@ import io.microconfig.domain.Component;
 import io.microconfig.domain.ComponentGroup;
 import io.microconfig.domain.Components;
 import io.microconfig.domain.Environment;
+import io.microconfig.io.StreamUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -15,7 +16,6 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import static io.microconfig.io.StreamUtils.filter;
-import static io.microconfig.io.StreamUtils.map;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
@@ -61,7 +61,7 @@ public class EnvironmentImpl implements Environment {
                 .findFirst();
 
         if (component.isPresent()) return component.get();
-        if (mustBeDeclaredInEnvDescriptor) return createComponentWithName(componentName);
+        if (!mustBeDeclaredInEnvDescriptor) return createComponentWithName(componentName);
         throw new IllegalArgumentException(exceptionMessageForComponent(componentName));
     }
 
@@ -85,15 +85,15 @@ public class EnvironmentImpl implements Environment {
 
             Map<String, Component> componentByName = componentFromGroups.stream()
                     .collect(toMap(Component::getName, identity()));
-            return map(components, name -> requireNonNull(componentByName.get(name), () -> exceptionMessageForComponent(name)));
+            return StreamUtils.toList(components, name -> requireNonNull(componentByName.get(name), () -> exceptionMessageForComponent(name)));
         };
 
         List<Component> componentFromGroups = componentsFromGroups.get();
         return new ComponentsImpl(filterByComponents.apply(componentFromGroups));
     }
 
-    private String exceptionMessageForComponent(String name) {
-        return "Component '" + name + "' is not configured for " + name + " env";
+    private String exceptionMessageForComponent(String component) {
+        return "Component '" + component + "' is not configured for env '" + name + "'";
     }
 
     private ComponentGroup filterGroup(Predicate<ComponentGroup> predicate, Supplier<String> filter) {
