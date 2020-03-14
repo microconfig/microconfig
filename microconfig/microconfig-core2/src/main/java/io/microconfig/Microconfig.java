@@ -27,7 +27,7 @@ import java.io.File;
 import static io.microconfig.domain.impl.configtype.CompositeConfigTypes.composite;
 import static io.microconfig.domain.impl.properties.resolvers.chain.ChainedResolver.chainOf;
 import static io.microconfig.io.FileUtils.canonical;
-import static io.microconfig.io.formats.factory.ConfigIoServiceFactory.configIoService;
+import static io.microconfig.io.formats.factory.ConfigIoServiceFactory.newConfigIoService;
 
 @Accessors(fluent = true)
 @RequiredArgsConstructor
@@ -72,7 +72,7 @@ public class Microconfig {
     private FileSystemPropertyRepository fsPropertyRepository() {
         return new FileSystemPropertyRepository(
                 fsGraph(),
-                new ComponentParserImpl(configIoService())
+                new ComponentParserImpl(newConfigIoService(io))
         );
     }
 

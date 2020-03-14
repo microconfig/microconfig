@@ -11,10 +11,10 @@ import io.microconfig.io.formats.yaml.YamlConfigIoService;
 import static io.microconfig.io.CacheProxy.cache;
 
 public class ConfigIoServiceFactory {
-    private static final ConfigIoService CONFIG_IO_SERVICE = newConfigIoService(new FileSystemIo());
+    private static final ConfigIoService configIo = newConfigIoService(new FileSystemIo());
 
-    public static ConfigIoService configIoService() {
-        return CONFIG_IO_SERVICE;
+    public static ConfigIoService configIo() {
+        return configIo;
     }
 
     public static ConfigIoService newConfigIoService(Io io) {

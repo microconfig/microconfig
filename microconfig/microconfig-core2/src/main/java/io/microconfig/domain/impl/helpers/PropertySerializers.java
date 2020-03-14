@@ -10,7 +10,7 @@ import static io.microconfig.domain.impl.properties.PropertyImpl.containsYamlPro
 import static io.microconfig.io.FileUtils.delete;
 import static io.microconfig.io.formats.ConfigFormat.PROPERTIES;
 import static io.microconfig.io.formats.ConfigFormat.YAML;
-import static io.microconfig.io.formats.factory.ConfigIoServiceFactory.configIoService;
+import static io.microconfig.io.formats.factory.ConfigIoServiceFactory.configIo;
 
 public class PropertySerializers {
     public static PropertySerializer<File> toFileIn(File dir) {
@@ -20,14 +20,14 @@ public class PropertySerializers {
             delete(resultFile);
 
             if (!properties.isEmpty()) {
-                configIoService().writeTo(resultFile).write(properties);
+                configIo().writeTo(resultFile).write(properties);
             }
             return resultFile;
         };
     }
 
     public static PropertySerializer<String> asString() {
-        return (properties, _2, _3, _4) -> configIoService()
+        return (properties, _2, _3, _4) -> configIo()
                 .writeTo(new File(extensionByContent(properties)))
                 .serialize(properties);
     }
