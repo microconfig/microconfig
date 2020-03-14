@@ -9,7 +9,8 @@ import java.util.List;
 
 import static io.microconfig.ClasspathUtils.classpathFile;
 import static io.microconfig.Microconfig.searchConfigsIn;
-import static io.microconfig.domain.impl.helpers.ConfigTypeFilters.configTypeWithName;
+import static io.microconfig.domain.impl.configtype.StandardConfigType.APPLICATION;
+import static io.microconfig.domain.impl.helpers.ConfigTypeFilters.configType;
 
 class PlaceholderTest {
     @Test
@@ -18,8 +19,8 @@ class PlaceholderTest {
 
         List<Property> properties = microconfig
                 .inEnvironment("placeholderAsDefaultValue")
-                .findComponentWithName("var", false)
-                .getPropertiesFor(configTypeWithName("app"))
+                .findComponentWithName("simple", false)
+                .getPropertiesFor(configType(APPLICATION))
                 .resolveBy(microconfig.resolver())
                 .getProperties();
         System.out.println(properties);

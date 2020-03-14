@@ -2,12 +2,14 @@ package io.microconfig.domain.impl.helpers;
 
 import io.microconfig.domain.ConfigType;
 import io.microconfig.domain.ConfigTypeFilter;
+import io.microconfig.domain.impl.configtype.StandardConfigType;
 
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static io.microconfig.io.FileUtils.getExtension;
 import static io.microconfig.io.StreamUtils.filter;
@@ -21,7 +23,16 @@ public class ConfigTypeFilters {
 
     public static ConfigTypeFilter configTypeWithName(String... name) {
         Set<String> types = new HashSet<>(asList(name));
-        return filerTypes(type -> types.contains(type.getType()), types);
+        return filerTypes(type -> types.contains(type.getType()), types); //todo throw exception if type is not supported
+    }
+
+    public static ConfigTypeFilter configType(StandardConfigType... standard) {
+        return configTypeWithName(
+                Stream.of(standard)
+                        .map(StandardConfigType::getType)
+                        .map(ConfigType::getType)
+                        .toArray(String[]::new)
+        );
     }
 
     public static ConfigTypeFilter configTypeFromExtensionOf(File file) {

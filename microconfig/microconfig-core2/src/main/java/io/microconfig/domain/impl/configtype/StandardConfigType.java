@@ -12,7 +12,7 @@ import static io.microconfig.io.StreamUtils.forEach;
 import static java.util.Arrays.asList;
 
 @RequiredArgsConstructor
-public enum StandardConfigTypes {
+public enum StandardConfigType {
     APPLICATION(byNameAndExtensions("app", setOf(".properties", ".yaml"), "application")),
     PROCESS(byNameAndExtensions("process", setOf(".process", ".proc"), "process")),
     DEPLOY(byName("deploy")),
@@ -23,6 +23,6 @@ public enum StandardConfigTypes {
     private final ConfigType type;
 
     public static ConfigTypes asTypes() {
-        return () -> forEach(asList(StandardConfigTypes.values()), StandardConfigTypes::getType);
+        return () -> forEach(asList(StandardConfigType.values()), StandardConfigType::getType);
     }
 }

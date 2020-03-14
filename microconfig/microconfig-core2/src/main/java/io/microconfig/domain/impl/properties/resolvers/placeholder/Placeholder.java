@@ -20,7 +20,9 @@ public class Placeholder {
     private final String defaultValue;
 
     public String resolveUsing(PlaceholderResolveStrategy strategy) {
-        return strategy.resolve(this).map(Property::getValue).orElseThrow(IllegalStateException::new);
+        return strategy.resolve(this)
+                .map(Property::getValue)
+                .orElseThrow(IllegalStateException::new);
     }
 
     @Override

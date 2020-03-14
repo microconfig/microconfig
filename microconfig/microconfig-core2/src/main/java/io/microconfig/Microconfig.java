@@ -4,7 +4,7 @@ import io.microconfig.domain.ConfigTypes;
 import io.microconfig.domain.Environment;
 import io.microconfig.domain.Environments;
 import io.microconfig.domain.Resolver;
-import io.microconfig.domain.impl.configtype.StandardConfigTypes;
+import io.microconfig.domain.impl.configtype.StandardConfigType;
 import io.microconfig.domain.impl.configtype.YamlDescriptorConfigTypes;
 import io.microconfig.domain.impl.environment.ComponentFactory;
 import io.microconfig.domain.impl.environment.provider.ComponentFactoryImpl;
@@ -86,7 +86,7 @@ public class Microconfig {
     private ConfigTypes configTypes() {
         return composite(
                 new YamlDescriptorConfigTypes(rootDir, io),
-                StandardConfigTypes.asTypes()
+                StandardConfigType.asTypes()
         );
     }
 
