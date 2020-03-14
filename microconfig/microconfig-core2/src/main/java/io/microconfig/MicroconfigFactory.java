@@ -10,6 +10,7 @@ import io.microconfig.domain.impl.environment.ComponentFactory;
 import io.microconfig.domain.impl.environment.provider.ComponentFactoryImpl;
 import io.microconfig.domain.impl.environment.provider.EnvironmentParserImpl;
 import io.microconfig.domain.impl.environment.provider.FileBasedEnvironments;
+import io.microconfig.domain.impl.properties.repository.ComponentParserImpl;
 import io.microconfig.domain.impl.properties.repository.FileSystemPropertyRepository;
 import io.microconfig.domain.impl.properties.resolvers.expression.ExpressionResolver;
 import io.microconfig.domain.impl.properties.resolvers.placeholder.PlaceholderResolver;
@@ -26,6 +27,7 @@ import java.io.File;
 import static io.microconfig.domain.impl.configtype.CompositeConfigTypes.composite;
 import static io.microconfig.domain.impl.properties.resolvers.chain.ChainedResolver.chainOf;
 import static io.microconfig.io.FileUtils.canonical;
+import static io.microconfig.io.formats.factory.ConfigIoServiceFactory.configIoService;
 
 @Accessors(fluent = true)
 @RequiredArgsConstructor
@@ -63,7 +65,14 @@ public class MicroconfigFactory {
     private ComponentFactory fileSystemComponentFactory() {
         return new ComponentFactoryImpl(
                 configTypes(),
-                new FileSystemPropertyRepository()
+                fsPropertyRepository()
+        );
+    }
+
+    private FileSystemPropertyRepository fsPropertyRepository() {
+        return new FileSystemPropertyRepository(
+                fsGraph(),
+                new ComponentParserImpl(configIoService())
         );
     }
 

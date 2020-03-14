@@ -66,7 +66,7 @@ public class EnvironmentImpl implements Environment {
     }
 
     private Component createComponentWithName(String componentName) {
-        return componentFactory.createComponent(componentName, name);
+        return componentFactory.createComponent(componentName, componentName, name);
     }
 
     @Override
