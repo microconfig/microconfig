@@ -13,14 +13,15 @@ import static java.util.regex.Pattern.compile;
 
 @RequiredArgsConstructor
 public class ExpressionResolver implements Resolver {
-    private static final Pattern PATTERN = compile("#\\{(?<value>[^{]+?)}");
+    private final Pattern expressionPattern = compile("#\\{(?<value>[^{]+?)}");
 
     @Override
     public Optional<Statement> findStatementIn(CharSequence line) {
-        Matcher matcher = PATTERN.matcher(line);
-        return matcher.find() ?
-                of(new Expression(matcher.group("value"), matcher.start(), matcher.end())) :
-                empty();
+        Matcher matcher = expressionPattern.matcher(line);
+        return matcher.find() ? of(toExpression(matcher)) : empty();
     }
 
+    private Expression toExpression(Matcher matcher) {
+        return new Expression(matcher.group("value"), matcher.start(), matcher.end());
+    }
 }
