@@ -12,10 +12,7 @@ class PlaceholderTest {
     void resolve() {
         String resolved = searchConfigsIn(rootDir())
                 .getResolver()
-                .findStatementIn("#{1+2}")
-                .orElseThrow(IllegalStateException::new)
-                .resolve();
-
+                .resolve("#{1+2} #{2+4}");
         System.out.println(resolved);
     }
 

@@ -2,13 +2,11 @@ package io.microconfig.domain.impl.properties;
 
 import io.microconfig.domain.Property;
 import io.microconfig.domain.Resolver;
-import io.microconfig.domain.Resolver.Statement;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
 import java.util.List;
-import java.util.Optional;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -44,17 +42,6 @@ public class PropertyImpl implements Property {
 
     @Override
     public Property resolveBy(Resolver resolver) {
-        StringBuilder result = new StringBuilder(value);
-
-        while (true) {
-            Optional<Statement> optionalStatement = resolver.findStatementIn(result);
-            if (!optionalStatement.isPresent()) break;
-
-            Statement statement = optionalStatement.get();
-            String resolved = statement.resolve();
-            result.replace(statement.getStartIndex(), statement.getEndIndex(), resolved);
-        }
-
-        return withValue(result.toString());
+        return withValue(resolver.resolve(value));
     }
 }
