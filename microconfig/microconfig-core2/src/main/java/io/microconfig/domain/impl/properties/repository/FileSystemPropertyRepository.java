@@ -16,7 +16,7 @@ import static io.microconfig.io.fsgraph.ConfigFileFilters.*;
 @RequiredArgsConstructor
 public class FileSystemPropertyRepository implements PropertyRepository {
     private final FileSystemGraph fsGraph;
-    private final ComponentParser componentParser;
+    private final ConfigParser configParser;
 
     @Override
     public List<Property> getProperties(String __, String componentType, String environment, ConfigType configType) {
@@ -41,15 +41,15 @@ public class FileSystemPropertyRepository implements PropertyRepository {
         Map<String, Property> propertyByKey = new HashMap<>();
 
         fsGraph.getConfigFilesFor(componentType, filter)
-                .map(file -> componentParser.parse(file, env))
+                .map(file -> configParser.parse(file, env))
                 .forEach(c -> processComponent(c, propertyByKey, configExtensions, processedIncludes));
 
         return propertyByKey;
     }
 
-    private void processComponent(ParsedComponent parsedComponent, Map<String, Property> destination, Set<String> configExtensions, Set<Include> processedIncludes) {
-        Map<String, Property> included = processIncludes(parsedComponent.getIncludes(), configExtensions, processedIncludes);
-        Map<String, Property> original = parsedComponent.getPropertiesAsMas();
+    private void processComponent(ParsedConfig parsedConfig, Map<String, Property> destination, Set<String> configExtensions, Set<Include> processedIncludes) {
+        Map<String, Property> included = processIncludes(parsedConfig.getIncludes(), configExtensions, processedIncludes);
+        Map<String, Property> original = parsedConfig.getPropertiesAsMas();
 
         destination.putAll(included);
         destination.putAll(original);

@@ -38,7 +38,7 @@ public class ComponentGroupImpl implements ComponentGroup {
 
     private Optional<Component> findComponentByName(String componentName) {
         return components.stream()
-                .filter(c -> c.getAlias().equals(componentName))
+                .filter(c -> c.getName().equals(componentName))
                 .findFirst();
     }
 

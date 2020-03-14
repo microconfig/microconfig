@@ -15,7 +15,7 @@ public class ComponentImpl implements Component {
     private final PropertyRepository propertyRepository;
 
     @Getter
-    private final String alias;
+    private final String name;
     @Getter
     private final String type;
     @Getter
@@ -28,7 +28,7 @@ public class ComponentImpl implements Component {
     }
 
     private ComponentConfiguration readConfigs(ConfigType configType) {
-        List<Property> properties = propertyRepository.getProperties(alias, type, environment, configType);
-        return new ComponentConfigurationImpl(alias, environment, configType, properties);
+        List<Property> properties = propertyRepository.getProperties(name, type, environment, configType);
+        return new ComponentConfigurationImpl(name, environment, configType, properties);
     }
 }

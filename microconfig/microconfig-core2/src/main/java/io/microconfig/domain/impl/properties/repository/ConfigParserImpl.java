@@ -18,22 +18,22 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
-public class ComponentParserImpl implements ComponentParser {
+public class ConfigParserImpl implements ConfigParser {
     private final ConfigIoService configIo;
 
     @Override
-    public ParsedComponent parse(File configFile, String env) {
+    public ParsedConfig parse(File configFile, String env) {
         ConfigReader reader = configIo.readFrom(configFile);
 
         Map<Integer, String> commentByLineNumber = reader.commentsByLineNumber();
         List<Include> includes = parseIncludes(commentByLineNumber.values(), env);
         if (ignoreComponent(commentByLineNumber.values())) {
-            return new ParsedComponent(includes, emptyList());
+            return new ParsedConfig(includes, emptyList());
         }
 
         List<Property> properties = reader.properties(env);
         List<Property> tempProperties = parseTempProperties(commentByLineNumber, configFile, env);
-        return new ParsedComponent(includes, join(properties, tempProperties));
+        return new ParsedConfig(includes, join(properties, tempProperties));
     }
 
     private List<Property> parseTempProperties(Map<Integer, String> comments, File file, String env) {

@@ -21,6 +21,16 @@ public class FilePropertySource implements PropertySource {
     }
 
     @Override
+    public String getDeclaringComponentName() {
+        return getDeclaringComponentType();
+    }
+
+    @Override
+    public String getDeclaringComponentType() {
+        return source.getParentFile().getName();
+    }
+
+    @Override
     public String toString() {
         return source.getAbsolutePath() + ":" + (lineNumber + 1);
     }

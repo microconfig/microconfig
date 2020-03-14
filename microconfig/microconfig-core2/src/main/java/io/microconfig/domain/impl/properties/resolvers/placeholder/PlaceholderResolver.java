@@ -1,12 +1,13 @@
 package io.microconfig.domain.impl.properties.resolvers.placeholder;
 
-import io.microconfig.domain.Environments;
+import io.microconfig.domain.Property;
 import io.microconfig.domain.Resolver;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import static java.lang.Character.isLetterOrDigit;
 import static java.lang.Math.max;
@@ -17,7 +18,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor
 public class PlaceholderResolver implements Resolver {
-    private final Environments environments;
+    private final PlaceholderResolveStrategy strategy;
 
     @Override
     public Optional<Statement> findStatementIn(CharSequence line) {
@@ -164,7 +165,17 @@ public class PlaceholderResolver implements Resolver {
 
         @Override
         public String resolve() {
-            return toPlaceholder("app", "dev").resolve(environments);
+            Placeholder placeholder = toPlaceholder("app", "dev");
+            return strategy.resolve(placeholder)
+                    .map(Property::getValue)
+                    .orElseGet(defaultValueOf(placeholder));
+        }
+
+        private Supplier<String> defaultValueOf(Placeholder placeholder) {
+            return ()-> {
+                if (placeholder.getDefaultValue() != null) return placeholder.getDefaultValue();
+                throw new PropertyResolveException("can't resolve " + toString());
+            };
         }
 
         @Override

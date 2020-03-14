@@ -1,7 +1,7 @@
 package io.microconfig.domain;
 
 public interface Component {
-    String getAlias();
+    String getName();
 
     String getType();
 

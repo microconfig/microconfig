@@ -13,11 +13,11 @@ public class ComponentFactoryImpl implements ComponentFactory {
     private final PropertyRepository propertyRepository;
 
     @Override
-    public Component createComponent(String componentAlias, String componentType, String environment) {
+    public Component createComponent(String componentName, String componentType, String environment) {
         return new ComponentImpl(
                 configTypes,
                 propertyRepository,
-                componentAlias,
+                componentName,
                 componentType,
                 environment
         );

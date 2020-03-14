@@ -10,7 +10,7 @@ import io.microconfig.domain.impl.environment.ComponentFactory;
 import io.microconfig.domain.impl.environment.provider.ComponentFactoryImpl;
 import io.microconfig.domain.impl.environment.provider.EnvironmentParserImpl;
 import io.microconfig.domain.impl.environment.provider.FileBasedEnvironments;
-import io.microconfig.domain.impl.properties.repository.ComponentParserImpl;
+import io.microconfig.domain.impl.properties.repository.ConfigParserImpl;
 import io.microconfig.domain.impl.properties.repository.FileSystemPropertyRepository;
 import io.microconfig.domain.impl.properties.resolvers.expression.ExpressionResolver;
 import io.microconfig.domain.impl.properties.resolvers.placeholder.PlaceholderResolver;
@@ -50,7 +50,7 @@ public class Microconfig {
 
     public Resolver resolver() {
         return chainOf(
-                new PlaceholderResolver(environments()),
+                new PlaceholderResolver(null),
                 new ExpressionResolver()
         );
     }
@@ -72,7 +72,7 @@ public class Microconfig {
     private FileSystemPropertyRepository fsPropertyRepository() {
         return new FileSystemPropertyRepository(
                 fsGraph(),
-                new ComponentParserImpl(newConfigIoService(io))
+                new ConfigParserImpl(newConfigIoService(io))
         );
     }
 
