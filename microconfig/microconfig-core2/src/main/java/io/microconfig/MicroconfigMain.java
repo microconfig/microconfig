@@ -3,9 +3,9 @@ package io.microconfig;
 import java.io.File;
 import java.util.List;
 
+import static io.microconfig.MicroconfigFactory.searchConfigsIn;
 import static io.microconfig.domain.impl.helpers.ConfigTypeFilters.eachConfigType;
 import static io.microconfig.domain.impl.helpers.PropertySerializers.toFileIn;
-import static io.microconfig.factory.MicroconfigFactory.searchConfigsIn;
 
 /**
  * Command line params example: *
@@ -15,7 +15,7 @@ import static io.microconfig.factory.MicroconfigFactory.searchConfigsIn;
  * -Xverify:none -XX:TieredStopAtLevel=1
  */
 //todo update documentation
-public class BuildConfigMain {
+public class MicroconfigMain {
     public static void main(String[] args) {
         MicroconfigParams params = MicroconfigParams.parse(args);
 

@@ -1,4 +1,4 @@
-package io.microconfig.factory;
+package io.microconfig;
 
 import io.microconfig.domain.Environment;
 import io.microconfig.domain.Environments;

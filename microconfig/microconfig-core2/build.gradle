@@ -1,7 +1,7 @@
 apply plugin: 'application'
 apply plugin: 'com.github.johnrengelman.shadow'
 
-mainClassName = 'io.microconfig.BuildConfigMain'
+mainClassName = 'io.microconfig.MicroconfigMain'
 
 publishing {
     publications {
