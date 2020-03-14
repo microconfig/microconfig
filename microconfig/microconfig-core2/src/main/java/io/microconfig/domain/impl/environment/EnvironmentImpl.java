@@ -4,7 +4,6 @@ import io.microconfig.domain.Component;
 import io.microconfig.domain.ComponentGroup;
 import io.microconfig.domain.Components;
 import io.microconfig.domain.Environment;
-import io.microconfig.io.StreamUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -16,6 +15,7 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import static io.microconfig.io.StreamUtils.filter;
+import static io.microconfig.io.StreamUtils.forEach;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
@@ -35,18 +35,21 @@ public class EnvironmentImpl implements Environment {
 
     @Override
     public ComponentGroup findGroupWithName(String groupName) {
-        return filterGroup(g -> g.getName().equals(groupName), () -> "group name=" + groupName);
+        return find(group -> group.getName().equals(groupName),
+                () -> "group name=" + groupName);
     }
 
     @Override
     public ComponentGroup findGroupWithComponent(String componentName) {
-        return filterGroup(g -> g.containsComponent(componentName), () -> "component name=" + componentName);
+        return find(group -> group.findComponentWithName(componentName).isPresent(),
+                () -> "component name=" + componentName
+        );
     }
 
     @Override
     public Components getAllComponents() {
         return new ComponentsImpl(componentGroups.stream()
-                .map(ComponentGroup::getComponents)
+                .map(ComponentGroup::getAllComponents)
                 .map(Components::asList)
                 .flatMap(List::stream)
                 .collect(toList())
@@ -56,8 +59,9 @@ public class EnvironmentImpl implements Environment {
     @Override
     public Component findComponentWithName(String componentName, boolean mustBeDeclaredInEnvDescriptor) {
         Optional<Component> component = componentGroups.stream()
-                .filter(g -> g.containsComponent(componentName))
-                .map(g -> g.getComponentWithName(componentName))
+                .map(g -> g.findComponentWithName(componentName))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .findFirst();
 
         if (component.isPresent()) return component.get();
@@ -76,7 +80,9 @@ public class EnvironmentImpl implements Environment {
 
             return groups.stream()
                     .map(this::findGroupWithName)
-                    .flatMap(g -> g.getComponents().asList().stream())
+                    .map(ComponentGroup::getAllComponents)
+                    .map(Components::asList)
+                    .flatMap(List::stream)
                     .collect(toList());
         };
 
@@ -85,7 +91,7 @@ public class EnvironmentImpl implements Environment {
 
             Map<String, Component> componentByName = componentFromGroups.stream()
                     .collect(toMap(Component::getName, identity()));
-            return StreamUtils.forEach(components, name -> requireNonNull(componentByName.get(name), () -> exceptionMessageForComponent(name)));
+            return forEach(components, name -> requireNonNull(componentByName.get(name), () -> exceptionMessageForComponent(name)));
         };
 
         List<Component> componentFromGroups = componentsFromGroups.get();
@@ -96,10 +102,10 @@ public class EnvironmentImpl implements Environment {
         return "Component '" + component + "' is not configured for env '" + name + "'";
     }
 
-    private ComponentGroup filterGroup(Predicate<ComponentGroup> predicate, Supplier<String> filter) {
+    private ComponentGroup find(Predicate<ComponentGroup> groupPredicate, Supplier<String> description) {
         return componentGroups.stream()
-                .filter(predicate)
+                .filter(groupPredicate)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Can't find group by " + filter.get() + " in env [" + name + "]"));
+                .orElseThrow(() -> new IllegalArgumentException("Can't find group by " + description.get() + " in env [" + name + "]"));
     }
 }

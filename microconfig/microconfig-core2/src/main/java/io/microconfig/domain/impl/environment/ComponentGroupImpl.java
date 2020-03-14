@@ -26,24 +26,14 @@ public class ComponentGroupImpl implements ComponentGroup {
     }
 
     @Override
-    public boolean containsComponent(String componentName) {
-        return findComponentByName(componentName).isPresent();
-    }
-
-    @Override
-    public Component getComponentWithName(String name) {
-        return findComponentByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("Can't find component '" + name + "' in group [" + name + "]"));
-    }
-
-    private Optional<Component> findComponentByName(String componentName) {
+    public Optional<Component> findComponentWithName(String componentName) {
         return components.stream()
                 .filter(c -> c.getName().equals(componentName))
                 .findFirst();
     }
 
     @Override
-    public Components getComponents() {
+    public Components getAllComponents() {
         return new ComponentsImpl(components);
     }
 }
