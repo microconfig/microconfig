@@ -11,9 +11,16 @@ import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
 public class StreamUtils {
-    public static <T, R> List<R> map(Collection<T> collection, Function<? super T, ? extends R> function) {
+    public static <K, V> List<V> map(Collection<K> collection, Function<? super K, ? extends V> function) {
         return collection.stream()
                 .map(function)
+                .collect(toList());
+    }
+
+    public static <K, V> List<V> flatMap(Collection<K> collection,
+                                         Function<? super K, ? extends Collection<? extends V>> function) {
+        return collection.stream()
+                .flatMap(k -> function.apply(k).stream())
                 .collect(toList());
     }
 

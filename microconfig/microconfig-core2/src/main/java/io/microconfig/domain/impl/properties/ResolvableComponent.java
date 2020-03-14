@@ -21,8 +21,8 @@ public class ResolvableComponent implements Component {
     }
 
     @Override
-    public ConfigBuildResults buildPropertiesFor(ConfigTypeFilter configTypes) {
-        return component.buildPropertiesFor(configTypes).forEachProperty(resolve());
+    public ConfigBuildResults getPropertiesFor(ConfigTypeFilter configTypes) {
+        return component.getPropertiesFor(configTypes).forEachProperty(resolve());
     }
 
     private UnaryOperator<Property> resolve() {

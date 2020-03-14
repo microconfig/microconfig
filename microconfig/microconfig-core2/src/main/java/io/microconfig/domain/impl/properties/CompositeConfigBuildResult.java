@@ -7,8 +7,10 @@ import io.microconfig.domain.PropertySerializer;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.UnaryOperator;
 
+import static io.microconfig.io.StreamUtils.flatMap;
 import static io.microconfig.io.StreamUtils.map;
 import static lombok.AccessLevel.PRIVATE;
 
@@ -26,8 +28,22 @@ public class CompositeConfigBuildResult implements ConfigBuildResults {
     }
 
     @Override
-    public ConfigBuildResult first() {
-        return results.get(0);
+    public ConfigBuildResults build() {
+        return composite(map(results, ConfigBuildResult::build));
+    }
+
+    @Override
+    public List<Property> getProperties() {
+        return flatMap(results, ConfigBuildResult::getProperties);
+    }
+
+    @Override
+    public Optional<Property> getProperty(String key) {
+        return results.stream()
+                .map(r -> r.getProperty(key))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst();
     }
 
     @Override

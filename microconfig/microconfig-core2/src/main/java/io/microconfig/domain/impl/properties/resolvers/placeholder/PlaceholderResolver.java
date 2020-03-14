@@ -16,12 +16,12 @@ import static lombok.AccessLevel.PRIVATE;
 public class PlaceholderResolver implements Resolver {
     @Override
     public Optional<Statement> findStatementIn(CharSequence line) {
-        return PlaceholderBorders.findPlaceholderIn(line).map(identity());
+        return PlaceholderBorders.findPlaceholderIn(line);
     }
 
     @With(PRIVATE)
     @RequiredArgsConstructor
-    private static class PlaceholderBorders implements Statement {
+     static class PlaceholderBorders implements Statement {
         private final StringBuilder line;
 
         @Getter
@@ -33,9 +33,9 @@ public class PlaceholderResolver implements Resolver {
         @Getter
         private final int endIndex;
 
-        static Optional<PlaceholderBorders> findPlaceholderIn(CharSequence sequence) {
+        static Optional<Statement> findPlaceholderIn(CharSequence sequence) {
             StringBuilder line = sequence instanceof StringBuilder ? (StringBuilder) sequence : new StringBuilder(sequence);
-            return new PlaceholderBorders(line).searchOpenSign();
+            return new PlaceholderBorders(line).searchOpenSign().map(identity());
         }
 
         private PlaceholderBorders(StringBuilder line) {

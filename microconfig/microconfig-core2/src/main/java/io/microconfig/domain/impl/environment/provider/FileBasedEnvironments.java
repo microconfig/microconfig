@@ -12,9 +12,9 @@ import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static io.microconfig.io.formats.ConfigFormat.YAML;
 import static io.microconfig.io.FileUtils.walk;
 import static io.microconfig.io.StreamUtils.map;
+import static io.microconfig.io.formats.ConfigFormat.YAML;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
@@ -45,10 +45,15 @@ public class FileBasedEnvironments implements Environments {
     }
 
     @Override
-    public Environment byName(String name) {
+    public Environment get(String name) {
         return parser.parse(name, envFile(name));
 //                .processInclude(this)
 //                .verifyUniqueComponentNames();
+    }
+
+    @Override
+    public Environment getOrCreate(String name) {
+        return get(name);
     }
 
     private String getEnvName(File file) {

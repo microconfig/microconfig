@@ -24,7 +24,7 @@ public class ComponentsImpl implements Components {
     public ConfigBuildResults buildPropertiesFor(ConfigTypeFilter filter) {
         return composite(
                 components.stream()
-                        .map(c -> c.buildPropertiesFor(filter))
+                        .map(c -> c.getPropertiesFor(filter))
                         .map(ConfigBuildResults::asList)
                         .flatMap(List::stream)
                         .collect(toList())

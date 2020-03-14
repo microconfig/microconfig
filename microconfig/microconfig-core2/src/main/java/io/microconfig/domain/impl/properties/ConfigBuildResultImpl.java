@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.With;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 import static io.microconfig.io.StreamUtils.map;
@@ -26,6 +27,18 @@ public class ConfigBuildResultImpl implements ConfigBuildResult {
     @Override
     public String getConfigType() {
         return configType.getType();
+    }
+
+    @Override
+    public ConfigBuildResult build() {
+        return null;
+    }
+
+    @Override
+    public Optional<Property> getProperty(String key) {
+        return properties.stream()
+                .filter(p -> p.getValue().equals(key))
+                .findFirst();
     }
 
     @Override

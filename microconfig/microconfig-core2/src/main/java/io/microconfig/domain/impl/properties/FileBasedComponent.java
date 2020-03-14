@@ -21,7 +21,7 @@ public class FileBasedComponent implements Component {
     private final String environment;
 
     @Override
-    public ConfigBuildResults buildPropertiesFor(ConfigTypeFilter filter) {
+    public ConfigBuildResults getPropertiesFor(ConfigTypeFilter filter) {
         List<ConfigType> filteredTypes = filter.selectTypes(types.getTypes());
         return composite(
                 map(filteredTypes, type -> new ConfigBuildResultImpl(name, environment, type, readPropertiesWith(type)))

@@ -29,10 +29,10 @@ public class MicroconfigFactory {
     }
 
     public Environment inEnvironment(String name) {
-        return getEnvironments().byName(name);
+        return environments().get(name);
     }
 
-    private Environments getEnvironments() {
+    private Environments environments() {
         return environments == null ?
                 environments = new FileBasedEnvironments(new File(rootDir, ENV_DIR), new EnvironmentParserImpl(io)) :
                 environments;
