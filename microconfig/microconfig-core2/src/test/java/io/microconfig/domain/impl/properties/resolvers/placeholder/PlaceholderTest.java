@@ -14,12 +14,13 @@ import static io.microconfig.domain.impl.helpers.ConfigTypeFilters.configTypeWit
 class PlaceholderTest {
     @Test
     void resolve() {
-        Microconfig factory = searchConfigsIn(rootDir());
+        Microconfig microconfig = searchConfigsIn(rootDir());
 
-        List<Property> properties = factory
+        List<Property> properties = microconfig
                 .inEnvironment("placeholderAsDefaultValue")
                 .findComponentWithName("var", false)
                 .getPropertiesFor(configTypeWithName("app"))
+                .resolveBy(microconfig.resolver())
                 .getProperties();
         System.out.println(properties);
     }

@@ -5,6 +5,8 @@ import io.microconfig.domain.Property;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
+import java.util.function.Supplier;
+
 import static io.microconfig.domain.impl.helpers.ConfigTypeFilters.configTypeWithName;
 import static lombok.AccessLevel.PACKAGE;
 
@@ -25,7 +27,14 @@ public class Placeholder {
                 .getPropertiesFor(configTypeWithName(configType))
                 .getPropertyWithKey(value)
                 .map(Property::getValue)
-                .orElse(defaultValue);
+                .orElseGet(defaultValue());
+    }
+
+    private Supplier<String> defaultValue() {
+        return ()-> {
+            if (defaultValue != null) return defaultValue;
+            throw new PropertyResolveException("can't resolve " + toString());
+        };
     }
 
     @Override
