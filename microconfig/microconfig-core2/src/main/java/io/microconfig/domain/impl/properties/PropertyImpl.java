@@ -113,6 +113,6 @@ public class PropertyImpl implements Property {
 
     @Override
     public Property resolveBy(Resolver resolver) {
-        return withValue(resolver.resolve(value));
+        return withValue(resolver.resolveRecursively(value));
     }
 }

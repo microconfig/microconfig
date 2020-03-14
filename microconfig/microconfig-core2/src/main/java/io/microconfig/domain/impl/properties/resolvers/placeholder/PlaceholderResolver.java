@@ -33,7 +33,14 @@ public class PlaceholderResolver implements Resolver {
         @Override
         public String resolve() {
             Placeholder placeholder = borders.toPlaceholder("app", "dev");
-            return placeholder.resolveUsing(strategy);
+            try {
+                String maybePlaceholder = placeholder.resolveUsing(strategy);
+                return resolveRecursively(maybePlaceholder);
+            } catch (RuntimeException e) {
+                String defaultValue = placeholder.getDefaultValue();
+                if (defaultValue != null) return defaultValue;
+                throw e;
+            }
         }
     }
 }

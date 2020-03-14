@@ -3,9 +3,7 @@ package io.microconfig.domain;
 import java.util.Optional;
 
 public interface Resolver {
-    Optional<Statement> findStatementIn(CharSequence line);
-
-    default String resolve(CharSequence line) {
+    default String resolveRecursively(CharSequence line) {
         StringBuilder result = new StringBuilder(line);
         while (true) {
             Optional<Statement> optionalStatement = findStatementIn(result);
@@ -17,6 +15,8 @@ public interface Resolver {
         }
         return result.toString();
     }
+
+    Optional<Statement> findStatementIn(CharSequence line);
 
     interface Statement {
         int getStartIndex();
