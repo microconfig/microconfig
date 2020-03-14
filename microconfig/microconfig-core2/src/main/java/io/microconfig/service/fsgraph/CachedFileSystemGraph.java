@@ -1,4 +1,4 @@
-package io.microconfig.service.tree;
+package io.microconfig.service.fsgraph;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -20,14 +20,14 @@ import static java.util.Optional.of;
 import static java.util.stream.Collectors.groupingBy;
 
 @RequiredArgsConstructor
-public class CachedComponentTree implements ComponentTree {
+public class CachedFileSystemGraph implements FileSystemGraph {
     public static final String COMPONENTS_DIR = "components";
 
     @Getter
     private final File rootDir;
     private final Map<String, List<File>> foldersByComponentType;
 
-    public static ComponentTree prepare(File rootDir) {
+    public static FileSystemGraph prepare(File rootDir) {
         if (!rootDir.exists()) {
             throw new IllegalArgumentException("Root directory doesn't exist: " + rootDir);
         }
@@ -38,7 +38,7 @@ public class CachedComponentTree implements ComponentTree {
         }
 
         try (Stream<Path> pathStream = walk(components.toPath())) {
-            return new CachedComponentTree(rootDir, collectFoldersByComponentType(pathStream));
+            return new CachedFileSystemGraph(rootDir, collectFoldersByComponentType(pathStream));
         }
     }
 

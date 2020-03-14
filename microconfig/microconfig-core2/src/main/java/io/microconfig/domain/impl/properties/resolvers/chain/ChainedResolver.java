@@ -1,4 +1,4 @@
-package io.microconfig.domain.impl.properties.resolvers.composite;
+package io.microconfig.domain.impl.properties.resolvers.chain;
 
 import io.microconfig.domain.Resolver;
 import lombok.RequiredArgsConstructor;
@@ -10,11 +10,11 @@ import static java.util.Arrays.asList;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
-public class CompositeResolver implements Resolver {
+public class ChainedResolver implements Resolver {
     public final List<Resolver> resolvers;
 
     public static Resolver chainOf(Resolver... resolvers) {
-        return new CompositeResolver(asList(resolvers));
+        return new ChainedResolver(asList(resolvers));
     }
 
     @Override

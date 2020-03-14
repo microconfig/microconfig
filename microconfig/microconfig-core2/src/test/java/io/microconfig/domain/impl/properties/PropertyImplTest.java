@@ -6,7 +6,7 @@ import io.microconfig.domain.impl.properties.resolvers.placeholder.PlaceholderRe
 import org.junit.jupiter.api.Test;
 
 import static io.microconfig.domain.impl.properties.PropertyImpl.property;
-import static io.microconfig.domain.impl.properties.resolvers.composite.CompositeResolver.chainOf;
+import static io.microconfig.domain.impl.properties.resolvers.chain.ChainedResolver.chainOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PropertyImplTest {
