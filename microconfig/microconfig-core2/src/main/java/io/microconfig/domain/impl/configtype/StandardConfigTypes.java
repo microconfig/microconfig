@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import static io.microconfig.domain.impl.configtype.ConfigTypeImpl.byName;
 import static io.microconfig.domain.impl.configtype.ConfigTypeImpl.byNameAndExtensions;
 import static io.microconfig.io.CollectionUtils.setOf;
-import static io.microconfig.io.StreamUtils.toList;
+import static io.microconfig.io.StreamUtils.forEach;
 import static java.util.Arrays.asList;
 
 @RequiredArgsConstructor
@@ -23,6 +23,6 @@ public enum StandardConfigTypes {
     private final ConfigType type;
 
     public static ConfigTypes asTypes() {
-        return () -> toList(asList(StandardConfigTypes.values()), StandardConfigTypes::getType);
+        return () -> forEach(asList(StandardConfigTypes.values()), StandardConfigTypes::getType);
     }
 }

@@ -45,7 +45,7 @@ public class MicroconfigFactory {
         return environments().withName(name);
     }
 
-    public Resolver getResolver() {
+    public Resolver resolver() {
         return chainOf(
                 new PlaceholderResolver(environments()),
                 new ExpressionResolver()
@@ -62,9 +62,7 @@ public class MicroconfigFactory {
     private ComponentFactory newComponentFactory() {
         return new ComponentFactoryImpl(
                 configTypes(),
-                fsGraph(),
-                null
-
+                fsGraph()
         );
     }
 

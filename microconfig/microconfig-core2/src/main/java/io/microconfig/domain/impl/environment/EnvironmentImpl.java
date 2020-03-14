@@ -85,7 +85,7 @@ public class EnvironmentImpl implements Environment {
 
             Map<String, Component> componentByName = componentFromGroups.stream()
                     .collect(toMap(Component::getName, identity()));
-            return StreamUtils.toList(components, name -> requireNonNull(componentByName.get(name), () -> exceptionMessageForComponent(name)));
+            return StreamUtils.forEach(components, name -> requireNonNull(componentByName.get(name), () -> exceptionMessageForComponent(name)));
         };
 
         List<Component> componentFromGroups = componentsFromGroups.get();

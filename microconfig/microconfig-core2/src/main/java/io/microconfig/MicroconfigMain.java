@@ -1,5 +1,7 @@
 package io.microconfig;
 
+import lombok.val;
+
 import java.io.File;
 import java.util.List;
 
@@ -25,9 +27,10 @@ public class MicroconfigMain {
         List<String> groups = params.groups();
         List<String> services = params.services();
 
-        searchConfigsIn(rootDir)
-                .inEnvironment(env).findComponentsFrom(groups, services)
-                .buildPropertiesFor(eachConfigType())
+        val microconfig = searchConfigsIn(rootDir);
+        microconfig.inEnvironment(env).findComponentsFrom(groups, services)
+                .getPropertiesFor(eachConfigType())
+                .resolveBy(microconfig.resolver())
                 .save(toFileIn(destinationDir));
     }
 }

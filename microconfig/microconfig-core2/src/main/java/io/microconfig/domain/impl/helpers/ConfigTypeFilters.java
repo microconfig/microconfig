@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 
 import static io.microconfig.io.FileUtils.getExtension;
 import static io.microconfig.io.StreamUtils.filter;
-import static io.microconfig.io.StreamUtils.toList;
+import static io.microconfig.io.StreamUtils.forEach;
 import static java.util.Arrays.asList;
 
 public class ConfigTypeFilters {
@@ -37,7 +37,7 @@ public class ConfigTypeFilters {
             List<ConfigType> result = filter(types, predicate);
             if (result.isEmpty()) {
                 throw new IllegalArgumentException("Unsupported config type '" + typeDescription + "'." +
-                        " Configured types: " + toList(types, ConfigType::getType));
+                        " Configured types: " + forEach(types, ConfigType::getType));
             }
             return result;
         };

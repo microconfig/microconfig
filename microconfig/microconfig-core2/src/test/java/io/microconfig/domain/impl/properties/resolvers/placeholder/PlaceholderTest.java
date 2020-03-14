@@ -1,5 +1,6 @@
 package io.microconfig.domain.impl.properties.resolvers.placeholder;
 
+import io.microconfig.MicroconfigFactory;
 import io.microconfig.domain.Property;
 import org.junit.jupiter.api.Test;
 
@@ -13,10 +14,13 @@ import static io.microconfig.domain.impl.helpers.ConfigTypeFilters.configTypeWit
 class PlaceholderTest {
     @Test
     void resolve() {
-        List<Property> properties = searchConfigsIn(rootDir())
+        MicroconfigFactory factory = searchConfigsIn(rootDir());
+
+        List<Property> properties = factory
                 .inEnvironment("placeholderAsDefaultValue")
                 .findComponentWithName("var", false)
                 .getPropertiesFor(configTypeWithName("app"))
+                .resolveBy(factory.resolver())
                 .getProperties();
         System.out.println(properties);
     }

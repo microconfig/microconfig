@@ -8,13 +8,12 @@ import lombok.RequiredArgsConstructor;
 import java.util.Collections;
 import java.util.List;
 
-import static io.microconfig.domain.impl.properties.ConfigBuildResultsImpl.resultsOf;
-import static io.microconfig.io.StreamUtils.toList;
+import static io.microconfig.domain.impl.properties.CompositeCompositeConfigsImpl.resultsOf;
+import static io.microconfig.io.StreamUtils.forEach;
 
 @RequiredArgsConstructor
 public class ComponentImpl implements Component {
     private final ConfigTypes types;
-    private final Resolver resolver;
     private final FileSystemGraph fsGraph;
 
     @Getter
@@ -23,13 +22,13 @@ public class ComponentImpl implements Component {
     private final String environment;
 
     @Override
-    public ConfigBuildResults getPropertiesFor(ConfigTypeFilter filter) {
+    public CompositeCompositeConfigs getPropertiesFor(ConfigTypeFilter filter) {
         List<ConfigType> filteredTypes = filter.selectTypes(types.getTypes());
-        return resultsOf(toList(filteredTypes, this::readConfigs));
+        return resultsOf(forEach(filteredTypes, this::readConfigs));
     }
 
-    private ConfigBuildResult readConfigs(ConfigType type) {
-        return new ConfigBuildResultImpl(name, environment, type, resolver, readPropertiesWith(type));
+    private ComponentConfigs readConfigs(ConfigType type) {
+        return new ComponentConfigsImpl(name, environment, type, readPropertiesWith(type));
     }
 
     private List<Property> readPropertiesWith(ConfigType type) {

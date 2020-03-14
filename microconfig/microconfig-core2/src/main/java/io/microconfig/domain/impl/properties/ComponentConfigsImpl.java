@@ -7,17 +7,15 @@ import lombok.With;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.UnaryOperator;
 
-import static io.microconfig.io.StreamUtils.toList;
+import static io.microconfig.io.StreamUtils.forEach;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor
-public class ConfigBuildResultImpl implements ConfigBuildResult {
+public class ComponentConfigsImpl implements ComponentConfigs {
     private final String component;
     private final String environment;
     private final ConfigType configType;
-    private final Resolver resolver;
     @Getter
     @With(PRIVATE)
     private final List<Property> properties;
@@ -28,20 +26,15 @@ public class ConfigBuildResultImpl implements ConfigBuildResult {
     }
 
     @Override
-    public ConfigBuildResult build() {
-        return forEachProperty(p -> p.resolveBy(resolver));
+    public ComponentConfigs resolveBy(Resolver resolver) {
+        return withProperties(forEach(properties, p -> p.resolveBy(resolver)));
     }
 
     @Override
-    public Optional<Property> getProperty(String key) {
+    public Optional<Property> getPropertyWithKey(String key) {
         return properties.stream()
                 .filter(p -> p.getValue().equals(key))
                 .findFirst();
-    }
-
-    @Override
-    public ConfigBuildResult forEachProperty(UnaryOperator<Property> operator) {
-        return withProperties(toList(properties, operator));
     }
 
     @Override

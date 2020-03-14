@@ -39,7 +39,7 @@ public class FileBasedEnvironments implements Environments {
 
     @Override
     public List<Environment> all() {
-        return StreamUtils.toList(envFiles(withYamlExtension()), f -> parser.parse(envName(f), f));
+        return StreamUtils.forEach(envFiles(withYamlExtension()), f -> parser.parse(envName(f), f));
     }
 
     @Override

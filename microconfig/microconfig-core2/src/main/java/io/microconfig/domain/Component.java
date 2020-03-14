@@ -5,5 +5,5 @@ public interface Component {
 
     String getEnvironment();
 
-    ConfigBuildResults getPropertiesFor(ConfigTypeFilter filter);
+    CompositeCompositeConfigs getPropertiesFor(ConfigTypeFilter filter);
 }

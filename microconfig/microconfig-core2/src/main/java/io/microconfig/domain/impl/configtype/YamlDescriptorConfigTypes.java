@@ -15,7 +15,7 @@ import java.util.Set;
 import static io.microconfig.domain.impl.configtype.ConfigTypeImpl.byName;
 import static io.microconfig.domain.impl.configtype.ConfigTypeImpl.byNameAndExtensions;
 import static io.microconfig.io.Logger.announce;
-import static io.microconfig.io.StreamUtils.toList;
+import static io.microconfig.io.StreamUtils.forEach;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 
@@ -47,7 +47,7 @@ public class YamlDescriptorConfigTypes implements ConfigTypes {
         try {
             Map<String, Object> types = new Yaml().load(io.readFully(file));
             List<Object> configTypes = (List<Object>) types.getOrDefault("configTypes", emptyList());
-            return toList(configTypes, this::parseType);
+            return forEach(configTypes, this::parseType);
         } catch (RuntimeException e) {
             throw new RuntimeException("Can't parse Microconfig descriptor '" + file + "'", e);
         }
