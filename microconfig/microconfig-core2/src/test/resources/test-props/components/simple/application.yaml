@@ -1,0 +1,4 @@
+k1: ${simple@k2} 1
+k2: ${simple@k3} 2
+k3: ${simple@k4} 3
+k4: hello 4

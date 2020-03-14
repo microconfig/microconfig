@@ -38,7 +38,7 @@ public class FileSystemPropertyRepository implements PropertyRepository {
     }
 
     private Map<String, Property> collectProperties(Predicate<File> filter, String componentType, String env, Set<String> configExtensions, Set<Include> processedIncludes) {
-        Map<String, Property> propertyByKey = new HashMap<>();
+        Map<String, Property> propertyByKey = new TreeMap<>();
 
         fsGraph.getConfigFilesFor(componentType, filter)
                 .map(file -> configParser.parse(file, env))
