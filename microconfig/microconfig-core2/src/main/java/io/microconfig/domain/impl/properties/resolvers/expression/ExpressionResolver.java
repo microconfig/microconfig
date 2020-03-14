@@ -1,4 +1,4 @@
-package io.microconfig.domain.impl.properties.resolvers.el;
+package io.microconfig.domain.impl.properties.resolvers.expression;
 
 import io.microconfig.domain.Resolver;
 import lombok.RequiredArgsConstructor;

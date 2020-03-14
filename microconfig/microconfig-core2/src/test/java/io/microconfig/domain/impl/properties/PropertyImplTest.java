@@ -1,7 +1,7 @@
 package io.microconfig.domain.impl.properties;
 
 import io.microconfig.domain.Property;
-import io.microconfig.domain.impl.properties.resolvers.el.ExpressionResolver;
+import io.microconfig.domain.impl.properties.resolvers.expression.ExpressionResolver;
 import io.microconfig.domain.impl.properties.resolvers.placeholder.PlaceholderResolver;
 import org.junit.jupiter.api.Test;
 
