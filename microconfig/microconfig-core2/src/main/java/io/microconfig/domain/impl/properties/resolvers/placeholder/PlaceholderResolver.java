@@ -154,8 +154,6 @@ public class PlaceholderResolver implements Resolver {
 
         public Placeholder toPlaceholder(String contextEnv) {
             return new Placeholder(
-                    startIndex,
-                    endIndex,
                     getConfigType(),
                     getComponent(),
                     getEnvironment(contextEnv),
