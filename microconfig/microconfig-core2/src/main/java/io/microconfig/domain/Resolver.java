@@ -1,9 +1,11 @@
 package io.microconfig.domain;
 
-public interface Resolver {
-    Expression parse(CharSequence value);
+import java.util.Optional;
 
-    interface Expression {
+public interface Resolver {
+    Optional<Statement> findStatementIn(CharSequence value);
+
+    interface Statement {
         int getStartIndex();
 
         int getEndIndex();

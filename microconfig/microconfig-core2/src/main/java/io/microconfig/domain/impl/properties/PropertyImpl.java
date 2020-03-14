@@ -2,12 +2,13 @@ package io.microconfig.domain.impl.properties;
 
 import io.microconfig.domain.Property;
 import io.microconfig.domain.Resolver;
-import io.microconfig.domain.Resolver.Expression;
+import io.microconfig.domain.Resolver.Statement;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @RequiredArgsConstructor
@@ -40,11 +41,12 @@ public class PropertyImpl implements Property {
         StringBuilder result = new StringBuilder(value);
 
         while (true) {
-            Expression expression = resolver.parse(result);
-            if (expression.getStartIndex() < 0) break;
+            Optional<Statement> statement = resolver.findStatementIn(result);
+            if (!statement.isPresent()) break;
 
-            String resolved = expression.resolve();
-            result.replace(expression.getStartIndex(), expression.getEndIndex() + 1, resolved);
+            Statement s = statement.get();
+            String resolved = s.resolve();
+            result.replace(s.getStartIndex(), s.getEndIndex() + 1, resolved);
         }
 
         return withValue(result.toString());

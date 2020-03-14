@@ -1,7 +1,7 @@
 package io.microconfig.domain.impl.properties.resolvers.placeholder.;
 
 import io.microconfig.domain.Property;
-import io.microconfig.domain.Resolver.Expression;
+import io.microconfig.domain.Resolver.Statement;
 import io.microconfig.domain.impl.properties.PropertySource;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -20,7 +20,7 @@ import static lombok.AccessLevel.PACKAGE;
 @Getter
 @RequiredArgsConstructor(access = PACKAGE)
 @EqualsAndHashCode(exclude = "defaultValue")
-public class Placeholder implements Expression {
+public class Placeholder implements Statement {
     private static final String SELF_REFERENCE = "this";
 
     @Getter
