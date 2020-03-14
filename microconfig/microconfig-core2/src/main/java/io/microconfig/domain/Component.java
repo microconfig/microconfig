@@ -1,7 +1,9 @@
 package io.microconfig.domain;
 
 public interface Component {
-    String getName();
+    String getAlias();
+
+    String getType();
 
     String getEnvironment();
 

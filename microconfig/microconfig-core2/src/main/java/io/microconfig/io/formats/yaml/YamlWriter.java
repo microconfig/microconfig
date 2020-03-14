@@ -1,8 +1,8 @@
 package io.microconfig.io.formats.yaml;
 
 import io.microconfig.domain.Property;
-import io.microconfig.io.formats.ConfigWriter;
 import io.microconfig.io.FileUtils;
+import io.microconfig.io.formats.ConfigWriter;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
