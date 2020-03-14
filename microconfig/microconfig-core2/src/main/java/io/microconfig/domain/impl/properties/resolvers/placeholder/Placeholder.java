@@ -22,7 +22,7 @@ public class Placeholder {
     public String resolveUsing(PlaceholderResolveStrategy strategy) {
         return strategy.resolve(this)
                 .map(Property::getValue)
-                .orElseThrow(IllegalStateException::new);
+                .orElseThrow(() -> new IllegalStateException("Cant resolve '" + this + "'"));
     }
 
     @Override
