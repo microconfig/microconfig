@@ -20,8 +20,7 @@ import io.microconfig.io.formats.Io;
 import io.microconfig.io.fsgraph.CachedFileSystemGraph;
 import io.microconfig.io.fsgraph.FileSystemGraph;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+import lombok.With;
 
 import java.io.File;
 
@@ -30,19 +29,18 @@ import static io.microconfig.domain.impl.properties.resolvers.chain.ChainedResol
 import static io.microconfig.io.FileUtils.canonical;
 import static io.microconfig.io.formats.factory.ConfigIoServiceFactory.newConfigIoService;
 
-@Accessors(fluent = true)
 @RequiredArgsConstructor
 public class Microconfig {
     private final File rootDir;
-    @Setter
-    private Io io = new FileSystemIo();
+    @With
+    private final Io io;
 
     public static Microconfig searchConfigsIn(File rootDir) {
         File canonical = canonical(rootDir);
         if (!canonical.exists()) {
             throw new IllegalArgumentException("Root directory doesn't exist: " + rootDir);
         }
-        return new Microconfig(canonical);
+        return new Microconfig(canonical, new FileSystemIo());
     }
 
     public Environment inEnvironment(String name) {
