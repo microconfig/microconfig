@@ -25,6 +25,8 @@ public abstract class AbstractConfigReader implements ConfigReader {
         return properties(env, false);
     }
 
+    protected abstract List<Property> properties(String env, boolean resolveEscape);
+
     @Override
     public Map<String, String> propertiesAsMap() {
         return propertiesToMap(false);
@@ -34,14 +36,6 @@ public abstract class AbstractConfigReader implements ConfigReader {
     public Map<String, String> escapeResolvedPropertiesAsMap() {
         return propertiesToMap(true);
     }
-
-    private Map<String, String> propertiesToMap(boolean resolveEscape) {
-        return properties("", resolveEscape)
-                .stream()
-                .collect(toSortedMap(Property::getKey, Property::getValue));
-    }
-
-    protected abstract List<Property> properties(String env, boolean resolveEscape);
 
     @Override
     public Map<Integer, String> commentsByLineNumber() {
@@ -53,5 +47,11 @@ public abstract class AbstractConfigReader implements ConfigReader {
             result.put(i, line);
         }
         return result;
+    }
+
+    private Map<String, String> propertiesToMap(boolean resolveEscape) {
+        return properties("", resolveEscape)
+                .stream()
+                .collect(toSortedMap(Property::getKey, Property::getValue));
     }
 }

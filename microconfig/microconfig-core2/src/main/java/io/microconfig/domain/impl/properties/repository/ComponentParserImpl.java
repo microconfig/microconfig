@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static io.microconfig.domain.impl.properties.FileSource.fileSource;
+import static io.microconfig.domain.impl.properties.FilePropertySource.fileSource;
 import static io.microconfig.domain.impl.properties.PropertyImpl.isTempProperty;
 import static io.microconfig.io.CollectionUtils.join;
 import static java.util.Collections.emptyList;

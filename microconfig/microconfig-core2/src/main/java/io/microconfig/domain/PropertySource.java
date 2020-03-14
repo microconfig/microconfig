@@ -1,4 +1,4 @@
-package io.microconfig.domain.impl.properties;
+package io.microconfig.domain;
 
 public interface PropertySource {
     default String sourceInfo() {

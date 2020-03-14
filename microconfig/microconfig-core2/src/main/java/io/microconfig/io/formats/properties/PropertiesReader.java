@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.microconfig.domain.impl.properties.FileSource.fileSource;
+import static io.microconfig.domain.impl.properties.FilePropertySource.fileSource;
 import static io.microconfig.domain.impl.properties.PropertyImpl.isComment;
 import static io.microconfig.io.FileUtils.LINES_SEPARATOR;
 
