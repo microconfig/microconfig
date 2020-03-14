@@ -166,5 +166,10 @@ public class PlaceholderResolver implements Resolver {
         public String resolve() {
             return toPlaceholder("app", "dev").resolve(environments);
         }
+
+        @Override
+        public String toString() {
+            return startIndex < 0 ? "" : line.substring(startIndex, endIndex);
+        }
     }
 }

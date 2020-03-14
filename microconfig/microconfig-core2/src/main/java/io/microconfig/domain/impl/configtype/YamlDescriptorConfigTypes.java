@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,7 @@ import static java.util.Collections.singleton;
 public class YamlDescriptorConfigTypes implements ConfigTypes {
     private static final String DESCRIPTOR = "microconfig.yaml";
 
-    private final Path rootDir;
+    private final File rootDir;
     private final Io io;
 
     @Override
@@ -40,7 +39,7 @@ public class YamlDescriptorConfigTypes implements ConfigTypes {
     }
 
     private File descriptor() {
-        return new File(rootDir.toFile(), DESCRIPTOR);
+        return new File(rootDir, DESCRIPTOR);
     }
 
     @SuppressWarnings("unchecked")

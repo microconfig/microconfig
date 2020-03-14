@@ -12,7 +12,7 @@ class PlaceholderTest {
     void resolve() {
         String resolved = searchConfigsIn(rootDir())
                 .getResolver()
-                .resolve("#{1+2} #{2+4}");
+                .resolve("${var@c}");
         System.out.println(resolved);
     }
 

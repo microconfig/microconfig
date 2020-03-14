@@ -28,16 +28,12 @@ public class CachedFileSystemGraph implements FileSystemGraph {
     private final Map<String, List<File>> foldersByComponentType;
 
     public static FileSystemGraph prepare(File rootDir) {
-        if (!rootDir.exists()) {
-            throw new IllegalArgumentException("Root directory doesn't exist: " + rootDir);
-        }
-
-        File components = new File(rootDir, COMPONENTS_DIR);
-        if (!components.exists()) {
+        File componentDir = new File(rootDir, COMPONENTS_DIR);
+        if (!componentDir.exists()) {
             throw new IllegalArgumentException("Root directory must contain 'components' dir");
         }
 
-        try (Stream<Path> pathStream = walk(components.toPath())) {
+        try (Stream<Path> pathStream = walk(componentDir.toPath())) {
             return new CachedFileSystemGraph(rootDir, collectFoldersByComponentType(pathStream));
         }
     }

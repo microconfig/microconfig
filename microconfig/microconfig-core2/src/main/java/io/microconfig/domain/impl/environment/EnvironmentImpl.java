@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -25,6 +26,7 @@ public class EnvironmentImpl implements Environment {
     @Getter
     private final String name;
     private final List<ComponentGroup> componentGroups;
+    private final ComponentFactory componentFactory;
 
     @Override
     public List<ComponentGroup> findGroupsWithIp(String ip) {
@@ -53,11 +55,18 @@ public class EnvironmentImpl implements Environment {
 
     @Override
     public Component findComponentWithName(String componentName, boolean mustBeDeclaredInEnvDescriptor) {
-        return componentGroups.stream()
+        Optional<Component> component = componentGroups.stream()
                 .filter(g -> g.containsComponent(componentName))
                 .map(g -> g.getComponentWithName(componentName))
-                .findFirst()
-                .orElseGet(() -> null);//todo
+                .findFirst();
+
+        if (component.isPresent()) return component.get();
+        if (mustBeDeclaredInEnvDescriptor) return createComponentWithName(componentName);
+        throw new IllegalArgumentException(exceptionMessageForComponent(componentName));
+    }
+
+    private Component createComponentWithName(String componentName) {
+        return componentFactory.createComponent(componentName, name);
     }
 
     @Override
@@ -76,12 +85,15 @@ public class EnvironmentImpl implements Environment {
 
             Map<String, Component> componentByName = componentFromGroups.stream()
                     .collect(toMap(Component::getName, identity()));
-            return map(components,
-                    name -> requireNonNull(componentByName.get(name), () -> "Component '" + name + "' is not configured for " + name + " env"));
+            return map(components, name -> requireNonNull(componentByName.get(name), () -> exceptionMessageForComponent(name)));
         };
 
         List<Component> componentFromGroups = componentsFromGroups.get();
         return new ComponentsImpl(filterByComponents.apply(componentFromGroups));
+    }
+
+    private String exceptionMessageForComponent(String name) {
+        return "Component '" + name + "' is not configured for " + name + " env";
     }
 
     private ComponentGroup filterGroup(Predicate<ComponentGroup> predicate, Supplier<String> filter) {

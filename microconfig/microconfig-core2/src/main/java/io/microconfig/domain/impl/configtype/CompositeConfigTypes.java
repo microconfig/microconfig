@@ -10,7 +10,7 @@ import static java.util.Arrays.asList;
 
 @RequiredArgsConstructor
 public class CompositeConfigTypes implements ConfigTypes {
-    private final List<ConfigTypes> providers;
+    private final List<ConfigTypes> types;
 
     public static ConfigTypes composite(ConfigTypes... types) {
         return new CompositeConfigTypes(asList(types));
@@ -18,7 +18,7 @@ public class CompositeConfigTypes implements ConfigTypes {
 
     @Override
     public List<ConfigType> getTypes() {
-        return providers.stream()
+        return types.stream()
                 .map(ConfigTypes::getTypes)
                 .filter(types -> !types.isEmpty())
                 .findFirst()

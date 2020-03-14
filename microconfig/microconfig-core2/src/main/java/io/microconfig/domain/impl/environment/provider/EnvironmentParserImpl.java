@@ -1,10 +1,14 @@
 package io.microconfig.domain.impl.environment.provider;
 
 import io.microconfig.domain.Environment;
+import io.microconfig.domain.impl.environment.ComponentFactory;
+import io.microconfig.domain.impl.environment.EnvironmentImpl;
 import io.microconfig.io.formats.Io;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
+
+import static java.util.Collections.emptyList;
 
 @RequiredArgsConstructor
 public class EnvironmentParserImpl implements EnvironmentParser {
@@ -17,6 +21,7 @@ public class EnvironmentParserImpl implements EnvironmentParser {
     private static final String COMPONENTS = "components";
 
     private final Io io;
+    private final ComponentFactory componentFactory;
 
     @Override
     public Environment parse(String name, File file) {
@@ -26,5 +31,10 @@ public class EnvironmentParserImpl implements EnvironmentParser {
         } catch (RuntimeException e) {
             throw new IllegalArgumentException("Can't parse '" + name + "' env", e);
         }
+    }
+
+    @Override
+    public Environment fakeEnvWithName(String name) {
+        return new EnvironmentImpl(name, emptyList(), componentFactory);
     }
 }

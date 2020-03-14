@@ -3,7 +3,6 @@ package io.microconfig.domain.impl.environment.provider;
 
 import io.microconfig.domain.Environment;
 import io.microconfig.domain.Environments;
-import io.microconfig.domain.impl.environment.EnvironmentImpl;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -18,7 +17,6 @@ import java.util.stream.Stream;
 import static io.microconfig.io.FileUtils.walk;
 import static io.microconfig.io.StreamUtils.map;
 import static io.microconfig.io.formats.ConfigFormat.YAML;
-import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toCollection;
@@ -28,12 +26,12 @@ public class FileBasedEnvironments implements Environments {
     private final File envDir;
     private final EnvironmentParser parser;
 
-    public FileBasedEnvironments(File envDir, EnvironmentParser parser) {
-        this.envDir = envDir;
+    public FileBasedEnvironments(File rootDir, EnvironmentParser parser) {
+        this.envDir = new File(rootDir, "env");
         this.parser = parser;
 
-        if (!envDir.exists()) {
-            throw new IllegalArgumentException("Env directory doesn't exist " + envDir);
+        if (!rootDir.exists()) {
+            throw new IllegalArgumentException("Env directory doesn't exist " + rootDir);
         }
     }
 
@@ -59,7 +57,8 @@ public class FileBasedEnvironments implements Environments {
 
     @Override
     public Environment getOrCreateWithName(String name) {
-        return findEnv(name).orElseGet(fakeEnvWithName(name));
+        return findEnv(name)
+                .orElseGet(fakeEnvWithName(name));
     }
 
     private Optional<Environment> findEnv(String name) {
@@ -70,7 +69,7 @@ public class FileBasedEnvironments implements Environments {
     }
 
     private Supplier<Environment> fakeEnvWithName(String name) {
-        return () -> new EnvironmentImpl(name, emptyList());
+        return () -> parser.fakeEnvWithName(name);
     }
 
     private Optional<File> envFile(String name) {
