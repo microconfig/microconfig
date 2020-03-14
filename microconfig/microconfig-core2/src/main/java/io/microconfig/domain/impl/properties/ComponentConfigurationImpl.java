@@ -33,7 +33,7 @@ public class ComponentConfigurationImpl implements ComponentConfiguration {
     @Override
     public Optional<Property> getPropertyWithKey(String key) {
         return properties.stream()
-                .filter(p -> p.getValue().equals(key))
+                .filter(p -> p.getKey().equals(key))
                 .findFirst();
     }
 
