@@ -12,7 +12,7 @@ import static io.microconfig.io.StreamUtils.forEach;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor
-public class ComponentConfigurationImpl implements ComponentConfiguration {
+public class ComponentConfigImpl implements ComponentConfig {
     private final String component;
     private final String environment;
     private final ConfigType configType;
@@ -26,7 +26,7 @@ public class ComponentConfigurationImpl implements ComponentConfiguration {
     }
 
     @Override
-    public ComponentConfiguration resolveBy(Resolver resolver) {
+    public ComponentConfig resolveBy(Resolver resolver) {
         return withProperties(forEach(properties, p -> p.resolveBy(resolver)));
     }
 

@@ -11,26 +11,26 @@ import static io.microconfig.io.StreamUtils.forEach;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
-public class CompositeComponentConfigurationImpl implements CompositeComponentConfiguration {
-    private final List<ComponentConfiguration> results;
+public class CompositeComponentConfigImpl implements CompositeComponentConfig {
+    private final List<ComponentConfig> results;
 
-    public static CompositeComponentConfiguration resultsOf(List<ComponentConfiguration> results) {
-        return new CompositeComponentConfigurationImpl(results);
+    public static CompositeComponentConfig resultsOf(List<ComponentConfig> results) {
+        return new CompositeComponentConfigImpl(results);
     }
 
     @Override
-    public List<ComponentConfiguration> asList() {
+    public List<ComponentConfig> asList() {
         return results;
     }
 
     @Override
-    public CompositeComponentConfiguration resolveBy(Resolver resolver) {
+    public CompositeComponentConfig resolveBy(Resolver resolver) {
         return resultsOf(forEach(results, r -> r.resolveBy(resolver)));
     }
 
     @Override
     public List<Property> getProperties() {
-        return flatMapEach(results, ComponentConfiguration::getProperties);
+        return flatMapEach(results, ComponentConfig::getProperties);
     }
 
     @Override

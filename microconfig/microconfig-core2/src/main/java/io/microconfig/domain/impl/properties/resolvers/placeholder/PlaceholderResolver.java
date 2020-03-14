@@ -21,16 +21,6 @@ public class PlaceholderResolver implements Resolver {
         private final PlaceholderBorders borders;
 
         @Override
-        public int getStartIndex() {
-            return borders.getStartIndex();
-        }
-
-        @Override
-        public int getEndIndex() {
-            return borders.getEndIndex();
-        }
-
-        @Override
         public String resolve() {
             Placeholder placeholder = borders.toPlaceholder("app", "dev");
             try {
@@ -41,6 +31,16 @@ public class PlaceholderResolver implements Resolver {
                 if (defaultValue != null) return defaultValue;
                 throw e;
             }
+        }
+
+        @Override
+        public int getStartIndex() {
+            return borders.getStartIndex();
+        }
+
+        @Override
+        public int getEndIndex() {
+            return borders.getEndIndex();
         }
     }
 }

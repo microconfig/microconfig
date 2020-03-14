@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static io.microconfig.domain.impl.properties.CompositeComponentConfigurationImpl.resultsOf;
+import static io.microconfig.domain.impl.properties.CompositeComponentConfigImpl.resultsOf;
 import static io.microconfig.io.StreamUtils.forEach;
 
 @RequiredArgsConstructor
@@ -22,13 +22,13 @@ public class ComponentImpl implements Component {
     private final String environment;
 
     @Override
-    public CompositeComponentConfiguration getPropertiesFor(ConfigTypeFilter filter) {
+    public CompositeComponentConfig getPropertiesFor(ConfigTypeFilter filter) {
         List<ConfigType> filteredTypes = filter.selectTypes(configTypes.getTypes());
         return resultsOf(forEach(filteredTypes, this::readConfigs));
     }
 
-    private ComponentConfiguration readConfigs(ConfigType configType) {
+    private ComponentConfig readConfigs(ConfigType configType) {
         List<Property> properties = propertyRepository.getProperties(name, type, environment, configType);
-        return new ComponentConfigurationImpl(name, environment, configType, properties);
+        return new ComponentConfigImpl(name, environment, configType, properties);
     }
 }
