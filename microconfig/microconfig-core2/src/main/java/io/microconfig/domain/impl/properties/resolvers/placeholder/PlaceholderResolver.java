@@ -1,6 +1,6 @@
 package io.microconfig.domain.impl.properties.resolvers.placeholder;
 
-import io.microconfig.domain.Resolver;
+import io.microconfig.domain.StatementResolver;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
@@ -8,7 +8,7 @@ import java.util.Optional;
 import static io.microconfig.domain.impl.properties.resolvers.placeholder.PlaceholderBorders.findPlaceholderIn;
 
 @RequiredArgsConstructor
-public class PlaceholderResolver implements Resolver {
+public class PlaceholderResolver implements StatementResolver {
     private final PlaceholderResolveStrategy strategy;
 
     @Override

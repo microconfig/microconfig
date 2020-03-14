@@ -6,7 +6,7 @@ import java.util.Optional;
 public interface CompositeComponentConfig {
     List<ComponentConfig> asList();
 
-    CompositeComponentConfig resolveBy(Resolver resolver);
+    CompositeComponentConfig resolveBy(StatementResolver resolver);
 
     List<Property> getProperties();
 

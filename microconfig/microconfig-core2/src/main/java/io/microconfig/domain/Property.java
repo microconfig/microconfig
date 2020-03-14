@@ -9,5 +9,5 @@ public interface Property {
 
     PropertySource getSource();
 
-    Property resolveBy(Resolver resolver);
+    Property resolveBy(StatementResolver resolver);
 }

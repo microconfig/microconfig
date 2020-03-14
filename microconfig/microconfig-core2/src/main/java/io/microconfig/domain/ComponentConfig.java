@@ -6,7 +6,7 @@ import java.util.Optional;
 public interface ComponentConfig {
     String getConfigType();
 
-    ComponentConfig resolveBy(Resolver resolver);
+    ComponentConfig resolveBy(StatementResolver resolver);
 
     List<Property> getProperties();
 

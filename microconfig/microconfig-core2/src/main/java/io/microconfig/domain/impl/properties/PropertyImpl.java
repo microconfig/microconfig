@@ -2,7 +2,7 @@ package io.microconfig.domain.impl.properties;
 
 import io.microconfig.domain.Property;
 import io.microconfig.domain.PropertySource;
-import io.microconfig.domain.Resolver;
+import io.microconfig.domain.StatementResolver;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -112,7 +112,7 @@ public class PropertyImpl implements Property {
     }
 
     @Override
-    public Property resolveBy(Resolver resolver) {
+    public Property resolveBy(StatementResolver resolver) {
         return withValue(resolver.resolveRecursively(value));
     }
 }

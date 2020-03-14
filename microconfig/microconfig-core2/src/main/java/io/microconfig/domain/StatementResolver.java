@@ -2,7 +2,7 @@ package io.microconfig.domain;
 
 import java.util.Optional;
 
-public interface Resolver {
+public interface StatementResolver {
     default String resolveRecursively(CharSequence line) {
         StringBuilder result = new StringBuilder(line);
         while (true) {
@@ -19,10 +19,10 @@ public interface Resolver {
     Optional<Statement> findStatementIn(CharSequence line);
 
     interface Statement {
+        String resolve();
+
         int getStartIndex();
 
         int getEndIndex();
-
-        String resolve();
     }
 }

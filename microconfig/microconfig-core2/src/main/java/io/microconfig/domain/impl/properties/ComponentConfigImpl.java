@@ -26,7 +26,7 @@ public class ComponentConfigImpl implements ComponentConfig {
     }
 
     @Override
-    public ComponentConfig resolveBy(Resolver resolver) {
+    public ComponentConfig resolveBy(StatementResolver resolver) {
         return withProperties(forEach(properties, p -> p.resolveBy(resolver)));
     }
 

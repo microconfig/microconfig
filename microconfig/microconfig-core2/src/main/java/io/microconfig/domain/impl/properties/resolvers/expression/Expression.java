@@ -1,6 +1,6 @@
 package io.microconfig.domain.impl.properties.resolvers.expression;
 
-import io.microconfig.domain.Resolver.Statement;
+import io.microconfig.domain.StatementResolver.Statement;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.expression.EvaluationException;

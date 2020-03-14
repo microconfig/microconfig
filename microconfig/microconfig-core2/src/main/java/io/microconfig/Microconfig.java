@@ -3,7 +3,7 @@ package io.microconfig;
 import io.microconfig.domain.ConfigTypes;
 import io.microconfig.domain.Environment;
 import io.microconfig.domain.Environments;
-import io.microconfig.domain.Resolver;
+import io.microconfig.domain.StatementResolver;
 import io.microconfig.domain.impl.configtype.StandardConfigType;
 import io.microconfig.domain.impl.configtype.YamlDescriptorConfigTypes;
 import io.microconfig.domain.impl.environment.ComponentFactory;
@@ -49,7 +49,7 @@ public class Microconfig {
         return environments().withName(name);
     }
 
-    public Resolver resolver() {
+    public StatementResolver resolver() {
         return chainOf(
                 placeholderResolver(),
                 new ExpressionResolver()

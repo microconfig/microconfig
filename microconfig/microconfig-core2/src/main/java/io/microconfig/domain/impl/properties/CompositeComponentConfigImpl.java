@@ -24,7 +24,7 @@ public class CompositeComponentConfigImpl implements CompositeComponentConfig {
     }
 
     @Override
-    public CompositeComponentConfig resolveBy(Resolver resolver) {
+    public CompositeComponentConfig resolveBy(StatementResolver resolver) {
         return resultsOf(forEach(results, r -> r.resolveBy(resolver)));
     }
 

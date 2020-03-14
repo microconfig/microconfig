@@ -1,6 +1,6 @@
 package io.microconfig.domain.impl.properties.resolvers.expression;
 
-import io.microconfig.domain.Resolver;
+import io.microconfig.domain.StatementResolver;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
@@ -12,7 +12,7 @@ import static java.util.Optional.of;
 import static java.util.regex.Pattern.compile;
 
 @RequiredArgsConstructor
-public class ExpressionResolver implements Resolver {
+public class ExpressionResolver implements StatementResolver {
     private final Pattern expressionPattern = compile("#\\{(?<value>[^{]+?)}");
 
     @Override
