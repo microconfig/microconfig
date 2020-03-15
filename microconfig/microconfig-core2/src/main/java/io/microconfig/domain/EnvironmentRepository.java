@@ -1,15 +1,14 @@
 package io.microconfig.domain;
 
-
 import java.util.List;
 import java.util.Set;
 
 public interface EnvironmentRepository {
-    List<Environment> all();
+    List<Environment> environments();
 
     Set<String> environmentNames();
 
-    Environment withName(String name);
+    Environment getWithName(String name);
 
     Environment getOrCreateWithName(String name);
 }

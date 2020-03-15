@@ -31,7 +31,7 @@ public class EnvInclude {
         if (environment.isEmpty()) return includeTo;
 
         //todo
-        EnvironmentDefinition includeFrom = (EnvironmentDefinition) environmentRepository.withName(environment);
+        EnvironmentDefinition includeFrom = (EnvironmentDefinition) environmentRepository.getWithName(environment);
 
         Map<String, ComponentGroupDefinition> groupToIncludeByName = collectGroupsToInclude(includeFrom)
                 .stream()

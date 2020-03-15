@@ -45,7 +45,7 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     }
 
     @Override
-    public List<Environment> all() {
+    public List<Environment> environments() {
         return forEach(environmentFiles(), parse());
     }
 
@@ -55,7 +55,7 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     }
 
     @Override
-    public Environment withName(String name) {
+    public Environment getWithName(String name) {
         return findEnvWith(name).orElseThrow(() -> {
             throw new EnvironmentException("Can't find env '" + name + "'");
         });

@@ -43,7 +43,7 @@ public class Microconfig {
     }
 
     public Environment inEnvironment(String name) {
-        return environments().withName(name);
+        return environments().getWithName(name);
     }
 
     public StatementResolver resolver() {
