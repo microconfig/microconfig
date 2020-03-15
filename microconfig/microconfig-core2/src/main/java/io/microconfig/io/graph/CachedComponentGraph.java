@@ -30,7 +30,7 @@ public class CachedComponentGraph implements ComponentGraph {
     private final File rootDir;
     private final Map<String, List<File>> foldersByComponentType;
 
-    public static ComponentGraph traverseFromRoot(File rootDir) {
+    public static ComponentGraph traverseFrom(File rootDir) {
         File componentDir = new File(rootDir, COMPONENTS_DIR);
         if (!componentDir.exists()) {
             throw new IllegalArgumentException("Root directory must contain 'components' dir");

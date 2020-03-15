@@ -85,7 +85,7 @@ public class EnvironmentImpl implements Environment {
                     .collect(toList());
         };
 
-        UnaryOperator<List<Component>> filterByComponents = (componentFromGroups) -> {
+        UnaryOperator<List<Component>> filterByComponents = componentFromGroups -> {
             if (components.isEmpty()) return componentFromGroups;
 
             Map<String, Component> componentByName = componentFromGroups.stream()

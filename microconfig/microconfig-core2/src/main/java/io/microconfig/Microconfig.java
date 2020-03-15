@@ -7,7 +7,6 @@ import io.microconfig.domain.StatementResolver;
 import io.microconfig.domain.impl.configtypes.StandardConfigType;
 import io.microconfig.domain.impl.environments.ComponentFactory;
 import io.microconfig.domain.impl.environments.repository.ComponentFactoryImpl;
-import io.microconfig.domain.impl.environments.repository.EnvironmentFile;
 import io.microconfig.domain.impl.environments.repository.FileEnvironmentRepository;
 import io.microconfig.domain.impl.properties.repository.FilePropertyRepository;
 import io.microconfig.domain.impl.properties.resolvers.expression.ExpressionResolver;
@@ -26,7 +25,7 @@ import static io.microconfig.domain.impl.configtypes.DescriptorConfigTypeReposit
 import static io.microconfig.domain.impl.properties.resolvers.chain.ChainedResolver.chainOf;
 import static io.microconfig.io.FileUtils.canonical;
 import static io.microconfig.io.formats.factory.ConfigIoServiceFactory.newConfigIoService;
-import static io.microconfig.io.graph.CachedComponentGraph.traverseFromRoot;
+import static io.microconfig.io.graph.CachedComponentGraph.traverseFrom;
 
 @RequiredArgsConstructor
 public class Microconfig {
@@ -39,6 +38,7 @@ public class Microconfig {
         if (!canonical.exists()) {
             throw new IllegalArgumentException("Root directory doesn't exist: " + rootDir);
         }
+
         return new Microconfig(canonical, new FileSystemIo());
     }
 
@@ -66,18 +66,19 @@ public class Microconfig {
     private EnvironmentRepository environments() {
         return new FileEnvironmentRepository(
                 rootDir,
-                new EnvironmentFile(io, fsComponentFactory()),
-                componentFactory);
-    }
-
-    private ComponentFactory fsComponentFactory() {
-        return new ComponentFactoryImpl(
-                configTypes(),
-                fsPropertyRepository()
+                io,
+                componentFactory()
         );
     }
 
-    private FilePropertyRepository fsPropertyRepository() {
+    private ComponentFactory componentFactory() {
+        return new ComponentFactoryImpl(
+                configTypes(),
+                propertyRepository()
+        );
+    }
+
+    private FilePropertyRepository propertyRepository() {
         return new FilePropertyRepository(
                 componentGraph(),
                 newConfigIoService(io)
@@ -92,6 +93,6 @@ public class Microconfig {
     }
 
     private ComponentGraph componentGraph() {
-        return traverseFromRoot(rootDir);
+        return traverseFrom(rootDir);
     }
 }

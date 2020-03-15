@@ -26,7 +26,11 @@ public class EnvironmentInclude {
         return empty;
     }
 
-    public EnvironmentDefinition includeTo(EnvironmentDefinition includeTo, EnvironmentRepository environmentRepository) {
+    public EnvironmentDefinition includeTo(EnvironmentDefinition includeTo,
+                                           EnvironmentRepository environmentRepository) {
+        if (environment.isEmpty()) return includeTo;
+
+        //todo
         EnvironmentDefinition includeFrom = (EnvironmentDefinition) environmentRepository.withName(environment);
 
         Map<String, ComponentGroupDefinition> groupToIncludeByName = collectGroupsToInclude(includeFrom)
