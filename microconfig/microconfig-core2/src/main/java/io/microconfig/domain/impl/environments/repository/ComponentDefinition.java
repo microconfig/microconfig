@@ -6,10 +6,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Getter
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class ComponentDefinition {
+    @Getter
     private final String name;
     private final String type;
 

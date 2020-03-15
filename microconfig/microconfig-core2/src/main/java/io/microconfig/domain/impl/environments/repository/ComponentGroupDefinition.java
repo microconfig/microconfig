@@ -14,12 +14,14 @@ import static io.microconfig.io.CollectionUtils.minus;
 import static io.microconfig.io.StreamUtils.forEach;
 import static java.util.Collections.emptyList;
 
-@Getter
 @With
 @RequiredArgsConstructor
 public class ComponentGroupDefinition {
+    @Getter
     private final String name;
+    @Getter
     private final String ip;
+    @Getter
     private final List<ComponentDefinition> components;
 
     private final List<ComponentDefinition> excludedComponents;

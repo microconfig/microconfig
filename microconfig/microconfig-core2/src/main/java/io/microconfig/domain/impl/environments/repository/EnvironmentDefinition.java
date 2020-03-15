@@ -17,14 +17,15 @@ import static io.microconfig.io.StreamUtils.forEach;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
-@Getter
 @With
 @RequiredArgsConstructor
 public class EnvironmentDefinition {
     private final String name;
+    @Getter
     private final String ip;
     private final int portOffset;
     private final EnvironmentInclude envInclude;
+    @Getter
     private final List<ComponentGroupDefinition> groups;
 
     private final File source;
