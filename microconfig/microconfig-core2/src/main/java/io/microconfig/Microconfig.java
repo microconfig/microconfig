@@ -5,7 +5,6 @@ import io.microconfig.domain.Environment;
 import io.microconfig.domain.EnvironmentRepository;
 import io.microconfig.domain.StatementResolver;
 import io.microconfig.domain.impl.configtypes.StandardConfigType;
-import io.microconfig.domain.impl.configtypes.YamlDescriptorConfigTypeRepository;
 import io.microconfig.domain.impl.environments.ComponentFactory;
 import io.microconfig.domain.impl.environments.repository.ComponentFactoryImpl;
 import io.microconfig.domain.impl.environments.repository.EnvironmentParserImpl;
@@ -16,7 +15,6 @@ import io.microconfig.domain.impl.properties.resolvers.placeholder.PlaceholderRe
 import io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.standard.StandardResolveStrategy;
 import io.microconfig.io.formats.FileSystemIo;
 import io.microconfig.io.formats.Io;
-import io.microconfig.io.graph.CachedComponentGraph;
 import io.microconfig.io.graph.ComponentGraph;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -24,9 +22,11 @@ import lombok.With;
 import java.io.File;
 
 import static io.microconfig.domain.impl.configtypes.CompositeConfigTypeRepository.composite;
+import static io.microconfig.domain.impl.configtypes.DescriptorConfigTypeRepository.findDescriptorIn;
 import static io.microconfig.domain.impl.properties.resolvers.chain.ChainedResolver.chainOf;
 import static io.microconfig.io.FileUtils.canonical;
 import static io.microconfig.io.formats.factory.ConfigIoServiceFactory.newConfigIoService;
+import static io.microconfig.io.graph.CachedComponentGraph.traverseFromRoot;
 
 @RequiredArgsConstructor
 public class Microconfig {
@@ -79,19 +79,19 @@ public class Microconfig {
 
     private FilePropertyRepository fsPropertyRepository() {
         return new FilePropertyRepository(
-                fsGraph(),
+                componentGraph(),
                 newConfigIoService(io)
         );
     }
 
     private ConfigTypeRepository configTypes() {
         return composite(
-                new YamlDescriptorConfigTypeRepository(rootDir, io),
+                findDescriptorIn(rootDir, io),
                 StandardConfigType.asRepository()
         );
     }
 
-    private ComponentGraph fsGraph() {
-        return CachedComponentGraph.prepare(rootDir);
+    private ComponentGraph componentGraph() {
+        return traverseFromRoot(rootDir);
     }
 }

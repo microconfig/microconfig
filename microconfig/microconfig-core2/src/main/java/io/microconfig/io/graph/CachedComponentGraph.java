@@ -20,8 +20,9 @@ import static java.util.Comparator.comparing;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.groupingBy;
+import static lombok.AccessLevel.PRIVATE;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = PRIVATE)
 public class CachedComponentGraph implements ComponentGraph {
     public static final String COMPONENTS_DIR = "components";
 
@@ -29,7 +30,7 @@ public class CachedComponentGraph implements ComponentGraph {
     private final File rootDir;
     private final Map<String, List<File>> foldersByComponentType;
 
-    public static ComponentGraph prepare(File rootDir) {
+    public static ComponentGraph traverseFromRoot(File rootDir) {
         File componentDir = new File(rootDir, COMPONENTS_DIR);
         if (!componentDir.exists()) {
             throw new IllegalArgumentException("Root directory must contain 'components' dir");
@@ -79,7 +80,7 @@ public class CachedComponentGraph implements ComponentGraph {
     private static Predicate<File> isDirectory() {
         return f -> {
             //Filter by ext works way faster than File::isDirectory.
-            //Implementation is correct because File::listFiles for file will return null and we handle it in getConfigFiles()
+            //Implementation is correct because File::listFiles for file will return null and its handled in getConfigFiles()
             return !f.getName().contains(".");
         };
     }

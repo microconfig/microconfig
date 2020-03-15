@@ -17,9 +17,9 @@ public class CompositeConfigTypeRepository implements ConfigTypeRepository {
     }
 
     @Override
-    public List<ConfigType> getRepositories() {
+    public List<ConfigType> getConfigTypes() {
         return repositories.stream()
-                .map(ConfigTypeRepository::getRepositories)
+                .map(ConfigTypeRepository::getConfigTypes)
                 .filter(types -> !types.isEmpty())
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Config types are not configured"));

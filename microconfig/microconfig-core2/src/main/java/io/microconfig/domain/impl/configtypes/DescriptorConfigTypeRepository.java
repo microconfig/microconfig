@@ -20,33 +20,32 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 
 @RequiredArgsConstructor
-public class YamlDescriptorConfigTypeRepository implements ConfigTypeRepository {
+public class DescriptorConfigTypeRepository implements ConfigTypeRepository {
     private static final String DESCRIPTOR = "microconfig.yaml";
 
-    private final File rootDir;
     private final Io io;
+    private final File descriptorFile;
+
+    public static ConfigTypeRepository findDescriptorIn(File rootDir, Io io) {
+        return new DescriptorConfigTypeRepository(io, new File(rootDir, DESCRIPTOR));
+    }
 
     @Override
-    public List<ConfigType> getRepositories() {
-        File descriptorFile = descriptorFile();
+    public List<ConfigType> getConfigTypes() {
         if (!descriptorFile.exists()) return emptyList();
 
-        List<ConfigType> types = getConfigTypes(descriptorFile);
+        List<ConfigType> types = parseConfigTypes();
         if (!types.isEmpty()) {
             announce("Using settings from " + DESCRIPTOR);
         }
         return types;
     }
 
-    private File descriptorFile() {
-        return new File(rootDir, DESCRIPTOR);
-    }
-
-    private List<ConfigType> getConfigTypes(File descriptor) {
+    private List<ConfigType> parseConfigTypes() {
         try {
-            return new MicroconfigDescriptor(io.readFully(descriptor)).getConfigTypes();
+            return new MicroconfigDescriptor(io.readFully(descriptorFile)).getConfigTypes();
         } catch (RuntimeException e) {
-            throw new RuntimeException("Can't parse descriptor: " + descriptor, e);
+            throw new RuntimeException("Can't parse descriptor: " + descriptorFile, e);
         }
     }
 

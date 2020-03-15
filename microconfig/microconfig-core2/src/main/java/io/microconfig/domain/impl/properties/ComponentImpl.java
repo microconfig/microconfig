@@ -23,7 +23,7 @@ public class ComponentImpl implements Component {
 
     @Override
     public CompositeComponentProperties getPropertiesFor(ConfigTypeFilter filter) {
-        List<ConfigType> filteredTypes = filter.selectTypes(configTypeRepository.getRepositories());
+        List<ConfigType> filteredTypes = filter.selectTypes(configTypeRepository.getConfigTypes());
         return resultsOf(forEach(filteredTypes, this::readConfigs));
     }
 
