@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
 
-import static io.microconfig.utils.StreamUtils.findFirst;
+import static io.microconfig.utils.StreamUtils.firstPresentResult;
 import static java.util.Arrays.asList;
 import static lombok.AccessLevel.PRIVATE;
 
@@ -20,6 +20,6 @@ public class ChainedResolver implements StatementResolver {
 
     @Override
     public Optional<Statement> findStatementIn(CharSequence line) {
-        return findFirst(resolvers, r -> r.findStatementIn(line));
+        return firstPresentResult(resolvers, r -> r.findStatementIn(line));
     }
 }

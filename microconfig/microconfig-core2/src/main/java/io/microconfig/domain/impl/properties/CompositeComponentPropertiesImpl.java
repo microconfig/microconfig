@@ -34,7 +34,7 @@ public class CompositeComponentPropertiesImpl implements CompositeComponentPrope
 
     @Override
     public Optional<Property> getPropertyWithKey(String key) {
-        return findFirst(results, r -> r.getPropertyWithKey(key));
+        return firstPresentResult(results, r -> r.getPropertyWithKey(key));
     }
 
     @Override

@@ -53,7 +53,7 @@ public class EnvironmentImpl implements Environment {
 
     @Override
     public Component findComponentWithName(String componentName, boolean mustBeDeclaredInEnvDescriptor) {
-        return findFirst(componentGroups, g -> g.findComponentWithName(componentName))
+        return firstPresentResult(componentGroups, g -> g.findComponentWithName(componentName))
                 .orElseGet(() -> {
                     if (mustBeDeclaredInEnvDescriptor) {
                         throw new IllegalArgumentException(notFoundComponentMessage(componentName));
