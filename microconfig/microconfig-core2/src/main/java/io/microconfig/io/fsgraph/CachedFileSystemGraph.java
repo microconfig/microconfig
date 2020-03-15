@@ -5,16 +5,15 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static io.microconfig.io.FileUtils.walk;
 import static io.microconfig.io.Logger.warn;
+import static io.microconfig.io.StringUtils.symbolCountIn;
 import static java.util.Collections.emptyList;
+import static java.util.Comparator.comparing;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.groupingBy;
@@ -56,7 +55,13 @@ public class CachedFileSystemGraph implements FileSystemGraph {
                 .map(File::listFiles)
                 .filter(Objects::nonNull)
                 .flatMap(Stream::of)
-                .filter(filter);
+                .filter(filter)
+                .sorted(envCountThenName());
+    }
+
+    private Comparator<File> envCountThenName() {
+        return comparing(File::getName, comparing(name -> symbolCountIn(name, '.')))
+                .thenComparing(File::getName);
     }
 
     @Override

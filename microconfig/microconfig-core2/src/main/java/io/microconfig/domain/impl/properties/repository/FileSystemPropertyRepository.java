@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static io.microconfig.io.fsgraph.ConfigFileFilters.*;
 import static java.util.Comparator.comparing;
@@ -38,7 +39,7 @@ public class FileSystemPropertyRepository implements PropertyRepository {
         public Map<String, Property> collectPropertiesFor(String componentType, String env) {
             Function<Predicate<File>, Map<String, Property>> collectProperties = filter -> {
                 try {
-                    return collectPropertiesFor(componentType, filter, env);
+                    return collectPropertiesFrom(configDefinitionsFor(componentType, filter, env));
                 } catch (ComponentDoesNotExistException e) {
                     throw e.withComponentParent(componentType);
                 }
@@ -53,22 +54,23 @@ public class FileSystemPropertyRepository implements PropertyRepository {
             return basicProperties;
         }
 
-        private Map<String, Property> collectPropertiesFor(String componentType, Predicate<File> filter, String env) {
+        private Map<String, Property> collectPropertiesFrom(Stream<ConfigDefinition> configDefinitions) {
             Map<String, Property> propertyByKey = new HashMap<>();
 
-            fsGraph.getConfigFilesFor(componentType, filter)
-                    .map(file -> configParser.parse(file, env))
-                    .forEach(c -> processComponent(c, propertyByKey));
+            configDefinitions.forEach(c -> {
+                Map<String, Property> included = collectIncludedProperties(c.getIncludes());
+                Map<String, Property> original = c.getProperties();
+
+                propertyByKey.putAll(included);
+                propertyByKey.putAll(original);
+            });
 
             return propertyByKey;
         }
 
-        private void processComponent(ConfigDefinition configDefinition, Map<String, Property> destination) {
-            Map<String, Property> included = collectIncludedProperties(configDefinition.getIncludes());
-            Map<String, Property> original = configDefinition.getProperties();
-
-            destination.putAll(included);
-            destination.putAll(original);
+        private Stream<ConfigDefinition> configDefinitionsFor(String componentType, Predicate<File> filter, String env) {
+            return fsGraph.getConfigFilesFor(componentType, filter)
+                    .map(file -> configParser.parse(file, env));
         }
 
         private Map<String, Property> collectIncludedProperties(List<Include> includes) {

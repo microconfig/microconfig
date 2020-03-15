@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import static io.microconfig.io.StringUtils.symbolCountIn;
+
 public class ConfigFileFilters {
     public static Predicate<File> defaultConfig(Set<String> extensions) {
         return fileEndsWith(extensions)
@@ -33,11 +35,8 @@ public class ConfigFileFilters {
 
     private static Predicate<File> environmentCountIs(Predicate<Long> envCountPredicate) {
         return file -> {
-            long dotCount = file.getName()
-                    .chars()
-                    .filter(c -> c == '.')
-                    .count();
-            return envCountPredicate.test(dotCount - 1);
+            long envCount = symbolCountIn(file.getName(), '.') - 1;
+            return envCountPredicate.test(envCount);
         };
     }
 }
