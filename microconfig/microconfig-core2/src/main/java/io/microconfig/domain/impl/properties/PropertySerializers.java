@@ -4,9 +4,9 @@ import io.microconfig.domain.Property;
 import io.microconfig.domain.PropertySerializer;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
-import static io.microconfig.domain.impl.properties.PropertyImpl.containsYamlProperties;
 import static io.microconfig.domain.impl.properties.io.ConfigFormat.PROPERTIES;
 import static io.microconfig.domain.impl.properties.io.ConfigFormat.YAML;
 import static io.microconfig.domain.impl.properties.io.selector.ConfigIoFactory.configIo;
@@ -34,5 +34,13 @@ public class PropertySerializers {
 
     private static String extensionByContent(List<Property> properties) {
         return properties.isEmpty() || containsYamlProperties(properties) ? YAML.extension() : PROPERTIES.extension();
+    }
+
+    private static boolean containsYamlProperties(Collection<Property> properties) {
+        return properties.stream()
+                .map(Property::getSource)
+                .filter(s -> s instanceof FilePropertySource)
+                .map(FilePropertySource.class::cast)
+                .anyMatch(FilePropertySource::isYaml);
     }
 }

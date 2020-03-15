@@ -9,10 +9,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
-import java.util.Collection;
-import java.util.Map;
-
-import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static io.microconfig.utils.StringUtils.unixLikePath;
 import static java.util.stream.IntStream.range;
 import static lombok.AccessLevel.PRIVATE;
@@ -69,28 +65,6 @@ public class PropertyImpl implements Property {
 
     public static boolean isComment(String line) {
         return line.startsWith("#");
-    }
-
-    public static Map<String, String> withoutTempValues(Map<String, Property> properties) {
-        return properties.entrySet()
-                .stream()
-                .filter(e -> !e.getValue().isTemp())
-                .collect(toLinkedMap(Map.Entry::getKey, e -> e.getValue().getValue()));
-    }
-
-    public static Map<String, String> asStringMap(Map<String, Property> properties) {
-        return properties.entrySet()
-                .stream()
-                .collect(toLinkedMap(Map.Entry::getKey, e -> e.getValue().getValue()));
-    }
-
-    public static boolean containsYamlProperties(Collection<Property> properties) {
-        return properties
-                .stream()
-                .map(Property::getSource)
-                .filter(s -> s instanceof FilePropertySource)
-                .map(FilePropertySource.class::cast)
-                .anyMatch(FilePropertySource::isYaml);
     }
 
     public Property escapeOnWindows() {
