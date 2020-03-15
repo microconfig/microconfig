@@ -2,7 +2,7 @@ package io.microconfig.domain.impl.environments.repository;
 
 import io.microconfig.domain.Environment;
 import io.microconfig.domain.EnvironmentRepository;
-import io.microconfig.io.StreamUtils;
+import io.microconfig.io.formats.Io;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -10,11 +10,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static io.microconfig.io.FileUtils.walk;
+import static io.microconfig.io.StreamUtils.filter;
+import static io.microconfig.io.StreamUtils.forEach;
 import static io.microconfig.io.formats.ConfigFormat.YAML;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -25,81 +28,83 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     private static final String ENV_DIR = "envs";
 
     private final File envDir;
-    private final EnvironmentParser parser;
+    private final Io io;
 
-    public FileEnvironmentRepository(File rootDir, EnvironmentParser parser) {
+    public FileEnvironmentRepository(File rootDir, Io io) {
         this.envDir = new File(rootDir, ENV_DIR);
         if (!envDir.exists()) {
-            throw new IllegalArgumentException("Env directory doesn't exist " + envDir);
+            throw new IllegalArgumentException("Env directory doesn't exist: " + envDir);
         }
-
-        this.parser = parser;
+        this.io = io;
     }
 
     @Override
     public List<Environment> all() {
-        return StreamUtils.forEach(envFiles(withYamlExtension()), f -> parser.parse(envName(f), f));
+        return forEach(environmentFiles(), parse());
     }
 
     @Override
     public Set<String> environmentNames() {
-        return envFiles(withYamlExtension())
-                .stream()
-                .map(this::envName)
-                .collect(toCollection(TreeSet::new));
+        return forEach(environmentFiles(), getEnvName(), toCollection(TreeSet::new));
     }
 
     @Override
     public Environment withName(String name) {
-        return findEnv(name).orElseThrow(() -> {
+        return findEnvWitH(name).orElseThrow(() -> {
             throw new EnvironmentNotFoundException("Can't find env with name '" + name + "'");
         });
     }
 
     @Override
     public Environment getOrCreateWithName(String name) {
-        return findEnv(name)
-                .orElseGet(fakeEnvWithName(name));
+        return findEnvWitH(name).orElseGet(fakeEnvWithName(name));
     }
 
-    private Optional<Environment> findEnv(String name) {
-        return envFile(name)
-                .map(envFile -> parser.parse(name, envFile));
-        //                .processInclude(this)
+    private Optional<Environment> findEnvWitH(String name) {
+        return envFileWith(name).map(parse());
+    }
+
+    private Optional<File> envFileWith(String name) {
+        List<File> envFiles = filter(environmentFiles(), withFileName(name));
+        if (envFiles.size() > 1) {
+            throw new IllegalArgumentException("Found several env files with name " + name);
+        }
+        return envFiles.isEmpty() ? empty() : of(envFiles.get(0));
+    }
+
+    private List<File> environmentFiles() {
+        try (Stream<Path> stream = walk(envDir.toPath())) {
+            return stream
+                    .map(Path::toFile)
+                    .filter(hasYamlExtension())
+                    .collect(toList());
+        }
+    }
+
+    private Function<File, Environment> parse() {
+        return f -> {
+            return new EnvironmentFile(f).parseUsing(io);
+            //                .processInclude(this)
 //                .verifyUniqueComponentNames();
+        };
     }
 
     private Supplier<Environment> fakeEnvWithName(String name) {
         return () -> parser.fakeEnvWithName(name);
     }
 
-    private Optional<File> envFile(String name) {
-        List<File> files = envFiles(withFileName(name));
-        if (files.size() > 1) {
-            throw new IllegalArgumentException("Found several env files with name " + name);
-        }
-        return files.isEmpty() ? empty() : of(files.get(0));
+    private Function<File, String> getEnvName() {
+        return f -> {
+            String name = f.getName();
+            return name.substring(0, name.lastIndexOf('.'));
+        };
     }
 
-    private List<File> envFiles(Predicate<File> predicate) {
-        try (Stream<Path> stream = walk(envDir.toPath())) {
-            return stream
-                    .map(Path::toFile)
-                    .filter(predicate)
-                    .collect(toList());
-        }
+    private Predicate<File> hasYamlExtension() {
+        return f -> f.getName().endsWith(YAML.extension());
     }
 
     private Predicate<File> withFileName(String envName) {
         return f -> f.getName().equals(envName + YAML.extension());
-    }
-
-    private Predicate<File> withYamlExtension() {
-        return f -> f.getName().endsWith(YAML.extension());
-    }
-
-    private String envName(File file) {
-        String name = file.getName();
-        return name.substring(0, name.lastIndexOf('.'));
     }
 }

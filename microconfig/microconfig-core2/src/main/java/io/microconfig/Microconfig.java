@@ -7,7 +7,7 @@ import io.microconfig.domain.StatementResolver;
 import io.microconfig.domain.impl.configtypes.StandardConfigType;
 import io.microconfig.domain.impl.environments.ComponentFactory;
 import io.microconfig.domain.impl.environments.repository.ComponentFactoryImpl;
-import io.microconfig.domain.impl.environments.repository.EnvironmentParserImpl;
+import io.microconfig.domain.impl.environments.repository.EnvironmentFile;
 import io.microconfig.domain.impl.environments.repository.FileEnvironmentRepository;
 import io.microconfig.domain.impl.properties.repository.FilePropertyRepository;
 import io.microconfig.domain.impl.properties.resolvers.expression.ExpressionResolver;
@@ -66,7 +66,7 @@ public class Microconfig {
     private EnvironmentRepository environments() {
         return new FileEnvironmentRepository(
                 rootDir,
-                new EnvironmentParserImpl(io, fsComponentFactory())
+                new EnvironmentFile(io, fsComponentFactory())
         );
     }
 

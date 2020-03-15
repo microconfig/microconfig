@@ -16,8 +16,12 @@ public class StreamUtils {
         return forEach(collection.stream(), applyFunction);
     }
 
-    public static <K, V> List<V> forEach(Stream<K> stream, Function<? super K, ? extends V> function) {
-        return stream.map(function).collect(toList());
+    public static <K, V, T extends Collection<V>> T forEach(Collection<K> collection, Function<? super K, ? extends V> applyFunction, Collector<? super V, ?, T> collector) {
+        return collection.stream().map(applyFunction).collect(collector);
+    }
+
+    public static <K, V> List<V> forEach(Stream<K> stream, Function<? super K, ? extends V> applyFunction) {
+        return stream.map(applyFunction).collect(toList());
     }
 
     public static <K, V> List<V> flatMapEach(Collection<K> collection,

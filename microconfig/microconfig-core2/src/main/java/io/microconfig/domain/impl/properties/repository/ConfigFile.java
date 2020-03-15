@@ -21,12 +21,12 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 @RequiredArgsConstructor
-class OriginalConfig {
-    private final File configFile;
+class ConfigFile {
+    private final File file;
     private final String environment;
 
     public ConfigDefinition parseUsing(ConfigIoService configIo) {
-        ConfigReader reader = configIo.readFrom(configFile);
+        ConfigReader reader = configIo.readFrom(file);
 
         Map<Integer, String> commentByLineNumber = reader.commentsByLineNumber();
         List<Include> includes = parseIncludes(commentByLineNumber.values());
@@ -43,7 +43,7 @@ class OriginalConfig {
         return commentByLineNumber.entrySet()
                 .stream()
                 .filter(e -> isTempProperty(e.getValue()))
-                .map(e -> parse(e.getValue(), environment, fileSource(configFile, e.getKey(), false)))
+                .map(e -> parse(e.getValue(), environment, fileSource(file, e.getKey(), false)))
                 .collect(toList());
     }
 

@@ -93,10 +93,17 @@ public class FileUtils {
         }
     }
 
-    public static String getExtension(File fileName) {
-        int beginIndex = fileName.getName().indexOf('.');
-        if (beginIndex < 0) return "";
+    public static String getExtension(File file) {
+        int extIndex = file.getName().lastIndexOf('.');
+        if (extIndex < 0) return "";
 
-        return fileName.getName().substring(beginIndex);
+        return file.getName().substring(extIndex);
+    }
+
+    public static String getName(File file) {
+        int extIndex = file.getName().lastIndexOf('.');
+        if (extIndex < 0) return file.getName();
+
+        return file.getName().substring(0, extIndex);
     }
 }
