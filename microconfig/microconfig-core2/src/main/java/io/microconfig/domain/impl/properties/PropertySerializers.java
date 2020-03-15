@@ -9,7 +9,7 @@ import java.util.List;
 import static io.microconfig.domain.impl.properties.PropertyImpl.containsYamlProperties;
 import static io.microconfig.domain.impl.properties.io.ConfigFormat.PROPERTIES;
 import static io.microconfig.domain.impl.properties.io.ConfigFormat.YAML;
-import static io.microconfig.domain.impl.properties.io.selector.ConfigIoServiceFactory.configIo;
+import static io.microconfig.domain.impl.properties.io.selector.ConfigIoFactory.configIo;
 import static io.microconfig.utils.FileUtils.delete;
 
 public class PropertySerializers {

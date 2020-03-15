@@ -1,7 +1,7 @@
 package io.microconfig.domain.impl.properties.io.selector;
 
 import io.microconfig.domain.impl.properties.io.ConfigFormat;
-import io.microconfig.domain.impl.properties.io.ConfigIoService;
+import io.microconfig.domain.impl.properties.io.ConfigIo;
 import io.microconfig.domain.impl.properties.io.ConfigReader;
 import io.microconfig.domain.impl.properties.io.ConfigWriter;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +12,11 @@ import static io.microconfig.domain.impl.properties.io.ConfigFormat.PROPERTIES;
 import static io.microconfig.domain.impl.properties.io.ConfigFormat.YAML;
 
 @RequiredArgsConstructor
-public class ConfigIoServiceSelector implements ConfigIoService {
+public class ConfigIoSelector implements ConfigIo {
     private final ConfigFormatDetector configFormatDetector;
 
-    private final ConfigIoService yamlFormat;
-    private final ConfigIoService propertiesFormat;
+    private final ConfigIo yamlFormat;
+    private final ConfigIo propertiesFormat;
 
     @Override
     public ConfigReader readFrom(File file) {
@@ -28,7 +28,7 @@ public class ConfigIoServiceSelector implements ConfigIoService {
         return select(file).writeTo(file);
     }
 
-    private ConfigIoService select(File file) {
+    private ConfigIo select(File file) {
         ConfigFormat format = configFormatDetector.detectConfigFormat(file);
         if (format == YAML) return yamlFormat;
         if (format == PROPERTIES) return propertiesFormat;

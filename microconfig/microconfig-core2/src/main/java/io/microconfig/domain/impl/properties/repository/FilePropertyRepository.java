@@ -3,7 +3,7 @@ package io.microconfig.domain.impl.properties.repository;
 import io.microconfig.domain.ConfigType;
 import io.microconfig.domain.Property;
 import io.microconfig.domain.impl.properties.PropertyRepository;
-import io.microconfig.domain.impl.properties.io.ConfigIoService;
+import io.microconfig.domain.impl.properties.io.ConfigIo;
 import io.microconfig.domain.impl.properties.repository.ConfigFile.ConfigDefinition;
 import io.microconfig.domain.impl.properties.repository.graph.ComponentNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class FilePropertyRepository implements PropertyRepository {
     private final ComponentGraph componentGraph;
-    private final ConfigIoService ioService;
+    private final ConfigIo ioService;
 
     @Override
     public List<Property> getProperties(String componentType, String environment, ConfigType configType) {

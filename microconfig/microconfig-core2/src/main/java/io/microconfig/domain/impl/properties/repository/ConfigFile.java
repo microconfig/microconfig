@@ -1,7 +1,7 @@
 package io.microconfig.domain.impl.properties.repository;
 
 import io.microconfig.domain.Property;
-import io.microconfig.domain.impl.properties.io.ConfigIoService;
+import io.microconfig.domain.impl.properties.io.ConfigIo;
 import io.microconfig.domain.impl.properties.io.ConfigReader;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ class ConfigFile {
     private final File file;
     private final String environment;
 
-    public ConfigDefinition parseUsing(ConfigIoService configIo) {
+    public ConfigDefinition parseUsing(ConfigIo configIo) {
         ConfigReader reader = configIo.readFrom(file);
 
         Map<Integer, String> commentByLineNumber = reader.commentsByLineNumber();
