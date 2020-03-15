@@ -18,7 +18,7 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
-public class ConfigParserImpl implements ConfigParser {
+public class ConfigDefinitionParserImpl implements ConfigDefinitionParser {
     private final ConfigIoService configIo;
 
     @Override
