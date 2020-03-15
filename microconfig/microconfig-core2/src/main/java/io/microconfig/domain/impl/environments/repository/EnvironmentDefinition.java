@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import static io.microconfig.domain.impl.environments.repository.EnvInclude.empty;
-import static io.microconfig.io.StreamUtils.forEach;
+import static io.microconfig.utils.StreamUtils.forEach;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 

@@ -4,7 +4,7 @@ import io.microconfig.domain.Property;
 import io.microconfig.domain.impl.properties.resolvers.expression.Expression;
 import io.microconfig.domain.impl.properties.resolvers.placeholder.RootComponent;
 
-import static io.microconfig.io.FileUtils.LINES_SEPARATOR;
+import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static java.lang.String.format;
 
 public class PropertyResolveException extends RuntimeException {

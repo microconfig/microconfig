@@ -1,8 +1,8 @@
 package io.microconfig.domain.impl.properties.repository;
 
 import io.microconfig.domain.Property;
-import io.microconfig.io.formats.ConfigIoService;
-import io.microconfig.io.formats.ConfigReader;
+import io.microconfig.domain.impl.properties.io.ConfigIoService;
+import io.microconfig.domain.impl.properties.io.ConfigReader;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -14,7 +14,7 @@ import java.util.Map;
 import static io.microconfig.domain.impl.properties.FilePropertySource.fileSource;
 import static io.microconfig.domain.impl.properties.PropertyImpl.isTempProperty;
 import static io.microconfig.domain.impl.properties.PropertyImpl.parse;
-import static io.microconfig.io.CollectionUtils.join;
+import static io.microconfig.utils.CollectionUtils.join;
 import static java.util.Collections.emptyList;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;

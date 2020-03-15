@@ -9,9 +9,9 @@ import lombok.With;
 
 import java.util.List;
 
-import static io.microconfig.io.CollectionUtils.join;
-import static io.microconfig.io.CollectionUtils.minus;
-import static io.microconfig.io.StreamUtils.forEach;
+import static io.microconfig.utils.CollectionUtils.join;
+import static io.microconfig.utils.CollectionUtils.minus;
+import static io.microconfig.utils.StreamUtils.forEach;
 import static java.util.Collections.emptyList;
 
 @With

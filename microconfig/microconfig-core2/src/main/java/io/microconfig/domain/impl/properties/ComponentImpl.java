@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 import static io.microconfig.domain.impl.properties.CompositeComponentPropertiesImpl.resultsOf;
-import static io.microconfig.io.StreamUtils.forEach;
+import static io.microconfig.utils.StreamUtils.forEach;
 
 @RequiredArgsConstructor
 public class ComponentImpl implements Component {

@@ -11,9 +11,9 @@ import lombok.With;
 import java.util.Collection;
 import java.util.Map;
 
-import static io.microconfig.io.OsUtil.isWindows;
-import static io.microconfig.io.StreamUtils.toLinkedMap;
-import static io.microconfig.io.StringUtils.unixLikePath;
+import static io.microconfig.utils.OsUtil.isWindows;
+import static io.microconfig.utils.StreamUtils.toLinkedMap;
+import static io.microconfig.utils.StringUtils.unixLikePath;
 import static java.util.stream.IntStream.range;
 import static lombok.AccessLevel.PRIVATE;
 

@@ -8,7 +8,7 @@ import lombok.With;
 import java.util.List;
 import java.util.Optional;
 
-import static io.microconfig.io.StreamUtils.forEach;
+import static io.microconfig.utils.StreamUtils.forEach;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor

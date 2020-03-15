@@ -4,8 +4,8 @@ import io.microconfig.domain.Environment;
 import io.microconfig.domain.EnvironmentRepository;
 import io.microconfig.domain.impl.environments.ComponentFactory;
 import io.microconfig.domain.impl.environments.EnvironmentImpl;
-import io.microconfig.io.FileUtils;
-import io.microconfig.io.io.FsReader;
+import io.microconfig.io.FsReader;
+import io.microconfig.utils.FileUtils;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -18,10 +18,10 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static io.microconfig.io.FileUtils.walk;
-import static io.microconfig.io.StreamUtils.filter;
-import static io.microconfig.io.StreamUtils.forEach;
-import static io.microconfig.io.formats.ConfigFormat.YAML;
+import static io.microconfig.utils.FileUtils.getName;
+import static io.microconfig.utils.FileUtils.walk;
+import static io.microconfig.utils.StreamUtils.filter;
+import static io.microconfig.utils.StreamUtils.forEach;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -99,10 +99,10 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     }
 
     private Predicate<File> hasYamlExtension() {
-        return f -> f.getName().endsWith(YAML.extension());
+        return f -> f.getName().endsWith(".yaml");
     }
 
     private Predicate<File> withFileName(String envName) {
-        return f -> f.getName().equals(envName + YAML.extension());
+        return f -> getName(f).equals(envName);
     }
 }

@@ -13,8 +13,8 @@ import java.util.Set;
 
 import static io.microconfig.factory.configtypes.ConfigTypeImpl.byName;
 import static io.microconfig.factory.configtypes.ConfigTypeImpl.byNameAndExtensions;
-import static io.microconfig.io.IoUtils.readFully;
-import static io.microconfig.io.Logger.announce;
+import static io.microconfig.utils.IoUtils.readFully;
+import static io.microconfig.utils.Logger.announce;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static java.util.stream.Collectors.toList;

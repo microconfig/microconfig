@@ -14,7 +14,7 @@ import java.util.List;
 import static io.microconfig.core.properties.Property.isComment;
 import static io.microconfig.core.properties.Property.property;
 import static io.microconfig.core.properties.sources.FileSource.fileSource;
-import static io.microconfig.io.FileUtils.LINES_SEPARATOR;
+import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static java.lang.Character.isWhitespace;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.IntStream.range;

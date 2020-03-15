@@ -3,13 +3,13 @@ package io.microconfig;
 import io.microconfig.commands.ComponentsToProcess;
 import io.microconfig.commands.ConfigCommand;
 import io.microconfig.factory.BuildConfigCommandFactory;
-import io.microconfig.io.CommandLineParamParser;
+import io.microconfig.utils.CommandLineParamParser;
 
 import java.io.File;
 import java.util.List;
 
 import static io.microconfig.factory.configtypes.CompositeConfigTypeProvider.compositeProvider;
-import static io.microconfig.io.Logger.announce;
+import static io.microconfig.utils.Logger.announce;
 import static java.lang.System.currentTimeMillis;
 
 /**

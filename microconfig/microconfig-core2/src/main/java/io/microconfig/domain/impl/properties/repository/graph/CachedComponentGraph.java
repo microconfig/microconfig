@@ -1,0 +1,88 @@
+package io.microconfig.domain.impl.properties.repository.graph;
+
+import io.microconfig.domain.impl.properties.repository.ComponentGraph;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+import static io.microconfig.utils.FileUtils.walk;
+import static io.microconfig.utils.Logger.warn;
+import static io.microconfig.utils.StringUtils.symbolCountIn;
+import static java.util.Collections.emptyList;
+import static java.util.Comparator.comparing;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static java.util.stream.Collectors.groupingBy;
+import static lombok.AccessLevel.PRIVATE;
+
+@RequiredArgsConstructor(access = PRIVATE)
+public class CachedComponentGraph implements ComponentGraph {
+    public static final String COMPONENTS_DIR = "components";
+
+    @Getter
+    private final File rootDir;
+    private final Map<String, List<File>> foldersByComponentType;
+
+    public static ComponentGraph traverseFrom(File rootDir) {
+        File componentDir = new File(rootDir, COMPONENTS_DIR);
+        if (!componentDir.exists()) {
+            throw new IllegalArgumentException("Root directory must contain 'components' dir");
+        }
+
+        try (Stream<Path> pathStream = walk(componentDir.toPath())) {
+            return new CachedComponentGraph(rootDir, collectFoldersByComponentType(pathStream));
+        }
+    }
+
+    private static Map<String, List<File>> collectFoldersByComponentType(Stream<Path> pathStream) {
+        return pathStream.parallel()
+                .map(Path::toFile)
+                .filter(isDirectory())
+                .collect(groupingBy(File::getName));
+    }
+
+    @Override
+    public Stream<File> getConfigFilesFor(String component, Predicate<File> configFileFilter) {
+        List<File> dirs = foldersByComponentType.getOrDefault(component, emptyList());
+        if (dirs.isEmpty()) {
+            throw new ComponentNotFoundException(component);
+        }
+
+        return dirs.stream()
+                .map(File::listFiles)
+                .filter(Objects::nonNull)
+                .flatMap(Stream::of)
+                .filter(configFileFilter)
+                .sorted(comparing(this::amountOfEnvironments).reversed().thenComparing(File::getName));
+    }
+
+    private long amountOfEnvironments(File f) {
+        return symbolCountIn(f.getName(), '.');
+    }
+
+    @Override
+    public Optional<File> getFolderOf(String component) {
+        List<File> folders = foldersByComponentType.getOrDefault(component, emptyList());
+        if (folders.size() > 1) {
+            warn("Found " + folders.size() + " folders with name '" + component + "'. " +
+                    "Consider renaming them, otherwise placeholder resolution works incorrectly");
+        }
+        return folders.isEmpty() ? empty() : of(folders.get(0));
+    }
+
+    private static Predicate<File> isDirectory() {
+        return f -> {
+            //Filter by ext works way faster than File::isDirectory.
+            //Implementation is correct because File::listFiles for file will return null and its handled in getConfigFiles()
+            return !f.getName().contains(".");
+        };
+    }
+}

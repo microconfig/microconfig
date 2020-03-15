@@ -5,7 +5,7 @@ import lombok.With;
 
 import java.util.*;
 
-import static io.microconfig.io.CollectionUtils.singleValue;
+import static io.microconfig.utils.CollectionUtils.singleValue;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;

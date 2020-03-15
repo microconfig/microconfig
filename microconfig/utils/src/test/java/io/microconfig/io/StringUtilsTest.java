@@ -1,10 +1,11 @@
 package io.microconfig.io;
 
+import io.microconfig.utils.StringUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-import static io.microconfig.io.StringUtils.*;
+import static io.microconfig.utils.StringUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class StringUtilsTest {

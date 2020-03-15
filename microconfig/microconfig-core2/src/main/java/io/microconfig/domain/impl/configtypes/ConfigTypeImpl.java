@@ -6,7 +6,7 @@ import lombok.Value;
 import java.util.List;
 import java.util.Set;
 
-import static io.microconfig.io.StreamUtils.filter;
+import static io.microconfig.utils.StreamUtils.filter;
 import static java.util.Collections.singleton;
 
 @Value

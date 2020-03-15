@@ -8,13 +8,13 @@ import io.microconfig.domain.impl.configtypes.StandardConfigType;
 import io.microconfig.domain.impl.environments.ComponentFactory;
 import io.microconfig.domain.impl.environments.repository.ComponentFactoryImpl;
 import io.microconfig.domain.impl.environments.repository.FileEnvironmentRepository;
+import io.microconfig.domain.impl.properties.repository.ComponentGraph;
 import io.microconfig.domain.impl.properties.repository.FilePropertyRepository;
 import io.microconfig.domain.impl.properties.resolvers.expression.ExpressionResolver;
 import io.microconfig.domain.impl.properties.resolvers.placeholder.PlaceholderResolver;
 import io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.standard.StandardResolveStrategy;
-import io.microconfig.io.graph.ComponentGraph;
-import io.microconfig.io.io.DumpedFsReader;
-import io.microconfig.io.io.FsReader;
+import io.microconfig.io.DumpedFsReader;
+import io.microconfig.io.FsReader;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
@@ -22,10 +22,10 @@ import java.io.File;
 
 import static io.microconfig.domain.impl.configtypes.CompositeConfigTypeRepository.composite;
 import static io.microconfig.domain.impl.configtypes.DescriptorConfigTypeRepository.findDescriptorIn;
+import static io.microconfig.domain.impl.properties.io.factory.ConfigIoServiceFactory.newConfigIoService;
+import static io.microconfig.domain.impl.properties.repository.graph.CachedComponentGraph.traverseFrom;
 import static io.microconfig.domain.impl.properties.resolvers.chain.ChainedResolver.chainOf;
-import static io.microconfig.io.FileUtils.canonical;
-import static io.microconfig.io.formats.factory.ConfigIoServiceFactory.newConfigIoService;
-import static io.microconfig.io.graph.CachedComponentGraph.traverseFrom;
+import static io.microconfig.utils.FileUtils.canonical;
 
 @RequiredArgsConstructor
 public class Microconfig {

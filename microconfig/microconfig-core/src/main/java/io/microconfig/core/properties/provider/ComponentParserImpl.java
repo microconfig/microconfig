@@ -12,7 +12,7 @@ import java.util.Map;
 
 import static io.microconfig.core.properties.Property.isTempProperty;
 import static io.microconfig.core.properties.sources.FileSource.fileSource;
-import static io.microconfig.io.CollectionUtils.join;
+import static io.microconfig.utils.CollectionUtils.join;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 

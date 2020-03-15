@@ -12,9 +12,9 @@ import java.util.regex.Pattern;
 
 import static io.microconfig.core.properties.Property.tempProperty;
 import static io.microconfig.core.properties.sources.SpecialSource.templateSource;
-import static io.microconfig.io.IoUtils.readFully;
-import static io.microconfig.io.Logger.warn;
-import static io.microconfig.io.StringUtils.addOffsets;
+import static io.microconfig.utils.IoUtils.readFully;
+import static io.microconfig.utils.Logger.warn;
+import static io.microconfig.utils.StringUtils.addOffsets;
 import static java.util.regex.Matcher.quoteReplacement;
 
 @RequiredArgsConstructor

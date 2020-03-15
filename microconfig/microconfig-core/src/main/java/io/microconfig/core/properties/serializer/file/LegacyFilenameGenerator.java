@@ -8,7 +8,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.function.Predicate;
 
-import static io.microconfig.io.FileUtils.getExtension;
+import static io.microconfig.utils.FileUtils.getExtension;
 
 @RequiredArgsConstructor
 public class LegacyFilenameGenerator implements FilenameGenerator {

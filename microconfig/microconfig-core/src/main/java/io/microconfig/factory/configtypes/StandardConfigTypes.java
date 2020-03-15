@@ -9,7 +9,7 @@ import java.io.File;
 
 import static io.microconfig.factory.configtypes.ConfigTypeImpl.byName;
 import static io.microconfig.factory.configtypes.ConfigTypeImpl.byNameAndExtensions;
-import static io.microconfig.io.CollectionUtils.setOf;
+import static io.microconfig.utils.CollectionUtils.setOf;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.of;
 

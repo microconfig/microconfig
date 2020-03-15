@@ -10,7 +10,7 @@ import java.util.List;
 
 import static io.microconfig.core.properties.Property.isComment;
 import static io.microconfig.core.properties.sources.FileSource.fileSource;
-import static io.microconfig.io.FileUtils.LINES_SEPARATOR;
+import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 
 class PropertiesReader extends AbstractConfigReader {
     PropertiesReader(File file, Io io) {

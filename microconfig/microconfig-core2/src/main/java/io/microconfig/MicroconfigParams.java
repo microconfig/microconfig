@@ -1,6 +1,6 @@
 package io.microconfig;
 
-import io.microconfig.io.CommandLineParamParser;
+import io.microconfig.utils.CommandLineParamParser;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

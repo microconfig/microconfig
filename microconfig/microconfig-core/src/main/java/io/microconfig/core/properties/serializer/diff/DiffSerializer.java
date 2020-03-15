@@ -11,9 +11,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
-import static io.microconfig.io.FileUtils.delete;
-import static io.microconfig.io.Logger.error;
-import static io.microconfig.io.Logger.warn;
+import static io.microconfig.utils.FileUtils.delete;
+import static io.microconfig.utils.Logger.error;
+import static io.microconfig.utils.Logger.warn;
 import static java.util.Collections.emptyMap;
 
 @RequiredArgsConstructor

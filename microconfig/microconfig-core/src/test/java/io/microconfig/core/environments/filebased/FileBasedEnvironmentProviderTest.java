@@ -8,7 +8,7 @@ import java.io.File;
 import java.util.Set;
 
 import static io.microconfig.testutils.MicronconfigTestFactory.getEnvProvider;
-import static io.microconfig.io.CollectionUtils.setOf;
+import static io.microconfig.utils.CollectionUtils.setOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;

@@ -3,7 +3,7 @@ package io.microconfig.core.properties.resolver;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.resolver.expression.Expression;
 
-import static io.microconfig.io.FileUtils.LINES_SEPARATOR;
+import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static java.lang.String.format;
 
 public class PropertyResolveException extends RuntimeException {

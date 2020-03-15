@@ -2,7 +2,7 @@ package io.microconfig.core.properties.io.ioservice.yaml;
 
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.io.ioservice.ConfigWriter;
-import io.microconfig.io.FileUtils;
+import io.microconfig.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -10,7 +10,7 @@ import java.nio.file.OpenOption;
 import java.util.Collection;
 import java.util.Map;
 
-import static io.microconfig.io.StreamUtils.toSortedMap;
+import static io.microconfig.utils.StreamUtils.toSortedMap;
 import static java.nio.file.StandardOpenOption.APPEND;
 
 @RequiredArgsConstructor

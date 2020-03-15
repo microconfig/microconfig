@@ -1,6 +1,6 @@
 package io.microconfig.domain.impl.environments.repository;
 
-import io.microconfig.io.io.FsReader;
+import io.microconfig.io.FsReader;
 import lombok.RequiredArgsConstructor;
 import org.yaml.snakeyaml.Yaml;
 
@@ -8,8 +8,8 @@ import java.io.File;
 import java.util.*;
 import java.util.Map.Entry;
 
-import static io.microconfig.io.FileUtils.getName;
-import static io.microconfig.io.StreamUtils.forEach;
+import static io.microconfig.utils.FileUtils.getName;
+import static io.microconfig.utils.StreamUtils.forEach;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 

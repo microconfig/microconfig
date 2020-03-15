@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.Collection;
 import java.util.Map;
 
-import static io.microconfig.io.StreamUtils.toSortedMap;
+import static io.microconfig.utils.StreamUtils.toSortedMap;
 import static java.util.function.Function.identity;
 
 @RequiredArgsConstructor

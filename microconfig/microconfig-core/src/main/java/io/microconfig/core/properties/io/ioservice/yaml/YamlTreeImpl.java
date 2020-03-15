@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import static io.microconfig.io.FileUtils.LINES_SEPARATOR;
-import static io.microconfig.io.StringUtils.addOffsets;
+import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
+import static io.microconfig.utils.StringUtils.addOffsets;
 import static java.lang.Math.max;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;

@@ -3,10 +3,9 @@ package io.microconfig.domain.impl.properties.repository;
 import io.microconfig.domain.ConfigType;
 import io.microconfig.domain.Property;
 import io.microconfig.domain.impl.properties.PropertyRepository;
+import io.microconfig.domain.impl.properties.io.ConfigIoService;
 import io.microconfig.domain.impl.properties.repository.ConfigFile.ConfigDefinition;
-import io.microconfig.io.formats.ConfigIoService;
-import io.microconfig.io.graph.ComponentGraph;
-import io.microconfig.io.graph.ComponentNotFoundException;
+import io.microconfig.domain.impl.properties.repository.graph.ComponentNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
@@ -15,13 +14,13 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static io.microconfig.io.graph.ConfigFileFilters.*;
+import static io.microconfig.domain.impl.properties.repository.graph.ConfigFileFilters.*;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 public class FilePropertyRepository implements PropertyRepository {
-    private final ComponentGraph fsGraph;
+    private final ComponentGraph componentGraph;
     private final ConfigIoService ioService;
 
     @Override
@@ -66,7 +65,7 @@ public class FilePropertyRepository implements PropertyRepository {
         }
 
         private Stream<ConfigDefinition> configDefinitionsFor(Predicate<File> filter) {
-            return fsGraph.getConfigFilesFor(componentType, filter)
+            return componentGraph.getConfigFilesFor(componentType, filter)
                     .map(file -> new ConfigFile(file, environment))
                     .map(original -> original.parseUsing(ioService));
         }
