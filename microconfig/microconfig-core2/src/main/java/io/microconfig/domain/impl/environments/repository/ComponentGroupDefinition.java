@@ -29,22 +29,26 @@ public class ComponentGroupDefinition {
     private final List<ComponentDefinition> appendedComponents;
 
     public ComponentGroupDefinition overrideBy(ComponentGroupDefinition override) {
-        ComponentGroupDefinition result = this;
+        return getIpFrom(override)
+                .getComponentsFrom(override)
+                .getExcludedGroupsFrom(override)
+                .getAppendedGroupsFrom(override);
+    }
 
-        if (override.ip != null) {
-            result = result.withIp(override.ip);
-        }
-        if (!override.components.isEmpty()) {
-            result = result.withComponents(override.components);
-        }
-        if (!override.excludedComponents.isEmpty()) {
-            result = result.excludeComponents(override.excludedComponents);
-        }
-        if (!override.appendedComponents.isEmpty()) {
-            result = result.appendComponents(override.appendedComponents);
-        }
+    private ComponentGroupDefinition getIpFrom(ComponentGroupDefinition override) {
+        return override.ip == null ? this : withIp(override.ip);
+    }
 
-        return result;
+    private ComponentGroupDefinition getComponentsFrom(ComponentGroupDefinition override) {
+        return override.components.isEmpty() ? this : withComponents(override.components);
+    }
+
+    private ComponentGroupDefinition getExcludedGroupsFrom(ComponentGroupDefinition override) {
+        return override.excludedComponents.isEmpty() ? this : excludeComponents(override.excludedComponents);
+    }
+
+    private ComponentGroupDefinition getAppendedGroupsFrom(ComponentGroupDefinition override) {
+        return override.appendedComponents.isEmpty() ? this : joinComponentsWith(override.appendedComponents);
     }
 
     private ComponentGroupDefinition excludeComponents(List<ComponentDefinition> toExclude) {
@@ -52,7 +56,7 @@ public class ComponentGroupDefinition {
                 .withExcludedComponents(emptyList());
     }
 
-    private ComponentGroupDefinition appendComponents(List<ComponentDefinition> newAppendedComponents) {
+    private ComponentGroupDefinition joinComponentsWith(List<ComponentDefinition> newAppendedComponents) {
         return withComponents(join(components, newAppendedComponents))
                 .withAppendedComponents(emptyList());
     }

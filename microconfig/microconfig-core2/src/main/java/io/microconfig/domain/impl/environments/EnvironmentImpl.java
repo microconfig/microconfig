@@ -61,9 +61,13 @@ public class EnvironmentImpl implements Environment {
                 .map(Optional::get)
                 .findFirst();
 
-        if (component.isPresent()) return component.get();
-        if (!mustBeDeclaredInEnvDescriptor) return createComponentWithName(componentName);
-        throw new IllegalArgumentException(exceptionMessageForComponent(componentName));
+        if (component.isPresent()) {
+            return component.get();
+        }
+        if (!mustBeDeclaredInEnvDescriptor) {
+            return createComponentWithName(componentName);
+        }
+        throw new IllegalArgumentException(notFoundComponentMessage(componentName));
     }
 
     private Component createComponentWithName(String componentName) {
@@ -88,14 +92,14 @@ public class EnvironmentImpl implements Environment {
 
             Map<String, Component> componentByName = componentFromGroups.stream()
                     .collect(toMap(Component::getName, identity()));
-            return forEach(components, name -> requireNonNull(componentByName.get(name), () -> exceptionMessageForComponent(name)));
+            return forEach(components, name -> requireNonNull(componentByName.get(name), () -> notFoundComponentMessage(name)));
         };
 
         List<Component> componentFromGroups = componentsFromGroups.get();
         return new ComponentsImpl(filterByComponents.apply(componentFromGroups));
     }
 
-    private String exceptionMessageForComponent(String component) {
+    private String notFoundComponentMessage(String component) {
         return "Component '" + component + "' is not configured for env '" + name + "'";
     }
 
