@@ -56,16 +56,14 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
 
     @Override
     public Environment withName(String name) {
-        return findEnvWith(name)
-                .orElseThrow(() -> {
-                    throw new EnvironmentNotFoundException("Can't find env with name '" + name + "'");
-                });
+        return findEnvWith(name).orElseThrow(() -> {
+            throw new EnvironmentException("Can't find env '" + name + "'");
+        });
     }
 
     @Override
     public Environment getOrCreateWithName(String name) {
-        return findEnvWith(name)
-                .orElseGet(fakeEnvWith(name));
+        return findEnvWith(name).orElseGet(fakeEnvWith(name));
     }
 
     private Optional<Environment> findEnvWith(String name) {
@@ -75,22 +73,21 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     private Optional<File> envFileWith(String name) {
         List<File> envFiles = filter(environmentFiles(), withFileName(name));
         if (envFiles.size() > 1) {
-            throw new IllegalArgumentException("Found several env files with name: " + name);
+            throw new EnvironmentException("Found several env files with name: " + name);
         }
         return envFiles.isEmpty() ? empty() : of(envFiles.get(0));
     }
 
     private List<File> environmentFiles() {
         try (Stream<Path> stream = walk(envDir.toPath())) {
-            return stream
-                    .map(Path::toFile)
+            return stream.map(Path::toFile)
                     .filter(hasYamlExtension())
                     .collect(toList());
         }
     }
 
     private Function<File, Environment> parse() {
-        return file -> new EnvironmentFile(file)
+        return f -> new EnvironmentFile(f)
                 .parseUsing(io)
                 .processInclude(this)
                 .verifyUniqueComponentNames()

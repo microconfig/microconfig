@@ -9,7 +9,7 @@ import static java.lang.String.join;
 
 @RequiredArgsConstructor
 public class ComponentNotFoundException extends RuntimeException {
-    private final String badComponentName;
+    private final String notFoundComponent;
     private final Deque<String> path = new ArrayDeque<>();
 
     public ComponentNotFoundException withComponentParent(String component) {
@@ -19,7 +19,7 @@ public class ComponentNotFoundException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return "Folder for component '" + badComponentName + "' doesn't exist. " +
+        return "Folder for component '" + notFoundComponent + "' doesn't exist. " +
                 "Path to component: " + join(" -> ", path);
     }
 }

@@ -29,7 +29,7 @@ public class EnvironmentFile {
         try {
             return doParse(getName(file), io.readFully(file));
         } catch (RuntimeException e) {
-            throw new IllegalStateException("Can't parse '" + file + "' env", e);
+            throw new EnvironmentException("Can't parse env file '" + file + "'", e);
         }
     }
 
