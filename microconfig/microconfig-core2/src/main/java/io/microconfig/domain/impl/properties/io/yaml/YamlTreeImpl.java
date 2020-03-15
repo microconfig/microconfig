@@ -24,7 +24,7 @@ public class YamlTreeImpl implements YamlTree {
 
     static class TreeCreator {
         Map<String, Object> toTree(Map<String, String> flatProperties) {
-            if (!(flatProperties instanceof TreeMap) || ((TreeMap) flatProperties).comparator() != null) {
+            if (!(flatProperties instanceof TreeMap) || ((TreeMap<?, ?>) flatProperties).comparator() != null) {
                 flatProperties = new TreeMap<>(flatProperties);
             }
 
@@ -112,7 +112,7 @@ public class YamlTreeImpl implements YamlTree {
         private void dumpValue(Object value, int indent) {
             if (value instanceof Map) {
                 result.append(':').append(LINES_SEPARATOR);
-                dump((Map) value, indent, false);
+                dump((Map<String, Object>) value, indent, false);
                 return;
             }
 

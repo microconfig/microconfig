@@ -25,7 +25,7 @@ public class FilePropertiesRepository implements PropertiesRepository {
 
     @Override
     public List<Property> getProperties(String componentType, String environment, ConfigType configType) {
-        return new OriginalComponent(componentType, environment, configType)
+        return new ComponentSource(componentType, environment, configType)
                 .getProperties()
                 .values().stream()
                 .sorted(comparing(Property::getKey))
@@ -33,7 +33,7 @@ public class FilePropertiesRepository implements PropertiesRepository {
     }
 
     @RequiredArgsConstructor
-    private class OriginalComponent {
+    private class ComponentSource {
         @With
         private final String componentType;
         @With
@@ -42,7 +42,7 @@ public class FilePropertiesRepository implements PropertiesRepository {
         private final Set<String> configExtensions;
         private final Set<Include> processedIncludes;
 
-        public OriginalComponent(String componentType, String environment, ConfigType configType) {
+        public ComponentSource(String componentType, String environment, ConfigType configType) {
             this(componentType, environment, configType.getSourceExtensions(), new LinkedHashSet<>());
         }
 
@@ -91,7 +91,7 @@ public class FilePropertiesRepository implements PropertiesRepository {
                     });
         }
 
-        private OriginalComponent includedComponent(Include include) {
+        private ComponentSource includedComponent(Include include) {
             return withComponentType(include.getComponentType())
                     .withEnvironment(include.getEnvironment());
         }

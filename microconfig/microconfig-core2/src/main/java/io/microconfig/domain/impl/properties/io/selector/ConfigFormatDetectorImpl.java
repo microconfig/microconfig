@@ -8,9 +8,9 @@ import java.io.File;
 import java.util.function.Predicate;
 
 import static io.microconfig.domain.impl.properties.PropertyImpl.isComment;
+import static io.microconfig.domain.impl.properties.PropertyImpl.separatorIndex;
 import static io.microconfig.domain.impl.properties.io.ConfigFormat.PROPERTIES;
 import static io.microconfig.domain.impl.properties.io.ConfigFormat.YAML;
-import static java.util.stream.IntStream.range;
 
 
 @RequiredArgsConstructor
@@ -43,16 +43,5 @@ public class ConfigFormatDetectorImpl implements ConfigFormatDetector {
             String trimmed = line.trim();
             return !trimmed.isEmpty() && !isComment(trimmed);
         };
-    }
-
-    //todo
-    private static int separatorIndex(String keyValue) {
-        return range(0, keyValue.length())
-                .filter(i -> {
-                    char c = keyValue.charAt(i);
-                    return c == '=' || c == ':';
-                })
-                .findFirst()
-                .orElse(-1);
     }
 }
