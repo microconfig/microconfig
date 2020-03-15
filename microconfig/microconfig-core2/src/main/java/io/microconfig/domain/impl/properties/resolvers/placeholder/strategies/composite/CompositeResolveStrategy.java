@@ -20,7 +20,6 @@ public class CompositeResolveStrategy implements PlaceholderResolveStrategy {
     public Optional<Property> resolve(Placeholder placeholder) {
         return strategies.stream()
                 .map(s -> s.resolve(placeholder))
-                .filter(Optional::isPresent)
                 .map(Optional::get)
                 .findFirst();
     }

@@ -21,7 +21,6 @@ public class ChainedResolver implements StatementResolver {
     public Optional<Statement> findStatementIn(CharSequence line) {
         return resolvers.stream()
                 .map(r -> r.findStatementIn(line))
-                .filter(Optional::isPresent)
                 .map(Optional::get)
                 .findFirst();
     }
