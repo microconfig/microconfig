@@ -23,61 +23,65 @@ public class FileSystemPropertyRepository implements PropertyRepository {
 
     @Override
     public List<Property> getProperties(String componentType, String environment, ConfigType configType) {
-        Collection<Property> properties = collectPropertiesFor(componentType, environment, configType.getSourceExtensions(), new LinkedHashSet<>()).values();
-        return sortByKey(properties);
-    }
-
-    private List<Property> sortByKey(Collection<Property> properties) {
-        return properties.stream()
+        return new CollectorContext(configType.getSourceExtensions())
+                .collectPropertiesFor(componentType, environment)
+                .values().stream()
                 .sorted(comparing(Property::getKey))
                 .collect(toList());
     }
 
-    private Map<String, Property> collectPropertiesFor(String componentType, String env, Set<String> configExtensions, Set<Include> processedIncludes) {
-        Function<Predicate<File>, Map<String, Property>> collectProperties = filter -> {
-            try {
-                return collectPropertiesFor(componentType, filter, env, configExtensions, processedIncludes);
-            } catch (ComponentDoesNotExistException e) {
-                throw e.withComponentParent(componentType);
-            }
-        };
+    @RequiredArgsConstructor
+    private class CollectorContext {
+        private final Set<String> configExtensions;
+        private final Set<Include> processedIncludes = new LinkedHashSet<>();
 
-        Map<String, Property> basicProperties = collectProperties.apply(defaultConfig(configExtensions));
-        Map<String, Property> envSharedProperties = collectProperties.apply(configForMultipleEnvironments(configExtensions, env));
-        Map<String, Property> envSpecificProperties = collectProperties.apply(configForOneEnvironment(configExtensions, env));
+        public Map<String, Property> collectPropertiesFor(String componentType, String env) {
+            Function<Predicate<File>, Map<String, Property>> collectProperties = filter -> {
+                try {
+                    return collectPropertiesFor(componentType, filter, env);
+                } catch (ComponentDoesNotExistException e) {
+                    throw e.withComponentParent(componentType);
+                }
+            };
 
-        basicProperties.putAll(envSharedProperties);
-        basicProperties.putAll(envSpecificProperties);
-        return basicProperties;
-    }
+            Map<String, Property> basicProperties = collectProperties.apply(defaultConfig(configExtensions));
+            Map<String, Property> envSharedProperties = collectProperties.apply(configForMultipleEnvironments(configExtensions, env));
+            Map<String, Property> envSpecificProperties = collectProperties.apply(configForOneEnvironment(configExtensions, env));
 
-    private Map<String, Property> collectPropertiesFor(String componentType, Predicate<File> filter, String env, Set<String> configExtensions, Set<Include> processedIncludes) {
-        Map<String, Property> propertyByKey = new HashMap<>();
+            basicProperties.putAll(envSharedProperties);
+            basicProperties.putAll(envSpecificProperties);
+            return basicProperties;
+        }
 
-        fsGraph.getConfigFilesFor(componentType, filter)
-                .map(file -> configParser.parse(file, env))
-                .forEach(c -> processComponent(c, propertyByKey, configExtensions, processedIncludes));
+        private Map<String, Property> collectPropertiesFor(String componentType, Predicate<File> filter, String env) {
+            Map<String, Property> propertyByKey = new HashMap<>();
 
-        return propertyByKey;
-    }
+            fsGraph.getConfigFilesFor(componentType, filter)
+                    .map(file -> configParser.parse(file, env))
+                    .forEach(c -> processComponent(c, propertyByKey));
 
-    private void processComponent(ConfigDefinition configDefinition, Map<String, Property> destination, Set<String> configExtensions, Set<Include> processedIncludes) {
-        Map<String, Property> included = processIncludes(configDefinition.getIncludes(), configExtensions, processedIncludes);
-        Map<String, Property> original = configDefinition.getPropertiesAsMas();
+            return propertyByKey;
+        }
 
-        destination.putAll(included);
-        destination.putAll(original);
-    }
+        private void processComponent(ConfigDefinition configDefinition, Map<String, Property> destination) {
+            Map<String, Property> included = processIncludes(configDefinition.getIncludes());
+            Map<String, Property> original = configDefinition.getPropertiesAsMas();
 
-    private Map<String, Property> processIncludes(List<Include> includes, Set<String> configExtensions, Set<Include> processedIncludes) {
-        Map<String, Property> result = new HashMap<>();
+            destination.putAll(included);
+            destination.putAll(original);
+        }
 
-        includes.stream()
-                .filter(processedIncludes::add)
-                .map(include -> collectPropertiesFor(include.getComponentType(), include.getEnvironment(), configExtensions, processedIncludes))
-                .forEach(result::putAll);
+        private Map<String, Property> processIncludes(List<Include> includes) {
+            Map<String, Property> result = new HashMap<>();
+
+            includes.stream()
+                    .filter(processedIncludes::add)
+                    .map(include -> collectPropertiesFor(include.getComponentType(), include.getEnvironment()))
+                    .forEach(result::putAll);
 
 
-        return result;
+            return result;
+        }
+
     }
 }
