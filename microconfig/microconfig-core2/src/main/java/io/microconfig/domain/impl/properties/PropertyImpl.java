@@ -17,7 +17,7 @@ import static lombok.AccessLevel.PRIVATE;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = PRIVATE)
 public class PropertyImpl implements Property {
-    private static final String TEMP_VALUE = "#var";
+    private static final String TEMP_VALUE = "#var ";
 
     private final String key;
     @With
@@ -35,7 +35,7 @@ public class PropertyImpl implements Property {
             throw new IllegalArgumentException("Property must contain ':' or '='. Bad property: " + keyValue + " in " + source);
         }
 
-        String key = keyValue.substring(temp ? TEMP_VALUE.length() + 1 : 0, indexOfSeparator).trim();
+        String key = keyValue.substring(temp ? TEMP_VALUE.length() : 0, indexOfSeparator).trim();
         String value = keyValue.substring(indexOfSeparator + 1).trim();
 
         return new PropertyImpl(key, value, envContext, temp, source);
@@ -54,13 +54,12 @@ public class PropertyImpl implements Property {
                 .filter(i -> {
                     char c = keyValue.charAt(i);
                     return c == '=' || c == ':';
-                })
-                .findFirst()
+                }).findFirst()
                 .orElse(-1);
     }
 
     public static boolean isTempProperty(String line) {
-        return line.startsWith(TEMP_VALUE + " ");
+        return line.startsWith(TEMP_VALUE);
     }
 
     public static boolean isComment(String line) {
