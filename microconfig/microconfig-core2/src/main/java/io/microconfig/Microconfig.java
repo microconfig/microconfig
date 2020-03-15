@@ -9,7 +9,7 @@ import io.microconfig.domain.impl.environments.ComponentFactory;
 import io.microconfig.domain.impl.environments.repository.ComponentFactoryImpl;
 import io.microconfig.domain.impl.environments.repository.FileEnvironmentRepository;
 import io.microconfig.domain.impl.properties.repository.ComponentGraph;
-import io.microconfig.domain.impl.properties.repository.FilePropertyRepository;
+import io.microconfig.domain.impl.properties.repository.FilePropertiesRepository;
 import io.microconfig.domain.impl.properties.resolvers.expression.ExpressionResolver;
 import io.microconfig.domain.impl.properties.resolvers.placeholder.PlaceholderResolver;
 import io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.standard.StandardResolveStrategy;
@@ -78,8 +78,8 @@ public class Microconfig {
         );
     }
 
-    private FilePropertyRepository propertyRepository() {
-        return new FilePropertyRepository(
+    private FilePropertiesRepository propertyRepository() {
+        return new FilePropertiesRepository(
                 componentGraph(),
                 newConfigIo(fsReader)
         );

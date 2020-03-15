@@ -12,7 +12,7 @@ import static io.microconfig.utils.StreamUtils.forEach;
 @RequiredArgsConstructor
 public class ComponentImpl implements Component {
     private final ConfigTypeRepository configTypeRepository;
-    private final PropertyRepository propertyRepository;
+    private final PropertiesRepository propertiesRepository;
 
     @Getter
     private final String name;
@@ -28,7 +28,7 @@ public class ComponentImpl implements Component {
     }
 
     private ComponentProperties readConfigs(ConfigType configType) {
-        List<Property> properties = propertyRepository.getProperties(type, environment, configType);
+        List<Property> properties = propertiesRepository.getProperties(type, environment, configType);
         return new ComponentPropertiesImpl(name, environment, configType, properties);
     }
 }

@@ -2,7 +2,7 @@ package io.microconfig.domain.impl.properties.repository;
 
 import io.microconfig.domain.ConfigType;
 import io.microconfig.domain.Property;
-import io.microconfig.domain.impl.properties.PropertyRepository;
+import io.microconfig.domain.impl.properties.PropertiesRepository;
 import io.microconfig.domain.impl.properties.io.ConfigIo;
 import io.microconfig.domain.impl.properties.repository.ConfigFile.ConfigDefinition;
 import io.microconfig.domain.impl.properties.repository.graph.ComponentNotFoundException;
@@ -19,7 +19,7 @@ import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
-public class FilePropertyRepository implements PropertyRepository {
+public class FilePropertiesRepository implements PropertiesRepository {
     private final ComponentGraph componentGraph;
     private final ConfigIo ioService;
 
