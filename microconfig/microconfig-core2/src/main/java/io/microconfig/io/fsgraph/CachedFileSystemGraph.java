@@ -56,11 +56,11 @@ public class CachedFileSystemGraph implements FileSystemGraph {
                 .filter(Objects::nonNull)
                 .flatMap(Stream::of)
                 .filter(filter)
-                .sorted(envCountThenName());
+                .sorted(fileWithBigAmountOfEnvFirst());
     }
 
-    private Comparator<File> envCountThenName() {
-        return comparing(File::getName, comparing(name -> symbolCountIn(name, '.')))
+    private Comparator<File> fileWithBigAmountOfEnvFirst() {
+        return comparing(File::getName, comparing(name -> -1 * symbolCountIn(name, '.')))
                 .thenComparing(File::getName);
     }
 
