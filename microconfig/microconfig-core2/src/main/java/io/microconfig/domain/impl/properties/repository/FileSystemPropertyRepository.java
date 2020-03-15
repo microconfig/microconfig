@@ -3,7 +3,7 @@ package io.microconfig.domain.impl.properties.repository;
 import io.microconfig.domain.ConfigType;
 import io.microconfig.domain.Property;
 import io.microconfig.domain.impl.properties.PropertyRepository;
-import io.microconfig.io.fsgraph.ComponentDoesNotExistException;
+import io.microconfig.io.fsgraph.ComponentNotFoundException;
 import io.microconfig.io.fsgraph.FileSystemGraph;
 import lombok.RequiredArgsConstructor;
 
@@ -40,7 +40,7 @@ public class FileSystemPropertyRepository implements PropertyRepository {
             Function<Predicate<File>, Map<String, Property>> collectProperties = filter -> {
                 try {
                     return collectPropertiesFrom(configDefinitionsFor(componentType, filter, env));
-                } catch (ComponentDoesNotExistException e) {
+                } catch (ComponentNotFoundException e) {
                     throw e.withComponentParent(componentType);
                 }
             };
@@ -54,23 +54,20 @@ public class FileSystemPropertyRepository implements PropertyRepository {
             return basicProperties;
         }
 
-        private Map<String, Property> collectPropertiesFrom(Stream<ConfigDefinition> configDefinitions) {
-            Map<String, Property> propertyByKey = new HashMap<>();
-
-            configDefinitions.forEach(c -> {
-                Map<String, Property> included = collectIncludedProperties(c.getIncludes());
-                Map<String, Property> original = c.getProperties();
-
-                propertyByKey.putAll(included);
-                propertyByKey.putAll(original);
-            });
-
-            return propertyByKey;
-        }
-
         private Stream<ConfigDefinition> configDefinitionsFor(String componentType, Predicate<File> filter, String env) {
             return fsGraph.getConfigFilesFor(componentType, filter)
                     .map(file -> configParser.parse(file, env));
+        }
+
+        private Map<String, Property> collectPropertiesFrom(Stream<ConfigDefinition> componentConfigs) {
+            Map<String, Property> componentProperties = new HashMap<>();
+
+            componentConfigs.forEach(component -> {
+                componentProperties.putAll(collectIncludedProperties(component.getIncludes()));
+                componentProperties.putAll(component.getProperties());
+            });
+
+            return componentProperties;
         }
 
         private Map<String, Property> collectIncludedProperties(List<Include> includes) {

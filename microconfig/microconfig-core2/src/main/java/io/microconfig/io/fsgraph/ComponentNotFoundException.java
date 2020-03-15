@@ -8,11 +8,11 @@ import java.util.Deque;
 import static java.lang.String.join;
 
 @RequiredArgsConstructor
-public class ComponentDoesNotExistException extends RuntimeException {
+public class ComponentNotFoundException extends RuntimeException {
     private final String badComponentName;
     private final Deque<String> path = new ArrayDeque<>();
 
-    public ComponentDoesNotExistException withComponentParent(String component) {
+    public ComponentNotFoundException withComponentParent(String component) {
         path.addFirst(component);
         return this;
     }

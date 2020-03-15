@@ -53,7 +53,7 @@ public class FileBasedEnvironments implements Environments {
     @Override
     public Environment withName(String name) {
         return findEnv(name).orElseThrow(() -> {
-            throw new EnvironmentDoesNotExistException("Can't find env with name '" + name + "'");
+            throw new EnvironmentNotFoundException("Can't find env with name '" + name + "'");
         });
     }
 

@@ -5,7 +5,10 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -45,23 +48,22 @@ public class CachedFileSystemGraph implements FileSystemGraph {
     }
 
     @Override
-    public Stream<File> getConfigFilesFor(String component, Predicate<File> filter) {
+    public Stream<File> getConfigFilesFor(String component, Predicate<File> configFileFilter) {
         List<File> dirs = foldersByComponentType.getOrDefault(component, emptyList());
         if (dirs.isEmpty()) {
-            throw new ComponentDoesNotExistException(component);
+            throw new ComponentNotFoundException(component);
         }
 
         return dirs.stream()
                 .map(File::listFiles)
                 .filter(Objects::nonNull)
                 .flatMap(Stream::of)
-                .filter(filter)
-                .sorted(fileWithBigAmountOfEnvFirst());
+                .filter(configFileFilter)
+                .sorted(comparing(this::amountOfEnvironments).reversed().thenComparing(File::getName));
     }
 
-    private Comparator<File> fileWithBigAmountOfEnvFirst() {
-        return comparing(File::getName, comparing(name -> -1 * symbolCountIn(name, '.')))
-                .thenComparing(File::getName);
+    private long amountOfEnvironments(File f) {
+        return symbolCountIn(f.getName(), '.');
     }
 
     @Override
