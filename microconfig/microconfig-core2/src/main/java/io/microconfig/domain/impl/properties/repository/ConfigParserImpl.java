@@ -22,25 +22,25 @@ public class ConfigParserImpl implements ConfigParser {
     private final ConfigIoService configIo;
 
     @Override
-    public ParsedConfig parse(File configFile, String env) {
+    public ConfigDefinition parse(File configFile, String env) {
         ConfigReader reader = configIo.readFrom(configFile);
 
         Map<Integer, String> commentByLineNumber = reader.commentsByLineNumber();
         List<Include> includes = parseIncludes(commentByLineNumber.values(), env);
-        if (ignoreComponent(commentByLineNumber.values())) {
-            return new ParsedConfig(includes, emptyList());
+        if (containsIgnoreDerective(commentByLineNumber.values())) {
+            return new ConfigDefinition(includes, emptyList());
         }
 
         List<Property> properties = reader.properties(env);
-        List<Property> tempProperties = parseTempProperties(commentByLineNumber, configFile, env);
-        return new ParsedConfig(includes, join(properties, tempProperties));
+        List<Property> tempProperties = parseTempProperties(commentByLineNumber, env, configFile);
+        return new ConfigDefinition(includes, join(properties, tempProperties));
     }
 
-    private List<Property> parseTempProperties(Map<Integer, String> comments, File file, String env) {
-        return comments.entrySet()
+    private List<Property> parseTempProperties(Map<Integer, String> commentByLineNumber, String env, File configFile) {
+        return commentByLineNumber.entrySet()
                 .stream()
                 .filter(e -> isTempProperty(e.getValue()))
-                .map(e -> PropertyImpl.parse(e.getValue(), env, fileSource(file, e.getKey(), false)))
+                .map(e -> PropertyImpl.parse(e.getValue(), env, fileSource(configFile, e.getKey(), false)))
                 .collect(toList());
     }
 
@@ -51,7 +51,7 @@ public class ConfigParserImpl implements ConfigParser {
                 .collect(toList());
     }
 
-    private boolean ignoreComponent(Collection<String> comments) {
+    private boolean containsIgnoreDerective(Collection<String> comments) {
         return comments.stream().anyMatch(s -> s.startsWith("#@Ignore"));
     }
 }

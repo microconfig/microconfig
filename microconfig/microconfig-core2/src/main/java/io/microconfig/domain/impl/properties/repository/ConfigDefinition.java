@@ -12,7 +12,7 @@ import static java.util.stream.Collectors.toMap;
 
 
 @RequiredArgsConstructor
-class ParsedConfig {
+class ConfigDefinition {
     @Getter
     private final List<Include> includes;
     private final List<Property> properties;

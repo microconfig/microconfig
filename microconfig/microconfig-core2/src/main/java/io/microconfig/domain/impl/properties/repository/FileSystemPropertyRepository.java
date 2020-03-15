@@ -57,9 +57,9 @@ public class FileSystemPropertyRepository implements PropertyRepository {
         return propertyByKey;
     }
 
-    private void processComponent(ParsedConfig parsedConfig, Map<String, Property> destination, Set<String> configExtensions, Set<Include> processedIncludes) {
-        Map<String, Property> included = processIncludes(parsedConfig.getIncludes(), configExtensions, processedIncludes);
-        Map<String, Property> original = parsedConfig.getPropertiesAsMas();
+    private void processComponent(ConfigDefinition configDefinition, Map<String, Property> destination, Set<String> configExtensions, Set<Include> processedIncludes) {
+        Map<String, Property> included = processIncludes(configDefinition.getIncludes(), configExtensions, processedIncludes);
+        Map<String, Property> original = configDefinition.getPropertiesAsMas();
 
         destination.putAll(included);
         destination.putAll(original);
