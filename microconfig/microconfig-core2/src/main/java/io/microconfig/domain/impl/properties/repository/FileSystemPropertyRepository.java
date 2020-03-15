@@ -72,12 +72,11 @@ public class FileSystemPropertyRepository implements PropertyRepository {
     private Map<String, Property> processIncludes(List<Include> includes, Set<String> configExtensions, Set<Include> processedIncludes) {
         Map<String, Property> result = new HashMap<>();
 
-        for (Include include : includes) {
-            if (!processedIncludes.add(include)) continue;
+        includes.stream()
+                .filter(processedIncludes::add)
+                .map(include -> collectPropertiesFor(include.getComponentType(), include.getEnvironment(), configExtensions, processedIncludes))
+                .forEach(result::putAll);
 
-            Map<String, Property> included = collectPropertiesFor(include.getComponentType(), include.getEnvironment(), configExtensions, processedIncludes);
-            result.putAll(included);
-        }
 
         return result;
     }
