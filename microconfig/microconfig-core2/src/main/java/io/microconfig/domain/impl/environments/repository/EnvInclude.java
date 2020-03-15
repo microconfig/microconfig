@@ -1,7 +1,5 @@
 package io.microconfig.domain.impl.environments.repository;
 
-import io.microconfig.domain.ComponentGroup;
-import io.microconfig.domain.Environment;
 import io.microconfig.domain.EnvironmentRepository;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -27,14 +25,14 @@ public class EnvInclude {
     }
 
     public EnvironmentDefinition includeTo(EnvironmentDefinition includeTo, EnvironmentRepository environmentRepository) {
-        Environment includeFrom = environmentRepository.withName(env);
+        EnvironmentDefinition includeFrom = (EnvironmentDefinition) environmentRepository.withName(env);
 
-        Map<String, ComponentGroup> groupToIncludeByName = collectGroupsToInclude(includeFrom)
+        Map<String, ComponentGroupDefinition> groupToIncludeByName = collectGroupsToInclude(includeFrom)
                 .stream()
                 .map(includedGroup -> overrideIp(includedGroup, includeFrom, includeTo))
-                .collect(toLinkedMap(ComponentGroup::getName, identity()));
+                .collect(toLinkedMap(ComponentGroupDefinition::getName, identity()));
 
-        includeTo.getComponentGroups()
+        includeTo.getGroups()
                 .stream()
                 .map(overriddenGroup -> override(groupToIncludeByName.get(overriddenGroup.getName()), overriddenGroup))
                 .forEach(g -> groupToIncludeByName.put(g.getName(), g));
@@ -42,26 +40,26 @@ public class EnvInclude {
         return includeTo.withIncludedGroups(new ArrayList<>(groupToIncludeByName.values()));
     }
 
-    private List<ComponentGroupDefinition> collectGroupsToInclude(Environment includeFrom) {
-        return includeFrom.getComponentGroups()
+    private List<ComponentGroupDefinition> collectGroupsToInclude(EnvironmentDefinition includeFrom) {
+        return includeFrom.getGroups()
                 .stream()
                 .filter(g -> !excludeGroups.contains(g.getName()))
                 .collect(toList());
     }
 
-    private ComponentGroupDefinition overrideIp(ComponentGroupDefinition includedGroup, Environment includedEnv, Environment destinationEnv) {
-        if (destinationEnv.getIp().isPresent()) {
-            return includedGroup.changeIp(destinationEnv.getIp().get());
+    private ComponentGroupDefinition overrideIp(ComponentGroupDefinition includedGroup, EnvironmentDefinition includedEnv, EnvironmentDefinition destinationEnv) {
+        if (destinationEnv.getIp() != null) {
+            return includedGroup.changeIp(destinationEnv.getIp());
         }
 
-        if (!includedGroup.getIp().isPresent() && includedEnv.getIp().isPresent()) {
-            return includedGroup.changeIp(includedEnv.getIp().get());
+        if (includedGroup.getIp() == null && includedEnv.getIp() != null) {
+            return includedGroup.changeIp(includedEnv.getIp());
         }
 
         return includedGroup;
     }
 
-    private ComponentGroupDefinition override(ComponentGroupDefinition includedGroup, ComponentGroup override) {
+    private ComponentGroupDefinition override(ComponentGroupDefinition includedGroup, ComponentGroupDefinition override) {
         return includedGroup == null ? override : includedGroup.override(override);
     }
 }

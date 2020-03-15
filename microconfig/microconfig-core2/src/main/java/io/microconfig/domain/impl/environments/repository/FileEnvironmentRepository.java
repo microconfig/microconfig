@@ -83,14 +83,16 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
 
     private Function<File, Environment> parse() {
         return f -> {
-            return new EnvironmentFile(f).parseUsing(io);
+            return null;
+            //return new EnvironmentFile(f).parseUsing(io);
             //                .processInclude(this)
 //                .verifyUniqueComponentNames();
         };
     }
 
     private Supplier<Environment> fakeEnvWithName(String name) {
-        return () -> parser.fakeEnvWithName(name);
+//        return () -> parser.fakeEnvWithName(name);
+        return null;
     }
 
     private Function<File, String> getEnvName() {

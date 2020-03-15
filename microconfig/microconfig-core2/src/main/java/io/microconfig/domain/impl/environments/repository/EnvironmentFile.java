@@ -40,7 +40,7 @@ public class EnvironmentFile {
         String envIp = parseIp(keyValue);
         List<ComponentGroupDefinition> componentGroups = parseComponentGroups(keyValue, name, envIp);
 
-        return new EnvironmentDefinition(name,envIp, portOffset, envInclude, componentGroups, file);
+        return new EnvironmentDefinition(name, envIp, portOffset, envInclude, componentGroups, file);
     }
 
     @SuppressWarnings("unchecked")
@@ -97,7 +97,7 @@ public class EnvironmentFile {
                 .map(s -> {
                     String[] parts = s.split(":");
                     if (parts.length > 2) throw new IllegalArgumentException("Incorrect component declaration: " + s);
-                    return parts.length == 1 ? ComponentDefinition.byType(parts[0]) : ComponentDefinition.byNameAndType(parts[0], parts[1]);
+                    return parts.length == 1 ? ComponentDefinition.withName(parts[0]) : ComponentDefinition.withAlias(parts[0], parts[1]);
                 }).collect(toList());
     }
 }

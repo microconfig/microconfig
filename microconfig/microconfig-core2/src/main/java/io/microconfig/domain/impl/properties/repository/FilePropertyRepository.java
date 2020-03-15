@@ -67,7 +67,7 @@ public class FilePropertyRepository implements PropertyRepository {
 
         private Stream<ConfigDefinition> configDefinitionsFor(Predicate<File> filter) {
             return fsGraph.getConfigFilesFor(componentType, filter)
-                    .map(configFile -> new ConfigFile(configFile, environment))
+                    .map(file -> new ConfigFile(file, environment))
                     .map(original -> original.parseUsing(ioService));
         }
 
