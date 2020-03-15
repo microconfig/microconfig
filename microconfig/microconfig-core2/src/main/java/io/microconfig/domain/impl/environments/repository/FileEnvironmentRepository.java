@@ -2,6 +2,9 @@ package io.microconfig.domain.impl.environments.repository;
 
 import io.microconfig.domain.Environment;
 import io.microconfig.domain.EnvironmentRepository;
+import io.microconfig.domain.impl.environments.ComponentFactory;
+import io.microconfig.domain.impl.environments.EnvironmentImpl;
+import io.microconfig.io.FileUtils;
 import io.microconfig.io.formats.Io;
 
 import java.io.File;
@@ -19,6 +22,7 @@ import static io.microconfig.io.FileUtils.walk;
 import static io.microconfig.io.StreamUtils.filter;
 import static io.microconfig.io.StreamUtils.forEach;
 import static io.microconfig.io.formats.ConfigFormat.YAML;
+import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toCollection;
@@ -29,13 +33,15 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
 
     private final File envDir;
     private final Io io;
+    private final ComponentFactory componentFactory;
 
-    public FileEnvironmentRepository(File rootDir, Io io) {
+    public FileEnvironmentRepository(File rootDir, Io io, ComponentFactory componentFactory) {
         this.envDir = new File(rootDir, ENV_DIR);
         if (!envDir.exists()) {
             throw new IllegalArgumentException("Env directory doesn't exist: " + envDir);
         }
         this.io = io;
+        this.componentFactory = componentFactory;
     }
 
     @Override
@@ -45,29 +51,31 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
 
     @Override
     public Set<String> environmentNames() {
-        return forEach(environmentFiles(), getEnvName(), toCollection(TreeSet::new));
+        return forEach(environmentFiles(), FileUtils::getName, toCollection(TreeSet::new));
     }
 
     @Override
     public Environment withName(String name) {
-        return findEnvWitH(name).orElseThrow(() -> {
-            throw new EnvironmentNotFoundException("Can't find env with name '" + name + "'");
-        });
+        return findEnvWith(name)
+                .orElseThrow(() -> {
+                    throw new EnvironmentNotFoundException("Can't find env with name '" + name + "'");
+                });
     }
 
     @Override
     public Environment getOrCreateWithName(String name) {
-        return findEnvWitH(name).orElseGet(fakeEnvWithName(name));
+        return findEnvWith(name)
+                .orElseGet(fakeEnvWith(name));
     }
 
-    private Optional<Environment> findEnvWitH(String name) {
+    private Optional<Environment> findEnvWith(String name) {
         return envFileWith(name).map(parse());
     }
 
     private Optional<File> envFileWith(String name) {
         List<File> envFiles = filter(environmentFiles(), withFileName(name));
         if (envFiles.size() > 1) {
-            throw new IllegalArgumentException("Found several env files with name " + name);
+            throw new IllegalArgumentException("Found several env files with name: " + name);
         }
         return envFiles.isEmpty() ? empty() : of(envFiles.get(0));
     }
@@ -82,24 +90,15 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     }
 
     private Function<File, Environment> parse() {
-        return f -> {
-            return null;
-            //return new EnvironmentFile(f).parseUsing(io);
-            //                .processInclude(this)
-//                .verifyUniqueComponentNames();
-        };
+        return file -> new EnvironmentFile(file)
+                .parseUsing(io)
+                .processInclude(this)
+                .verifyUniqueComponentNames()
+                .toEnvironment(componentFactory);
     }
 
-    private Supplier<Environment> fakeEnvWithName(String name) {
-//        return () -> parser.fakeEnvWithName(name);
-        return null;
-    }
-
-    private Function<File, String> getEnvName() {
-        return f -> {
-            String name = f.getName();
-            return name.substring(0, name.lastIndexOf('.'));
-        };
+    private Supplier<Environment> fakeEnvWith(String name) {
+        return () -> new EnvironmentImpl(name, emptyList(), componentFactory);
     }
 
     private Predicate<File> hasYamlExtension() {

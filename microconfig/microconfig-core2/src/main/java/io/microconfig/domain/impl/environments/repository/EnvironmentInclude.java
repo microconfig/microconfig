@@ -16,18 +16,18 @@ import static java.util.function.Function.identity;
 
 @EqualsAndHashCode
 @RequiredArgsConstructor
-public class EnvInclude {
-    private static final EnvInclude empty = new EnvInclude("", emptySet());
+public class EnvironmentInclude {
+    private static final EnvironmentInclude empty = new EnvironmentInclude("", emptySet());
 
-    private final String env;
+    private final String environment;
     private final Set<String> excludeGroups;
 
-    public static EnvInclude empty() {
+    public static EnvironmentInclude empty() {
         return empty;
     }
 
     public EnvironmentDefinition includeTo(EnvironmentDefinition includeTo, EnvironmentRepository environmentRepository) {
-        EnvironmentDefinition includeFrom = (EnvironmentDefinition) environmentRepository.withName(env);
+        EnvironmentDefinition includeFrom = (EnvironmentDefinition) environmentRepository.withName(environment);
 
         Map<String, ComponentGroupDefinition> groupToIncludeByName = collectGroupsToInclude(includeFrom)
                 .stream()
@@ -59,6 +59,6 @@ public class EnvInclude {
     }
 
     private ComponentGroupDefinition override(ComponentGroupDefinition includedGroup, ComponentGroupDefinition override) {
-        return includedGroup == null ? override : includedGroup.override(override);
+        return includedGroup == null ? override : includedGroup.overrideBy(override);
     }
 }

@@ -94,16 +94,17 @@ public class FileUtils {
     }
 
     public static String getExtension(File file) {
-        int extIndex = file.getName().lastIndexOf('.');
-        if (extIndex < 0) return "";
+        int extIndex = extensionIndex(file);
+        return extIndex < 0 ? "" : file.getName().substring(extIndex);
 
-        return file.getName().substring(extIndex);
     }
 
     public static String getName(File file) {
-        int extIndex = file.getName().lastIndexOf('.');
-        if (extIndex < 0) return file.getName();
+        int extIndex = extensionIndex(file);
+        return extIndex < 0 ? file.getName() : file.getName().substring(0, extIndex);
+    }
 
-        return file.getName().substring(0, extIndex);
+    private static int extensionIndex(File file) {
+        return file.getName().lastIndexOf('.');
     }
 }

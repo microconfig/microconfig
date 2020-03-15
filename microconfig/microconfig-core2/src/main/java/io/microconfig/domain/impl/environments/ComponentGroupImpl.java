@@ -16,8 +16,6 @@ public class ComponentGroupImpl implements ComponentGroup {
     @Getter
     private final String name;
     private final String ip;
-    private final String env;
-
     private final List<Component> components;
 
     @Override

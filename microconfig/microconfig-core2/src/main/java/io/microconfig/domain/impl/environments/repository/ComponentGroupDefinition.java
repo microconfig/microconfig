@@ -1,5 +1,8 @@
 package io.microconfig.domain.impl.environments.repository;
 
+import io.microconfig.domain.ComponentGroup;
+import io.microconfig.domain.impl.environments.ComponentFactory;
+import io.microconfig.domain.impl.environments.ComponentGroupImpl;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -8,6 +11,7 @@ import java.util.List;
 
 import static io.microconfig.io.CollectionUtils.join;
 import static io.microconfig.io.CollectionUtils.minus;
+import static io.microconfig.io.StreamUtils.forEach;
 import static java.util.Collections.emptyList;
 
 @Getter
@@ -21,7 +25,7 @@ public class ComponentGroupDefinition {
     private final List<ComponentDefinition> excludedComponents;
     private final List<ComponentDefinition> appendedComponents;
 
-    public ComponentGroupDefinition override(ComponentGroupDefinition override) {
+    public ComponentGroupDefinition overrideBy(ComponentGroupDefinition override) {
         ComponentGroupDefinition result = this;
 
         if (override.ip != null) {
@@ -48,5 +52,13 @@ public class ComponentGroupDefinition {
     private ComponentGroupDefinition appendComponents(List<ComponentDefinition> newAppendedComponents) {
         return withComponents(join(components, newAppendedComponents))
                 .withAppendedComponents(emptyList());
+    }
+
+    public ComponentGroup toGroup(ComponentFactory componentFactory, String environment) {
+        return new ComponentGroupImpl(
+                name,
+                ip,
+                forEach(components, c -> c.toComponent(componentFactory, environment))
+        );
     }
 }

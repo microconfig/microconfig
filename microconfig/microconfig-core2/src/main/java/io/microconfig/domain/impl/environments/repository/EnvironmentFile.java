@@ -36,7 +36,7 @@ public class EnvironmentFile {
     private EnvironmentDefinition doParse(String name, String content) {
         Map<String, Object> keyValue = new Yaml().load(content);
 
-        EnvInclude envInclude = parseInclude(keyValue);
+        EnvironmentInclude envInclude = parseInclude(keyValue);
         int portOffset = parsePortOffset(keyValue);
         String envIp = parseIp(keyValue);
         List<ComponentGroupDefinition> componentGroups = parseComponentGroups(keyValue, name, envIp);
@@ -45,13 +45,13 @@ public class EnvironmentFile {
     }
 
     @SuppressWarnings("unchecked")
-    private EnvInclude parseInclude(Map<String, Object> keyValue) {
+    private EnvironmentInclude parseInclude(Map<String, Object> keyValue) {
         Map<String, Object> includeProps = (Map<String, Object>) keyValue.remove(INCLUDE);
-        if (includeProps == null) return EnvInclude.empty();
+        if (includeProps == null) return EnvironmentInclude.empty();
 
         String name = (String) includeProps.get(INCLUDE_ENV);
         Collection<String> excludes = (Collection<String>) includeProps.getOrDefault(EXCLUDE, emptyList());
-        return new EnvInclude(name, new LinkedHashSet<>(excludes));
+        return new EnvironmentInclude(name, new LinkedHashSet<>(excludes));
     }
 
     private int parsePortOffset(Map<String, ?> keyValue) {

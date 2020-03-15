@@ -66,8 +66,8 @@ public class Microconfig {
     private EnvironmentRepository environments() {
         return new FileEnvironmentRepository(
                 rootDir,
-                new EnvironmentFile(io, fsComponentFactory())
-        );
+                new EnvironmentFile(io, fsComponentFactory()),
+                componentFactory);
     }
 
     private ComponentFactory fsComponentFactory() {

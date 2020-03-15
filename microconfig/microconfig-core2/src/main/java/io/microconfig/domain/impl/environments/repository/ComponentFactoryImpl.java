@@ -14,12 +14,6 @@ public class ComponentFactoryImpl implements ComponentFactory {
 
     @Override
     public Component createComponent(String componentName, String componentType, String environment) {
-        return new ComponentImpl(
-                configTypeRepository,
-                propertyRepository,
-                componentName,
-                componentType,
-                environment
-        );
+        return new ComponentImpl(configTypeRepository, propertyRepository, componentName, componentType, environment);
     }
 }
