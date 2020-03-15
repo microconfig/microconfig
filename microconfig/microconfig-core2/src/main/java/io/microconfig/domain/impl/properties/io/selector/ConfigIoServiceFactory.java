@@ -1,9 +1,7 @@
-package io.microconfig.domain.impl.properties.io.factory;
+package io.microconfig.domain.impl.properties.io.selector;
 
 import io.microconfig.domain.impl.properties.io.ConfigIoService;
 import io.microconfig.domain.impl.properties.io.properties.PropertiesConfigIoService;
-import io.microconfig.domain.impl.properties.io.selector.ConfigFormatDetectorImpl;
-import io.microconfig.domain.impl.properties.io.selector.ConfigIoServiceSelector;
 import io.microconfig.domain.impl.properties.io.yaml.YamlConfigIoService;
 import io.microconfig.io.DumpedFsReader;
 import io.microconfig.io.FsReader;

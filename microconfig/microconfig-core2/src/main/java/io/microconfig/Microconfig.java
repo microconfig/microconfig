@@ -22,7 +22,7 @@ import java.io.File;
 
 import static io.microconfig.domain.impl.configtypes.CompositeConfigTypeRepository.composite;
 import static io.microconfig.domain.impl.configtypes.DescriptorConfigTypeRepository.findDescriptorIn;
-import static io.microconfig.domain.impl.properties.io.factory.ConfigIoServiceFactory.newConfigIoService;
+import static io.microconfig.domain.impl.properties.io.selector.ConfigIoServiceFactory.newConfigIoService;
 import static io.microconfig.domain.impl.properties.repository.graph.CachedComponentGraph.traverseFrom;
 import static io.microconfig.domain.impl.properties.resolvers.chain.ChainedResolver.chainOf;
 import static io.microconfig.utils.FileUtils.canonical;
