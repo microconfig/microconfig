@@ -4,6 +4,7 @@ import io.microconfig.domain.ComponentGroup;
 import io.microconfig.domain.Environment;
 import io.microconfig.domain.EnvironmentRepository;
 import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,22 +12,21 @@ import java.util.Map;
 import java.util.Set;
 
 import static io.microconfig.io.StreamUtils.toLinkedMap;
-import static java.util.Collections.unmodifiableSet;
-import static java.util.Objects.requireNonNull;
+import static java.util.Collections.emptySet;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 
 @EqualsAndHashCode
+@RequiredArgsConstructor
 public class EnvInclude {
     private final String env;
     private final Set<String> excludeGroups;
 
-    public EnvInclude(String env, Set<String> excludeGroups) {
-        this.env = requireNonNull(env);
-        this.excludeGroups = unmodifiableSet(requireNonNull(excludeGroups));
+    public static EnvInclude empty() {
+        return new EnvInclude("", emptySet());
     }
 
-    public Environment includeTo(Environment includeTo, EnvironmentRepository environmentRepository) {
+    public EnvironmentDefinition includeTo(EnvironmentDefinition includeTo, EnvironmentRepository environmentRepository) {
         Environment includeFrom = environmentRepository.withName(env);
 
         Map<String, ComponentGroup> groupToIncludeByName = collectGroupsToInclude(includeFrom)
@@ -42,14 +42,14 @@ public class EnvInclude {
         return includeTo.withIncludedGroups(new ArrayList<>(groupToIncludeByName.values()));
     }
 
-    private List<ComponentGroup> collectGroupsToInclude(Environment includeFrom) {
+    private List<ComponentGroupDefinition> collectGroupsToInclude(Environment includeFrom) {
         return includeFrom.getComponentGroups()
                 .stream()
                 .filter(g -> !excludeGroups.contains(g.getName()))
                 .collect(toList());
     }
 
-    private ComponentGroup overrideIp(ComponentGroup includedGroup, Environment includedEnv, Environment destinationEnv) {
+    private ComponentGroupDefinition overrideIp(ComponentGroupDefinition includedGroup, Environment includedEnv, Environment destinationEnv) {
         if (destinationEnv.getIp().isPresent()) {
             return includedGroup.changeIp(destinationEnv.getIp().get());
         }
@@ -61,7 +61,7 @@ public class EnvInclude {
         return includedGroup;
     }
 
-    private ComponentGroup override(ComponentGroup includedGroup, ComponentGroup override) {
+    private ComponentGroupDefinition override(ComponentGroupDefinition includedGroup, ComponentGroup override) {
         return includedGroup == null ? override : includedGroup.override(override);
     }
 }

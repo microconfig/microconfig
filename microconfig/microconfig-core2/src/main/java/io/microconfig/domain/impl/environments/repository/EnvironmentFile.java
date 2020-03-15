@@ -1,8 +1,5 @@
 package io.microconfig.domain.impl.environments.repository;
 
-import io.microconfig.domain.Component;
-import io.microconfig.domain.ComponentGroup;
-import io.microconfig.domain.impl.environments.EnvironmentImpl;
 import io.microconfig.io.formats.Io;
 import lombok.RequiredArgsConstructor;
 import org.yaml.snakeyaml.Yaml;
@@ -13,7 +10,6 @@ import java.util.Map.Entry;
 
 import static io.microconfig.io.FileUtils.getName;
 import static java.util.Collections.emptyList;
-import static java.util.Optional.*;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
@@ -39,35 +35,34 @@ public class EnvironmentFile {
     private EnvironmentDefinition doParse(String name, String content) {
         Map<String, Object> keyValue = new Yaml().load(content);
 
-        Optional<EnvInclude> envInclude = parseInclude(keyValue);
-        Optional<Integer> portOffset = parsePortOffset(keyValue);
-        Optional<String> envIp = parseIp(keyValue);
-        List<ComponentGroup> componentGroups = parseComponentGroups(keyValue, name, envIp);
+        EnvInclude envInclude = parseInclude(keyValue);
+        int portOffset = parsePortOffset(keyValue);
+        String envIp = parseIp(keyValue);
+        List<ComponentGroupDefinition> componentGroups = parseComponentGroups(keyValue, name, envIp);
 
-        return new EnvironmentImpl(name, componentGroups, envIp, portOffset, envInclude, null);
+        return new EnvironmentDefinition(name,envIp, portOffset, envInclude, componentGroups, file);
     }
 
     @SuppressWarnings("unchecked")
-    private Optional<EnvInclude> parseInclude(Map<String, Object> keyValue) {
+    private EnvInclude parseInclude(Map<String, Object> keyValue) {
         Map<String, Object> includeProps = (Map<String, Object>) keyValue.remove(INCLUDE);
-        if (includeProps == null) return empty();
+        if (includeProps == null) return EnvInclude.empty();
 
         String name = (String) includeProps.get(INCLUDE_ENV);
         Collection<String> excludes = (Collection<String>) includeProps.getOrDefault(EXCLUDE, emptyList());
-        return of(new EnvInclude(name, new LinkedHashSet<>(excludes)));
+        return new EnvInclude(name, new LinkedHashSet<>(excludes));
     }
 
-    private Optional<Integer> parsePortOffset(Map<String, ?> keyValue) {
-        return ofNullable(keyValue.remove(PORT_OFFSET))
-                .map(Number.class::cast)
-                .map(Number::intValue);
+    private int parsePortOffset(Map<String, ?> keyValue) {
+        Number offset = (Number) keyValue.remove(PORT_OFFSET);
+        return offset == null ? 0 : offset.intValue();
     }
 
-    private Optional<String> parseIp(Map<String, ?> keyValue) {
-        return ofNullable(keyValue.remove(IP)).map(Object::toString);
+    private String parseIp(Map<String, ?> keyValue) {
+        return (String) keyValue.remove(IP);
     }
 
-    private List<ComponentGroup> parseComponentGroups(Map<String, Object> keyValue, String envName, Optional<String> envIp) {
+    private List<ComponentGroupDefinition> parseComponentGroups(Map<String, Object> keyValue, String envName, String envIp) {
         return keyValue.entrySet()
                 .stream()
                 .map(group -> {
@@ -80,22 +75,20 @@ public class EnvironmentFile {
     }
 
     @SuppressWarnings("unchecked")
-    private ComponentGroup parseGroup(Entry<String, Object> componentGroupDeclaration, Optional<String> envIp) {
+    private ComponentGroupDefinition parseGroup(Entry<String, Object> componentGroupDeclaration, String envIp) {
         String componentGroupName = componentGroupDeclaration.getKey();
         Map<String, Object> properties = (Map<String, Object>) componentGroupDeclaration.getValue();
-        Optional<String> ip = ofNullable((String) properties.getOrDefault(IP, envIp.orElse(null)));
+        String ip = (String) properties.getOrDefault(IP, envIp);
 
-        List<Component> parsedComponents = parseComponents(properties, COMPONENTS);
-        List<Component> excludedComponents = parseComponents(properties, EXCLUDE);
-        List<Component> appendedComponents = parseComponents(properties, APPEND);
+        List<ComponentDefinition> parsedComponents = parseComponents(properties, COMPONENTS);
+        List<ComponentDefinition> excludedComponents = parseComponents(properties, EXCLUDE);
+        List<ComponentDefinition> appendedComponents = parseComponents(properties, APPEND);
 
-        return new ComponentGroup(componentGroupName, ip,
-                parsedComponents, excludedComponents, appendedComponents
-        );
+        return new ComponentGroupDefinition(componentGroupName, ip, parsedComponents, excludedComponents, appendedComponents);
     }
 
     @SuppressWarnings("unchecked")
-    private List<Component> parseComponents(Map<String, Object> keyValue, String property) {
+    private List<ComponentDefinition> parseComponents(Map<String, Object> keyValue, String property) {
         List<String> values = (List<String>) keyValue.get(property);
         if (values == null) return emptyList();
 
@@ -104,7 +97,7 @@ public class EnvironmentFile {
                 .map(s -> {
                     String[] parts = s.split(":");
                     if (parts.length > 2) throw new IllegalArgumentException("Incorrect component declaration: " + s);
-                    return parts.length == 1 ? Component.byType(parts[0]) : Component.byNameAndType(parts[0], parts[1]);
+                    return parts.length == 1 ? ComponentDefinition.byType(parts[0]) : ComponentDefinition.byNameAndType(parts[0], parts[1]);
                 }).collect(toList());
     }
 }
