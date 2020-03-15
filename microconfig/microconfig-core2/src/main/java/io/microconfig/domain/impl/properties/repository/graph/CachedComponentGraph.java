@@ -1,7 +1,6 @@
 package io.microconfig.domain.impl.properties.repository.graph;
 
 import io.microconfig.domain.impl.properties.repository.ComponentGraph;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -27,8 +26,6 @@ import static lombok.AccessLevel.PRIVATE;
 public class CachedComponentGraph implements ComponentGraph {
     public static final String COMPONENTS_DIR = "components";
 
-    @Getter
-    private final File rootDir;
     private final Map<String, List<File>> foldersByComponentType;
 
     public static ComponentGraph traverseFrom(File rootDir) {
@@ -37,8 +34,8 @@ public class CachedComponentGraph implements ComponentGraph {
             throw new IllegalArgumentException("Root directory must contain 'components' dir");
         }
 
-        try (Stream<Path> pathStream = walk(componentDir.toPath())) {
-            return new CachedComponentGraph(rootDir, collectFoldersByComponentType(pathStream));
+        try (Stream<Path> paths = walk(componentDir.toPath())) {
+            return new CachedComponentGraph(collectFoldersByComponentType(paths));
         }
     }
 
