@@ -47,8 +47,12 @@ public class CachedFileSystemGraph implements FileSystemGraph {
 
     @Override
     public Stream<File> getConfigFilesFor(String component, Predicate<File> filter) {
-        return foldersByComponentType.getOrDefault(component, emptyList())
-                .stream()
+        List<File> dirs = foldersByComponentType.getOrDefault(component, emptyList());
+        if (dirs.isEmpty()) {
+            throw new ComponentDoesNotExistException(component);
+        }
+
+        return dirs.stream()
                 .map(File::listFiles)
                 .filter(Objects::nonNull)
                 .flatMap(Stream::of)
@@ -59,8 +63,8 @@ public class CachedFileSystemGraph implements FileSystemGraph {
     public Optional<File> getFolderOf(String component) {
         List<File> folders = foldersByComponentType.getOrDefault(component, emptyList());
         if (folders.size() > 1) {
-            warn("Found " + folders.size() + " folders with name " + component + ". " +
-                    "Consider renaming them, otherwise placeholder resolution can be incorrect");
+            warn("Found " + folders.size() + " folders with name '" + component + "'. " +
+                    "Consider renaming them, otherwise placeholder resolution works incorrectly");
         }
         return folders.isEmpty() ? empty() : of(folders.get(0));
     }

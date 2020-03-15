@@ -3,6 +3,7 @@ package io.microconfig.domain.impl.properties.repository;
 import io.microconfig.domain.ConfigType;
 import io.microconfig.domain.Property;
 import io.microconfig.domain.impl.properties.PropertyRepository;
+import io.microconfig.io.fsgraph.ComponentDoesNotExistException;
 import io.microconfig.io.fsgraph.FileSystemGraph;
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +27,13 @@ public class FileSystemPropertyRepository implements PropertyRepository {
     }
 
     private Map<String, Property> collectProperties(String componentType, String env, Set<String> configExtensions, Set<Include> processedIncludes) {
-        Function<Predicate<File>, Map<String, Property>> collectProperties = filter -> collectProperties(filter, componentType, env, configExtensions, processedIncludes);
+        Function<Predicate<File>, Map<String, Property>> collectProperties = filter -> {
+            try {
+                return collectProperties(filter, componentType, env, configExtensions, processedIncludes);
+            } catch (ComponentDoesNotExistException e) {
+                throw e.withParent(componentType);
+            }
+        };
 
         Map<String, Property> basicProperties = collectProperties.apply(defaultConfig(configExtensions));
         Map<String, Property> envSharedProperties = collectProperties.apply(configForMultipleEnvironments(configExtensions, env));
