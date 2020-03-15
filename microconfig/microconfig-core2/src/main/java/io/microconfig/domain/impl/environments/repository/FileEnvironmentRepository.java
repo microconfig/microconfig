@@ -55,14 +55,14 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     }
 
     @Override
-    public Environment getWithName(String name) {
+    public Environment getByName(String name) {
         return findEnvWith(name).orElseThrow(() -> {
             throw new EnvironmentException("Can't find env '" + name + "'");
         });
     }
 
     @Override
-    public Environment getOrCreateWithName(String name) {
+    public Environment getOrCreateByName(String name) {
         return findEnvWith(name).orElseGet(fakeEnvWith(name));
     }
 

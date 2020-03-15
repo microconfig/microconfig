@@ -8,7 +8,7 @@ public interface EnvironmentRepository {
 
     Set<String> environmentNames();
 
-    Environment getWithName(String name);
+    Environment getByName(String name);
 
-    Environment getOrCreateWithName(String name);
+    Environment getOrCreateByName(String name);
 }

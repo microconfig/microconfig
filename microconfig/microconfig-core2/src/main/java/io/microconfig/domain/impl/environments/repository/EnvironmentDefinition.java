@@ -30,7 +30,7 @@ public class EnvironmentDefinition {
     private final File source;
 
     public EnvironmentDefinition processInclude(EnvironmentRepository environmentProvider) {
-        return envInclude.includeTo(this, environmentProvider);
+        return envInclude.isEmpty() ? this : envInclude.includeTo(this, environmentProvider);
     }
 
     public EnvironmentDefinition checkComponentNamesAreUnique() {

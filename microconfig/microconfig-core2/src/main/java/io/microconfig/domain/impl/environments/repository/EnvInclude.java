@@ -3,9 +3,11 @@ package io.microconfig.domain.impl.environments.repository;
 import io.microconfig.domain.EnvironmentRepository;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 
 import java.util.*;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collector;
 
 import static io.microconfig.utils.StreamUtils.*;
 import static java.util.Collections.emptySet;
@@ -23,37 +25,42 @@ public class EnvInclude {
         return empty;
     }
 
-    public EnvironmentDefinition includeTo(EnvironmentDefinition destinationEnv,
-                                           EnvironmentRepository repository) {
-        if (baseEnvironment.isEmpty()) return destinationEnv;
-
-        EnvironmentDefinition baseEnv = (EnvironmentDefinition) repository.getWithName(baseEnvironment); //todo
-        List<ComponentGroupDefinition> groupsToInclude = forEach(groupsToIncludeFrom(baseEnv), assignIpOf(destinationEnv));
-
-        Map<String, ComponentGroupDefinition> groupToIncludeByName = groupsToInclude.stream()
-                .collect(toLinkedMap(ComponentGroupDefinition::getName, identity()));
-
-        destinationEnv.getGroups()
-                .stream()
-                .map(overriddenGroup -> override(groupToIncludeByName.get(overriddenGroup.getName()), overriddenGroup))
-                .forEach(g -> groupToIncludeByName.put(g.getName(), g));
-
-        return assignNewGroupsTo(destinationEnv, groupToIncludeByName.values());
+    public EnvironmentDefinition includeTo(EnvironmentDefinition destinationEnv, EnvironmentRepository repository) {
+        val baseGroupByName = findBaseGroupsUsing(repository, destinationEnv);
+        forEach(destinationEnv.getGroups(), overrideBaseGroupIn(baseGroupByName).andThen(g -> baseGroupByName.put(g.getName(), g)));
+        return assignGroupsTo(destinationEnv, baseGroupByName.values());
     }
 
-    private List<ComponentGroupDefinition> groupsToIncludeFrom(EnvironmentDefinition env) {
-        return filter(env.getGroups(), g -> !excludedGroups.contains(g.getName()));
+    private Map<String, ComponentGroupDefinition> findBaseGroupsUsing(EnvironmentRepository repository, EnvironmentDefinition destinationEnv) {
+        EnvironmentDefinition baseEnv = (EnvironmentDefinition) repository.getByName(baseEnvironment);
+        return forEach(notExcludedGroupsFrom(baseEnv), assignIpOf(destinationEnv), resultsToMap());
+    }
+
+    private List<ComponentGroupDefinition> notExcludedGroupsFrom(EnvironmentDefinition baseEnv) {
+        return filter(baseEnv.getGroups(), group -> !excludedGroups.contains(group.getName()));
     }
 
     private UnaryOperator<ComponentGroupDefinition> assignIpOf(EnvironmentDefinition destinationEnv) {
         return group -> destinationEnv.getIp() == null ? group : group.withIp(destinationEnv.getIp());
     }
 
-    private ComponentGroupDefinition override(ComponentGroupDefinition includedGroup, ComponentGroupDefinition override) {
-        return includedGroup == null ? override : includedGroup.overrideBy(override);
+    private UnaryOperator<ComponentGroupDefinition> overrideBaseGroupIn(Map<String, ComponentGroupDefinition> baseGroupByName) {
+        return destinationGroup -> {
+            ComponentGroupDefinition baseGroup = baseGroupByName.get(destinationGroup.getName());
+            return baseGroup == null ? destinationGroup : baseGroup.overrideBy(destinationGroup);
+        };
     }
 
-    private EnvironmentDefinition assignNewGroupsTo(EnvironmentDefinition destinationEnv, Collection<ComponentGroupDefinition> groups) {
-        return destinationEnv.withGroups(new ArrayList<>(groups)).withEnvInclude(EnvInclude.empty());
+    private EnvironmentDefinition assignGroupsTo(EnvironmentDefinition destinationEnv, Collection<ComponentGroupDefinition> groups) {
+        return destinationEnv.withGroups(new ArrayList<>(groups))
+                .withEnvInclude(EnvInclude.empty());
+    }
+
+    private Collector<ComponentGroupDefinition, ?, Map<String, ComponentGroupDefinition>> resultsToMap() {
+        return toLinkedMap(ComponentGroupDefinition::getName, identity());
+    }
+
+    public boolean isEmpty() {
+        return this == empty();
     }
 }
