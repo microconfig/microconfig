@@ -1,9 +1,9 @@
 package io.microconfig.domain.impl.environments.repository;
 
+import io.microconfig.domain.ComponentFactory;
+import io.microconfig.domain.ComponentFactory.ComponentFactoryContext;
 import io.microconfig.domain.ComponentGroup;
-import io.microconfig.domain.impl.environments.ComponentFactory;
 import io.microconfig.domain.impl.environments.ComponentGroupImpl;
-import io.microconfig.domain.impl.properties.ComponentsImpl;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -12,7 +12,6 @@ import java.util.List;
 
 import static io.microconfig.utils.CollectionUtils.join;
 import static io.microconfig.utils.CollectionUtils.minus;
-import static io.microconfig.utils.StreamUtils.forEach;
 import static java.util.Collections.emptyList;
 
 @With
@@ -58,12 +57,13 @@ public class ComponentGroupDefinition {
     }
 
     public ComponentGroup toGroup(ComponentFactory componentFactory, String environment) {
+        ComponentFactoryContext contexts = componentFactory.forEnvironment(environment);
+        components.forEach(c -> contexts.createComponent(c.getName(), c.getType()));
+
         return new ComponentGroupImpl(
                 name,
                 ip,
-                new ComponentsImpl(
-                        forEach(components, c -> componentFactory.createComponent(c.getName(), c.getType(), environment))
-                )
+                contexts.components()
         );
     }
 }

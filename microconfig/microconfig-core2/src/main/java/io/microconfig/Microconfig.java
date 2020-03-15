@@ -1,13 +1,9 @@
 package io.microconfig;
 
-import io.microconfig.domain.ConfigTypeRepository;
-import io.microconfig.domain.Environment;
-import io.microconfig.domain.EnvironmentRepository;
-import io.microconfig.domain.StatementResolver;
+import io.microconfig.domain.*;
 import io.microconfig.domain.impl.configtypes.StandardConfigType;
-import io.microconfig.domain.impl.environments.ComponentFactory;
-import io.microconfig.domain.impl.environments.repository.ComponentFactoryImpl;
 import io.microconfig.domain.impl.environments.repository.FileEnvironmentRepository;
+import io.microconfig.domain.impl.properties.ComponentFactoryImpl;
 import io.microconfig.domain.impl.properties.repository.ComponentGraph;
 import io.microconfig.domain.impl.properties.repository.FilePropertiesRepository;
 import io.microconfig.domain.impl.properties.resolvers.expression.ExpressionResolver;

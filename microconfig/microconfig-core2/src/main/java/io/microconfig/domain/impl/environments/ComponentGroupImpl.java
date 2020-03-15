@@ -24,7 +24,8 @@ public class ComponentGroupImpl implements ComponentGroup {
 
     @Override
     public Optional<Component> findComponentWithName(String componentName) {
-        return components.asList().stream()
+        return components.asList()
+                .stream()
                 .filter(c -> c.getName().equals(componentName))
                 .findFirst();
     }

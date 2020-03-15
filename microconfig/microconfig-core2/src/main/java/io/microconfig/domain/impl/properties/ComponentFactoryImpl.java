@@ -1,10 +1,8 @@
-package io.microconfig.domain.impl.environments.repository;
+package io.microconfig.domain.impl.properties;
 
 import io.microconfig.domain.Component;
+import io.microconfig.domain.ComponentFactory;
 import io.microconfig.domain.ConfigTypeRepository;
-import io.microconfig.domain.impl.environments.ComponentFactory;
-import io.microconfig.domain.impl.properties.ComponentImpl;
-import io.microconfig.domain.impl.properties.PropertiesRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
