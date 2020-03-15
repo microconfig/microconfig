@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public interface ComponentGraph {
-    Optional<File> getFolderOf(String component);
-
     Stream<File> getConfigFilesFor(String component, Predicate<File> filter);
+
+    Optional<File> getFolderOf(String component);
 }

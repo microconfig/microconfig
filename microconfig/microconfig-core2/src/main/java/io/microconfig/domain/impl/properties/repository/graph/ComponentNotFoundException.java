@@ -12,8 +12,8 @@ public class ComponentNotFoundException extends RuntimeException {
     private final String notFoundComponent;
     private final Deque<String> path = new ArrayDeque<>();
 
-    public ComponentNotFoundException withComponentParent(String component) {
-        path.addFirst(component);
+    public ComponentNotFoundException withParentComponent(String parent) {
+        path.addFirst(parent);
         return this;
     }
 

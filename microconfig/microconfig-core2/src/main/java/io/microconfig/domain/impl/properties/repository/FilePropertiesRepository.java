@@ -60,7 +60,7 @@ public class FilePropertiesRepository implements PropertiesRepository {
             try {
                 return collectPropertiesFrom(configDefinitionsFor(configFilter));
             } catch (ComponentNotFoundException e) {
-                throw e.withComponentParent(componentType);
+                throw e.withParentComponent(componentType);
             }
         }
 
