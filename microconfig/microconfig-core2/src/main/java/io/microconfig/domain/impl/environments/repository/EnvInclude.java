@@ -1,7 +1,6 @@
 package io.microconfig.domain.impl.environments.repository;
 
 import io.microconfig.domain.EnvironmentRepository;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 
@@ -13,7 +12,6 @@ import static io.microconfig.utils.StreamUtils.*;
 import static java.util.Collections.emptySet;
 import static java.util.function.Function.identity;
 
-@EqualsAndHashCode
 @RequiredArgsConstructor
 public class EnvInclude {
     private static final EnvInclude empty = new EnvInclude("", emptySet());
@@ -27,7 +25,7 @@ public class EnvInclude {
 
     public EnvironmentDefinition includeTo(EnvironmentDefinition destinationEnv, EnvironmentRepository repository) {
         val baseGroupByName = findBaseGroupsUsing(repository, destinationEnv);
-        forEach(destinationEnv.getGroups(), overrideBaseGroupIn(baseGroupByName).andThen(g -> baseGroupByName.put(g.getName(), g)));
+        forEach(destinationEnv.getGroups(), overrideBaseGroupIn(baseGroupByName).andThen(overriddenGroup -> baseGroupByName.put(overriddenGroup.getName(), overriddenGroup)));
         return assignGroupsTo(destinationEnv, baseGroupByName.values());
     }
 
@@ -61,6 +59,6 @@ public class EnvInclude {
     }
 
     public boolean isEmpty() {
-        return this == empty();
+        return this == empty;
     }
 }

@@ -4,7 +4,6 @@ import io.microconfig.domain.Property;
 import io.microconfig.domain.PropertySource;
 import io.microconfig.domain.StatementResolver;
 import io.microconfig.utils.Os;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -14,7 +13,6 @@ import static java.util.stream.IntStream.range;
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
-@EqualsAndHashCode
 @RequiredArgsConstructor(access = PRIVATE)
 public class PropertyImpl implements Property {
     private static final String TEMP_VALUE = "#var ";

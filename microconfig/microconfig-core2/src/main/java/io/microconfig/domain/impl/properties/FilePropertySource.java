@@ -1,7 +1,6 @@
 package io.microconfig.domain.impl.properties;
 
 import io.microconfig.domain.PropertySource;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -9,7 +8,6 @@ import java.io.File;
 
 
 @Getter
-@EqualsAndHashCode
 @RequiredArgsConstructor
 public class FilePropertySource implements PropertySource {
     private final File source;

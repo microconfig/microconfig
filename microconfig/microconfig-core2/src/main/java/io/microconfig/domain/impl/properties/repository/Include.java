@@ -1,6 +1,5 @@
 package io.microconfig.domain.impl.properties.repository;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -10,7 +9,6 @@ import java.util.regex.Pattern;
 import static java.util.regex.Pattern.compile;
 
 @Getter
-@EqualsAndHashCode
 @RequiredArgsConstructor
 public class Include {
     private static Pattern componentPattern = compile("^(?<comp>[\\w-_.]+)(\\[(?<env>.+)])?$");
