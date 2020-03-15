@@ -9,5 +9,5 @@ public interface ComponentGroup {
 
     Optional<Component> findComponentWithName(String name);
 
-    Components getAllComponents();
+    Components getComponents();
 }

@@ -46,7 +46,7 @@ public class EnvironmentImpl implements Environment {
     @Override
     public Components getAllComponents() {
         return new ComponentsImpl(componentGroups.stream()
-                .map(ComponentGroup::getAllComponents)
+                .map(ComponentGroup::getComponents)
                 .map(Components::asList)
                 .flatMap(List::stream)
                 .collect(toList())
@@ -67,7 +67,7 @@ public class EnvironmentImpl implements Environment {
     }
 
     private Component createComponentWithName(String componentName) {
-        return componentFactory.forEnvironment(name).createComponent(componentName, componentName);
+        return componentFactory.createComponent(componentName, componentName, name);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class EnvironmentImpl implements Environment {
 
             return groups.stream()
                     .map(this::findGroupWithName)
-                    .map(ComponentGroup::getAllComponents)
+                    .map(ComponentGroup::getComponents)
                     .map(Components::asList)
                     .flatMap(List::stream)
                     .collect(toList());

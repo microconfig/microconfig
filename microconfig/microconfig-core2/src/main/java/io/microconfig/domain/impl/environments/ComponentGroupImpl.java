@@ -15,6 +15,7 @@ public class ComponentGroupImpl implements ComponentGroup {
     @Getter
     private final String name;
     private final String ip;
+    @Getter
     private final Components components;
 
     @Override
@@ -28,10 +29,5 @@ public class ComponentGroupImpl implements ComponentGroup {
                 .stream()
                 .filter(c -> c.getName().equals(componentName))
                 .findFirst();
-    }
-
-    @Override
-    public Components getAllComponents() {
-        return components;
     }
 }
