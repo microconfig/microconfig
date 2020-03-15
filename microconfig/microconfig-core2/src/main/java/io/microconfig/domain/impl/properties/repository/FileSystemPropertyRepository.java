@@ -3,6 +3,8 @@ package io.microconfig.domain.impl.properties.repository;
 import io.microconfig.domain.ConfigType;
 import io.microconfig.domain.Property;
 import io.microconfig.domain.impl.properties.PropertyRepository;
+import io.microconfig.domain.impl.properties.repository.OriginalConfig.ConfigDefinition;
+import io.microconfig.io.formats.ConfigIoService;
 import io.microconfig.io.fsgraph.ComponentNotFoundException;
 import io.microconfig.io.fsgraph.FileSystemGraph;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,7 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class FileSystemPropertyRepository implements PropertyRepository {
     private final FileSystemGraph fsGraph;
-    private final ConfigDefinitionParser configDefinitionParser;
+    private final ConfigIoService ioService;
 
     @Override
     public List<Property> getProperties(String componentType, String environment, ConfigType configType) {
@@ -65,7 +67,8 @@ public class FileSystemPropertyRepository implements PropertyRepository {
 
         private Stream<ConfigDefinition> configDefinitionsFor(Predicate<File> filter) {
             return fsGraph.getConfigFilesFor(componentType, filter)
-                    .map(file -> configDefinitionParser.parse(file, environment));
+                    .map(configFile -> new OriginalConfig(configFile, environment))
+                    .map(original -> original.parseUsing(ioService));
         }
 
         private Map<String, Property> collectPropertiesFrom(Stream<ConfigDefinition> componentConfigs) {
