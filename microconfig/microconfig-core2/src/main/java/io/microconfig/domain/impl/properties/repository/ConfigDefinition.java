@@ -17,7 +17,7 @@ class ConfigDefinition {
     private final List<Include> includes;
     private final List<Property> properties;
 
-    public Map<String, Property> getPropertiesAsMas() {
+    public Map<String, Property> getProperties() {
         return properties.stream()
                 .collect(toMap(Property::getKey, identity()));
     }

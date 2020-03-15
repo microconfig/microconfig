@@ -64,24 +64,21 @@ public class FileSystemPropertyRepository implements PropertyRepository {
         }
 
         private void processComponent(ConfigDefinition configDefinition, Map<String, Property> destination) {
-            Map<String, Property> included = processIncludes(configDefinition.getIncludes());
-            Map<String, Property> original = configDefinition.getPropertiesAsMas();
+            Map<String, Property> included = collectIncludedProperties(configDefinition.getIncludes());
+            Map<String, Property> original = configDefinition.getProperties();
 
             destination.putAll(included);
             destination.putAll(original);
         }
 
-        private Map<String, Property> processIncludes(List<Include> includes) {
-            Map<String, Property> result = new HashMap<>();
-
-            includes.stream()
+        private Map<String, Property> collectIncludedProperties(List<Include> includes) {
+            return includes.stream()
                     .filter(processedIncludes::add)
                     .map(include -> collectPropertiesFor(include.getComponentType(), include.getEnvironment()))
-                    .forEach(result::putAll);
-
-
-            return result;
+                    .reduce(new HashMap<>(), (m1, m2) -> {
+                        m1.putAll(m2);
+                        return m1;
+                    });
         }
-
     }
 }
