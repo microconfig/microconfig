@@ -6,15 +6,18 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
 public class StreamUtils {
-    public static <K, V> List<V> forEach(Collection<K> collection, Function<? super K, ? extends V> function) {
-        return collection.stream()
-                .map(function)
-                .collect(toList());
+    public static <K, V> List<V> forEach(Collection<K> collection, Function<? super K, ? extends V> applyFunction) {
+        return forEach(collection.stream(), applyFunction);
+    }
+
+    public static <K, V> List<V> forEach(Stream<K> stream, Function<? super K, ? extends V> function) {
+        return stream.map(function).collect(toList());
     }
 
     public static <K, V> List<V> flatMapEach(Collection<K> collection,

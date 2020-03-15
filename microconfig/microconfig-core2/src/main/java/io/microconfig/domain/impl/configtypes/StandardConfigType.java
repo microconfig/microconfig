@@ -9,7 +9,7 @@ import static io.microconfig.domain.impl.configtypes.ConfigTypeImpl.byName;
 import static io.microconfig.domain.impl.configtypes.ConfigTypeImpl.byNameAndExtensions;
 import static io.microconfig.io.CollectionUtils.setOf;
 import static io.microconfig.io.StreamUtils.forEach;
-import static java.util.Arrays.asList;
+import static java.util.stream.Stream.of;
 
 @RequiredArgsConstructor
 public enum StandardConfigType {
@@ -23,6 +23,6 @@ public enum StandardConfigType {
     private final ConfigType type;
 
     public static ConfigTypeRepository asRepository() {
-        return () -> forEach(asList(StandardConfigType.values()), StandardConfigType::getType);
+        return () -> forEach(of(StandardConfigType.values()), StandardConfigType::getType);
     }
 }

@@ -12,8 +12,8 @@ import static java.util.Arrays.asList;
 public class CompositeConfigTypeRepository implements ConfigTypeRepository {
     private final List<ConfigTypeRepository> repositories;
 
-    public static ConfigTypeRepository composite(ConfigTypeRepository... types) {
-        return new CompositeConfigTypeRepository(asList(types));
+    public static ConfigTypeRepository composite(ConfigTypeRepository... repositories) {
+        return new CompositeConfigTypeRepository(asList(repositories));
     }
 
     @Override
