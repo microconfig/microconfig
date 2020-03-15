@@ -57,6 +57,7 @@ public class EnvironmentImpl implements Environment {
     public Component findComponentWithName(String componentName, boolean mustBeDeclaredInEnvDescriptor) {
         return componentGroups.stream()
                 .map(g -> g.findComponentWithName(componentName))
+                .filter(Optional::isPresent)
                 .map(Optional::get)
                 .findFirst()
                 .orElseGet(() -> {

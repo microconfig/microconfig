@@ -37,6 +37,7 @@ public class CompositeComponentPropertiesImpl implements CompositeComponentPrope
     public Optional<Property> getPropertyWithKey(String key) {
         return results.stream()
                 .map(r -> r.getPropertyWithKey(key))
+                .filter(Optional::isPresent)
                 .map(Optional::get)
                 .findFirst();
     }

@@ -77,6 +77,7 @@ public class Environment {
     public Optional<Component> getComponentByName(String componentName) {
         return componentGroups.stream()
                 .map(componentGroup -> componentGroup.getComponentByName(componentName))
+                .filter(Optional::isPresent)
                 .map(Optional::get)
                 .findFirst();
     }
