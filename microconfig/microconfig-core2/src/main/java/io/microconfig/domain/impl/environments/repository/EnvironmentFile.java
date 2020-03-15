@@ -1,6 +1,6 @@
 package io.microconfig.domain.impl.environments.repository;
 
-import io.microconfig.io.formats.Io;
+import io.microconfig.io.io.FsReader;
 import lombok.RequiredArgsConstructor;
 import org.yaml.snakeyaml.Yaml;
 
@@ -25,9 +25,9 @@ public class EnvironmentFile {
 
     private final File file;
 
-    public EnvironmentDefinition parseUsing(Io io) {
+    public EnvironmentDefinition parseUsing(FsReader fsReader) {
         try {
-            return doParse(getName(file), io.readFully(file));
+            return doParse(getName(file), fsReader.readFully(file));
         } catch (RuntimeException e) {
             throw new EnvironmentException("Can't parse env file '" + file + "'", e);
         }

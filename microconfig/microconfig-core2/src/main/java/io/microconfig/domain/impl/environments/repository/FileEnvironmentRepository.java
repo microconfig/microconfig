@@ -5,7 +5,7 @@ import io.microconfig.domain.EnvironmentRepository;
 import io.microconfig.domain.impl.environments.ComponentFactory;
 import io.microconfig.domain.impl.environments.EnvironmentImpl;
 import io.microconfig.io.FileUtils;
-import io.microconfig.io.formats.Io;
+import io.microconfig.io.io.FsReader;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -32,15 +32,15 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     private static final String ENV_DIR = "envs";
 
     private final File envDir;
-    private final Io io;
+    private final FsReader fsReader;
     private final ComponentFactory componentFactory;
 
-    public FileEnvironmentRepository(File rootDir, Io io, ComponentFactory componentFactory) {
+    public FileEnvironmentRepository(File rootDir, FsReader fsReader, ComponentFactory componentFactory) {
         this.envDir = new File(rootDir, ENV_DIR);
         if (!envDir.exists()) {
             throw new IllegalArgumentException("Env directory doesn't exist: " + envDir);
         }
-        this.io = io;
+        this.fsReader = fsReader;
         this.componentFactory = componentFactory;
     }
 
@@ -88,7 +88,7 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
 
     private Function<File, Environment> parse() {
         return f -> new EnvironmentFile(f)
-                .parseUsing(io)
+                .parseUsing(fsReader)
                 .processInclude(this)
                 .verifyUniqueComponentNames()
                 .toEnvironment(componentFactory);

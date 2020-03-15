@@ -3,7 +3,7 @@ package io.microconfig.io.formats.properties;
 import io.microconfig.domain.Property;
 import io.microconfig.domain.impl.properties.PropertyImpl;
 import io.microconfig.io.formats.AbstractConfigReader;
-import io.microconfig.io.formats.Io;
+import io.microconfig.io.io.FsReader;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -14,8 +14,8 @@ import static io.microconfig.domain.impl.properties.PropertyImpl.isComment;
 import static io.microconfig.io.FileUtils.LINES_SEPARATOR;
 
 class PropertiesReader extends AbstractConfigReader {
-    PropertiesReader(File file, Io fileReader) {
-        super(file, fileReader);
+    PropertiesReader(File file, FsReader fileFsReader) {
+        super(file, fileFsReader);
     }
 
     @Override

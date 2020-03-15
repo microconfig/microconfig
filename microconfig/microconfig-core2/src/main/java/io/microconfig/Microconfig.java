@@ -12,9 +12,9 @@ import io.microconfig.domain.impl.properties.repository.FilePropertyRepository;
 import io.microconfig.domain.impl.properties.resolvers.expression.ExpressionResolver;
 import io.microconfig.domain.impl.properties.resolvers.placeholder.PlaceholderResolver;
 import io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.standard.StandardResolveStrategy;
-import io.microconfig.io.formats.FileSystemIo;
-import io.microconfig.io.formats.Io;
 import io.microconfig.io.graph.ComponentGraph;
+import io.microconfig.io.io.DumpedFsReader;
+import io.microconfig.io.io.FsReader;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
@@ -31,7 +31,7 @@ import static io.microconfig.io.graph.CachedComponentGraph.traverseFrom;
 public class Microconfig {
     private final File rootDir;
     @With
-    private final Io io;
+    private final FsReader fsReader;
 
     public static Microconfig searchConfigsIn(File rootDir) {
         File canonical = canonical(rootDir);
@@ -39,7 +39,7 @@ public class Microconfig {
             throw new IllegalArgumentException("Root directory doesn't exist: " + rootDir);
         }
 
-        return new Microconfig(canonical, new FileSystemIo());
+        return new Microconfig(canonical, new DumpedFsReader());
     }
 
     public Environment inEnvironment(String name) {
@@ -66,7 +66,7 @@ public class Microconfig {
     private EnvironmentRepository environments() {
         return new FileEnvironmentRepository(
                 rootDir,
-                io,
+                fsReader,
                 componentFactory()
         );
     }
@@ -81,13 +81,13 @@ public class Microconfig {
     private FilePropertyRepository propertyRepository() {
         return new FilePropertyRepository(
                 componentGraph(),
-                newConfigIoService(io)
+                newConfigIoService(fsReader)
         );
     }
 
     private ConfigTypeRepository configTypes() {
         return composite(
-                findDescriptorIn(rootDir, io),
+                findDescriptorIn(rootDir, fsReader),
                 StandardConfigType.asRepository()
         );
     }

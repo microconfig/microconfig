@@ -1,7 +1,7 @@
 package io.microconfig.io.formats.selector;
 
 import io.microconfig.io.formats.ConfigFormat;
-import io.microconfig.io.formats.Io;
+import io.microconfig.io.io.FsReader;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -15,7 +15,7 @@ import static java.util.stream.IntStream.range;
 
 @RequiredArgsConstructor
 public class ConfigFormatDetectorImpl implements ConfigFormatDetector {
-    private final Io fileReader;
+    private final FsReader fileFsReader;
 
     @Override
     public ConfigFormat detectConfigFormat(File file) {
@@ -27,7 +27,7 @@ public class ConfigFormatDetectorImpl implements ConfigFormatDetector {
     private boolean hasYamlOffsets(File file) {
         if (!file.exists()) return false;
 
-        String firstProperty = fileReader.firstLine(file, containsValue()).orElse(null);
+        String firstProperty = fileFsReader.firstLine(file, containsValue()).orElse(null);
         if (firstProperty == null) return false;
 
         int separatorIndex = separatorIndex(firstProperty);

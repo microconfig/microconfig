@@ -2,7 +2,7 @@ package io.microconfig.domain.impl.configtypes;
 
 import io.microconfig.domain.ConfigType;
 import io.microconfig.domain.ConfigTypeRepository;
-import io.microconfig.io.formats.Io;
+import io.microconfig.io.io.FsReader;
 import lombok.RequiredArgsConstructor;
 import org.yaml.snakeyaml.Yaml;
 
@@ -23,11 +23,11 @@ import static java.util.Collections.singleton;
 public class DescriptorConfigTypeRepository implements ConfigTypeRepository {
     private static final String DESCRIPTOR = "microconfig.yaml";
 
-    private final Io io;
+    private final FsReader fsReader;
     private final File descriptorFile;
 
-    public static ConfigTypeRepository findDescriptorIn(File rootDir, Io io) {
-        return new DescriptorConfigTypeRepository(io, new File(rootDir, DESCRIPTOR));
+    public static ConfigTypeRepository findDescriptorIn(File rootDir, FsReader fsReader) {
+        return new DescriptorConfigTypeRepository(fsReader, new File(rootDir, DESCRIPTOR));
     }
 
     @Override
@@ -43,7 +43,7 @@ public class DescriptorConfigTypeRepository implements ConfigTypeRepository {
 
     private List<ConfigType> parseConfigTypes() {
         try {
-            return new MicroconfigDescriptor(io.readFully(descriptorFile)).getConfigTypes();
+            return new MicroconfigDescriptor(fsReader.readFully(descriptorFile)).getConfigTypes();
         } catch (RuntimeException e) {
             throw new RuntimeException("Can't parse descriptor: " + descriptorFile, e);
         }

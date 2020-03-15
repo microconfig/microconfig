@@ -1,6 +1,7 @@
 package io.microconfig.io.formats;
 
 import io.microconfig.domain.Property;
+import io.microconfig.io.io.FsReader;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -16,8 +17,8 @@ public abstract class AbstractConfigReader implements ConfigReader {
     protected final File file;
     protected final List<String> lines;
 
-    protected AbstractConfigReader(File file, Io io) {
-        this(file, io.readLines(file));
+    protected AbstractConfigReader(File file, FsReader fsReader) {
+        this(file, fsReader.readLines(file));
     }
 
     @Override

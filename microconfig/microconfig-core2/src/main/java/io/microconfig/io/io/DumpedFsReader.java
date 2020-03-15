@@ -1,4 +1,4 @@
-package io.microconfig.io.formats;
+package io.microconfig.io.io;
 
 import io.microconfig.io.IoUtils;
 
@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public class FileSystemIo implements Io {
+public class DumpedFsReader implements FsReader {
     @Override
     public String readFully(File file) {
         return IoUtils.readFully(file);
