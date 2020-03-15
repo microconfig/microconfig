@@ -1,4 +1,4 @@
-package io.microconfig.io.fsgraph;
+package io.microconfig.io.graph;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -22,21 +22,21 @@ import static java.util.Optional.of;
 import static java.util.stream.Collectors.groupingBy;
 
 @RequiredArgsConstructor
-public class CachedFileSystemGraph implements FileSystemGraph {
+public class CachedComponentGraph implements ComponentGraph {
     public static final String COMPONENTS_DIR = "components";
 
     @Getter
     private final File rootDir;
     private final Map<String, List<File>> foldersByComponentType;
 
-    public static FileSystemGraph prepare(File rootDir) {
+    public static ComponentGraph prepare(File rootDir) {
         File componentDir = new File(rootDir, COMPONENTS_DIR);
         if (!componentDir.exists()) {
             throw new IllegalArgumentException("Root directory must contain 'components' dir");
         }
 
         try (Stream<Path> pathStream = walk(componentDir.toPath())) {
-            return new CachedFileSystemGraph(rootDir, collectFoldersByComponentType(pathStream));
+            return new CachedComponentGraph(rootDir, collectFoldersByComponentType(pathStream));
         }
     }
 

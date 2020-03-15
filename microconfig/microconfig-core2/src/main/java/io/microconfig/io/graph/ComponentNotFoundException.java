@@ -1,4 +1,4 @@
-package io.microconfig.io.fsgraph;
+package io.microconfig.io.graph;
 
 import lombok.RequiredArgsConstructor;
 

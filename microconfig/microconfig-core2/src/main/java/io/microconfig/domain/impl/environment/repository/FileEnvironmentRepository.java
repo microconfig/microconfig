@@ -1,6 +1,5 @@
 package io.microconfig.domain.impl.environment.repository;
 
-
 import io.microconfig.domain.Environment;
 import io.microconfig.domain.EnvironmentRepository;
 import io.microconfig.io.StreamUtils;
@@ -22,19 +21,19 @@ import static java.util.Optional.of;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
-public class FileBasedEnvironmentRepository implements EnvironmentRepository {
+public class FileEnvironmentRepository implements EnvironmentRepository {
     private static final String ENV_DIR = "envs";
 
     private final File envDir;
     private final EnvironmentParser parser;
 
-    public FileBasedEnvironmentRepository(File rootDir, EnvironmentParser parser) {
+    public FileEnvironmentRepository(File rootDir, EnvironmentParser parser) {
         this.envDir = new File(rootDir, ENV_DIR);
-        this.parser = parser;
-
-        if (!rootDir.exists()) {
-            throw new IllegalArgumentException("Env directory doesn't exist " + rootDir);
+        if (!envDir.exists()) {
+            throw new IllegalArgumentException("Env directory doesn't exist " + envDir);
         }
+
+        this.parser = parser;
     }
 
     @Override

@@ -5,8 +5,8 @@ import io.microconfig.domain.Property;
 import io.microconfig.domain.impl.properties.PropertyRepository;
 import io.microconfig.domain.impl.properties.repository.OriginalConfig.ConfigDefinition;
 import io.microconfig.io.formats.ConfigIoService;
-import io.microconfig.io.fsgraph.ComponentNotFoundException;
-import io.microconfig.io.fsgraph.FileSystemGraph;
+import io.microconfig.io.graph.ComponentGraph;
+import io.microconfig.io.graph.ComponentNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
@@ -15,13 +15,13 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static io.microconfig.io.fsgraph.ConfigFileFilters.*;
+import static io.microconfig.io.graph.ConfigFileFilters.*;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
-public class FileSystemPropertyRepository implements PropertyRepository {
-    private final FileSystemGraph fsGraph;
+public class FilePropertyRepository implements PropertyRepository {
+    private final ComponentGraph fsGraph;
     private final ConfigIoService ioService;
 
     @Override

@@ -9,15 +9,15 @@ import io.microconfig.domain.impl.configtype.YamlDescriptorConfigTypes;
 import io.microconfig.domain.impl.environment.ComponentFactory;
 import io.microconfig.domain.impl.environment.repository.ComponentFactoryImpl;
 import io.microconfig.domain.impl.environment.repository.EnvironmentParserImpl;
-import io.microconfig.domain.impl.environment.repository.FileBasedEnvironmentRepository;
-import io.microconfig.domain.impl.properties.repository.FileSystemPropertyRepository;
+import io.microconfig.domain.impl.environment.repository.FileEnvironmentRepository;
+import io.microconfig.domain.impl.properties.repository.FilePropertyRepository;
 import io.microconfig.domain.impl.properties.resolvers.expression.ExpressionResolver;
 import io.microconfig.domain.impl.properties.resolvers.placeholder.PlaceholderResolver;
 import io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.standard.StandardResolveStrategy;
 import io.microconfig.io.formats.FileSystemIo;
 import io.microconfig.io.formats.Io;
-import io.microconfig.io.fsgraph.CachedFileSystemGraph;
-import io.microconfig.io.fsgraph.FileSystemGraph;
+import io.microconfig.io.graph.CachedComponentGraph;
+import io.microconfig.io.graph.ComponentGraph;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
@@ -64,7 +64,7 @@ public class Microconfig {
     }
 
     private EnvironmentRepository environments() {
-        return new FileBasedEnvironmentRepository(
+        return new FileEnvironmentRepository(
                 rootDir,
                 new EnvironmentParserImpl(io, fsComponentFactory())
         );
@@ -77,8 +77,8 @@ public class Microconfig {
         );
     }
 
-    private FileSystemPropertyRepository fsPropertyRepository() {
-        return new FileSystemPropertyRepository(
+    private FilePropertyRepository fsPropertyRepository() {
+        return new FilePropertyRepository(
                 fsGraph(),
                 newConfigIoService(io)
         );
@@ -91,7 +91,7 @@ public class Microconfig {
         );
     }
 
-    private FileSystemGraph fsGraph() {
-        return CachedFileSystemGraph.prepare(rootDir);
+    private ComponentGraph fsGraph() {
+        return CachedComponentGraph.prepare(rootDir);
     }
 }

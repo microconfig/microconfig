@@ -1,11 +1,11 @@
-package io.microconfig.io.fsgraph;
+package io.microconfig.io.graph;
 
 import java.io.File;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public interface FileSystemGraph {
+public interface ComponentGraph {
     File getRootDir();
 
     Optional<File> getFolderOf(String component);
