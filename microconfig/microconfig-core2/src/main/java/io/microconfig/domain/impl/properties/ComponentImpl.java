@@ -28,7 +28,7 @@ public class ComponentImpl implements Component {
     }
 
     private ComponentConfig readConfigs(ConfigType configType) {
-        List<Property> properties = propertyRepository.getProperties(name, type, environment, configType);
+        List<Property> properties = propertyRepository.getProperties(type, environment, configType);
         return new ComponentConfigImpl(name, environment, configType, properties);
     }
 }

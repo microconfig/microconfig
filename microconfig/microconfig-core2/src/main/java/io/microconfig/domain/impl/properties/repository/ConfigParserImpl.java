@@ -27,7 +27,7 @@ public class ConfigParserImpl implements ConfigParser {
 
         Map<Integer, String> commentByLineNumber = reader.commentsByLineNumber();
         List<Include> includes = parseIncludes(commentByLineNumber.values(), env);
-        if (containsIgnoreDerective(commentByLineNumber.values())) {
+        if (containsIgnoreDirective(commentByLineNumber.values())) {
             return new ConfigDefinition(includes, emptyList());
         }
 
@@ -51,7 +51,7 @@ public class ConfigParserImpl implements ConfigParser {
                 .collect(toList());
     }
 
-    private boolean containsIgnoreDerective(Collection<String> comments) {
+    private boolean containsIgnoreDirective(Collection<String> comments) {
         return comments.stream().anyMatch(s -> s.startsWith("#@Ignore"));
     }
 }

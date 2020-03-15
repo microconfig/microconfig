@@ -22,17 +22,21 @@ public class FileSystemPropertyRepository implements PropertyRepository {
     private final ConfigParser configParser;
 
     @Override
-    public List<Property> getProperties(String __, String componentType, String environment, ConfigType configType) {
-        return collectProperties(componentType, environment, configType.getSourceExtensions(), new LinkedHashSet<>())
-                .values().stream()
+    public List<Property> getProperties(String componentType, String environment, ConfigType configType) {
+        Collection<Property> properties = collectPropertiesFor(componentType, environment, configType.getSourceExtensions(), new LinkedHashSet<>()).values();
+        return sortByKey(properties);
+    }
+
+    private List<Property> sortByKey(Collection<Property> properties) {
+        return properties.stream()
                 .sorted(comparing(Property::getKey))
                 .collect(toList());
     }
 
-    private Map<String, Property> collectProperties(String componentType, String env, Set<String> configExtensions, Set<Include> processedIncludes) {
+    private Map<String, Property> collectPropertiesFor(String componentType, String env, Set<String> configExtensions, Set<Include> processedIncludes) {
         Function<Predicate<File>, Map<String, Property>> collectProperties = filter -> {
             try {
-                return collectProperties(filter, componentType, env, configExtensions, processedIncludes);
+                return collectPropertiesFor(componentType, filter, env, configExtensions, processedIncludes);
             } catch (ComponentDoesNotExistException e) {
                 throw e.withComponentParent(componentType);
             }
@@ -47,7 +51,7 @@ public class FileSystemPropertyRepository implements PropertyRepository {
         return basicProperties;
     }
 
-    private Map<String, Property> collectProperties(Predicate<File> filter, String componentType, String env, Set<String> configExtensions, Set<Include> processedIncludes) {
+    private Map<String, Property> collectPropertiesFor(String componentType, Predicate<File> filter, String env, Set<String> configExtensions, Set<Include> processedIncludes) {
         Map<String, Property> propertyByKey = new HashMap<>();
 
         fsGraph.getConfigFilesFor(componentType, filter)
@@ -71,7 +75,7 @@ public class FileSystemPropertyRepository implements PropertyRepository {
         for (Include include : includes) {
             if (!processedIncludes.add(include)) continue;
 
-            Map<String, Property> included = collectProperties(include.getComponentType(), include.getEnvironment(), configExtensions, processedIncludes);
+            Map<String, Property> included = collectPropertiesFor(include.getComponentType(), include.getEnvironment(), configExtensions, processedIncludes);
             result.putAll(included);
         }
 
