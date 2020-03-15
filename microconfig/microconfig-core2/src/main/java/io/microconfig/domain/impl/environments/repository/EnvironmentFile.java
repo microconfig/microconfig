@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import static io.microconfig.io.FileUtils.getName;
+import static io.microconfig.io.StreamUtils.forEach;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
@@ -28,7 +29,7 @@ public class EnvironmentFile {
         try {
             return doParse(getName(file), io.readFully(file));
         } catch (RuntimeException e) {
-            throw new IllegalArgumentException("Can't parse '" + file + "' env", e);
+            throw new IllegalStateException("Can't parse '" + file + "' env", e);
         }
     }
 
@@ -63,15 +64,13 @@ public class EnvironmentFile {
     }
 
     private List<ComponentGroupDefinition> parseComponentGroups(Map<String, Object> keyValue, String envName, String envIp) {
-        return keyValue.entrySet()
-                .stream()
-                .map(group -> {
-                    try {
-                        return parseGroup(group, envIp);
-                    } catch (RuntimeException e) {
-                        throw new RuntimeException("Can't parse group declaration: '" + group + "' in '" + envName + "' env.", e);
-                    }
-                }).collect(toList());
+        return forEach(keyValue.entrySet(), groupEntry -> {
+            try {
+                return parseGroup(groupEntry, envIp);
+            } catch (RuntimeException e) {
+                throw new IllegalStateException("Can't parse group declaration: '" + groupEntry + "' in '" + envName + "' env.", e);
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")

@@ -21,6 +21,13 @@ public class CollectionUtils {
         return result;
     }
 
+    public static <T> List<T> minus(Collection<T> first, Collection<T> second) {
+        ArrayList<T> result = new ArrayList<>(first);
+        result.removeAll(second);
+        result.trimToSize();
+        return result;
+    }
+
     public static <T> Set<T> joinToSet(Collection<T> first, Collection<T> second) {
         Set<T> list = new HashSet<>(max(first.size(), second.size()));
         list.addAll(first);

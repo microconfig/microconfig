@@ -9,19 +9,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static io.microconfig.io.StreamUtils.filter;
 import static io.microconfig.io.StreamUtils.toLinkedMap;
 import static java.util.Collections.emptySet;
 import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toList;
 
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class EnvInclude {
+    private static final EnvInclude empty = new EnvInclude("", emptySet());
+
     private final String env;
     private final Set<String> excludeGroups;
 
     public static EnvInclude empty() {
-        return new EnvInclude("", emptySet());
+        return empty;
     }
 
     public EnvironmentDefinition includeTo(EnvironmentDefinition includeTo, EnvironmentRepository environmentRepository) {
@@ -41,19 +43,16 @@ public class EnvInclude {
     }
 
     private List<ComponentGroupDefinition> collectGroupsToInclude(EnvironmentDefinition includeFrom) {
-        return includeFrom.getGroups()
-                .stream()
-                .filter(g -> !excludeGroups.contains(g.getName()))
-                .collect(toList());
+        return filter(includeFrom.getGroups(), g -> !excludeGroups.contains(g.getName()));
     }
 
     private ComponentGroupDefinition overrideIp(ComponentGroupDefinition includedGroup, EnvironmentDefinition includedEnv, EnvironmentDefinition destinationEnv) {
         if (destinationEnv.getIp() != null) {
-            return includedGroup.changeIp(destinationEnv.getIp());
+            return includedGroup.withIp(destinationEnv.getIp());
         }
 
         if (includedGroup.getIp() == null && includedEnv.getIp() != null) {
-            return includedGroup.changeIp(includedEnv.getIp());
+            return includedGroup.withIp(includedEnv.getIp());
         }
 
         return includedGroup;

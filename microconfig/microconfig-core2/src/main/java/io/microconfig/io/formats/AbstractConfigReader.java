@@ -50,8 +50,7 @@ public abstract class AbstractConfigReader implements ConfigReader {
     }
 
     private Map<String, String> propertiesToMap(boolean resolveEscape) {
-        return properties("", resolveEscape)
-                .stream()
+        return properties("", resolveEscape).stream()
                 .collect(toSortedMap(Property::getKey, Property::getValue));
     }
 }

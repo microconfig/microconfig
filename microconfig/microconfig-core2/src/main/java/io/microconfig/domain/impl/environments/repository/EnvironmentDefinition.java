@@ -2,16 +2,17 @@ package io.microconfig.domain.impl.environments.repository;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.With;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
-import static java.util.Optional.empty;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 @Getter
+@With
 @RequiredArgsConstructor
 public class EnvironmentDefinition {
     private final String name;
@@ -23,31 +24,27 @@ public class EnvironmentDefinition {
     private final File source;
 
     public EnvironmentDefinition withIncludedGroups(List<ComponentGroupDefinition> includedGroups) {
-        return new EnvironmentDefinition(
-                name,
-                includedGroups,
-                ip,
-                portOffset,
-                empty(),
-                source
-        );
+        return withGroups(includedGroups)
+                .withEnvInclude(EnvInclude.empty());
     }
 
     public EnvironmentDefinition processInclude(EnvironmentProvider environmentProvider) {
-        return include.map(env -> env.includeTo(this, environmentProvider))
-                .orElse(this);
+        return envInclude.includeTo(this, environmentProvider))
     }
 
     public EnvironmentDefinition verifyUniqueComponentNames() {
-        Set<String> unique = new HashSet<>();
-        groups.stream()
+        List<String> notUniqueComponents = groups.stream()
                 .map(ComponentGroupDefinition::getComponents)
-                .flatMap(Collection::stream)
-                .filter(c -> !unique.add(c.getName()))
-                .findFirst()
-                .ifPresent(c -> {
-                    throw new IllegalArgumentException("Env [" + name + "] contains several definitions of [" + c.getName() + "] component");
-                });
+                .flatMap(List::stream)
+                .collect(groupingBy(ComponentDefinition::getName))
+                .entrySet().stream()
+                .filter(e -> e.getValue().size() > 1)
+                .map(Map.Entry::getKey)
+                .collect(toList());
+
+        if (!notUniqueComponents.isEmpty()) {
+            throw new IllegalArgumentException("Env '" + name + "' contains several definitions of: " + notUniqueComponents);
+        }
 
         return this;
     }
