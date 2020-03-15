@@ -21,9 +21,8 @@ public class FileSystemPropertyRepository implements PropertyRepository {
 
     @Override
     public List<Property> getProperties(String __, String componentType, String environment, ConfigType configType) {
-        return new ArrayList<>(
-                collectProperties(componentType, environment, configType.getSourceExtensions(), new LinkedHashSet<>()).values()
-        );
+        Map<String, Property> properties = collectProperties(componentType, environment, configType.getSourceExtensions(), new LinkedHashSet<>());
+        return new ArrayList<>(properties.values());
     }
 
     private Map<String, Property> collectProperties(String componentType, String env, Set<String> configExtensions, Set<Include> processedIncludes) {
