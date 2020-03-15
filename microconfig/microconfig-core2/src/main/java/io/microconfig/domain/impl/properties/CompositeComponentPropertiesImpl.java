@@ -6,8 +6,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
 
-import static io.microconfig.utils.StreamUtils.flatMapEach;
-import static io.microconfig.utils.StreamUtils.forEach;
+import static io.microconfig.utils.StreamUtils.*;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
@@ -35,11 +34,7 @@ public class CompositeComponentPropertiesImpl implements CompositeComponentPrope
 
     @Override
     public Optional<Property> getPropertyWithKey(String key) {
-        return results.stream()
-                .map(r -> r.getPropertyWithKey(key))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .findFirst();
+        return findFirst(results, r -> r.getPropertyWithKey(key));
     }
 
     @Override

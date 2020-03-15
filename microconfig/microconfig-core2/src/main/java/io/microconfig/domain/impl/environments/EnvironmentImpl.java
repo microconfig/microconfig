@@ -7,13 +7,11 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-import static io.microconfig.utils.StreamUtils.filter;
-import static io.microconfig.utils.StreamUtils.forEach;
+import static io.microconfig.utils.StreamUtils.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
@@ -55,11 +53,7 @@ public class EnvironmentImpl implements Environment {
 
     @Override
     public Component findComponentWithName(String componentName, boolean mustBeDeclaredInEnvDescriptor) {
-        return componentGroups.stream()
-                .map(g -> g.findComponentWithName(componentName))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .findFirst()
+        return findFirst(componentGroups, g -> g.findComponentWithName(componentName))
                 .orElseGet(() -> {
                     if (mustBeDeclaredInEnvDescriptor) {
                         throw new IllegalArgumentException(notFoundComponentMessage(componentName));

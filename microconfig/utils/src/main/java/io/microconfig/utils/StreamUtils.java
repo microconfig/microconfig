@@ -42,6 +42,14 @@ public class StreamUtils {
                 .collect(toList());
     }
 
+    public static <K, V> Optional<V> findFirst(Collection<K> collection, Function<K, Optional<V>> getter) {
+        return collection.stream()
+                .map(getter)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst();
+    }
+
     public static <T, K, U> Collector<T, ?, Map<K, U>> toLinkedMap(Function<? super T, ? extends K> keyMapper,
                                                                    Function<? super T, ? extends U> valueMapper) {
         return Collectors.toMap(keyMapper, valueMapper, throwingMerger(), LinkedHashMap::new);

@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
 
+import static io.microconfig.utils.StreamUtils.findFirst;
+
 @RequiredArgsConstructor
 public class CompositeResolveStrategy implements PlaceholderResolveStrategy {
     private final List<PlaceholderResolveStrategy> strategies;
@@ -18,10 +20,6 @@ public class CompositeResolveStrategy implements PlaceholderResolveStrategy {
 
     @Override
     public Optional<Property> resolve(Placeholder placeholder) {
-        return strategies.stream()
-                .map(s -> s.resolve(placeholder))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .findFirst();
+        return findFirst(strategies, s -> s.resolve(placeholder));
     }
 }
