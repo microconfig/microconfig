@@ -12,7 +12,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import static io.microconfig.domain.impl.environments.repository.EnvironmentInclude.empty;
+import static io.microconfig.domain.impl.environments.repository.EnvInclude.empty;
 import static io.microconfig.io.StreamUtils.forEach;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -24,7 +24,7 @@ public class EnvironmentDefinition {
     @Getter
     private final String ip;
     private final int portOffset;
-    private final EnvironmentInclude envInclude;
+    private final EnvInclude envInclude;
     @Getter
     private final List<ComponentGroupDefinition> groups;
 

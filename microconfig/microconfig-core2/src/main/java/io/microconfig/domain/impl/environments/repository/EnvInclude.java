@@ -16,13 +16,13 @@ import static java.util.function.Function.identity;
 
 @EqualsAndHashCode
 @RequiredArgsConstructor
-public class EnvironmentInclude {
-    private static final EnvironmentInclude empty = new EnvironmentInclude("", emptySet());
+public class EnvInclude {
+    private static final EnvInclude empty = new EnvInclude("", emptySet());
 
     private final String environment;
     private final Set<String> excludeGroups;
 
-    public static EnvironmentInclude empty() {
+    public static EnvInclude empty() {
         return empty;
     }
 

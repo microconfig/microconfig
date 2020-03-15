@@ -60,7 +60,7 @@ public class ComponentGroupDefinition {
         return new ComponentGroupImpl(
                 name,
                 ip,
-                forEach(components, c -> c.toComponent(componentFactory, environment))
+                forEach(components, c -> componentFactory.createComponent(c.getName(), c.getType(), environment))
         );
     }
 }
