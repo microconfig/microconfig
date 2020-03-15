@@ -13,6 +13,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static io.microconfig.io.fsgraph.ConfigFileFilters.*;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 public class FileSystemPropertyRepository implements PropertyRepository {
@@ -21,8 +23,10 @@ public class FileSystemPropertyRepository implements PropertyRepository {
 
     @Override
     public List<Property> getProperties(String __, String componentType, String environment, ConfigType configType) {
-        Map<String, Property> properties = collectProperties(componentType, environment, configType.getSourceExtensions(), new LinkedHashSet<>());
-        return new ArrayList<>(properties.values());
+        return collectProperties(componentType, environment, configType.getSourceExtensions(), new LinkedHashSet<>())
+                .values().stream()
+                .sorted(comparing(Property::getKey))
+                .collect(toList());
     }
 
     private Map<String, Property> collectProperties(String componentType, String env, Set<String> configExtensions, Set<Include> processedIncludes) {
@@ -30,7 +34,7 @@ public class FileSystemPropertyRepository implements PropertyRepository {
             try {
                 return collectProperties(filter, componentType, env, configExtensions, processedIncludes);
             } catch (ComponentDoesNotExistException e) {
-                throw e.withParent(componentType);
+                throw e.withComponentParent(componentType);
             }
         };
 
@@ -44,7 +48,7 @@ public class FileSystemPropertyRepository implements PropertyRepository {
     }
 
     private Map<String, Property> collectProperties(Predicate<File> filter, String componentType, String env, Set<String> configExtensions, Set<Include> processedIncludes) {
-        Map<String, Property> propertyByKey = new TreeMap<>();
+        Map<String, Property> propertyByKey = new HashMap<>();
 
         fsGraph.getConfigFilesFor(componentType, filter)
                 .map(file -> configParser.parse(file, env))

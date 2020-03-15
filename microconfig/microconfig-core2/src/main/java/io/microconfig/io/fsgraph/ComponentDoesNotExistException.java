@@ -12,7 +12,7 @@ public class ComponentDoesNotExistException extends RuntimeException {
     private final String badComponentName;
     private final Deque<String> path = new ArrayDeque<>();
 
-    public ComponentDoesNotExistException withParent(String component) {
+    public ComponentDoesNotExistException withComponentParent(String component) {
         path.addFirst(component);
         return this;
     }
