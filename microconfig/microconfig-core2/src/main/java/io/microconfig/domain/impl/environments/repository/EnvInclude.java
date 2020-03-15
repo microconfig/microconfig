@@ -4,13 +4,10 @@ import io.microconfig.domain.EnvironmentRepository;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.function.UnaryOperator;
 
-import static io.microconfig.utils.StreamUtils.filter;
-import static io.microconfig.utils.StreamUtils.toLinkedMap;
+import static io.microconfig.utils.StreamUtils.*;
 import static java.util.Collections.emptySet;
 import static java.util.function.Function.identity;
 
@@ -19,50 +16,44 @@ import static java.util.function.Function.identity;
 public class EnvInclude {
     private static final EnvInclude empty = new EnvInclude("", emptySet());
 
-    private final String environment;
-    private final Set<String> excludeGroups;
+    private final String baseEnvironment;
+    private final Set<String> excludedGroups;
 
     public static EnvInclude empty() {
         return empty;
     }
 
-    public EnvironmentDefinition includeTo(EnvironmentDefinition includeTo,
-                                           EnvironmentRepository environmentRepository) {
-        if (environment.isEmpty()) return includeTo;
+    public EnvironmentDefinition includeTo(EnvironmentDefinition destinationEnv,
+                                           EnvironmentRepository repository) {
+        if (baseEnvironment.isEmpty()) return destinationEnv;
 
-        //todo
-        EnvironmentDefinition includeFrom = (EnvironmentDefinition) environmentRepository.getWithName(environment);
+        EnvironmentDefinition baseEnv = (EnvironmentDefinition) repository.getWithName(baseEnvironment); //todo
+        List<ComponentGroupDefinition> groupsToInclude = forEach(groupsToIncludeFrom(baseEnv), assignIpOf(destinationEnv));
 
-        Map<String, ComponentGroupDefinition> groupToIncludeByName = collectGroupsToInclude(includeFrom)
-                .stream()
-                .map(includedGroup -> overrideIp(includedGroup, includeFrom, includeTo))
+        Map<String, ComponentGroupDefinition> groupToIncludeByName = groupsToInclude.stream()
                 .collect(toLinkedMap(ComponentGroupDefinition::getName, identity()));
 
-        includeTo.getGroups()
+        destinationEnv.getGroups()
                 .stream()
                 .map(overriddenGroup -> override(groupToIncludeByName.get(overriddenGroup.getName()), overriddenGroup))
                 .forEach(g -> groupToIncludeByName.put(g.getName(), g));
 
-        return includeTo.withIncludedGroups(new ArrayList<>(groupToIncludeByName.values()));
+        return assignNewGroupsTo(destinationEnv, groupToIncludeByName.values());
     }
 
-    private List<ComponentGroupDefinition> collectGroupsToInclude(EnvironmentDefinition includeFrom) {
-        return filter(includeFrom.getGroups(), g -> !excludeGroups.contains(g.getName()));
+    private List<ComponentGroupDefinition> groupsToIncludeFrom(EnvironmentDefinition env) {
+        return filter(env.getGroups(), g -> !excludedGroups.contains(g.getName()));
     }
 
-    private ComponentGroupDefinition overrideIp(ComponentGroupDefinition includedGroup, EnvironmentDefinition includedEnv, EnvironmentDefinition destinationEnv) {
-        if (destinationEnv.getIp() != null) {
-            return includedGroup.withIp(destinationEnv.getIp());
-        }
-
-        if (includedGroup.getIp() == null && includedEnv.getIp() != null) {
-            return includedGroup.withIp(includedEnv.getIp());
-        }
-
-        return includedGroup;
+    private UnaryOperator<ComponentGroupDefinition> assignIpOf(EnvironmentDefinition destinationEnv) {
+        return group -> destinationEnv.getIp() == null ? group : group.withIp(destinationEnv.getIp());
     }
 
     private ComponentGroupDefinition override(ComponentGroupDefinition includedGroup, ComponentGroupDefinition override) {
         return includedGroup == null ? override : includedGroup.overrideBy(override);
+    }
+
+    private EnvironmentDefinition assignNewGroupsTo(EnvironmentDefinition destinationEnv, Collection<ComponentGroupDefinition> groups) {
+        return destinationEnv.withGroups(new ArrayList<>(groups)).withEnvInclude(EnvInclude.empty());
     }
 }

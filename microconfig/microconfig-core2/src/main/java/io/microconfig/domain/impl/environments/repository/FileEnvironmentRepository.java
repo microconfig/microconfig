@@ -90,7 +90,7 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
         return f -> new EnvironmentFile(f)
                 .parseUsing(fsReader)
                 .processInclude(this)
-                .verifyUniqueComponentNames()
+                .checkComponentNamesAreUnique()
                 .toEnvironment(componentFactory);
     }
 

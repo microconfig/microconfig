@@ -12,7 +12,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import static io.microconfig.domain.impl.environments.repository.EnvInclude.empty;
 import static io.microconfig.utils.StreamUtils.forEach;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -34,12 +33,7 @@ public class EnvironmentDefinition {
         return envInclude.includeTo(this, environmentProvider);
     }
 
-    public EnvironmentDefinition withIncludedGroups(List<ComponentGroupDefinition> includedGroups) {
-        return withGroups(includedGroups)
-                .withEnvInclude(empty());
-    }
-
-    public EnvironmentDefinition verifyUniqueComponentNames() {
+    public EnvironmentDefinition checkComponentNamesAreUnique() {
         List<String> notUniqueComponents = groups.stream()
                 .map(ComponentGroupDefinition::getComponents)
                 .flatMap(List::stream)
