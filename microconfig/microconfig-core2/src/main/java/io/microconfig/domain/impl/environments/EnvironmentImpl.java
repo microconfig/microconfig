@@ -55,19 +55,17 @@ public class EnvironmentImpl implements Environment {
 
     @Override
     public Component findComponentWithName(String componentName, boolean mustBeDeclaredInEnvDescriptor) {
-        Optional<Component> component = componentGroups.stream()
+        return componentGroups.stream()
                 .map(g -> g.findComponentWithName(componentName))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .findFirst();
-
-        if (component.isPresent()) {
-            return component.get();
-        }
-        if (!mustBeDeclaredInEnvDescriptor) {
-            return createComponentWithName(componentName);
-        }
-        throw new IllegalArgumentException(notFoundComponentMessage(componentName));
+                .findFirst()
+                .orElseGet(() -> {
+                    if (mustBeDeclaredInEnvDescriptor) {
+                        throw new IllegalArgumentException(notFoundComponentMessage(componentName));
+                    }
+                    return createComponentWithName(componentName);
+                });
     }
 
     private Component createComponentWithName(String componentName) {
