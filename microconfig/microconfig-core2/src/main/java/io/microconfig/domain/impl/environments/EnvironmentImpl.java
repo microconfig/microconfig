@@ -4,6 +4,7 @@ import io.microconfig.domain.Component;
 import io.microconfig.domain.ComponentGroup;
 import io.microconfig.domain.Components;
 import io.microconfig.domain.Environment;
+import io.microconfig.domain.impl.properties.ComponentsImpl;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -69,7 +70,7 @@ public class EnvironmentImpl implements Environment {
     }
 
     private Component createComponentWithName(String componentName) {
-        return componentFactory.createComponent(componentName, name);
+        return componentFactory.createComponent(componentName, componentName, name);
     }
 
     @Override
