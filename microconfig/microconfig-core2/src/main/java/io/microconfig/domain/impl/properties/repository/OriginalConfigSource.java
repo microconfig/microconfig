@@ -21,7 +21,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 @RequiredArgsConstructor
-class OriginalConfig {
+class OriginalConfigSource {
     private final File configFile;
     private final String environment;
 
@@ -49,8 +49,9 @@ class OriginalConfig {
 
     private List<Include> parseIncludes(Collection<String> comments) {
         return comments.stream()
-                .filter(Include::isInclude)
-                .flatMap(line -> Include.parse(line, environment).stream())
+                .filter(IncludeDirective::isInclude)
+                .map(line -> IncludeDirective.from(line).withDefaultEnv(environment))
+                .flatMap(List::stream)
                 .collect(toList());
     }
 

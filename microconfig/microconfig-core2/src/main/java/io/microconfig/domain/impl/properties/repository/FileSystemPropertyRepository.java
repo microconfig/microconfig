@@ -3,7 +3,7 @@ package io.microconfig.domain.impl.properties.repository;
 import io.microconfig.domain.ConfigType;
 import io.microconfig.domain.Property;
 import io.microconfig.domain.impl.properties.PropertyRepository;
-import io.microconfig.domain.impl.properties.repository.OriginalConfig.ConfigDefinition;
+import io.microconfig.domain.impl.properties.repository.OriginalConfigSource.ConfigDefinition;
 import io.microconfig.io.formats.ConfigIoService;
 import io.microconfig.io.fsgraph.ComponentNotFoundException;
 import io.microconfig.io.fsgraph.FileSystemGraph;
@@ -26,7 +26,7 @@ public class FileSystemPropertyRepository implements PropertyRepository {
 
     @Override
     public List<Property> getProperties(String componentType, String environment, ConfigType configType) {
-        return new ComponentConfig(componentType, environment, configType)
+        return new OriginalComponent(componentType, environment, configType)
                 .getProperties()
                 .values().stream()
                 .sorted(comparing(Property::getKey))
@@ -34,7 +34,7 @@ public class FileSystemPropertyRepository implements PropertyRepository {
     }
 
     @RequiredArgsConstructor
-    private class ComponentConfig {
+    private class OriginalComponent {
         @With
         private final String componentType;
         @With
@@ -43,7 +43,7 @@ public class FileSystemPropertyRepository implements PropertyRepository {
         private final Set<String> configExtensions;
         private final Set<Include> processedIncludes;
 
-        public ComponentConfig(String componentType, String environment, ConfigType configType) {
+        public OriginalComponent(String componentType, String environment, ConfigType configType) {
             this(componentType, environment, configType.getSourceExtensions(), new LinkedHashSet<>());
         }
 
@@ -67,7 +67,7 @@ public class FileSystemPropertyRepository implements PropertyRepository {
 
         private Stream<ConfigDefinition> configDefinitionsFor(Predicate<File> filter) {
             return fsGraph.getConfigFilesFor(componentType, filter)
-                    .map(configFile -> new OriginalConfig(configFile, environment))
+                    .map(configFile -> new OriginalConfigSource(configFile, environment))
                     .map(original -> original.parseUsing(ioService));
         }
 
@@ -92,7 +92,7 @@ public class FileSystemPropertyRepository implements PropertyRepository {
                     });
         }
 
-        private ComponentConfig includedComponent(Include include) {
+        private OriginalComponent includedComponent(Include include) {
             return withComponentType(include.getComponentType())
                     .withEnvironment(include.getEnvironment());
         }
