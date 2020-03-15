@@ -1,15 +1,15 @@
 package io.microconfig;
 
-import io.microconfig.domain.ConfigTypes;
+import io.microconfig.domain.ConfigTypeRepository;
 import io.microconfig.domain.Environment;
 import io.microconfig.domain.EnvironmentRepository;
 import io.microconfig.domain.StatementResolver;
-import io.microconfig.domain.impl.configtype.StandardConfigType;
-import io.microconfig.domain.impl.configtype.YamlDescriptorConfigTypes;
-import io.microconfig.domain.impl.environment.ComponentFactory;
-import io.microconfig.domain.impl.environment.repository.ComponentFactoryImpl;
-import io.microconfig.domain.impl.environment.repository.EnvironmentParserImpl;
-import io.microconfig.domain.impl.environment.repository.FileEnvironmentRepository;
+import io.microconfig.domain.impl.configtypes.StandardConfigType;
+import io.microconfig.domain.impl.configtypes.YamlDescriptorConfigTypeRepository;
+import io.microconfig.domain.impl.environments.ComponentFactory;
+import io.microconfig.domain.impl.environments.repository.ComponentFactoryImpl;
+import io.microconfig.domain.impl.environments.repository.EnvironmentParserImpl;
+import io.microconfig.domain.impl.environments.repository.FileEnvironmentRepository;
 import io.microconfig.domain.impl.properties.repository.FilePropertyRepository;
 import io.microconfig.domain.impl.properties.resolvers.expression.ExpressionResolver;
 import io.microconfig.domain.impl.properties.resolvers.placeholder.PlaceholderResolver;
@@ -23,7 +23,7 @@ import lombok.With;
 
 import java.io.File;
 
-import static io.microconfig.domain.impl.configtype.CompositeConfigTypes.composite;
+import static io.microconfig.domain.impl.configtypes.CompositeConfigTypeRepository.composite;
 import static io.microconfig.domain.impl.properties.resolvers.chain.ChainedResolver.chainOf;
 import static io.microconfig.io.FileUtils.canonical;
 import static io.microconfig.io.formats.factory.ConfigIoServiceFactory.newConfigIoService;
@@ -84,10 +84,10 @@ public class Microconfig {
         );
     }
 
-    private ConfigTypes configTypes() {
+    private ConfigTypeRepository configTypes() {
         return composite(
-                new YamlDescriptorConfigTypes(rootDir, io),
-                StandardConfigType.asTypes()
+                new YamlDescriptorConfigTypeRepository(rootDir, io),
+                StandardConfigType.asRepository()
         );
     }
 

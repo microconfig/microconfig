@@ -1,4 +1,4 @@
-package io.microconfig.domain.impl.helpers;
+package io.microconfig.domain.impl.properties;
 
 import io.microconfig.domain.Property;
 import io.microconfig.domain.PropertySerializer;

@@ -1,7 +1,7 @@
-package io.microconfig.domain.impl.configtype;
+package io.microconfig.domain.impl.configtypes;
 
 import io.microconfig.domain.ConfigType;
-import io.microconfig.domain.ConfigTypes;
+import io.microconfig.domain.ConfigTypeRepository;
 import io.microconfig.io.formats.Io;
 import lombok.RequiredArgsConstructor;
 import org.yaml.snakeyaml.Yaml;
@@ -12,22 +12,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static io.microconfig.domain.impl.configtype.ConfigTypeImpl.byName;
-import static io.microconfig.domain.impl.configtype.ConfigTypeImpl.byNameAndExtensions;
+import static io.microconfig.domain.impl.configtypes.ConfigTypeImpl.byName;
+import static io.microconfig.domain.impl.configtypes.ConfigTypeImpl.byNameAndExtensions;
 import static io.microconfig.io.Logger.announce;
 import static io.microconfig.io.StreamUtils.forEach;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 
 @RequiredArgsConstructor
-public class YamlDescriptorConfigTypes implements ConfigTypes {
+public class YamlDescriptorConfigTypeRepository implements ConfigTypeRepository {
     private static final String DESCRIPTOR = "microconfig.yaml";
 
     private final File rootDir;
     private final Io io;
 
     @Override
-    public List<ConfigType> getTypes() {
+    public List<ConfigType> getRepositories() {
         File descriptor = descriptor();
         if (!descriptor.exists()) return emptyList();
 

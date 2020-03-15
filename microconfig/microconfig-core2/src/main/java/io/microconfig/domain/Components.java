@@ -5,5 +5,5 @@ import java.util.List;
 public interface Components {
     List<Component> asList();
 
-    CompositeComponentConfig getPropertiesFor(ConfigTypeFilter filter);
+    CompositeComponentProperties getPropertiesFor(ConfigTypeFilter filter);
 }

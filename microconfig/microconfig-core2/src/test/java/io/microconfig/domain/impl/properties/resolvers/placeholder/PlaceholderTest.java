@@ -9,8 +9,8 @@ import java.util.List;
 
 import static io.microconfig.ClasspathUtils.classpathFile;
 import static io.microconfig.Microconfig.searchConfigsIn;
-import static io.microconfig.domain.impl.configtype.StandardConfigType.APPLICATION;
-import static io.microconfig.domain.impl.helpers.ConfigTypeFilters.configType;
+import static io.microconfig.domain.impl.configtypes.ConfigTypeFilters.configType;
+import static io.microconfig.domain.impl.configtypes.StandardConfigType.APPLICATION;
 
 class PlaceholderTest {
     @Test

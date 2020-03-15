@@ -1,14 +1,14 @@
-package io.microconfig.domain.impl.environment;
+package io.microconfig.domain.impl.environments;
 
 import io.microconfig.domain.Component;
 import io.microconfig.domain.Components;
-import io.microconfig.domain.CompositeComponentConfig;
+import io.microconfig.domain.CompositeComponentProperties;
 import io.microconfig.domain.ConfigTypeFilter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static io.microconfig.domain.impl.properties.CompositeComponentConfigImpl.resultsOf;
+import static io.microconfig.domain.impl.properties.CompositeComponentPropertiesImpl.resultsOf;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
@@ -21,11 +21,11 @@ public class ComponentsImpl implements Components {
     }
 
     @Override
-    public CompositeComponentConfig getPropertiesFor(ConfigTypeFilter filter) {
+    public CompositeComponentProperties getPropertiesFor(ConfigTypeFilter filter) {
         return resultsOf(
                 components.stream()
                         .map(c -> c.getPropertiesFor(filter))
-                        .map(CompositeComponentConfig::asList)
+                        .map(CompositeComponentProperties::asList)
                         .flatMap(List::stream)
                         .collect(toList())
         );

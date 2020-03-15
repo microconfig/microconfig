@@ -7,5 +7,5 @@ public interface Component {
 
     String getEnvironment();
 
-    CompositeComponentConfig getPropertiesFor(ConfigTypeFilter filter);
+    CompositeComponentProperties getPropertiesFor(ConfigTypeFilter filter);
 }

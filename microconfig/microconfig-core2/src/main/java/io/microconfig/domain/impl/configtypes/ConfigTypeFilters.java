@@ -1,8 +1,7 @@
-package io.microconfig.domain.impl.helpers;
+package io.microconfig.domain.impl.configtypes;
 
 import io.microconfig.domain.ConfigType;
 import io.microconfig.domain.ConfigTypeFilter;
-import io.microconfig.domain.impl.configtype.StandardConfigType;
 
 import java.io.File;
 import java.util.HashSet;
