@@ -1,4 +1,4 @@
-package io.microconfig.domain.impl.environment.provider;
+package io.microconfig.domain.impl.environment.repository;
 
 import io.microconfig.domain.Environment;
 

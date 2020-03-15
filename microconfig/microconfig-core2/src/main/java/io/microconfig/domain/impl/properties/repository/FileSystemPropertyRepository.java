@@ -3,7 +3,7 @@ package io.microconfig.domain.impl.properties.repository;
 import io.microconfig.domain.ConfigType;
 import io.microconfig.domain.Property;
 import io.microconfig.domain.impl.properties.PropertyRepository;
-import io.microconfig.domain.impl.properties.repository.OriginalConfigSource.ConfigDefinition;
+import io.microconfig.domain.impl.properties.repository.OriginalConfig.ConfigDefinition;
 import io.microconfig.io.formats.ConfigIoService;
 import io.microconfig.io.fsgraph.ComponentNotFoundException;
 import io.microconfig.io.fsgraph.FileSystemGraph;
@@ -67,7 +67,7 @@ public class FileSystemPropertyRepository implements PropertyRepository {
 
         private Stream<ConfigDefinition> configDefinitionsFor(Predicate<File> filter) {
             return fsGraph.getConfigFilesFor(componentType, filter)
-                    .map(configFile -> new OriginalConfigSource(configFile, environment))
+                    .map(configFile -> new OriginalConfig(configFile, environment))
                     .map(original -> original.parseUsing(ioService));
         }
 

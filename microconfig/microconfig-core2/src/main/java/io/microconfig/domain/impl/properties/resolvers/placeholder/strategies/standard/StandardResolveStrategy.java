@@ -1,6 +1,6 @@
 package io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.standard;
 
-import io.microconfig.domain.Environments;
+import io.microconfig.domain.EnvironmentRepository;
 import io.microconfig.domain.Property;
 import io.microconfig.domain.impl.properties.resolvers.placeholder.Placeholder;
 import io.microconfig.domain.impl.properties.resolvers.placeholder.PlaceholderResolveStrategy;
@@ -12,11 +12,11 @@ import static io.microconfig.domain.impl.helpers.ConfigTypeFilters.configTypeWit
 
 @RequiredArgsConstructor
 public class StandardResolveStrategy implements PlaceholderResolveStrategy {
-    private final Environments environments;
+    private final EnvironmentRepository environmentRepository;
 
     @Override
     public Optional<Property> resolve(Placeholder placeholder) {
-        return environments.getOrCreateWithName(placeholder.getEnvironment())
+        return environmentRepository.getOrCreateWithName(placeholder.getEnvironment())
                 .findComponentWithName(placeholder.getComponent(), false)
                 .getPropertiesFor(configTypeWithName(placeholder.getConfigType()))
                 .getPropertyWithKey(placeholder.getValue());

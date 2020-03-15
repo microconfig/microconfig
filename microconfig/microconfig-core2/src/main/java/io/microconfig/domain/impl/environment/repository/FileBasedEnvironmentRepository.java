@@ -1,8 +1,8 @@
-package io.microconfig.domain.impl.environment.provider;
+package io.microconfig.domain.impl.environment.repository;
 
 
 import io.microconfig.domain.Environment;
-import io.microconfig.domain.Environments;
+import io.microconfig.domain.EnvironmentRepository;
 import io.microconfig.io.StreamUtils;
 
 import java.io.File;
@@ -22,13 +22,13 @@ import static java.util.Optional.of;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
-public class FileBasedEnvironments implements Environments {
+public class FileBasedEnvironmentRepository implements EnvironmentRepository {
     private static final String ENV_DIR = "envs";
 
     private final File envDir;
     private final EnvironmentParser parser;
 
-    public FileBasedEnvironments(File rootDir, EnvironmentParser parser) {
+    public FileBasedEnvironmentRepository(File rootDir, EnvironmentParser parser) {
         this.envDir = new File(rootDir, ENV_DIR);
         this.parser = parser;
 

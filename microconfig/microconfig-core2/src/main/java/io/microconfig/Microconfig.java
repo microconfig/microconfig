@@ -2,14 +2,14 @@ package io.microconfig;
 
 import io.microconfig.domain.ConfigTypes;
 import io.microconfig.domain.Environment;
-import io.microconfig.domain.Environments;
+import io.microconfig.domain.EnvironmentRepository;
 import io.microconfig.domain.StatementResolver;
 import io.microconfig.domain.impl.configtype.StandardConfigType;
 import io.microconfig.domain.impl.configtype.YamlDescriptorConfigTypes;
 import io.microconfig.domain.impl.environment.ComponentFactory;
-import io.microconfig.domain.impl.environment.provider.ComponentFactoryImpl;
-import io.microconfig.domain.impl.environment.provider.EnvironmentParserImpl;
-import io.microconfig.domain.impl.environment.provider.FileBasedEnvironments;
+import io.microconfig.domain.impl.environment.repository.ComponentFactoryImpl;
+import io.microconfig.domain.impl.environment.repository.EnvironmentParserImpl;
+import io.microconfig.domain.impl.environment.repository.FileBasedEnvironmentRepository;
 import io.microconfig.domain.impl.properties.repository.FileSystemPropertyRepository;
 import io.microconfig.domain.impl.properties.resolvers.expression.ExpressionResolver;
 import io.microconfig.domain.impl.properties.resolvers.placeholder.PlaceholderResolver;
@@ -63,8 +63,8 @@ public class Microconfig {
         return new ExpressionResolver();
     }
 
-    private Environments environments() {
-        return new FileBasedEnvironments(
+    private EnvironmentRepository environments() {
+        return new FileBasedEnvironmentRepository(
                 rootDir,
                 new EnvironmentParserImpl(io, fsComponentFactory())
         );

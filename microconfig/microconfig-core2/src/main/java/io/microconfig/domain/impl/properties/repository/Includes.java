@@ -9,7 +9,7 @@ import static java.util.stream.Collectors.toList;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
-public class IncludeDirective {
+public class Includes {
     private static final String PREFIX = "#include ";
     private static final String PREFIX2 = "#@include ";
 
@@ -20,8 +20,8 @@ public class IncludeDirective {
         return lower.startsWith(PREFIX) || lower.startsWith(PREFIX2);
     }
 
-    public static IncludeDirective from(String line) {
-        return new IncludeDirective(line);
+    public static Includes from(String line) {
+        return new Includes(line);
     }
 
     public List<Include> withDefaultEnv(String defaultEnv) {

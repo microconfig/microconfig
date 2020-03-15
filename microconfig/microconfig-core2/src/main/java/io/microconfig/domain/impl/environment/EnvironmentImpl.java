@@ -35,15 +35,14 @@ public class EnvironmentImpl implements Environment {
 
     @Override
     public ComponentGroup findGroupWithName(String groupName) {
-        return find(group -> group.getName().equals(groupName),
+        return findGroup(group -> group.getName().equals(groupName),
                 () -> "group name=" + groupName);
     }
 
     @Override
     public ComponentGroup findGroupWithComponent(String componentName) {
-        return find(group -> group.findComponentWithName(componentName).isPresent(),
-                () -> "component name=" + componentName
-        );
+        return findGroup(group -> group.findComponentWithName(componentName).isPresent(),
+                () -> "component name=" + componentName);
     }
 
     @Override
@@ -70,7 +69,7 @@ public class EnvironmentImpl implements Environment {
     }
 
     private Component createComponentWithName(String componentName) {
-        return componentFactory.createComponent(componentName, componentName, name);
+        return componentFactory.createComponent(componentName, name);
     }
 
     @Override
@@ -102,7 +101,7 @@ public class EnvironmentImpl implements Environment {
         return "Component '" + component + "' is not configured for env '" + name + "'";
     }
 
-    private ComponentGroup find(Predicate<ComponentGroup> groupPredicate, Supplier<String> description) {
+    private ComponentGroup findGroup(Predicate<ComponentGroup> groupPredicate, Supplier<String> description) {
         return componentGroups.stream()
                 .filter(groupPredicate)
                 .findFirst()
