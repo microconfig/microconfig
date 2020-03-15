@@ -1,13 +1,13 @@
 package io.microconfig.core.properties;
 
 import io.microconfig.core.properties.sources.FileSource;
+import io.microconfig.utils.Os;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.Collection;
 import java.util.Map;
 
-import static io.microconfig.utils.OsUtil.isWindows;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static io.microconfig.utils.StringUtils.unixLikePath;
 import static java.util.Objects.requireNonNull;
@@ -104,7 +104,7 @@ public class Property {
     }
 
     public Property escapeOnWindows() {
-        if (!isWindows()) return this;
+        if (!Os.isWindows()) return this;
 
         String escaped = ("user.home".equals(key)) ? unixLikePath(value) : escapeValue();
         return withNewValue(escaped);

@@ -9,7 +9,7 @@ import java.util.Map;
 
 import static io.microconfig.utils.Logger.error;
 import static io.microconfig.utils.StringUtils.isEmpty;
-import static io.microconfig.utils.StringUtils.splitToList;
+import static io.microconfig.utils.StringUtils.split;
 
 @RequiredArgsConstructor
 public class CommandLineParamParser {
@@ -39,7 +39,7 @@ public class CommandLineParamParser {
     }
 
     public List<String> listValue(String key) {
-        return splitToList(value(key), ",");
+        return split(value(key), ",");
     }
 
     public String requiredValue(String key, String npeMessage) {

@@ -1,6 +1,5 @@
-package io.microconfig.io;
+package io.microconfig.utils;
 
-import io.microconfig.utils.CommandLineParamParser;
 import org.junit.jupiter.api.Test;
 
 import static java.util.Arrays.asList;

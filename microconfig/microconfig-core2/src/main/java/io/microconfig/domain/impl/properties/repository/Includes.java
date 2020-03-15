@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
+import static io.microconfig.utils.StreamUtils.forEach;
+import static io.microconfig.utils.StringUtils.split;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
@@ -33,15 +33,11 @@ public class Includes {
     }
 
     private List<Include> parseIncludes(String defaultEnv) {
-        String[] components = line.substring(componentStartIndex()).split(",");
-        if (components.length == 0) {
+        List<String> components = split(line.substring(componentStartIndex()), ",");
+        if (components.isEmpty()) {
             throw new IllegalArgumentException("Include must contain component names.");
         }
-
-        return stream(components)
-                .map(String::trim)
-                .map(component -> Include.parse(component, defaultEnv))
-                .collect(toList());
+        return forEach(components, component -> Include.parse(component, defaultEnv));
     }
 
     private int componentStartIndex() {

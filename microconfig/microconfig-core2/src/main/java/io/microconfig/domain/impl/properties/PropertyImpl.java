@@ -3,6 +3,7 @@ package io.microconfig.domain.impl.properties;
 import io.microconfig.domain.Property;
 import io.microconfig.domain.PropertySource;
 import io.microconfig.domain.StatementResolver;
+import io.microconfig.utils.Os;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,6 @@ import lombok.With;
 import java.util.Collection;
 import java.util.Map;
 
-import static io.microconfig.utils.OsUtil.isWindows;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static io.microconfig.utils.StringUtils.unixLikePath;
 import static java.util.stream.IntStream.range;
@@ -94,7 +94,7 @@ public class PropertyImpl implements Property {
     }
 
     public Property escapeOnWindows() {
-        if (!isWindows()) return this;
+        if (!Os.isWindows()) return this;
 
         String escaped = ("user.home".equals(key)) ? unixLikePath(value) : escapeValue();
         return withValue(escaped);
