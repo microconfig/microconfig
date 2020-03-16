@@ -13,8 +13,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static io.microconfig.utils.StreamUtils.forEach;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 @With
 @RequiredArgsConstructor
@@ -37,9 +36,9 @@ public class EnvironmentDefinition {
         List<String> notUniqueComponents = groups.stream()
                 .map(ComponentGroupDefinition::getComponents)
                 .flatMap(List::stream)
-                .collect(groupingBy(ComponentDefinition::getName))
+                .collect(groupingBy(ComponentDefinition::getName, counting()))
                 .entrySet().stream()
-                .filter(e -> e.getValue().size() > 1)
+                .filter(e -> e.getValue() > 1)
                 .map(Map.Entry::getKey)
                 .collect(toList());
 
