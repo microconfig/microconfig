@@ -5,7 +5,11 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static io.microconfig.domain.impl.configtypes.ConfigTypeFilters.configTypeWithName;
 import static io.microconfig.domain.impl.configtypes.ConfigTypeFilters.eachConfigType;
+import static io.microconfig.domain.impl.configtypes.StandardConfigType.APPLICATION;
+import static io.microconfig.domain.impl.configtypes.StandardConfigType.HELM;
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ConfigTypeFiltersTest {
@@ -13,7 +17,13 @@ class ConfigTypeFiltersTest {
 
     @Test
     void selectEachConfigType() {
-        List<ConfigType> filteredTypes = eachConfigType().selectTypes(types);
-        assertEquals(types, filteredTypes);
+        List<ConfigType> selected = eachConfigType().selectTypes(types);
+        assertEquals(types, selected);
+    }
+
+    @Test
+    void selectByConfigName() {
+        List<ConfigType> selected = configTypeWithName("app", "helm").selectTypes(types);
+        assertEquals(asList(APPLICATION, HELM), selected);
     }
 }
