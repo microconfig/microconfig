@@ -4,7 +4,7 @@ import io.microconfig.domain.ConfigTypeRepository;
 import io.microconfig.domain.Environment;
 import io.microconfig.domain.EnvironmentRepository;
 import io.microconfig.domain.StatementResolver;
-import io.microconfig.domain.impl.configtypes.StandardConfigType;
+import io.microconfig.domain.impl.configtypes.StandardConfigTypeRepository;
 import io.microconfig.domain.impl.environments.repository.FileEnvironmentRepository;
 import io.microconfig.domain.impl.properties.ComponentFactory;
 import io.microconfig.domain.impl.properties.ComponentFactoryImpl;
@@ -21,7 +21,7 @@ import lombok.With;
 import java.io.File;
 
 import static io.microconfig.domain.impl.configtypes.CompositeConfigTypeRepository.composite;
-import static io.microconfig.domain.impl.configtypes.DescriptorConfigTypeRepository.findDescriptorIn;
+import static io.microconfig.domain.impl.configtypes.CustomConfigTypeRepository.findDescriptorIn;
 import static io.microconfig.domain.impl.properties.io.selector.ConfigIoFactory.newConfigIo;
 import static io.microconfig.domain.impl.properties.repository.graph.CachedComponentGraph.traverseFrom;
 import static io.microconfig.domain.impl.properties.resolvers.chain.ChainedResolver.chainOf;
@@ -88,7 +88,7 @@ public class Microconfig {
     private ConfigTypeRepository configTypes() {
         return composite(
                 findDescriptorIn(rootDir, fsReader),
-                StandardConfigType.asRepository()
+                new StandardConfigTypeRepository()
         );
     }
 
