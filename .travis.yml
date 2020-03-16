@@ -1,5 +1,5 @@
 language: java
-jdk: openjdk11
+jdk: openjdk8
 
 script:
   - ./gradlew check

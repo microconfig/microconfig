@@ -3,6 +3,7 @@ package io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.s
 import io.microconfig.domain.Property;
 import io.microconfig.domain.impl.properties.resolvers.placeholder.Placeholder;
 import io.microconfig.domain.impl.properties.resolvers.placeholder.PlaceholderResolveStrategy;
+import io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.PlaceholderSource;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
@@ -33,6 +34,6 @@ public class SystemResolveStrategy implements PlaceholderResolveStrategy {
         if (!name.equals(p.getComponent())) return empty();
 
         return ofNullable(resolver.apply(p.getValue()))
-                .map(value -> tempProperty(p.getValue(), value, p.getEnvironment(), null).escapeOnWindows());
+                .map(value -> tempProperty(p.getValue(), value, p.getEnvironment(), new PlaceholderSource(p.getComponent(), p.getComponent())).escapeOnWindows());
     }
 }
