@@ -111,7 +111,7 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     }
 
     private Supplier<EnvironmentException> notFoundException(String name) {
-        return () -> new EnvironmentException("Can't find env '" + name + "'");
+        return () -> new EnvironmentException("Can't find env '" + name + "'. Available envs: " + environmentNames());
     }
 
     private Supplier<Environment> fakeEnvWith(String name) {

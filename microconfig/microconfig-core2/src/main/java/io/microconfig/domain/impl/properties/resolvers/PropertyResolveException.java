@@ -8,6 +8,10 @@ import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static java.lang.String.format;
 
 public class PropertyResolveException extends RuntimeException {
+    public PropertyResolveException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
     public PropertyResolveException(String message) {
         super(message);
     }

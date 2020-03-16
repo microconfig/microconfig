@@ -8,8 +8,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 
 public class StandardConfigTypeRepository implements ConfigTypeRepository {
-
-    private static final List<ConfigType> standardTypes = asList(StandardConfigType.values());
+    private final List<ConfigType> standardTypes = asList(StandardConfigType.values());
 
     @Override
     public List<ConfigType> getConfigTypes() {

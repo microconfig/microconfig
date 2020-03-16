@@ -36,13 +36,13 @@ public class EnvironmentImpl implements Environment {
     @Override
     public ComponentGroup findGroupWithName(String groupName) {
         return findGroup(group -> group.getName().equals(groupName),
-                () -> "group name=" + groupName);
+                () -> "groupName=" + groupName);
     }
 
     @Override
     public ComponentGroup findGroupWithComponent(String componentName) {
         return findGroup(group -> group.findComponentWithName(componentName).isPresent(),
-                () -> "component name=" + componentName);
+                () -> "componentName=" + componentName);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class EnvironmentImpl implements Environment {
         return componentGroups.stream()
                 .filter(groupPredicate)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Can't find group by " + description.get() + " in env [" + name + "]"));
+                .orElseThrow(() -> new IllegalArgumentException("Can't find group by filter: '" + description.get() + "' in env '" + name + "'"));
     }
 
     @Override

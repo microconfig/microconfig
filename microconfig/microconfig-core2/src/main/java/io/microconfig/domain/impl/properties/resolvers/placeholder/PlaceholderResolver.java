@@ -22,7 +22,7 @@ public class PlaceholderResolver implements StatementResolver {
 
         @Override
         public String resolve() {
-            Placeholder placeholder = borders.toPlaceholder("app", "dev");
+            Placeholder placeholder = borders.toPlaceholder("app", "uat"); //todo
             try {
                 String maybePlaceholder = placeholder.resolveUsing(strategy);
                 return resolveRecursively(maybePlaceholder);

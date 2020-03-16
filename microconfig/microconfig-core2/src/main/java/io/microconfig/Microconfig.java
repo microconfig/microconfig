@@ -12,6 +12,10 @@ import io.microconfig.domain.impl.properties.repository.ComponentGraph;
 import io.microconfig.domain.impl.properties.repository.FilePropertiesRepository;
 import io.microconfig.domain.impl.properties.resolvers.expression.ExpressionResolver;
 import io.microconfig.domain.impl.properties.resolvers.placeholder.PlaceholderResolver;
+import io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.component.ComponentResolveStrategy;
+import io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.component.properties.ComponentPropertiesFactory;
+import io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.envdescriptor.EnvDescriptorResolveStrategy;
+import io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.envdescriptor.properties.EnvDescriptorPropertiesFactory;
 import io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.standard.StandardResolveStrategy;
 import io.microconfig.io.DumpedFsReader;
 import io.microconfig.io.FsReader;
@@ -25,6 +29,9 @@ import static io.microconfig.domain.impl.configtypes.CustomConfigTypeRepository.
 import static io.microconfig.domain.impl.properties.io.selector.ConfigIoFactory.newConfigIo;
 import static io.microconfig.domain.impl.properties.repository.graph.CachedComponentGraph.traverseFrom;
 import static io.microconfig.domain.impl.properties.resolvers.chain.ChainedResolver.chainOf;
+import static io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.composite.CompositeResolveStrategy.composite;
+import static io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.system.SystemResolveStrategy.envVariablesResolveStrategy;
+import static io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.system.SystemResolveStrategy.systemPropertiesResolveStrategy;
 import static io.microconfig.utils.FileUtils.canonical;
 
 @RequiredArgsConstructor
@@ -54,9 +61,16 @@ public class Microconfig {
     }
 
     private StatementResolver placeholderResolver() {
-        return new PlaceholderResolver(
-                new StandardResolveStrategy(environments())
-        );
+        ComponentPropertiesFactory componentProperties = new ComponentPropertiesFactory(componentGraph(), rootDir, null); //todo;
+        EnvDescriptorPropertiesFactory envProperties = new EnvDescriptorPropertiesFactory();
+
+        return new PlaceholderResolver(composite(
+                systemPropertiesResolveStrategy(),
+                new ComponentResolveStrategy(componentProperties.get()),
+                new EnvDescriptorResolveStrategy(environments(), envProperties.get()),
+                new StandardResolveStrategy(environments()),
+                envVariablesResolveStrategy()
+        ));
     }
 
     private StatementResolver expressionResolver() {

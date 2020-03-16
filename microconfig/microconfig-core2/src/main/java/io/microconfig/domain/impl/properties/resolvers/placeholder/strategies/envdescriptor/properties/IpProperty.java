@@ -13,8 +13,6 @@ public class IpProperty implements EnvProperty {
 
     @Override
     public Optional<String> value(String componentName, String componentType, Environment environment) {
-//        return environment.findGroupWithComponent(componentName)
-//                .map(ComponentGroup::getIp);
-        return Optional.empty();
+        return environment.findGroupWithComponent(componentName).getIp(); //todo
     }
 }

@@ -3,6 +3,7 @@ package io.microconfig.domain.impl.properties;
 import io.microconfig.domain.Property;
 import io.microconfig.domain.PropertySource;
 import io.microconfig.domain.StatementResolver;
+import io.microconfig.domain.impl.properties.resolvers.PropertyResolveException;
 import io.microconfig.utils.Os;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -66,12 +67,16 @@ public class PropertyImpl implements Property {
     }
 
     @Override
-    public String toString() {
-        return (temp ? "#" : "") + key + ": " + value;
+    public Property resolveBy(StatementResolver resolver) {
+        try {
+            return withValue(resolver.resolveRecursively(value));
+        } catch (RuntimeException e) {
+            throw new PropertyResolveException("Can't resolve property: " + this, e); //todo
+        }
     }
 
     @Override
-    public Property resolveBy(StatementResolver resolver) {
-        return withValue(resolver.resolveRecursively(value));
+    public String toString() {
+        return (temp ? "#" : "") + key + ": " + value;
     }
 }

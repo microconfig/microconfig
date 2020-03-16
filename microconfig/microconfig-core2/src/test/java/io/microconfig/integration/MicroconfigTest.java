@@ -26,12 +26,12 @@ public class MicroconfigTest {
 
     @Test
     void simpleInclude() {
-        assertEquals(setOf("i1.prop", "i2.prop", "i3.prop"), build("uat", "ui").getPropertiesAsMap().keySet());
+        assertEquals(setOf("i1.prop", "i2.prop", "i3.prop"), build("uat", "i1").getPropertiesAsMap().keySet());
     }
 
     private CompositeComponentProperties build(String env, String component) {
-        return microconfig.inEnvironment(env).
-                findComponentWithName(component)
+        return microconfig.inEnvironment(env)
+                .findComponentWithName(component, false)
                 .getPropertiesFor(eachConfigType())
                 .resolveBy(microconfig.resolver());
     }
