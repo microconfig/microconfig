@@ -29,7 +29,7 @@ public class ComponentPropertiesImpl implements ComponentProperties {
 
     @Override
     public ComponentProperties resolveBy(StatementResolver resolver) {
-        return withProperties(forEach(properties, p -> p.resolveBy(resolver)));
+        return withProperties(forEach(properties, p -> p.resolveBy(resolver, configType.getType())));
     }
 
     @Override

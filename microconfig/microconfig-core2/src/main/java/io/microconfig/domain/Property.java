@@ -9,5 +9,5 @@ public interface Property {
 
     boolean isTemp();
 
-    Property resolveBy(StatementResolver resolver);
+    Property resolveBy(StatementResolver resolver, String configType);
 }

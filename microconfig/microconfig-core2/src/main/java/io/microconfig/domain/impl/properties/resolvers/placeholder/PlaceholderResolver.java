@@ -21,11 +21,11 @@ public class PlaceholderResolver implements StatementResolver {
         private final PlaceholderBorders borders;
 
         @Override
-        public String resolve() {
-            Placeholder placeholder = borders.toPlaceholder("app", "uat"); //todo
+        public String resolve(String env, String configType) {
+            Placeholder placeholder = borders.toPlaceholder(configType, env);
             try {
                 String maybePlaceholder = placeholder.resolveUsing(strategy);
-                return resolveRecursively(maybePlaceholder);
+                return resolveRecursively(maybePlaceholder, env, configType);
             } catch (RuntimeException e) {
                 String defaultValue = placeholder.getDefaultValue();
                 if (defaultValue != null) return defaultValue;

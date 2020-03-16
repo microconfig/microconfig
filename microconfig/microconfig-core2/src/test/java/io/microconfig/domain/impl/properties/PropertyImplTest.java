@@ -11,7 +11,7 @@ class PropertyImplTest {
     @Test
     void testResolve() {
         Property original = property("key", "I'm #{#{1 + 2} * #{10 - 4}}!", "dev", null);
-        Property resolved = original.resolveBy(new ExpressionResolver());
+        Property resolved = original.resolveBy(new ExpressionResolver(), "app");
         assertEquals("I'm 18!", resolved.getValue());
     }
 }

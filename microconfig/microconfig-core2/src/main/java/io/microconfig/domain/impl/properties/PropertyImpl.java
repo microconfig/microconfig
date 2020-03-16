@@ -75,9 +75,9 @@ public class PropertyImpl implements Property {
     }
 
     @Override
-    public Property resolveBy(StatementResolver resolver) {
+    public Property resolveBy(StatementResolver resolver, String configType) {
         try {
-            return withValue(resolver.resolveRecursively(value));
+            return withValue(resolver.resolveRecursively(value, envContext, configType));
         } catch (RuntimeException e) {
             throw new PropertyResolveException("Can't resolve property '" + this + "'", e); //todo
         }

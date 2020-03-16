@@ -19,7 +19,7 @@ public class Expression implements Statement {
     private final int endIndex;
 
     @Override
-    public String resolve() {
+    public String resolve(String _1, String _2) {
         try {
             return parser.parseExpression(value).getValue(String.class);
         } catch (EvaluationException | ParseException e) {
