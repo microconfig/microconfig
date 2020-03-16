@@ -8,9 +8,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import static io.microconfig.utils.FileUtils.getExtension;
 import static io.microconfig.utils.StreamUtils.filter;
+import static io.microconfig.utils.StreamUtils.forEach;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toSet;
 
@@ -24,10 +26,19 @@ public class ConfigTypeFilters {
     }
 
     public static ConfigTypeFilter configTypeWithName(String... name) {
-        Set<String> names = new HashSet<>(asList(name));
-        return configTypes -> {
-            validateNames(names, configTypes);
-            return filter(configTypes, type -> names.contains(type.getType()));
+        Set<String> types = new HashSet<>(asList(name));
+        return filerTypes(type -> types.contains(type.getType()), types); //todo throw exception if type is not supported
+
+    }
+
+    private static ConfigTypeFilter filerTypes(Predicate<ConfigType> predicate, Object typeDescription) {
+        return types -> {
+            List<ConfigType> result = filter(types, predicate);
+            if (result.isEmpty()) {
+                throw new IllegalArgumentException("Unsupported config type '" + typeDescription + "'." +
+                        " Configured types: " + forEach(types, ConfigType::getType));
+            }
+            return result;
         };
     }
 
