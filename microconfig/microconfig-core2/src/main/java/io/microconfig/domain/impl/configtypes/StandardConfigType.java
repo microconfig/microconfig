@@ -16,6 +16,7 @@ public enum StandardConfigType {
     APPLICATION(byNameAndExtensions("app", setOf(".properties", ".yaml"), "application")),
     PROCESS(byNameAndExtensions("process", setOf(".process", ".proc"), "process")),
     DEPLOY(byName("deploy")),
+    HELM(byNameAndExtensions("helm", setOf(".helm"), "values")),
     ENV(byName("env")),
     SECRET(byName("secret"));
 
