@@ -13,7 +13,8 @@ public class PortOffsetProperty implements EnvProperty {
 
     @Override
     public Optional<String> value(String componentName, String componentType, Environment environment) {
-        return environment.getPortOffset()
-                .map(Object::toString);
+//        return environment.getPortOffset()
+//                .map(Object::toString);
+        return Optional.empty();
     }
 }

@@ -13,6 +13,7 @@ public class GroupNameProperty implements EnvProperty {
 
     @Override
     public Optional<String> value(String componentName, String componentType, Environment environment) {
-        return environment.findGroupWithComponent(componentName).getName();
+//        return environment.findGroupWithComponent(componentName).getName();
+        return Optional.empty();
     }
 }

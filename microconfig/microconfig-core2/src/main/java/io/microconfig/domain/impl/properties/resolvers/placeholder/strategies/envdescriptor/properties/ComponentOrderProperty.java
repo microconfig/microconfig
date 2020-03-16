@@ -14,8 +14,9 @@ public class ComponentOrderProperty implements EnvProperty {
 
     @Override
     public Optional<String> value(String componentName, String componentType, Environment environment) {
-        return environment.findGroupWithComponent(componentName)
-                .map(cg -> cg().indexOf(componentName))
-                .map(String::valueOf);
+//        return environment.findGroupWithComponent(componentName)
+//                .map(cg -> cg().indexOf(componentName))
+//                .map(String::valueOf);
+        return Optional.empty();
     }
 }
