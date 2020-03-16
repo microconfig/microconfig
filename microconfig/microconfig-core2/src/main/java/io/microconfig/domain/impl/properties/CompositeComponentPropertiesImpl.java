@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static io.microconfig.domain.impl.properties.PropertyImpl.asKeyValue;
 import static io.microconfig.utils.StreamUtils.*;
-import static java.util.function.Function.identity;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
@@ -35,8 +35,8 @@ public class CompositeComponentPropertiesImpl implements CompositeComponentPrope
     }
 
     @Override
-    public Map<String, Property> getPropertiesAsMap() {
-        return getProperties().stream().collect(toLinkedMap(Property::getKey, identity()));
+    public Map<String, String> propertiesAsKeyValue() {
+        return asKeyValue(getProperties());
     }
 
     @Override

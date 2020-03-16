@@ -9,9 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static io.microconfig.domain.impl.properties.PropertyImpl.asKeyValue;
 import static io.microconfig.utils.StreamUtils.forEach;
-import static io.microconfig.utils.StreamUtils.toLinkedMap;
-import static java.util.function.Function.identity;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor
@@ -34,8 +33,8 @@ public class ComponentPropertiesImpl implements ComponentProperties {
     }
 
     @Override
-    public Map<String, Property> getPropertiesAsMap() {
-        return properties.stream().collect(toLinkedMap(Property::getKey, identity()));
+    public Map<String, String> propertiesAsKeyValue() {
+        return asKeyValue(getProperties());
     }
 
     @Override

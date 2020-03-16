@@ -9,6 +9,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
+import java.util.Collection;
+import java.util.Map;
+
+import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static io.microconfig.utils.StringUtils.*;
 import static lombok.AccessLevel.PRIVATE;
 
@@ -57,6 +61,10 @@ public class PropertyImpl implements Property {
 
     public static boolean isComment(String line) {
         return line.startsWith("#");
+    }
+
+    public static Map<String, String> asKeyValue(Collection<Property> properties){
+       return  properties.stream().collect(toLinkedMap(Property::getKey, Property::getValue));
     }
 
     public Property escapeOnWindows() {

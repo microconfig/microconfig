@@ -11,7 +11,7 @@ public interface ComponentProperties {
 
     List<Property> getProperties();
 
-    Map<String, Property> getPropertiesAsMap();
+    Map<String, String> propertiesAsKeyValue();
 
     Optional<Property> getPropertyWithKey(String key);
 

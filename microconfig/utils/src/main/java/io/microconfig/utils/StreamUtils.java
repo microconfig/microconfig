@@ -65,4 +65,10 @@ public class StreamUtils {
             throw new IllegalStateException(format("Duplicate key %s", u));
         };
     }
+
+    public static Map<String, String> splitKeyValue(String... keyValue) {
+        return Stream.of(keyValue)
+                .map(s -> s.split("="))
+                .collect(toLinkedMap(s -> s[0], s -> s[1]));
+    }
 }
