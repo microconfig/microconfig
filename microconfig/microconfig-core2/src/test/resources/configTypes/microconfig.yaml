@@ -14,7 +14,7 @@ configTypes:
   - helm:
       resultFileName: values
       sourceExtensions:
-        - helm
+        - .helm
 
   - deploy
   - env

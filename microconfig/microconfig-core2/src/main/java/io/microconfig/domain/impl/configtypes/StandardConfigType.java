@@ -13,10 +13,12 @@ import static io.microconfig.utils.CollectionUtils.setOf;
 public enum StandardConfigType implements ConfigType {
     APPLICATION("app", setOf(".properties", ".yaml"), "application"),
     PROCESS("process", setOf(".process", ".proc"), "process"),
-    DEPLOY("deploy", setOf("deploy"), "deploy"),
     HELM("helm", setOf(".helm"), "values"),
-    ENV("env", setOf("env"), "env"),
-    SECRET("secret", setOf("secret"), "secret");
+    DEPLOY("deploy", setOf(".deploy"), "deploy"),
+    ENV("env", setOf(".env"), "env"),
+    SECRET("secret", setOf(".secret"), "secret"),
+    LOG4J("log4j", setOf(".log4j"), "log4j"),
+    LOG4J2("log4j2", setOf(".log4j2"), "log4j2");
 
     private final String type;
     private final Set<String> sourceExtensions;
