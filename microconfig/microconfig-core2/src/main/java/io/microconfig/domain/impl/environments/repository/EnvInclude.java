@@ -25,7 +25,7 @@ public class EnvInclude {
 
     public EnvironmentDefinition includeTo(EnvironmentDefinition destinationEnv, Function<String, EnvironmentDefinition> repository) {
         val baseGroupByName = findBaseGroupsUsing(repository, destinationEnv);
-        forEach(destinationEnv.getGroups(), overrideBaseGroupIn(baseGroupByName).andThen(overriddenGroup -> baseGroupByName.put(overriddenGroup.getName(), overriddenGroup)));
+        forEach(destinationEnv.getGroups(), overrideBaseGroupIn(baseGroupByName).andThen(putOverriddenGroupTo(baseGroupByName)));
         return assignGroupsTo(destinationEnv, baseGroupByName.values());
     }
 
@@ -56,6 +56,10 @@ public class EnvInclude {
 
     private Collector<ComponentGroupDefinition, ?, Map<String, ComponentGroupDefinition>> resultsToMap() {
         return toLinkedMap(ComponentGroupDefinition::getName, identity());
+    }
+
+    private Function<ComponentGroupDefinition, ComponentGroupDefinition> putOverriddenGroupTo(Map<String, ComponentGroupDefinition> baseGroupByName) {
+        return overriddenGroup -> baseGroupByName.put(overriddenGroup.getName(), overriddenGroup);
     }
 
     public boolean isEmpty() {
