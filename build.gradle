@@ -23,8 +23,8 @@ allprojects {
     group = 'io.microconfig'
     version = rootProject.version
 
-    sourceCompatibility = 11
-    targetCompatibility = 11
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
     repositories {        
 //        if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
