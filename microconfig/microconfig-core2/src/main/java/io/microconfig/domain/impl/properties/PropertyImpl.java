@@ -8,8 +8,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
-import static io.microconfig.utils.StringUtils.unixLikePath;
-import static java.util.stream.IntStream.range;
+import static io.microconfig.utils.StringUtils.*;
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
@@ -28,13 +27,13 @@ public class PropertyImpl implements Property {
 
     public static Property parse(String keyValue, String envContext, PropertySource source) {
         boolean temp = isTempProperty(keyValue);
-        int indexOfSeparator = separatorIndex(keyValue);
-        if (indexOfSeparator < 0) {
+        int separatorIndex = findKeyValueSeparatorIndexIn(keyValue);
+        if (separatorIndex < 0) {
             throw new IllegalArgumentException("Property must contain ':' or '='. Bad property: " + keyValue + " in " + source);
         }
 
-        String key = keyValue.substring(temp ? TEMP_VALUE.length() : 0, indexOfSeparator).trim();
-        String value = keyValue.substring(indexOfSeparator + 1).trim();
+        String key = keyValue.substring(temp ? TEMP_VALUE.length() : 0, separatorIndex).trim();
+        String value = keyValue.substring(separatorIndex + 1).trim();
 
         return new PropertyImpl(key, value, envContext, temp, source);
     }
@@ -47,13 +46,8 @@ public class PropertyImpl implements Property {
         return new PropertyImpl(key, value, envContext, true, source);
     }
 
-    public static int separatorIndex(String keyValue) {
-        return range(0, keyValue.length())
-                .filter(i -> {
-                    char c = keyValue.charAt(i);
-                    return c == '=' || c == ':';
-                }).findFirst()
-                .orElse(-1);
+    public static int findKeyValueSeparatorIndexIn(String keyValue) {
+        return findFirstIndexIn(keyValue, ":=");
     }
 
     public static boolean isTempProperty(String line) {
@@ -67,14 +61,8 @@ public class PropertyImpl implements Property {
     public Property escapeOnWindows() {
         if (!Os.isWindows()) return this;
 
-        String escaped = ("user.home".equals(key)) ? unixLikePath(value) : escapeValue();
+        String escaped = ("user.home".equals(key)) ? unixLikePath(value) : escape(value);
         return withValue(escaped);
-    }
-
-    String escapeValue() {
-        String one = "\\";
-        String two = "\\\\";
-        return value.replace(two, one).replace(one, two);
     }
 
     @Override
