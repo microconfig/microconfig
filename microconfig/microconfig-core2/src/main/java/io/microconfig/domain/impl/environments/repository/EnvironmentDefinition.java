@@ -2,7 +2,6 @@ package io.microconfig.domain.impl.environments.repository;
 
 import io.microconfig.domain.ComponentFactory;
 import io.microconfig.domain.Environment;
-import io.microconfig.domain.EnvironmentRepository;
 import io.microconfig.domain.impl.environments.EnvironmentImpl;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +10,7 @@ import lombok.With;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static io.microconfig.utils.StreamUtils.forEach;
 import static java.util.stream.Collectors.groupingBy;
@@ -29,7 +29,7 @@ public class EnvironmentDefinition {
 
     private final File source;
 
-    public EnvironmentDefinition processInclude(EnvironmentRepository environmentProvider) {
+    public EnvironmentDefinition processInclude( Function<String, EnvironmentDefinition> environmentProvider) {
         return envInclude.isEmpty() ? this : envInclude.includeTo(this, environmentProvider);
     }
 

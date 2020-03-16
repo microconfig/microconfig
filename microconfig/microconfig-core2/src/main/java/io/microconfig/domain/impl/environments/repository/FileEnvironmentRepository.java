@@ -56,9 +56,7 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
 
     @Override
     public Environment getByName(String name) {
-        return findEnvWith(name).orElseThrow(() -> {
-            throw new EnvironmentException("Can't find env '" + name + "'");
-        });
+        return findEnvWith(name).orElseThrow(notFoundException(name));
     }
 
     @Override
@@ -87,11 +85,14 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     }
 
     private Function<File, Environment> parse() {
+        return parseDefinition().andThen(def -> def.toEnvironment(componentFactory));
+    }
+
+    private Function<File, EnvironmentDefinition> parseDefinition() {
         return f -> new EnvironmentFile(f)
                 .parseUsing(fsReader)
-                .processInclude(this)
-                .checkComponentNamesAreUnique()
-                .toEnvironment(componentFactory);
+                .processInclude(name -> envFileWith(name).map(parseDefinition()).orElseThrow(notFoundException(name)))
+                .checkComponentNamesAreUnique();
     }
 
     private Supplier<Environment> fakeEnvWith(String name) {
@@ -104,5 +105,9 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
 
     private Predicate<File> withFileName(String envName) {
         return f -> getName(f).equals(envName);
+    }
+
+    private Supplier<EnvironmentException> notFoundException(String name) {
+        return () -> new EnvironmentException("Can't find env '" + name + "'");
     }
 }

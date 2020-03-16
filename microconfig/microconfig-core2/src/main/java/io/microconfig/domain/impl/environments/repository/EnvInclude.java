@@ -1,10 +1,10 @@
 package io.microconfig.domain.impl.environments.repository;
 
-import io.microconfig.domain.EnvironmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
 
@@ -23,14 +23,14 @@ public class EnvInclude {
         return empty;
     }
 
-    public EnvironmentDefinition includeTo(EnvironmentDefinition destinationEnv, EnvironmentRepository repository) {
+    public EnvironmentDefinition includeTo(EnvironmentDefinition destinationEnv, Function<String, EnvironmentDefinition> repository) {
         val baseGroupByName = findBaseGroupsUsing(repository, destinationEnv);
         forEach(destinationEnv.getGroups(), overrideBaseGroupIn(baseGroupByName).andThen(overriddenGroup -> baseGroupByName.put(overriddenGroup.getName(), overriddenGroup)));
         return assignGroupsTo(destinationEnv, baseGroupByName.values());
     }
 
-    private Map<String, ComponentGroupDefinition> findBaseGroupsUsing(EnvironmentRepository repository, EnvironmentDefinition destinationEnv) {
-        EnvironmentDefinition baseEnv = (EnvironmentDefinition) repository.getByName(baseEnvironment);
+    private Map<String, ComponentGroupDefinition> findBaseGroupsUsing(Function<String, EnvironmentDefinition> repository, EnvironmentDefinition destinationEnv) {
+        EnvironmentDefinition baseEnv = repository.apply(baseEnvironment);
         return forEach(notExcludedGroupsFrom(baseEnv), assignIpOf(destinationEnv), resultsToMap());
     }
 
@@ -59,6 +59,6 @@ public class EnvInclude {
     }
 
     public boolean isEmpty() {
-        return this == empty;
+        return baseEnvironment.isEmpty();
     }
 }
