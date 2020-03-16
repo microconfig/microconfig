@@ -23,23 +23,12 @@ public class ConfigTypeFilters {
         return __ -> asList(types);
     }
 
-    public static ConfigTypeFilter configTypeWithName(String... name) {
-        Set<String> names = new HashSet<>(asList(name));
-        return types -> {
-            validateNames(types, names);
-            return filter(types, type -> names.contains(type.getType()));
+    public static ConfigTypeFilter configTypeWithName(String... types) {
+        Set<String> names = new HashSet<>(asList(types));
+        return configTypes -> {
+            validateNames(names, configTypes);
+            return filter(configTypes, type -> names.contains(type.getType()));
         };
-    }
-
-    private static void validateNames(List<ConfigType> supportedTypes, Set<String> names) {
-        Set<String> supportedNames = supportedTypes.stream().map(ConfigType::getType).collect(toSet());
-        names.stream()
-                .filter(n -> !supportedNames.contains(n))
-                .findAny()
-                .ifPresent(n -> {
-                    throw new IllegalArgumentException("Unsupported config type '" + n + "'."
-                            + " Configured types: " + supportedNames);
-                });
     }
 
     public static ConfigTypeFilter configTypeWithExtension(File file) {
@@ -52,5 +41,16 @@ public class ConfigTypeFilters {
                 .findFirst()
                 .map(Arrays::asList)
                 .orElseThrow(() -> new IllegalArgumentException("Unsupported config extension '" + ext + "'"));
+    }
+
+    private static void validateNames(Set<String> names, List<ConfigType> supportedTypes) {
+        Set<String> supportedNames = supportedTypes.stream().map(ConfigType::getType).collect(toSet());
+        names.stream()
+                .filter(n -> !supportedNames.contains(n))
+                .findAny()
+                .ifPresent(n -> {
+                    throw new IllegalArgumentException("Unsupported config type '" + n + "'."
+                            + " Configured types: " + supportedNames);
+                });
     }
 }
