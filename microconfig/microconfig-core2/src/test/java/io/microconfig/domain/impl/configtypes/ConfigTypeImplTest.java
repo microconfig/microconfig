@@ -3,6 +3,8 @@ package io.microconfig.domain.impl.configtypes;
 import io.microconfig.domain.ConfigType;
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
+
 import static io.microconfig.domain.impl.configtypes.ConfigTypeImpl.byNameAndExtensions;
 import static io.microconfig.domain.impl.configtypes.ConfigTypeImpl.byName;
 import static java.util.Collections.singleton;
@@ -27,6 +29,7 @@ class ConfigTypeImplTest {
 
     @Test
     void extensionsShouldStartWithDot() {
-        assertThrows(IllegalArgumentException.class, () -> byNameAndExtensions("app", singleton("yaml"), "application"));
+        Set<String> badExtension = singleton("yaml");
+        assertThrows(IllegalArgumentException.class, () -> byNameAndExtensions("app", badExtension, "application"));
     }
 }
