@@ -1,6 +1,10 @@
 package io.microconfig.domain.impl.environments;
 
-import io.microconfig.domain.*;
+import io.microconfig.domain.Component;
+import io.microconfig.domain.ComponentGroup;
+import io.microconfig.domain.Components;
+import io.microconfig.domain.Environment;
+import io.microconfig.domain.impl.properties.ComponentFactory;
 import io.microconfig.domain.impl.properties.ComponentsImpl;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

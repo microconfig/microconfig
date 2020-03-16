@@ -1,7 +1,6 @@
 package io.microconfig.domain.impl.properties;
 
 import io.microconfig.domain.Component;
-import io.microconfig.domain.ComponentFactory;
 import io.microconfig.domain.ConfigTypeRepository;
 import lombok.RequiredArgsConstructor;
 
