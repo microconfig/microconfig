@@ -7,7 +7,9 @@ import java.io.File;
 import java.util.List;
 
 import static io.microconfig.domain.impl.configtypes.ConfigTypeFilters.*;
-import static io.microconfig.domain.impl.configtypes.StandardConfigType.*;
+import static io.microconfig.domain.impl.configtypes.StandardConfigType.APPLICATION;
+import static io.microconfig.domain.impl.configtypes.StandardConfigType.HELM;
+import static io.microconfig.utils.CollectionUtils.setOf;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -27,9 +29,10 @@ class ConfigTypeFiltersTest {
 
     @Test
     void useProvidedTypes() {
+        ConfigType testType = new ConfigTypeImpl("test", setOf(".tst"), "test");
         assertEquals(
-                singletonList(DEPLOY),
-                configType(DEPLOY).selectTypes(emptyList())
+                singletonList(testType),
+                configType(testType).selectTypes(emptyList())
         );
     }
 
@@ -39,16 +42,16 @@ class ConfigTypeFiltersTest {
                 asList(APPLICATION, HELM),
                 configTypeWithName("app", "helm").selectTypes(types)
         );
-
-        assertEquals(
-                asList(APPLICATION),
-                configTypeWithName("app", "BAD").selectTypes(types)
-        );
     }
 
     @Test
     void failOnUnsupportedName() {
-        assertThrows(IllegalArgumentException.class, () -> configTypeWithName("badName").selectTypes(types));
+        assertThrows(IllegalArgumentException.class, () -> configTypeWithName("app", "badName").selectTypes(types));
+    }
+
+    @Test
+    void failOnEmptyNames() {
+        assertThrows(IllegalArgumentException.class, () -> configTypeWithName().selectTypes(types));
     }
 
     @Test

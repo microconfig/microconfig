@@ -16,7 +16,7 @@ class StandardConfigTypeRepositoryTest {
     void standardTypesRepo() {
         Collection<String> types = standardRepo.getConfigTypes().stream().map(ConfigType::getType).collect(toSet());
 
-        Collection<String> expectedTypes = setOf("app", "process", "deploy", "helm", "env", "secret");
+        Collection<String> expectedTypes = setOf("app", "process", "helm", "deploy", "env", "secret", "log4j", "log4j2");
         assertEquals(expectedTypes, types);
     }
 
