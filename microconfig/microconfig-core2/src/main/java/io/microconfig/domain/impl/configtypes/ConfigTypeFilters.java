@@ -22,7 +22,7 @@ public class ConfigTypeFilters {
     public static ConfigTypeFilter configType(ConfigType... types) {
         return __ -> {
             if (types.length == 0) {
-                throwEmptyConfigTypesException();
+                throwNoConfigTypesProvidedException();
             }
             return asList(types);
         };
@@ -31,7 +31,7 @@ public class ConfigTypeFilters {
     public static ConfigTypeFilter configTypeWithName(String... name) {
         Set<String> names = new HashSet<>(asList(name));
         if (names.isEmpty()) {
-            throwEmptyConfigTypesException();
+            throwNoConfigTypesProvidedException();
         }
         return configTypes -> {
             validateNames(names, configTypes);
@@ -59,7 +59,7 @@ public class ConfigTypeFilters {
         }
     }
 
-    private static void throwEmptyConfigTypesException() {
+    private static void throwNoConfigTypesProvidedException() {
         throw new IllegalArgumentException("No config types provided");
     }
 }
