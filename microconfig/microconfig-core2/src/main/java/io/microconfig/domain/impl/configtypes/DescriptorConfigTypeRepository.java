@@ -36,7 +36,7 @@ public class DescriptorConfigTypeRepository implements ConfigTypeRepository {
 
         List<ConfigType> types = parseConfigTypes();
         if (!types.isEmpty()) {
-            announce("Using settings from " + DESCRIPTOR);
+            announce("Using settings from " + descriptorFile);
         }
         return types;
     }
