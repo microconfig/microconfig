@@ -5,9 +5,9 @@ import io.microconfig.domain.CompositeComponentProperties;
 import io.microconfig.domain.Property;
 import org.junit.jupiter.api.Test;
 
-import static io.microconfig.ClasspathUtils.classpathFile;
 import static io.microconfig.Microconfig.searchConfigsIn;
 import static io.microconfig.domain.impl.configtypes.ConfigTypeFilters.eachConfigType;
+import static io.microconfig.testutils.ClasspathUtils.classpathFile;
 import static io.microconfig.utils.StreamUtils.splitKeyValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

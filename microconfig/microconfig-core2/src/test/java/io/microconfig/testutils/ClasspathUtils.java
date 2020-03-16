@@ -1,4 +1,4 @@
-package io.microconfig;
+package io.microconfig.testutils;
 
 import org.springframework.core.io.ClassPathResource;
 
