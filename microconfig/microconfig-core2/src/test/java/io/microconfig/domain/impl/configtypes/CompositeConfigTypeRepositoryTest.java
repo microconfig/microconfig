@@ -26,7 +26,7 @@ class CompositeConfigTypeRepositoryTest {
     private ConfigTypeRepository r3;
 
     @Test
-    void test() {
+    void returnsFirstNotEmptyTypes() {
         List<ConfigType> r2Types = asList(APPLICATION, DEPLOY);
         List<ConfigType> r3Types = asList(SECRET, PROCESS);
         when(r2.getConfigTypes()).thenReturn(r2Types);
@@ -34,6 +34,7 @@ class CompositeConfigTypeRepositoryTest {
 
         assertSame(r2Types, composite(r1, r2, r3).getConfigTypes());
         assertSame(r3Types, composite(r1, r3, r2).getConfigTypes());
+        assertSame(r2Types, composite(r2, r1).getConfigTypes());
     }
 
     @Test
