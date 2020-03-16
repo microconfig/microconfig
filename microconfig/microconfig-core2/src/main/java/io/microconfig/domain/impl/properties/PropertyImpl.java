@@ -63,8 +63,8 @@ public class PropertyImpl implements Property {
         return line.startsWith("#");
     }
 
-    public static Map<String, String> asKeyValue(Collection<Property> properties){
-       return  properties.stream().collect(toLinkedMap(Property::getKey, Property::getValue));
+    public static Map<String, String> asKeyValue(Collection<Property> properties) {
+        return properties.stream().collect(toLinkedMap(Property::getKey, Property::getValue));
     }
 
     public Property escapeOnWindows() {
@@ -79,7 +79,7 @@ public class PropertyImpl implements Property {
         try {
             return withValue(resolver.resolveRecursively(value));
         } catch (RuntimeException e) {
-            throw new PropertyResolveException("Can't resolve property: " + this, e); //todo
+            throw new PropertyResolveException("Can't resolve property '" + this + "'", e); //todo
         }
     }
 
