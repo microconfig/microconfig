@@ -19,20 +19,26 @@ class ConfigTypeFiltersTest {
 
     @Test
     void selectEachConfigType() {
-        List<ConfigType> selected = eachConfigType().selectTypes(types);
-        assertEquals(types, selected);
+        assertEquals(
+                types,
+                eachConfigType().selectTypes(types)
+        );
     }
 
     @Test
     void useProvidedTypes() {
-        List<ConfigType> selected = configType(DEPLOY).selectTypes(emptyList());
-        assertEquals(singletonList(DEPLOY), selected);
+        assertEquals(
+                singletonList(DEPLOY),
+                configType(DEPLOY).selectTypes(emptyList())
+        );
     }
 
     @Test
     void selectByConfigName() {
-        List<ConfigType> selected = configTypeWithName("app", "helm").selectTypes(types);
-        assertEquals(asList(APPLICATION, HELM), selected);
+        assertEquals(
+                asList(APPLICATION, HELM),
+                configTypeWithName("app", "helm").selectTypes(types)
+        );
     }
 
     @Test
@@ -43,8 +49,10 @@ class ConfigTypeFiltersTest {
     @Test
     void selectByFileExtension() {
         File application = new File("application.yaml");
-        List<ConfigType> selected = configTypeWithExtensionOf(application).selectTypes(types);
-        assertEquals(singletonList(APPLICATION), selected);
+        assertEquals(
+                singletonList(APPLICATION),
+                configTypeWithExtensionOf(application).selectTypes(types)
+        );
     }
 
     @Test
