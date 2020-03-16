@@ -42,7 +42,7 @@ public class StreamUtils {
                 .collect(toList());
     }
 
-    public static <K, V> Optional<V> firstPresentResult(Collection<K> collection, Function<K, Optional<V>> getter) {
+    public static <K, V> Optional<V> firstFirstResult(Collection<K> collection, Function<K, Optional<V>> getter) {
         return collection.stream()
                 .map(getter)
                 .filter(Optional::isPresent)

@@ -15,10 +15,10 @@ public class StandardResolveStrategy implements PlaceholderResolveStrategy {
     private final EnvironmentRepository environmentRepository;
 
     @Override
-    public Optional<Property> resolve(Placeholder placeholder) {
-        return environmentRepository.getOrCreateByName(placeholder.getEnvironment())
-                .findComponentWithName(placeholder.getComponent(), false)
-                .getPropertiesFor(configTypeWithName(placeholder.getConfigType()))
-                .getPropertyWithKey(placeholder.getValue());
+    public Optional<Property> resolve(Placeholder p) {
+        return environmentRepository.getOrCreateByName(p.getEnvironment())
+                .findComponentWithName(p.getComponent(), false)
+                .getPropertiesFor(configTypeWithName(p.getConfigType()))
+                .getPropertyWithKey(p.getValue());
     }
 }

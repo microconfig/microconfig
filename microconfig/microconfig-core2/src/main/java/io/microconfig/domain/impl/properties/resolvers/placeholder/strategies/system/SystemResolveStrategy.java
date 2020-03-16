@@ -6,7 +6,7 @@ import io.microconfig.domain.impl.properties.resolvers.placeholder.PlaceholderRe
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import static io.microconfig.domain.impl.properties.PropertyImpl.tempProperty;
 import static java.util.Optional.empty;
@@ -18,7 +18,7 @@ public class SystemResolveStrategy implements PlaceholderResolveStrategy {
     public static final String SYSTEM_SOURCE = "system";
 
     private final String name;
-    private final Function<String, ?> keyToValue;
+    private final UnaryOperator<String> resolver;
 
     public static PlaceholderResolveStrategy systemPropertiesResolveStrategy() {
         return new SystemResolveStrategy(SYSTEM_SOURCE, System::getProperty);
@@ -29,11 +29,10 @@ public class SystemResolveStrategy implements PlaceholderResolveStrategy {
     }
 
     @Override
-    public Optional<Property> resolve(Placeholder placeholder) {
-        if (!name.equals(placeholder.getComponent())) return empty();
+    public Optional<Property> resolve(Placeholder p) {
+        if (!name.equals(p.getComponent())) return empty();
 
-        return ofNullable(keyToValue.apply(placeholder.getValue()))
-                .map(Object::toString)
-                .map(value -> tempProperty(placeholder.getValue(), value, placeholder.getEnvironment(), null).escapeOnWindows());
+        return ofNullable(resolver.apply(p.getValue()))
+                .map(value -> tempProperty(p.getValue(), value, p.getEnvironment(), null).escapeOnWindows());
     }
 }
