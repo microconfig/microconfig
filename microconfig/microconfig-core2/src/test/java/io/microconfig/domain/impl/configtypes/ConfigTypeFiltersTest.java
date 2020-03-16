@@ -52,6 +52,7 @@ class ConfigTypeFiltersTest {
     @Test
     void failOnEmptyNames() {
         assertThrows(IllegalArgumentException.class, () -> configTypeWithName().selectTypes(types));
+        assertThrows(IllegalArgumentException.class, () -> configType().selectTypes(types));
     }
 
     @Test
@@ -68,5 +69,4 @@ class ConfigTypeFiltersTest {
         File badFile = new File("application");
         assertThrows(IllegalArgumentException.class, () -> configTypeWithExtensionOf(badFile).selectTypes(types));
     }
-
 }

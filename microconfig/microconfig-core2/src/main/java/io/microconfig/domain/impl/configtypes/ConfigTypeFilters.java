@@ -8,11 +8,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import static io.microconfig.utils.FileUtils.getExtension;
 import static io.microconfig.utils.StreamUtils.filter;
-import static io.microconfig.utils.StreamUtils.forEach;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toSet;
 
@@ -22,12 +20,19 @@ public class ConfigTypeFilters {
     }
 
     public static ConfigTypeFilter configType(ConfigType... types) {
-        return __ -> asList(types);
+        return __ -> {
+            if (types.length == 0) {
+                throwEmptyConfigTypesException();
+            }
+            return asList(types);
+        };
     }
 
     public static ConfigTypeFilter configTypeWithName(String... name) {
         Set<String> names = new HashSet<>(asList(name));
-        if (names.isEmpty()) throw new IllegalArgumentException("No config types provided");
+        if (names.isEmpty()) {
+            throwEmptyConfigTypesException();
+        }
         return configTypes -> {
             validateNames(names, configTypes);
             return filter(configTypes, type -> names.contains(type.getType()));
@@ -52,5 +57,9 @@ public class ConfigTypeFilters {
         if (!unsupportedNames.isEmpty()) {
             throw new IllegalArgumentException("Unsupported config types: " + unsupportedNames + " Configured types: " + supportedNames);
         }
+    }
+
+    private static void throwEmptyConfigTypesException() {
+        throw new IllegalArgumentException("No config types provided");
     }
 }

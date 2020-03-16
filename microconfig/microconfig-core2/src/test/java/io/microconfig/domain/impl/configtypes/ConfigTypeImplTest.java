@@ -7,6 +7,7 @@ import java.util.Set;
 
 import static io.microconfig.domain.impl.configtypes.ConfigTypeImpl.byName;
 import static io.microconfig.domain.impl.configtypes.ConfigTypeImpl.byNameAndExtensions;
+import static io.microconfig.utils.CollectionUtils.setOf;
 import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -30,7 +31,7 @@ class ConfigTypeImplTest {
 
     @Test
     void extensionsShouldStartWithDot() {
-        Set<String> badExtension = singleton("yaml");
-        assertThrows(IllegalArgumentException.class, () -> byNameAndExtensions("app", badExtension, "application"));
+        Set<String> withBadExtension = setOf(".json", "yaml");
+        assertThrows(IllegalArgumentException.class, () -> byNameAndExtensions("app", withBadExtension, "application"));
     }
 }
