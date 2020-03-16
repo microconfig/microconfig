@@ -1,29 +1,29 @@
 package io.microconfig.domain.impl.configtypes;
 
 import io.microconfig.domain.ConfigType;
-import io.microconfig.domain.ConfigTypeRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import static io.microconfig.domain.impl.configtypes.ConfigTypeImpl.byName;
-import static io.microconfig.domain.impl.configtypes.ConfigTypeImpl.byNameAndExtensions;
+import java.util.Set;
+
 import static io.microconfig.utils.CollectionUtils.setOf;
-import static io.microconfig.utils.StreamUtils.forEach;
-import static java.util.stream.Stream.of;
 
 @RequiredArgsConstructor
-public enum StandardConfigType {
-    APPLICATION(byNameAndExtensions("app", setOf(".properties", ".yaml"), "application")),
-    PROCESS(byNameAndExtensions("process", setOf(".process", ".proc"), "process")),
-    DEPLOY(byName("deploy")),
-    HELM(byNameAndExtensions("helm", setOf(".helm"), "values")),
-    ENV(byName("env")),
-    SECRET(byName("secret"));
+public enum StandardConfigType implements ConfigType {
+    APPLICATION("app", setOf(".properties", ".yaml"), "application"),
+    PROCESS("process", setOf(".process", ".proc"), "process"),
+    DEPLOY("deploy", setOf("deploy"), "deploy"),
+    HELM("helm", setOf(".helm"), "values"),
+    ENV("env", setOf("env"), "env"),
+    SECRET("secret", setOf("secret"), "secret");
 
     @Getter
-    private final ConfigType type;
+    private final String type;
 
-    public static ConfigTypeRepository asRepository() {
-        return () -> forEach(of(StandardConfigType.values()), StandardConfigType::getType);
-    }
+    @Getter
+    private final Set<String> sourceExtensions;
+
+    @Getter
+    private final String resultFileName;
+
 }

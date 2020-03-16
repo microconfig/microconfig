@@ -20,14 +20,14 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 
 @RequiredArgsConstructor
-public class DescriptorConfigTypeRepository implements ConfigTypeRepository {
+public class CustomConfigTypeRepository implements ConfigTypeRepository {
     private static final String DESCRIPTOR = "microconfig.yaml";
 
     private final FsReader fsReader;
     private final File descriptorFile;
 
     public static ConfigTypeRepository findDescriptorIn(File rootDir, FsReader fsReader) {
-        return new DescriptorConfigTypeRepository(fsReader, new File(rootDir, DESCRIPTOR));
+        return new CustomConfigTypeRepository(fsReader, new File(rootDir, DESCRIPTOR));
     }
 
     @Override

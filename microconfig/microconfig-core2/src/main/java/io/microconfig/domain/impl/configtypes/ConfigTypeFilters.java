@@ -28,7 +28,6 @@ public class ConfigTypeFilters {
     public static ConfigTypeFilter configType(StandardConfigType... standard) {
         return configTypeWithName(
                 Stream.of(standard)
-                        .map(StandardConfigType::getType)
                         .map(ConfigType::getType)
                         .toArray(String[]::new)
         );
