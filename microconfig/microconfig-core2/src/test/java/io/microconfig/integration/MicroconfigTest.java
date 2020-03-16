@@ -14,6 +14,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class MicroconfigTest {
     private final Microconfig microconfig = searchConfigsIn(classpathFile("repo"));
 
+//    @Test
+//    void testEnvPropAliases() {
+//        doTestAliases("node1", "172.30.162.4");
+//        doTestAliases("node2", "172.30.162.4");
+//        doTestAliases("node3", "172.30.162.5");
+//        doTestAliases("node", "172.30.162.5");
+//    }
+
+//    @Test
+//    void placeholderToAliases() {
+//        Map<String, String> result = build("aliases", "placeholderToAlias").propertiesAsKeyValue();
+//        assertEquals("172.30.162.4 172.30.162.5", result.get("ips"));
+//        assertEquals("v1 v1", result.get("properties"));
+//    }
+
     @Test
     void ip() {
         String value = build("uat", "ip1")
