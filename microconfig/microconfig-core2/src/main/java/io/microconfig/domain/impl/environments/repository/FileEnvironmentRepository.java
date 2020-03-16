@@ -91,12 +91,12 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     private Function<File, EnvironmentDefinition> parseDefinition() {
         return f -> new EnvironmentFile(f)
                 .parseUsing(fsReader)
-                .processInclude(name -> envFileWith(name).map(parseDefinition()).orElseThrow(notFoundException(name)))
+                .processIncludeUsing(definitionRepository())
                 .checkComponentNamesAreUnique();
     }
 
-    private Supplier<Environment> fakeEnvWith(String name) {
-        return () -> new EnvironmentImpl(name, emptyList(), componentFactory);
+    private Function<String, EnvironmentDefinition> definitionRepository() {
+        return name -> envFileWith(name).map(parseDefinition()).orElseThrow(notFoundException(name));
     }
 
     private Predicate<File> hasYamlExtension() {
@@ -109,5 +109,9 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
 
     private Supplier<EnvironmentException> notFoundException(String name) {
         return () -> new EnvironmentException("Can't find env '" + name + "'");
+    }
+
+    private Supplier<Environment> fakeEnvWith(String name) {
+        return () -> new EnvironmentImpl(name, emptyList(), componentFactory);
     }
 }

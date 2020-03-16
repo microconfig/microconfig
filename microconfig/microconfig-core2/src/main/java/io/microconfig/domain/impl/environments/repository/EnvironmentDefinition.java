@@ -29,8 +29,8 @@ public class EnvironmentDefinition {
 
     private final File source;
 
-    public EnvironmentDefinition processInclude( Function<String, EnvironmentDefinition> environmentProvider) {
-        return envInclude.isEmpty() ? this : envInclude.includeTo(this, environmentProvider);
+    public EnvironmentDefinition processIncludeUsing(Function<String, EnvironmentDefinition> environmentRepository) {
+        return envInclude.isEmpty() ? this : envInclude.includeTo(this, environmentRepository);
     }
 
     public EnvironmentDefinition checkComponentNamesAreUnique() {
