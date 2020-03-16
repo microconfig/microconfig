@@ -27,13 +27,13 @@ public class EnvironmentFile {
 
     public EnvironmentDefinition parseUsing(FsReader fsReader) {
         try {
-            return doParse(getName(file), fsReader.readFully(file));
+            return parse(fsReader.readFully(file), getName(file));
         } catch (RuntimeException e) {
             throw new EnvironmentException("Can't parse env file '" + file + "'", e);
         }
     }
 
-    private EnvironmentDefinition doParse(String name, String content) {
+    private EnvironmentDefinition parse(String content, String name) {
         Map<String, Object> keyValue = new Yaml().load(content);
 
         EnvInclude envInclude = parseInclude(keyValue);

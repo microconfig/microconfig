@@ -24,7 +24,8 @@ public class EnvInclude {
     }
 
     public EnvironmentDefinition includeTo(EnvironmentDefinition destinationEnv, Function<String, EnvironmentDefinition> repository) {
-        val baseGroupByName = findBaseGroupsUsing(repository, destinationEnv);
+        EnvironmentDefinition baseEnv = repository.apply(baseEnvironment);
+        val baseGroupByName = forEach(notExcludedGroupsFrom(baseEnv), assignIpOf(destinationEnv), resultsToMap());
         forEach(destinationEnv.getGroups(), overrideBaseGroupIn(baseGroupByName).andThen(putOverriddenGroupTo(baseGroupByName)));
         return assignGroupsTo(destinationEnv, baseGroupByName.values());
     }
