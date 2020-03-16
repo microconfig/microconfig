@@ -4,9 +4,11 @@ import io.microconfig.domain.*;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static io.microconfig.utils.StreamUtils.*;
+import static java.util.function.Function.identity;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
@@ -30,6 +32,11 @@ public class CompositeComponentPropertiesImpl implements CompositeComponentPrope
     @Override
     public List<Property> getProperties() {
         return flatMapEach(results, ComponentProperties::getProperties);
+    }
+
+    @Override
+    public Map<String, Property> getPropertiesAsMap() {
+        return getProperties().stream().collect(toLinkedMap(Property::getKey, identity()));
     }
 
     @Override

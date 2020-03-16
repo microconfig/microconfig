@@ -5,10 +5,11 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-import static io.microconfig.domain.impl.configtypes.ConfigTypeImpl.byNameAndExtensions;
 import static io.microconfig.domain.impl.configtypes.ConfigTypeImpl.byName;
+import static io.microconfig.domain.impl.configtypes.ConfigTypeImpl.byNameAndExtensions;
 import static java.util.Collections.singleton;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ConfigTypeImplTest {
     @Test

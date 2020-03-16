@@ -79,7 +79,7 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     private List<File> environmentFiles() {
         try (Stream<Path> stream = walk(envDir.toPath())) {
             return stream.map(Path::toFile)
-                    .filter(hasYamlExtension())
+                    .filter(hasSupportedExtension())
                     .collect(toList());
         }
     }
@@ -99,8 +99,11 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
         return name -> envFileWith(name).map(parseDefinition()).orElseThrow(notFoundException(name));
     }
 
-    private Predicate<File> hasYamlExtension() {
-        return f -> f.getName().endsWith(".yaml");
+    private Predicate<File> hasSupportedExtension() {
+        return f -> {
+            String name = f.getName();
+            return name.endsWith(".yaml") || name.endsWith(".json");
+        };
     }
 
     private Predicate<File> withFileName(String envName) {

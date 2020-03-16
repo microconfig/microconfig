@@ -105,4 +105,9 @@ public class EnvironmentImpl implements Environment {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Can't find group by " + description.get() + " in env [" + name + "]"));
     }
+
+    @Override
+    public String toString() {
+        return name + ": " + componentGroups;
+    }
 }

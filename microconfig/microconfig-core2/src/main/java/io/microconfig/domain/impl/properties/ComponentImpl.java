@@ -31,4 +31,9 @@ public class ComponentImpl implements Component {
         List<Property> properties = propertiesRepository.getProperties(type, environment, configType);
         return new ComponentPropertiesImpl(name, environment, configType, properties);
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

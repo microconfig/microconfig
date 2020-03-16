@@ -23,8 +23,8 @@ allprojects {
     group = 'io.microconfig'
     version = rootProject.version
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = 11
+    targetCompatibility = 11
 
     repositories {        
 //        if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
@@ -43,6 +43,7 @@ allprojects {
 
     dependencies {
         compileOnly lib.lombok
+        testCompileOnly lib.lombok
         annotationProcessor lib.lombok
 
         testImplementation lib.junit, lib.mokito

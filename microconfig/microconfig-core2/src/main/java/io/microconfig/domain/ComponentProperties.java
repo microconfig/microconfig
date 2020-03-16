@@ -1,6 +1,7 @@
 package io.microconfig.domain;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface ComponentProperties {
@@ -9,6 +10,8 @@ public interface ComponentProperties {
     ComponentProperties resolveBy(StatementResolver resolver);
 
     List<Property> getProperties();
+
+    Map<String, Property> getPropertiesAsMap();
 
     Optional<Property> getPropertyWithKey(String key);
 

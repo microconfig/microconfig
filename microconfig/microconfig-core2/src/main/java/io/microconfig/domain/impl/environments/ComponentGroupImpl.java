@@ -30,4 +30,9 @@ public class ComponentGroupImpl implements ComponentGroup {
                 .filter(c -> c.getName().equals(componentName))
                 .findFirst();
     }
+
+    @Override
+    public String toString() {
+        return name + ": " + components;
+    }
 }

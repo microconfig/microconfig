@@ -27,6 +27,6 @@ class PlaceholderTest {
     }
 
     private File rootDir() {
-        return classpathFile("test-props");
+        return classpathFile("repo");
     }
 }

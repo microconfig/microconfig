@@ -30,4 +30,9 @@ public class ComponentsImpl implements Components {
                         .collect(toList())
         );
     }
+
+    @Override
+    public String toString() {
+        return components.toString();
+    }
 }

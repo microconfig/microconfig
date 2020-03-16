@@ -6,9 +6,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.With;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static io.microconfig.utils.StreamUtils.forEach;
+import static io.microconfig.utils.StreamUtils.toLinkedMap;
+import static java.util.function.Function.identity;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor
@@ -28,6 +31,11 @@ public class ComponentPropertiesImpl implements ComponentProperties {
     @Override
     public ComponentProperties resolveBy(StatementResolver resolver) {
         return withProperties(forEach(properties, p -> p.resolveBy(resolver)));
+    }
+
+    @Override
+    public Map<String, Property> getPropertiesAsMap() {
+        return properties.stream().collect(toLinkedMap(Property::getKey, identity()));
     }
 
     @Override

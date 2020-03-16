@@ -90,9 +90,4 @@ public class ComponentGroup {
     private ComponentGroup appendComponents(List<Component> newAppendedComponents) {
         return new ComponentGroup(name, ip, join(this.components, newAppendedComponents), excludedComponents, emptyList());
     }
-
-    @Override
-    public String toString() {
-        return name;
-    }
 }
