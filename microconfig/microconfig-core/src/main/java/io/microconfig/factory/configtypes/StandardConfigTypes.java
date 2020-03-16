@@ -5,8 +5,6 @@ import io.microconfig.factory.ConfigsTypeProvider;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.io.File;
-
 import static io.microconfig.factory.configtypes.ConfigTypeImpl.byName;
 import static io.microconfig.factory.configtypes.ConfigTypeImpl.byNameAndExtensions;
 import static io.microconfig.utils.CollectionUtils.setOf;
@@ -27,7 +25,7 @@ public enum StandardConfigTypes {
     private final ConfigType type;
 
     public static ConfigsTypeProvider asProvider() {
-        return (File ignore) -> of(StandardConfigTypes.values())
+        return __ -> of(StandardConfigTypes.values())
                 .map(StandardConfigTypes::getType)
                 .collect(toList());
     }
