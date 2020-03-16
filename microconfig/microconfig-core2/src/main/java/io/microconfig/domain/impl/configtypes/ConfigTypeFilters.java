@@ -23,8 +23,8 @@ public class ConfigTypeFilters {
         return __ -> asList(types);
     }
 
-    public static ConfigTypeFilter configTypeWithName(String... types) {
-        Set<String> names = new HashSet<>(asList(types));
+    public static ConfigTypeFilter configTypeWithName(String... name) {
+        Set<String> names = new HashSet<>(asList(name));
         return configTypes -> {
             validateNames(names, configTypes);
             return filter(configTypes, type -> names.contains(type.getType()));
@@ -45,12 +45,9 @@ public class ConfigTypeFilters {
 
     private static void validateNames(Set<String> names, List<ConfigType> supportedTypes) {
         Set<String> supportedNames = supportedTypes.stream().map(ConfigType::getType).collect(toSet());
-        names.stream()
-                .filter(n -> !supportedNames.contains(n))
-                .findAny()
-                .ifPresent(n -> {
-                    throw new IllegalArgumentException("Unsupported config type '" + n + "'."
-                            + " Configured types: " + supportedNames);
-                });
+        List<String> unsupportedNames = filter(names, n -> !supportedNames.contains(n));
+        if (!unsupportedNames.isEmpty()) {
+            throw new IllegalArgumentException("Unsupported config types: " + unsupportedNames + " Configured types: " + supportedNames);
+        }
     }
 }

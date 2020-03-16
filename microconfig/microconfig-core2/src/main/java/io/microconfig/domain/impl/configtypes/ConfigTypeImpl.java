@@ -3,6 +3,7 @@ package io.microconfig.domain.impl.configtypes;
 import io.microconfig.domain.ConfigType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 import java.util.Set;
@@ -11,6 +12,7 @@ import static io.microconfig.utils.StreamUtils.filter;
 import static java.util.Collections.singleton;
 
 @Getter
+@ToString
 @RequiredArgsConstructor
 public class ConfigTypeImpl implements ConfigType {
     private final String type;
