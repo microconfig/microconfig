@@ -31,7 +31,7 @@ public class ConfigTypeFilters {
         };
     }
 
-    public static ConfigTypeFilter configTypeWithExtension(File file) {
+    public static ConfigTypeFilter configTypeWithExtensionOf(File file) {
         String ext = getExtension(file);
         if (ext.isEmpty()) {
             throw new IllegalArgumentException("File " + file + " doesn't have an extension. Unable to resolve component type.");

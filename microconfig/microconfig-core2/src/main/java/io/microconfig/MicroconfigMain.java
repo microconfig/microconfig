@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.List;
 
 import static io.microconfig.Microconfig.searchConfigsIn;
-import static io.microconfig.domain.impl.configtypes.ConfigTypeFilters.eachConfigType;
+import static io.microconfig.domain.impl.configtypes.ConfigTypeFilters.configTypeWithExtensionOf;
 import static io.microconfig.domain.impl.properties.PropertySerializers.toFileIn;
 
 /**
@@ -29,7 +29,7 @@ public class MicroconfigMain {
 
         val microconfig = searchConfigsIn(rootDir);
         microconfig.inEnvironment(env).findComponentsFrom(groups, services)
-                .getPropertiesFor(eachConfigType())
+                .getPropertiesFor(configTypeWithExtensionOf(new File("a.yaml")))
                 .resolveBy(microconfig.resolver())
                 .save(toFileIn(destinationDir));
     }

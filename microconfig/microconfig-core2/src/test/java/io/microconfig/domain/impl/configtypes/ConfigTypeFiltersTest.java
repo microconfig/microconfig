@@ -43,14 +43,14 @@ class ConfigTypeFiltersTest {
     @Test
     void selectByFileExtension() {
         File application = new File("application.yaml");
-        List<ConfigType> selected = configTypeWithExtension(application).selectTypes(types);
+        List<ConfigType> selected = configTypeWithExtensionOf(application).selectTypes(types);
         assertEquals(singletonList(APPLICATION), selected);
     }
 
     @Test
     void failOnFileWithoutExtension() {
         File badFile = new File("application");
-        assertThrows(IllegalArgumentException.class, () -> configTypeWithExtension(badFile).selectTypes(types));
+        assertThrows(IllegalArgumentException.class, () -> configTypeWithExtensionOf(badFile).selectTypes(types));
     }
 
 }
