@@ -39,6 +39,11 @@ class ConfigTypeFiltersTest {
                 asList(APPLICATION, HELM),
                 configTypeWithName("app", "helm").selectTypes(types)
         );
+
+        assertEquals(
+                asList(APPLICATION),
+                configTypeWithName("app", "BAD").selectTypes(types)
+        );
     }
 
     @Test
