@@ -2,12 +2,11 @@ package io.microconfig.core.properties.resolver.expression;
 
 import io.microconfig.core.properties.resolver.PropertyResolveException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static io.microconfig.core.properties.resolver.expression.ExpressionEvaluator.withPredefinedFunctionsFrom;
 import static java.util.regex.Pattern.compile;
 
 /**
@@ -20,7 +19,7 @@ import static java.util.regex.Pattern.compile;
 @RequiredArgsConstructor
 public class Expression {
     private static final Pattern PATTERN = compile("#\\{(?<value>[^{]+?)}");
-    private static final ExpressionParser parser = new SpelExpressionParser();
+    private static final ExpressionEvaluator evaluator = withPredefinedFunctionsFrom(ExpressionFunctions.class);
 
     private final String value;
 
@@ -38,7 +37,7 @@ public class Expression {
     }
 
     public String evaluate() {
-        return parser.parseExpression(value).getValue(String.class);
+        return evaluator.evaluate(value);
     }
 
     @Override
