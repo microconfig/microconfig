@@ -64,6 +64,14 @@ public class MicroconfigTest {
         );
     }
 
+    @Test
+    void placeholderToSpel() {
+        assertEquals(
+                splitKeyValue("test.mq.address=tcp://:6872", "test.mq.address2=tcp://:68720"),
+                buildComponent("pts", "dev").propertiesAsKeyValue()
+        );
+    }
+
     private void testAliases(String component, String... keyValue) {
         assertEquals(
                 splitKeyValue(keyValue),
