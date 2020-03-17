@@ -1,9 +1,8 @@
 package io.microconfig.domain.impl.environments.repository;
 
+import io.microconfig.domain.ComponentFactory;
 import io.microconfig.domain.ComponentGroup;
 import io.microconfig.domain.impl.environments.ComponentGroupImpl;
-import io.microconfig.domain.impl.properties.ComponentFactory;
-import io.microconfig.domain.impl.properties.ComponentsImpl;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -65,7 +64,7 @@ public class ComponentGroupDefinition {
         return new ComponentGroupImpl(
                 name,
                 ip,
-                new ComponentsImpl(
+                componentFactory.toComponents(
                         forEach(components, c -> componentFactory.createComponent(c.getName(), c.getType(), environment))
                 )
         );

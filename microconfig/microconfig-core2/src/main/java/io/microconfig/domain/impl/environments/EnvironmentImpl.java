@@ -1,11 +1,6 @@
 package io.microconfig.domain.impl.environments;
 
-import io.microconfig.domain.Component;
-import io.microconfig.domain.ComponentGroup;
-import io.microconfig.domain.Components;
-import io.microconfig.domain.Environment;
-import io.microconfig.domain.impl.properties.ComponentFactory;
-import io.microconfig.domain.impl.properties.ComponentsImpl;
+import io.microconfig.domain.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -47,11 +42,12 @@ public class EnvironmentImpl implements Environment {
 
     @Override
     public Components getAllComponents() {
-        return new ComponentsImpl(componentGroups.stream()
-                .map(ComponentGroup::getComponents)
-                .map(Components::asList)
-                .flatMap(List::stream)
-                .collect(toList())
+        return componentFactory.toComponents(
+                componentGroups.stream()
+                        .map(ComponentGroup::getComponents)
+                        .map(Components::asList)
+                        .flatMap(List::stream)
+                        .collect(toList())
         );
     }
 
@@ -92,7 +88,7 @@ public class EnvironmentImpl implements Environment {
         };
 
         List<Component> componentFromGroups = componentsFromGroups.get();
-        return new ComponentsImpl(filterByComponents.apply(componentFromGroups));
+        return componentFactory.toComponents(filterByComponents.apply(componentFromGroups));
     }
 
     private String notFoundComponentMessage(String component) {
