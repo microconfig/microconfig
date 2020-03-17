@@ -14,7 +14,7 @@ public class ExpressionEvaluator {
     private final ExpressionParser parser;
     private final EvaluationContext context;
 
-    public static ExpressionEvaluator withPredefinedFunctionsFrom(Class<?> functionClass) {
+    public static ExpressionEvaluator withFunctionsFrom(Class<?> functionClass) {
         EvaluationContext context = new StandardEvaluationContext();
         of(functionClass.getMethods())
                 .filter(m -> !m.isSynthetic())

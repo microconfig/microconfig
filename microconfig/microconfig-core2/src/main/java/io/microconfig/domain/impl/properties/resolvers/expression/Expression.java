@@ -6,11 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.expression.EvaluationException;
 import org.springframework.expression.ParseException;
 
-import static io.microconfig.domain.impl.properties.resolvers.expression.ExpressionEvaluator.withPredefinedFunctionsFrom;
+import static io.microconfig.domain.impl.properties.resolvers.expression.ExpressionEvaluator.withFunctionsFrom;
 
 @RequiredArgsConstructor
 public class Expression implements Statement {
-    private static final ExpressionEvaluator evaluator = withPredefinedFunctionsFrom(PredefinedFunctions.class);
+    private static final ExpressionEvaluator evaluator = withFunctionsFrom(PredefinedFunctions.class);
 
     private final String value;
     @Getter
