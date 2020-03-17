@@ -4,13 +4,13 @@ import io.microconfig.domain.StatementResolver.Statement;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.expression.EvaluationException;
-import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.ParseException;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
+
+import static io.microconfig.domain.impl.properties.resolvers.expression.ExpressionEvaluator.withPredefinedFunctionsFrom;
 
 @RequiredArgsConstructor
 public class Expression implements Statement {
-    private static final ExpressionParser parser = new SpelExpressionParser();
+    private static final ExpressionEvaluator evaluator = withPredefinedFunctionsFrom(ExpressionFunctions.class);
 
     private final String value;
     @Getter
@@ -21,7 +21,7 @@ public class Expression implements Statement {
     @Override
     public String resolve(String _1, String _2) {
         try {
-            return parser.parseExpression(value).getValue(String.class);
+            return evaluator.evaluate(value);
         } catch (EvaluationException | ParseException e) {
             throw new RuntimeException(e);//todo
         }

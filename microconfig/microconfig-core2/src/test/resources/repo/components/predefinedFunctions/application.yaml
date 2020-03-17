@@ -1,0 +1,3 @@
+xmx: #{#findGroup('Xmx(?<xmx>.+)', '${predefinedFunctions@xmxLine}').substring(2)}
+notFound: #{#findGroup('Xmx2(?<xmx>.+)', '${predefinedFunctions@xmxLine}')}
+xmxLine: Xmx100m

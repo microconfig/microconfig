@@ -69,6 +69,6 @@ public class StreamUtils {
     public static Map<String, String> splitKeyValue(String... keyValue) {
         return Stream.of(keyValue)
                 .map(s -> s.split("="))
-                .collect(toLinkedMap(s -> s[0], s -> s[1]));
+                .collect(toLinkedMap(s -> s[0], s -> s.length == 1 ? "" : s[1]));
     }
 }

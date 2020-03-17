@@ -56,6 +56,14 @@ public class MicroconfigTest {
         );
     }
 
+    @Test
+    void testPredefinedFunction() {
+        assertEquals(
+                splitKeyValue("notFound=", "xmx=0m", "xmxLine=Xmx100m"),
+                buildComponent("predefinedFunctions", "uat").propertiesAsKeyValue()
+        );
+    }
+
     private void testAliases(String component, String... keyValue) {
         assertEquals(
                 splitKeyValue(keyValue),
