@@ -20,8 +20,7 @@ import static org.mockito.Mockito.when;
 class ExpressionResolverTest {
     @Mock
     PropertyResolver placeholderResolver;
-    @Mock
-    EnvComponent context;
+    EnvComponent context = new EnvComponent(Component.byType("someC"), "someE");
 
     @Test
     void testResolves() {
@@ -30,6 +29,15 @@ class ExpressionResolverTest {
         ExpressionResolver resolver = new ExpressionResolver(placeholderResolver);
         String result = resolver.resolve(spel, context);
         assertEquals("27", result);
+    }
+
+    @Test
+    void testPredefinedFunctions() {
+        Property spel = prop("#{#findGroup('Xmx(?<xmx>.+)', 'Xmx100m')}");
+        when(placeholderResolver.resolve(spel, context)).thenReturn(spel.getValue());
+        ExpressionResolver resolver = new ExpressionResolver(placeholderResolver);
+        String result = resolver.resolve(spel, context);
+        assertEquals("100m", result);
     }
 
     @Test

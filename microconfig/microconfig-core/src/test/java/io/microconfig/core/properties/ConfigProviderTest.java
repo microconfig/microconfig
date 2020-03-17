@@ -242,6 +242,17 @@ class ConfigProviderTest {
         }, asStringMap(provider.getProperties(byType("appType"), "dev")));
     }
 
+    @Test
+    void testPredefinedFunction() {
+        assertEquals(new HashMap<String, String>() {
+            {
+                put("notFound", "");
+                put("xmx", "0m");
+                put("xmxLine", "Xmx100m");
+            }
+        }, asStringMap(provider.getProperties(byType("predefinedFunctions"), "dev")));
+    }
+
     private void doTestAliases(String componentName, String ip) {
         Component component = byNameAndType(componentName, "node");
         assertEquals(ip, resolveValue("aliases", component, "ip"));
