@@ -10,7 +10,7 @@ import static io.microconfig.domain.impl.properties.resolvers.expression.Express
 
 @RequiredArgsConstructor
 public class Expression implements Statement {
-    private static final ExpressionEvaluator evaluator = withPredefinedFunctionsFrom(ExpressionFunctions.class);
+    private static final ExpressionEvaluator evaluator = withPredefinedFunctionsFrom(PredefinedFunctions.class);
 
     private final String value;
     @Getter
