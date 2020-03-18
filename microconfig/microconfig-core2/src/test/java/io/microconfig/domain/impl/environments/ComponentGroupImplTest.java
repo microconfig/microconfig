@@ -35,6 +35,7 @@ class ComponentGroupImplTest {
 
         ComponentGroup group = new ComponentGroupImpl("group", null, components);
         assertEquals(of(two), group.findComponentWithName("two"));
+        assertEquals(empty(), group.findComponentWithName("missing"));
     }
 
     @Test
