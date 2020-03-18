@@ -8,12 +8,13 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class ComponentGroupImplTest {
-
     Component one = mock(Component.class);
     Component two = mock(Component.class);
     Components components = mock(Components.class);
@@ -21,11 +22,11 @@ class ComponentGroupImplTest {
     @Test
     void ipOptionalWrapping() {
         ComponentGroup nullableIp = new ComponentGroupImpl("null", null, components);
-        assertEquals(Optional.empty(), nullableIp.getIp());
+        assertEquals(empty(), nullableIp.getIp());
 
         String ip = "127.0.0.1";
         ComponentGroup ipGroup = new ComponentGroupImpl("group", ip, components);
-        assertEquals(Optional.of(ip), ipGroup.getIp());
+        assertEquals(of(ip), ipGroup.getIp());
     }
 
     @Test
@@ -34,19 +35,17 @@ class ComponentGroupImplTest {
         when(two.getName()).thenReturn("two");
         when(components.asList()).thenReturn(asList(one, two));
 
-        ComponentGroupImpl group = new ComponentGroupImpl("group", null, components);
+        ComponentGroup group = new ComponentGroupImpl("group", null, components);
 
         Optional<Component> result = group.findComponentWithName("two");
-        assertEquals(Optional.of(two), result);
+        assertEquals(of(two), result);
     }
 
     @Test
     void string() {
-        when(components.toString()).thenReturn("[]");
-        ComponentGroupImpl group = new ComponentGroupImpl("groupName", null, components);
+        when(components.toString()).thenReturn("[]]");
+        ComponentGroup group = new ComponentGroupImpl("groupName", null, components);
 
-        String expected = "groupName: []";
-        assertEquals(expected, group.toString());
+        assertEquals("groupName: []", group.toString());
     }
-
 }
