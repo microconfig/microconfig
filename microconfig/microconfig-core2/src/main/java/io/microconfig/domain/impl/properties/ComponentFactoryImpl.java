@@ -7,7 +7,6 @@ import io.microconfig.domain.ConfigTypeRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.stream.Collector;
 
 @RequiredArgsConstructor
 public class ComponentFactoryImpl implements ComponentFactory {
