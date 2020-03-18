@@ -91,15 +91,15 @@ public class EnvironmentImpl implements Environment {
         return componentFactory.toComponents(filterByComponents.apply(componentFromGroups));
     }
 
-    private String notFoundComponentMessage(String component) {
-        return "Component '" + component + "' is not configured for env '" + name + "'";
-    }
-
     private ComponentGroup findGroup(Predicate<ComponentGroup> groupPredicate, Supplier<String> description) {
         return componentGroups.stream()
                 .filter(groupPredicate)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Can't find group by filter: '" + description.get() + "' in env '" + name + "'"));
+    }
+
+    private String notFoundComponentMessage(String component) {
+        return "Component '" + component + "' is not configured for env '" + name + "'";
     }
 
     @Override
