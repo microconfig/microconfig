@@ -39,7 +39,7 @@ class ComponentGroupImplTest {
 
     @Test
     void string() {
-        when(components.toString()).thenReturn("[]]");
+        when(components.toString()).thenReturn("[]");
         ComponentGroup group = new ComponentGroupImpl("groupName", null, components);
 
         assertEquals("groupName: []", group.toString());
