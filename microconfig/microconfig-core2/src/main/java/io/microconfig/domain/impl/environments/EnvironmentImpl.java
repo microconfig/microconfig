@@ -5,16 +5,12 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 
-import static io.microconfig.utils.StreamUtils.*;
-import static java.util.Objects.requireNonNull;
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
+import static io.microconfig.domain.impl.properties.ComponentsCollector.toComponents;
+import static io.microconfig.utils.StreamUtils.filter;
+import static io.microconfig.utils.StreamUtils.firstFirstResult;
 
 @RequiredArgsConstructor
 public class EnvironmentImpl implements Environment {
@@ -42,13 +38,11 @@ public class EnvironmentImpl implements Environment {
 
     @Override
     public Components getAllComponents() {
-        return componentFactory.toComponents(
-                componentGroups.stream()
-                        .map(ComponentGroup::getComponents)
-                        .map(Components::asList)
-                        .flatMap(List::stream)
-                        .collect(toList())
-        );
+        return componentGroups.stream()
+                .map(ComponentGroup::getComponents)
+                .map(Components::asList)
+                .flatMap(List::stream)
+                .collect(toComponents());
     }
 
     @Override
@@ -70,28 +64,15 @@ public class EnvironmentImpl implements Environment {
     }
 
     @Override
-    public Components findComponentsFrom(List<String> groups, List<String> components) {
-        Supplier<List<Component>> componentsFromGroups = () -> {
-            if (groups.isEmpty()) return getAllComponents().asList();
+    public Components inGroups(List<String> groups) {
+        if (groups.isEmpty()) return getAllComponents();
 
-            return groups.stream()
-                    .map(this::findGroupWithName)
-                    .map(ComponentGroup::getComponents)
-                    .map(Components::asList)
-                    .flatMap(List::stream)
-                    .collect(toList());
-        };
-
-        UnaryOperator<List<Component>> filterByComponents = componentFromGroups -> {
-            if (components.isEmpty()) return componentFromGroups;
-
-            Map<String, Component> componentByName = componentFromGroups.stream()
-                    .collect(toMap(Component::getName, identity()));
-            return forEach(components, name -> requireNonNull(componentByName.get(name), () -> notFoundComponentMessage(name)));
-        };
-
-        List<Component> componentFromGroups = componentsFromGroups.get();
-        return componentFactory.toComponents(filterByComponents.apply(componentFromGroups));
+        return groups.stream()
+                .map(this::findGroupWithName)
+                .map(ComponentGroup::getComponents)
+                .map(Components::asList)
+                .flatMap(List::stream)
+                .collect(toComponents());
     }
 
     private ComponentGroup findGroup(Predicate<ComponentGroup> groupPredicate, Supplier<String> description) {

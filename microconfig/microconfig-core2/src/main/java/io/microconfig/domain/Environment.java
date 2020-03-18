@@ -13,7 +13,7 @@ public interface Environment {
 
     Component findComponentWithName(String componentName, boolean mustBeDeclaredInEnvDescriptor);
 
-    Components findComponentsFrom(List<String> groups, List<String> components);
+    Components inGroups(List<String> groups);
 
     Components getAllComponents();
 }
