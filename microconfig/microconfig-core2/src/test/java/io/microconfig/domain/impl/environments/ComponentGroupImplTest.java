@@ -5,8 +5,6 @@ import io.microconfig.domain.ComponentGroup;
 import io.microconfig.domain.Components;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
 import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -36,9 +34,7 @@ class ComponentGroupImplTest {
         when(components.asList()).thenReturn(asList(one, two));
 
         ComponentGroup group = new ComponentGroupImpl("group", null, components);
-
-        Optional<Component> result = group.findComponentWithName("two");
-        assertEquals(of(two), result);
+        assertEquals(of(two), group.findComponentWithName("two"));
     }
 
     @Test
