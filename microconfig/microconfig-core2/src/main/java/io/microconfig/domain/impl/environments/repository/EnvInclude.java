@@ -13,7 +13,7 @@ import static java.util.Collections.emptySet;
 import static java.util.function.Function.identity;
 
 @RequiredArgsConstructor
-public class EnvInclude {
+class EnvInclude {
     private static final EnvInclude empty = new EnvInclude("", emptySet());
 
     private final String baseEnvironment;

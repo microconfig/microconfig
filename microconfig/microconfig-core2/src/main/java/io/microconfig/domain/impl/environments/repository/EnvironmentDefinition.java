@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.*;
 
 @With
 @RequiredArgsConstructor
-public class EnvironmentDefinition {
+class EnvironmentDefinition {
     private final String name;
     @Getter
     private final String ip;

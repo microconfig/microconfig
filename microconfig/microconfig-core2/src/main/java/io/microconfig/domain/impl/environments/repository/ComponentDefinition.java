@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @EqualsAndHashCode
 @RequiredArgsConstructor
-public class ComponentDefinition {
+class ComponentDefinition {
     private final String name;
     private final String type;
 

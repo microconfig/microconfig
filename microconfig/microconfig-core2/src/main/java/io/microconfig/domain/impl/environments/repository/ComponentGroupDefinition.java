@@ -16,7 +16,7 @@ import static java.util.Collections.emptyList;
 
 @With
 @RequiredArgsConstructor
-public class ComponentGroupDefinition {
+class ComponentGroupDefinition {
     @Getter
     private final String name;
     @Getter

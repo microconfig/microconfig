@@ -14,7 +14,7 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
-public class EnvironmentFile {
+class EnvironmentFile {
     private static final String IP = "ip";
     private static final String PORT_OFFSET = "portOffset";
     private static final String INCLUDE = "include";
