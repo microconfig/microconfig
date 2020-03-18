@@ -4,6 +4,7 @@ import io.microconfig.domain.Component;
 import io.microconfig.domain.Components;
 import io.microconfig.domain.CompositeComponentProperties;
 import io.microconfig.domain.ConfigTypeFilter;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 @RequiredArgsConstructor
+@EqualsAndHashCode
 public class ComponentsImpl implements Components {
     private final List<Component> components;
 

@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
+import static io.microconfig.domain.impl.properties.ComponentsCollector.toComponents;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.of;
@@ -63,12 +65,8 @@ class EnvironmentImplTest {
 
     @Test
     void getAllComponents() {
-        List<Component> allComponents = asList(one, two, three);
-
-        Components expected = mock(Components.class);
-        when(factory.toComponents(allComponents)).thenReturn(expected);
-
-        assertSame(expected, env.getAllComponents());
+        Components expected = Stream.of(one, two, three).collect(toComponents());
+        assertEquals(expected, env.getAllComponents());
     }
 
     @Test
