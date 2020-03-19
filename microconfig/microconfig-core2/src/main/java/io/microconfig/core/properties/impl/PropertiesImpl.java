@@ -14,20 +14,20 @@ import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
 public class PropertiesImpl implements Properties {
-    private final List<ComponentProperties> properties;
+    private final List<TypedProperties> properties;
 
-    public static Properties composite(List<ComponentProperties> properties) {
+    public static Properties composite(List<TypedProperties> properties) {
         return new PropertiesImpl(properties);
     }
 
     @Override
-    public List<ComponentProperties> asList() {
+    public List<TypedProperties> asList() {
         return properties;
     }
 
     @Override
     public Properties withoutTempValues() {
-        return forEachComponent(ComponentProperties::withoutTempValues);
+        return forEachComponent(TypedProperties::withoutTempValues);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class PropertiesImpl implements Properties {
 
     @Override
     public List<Property> getProperties() {
-        return flatMapEach(properties, ComponentProperties::getProperties);
+        return flatMapEach(properties, TypedProperties::getProperties);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class PropertiesImpl implements Properties {
         return forEach(properties, p -> p.save(serializer));
     }
 
-    private Properties forEachComponent(UnaryOperator<ComponentProperties> applyFunction) {
+    private Properties forEachComponent(UnaryOperator<TypedProperties> applyFunction) {
         return composite(forEach(properties, applyFunction));
     }
 }

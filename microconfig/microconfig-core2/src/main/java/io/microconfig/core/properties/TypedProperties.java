@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public interface ComponentProperties {
+public interface TypedProperties {
     String getComponent();
 
     String getConfigType();
 
-    ComponentProperties resolveBy(Resolver resolver);
+    TypedProperties resolveBy(Resolver resolver);
 
-    ComponentProperties withoutTempValues();
+    TypedProperties withoutTempValues();
 
     List<Property> getProperties();
 

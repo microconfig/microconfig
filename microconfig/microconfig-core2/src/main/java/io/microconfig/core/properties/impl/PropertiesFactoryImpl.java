@@ -1,10 +1,10 @@
 package io.microconfig.core.properties.impl;
 
 import io.microconfig.core.configtypes.ConfigType;
-import io.microconfig.core.properties.ComponentProperties;
 import io.microconfig.core.properties.Properties;
 import io.microconfig.core.properties.PropertiesFactory;
 import io.microconfig.core.properties.Property;
+import io.microconfig.core.properties.TypedProperties;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -26,10 +26,10 @@ public class PropertiesFactoryImpl implements PropertiesFactory {
         );
     }
 
-    private Function<ConfigType, ComponentProperties> readConfigsFor(String component, String environment) {
+    private Function<ConfigType, TypedProperties> readConfigsFor(String component, String environment) {
         return configType -> {
             List<Property> properties = propertiesRepository.getProperties(component, environment, configType);
-            return new ComponentPropertiesImpl(component, environment, configType, properties);
+            return new TypedPropertiesImpl(component, environment, configType, properties);
         };
     }
 }

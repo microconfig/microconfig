@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface Properties {
-    List<ComponentProperties> asList();
+    List<TypedProperties> asList();
 
     Properties resolveBy(Resolver resolver);
 
