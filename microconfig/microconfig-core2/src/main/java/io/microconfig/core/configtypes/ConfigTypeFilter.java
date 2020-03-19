@@ -2,6 +2,6 @@ package io.microconfig.core.configtypes;
 
 import java.util.List;
 
-public interface ConfigTypesFilter {
+public interface ConfigTypeFilter {
     List<ConfigType> selectTypes(List<ConfigType> supportedTypes);
 }

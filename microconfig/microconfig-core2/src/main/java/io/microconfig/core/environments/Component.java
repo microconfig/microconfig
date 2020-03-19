@@ -1,6 +1,6 @@
 package io.microconfig.core.environments;
 
-import io.microconfig.core.configtypes.ConfigTypesFilter;
+import io.microconfig.core.configtypes.ConfigTypeFilter;
 import io.microconfig.core.properties.CompositeProperties;
 
 public interface Component {
@@ -10,5 +10,5 @@ public interface Component {
 
     String getEnvironment();
 
-    CompositeProperties getPropertiesFor(ConfigTypesFilter filter);
+    CompositeProperties getPropertiesFor(ConfigTypeFilter filter);
 }

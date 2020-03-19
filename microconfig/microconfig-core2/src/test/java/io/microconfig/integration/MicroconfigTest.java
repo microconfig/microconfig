@@ -6,7 +6,7 @@ import io.microconfig.core.properties.Property;
 import org.junit.jupiter.api.Test;
 
 import static io.microconfig.Microconfig.searchConfigsIn;
-import static io.microconfig.core.configtypes.impl.ConfigTypesFilters.eachConfigType;
+import static io.microconfig.core.configtypes.impl.ConfigTypeFilters.eachConfigType;
 import static io.microconfig.testutils.ClasspathUtils.classpathFile;
 import static io.microconfig.utils.StreamUtils.splitKeyValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;

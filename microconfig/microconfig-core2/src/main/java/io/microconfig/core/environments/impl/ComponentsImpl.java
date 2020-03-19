@@ -1,6 +1,6 @@
 package io.microconfig.core.environments.impl;
 
-import io.microconfig.core.configtypes.ConfigTypesFilter;
+import io.microconfig.core.configtypes.ConfigTypeFilter;
 import io.microconfig.core.environments.Component;
 import io.microconfig.core.environments.Components;
 import io.microconfig.core.properties.CompositeProperties;
@@ -23,7 +23,7 @@ public class ComponentsImpl implements Components {
     }
 
     @Override
-    public CompositeProperties getPropertiesFor(ConfigTypesFilter filter) {
+    public CompositeProperties getPropertiesFor(ConfigTypeFilter filter) {
         return composite(
                 components.stream()
                         .map(c -> c.getPropertiesFor(filter))

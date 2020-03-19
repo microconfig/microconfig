@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.util.List;
 
-import static io.microconfig.core.configtypes.impl.ConfigTypesFilters.*;
+import static io.microconfig.core.configtypes.impl.ConfigTypeFilters.*;
 import static io.microconfig.core.configtypes.impl.StandardConfigType.APPLICATION;
 import static io.microconfig.core.configtypes.impl.StandardConfigType.HELM;
 import static io.microconfig.utils.CollectionUtils.setOf;
@@ -17,7 +17,7 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class ConfigTypesFiltersTest {
+class ConfigTypeFiltersTest {
     private final List<ConfigType> types = new StandardConfigTypeRepository().getConfigTypes();
 
     @Test

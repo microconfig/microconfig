@@ -1,7 +1,7 @@
 package io.microconfig.core.configtypes.impl;
 
 import io.microconfig.core.configtypes.ConfigType;
-import io.microconfig.core.configtypes.ConfigTypesFilter;
+import io.microconfig.core.configtypes.ConfigTypeFilter;
 
 import java.io.File;
 import java.util.Arrays;
@@ -14,12 +14,12 @@ import static io.microconfig.utils.StreamUtils.filter;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toSet;
 
-public class ConfigTypesFilters {
-    public static ConfigTypesFilter eachConfigType() {
+public class ConfigTypeFilters {
+    public static ConfigTypeFilter eachConfigType() {
         return types -> types;
     }
 
-    public static ConfigTypesFilter configType(ConfigType... types) {
+    public static ConfigTypeFilter configType(ConfigType... types) {
         return __ -> {
             if (types.length == 0) {
                 throwNoConfigTypesProvidedException();
@@ -28,7 +28,7 @@ public class ConfigTypesFilters {
         };
     }
 
-    public static ConfigTypesFilter configTypeWithName(String... name) {
+    public static ConfigTypeFilter configTypeWithName(String... name) {
         Set<String> names = new HashSet<>(asList(name));
         if (names.isEmpty()) {
             throwNoConfigTypesProvidedException();
@@ -39,7 +39,7 @@ public class ConfigTypesFilters {
         };
     }
 
-    public static ConfigTypesFilter configTypeWithExtensionOf(File file) {
+    public static ConfigTypeFilter configTypeWithExtensionOf(File file) {
         String ext = getExtension(file);
         if (ext.isEmpty()) {
             throw new IllegalArgumentException("File " + file + " doesn't have an extension. Unable to resolve component type.");
