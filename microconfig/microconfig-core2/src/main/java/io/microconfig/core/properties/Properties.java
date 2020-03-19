@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface Properties {
-    List<TypedProperties> asList();
-
     Properties resolveBy(Resolver resolver);
 
     Properties withoutTempValues();
@@ -18,4 +16,6 @@ public interface Properties {
     Optional<Property> getPropertyWithKey(String key);
 
     <T> List<T> save(PropertySerializer<T> serializer);
+
+    List<TypedProperties> asList();
 }
