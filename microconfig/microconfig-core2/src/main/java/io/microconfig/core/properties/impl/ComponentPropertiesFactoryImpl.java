@@ -17,8 +17,8 @@ public class ComponentPropertiesFactoryImpl implements ComponentPropertiesFactor
     private final PropertiesRepository propertiesRepository;
 
     @Override
-    public CompositeComponentProperties getComponentProperties(String componentType, String environment, List<ConfigType> filteredTypes) {
-        return resultsOf(forEach(filteredTypes, configType -> readConfigs(componentType, environment, configType)));
+    public CompositeComponentProperties getComponentProperties(String componentType, String environment, List<ConfigType> configTypes) {
+        return resultsOf(forEach(configTypes, configType -> readConfigs(componentType, environment, configType)));
     }
 
     private ComponentProperties readConfigs(String component, String environment, ConfigType configType) {
