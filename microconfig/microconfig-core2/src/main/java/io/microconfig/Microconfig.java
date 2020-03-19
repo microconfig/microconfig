@@ -1,18 +1,22 @@
 package io.microconfig;
 
-import io.microconfig.domain.*;
-import io.microconfig.domain.impl.configtypes.StandardConfigTypeRepository;
-import io.microconfig.domain.impl.environments.repository.FileEnvironmentRepository;
-import io.microconfig.domain.impl.properties.ComponentFactoryImpl;
-import io.microconfig.domain.impl.properties.repository.ComponentGraph;
-import io.microconfig.domain.impl.properties.repository.FilePropertiesRepository;
-import io.microconfig.domain.impl.properties.resolvers.expression.ExpressionResolver;
-import io.microconfig.domain.impl.properties.resolvers.placeholder.PlaceholderResolver;
-import io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.component.ComponentResolveStrategy;
-import io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.component.properties.ComponentPropertiesFactory;
-import io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.envdescriptor.EnvDescriptorResolveStrategy;
-import io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.envdescriptor.properties.EnvDescriptorPropertiesFactory;
-import io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.standard.StandardResolveStrategy;
+import io.microconfig.core.configtypes.ConfigTypeRepository;
+import io.microconfig.core.configtypes.impl.StandardConfigTypeRepository;
+import io.microconfig.core.environments.Environment;
+import io.microconfig.core.environments.EnvironmentRepository;
+import io.microconfig.core.environments.impl.repository.FileEnvironmentRepository;
+import io.microconfig.core.properties.ComponentFactory;
+import io.microconfig.core.properties.StatementResolver;
+import io.microconfig.core.properties.impl.ComponentFactoryImpl;
+import io.microconfig.core.properties.impl.repository.ComponentGraph;
+import io.microconfig.core.properties.impl.repository.FilePropertiesRepository;
+import io.microconfig.core.resolvers.expression.ExpressionResolver;
+import io.microconfig.core.resolvers.placeholder.PlaceholderResolver;
+import io.microconfig.core.resolvers.placeholder.strategies.component.ComponentResolveStrategy;
+import io.microconfig.core.resolvers.placeholder.strategies.component.properties.ComponentPropertiesFactory;
+import io.microconfig.core.resolvers.placeholder.strategies.envdescriptor.EnvDescriptorResolveStrategy;
+import io.microconfig.core.resolvers.placeholder.strategies.envdescriptor.properties.EnvDescriptorPropertiesFactory;
+import io.microconfig.core.resolvers.placeholder.strategies.standard.StandardResolveStrategy;
 import io.microconfig.io.DumpedFsReader;
 import io.microconfig.io.FsReader;
 import lombok.RequiredArgsConstructor;
@@ -20,14 +24,14 @@ import lombok.With;
 
 import java.io.File;
 
-import static io.microconfig.domain.impl.configtypes.CompositeConfigTypeRepository.composite;
-import static io.microconfig.domain.impl.configtypes.CustomConfigTypeRepository.findDescriptorIn;
-import static io.microconfig.domain.impl.properties.io.selector.ConfigIoFactory.newConfigIo;
-import static io.microconfig.domain.impl.properties.repository.graph.CachedComponentGraph.traverseFrom;
-import static io.microconfig.domain.impl.properties.resolvers.chain.ChainedResolver.chainOf;
-import static io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.composite.CompositeResolveStrategy.composite;
-import static io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.system.SystemResolveStrategy.envVariablesResolveStrategy;
-import static io.microconfig.domain.impl.properties.resolvers.placeholder.strategies.system.SystemResolveStrategy.systemPropertiesResolveStrategy;
+import static io.microconfig.core.configtypes.impl.CompositeConfigTypeRepository.composite;
+import static io.microconfig.core.configtypes.impl.CustomConfigTypeRepository.findDescriptorIn;
+import static io.microconfig.core.properties.impl.io.selector.ConfigIoFactory.newConfigIo;
+import static io.microconfig.core.properties.impl.repository.graph.CachedComponentGraph.traverseFrom;
+import static io.microconfig.core.resolvers.chain.ChainedResolver.chainOf;
+import static io.microconfig.core.resolvers.placeholder.strategies.composite.CompositeResolveStrategy.composite;
+import static io.microconfig.core.resolvers.placeholder.strategies.system.SystemResolveStrategy.envVariablesResolveStrategy;
+import static io.microconfig.core.resolvers.placeholder.strategies.system.SystemResolveStrategy.systemPropertiesResolveStrategy;
 import static io.microconfig.utils.FileUtils.canonical;
 
 @RequiredArgsConstructor

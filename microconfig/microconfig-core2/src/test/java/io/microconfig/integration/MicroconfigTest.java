@@ -1,12 +1,12 @@
 package io.microconfig.integration;
 
 import io.microconfig.Microconfig;
-import io.microconfig.domain.CompositeComponentProperties;
-import io.microconfig.domain.Property;
+import io.microconfig.core.properties.CompositeComponentProperties;
+import io.microconfig.core.properties.Property;
 import org.junit.jupiter.api.Test;
 
 import static io.microconfig.Microconfig.searchConfigsIn;
-import static io.microconfig.domain.impl.configtypes.ConfigTypeFilters.eachConfigType;
+import static io.microconfig.core.configtypes.impl.ConfigTypeFilters.eachConfigType;
 import static io.microconfig.testutils.ClasspathUtils.classpathFile;
 import static io.microconfig.utils.StreamUtils.splitKeyValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -74,10 +74,10 @@ public class MicroconfigTest {
 
     @Test
     void thisToVar() {
-//        assertEquals(
-//                splitKeyValue("c=3"),
-//                buildComponent("var", "dev").propertiesAsKeyValue()
-//        );
+        assertEquals(
+                splitKeyValue("c=3"),
+                buildComponent("var", "dev").propertiesAsKeyValue()
+        );
     }
 
     private void testAliases(String component, String... keyValue) {

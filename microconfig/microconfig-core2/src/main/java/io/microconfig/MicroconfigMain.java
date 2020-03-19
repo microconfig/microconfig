@@ -6,8 +6,8 @@ import java.io.File;
 import java.util.List;
 
 import static io.microconfig.Microconfig.searchConfigsIn;
-import static io.microconfig.domain.impl.configtypes.ConfigTypeFilters.eachConfigType;
-import static io.microconfig.domain.impl.properties.PropertySerializers.toFileIn;
+import static io.microconfig.core.configtypes.impl.ConfigTypeFilters.eachConfigType;
+import static io.microconfig.core.properties.impl.PropertySerializers.toFileIn;
 
 /**
  * Command line params example: *
