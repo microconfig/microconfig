@@ -1,10 +1,10 @@
 package io.microconfig.core.properties.impl;
 
 import io.microconfig.core.configtypes.ConfigType;
-import io.microconfig.core.properties.ComponentProperties;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.PropertySerializer;
 import io.microconfig.core.properties.Resolver;
+import io.microconfig.core.properties.TypedProperties;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -19,7 +19,7 @@ import static io.microconfig.utils.StreamUtils.forEach;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor
-public class ComponentPropertiesImpl implements ComponentProperties {
+public class TypedPropertiesImpl implements TypedProperties {
     private final String component;
     private final String environment;
     private final ConfigType configType;
@@ -33,12 +33,12 @@ public class ComponentPropertiesImpl implements ComponentProperties {
     }
 
     @Override
-    public ComponentProperties withoutTempValues() {
+    public TypedProperties withoutTempValues() {
         return withProperties(filter(properties, p -> !p.isTemp()));
     }
 
     @Override
-    public ComponentProperties resolveBy(Resolver resolver) {
+    public TypedProperties resolveBy(Resolver resolver) {
         return withProperties(forEach(properties, p -> p.resolveBy(resolver, configType.getType())));
     }
 

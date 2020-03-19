@@ -7,9 +7,9 @@ import io.microconfig.core.environments.EnvironmentRepository;
 import io.microconfig.core.environments.impl.repository.ComponentFactory;
 import io.microconfig.core.environments.impl.repository.ComponentFactoryImpl;
 import io.microconfig.core.environments.impl.repository.FileEnvironmentRepository;
-import io.microconfig.core.properties.ComponentPropertiesFactory;
+import io.microconfig.core.properties.PropertiesFactory;
 import io.microconfig.core.properties.Resolver;
-import io.microconfig.core.properties.impl.ComponentPropertiesFactoryImpl;
+import io.microconfig.core.properties.impl.PropertiesFactoryImpl;
 import io.microconfig.core.properties.impl.repository.ComponentGraph;
 import io.microconfig.core.properties.impl.repository.FilePropertiesRepository;
 import io.microconfig.core.resolvers.RecursiveResolver;
@@ -95,8 +95,8 @@ public class Microconfig {
         );
     }
 
-    private ComponentPropertiesFactory componentPropertiesFactory() {
-        return new ComponentPropertiesFactoryImpl(
+    private PropertiesFactory componentPropertiesFactory() {
+        return new PropertiesFactoryImpl(
                 new FilePropertiesRepository(
                         componentGraph(),
                         newConfigIo(fsReader)

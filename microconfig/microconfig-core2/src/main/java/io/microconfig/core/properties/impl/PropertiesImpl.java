@@ -13,31 +13,31 @@ import static io.microconfig.utils.StreamUtils.*;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
-public class CompositeComponentPropertiesImpl implements CompositeComponentProperties {
-    private final List<ComponentProperties> properties;
+public class PropertiesImpl implements Properties {
+    private final List<TypedProperties> properties;
 
-    public static CompositeComponentProperties composite(List<ComponentProperties> properties) {
-        return new CompositeComponentPropertiesImpl(properties);
+    public static Properties composite(List<TypedProperties> properties) {
+        return new PropertiesImpl(properties);
     }
 
     @Override
-    public List<ComponentProperties> asList() {
+    public List<TypedProperties> asList() {
         return properties;
     }
 
     @Override
-    public CompositeComponentProperties withoutTempValues() {
-        return forEachComponent(ComponentProperties::withoutTempValues);
+    public Properties withoutTempValues() {
+        return forEachComponent(TypedProperties::withoutTempValues);
     }
 
     @Override
-    public CompositeComponentProperties resolveBy(Resolver resolver) {
+    public Properties resolveBy(Resolver resolver) {
         return forEachComponent(c -> c.resolveBy(resolver));
     }
 
     @Override
     public List<Property> getProperties() {
-        return flatMapEach(properties, ComponentProperties::getProperties);
+        return flatMapEach(properties, TypedProperties::getProperties);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class CompositeComponentPropertiesImpl implements CompositeComponentPrope
         return forEach(properties, r -> r.save(serializer));
     }
 
-    private CompositeComponentProperties forEachComponent(UnaryOperator<ComponentProperties> func) {
+    private Properties forEachComponent(UnaryOperator<TypedProperties> func) {
         return composite(forEach(properties, func));
     }
 }

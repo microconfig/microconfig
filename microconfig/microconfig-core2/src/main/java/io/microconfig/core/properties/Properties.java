@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public interface CompositeComponentProperties {
-    List<ComponentProperties> asList();
+public interface Properties {
+    List<TypedProperties> asList();
 
-    CompositeComponentProperties resolveBy(Resolver resolver);
+    Properties resolveBy(Resolver resolver);
 
-    CompositeComponentProperties withoutTempValues();
+    Properties withoutTempValues();
 
     List<Property> getProperties();
 

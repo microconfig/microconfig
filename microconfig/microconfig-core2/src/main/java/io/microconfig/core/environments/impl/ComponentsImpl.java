@@ -3,13 +3,13 @@ package io.microconfig.core.environments.impl;
 import io.microconfig.core.configtypes.ConfigTypeFilter;
 import io.microconfig.core.environments.Component;
 import io.microconfig.core.environments.Components;
-import io.microconfig.core.properties.CompositeComponentProperties;
+import io.microconfig.core.properties.Properties;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static io.microconfig.core.properties.impl.CompositeComponentPropertiesImpl.composite;
+import static io.microconfig.core.properties.impl.PropertiesImpl.composite;
 import static java.util.stream.Collectors.toList;
 
 @EqualsAndHashCode
@@ -23,11 +23,11 @@ public class ComponentsImpl implements Components {
     }
 
     @Override
-    public CompositeComponentProperties getPropertiesFor(ConfigTypeFilter filter) {
+    public Properties getPropertiesFor(ConfigTypeFilter filter) {
         return composite(
                 components.stream()
                         .map(c -> c.getPropertiesFor(filter))
-                        .map(CompositeComponentProperties::asList)
+                        .map(Properties::asList)
                         .flatMap(List::stream)
                         .collect(toList())
         );
