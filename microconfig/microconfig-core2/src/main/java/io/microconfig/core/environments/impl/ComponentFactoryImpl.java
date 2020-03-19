@@ -1,9 +1,9 @@
-package io.microconfig.core.properties.impl;
+package io.microconfig.core.environments.impl;
 
 import io.microconfig.core.configtypes.ConfigTypeRepository;
-import io.microconfig.core.properties.Component;
-import io.microconfig.core.properties.ComponentFactory;
-import io.microconfig.core.properties.Components;
+import io.microconfig.core.environments.Component;
+import io.microconfig.core.environments.Components;
+import io.microconfig.core.properties.PropertiesRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;

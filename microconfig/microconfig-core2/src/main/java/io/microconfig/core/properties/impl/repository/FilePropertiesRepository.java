@@ -1,8 +1,8 @@
 package io.microconfig.core.properties.impl.repository;
 
 import io.microconfig.core.configtypes.ConfigType;
+import io.microconfig.core.properties.PropertiesRepository;
 import io.microconfig.core.properties.Property;
-import io.microconfig.core.properties.impl.PropertiesRepository;
 import io.microconfig.core.properties.impl.io.ConfigIo;
 import io.microconfig.core.properties.impl.repository.ConfigFile.ConfigDefinition;
 import io.microconfig.core.properties.impl.repository.graph.ComponentNotFoundException;

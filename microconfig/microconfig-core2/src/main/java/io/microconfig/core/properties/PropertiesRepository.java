@@ -1,7 +1,6 @@
-package io.microconfig.core.properties.impl;
+package io.microconfig.core.properties;
 
 import io.microconfig.core.configtypes.ConfigType;
-import io.microconfig.core.properties.Property;
 
 import java.util.List;
 

@@ -2,8 +2,8 @@ package io.microconfig.core.environments.impl.repository;
 
 import io.microconfig.core.environments.Environment;
 import io.microconfig.core.environments.EnvironmentRepository;
+import io.microconfig.core.environments.impl.ComponentFactory;
 import io.microconfig.core.environments.impl.EnvironmentImpl;
-import io.microconfig.core.properties.ComponentFactory;
 import io.microconfig.io.FsReader;
 import io.microconfig.utils.FileUtils;
 

@@ -1,4 +1,7 @@
-package io.microconfig.core.properties;
+package io.microconfig.core.environments.impl;
+
+import io.microconfig.core.environments.Component;
+import io.microconfig.core.environments.Components;
 
 import java.util.List;
 
