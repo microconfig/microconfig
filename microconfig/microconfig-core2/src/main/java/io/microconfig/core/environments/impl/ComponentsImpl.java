@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 import static io.microconfig.core.properties.impl.PropertiesImpl.composite;
-import static java.util.stream.Collectors.toList;
+import static io.microconfig.utils.StreamUtils.forEach;
 
 @EqualsAndHashCode
 @RequiredArgsConstructor
@@ -25,9 +25,7 @@ public class ComponentsImpl implements Components {
     @Override
     public Properties getPropertiesFor(ConfigTypeFilter filter) {
         return composite(
-                components.stream()
-                        .map(c -> c.getPropertiesFor(filter))
-                        .collect(toList())
+                forEach(components, c->c.getPropertiesFor(filter))
         );
     }
 
