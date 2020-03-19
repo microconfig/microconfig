@@ -55,7 +55,7 @@ public class CompositePropertiesImpl implements CompositeProperties {
         return forEach(properties, p -> p.save(serializer));
     }
 
-    private CompositeProperties forEachComponent(UnaryOperator<Properties> func) {
-        return composite(forEach(properties, func));
+    private CompositeProperties forEachComponent(UnaryOperator<Properties> applyFunction) {
+        return composite(forEach(properties, applyFunction));
     }
 }
