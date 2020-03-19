@@ -1,6 +1,7 @@
 package io.microconfig.core.properties.impl;
 
 import io.microconfig.core.properties.*;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import static io.microconfig.core.properties.impl.PropertyImpl.asKeyValue;
 import static io.microconfig.utils.StreamUtils.*;
 
 @RequiredArgsConstructor
+@EqualsAndHashCode
 public class PropertiesImpl implements Properties {
     private final List<TypedProperties> properties;
 
