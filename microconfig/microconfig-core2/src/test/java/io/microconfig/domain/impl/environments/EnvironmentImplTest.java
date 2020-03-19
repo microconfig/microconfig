@@ -5,9 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.of;
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,6 +42,7 @@ class EnvironmentImplTest {
         when(group2.getIp()).thenReturn(of(ip));
 
         assertEquals(singletonList(group2), env.findGroupsWithIp(ip));
+        assertEquals(emptyList(), env.findGroupsWithIp("badIp"));
     }
 
     @Test
@@ -63,10 +64,8 @@ class EnvironmentImplTest {
 
     @Test
     void getAllComponents() {
-        List<Component> allComponents = asList(one, two, three);
-
         Components expected = mock(Components.class);
-        when(factory.toComponents(allComponents)).thenReturn(expected);
+        when(factory.toComponents(asList(one, two, three))).thenReturn(expected);
 
         assertSame(expected, env.getAllComponents());
     }
@@ -87,5 +86,22 @@ class EnvironmentImplTest {
         Component four = mock(Component.class);
         when(factory.createComponent("four", "four", env.getName())).thenReturn(four);
         assertEquals(four, env.findComponentWithName("four", false));
+    }
+
+    @Test //todo
+    void findComponentsFrom() {
+       /*env.findComponentsFrom(emptyList(), emptyList());
+       env.findComponentsFrom(asList("g1", "g2"), emptyList());
+       env.findComponentsFrom(asList("g1", "g2"), asList("one", "two"));
+       env.findComponentsFrom(singletonList("g1"), asList("one", "two"));
+       env.findComponentsFrom(emptyList(), asList("one", "two"));
+       env.findComponentsFrom(singletonList("bad"), singletonList("bad"));*/
+    }
+
+    @Test
+    void testToString() {
+        when(group1.toString()).thenReturn("g1");
+        when(group2.toString()).thenReturn("g2");
+        assertEquals("dev: [g1, g2]", env.toString());
     }
 }
