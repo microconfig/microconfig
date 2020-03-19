@@ -5,7 +5,7 @@ import io.microconfig.core.configtypes.ConfigType;
 import java.util.List;
 
 public interface PropertiesFactory {
-    Properties getComponentProperties(String componentType,
-                                      String environment,
-                                      List<ConfigType> configTypes);
+    Properties getPropertiesOf(String component,
+                               String environment,
+                               List<ConfigType> configTypes);
 }

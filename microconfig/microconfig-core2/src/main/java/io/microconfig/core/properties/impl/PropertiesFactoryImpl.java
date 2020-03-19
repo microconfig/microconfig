@@ -18,11 +18,11 @@ public class PropertiesFactoryImpl implements PropertiesFactory {
     private final PropertiesRepository propertiesRepository;
 
     @Override
-    public Properties getComponentProperties(String componentType,
-                                             String environment,
-                                             List<ConfigType> configTypes) {
+    public Properties getPropertiesOf(String component,
+                                      String environment,
+                                      List<ConfigType> configTypes) {
         return composite(
-                forEach(configTypes, readConfigsFor(componentType, environment))
+                forEach(configTypes, readConfigsFor(component, environment))
         );
     }
 

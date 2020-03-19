@@ -28,7 +28,7 @@ public class ComponentImpl implements Component {
     @Override
     public Properties getPropertiesFor(ConfigTypeFilter filter) {
         List<ConfigType> filteredTypes = filter.selectTypes(configTypeRepository.getConfigTypes());
-        return propertiesFactory.getComponentProperties(type, environment, filteredTypes);
+        return propertiesFactory.getPropertiesOf(type, environment, filteredTypes);
     }
 
     @Override
