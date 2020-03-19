@@ -8,8 +8,9 @@ import io.microconfig.core.properties.Property;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.function.Function;
 
-import static io.microconfig.core.properties.impl.CompositeComponentPropertiesImpl.resultsOf;
+import static io.microconfig.core.properties.impl.CompositeComponentPropertiesImpl.composite;
 import static io.microconfig.utils.StreamUtils.forEach;
 
 @RequiredArgsConstructor
@@ -17,12 +18,18 @@ public class ComponentPropertiesFactoryImpl implements ComponentPropertiesFactor
     private final PropertiesRepository propertiesRepository;
 
     @Override
-    public CompositeComponentProperties getComponentProperties(String componentType, String environment, List<ConfigType> configTypes) {
-        return resultsOf(forEach(configTypes, configType -> readConfigs(componentType, environment, configType)));
+    public CompositeComponentProperties getComponentProperties(String componentType,
+                                                               String environment,
+                                                               List<ConfigType> configTypes) {
+        return composite(
+                forEach(configTypes, readConfigsFor(componentType, environment))
+        );
     }
 
-    private ComponentProperties readConfigs(String component, String environment, ConfigType configType) {
-        List<Property> properties = propertiesRepository.getProperties(component, environment, configType);
-        return new ComponentPropertiesImpl(component, environment, configType, properties);
+    private Function<ConfigType, ComponentProperties> readConfigsFor(String component, String environment) {
+        return configType -> {
+            List<Property> properties = propertiesRepository.getProperties(component, environment, configType);
+            return new ComponentPropertiesImpl(component, environment, configType, properties);
+        };
     }
 }

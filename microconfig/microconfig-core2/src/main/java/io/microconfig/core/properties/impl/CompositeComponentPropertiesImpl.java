@@ -16,8 +16,8 @@ import static lombok.AccessLevel.PRIVATE;
 public class CompositeComponentPropertiesImpl implements CompositeComponentProperties {
     private final List<ComponentProperties> properties;
 
-    public static CompositeComponentProperties resultsOf(List<ComponentProperties> results) {
-        return new CompositeComponentPropertiesImpl(results);
+    public static CompositeComponentProperties composite(List<ComponentProperties> properties) {
+        return new CompositeComponentPropertiesImpl(properties);
     }
 
     @Override
@@ -56,6 +56,6 @@ public class CompositeComponentPropertiesImpl implements CompositeComponentPrope
     }
 
     private CompositeComponentProperties forEachComponent(UnaryOperator<ComponentProperties> func) {
-        return resultsOf(forEach(properties, func));
+        return composite(forEach(properties, func));
     }
 }
