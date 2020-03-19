@@ -25,7 +25,6 @@ public class PropertyResolveException extends RuntimeException {
 
     public PropertyResolveException(String expression, RootComponent root, Throwable cause) {
         super(format("Can't evaluate EL '%s'. Root component -> %s[%s]. " +
-                        "All string must be escaped with single quote '. " +
                         "Example of correct EL: #{'${component1@ip}' + ':' + ${ports@port1}}",
                 expression, root.getComponentName(), root.getEnvironment()), cause
         );
