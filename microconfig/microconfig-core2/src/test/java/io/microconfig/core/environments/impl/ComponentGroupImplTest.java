@@ -1,6 +1,8 @@
-package io.microconfig.core.environments;
+package io.microconfig.core.environments.impl;
 
-import io.microconfig.core.environments.impl.ComponentGroupImpl;
+import io.microconfig.core.environments.Component;
+import io.microconfig.core.environments.ComponentGroup;
+import io.microconfig.core.environments.Components;
 import org.junit.jupiter.api.Test;
 
 import static java.util.Arrays.asList;
