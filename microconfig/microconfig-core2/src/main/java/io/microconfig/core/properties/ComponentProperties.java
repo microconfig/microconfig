@@ -4,12 +4,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public interface CompositeProperties {
-    List<Properties> asList();
+public interface ComponentProperties {
+    String getComponent();
 
-    CompositeProperties resolveBy(Resolver resolver);
+    String getConfigType();
 
-    CompositeProperties withoutTempValues();
+    ComponentProperties resolveBy(Resolver resolver);
+
+    ComponentProperties withoutTempValues();
 
     List<Property> getProperties();
 
@@ -17,5 +19,5 @@ public interface CompositeProperties {
 
     Optional<Property> getPropertyWithKey(String key);
 
-    <T> List<T> save(PropertySerializer<T> serializer);
+    <T> T save(PropertySerializer<T> serializer);
 }

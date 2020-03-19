@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface Properties {
-    String getConfigType();
+    List<ComponentProperties> asList();
 
     Properties resolveBy(Resolver resolver);
 
@@ -17,5 +17,5 @@ public interface Properties {
 
     Optional<Property> getPropertyWithKey(String key);
 
-    <T> T save(PropertySerializer<T> serializer);
+    <T> List<T> save(PropertySerializer<T> serializer);
 }

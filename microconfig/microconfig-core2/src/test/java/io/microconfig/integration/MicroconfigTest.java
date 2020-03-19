@@ -1,7 +1,7 @@
 package io.microconfig.integration;
 
 import io.microconfig.Microconfig;
-import io.microconfig.core.properties.CompositeProperties;
+import io.microconfig.core.properties.Properties;
 import io.microconfig.core.properties.Property;
 import org.junit.jupiter.api.Test;
 
@@ -87,7 +87,7 @@ public class MicroconfigTest {
         );
     }
 
-    private CompositeProperties buildComponent(String component, String env) {
+    private Properties buildComponent(String component, String env) {
         return microconfig.inEnvironment(env)
                 .findComponentWithName(component, false)
                 .getPropertiesFor(eachConfigType())
