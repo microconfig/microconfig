@@ -1,6 +1,6 @@
 package io.microconfig.core.resolvers.expression;
 
-import io.microconfig.core.properties.StatementResolver.Statement;
+import io.microconfig.core.resolvers.RecursiveResolver.Statement;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.expression.EvaluationException;

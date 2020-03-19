@@ -12,7 +12,7 @@ import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
 
 @RequiredArgsConstructor
-public class ComponentPropertiesFactory {
+public class ComponentPropertyFactory {
     private final ComponentGraph componentGraph;
     private final File rootDir;
     private final File destinationComponentDir;

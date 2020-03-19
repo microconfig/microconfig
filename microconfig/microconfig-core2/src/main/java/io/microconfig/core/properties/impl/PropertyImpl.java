@@ -2,7 +2,7 @@ package io.microconfig.core.properties.impl;
 
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.PropertySource;
-import io.microconfig.core.properties.StatementResolver;
+import io.microconfig.core.properties.Resolver;
 import io.microconfig.utils.Os;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -74,9 +74,9 @@ public class PropertyImpl implements Property {
     }
 
     @Override
-    public Property resolveBy(StatementResolver resolver, String configType) {
+    public Property resolveBy(Resolver resolver, String configType) {
         try {
-            return withValue(resolver.resolveRecursively(value, envContext, configType));
+            return withValue(resolver.resolve(value, envContext, configType));
         } catch (RuntimeException e) {
             throw new PropertyResolveException("Can't resolve property '" + this + "'", e); //todo
         }

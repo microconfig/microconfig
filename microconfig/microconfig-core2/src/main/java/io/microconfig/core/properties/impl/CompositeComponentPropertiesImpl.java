@@ -31,7 +31,7 @@ public class CompositeComponentPropertiesImpl implements CompositeComponentPrope
     }
 
     @Override
-    public CompositeComponentProperties resolveBy(StatementResolver resolver) {
+    public CompositeComponentProperties resolveBy(Resolver resolver) {
         return forEachComponent(c -> c.resolveBy(resolver));
     }
 

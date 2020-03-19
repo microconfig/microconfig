@@ -4,6 +4,7 @@ import io.microconfig.core.configtypes.ConfigTypeFilter;
 import io.microconfig.core.environments.Component;
 import io.microconfig.core.environments.Components;
 import io.microconfig.core.properties.CompositeComponentProperties;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 import static io.microconfig.core.properties.impl.CompositeComponentPropertiesImpl.composite;
 import static java.util.stream.Collectors.toList;
 
+@EqualsAndHashCode
 @RequiredArgsConstructor
 public class ComponentsImpl implements Components {
     private final List<Component> components;

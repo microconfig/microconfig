@@ -1,6 +1,6 @@
 package io.microconfig.core.resolvers.expression;
 
-import io.microconfig.core.properties.StatementResolver.Statement;
+import io.microconfig.core.resolvers.RecursiveResolver.Statement;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,6 +35,6 @@ class ExpressionResolverTest {
     }
 
     private String resolve(String value) {
-        return resolver.resolveRecursively(value, "dev", "app");
+        return resolver.resolve(value, "dev", "app");
     }
 }

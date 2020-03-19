@@ -1,7 +1,8 @@
 package io.microconfig.core.environments;
 
-import io.microconfig.core.environments.impl.ComponentFactory;
+import io.microconfig.core.environments.impl.ComponentsImpl;
 import io.microconfig.core.environments.impl.EnvironmentImpl;
+import io.microconfig.core.environments.impl.repository.ComponentFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +12,8 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.of;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -65,10 +67,7 @@ class EnvironmentImplTest {
 
     @Test
     void getAllComponents() {
-        Components expected = mock(Components.class);
-        when(factory.toComponents(asList(one, two, three))).thenReturn(expected);
-
-        assertSame(expected, env.getAllComponents());
+        assertEquals(new ComponentsImpl((asList(one, two, three))), env.getAllComponents());
     }
 
     @Test

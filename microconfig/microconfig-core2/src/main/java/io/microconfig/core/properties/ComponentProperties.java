@@ -7,7 +7,7 @@ import java.util.Optional;
 public interface ComponentProperties {
     String getConfigType();
 
-    ComponentProperties resolveBy(StatementResolver resolver);
+    ComponentProperties resolveBy(Resolver resolver);
 
     ComponentProperties withoutTempValues();
 

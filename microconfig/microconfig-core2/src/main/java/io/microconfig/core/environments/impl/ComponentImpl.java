@@ -6,11 +6,13 @@ import io.microconfig.core.configtypes.ConfigTypeRepository;
 import io.microconfig.core.environments.Component;
 import io.microconfig.core.properties.ComponentPropertiesFactory;
 import io.microconfig.core.properties.CompositeComponentProperties;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+@EqualsAndHashCode(of = {"name", "type", "environment"})
 @RequiredArgsConstructor
 public class ComponentImpl implements Component {
     private final ConfigTypeRepository configTypeRepository;

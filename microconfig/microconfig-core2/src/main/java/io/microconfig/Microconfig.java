@@ -4,16 +4,19 @@ import io.microconfig.core.configtypes.ConfigTypeRepository;
 import io.microconfig.core.configtypes.impl.StandardConfigTypeRepository;
 import io.microconfig.core.environments.Environment;
 import io.microconfig.core.environments.EnvironmentRepository;
-import io.microconfig.core.environments.impl.ComponentFactory;
-import io.microconfig.core.environments.impl.ComponentFactoryImpl;
+import io.microconfig.core.environments.impl.repository.ComponentFactory;
+import io.microconfig.core.environments.impl.repository.ComponentFactoryImpl;
 import io.microconfig.core.environments.impl.repository.FileEnvironmentRepository;
-import io.microconfig.core.properties.StatementResolver;
+import io.microconfig.core.properties.ComponentPropertiesFactory;
+import io.microconfig.core.properties.Resolver;
+import io.microconfig.core.properties.impl.ComponentPropertiesFactoryImpl;
 import io.microconfig.core.properties.impl.repository.ComponentGraph;
 import io.microconfig.core.properties.impl.repository.FilePropertiesRepository;
+import io.microconfig.core.resolvers.RecursiveResolver;
 import io.microconfig.core.resolvers.expression.ExpressionResolver;
 import io.microconfig.core.resolvers.placeholder.PlaceholderResolver;
 import io.microconfig.core.resolvers.placeholder.strategies.component.ComponentResolveStrategy;
-import io.microconfig.core.resolvers.placeholder.strategies.component.properties.ComponentPropertiesFactory;
+import io.microconfig.core.resolvers.placeholder.strategies.component.properties.ComponentPropertyFactory;
 import io.microconfig.core.resolvers.placeholder.strategies.envdescriptor.EnvDescriptorResolveStrategy;
 import io.microconfig.core.resolvers.placeholder.strategies.envdescriptor.properties.EnvDescriptorPropertiesFactory;
 import io.microconfig.core.resolvers.placeholder.strategies.standard.StandardResolveStrategy;
@@ -28,7 +31,7 @@ import static io.microconfig.core.configtypes.impl.CompositeConfigTypeRepository
 import static io.microconfig.core.configtypes.impl.CustomConfigTypeRepository.findDescriptorIn;
 import static io.microconfig.core.properties.impl.io.selector.ConfigIoFactory.newConfigIo;
 import static io.microconfig.core.properties.impl.repository.graph.CachedComponentGraph.traverseFrom;
-import static io.microconfig.core.resolvers.chain.ChainedResolver.chainOf;
+import static io.microconfig.core.resolvers.ChainedResolver.chainOf;
 import static io.microconfig.core.resolvers.placeholder.strategies.composite.CompositeResolveStrategy.composite;
 import static io.microconfig.core.resolvers.placeholder.strategies.system.SystemResolveStrategy.envVariablesResolveStrategy;
 import static io.microconfig.core.resolvers.placeholder.strategies.system.SystemResolveStrategy.systemPropertiesResolveStrategy;
@@ -53,15 +56,15 @@ public class Microconfig {
         return environments().getByName(name);
     }
 
-    public StatementResolver resolver() {
+    public Resolver resolver() {
         return chainOf(
                 placeholderResolver(),
                 expressionResolver()
         );
     }
 
-    private StatementResolver placeholderResolver() {
-        ComponentPropertiesFactory componentProperties = new ComponentPropertiesFactory(componentGraph(), rootDir, null); //todo;
+    private RecursiveResolver placeholderResolver() {
+        ComponentPropertyFactory componentProperties = new ComponentPropertyFactory(componentGraph(), rootDir, null); //todo;
         EnvDescriptorPropertiesFactory envProperties = new EnvDescriptorPropertiesFactory();
 
         return new PlaceholderResolver(composite(
@@ -73,7 +76,7 @@ public class Microconfig {
         ));
     }
 
-    private StatementResolver expressionResolver() {
+    private RecursiveResolver expressionResolver() {
         return new ExpressionResolver();
     }
 
@@ -88,14 +91,16 @@ public class Microconfig {
     private ComponentFactory componentFactory() {
         return new ComponentFactoryImpl(
                 configTypes(),
-                propertyRepository()
+                componentPropertiesFactory()
         );
     }
 
-    private FilePropertiesRepository propertyRepository() {
-        return new FilePropertiesRepository(
-                componentGraph(),
-                newConfigIo(fsReader)
+    private ComponentPropertiesFactory componentPropertiesFactory() {
+        return new ComponentPropertiesFactoryImpl(
+                new FilePropertiesRepository(
+                        componentGraph(),
+                        newConfigIo(fsReader)
+                )
         );
     }
 

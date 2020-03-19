@@ -1,6 +1,6 @@
-package io.microconfig.core.resolvers.chain;
+package io.microconfig.core.resolvers;
 
-import io.microconfig.core.properties.StatementResolver;
+import io.microconfig.core.properties.Resolver;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -11,10 +11,10 @@ import static java.util.Arrays.asList;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
-public class ChainedResolver implements StatementResolver {
-    public final List<StatementResolver> resolvers;
+public class ChainedResolver implements RecursiveResolver {
+    public final List<RecursiveResolver> resolvers;
 
-    public static StatementResolver chainOf(StatementResolver... resolvers) {
+    public static Resolver chainOf(RecursiveResolver... resolvers) {
         return new ChainedResolver(asList(resolvers));
     }
 

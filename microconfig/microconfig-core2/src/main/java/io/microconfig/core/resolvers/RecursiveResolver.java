@@ -1,9 +1,11 @@
-package io.microconfig.core.properties;
+package io.microconfig.core.resolvers;
+
+import io.microconfig.core.properties.Resolver;
 
 import java.util.Optional;
 
-public interface StatementResolver {
-    default String resolveRecursively(CharSequence line, String env, String configType) {
+public interface RecursiveResolver extends Resolver {
+    default String resolve(CharSequence line, String env, String configType) {
         StringBuilder result = new StringBuilder(line);
         while (true) {
             Optional<Statement> optionalStatement = findStatementIn(result);

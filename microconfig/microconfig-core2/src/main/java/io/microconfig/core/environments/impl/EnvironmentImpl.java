@@ -1,11 +1,10 @@
 package io.microconfig.core.environments.impl;
 
-import io.microconfig.core.configtypes.ConfigTypeRepository;
 import io.microconfig.core.environments.Component;
 import io.microconfig.core.environments.ComponentGroup;
 import io.microconfig.core.environments.Components;
 import io.microconfig.core.environments.Environment;
-import io.microconfig.core.properties.ComponentPropertiesFactory;
+import io.microconfig.core.environments.impl.repository.ComponentFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -26,8 +25,7 @@ public class EnvironmentImpl implements Environment {
     @Getter
     private final String name;
     private final List<ComponentGroup> componentGroups;
-    private final ConfigTypeRepository configTypeRepository;
-    private final ComponentPropertiesFactory componentPropertiesFactory;
+    private final ComponentFactory componentFactory;
 
     @Override
     public List<ComponentGroup> findGroupsWithIp(String ip) {
@@ -72,7 +70,7 @@ public class EnvironmentImpl implements Environment {
 
     private Component findOrCreateComponent(String componentName) {
         return firstFirstResult(componentGroups, g -> g.findComponentWithName(componentName))
-                .orElseGet(() -> new ComponentImpl(configTypeRepository, componentPropertiesFactory, componentName, componentName, name));
+                .orElseGet(() -> componentFactory.createComponent(componentName, componentName, name));
     }
 
     @Override

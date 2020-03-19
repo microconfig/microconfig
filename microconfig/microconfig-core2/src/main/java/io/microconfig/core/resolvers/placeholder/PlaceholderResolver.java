@@ -1,6 +1,6 @@
 package io.microconfig.core.resolvers.placeholder;
 
-import io.microconfig.core.properties.StatementResolver;
+import io.microconfig.core.resolvers.RecursiveResolver;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
@@ -8,7 +8,7 @@ import java.util.Optional;
 import static io.microconfig.core.resolvers.placeholder.PlaceholderBorders.findPlaceholderIn;
 
 @RequiredArgsConstructor
-public class PlaceholderResolver implements StatementResolver {
+public class PlaceholderResolver implements RecursiveResolver {
     private final PlaceholderResolveStrategy strategy;
 
     @Override
@@ -25,7 +25,7 @@ public class PlaceholderResolver implements StatementResolver {
             Placeholder placeholder = borders.toPlaceholder(configType, env);
             try {
                 String maybePlaceholder = placeholder.resolveUsing(strategy);
-                return resolveRecursively(maybePlaceholder, env, configType);
+                return PlaceholderResolver.this.resolve(maybePlaceholder, env, configType);
             } catch (RuntimeException e) {
                 String defaultValue = placeholder.getDefaultValue();
                 if (defaultValue != null) return defaultValue;

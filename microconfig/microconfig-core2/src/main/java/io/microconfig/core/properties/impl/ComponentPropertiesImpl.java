@@ -4,7 +4,7 @@ import io.microconfig.core.configtypes.ConfigType;
 import io.microconfig.core.properties.ComponentProperties;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.PropertySerializer;
-import io.microconfig.core.properties.StatementResolver;
+import io.microconfig.core.properties.Resolver;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -38,7 +38,7 @@ public class ComponentPropertiesImpl implements ComponentProperties {
     }
 
     @Override
-    public ComponentProperties resolveBy(StatementResolver resolver) {
+    public ComponentProperties resolveBy(Resolver resolver) {
         return withProperties(forEach(properties, p -> p.resolveBy(resolver, configType.getType())));
     }
 

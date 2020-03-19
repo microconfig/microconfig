@@ -1,7 +1,6 @@
 package io.microconfig.core.properties.impl;
 
 import io.microconfig.core.properties.Property;
-import io.microconfig.core.properties.StatementResolver.Statement;
 
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static java.lang.String.format;
@@ -24,7 +23,7 @@ public class PropertyResolveException extends RuntimeException {
         super(resolveExceptionMessage(unresolvedPlaceholder, sourceOfPlaceholder, root));
     }
 
-    public PropertyResolveException(Statement expression, RootComponent root, Throwable cause) {
+    public PropertyResolveException(String expression, RootComponent root, Throwable cause) {
         super(format("Can't evaluate EL '%s'. Root component -> %s[%s]. " +
                         "All string must be escaped with single quote '. " +
                         "Example of correct EL: #{'${component1@ip}' + ':' + ${ports@port1}}",
