@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.function.Function;
 
-import static io.microconfig.core.properties.impl.PropertiesImpl.composite;
 import static io.microconfig.utils.StreamUtils.forEach;
 
 @RequiredArgsConstructor
@@ -21,7 +20,7 @@ public class PropertiesFactoryImpl implements PropertiesFactory {
     public Properties getPropertiesOf(String component,
                                       String environment,
                                       List<ConfigType> configTypes) {
-        return composite(
+        return new PropertiesImpl(
                 forEach(configTypes, readConfigsFor(component, environment))
         );
     }

@@ -10,14 +10,13 @@ import java.util.function.UnaryOperator;
 
 import static io.microconfig.core.properties.impl.PropertyImpl.asKeyValue;
 import static io.microconfig.utils.StreamUtils.*;
-import static lombok.AccessLevel.PRIVATE;
 
-@RequiredArgsConstructor(access = PRIVATE)
+@RequiredArgsConstructor
 public class PropertiesImpl implements Properties {
     private final List<TypedProperties> properties;
 
-    public static Properties composite(List<TypedProperties> properties) {
-        return new PropertiesImpl(properties);
+    public static Properties composite(List<Properties> properties) {
+        return new PropertiesImpl(flatMapEach(properties, Properties::asList));
     }
 
     @Override
@@ -56,6 +55,6 @@ public class PropertiesImpl implements Properties {
     }
 
     private Properties forEachComponent(UnaryOperator<TypedProperties> applyFunction) {
-        return composite(forEach(properties, applyFunction));
+        return new PropertiesImpl(forEach(properties, applyFunction));
     }
 }

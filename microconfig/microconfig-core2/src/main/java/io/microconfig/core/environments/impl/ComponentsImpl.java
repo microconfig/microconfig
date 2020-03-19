@@ -27,8 +27,6 @@ public class ComponentsImpl implements Components {
         return composite(
                 components.stream()
                         .map(c -> c.getPropertiesFor(filter))
-                        .map(Properties::asList)
-                        .flatMap(List::stream)
                         .collect(toList())
         );
     }
