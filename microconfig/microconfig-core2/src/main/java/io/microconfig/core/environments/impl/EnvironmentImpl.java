@@ -1,9 +1,11 @@
 package io.microconfig.core.environments.impl;
 
+import io.microconfig.core.configtypes.ConfigTypeRepository;
 import io.microconfig.core.environments.Component;
 import io.microconfig.core.environments.ComponentGroup;
 import io.microconfig.core.environments.Components;
 import io.microconfig.core.environments.Environment;
+import io.microconfig.core.properties.ComponentPropertiesFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -24,7 +26,8 @@ public class EnvironmentImpl implements Environment {
     @Getter
     private final String name;
     private final List<ComponentGroup> componentGroups;
-    private final ComponentFactory componentFactory;
+    private final ConfigTypeRepository configTypeRepository;
+    private final ComponentPropertiesFactory componentPropertiesFactory;
 
     @Override
     public List<ComponentGroup> findGroupsWithIp(String ip) {
@@ -45,13 +48,13 @@ public class EnvironmentImpl implements Environment {
 
     @Override
     public Components getAllComponents() {
-        return componentFactory.toComponents(
-                componentGroups.stream()
-                        .map(ComponentGroup::getComponents)
-                        .map(Components::asList)
-                        .flatMap(List::stream)
-                        .collect(toList())
-        );
+        List<Component> components = componentGroups.stream()
+                .map(ComponentGroup::getComponents)
+                .map(Components::asList)
+                .flatMap(List::stream)
+                .collect(toList());
+
+        return new ComponentsImpl(components);
     }
 
     @Override
@@ -69,7 +72,7 @@ public class EnvironmentImpl implements Environment {
 
     private Component findOrCreateComponent(String componentName) {
         return firstFirstResult(componentGroups, g -> g.findComponentWithName(componentName))
-                .orElseGet(() -> componentFactory.createComponent(componentName, componentName, name));
+                .orElseGet(() -> new ComponentImpl(configTypeRepository, componentPropertiesFactory, componentName, componentName, name));
     }
 
     @Override
@@ -94,7 +97,7 @@ public class EnvironmentImpl implements Environment {
         };
 
         List<Component> componentFromGroups = componentsFromGroups.get();
-        return componentFactory.toComponents(filterByComponents.apply(componentFromGroups));
+        return new ComponentsImpl(filterByComponents.apply(componentFromGroups));
     }
 
     private ComponentGroup findGroup(Predicate<ComponentGroup> groupPredicate, Supplier<String> description) {

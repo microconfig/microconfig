@@ -4,23 +4,17 @@ import io.microconfig.core.configtypes.ConfigType;
 import io.microconfig.core.configtypes.ConfigTypeFilter;
 import io.microconfig.core.configtypes.ConfigTypeRepository;
 import io.microconfig.core.environments.Component;
-import io.microconfig.core.properties.ComponentProperties;
+import io.microconfig.core.properties.ComponentPropertiesFactory;
 import io.microconfig.core.properties.CompositeComponentProperties;
-import io.microconfig.core.properties.PropertiesRepository;
-import io.microconfig.core.properties.Property;
-import io.microconfig.core.properties.impl.ComponentPropertiesImpl;
-import io.microconfig.utils.StreamUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static io.microconfig.core.properties.impl.CompositeComponentPropertiesImpl.resultsOf;
-
 @RequiredArgsConstructor
 public class ComponentImpl implements Component {
     private final ConfigTypeRepository configTypeRepository;
-    private final PropertiesRepository propertiesRepository;
+    private final ComponentPropertiesFactory componentPropertiesFactory;
 
     @Getter
     private final String name;
@@ -32,12 +26,7 @@ public class ComponentImpl implements Component {
     @Override
     public CompositeComponentProperties getPropertiesFor(ConfigTypeFilter filter) {
         List<ConfigType> filteredTypes = filter.selectTypes(configTypeRepository.getConfigTypes());
-        return resultsOf(StreamUtils.forEach(filteredTypes, this::readConfigs));
-    }
-
-    private ComponentProperties readConfigs(ConfigType configType) {
-        List<Property> properties = propertiesRepository.getProperties(type, environment, configType);
-        return new ComponentPropertiesImpl(name, environment, configType, properties);
+        return componentPropertiesFactory.getComponentProperties(type, environment, filteredTypes);
     }
 
     @Override
