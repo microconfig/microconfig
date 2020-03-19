@@ -1,8 +1,8 @@
 package io.microconfig.core.environments;
 
+import io.microconfig.core.environments.impl.ComponentFactory;
 import io.microconfig.core.environments.impl.ComponentsImpl;
 import io.microconfig.core.environments.impl.EnvironmentImpl;
-import io.microconfig.core.environments.impl.repository.ComponentFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package io.microconfig.core.environments.impl.repository;
+package io.microconfig.core.environments.impl;
 
 import io.microconfig.core.environments.Component;
 

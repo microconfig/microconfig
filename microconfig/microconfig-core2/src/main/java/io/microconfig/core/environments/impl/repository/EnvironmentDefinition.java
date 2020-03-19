@@ -1,6 +1,7 @@
 package io.microconfig.core.environments.impl.repository;
 
 import io.microconfig.core.environments.Environment;
+import io.microconfig.core.environments.impl.ComponentFactory;
 import io.microconfig.core.environments.impl.EnvironmentImpl;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

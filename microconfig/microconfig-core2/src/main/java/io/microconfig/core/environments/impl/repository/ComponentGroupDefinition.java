@@ -1,6 +1,7 @@
 package io.microconfig.core.environments.impl.repository;
 
 import io.microconfig.core.environments.ComponentGroup;
+import io.microconfig.core.environments.impl.ComponentFactory;
 import io.microconfig.core.environments.impl.ComponentGroupImpl;
 import io.microconfig.core.environments.impl.ComponentsImpl;
 import lombok.Getter;

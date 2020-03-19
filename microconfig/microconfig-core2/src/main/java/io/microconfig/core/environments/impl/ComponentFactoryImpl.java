@@ -1,8 +1,7 @@
-package io.microconfig.core.environments.impl.repository;
+package io.microconfig.core.environments.impl;
 
 import io.microconfig.core.configtypes.ConfigTypeRepository;
 import io.microconfig.core.environments.Component;
-import io.microconfig.core.environments.impl.ComponentImpl;
 import io.microconfig.core.properties.PropertiesFactory;
 import lombok.RequiredArgsConstructor;
 
