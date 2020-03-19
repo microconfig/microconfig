@@ -6,7 +6,7 @@ import lombok.With;
 import java.util.*;
 
 import static io.microconfig.utils.CollectionUtils.singleValue;
-import static io.microconfig.utils.StreamUtils.firstFirstResult;
+import static io.microconfig.utils.StreamUtils.findFirstResult;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
@@ -76,7 +76,7 @@ public class Environment {
     }
 
     public Optional<Component> getComponentByName(String componentName) {
-        return firstFirstResult(componentGroups, componentGroup -> componentGroup.getComponentByName(componentName));
+        return findFirstResult(componentGroups, componentGroup -> componentGroup.getComponentByName(componentName));
     }
 
     public Environment withIncludedGroups(List<ComponentGroup> includedGroups) {

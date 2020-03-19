@@ -63,12 +63,12 @@ public class EnvironmentImpl implements Environment {
     }
 
     private Component getComponent(String componentName) {
-        return firstFirstResult(componentGroups, g -> g.findComponentWithName(componentName))
+        return findFirstResult(componentGroups, g -> g.findComponentWithName(componentName))
                 .orElseThrow(() -> new IllegalArgumentException(notFoundComponentMessage(componentName)));
     }
 
     private Component findOrCreateComponent(String componentName) {
-        return firstFirstResult(componentGroups, g -> g.findComponentWithName(componentName))
+        return findFirstResult(componentGroups, g -> g.findComponentWithName(componentName))
                 .orElseGet(() -> componentFactory.createComponent(componentName, componentName, name));
     }
 

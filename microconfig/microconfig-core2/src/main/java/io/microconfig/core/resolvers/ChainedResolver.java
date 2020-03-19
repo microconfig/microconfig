@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
 
-import static io.microconfig.utils.StreamUtils.firstFirstResult;
+import static io.microconfig.utils.StreamUtils.findFirstResult;
 import static java.util.Arrays.asList;
 import static lombok.AccessLevel.PRIVATE;
 
@@ -20,6 +20,6 @@ public class ChainedResolver implements RecursiveResolver {
 
     @Override
     public Optional<Statement> findStatementIn(CharSequence line) {
-        return firstFirstResult(resolvers, r -> r.findStatementIn(line));
+        return findFirstResult(resolvers, r -> r.findStatementIn(line));
     }
 }

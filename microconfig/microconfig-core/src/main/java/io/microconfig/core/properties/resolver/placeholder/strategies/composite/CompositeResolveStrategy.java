@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
 
-import static io.microconfig.utils.StreamUtils.firstFirstResult;
+import static io.microconfig.utils.StreamUtils.findFirstResult;
 
 @RequiredArgsConstructor
 public class CompositeResolveStrategy implements PlaceholderResolveStrategy {
@@ -20,6 +20,6 @@ public class CompositeResolveStrategy implements PlaceholderResolveStrategy {
 
     @Override
     public Optional<Property> resolve(Component component, String propertyKey, String environment) {
-        return firstFirstResult(strategies, s -> s.resolve(component, propertyKey, environment));
+        return findFirstResult(strategies, s -> s.resolve(component, propertyKey, environment));
     }
 }
