@@ -34,6 +34,11 @@ class EnvironmentImplTest {
 
     @BeforeEach
     void setUp() {
+        when(one.getName()).thenReturn("one");
+        when(two.getName()).thenReturn("two");
+        when(three.getName()).thenReturn("three");
+        when(group1.getName()).thenReturn("group1");
+        when(group2.getName()).thenReturn("group2");
         when(group1.getComponents()).thenReturn(components1);
         when(group2.getComponents()).thenReturn(components2);
         when(components1.asList()).thenReturn(asList(one, two));
@@ -51,9 +56,6 @@ class EnvironmentImplTest {
 
     @Test
     void findGroupByName() {
-        when(group1.getName()).thenReturn("group1");
-        when(group2.getName()).thenReturn("group2");
-
         assertEquals(group2, env.findGroupWithName("group2"));
         assertThrows(IllegalArgumentException.class, () -> env.findGroupWithName("group3"));
     }
@@ -89,14 +91,17 @@ class EnvironmentImplTest {
         assertEquals(four, env.findComponentWithName("four", false));
     }
 
-    @Test //todo
+    @Test
     void findComponentsFrom() {
-       /*env.findComponentsFrom(emptyList(), emptyList());
-       env.findComponentsFrom(asList("g1", "g2"), emptyList());
-       env.findComponentsFrom(asList("g1", "g2"), asList("one", "two"));
-       env.findComponentsFrom(singletonList("g1"), asList("one", "two"));
-       env.findComponentsFrom(emptyList(), asList("one", "two"));
-       env.findComponentsFrom(singletonList("bad"), singletonList("bad"));*/
+        assertEquals(components(one, two, three), env.findComponentsFrom(emptyList(), emptyList()));
+        assertEquals(components(one, two, three), env.findComponentsFrom(asList("group1", "group2"), emptyList()));
+        assertEquals(components(one, two), env.findComponentsFrom(asList("group1", "group2"), asList("one", "two")));
+        assertEquals(components(one, two), env.findComponentsFrom(singletonList("group1"), asList("one", "two")));
+        assertEquals(components(one, three), env.findComponentsFrom(emptyList(), asList("one", "three")));
+
+        assertThrows(IllegalArgumentException.class, () -> env.findComponentsFrom(singletonList("bad"), singletonList("bad")));
+        assertThrows(IllegalArgumentException.class, () -> env.findComponentsFrom(singletonList("bad"), emptyList()));
+        assertThrows(NullPointerException.class, () -> env.findComponentsFrom(emptyList(), singletonList("bad")));
     }
 
     @Test
@@ -104,5 +109,9 @@ class EnvironmentImplTest {
         when(group1.toString()).thenReturn("g1");
         when(group2.toString()).thenReturn("g2");
         assertEquals("dev: [g1, g2]", env.toString());
+    }
+
+    private Components components(Component... components) {
+        return new ComponentsImpl(asList(components));
     }
 }
