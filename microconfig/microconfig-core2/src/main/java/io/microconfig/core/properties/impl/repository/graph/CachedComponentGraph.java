@@ -58,11 +58,11 @@ public class CachedComponentGraph implements ComponentGraph {
                 .filter(Objects::nonNull)
                 .flatMap(Stream::of)
                 .filter(configFileFilter)
-                .sorted(comparing(this::amountOfEnvironments).reversed().thenComparing(File::getName));
+                .sorted(comparing(this::amountOfEnvironments).thenComparing(File::getName));
     }
 
     private long amountOfEnvironments(File f) {
-        return symbolCountIn(f.getName(), '.');
+        return -1 * symbolCountIn(f.getName(), '.');
     }
 
     @Override
