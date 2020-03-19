@@ -1,7 +1,5 @@
-package io.microconfig.core.configtypes;
+package io.microconfig.core.configtypes.impl;
 
-import io.microconfig.core.configtypes.impl.StandardConfigType;
-import io.microconfig.core.configtypes.impl.StandardConfigTypeRepository;
 import org.junit.jupiter.api.Test;
 
 import static java.util.Arrays.asList;

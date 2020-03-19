@@ -1,7 +1,6 @@
-package io.microconfig.core.configtypes;
+package io.microconfig.core.configtypes.impl;
 
-import io.microconfig.core.configtypes.impl.ConfigTypeImpl;
-import io.microconfig.core.configtypes.impl.StandardConfigTypeRepository;
+import io.microconfig.core.configtypes.ConfigType;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

@@ -1,5 +1,6 @@
-package io.microconfig.core.configtypes;
+package io.microconfig.core.configtypes.impl;
 
+import io.microconfig.core.configtypes.ConfigType;
 import org.junit.jupiter.api.Test;
 
 import static io.microconfig.core.configtypes.impl.StandardConfigType.APPLICATION;

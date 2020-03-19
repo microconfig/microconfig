@@ -1,5 +1,7 @@
-package io.microconfig.core.configtypes;
+package io.microconfig.core.configtypes.impl;
 
+import io.microconfig.core.configtypes.ConfigType;
+import io.microconfig.core.configtypes.ConfigTypeRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;

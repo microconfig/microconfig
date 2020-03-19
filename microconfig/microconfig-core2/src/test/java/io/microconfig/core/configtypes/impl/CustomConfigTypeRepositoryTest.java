@@ -1,6 +1,7 @@
-package io.microconfig.core.configtypes;
+package io.microconfig.core.configtypes.impl;
 
-import io.microconfig.core.configtypes.impl.StandardConfigTypeRepository;
+import io.microconfig.core.configtypes.ConfigType;
+import io.microconfig.core.configtypes.ConfigTypeRepository;
 import io.microconfig.io.DumpedFsReader;
 import org.junit.jupiter.api.Test;
 
