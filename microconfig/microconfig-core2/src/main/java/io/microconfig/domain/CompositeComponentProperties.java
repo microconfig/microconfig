@@ -7,6 +7,8 @@ import java.util.Optional;
 public interface CompositeComponentProperties {
     List<ComponentProperties> asList();
 
+    CompositeComponentProperties withoutTempValues();
+
     CompositeComponentProperties resolveBy(StatementResolver resolver);
 
     List<Property> getProperties();

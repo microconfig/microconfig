@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static io.microconfig.domain.impl.properties.PropertyImpl.asKeyValue;
+import static io.microconfig.utils.StreamUtils.filter;
 import static io.microconfig.utils.StreamUtils.forEach;
 import static lombok.AccessLevel.PRIVATE;
 
@@ -25,6 +26,11 @@ public class ComponentPropertiesImpl implements ComponentProperties {
     @Override
     public String getConfigType() {
         return configType.getType();
+    }
+
+    @Override
+    public ComponentProperties withoutTempValues() {
+        return withProperties(filter(properties, p -> !p.isTemp()));
     }
 
     @Override

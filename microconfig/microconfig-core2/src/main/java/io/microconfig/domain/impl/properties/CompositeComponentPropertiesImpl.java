@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 
 import static io.microconfig.domain.impl.properties.PropertyImpl.asKeyValue;
 import static io.microconfig.utils.StreamUtils.*;
@@ -13,7 +14,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
 public class CompositeComponentPropertiesImpl implements CompositeComponentProperties {
-    private final List<ComponentProperties> results;
+    private final List<ComponentProperties> properties;
 
     public static CompositeComponentProperties resultsOf(List<ComponentProperties> results) {
         return new CompositeComponentPropertiesImpl(results);
@@ -21,17 +22,22 @@ public class CompositeComponentPropertiesImpl implements CompositeComponentPrope
 
     @Override
     public List<ComponentProperties> asList() {
-        return results;
+        return properties;
+    }
+
+    @Override
+    public CompositeComponentProperties withoutTempValues() {
+        return forEachComponent(ComponentProperties::withoutTempValues);
     }
 
     @Override
     public CompositeComponentProperties resolveBy(StatementResolver resolver) {
-        return resultsOf(forEach(results, r -> r.resolveBy(resolver)));
+        return forEachComponent(c -> c.resolveBy(resolver));
     }
 
     @Override
     public List<Property> getProperties() {
-        return flatMapEach(results, ComponentProperties::getProperties);
+        return flatMapEach(properties, ComponentProperties::getProperties);
     }
 
     @Override
@@ -41,11 +47,15 @@ public class CompositeComponentPropertiesImpl implements CompositeComponentPrope
 
     @Override
     public Optional<Property> getPropertyWithKey(String key) {
-        return firstFirstResult(results, r -> r.getPropertyWithKey(key));
+        return firstFirstResult(properties, r -> r.getPropertyWithKey(key));
     }
 
     @Override
     public <T> List<T> save(PropertySerializer<T> serializer) {
-        return forEach(results, r -> r.save(serializer));
+        return forEach(properties, r -> r.save(serializer));
+    }
+
+    private CompositeComponentProperties forEachComponent(UnaryOperator<ComponentProperties> func) {
+        return resultsOf(forEach(properties, func));
     }
 }

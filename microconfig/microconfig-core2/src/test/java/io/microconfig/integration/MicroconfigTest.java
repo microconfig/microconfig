@@ -72,6 +72,14 @@ public class MicroconfigTest {
         );
     }
 
+    @Test
+    void thisToVar() {
+//        assertEquals(
+//                splitKeyValue("c=3"),
+//                buildComponent("var", "dev").propertiesAsKeyValue()
+//        );
+    }
+
     private void testAliases(String component, String... keyValue) {
         assertEquals(
                 splitKeyValue(keyValue),
@@ -83,6 +91,7 @@ public class MicroconfigTest {
         return microconfig.inEnvironment(env)
                 .findComponentWithName(component, false)
                 .getPropertiesFor(eachConfigType())
-                .resolveBy(microconfig.resolver());
+                .resolveBy(microconfig.resolver())
+                .withoutTempValues();
     }
 }
