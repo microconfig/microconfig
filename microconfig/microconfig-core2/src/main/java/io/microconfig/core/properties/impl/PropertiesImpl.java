@@ -1,43 +1,45 @@
 package io.microconfig.core.properties.impl;
 
-import io.microconfig.core.properties.*;
+import io.microconfig.core.configtypes.ConfigType;
+import io.microconfig.core.properties.Properties;
+import io.microconfig.core.properties.Property;
+import io.microconfig.core.properties.PropertySerializer;
+import io.microconfig.core.properties.Resolver;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.With;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.UnaryOperator;
 
 import static io.microconfig.core.properties.impl.PropertyImpl.asKeyValue;
-import static io.microconfig.utils.StreamUtils.*;
+import static io.microconfig.utils.StreamUtils.filter;
+import static io.microconfig.utils.StreamUtils.forEach;
 import static lombok.AccessLevel.PRIVATE;
 
-@RequiredArgsConstructor(access = PRIVATE)
+@RequiredArgsConstructor
 public class PropertiesImpl implements Properties {
-    private final List<TypedProperties> properties;
-
-    public static Properties composite(List<TypedProperties> properties) {
-        return new PropertiesImpl(properties);
-    }
+    private final String component;
+    private final String environment;
+    private final ConfigType configType;
+    @Getter
+    @With(PRIVATE)
+    private final List<Property> properties;
 
     @Override
-    public List<TypedProperties> asList() {
-        return properties;
+    public String getConfigType() {
+        return configType.getType();
     }
 
     @Override
     public Properties withoutTempValues() {
-        return forEachComponent(TypedProperties::withoutTempValues);
+        return withProperties(filter(properties, p -> !p.isTemp()));
     }
 
     @Override
     public Properties resolveBy(Resolver resolver) {
-        return forEachComponent(c -> c.resolveBy(resolver));
-    }
-
-    @Override
-    public List<Property> getProperties() {
-        return flatMapEach(properties, TypedProperties::getProperties);
+        return withProperties(forEach(properties, p -> p.resolveBy(resolver, configType.getType())));
     }
 
     @Override
@@ -47,15 +49,13 @@ public class PropertiesImpl implements Properties {
 
     @Override
     public Optional<Property> getPropertyWithKey(String key) {
-        return firstFirstResult(properties, r -> r.getPropertyWithKey(key));
+        return properties.stream()
+                .filter(p -> p.getKey().equals(key))
+                .findFirst();
     }
 
     @Override
-    public <T> List<T> save(PropertySerializer<T> serializer) {
-        return forEach(properties, r -> r.save(serializer));
-    }
-
-    private Properties forEachComponent(UnaryOperator<TypedProperties> func) {
-        return composite(forEach(properties, func));
+    public <T> T save(PropertySerializer<T> serializer) {
+        return serializer.serialize(properties, configType, component, environment);
     }
 }

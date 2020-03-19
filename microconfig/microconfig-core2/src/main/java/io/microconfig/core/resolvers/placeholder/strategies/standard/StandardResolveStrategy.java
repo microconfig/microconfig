@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
-import static io.microconfig.core.configtypes.impl.ConfigTypeFilters.configTypeWithName;
+import static io.microconfig.core.configtypes.impl.ConfigTypesFilters.configTypeWithName;
 
 @RequiredArgsConstructor
 public class StandardResolveStrategy implements PlaceholderResolveStrategy {
