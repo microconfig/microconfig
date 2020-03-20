@@ -21,7 +21,7 @@ public class SystemResolveStrategy implements PlaceholderResolveStrategy {
     public static final String ENV_OS_SOURCE = "env";
     public static final String SYSTEM_SOURCE = "system";
 
-    private final String name;
+    private final String propertyKey;
     private final UnaryOperator<String> resolver;
 
     public static PlaceholderResolveStrategy systemPropertiesResolveStrategy() {
@@ -34,7 +34,7 @@ public class SystemResolveStrategy implements PlaceholderResolveStrategy {
 
     @Override
     public Optional<Property> resolve(Placeholder p) {
-        if (!name.equals(p.getComponent())) return empty();
+        if (!propertyKey.equals(p.getComponent())) return empty();
 
         return ofNullable(resolver.apply(p.getValue()))
                 .map(v -> escapeOnWindows(v, p.getValue()))
