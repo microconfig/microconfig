@@ -24,8 +24,8 @@ public class FilePropertiesRepository implements PropertiesRepository {
     private final ConfigIo ioService;
 
     @Override
-    public List<Property> getPropertiesOf(String componentType, String environment, ConfigType configType) {
-        return new ComponentSource(componentType, environment, configType)
+    public List<Property> getPropertiesOf(String originalComponentName, String environment, ConfigType configType) {
+        return new ComponentSource(originalComponentName, environment, configType)
                 .getProperties()
                 .values().stream()
                 .sorted(comparing(Property::getKey))
@@ -35,15 +35,15 @@ public class FilePropertiesRepository implements PropertiesRepository {
     @RequiredArgsConstructor
     private class ComponentSource {
         @With
-        private final String componentType;
+        private final String originalComponentName;
         @With
         private final String environment;
 
         private final Set<String> configExtensions;
         private final Set<Include> processedIncludes;
 
-        public ComponentSource(String componentType, String environment, ConfigType configType) {
-            this(componentType, environment, configType.getSourceExtensions(), new LinkedHashSet<>());
+        public ComponentSource(String originalComponentName, String environment, ConfigType configType) {
+            this(originalComponentName, environment, configType.getSourceExtensions(), new LinkedHashSet<>());
         }
 
         public Map<String, Property> getProperties() {
@@ -60,12 +60,12 @@ public class FilePropertiesRepository implements PropertiesRepository {
             try {
                 return collectPropertiesFrom(configDefinitionsFor(configFilter));
             } catch (ComponentNotFoundException e) {
-                throw e.withParentComponent(componentType);
+                throw e.withParentComponent(originalComponentName);
             }
         }
 
         private Stream<ConfigDefinition> configDefinitionsFor(Predicate<File> filter) {
-            return componentGraph.getConfigFilesFor(componentType, filter)
+            return componentGraph.getConfigFilesFor(originalComponentName, filter)
                     .map(file -> new ConfigFile(file, environment))
                     .map(original -> original.parseUsing(ioService));
         }
@@ -92,7 +92,7 @@ public class FilePropertiesRepository implements PropertiesRepository {
         }
 
         private ComponentSource includedComponent(Include include) {
-            return withComponentType(include.getComponentType())
+            return withOriginalComponentName(include.getComponent())
                     .withEnvironment(include.getEnvironment());
         }
     }

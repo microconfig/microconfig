@@ -17,11 +17,11 @@ public class PropertiesFactoryImpl implements PropertiesFactory {
     private final PropertiesRepository propertiesRepository;
 
     @Override
-    public Properties getPropertiesOf(String component,
+    public Properties getPropertiesOf(String componentName, String componentOriginalName,
                                       String environment,
                                       List<ConfigType> configTypes) {
         return new PropertiesImpl(
-                forEach(configTypes, readConfigsFor(component, environment))
+                forEach(configTypes, readConfigsFor(componentOriginalName, environment))
         );
     }
 

@@ -15,7 +15,7 @@ import static java.util.regex.Pattern.compile;
 public class Include {
     private static Pattern componentPattern = compile("^(?<comp>[\\w-_.]+)(\\[(?<env>.+)])?$");
 
-    private final String componentType;
+    private final String component;
     private final String environment;
 
     static Include parse(String component, String defaultEnv) {
@@ -31,6 +31,6 @@ public class Include {
 
     @Override
     public String toString() {
-        return "#include " + componentType + "[" + environment + "]";
+        return "#include " + component + "[" + environment + "]";
     }
 }

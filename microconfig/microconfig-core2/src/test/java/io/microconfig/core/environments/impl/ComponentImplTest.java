@@ -25,7 +25,7 @@ class ComponentImplTest {
         Properties properties = mock(Properties.class);
         when(configTypeRepository.getConfigTypes()).thenReturn(asList(APPLICATION, DEPLOY));
         when(filter.selectTypes(asList(APPLICATION, DEPLOY))).thenReturn(singletonList(DEPLOY));
-        when(propertiesFactory.getPropertiesOf("type", "env", singletonList(DEPLOY))).thenReturn(properties);
+        when(propertiesFactory.getPropertiesOf(name, "type", "env", singletonList(DEPLOY))).thenReturn(properties);
 
         assertEquals(properties, subj.getPropertiesFor(filter));
     }
