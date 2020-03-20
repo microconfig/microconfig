@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-@EqualsAndHashCode(of = {"name", "type", "environment"})
+@EqualsAndHashCode(of = {"name", "originalName", "environment"})
 @RequiredArgsConstructor
 public class ComponentImpl implements Component {
     private final ConfigTypeRepository configTypeRepository;
@@ -20,14 +20,14 @@ public class ComponentImpl implements Component {
 
     @Getter
     private final String name;
-    private final String type;
+    private final String originalName;
     @Getter
     private final String environment;
 
     @Override
     public Properties getPropertiesFor(ConfigTypeFilter filter) {
         List<ConfigType> filteredTypes = filter.selectTypes(configTypeRepository.getConfigTypes());
-        return propertiesFactory.getPropertiesOf(type, environment, filteredTypes);
+        return propertiesFactory.getPropertiesOf(originalName, environment, filteredTypes);
     }
 
     @Override

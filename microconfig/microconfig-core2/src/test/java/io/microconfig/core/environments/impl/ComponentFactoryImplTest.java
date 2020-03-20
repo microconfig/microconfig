@@ -1,7 +1,6 @@
 package io.microconfig.core.environments.impl;
 
 import io.microconfig.core.configtypes.ConfigTypeRepository;
-import io.microconfig.core.environments.Component;
 import io.microconfig.core.properties.PropertiesFactory;
 import org.junit.jupiter.api.Test;
 
@@ -16,8 +15,13 @@ class ComponentFactoryImplTest {
 
     @Test
     void createComponent() {
-        Component expected = new ComponentImpl(configTypeRepository, propertiesFactory, "name", "type", "env");
-        assertEquals(expected, subj.createComponent("name", "type", "env"));
+        String name = "name";
+        String originalName = "originalName";
+        String env = "env";
+        assertEquals(
+                new ComponentImpl(configTypeRepository, propertiesFactory, name, originalName, env),
+                subj.createComponent(name, originalName, env)
+        );
     }
 
 }

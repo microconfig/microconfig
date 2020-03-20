@@ -11,10 +11,10 @@ import lombok.RequiredArgsConstructor;
 class ComponentDefinition {
     @Getter
     private final String name;
-    private final String type;
+    private final String originalName;
 
-    public static ComponentDefinition withAlias(String alias, String type) {
-        return new ComponentDefinition(alias, type);
+    public static ComponentDefinition withAlias(String alias, String originalName) {
+        return new ComponentDefinition(alias, originalName);
     }
 
     public static ComponentDefinition withName(String name) {
@@ -22,6 +22,6 @@ class ComponentDefinition {
     }
 
     public Component toComponent(ComponentFactory componentFactory, String environment) {
-        return componentFactory.createComponent(name, type, environment);
+        return componentFactory.createComponent(name, originalName, environment);
     }
 }
