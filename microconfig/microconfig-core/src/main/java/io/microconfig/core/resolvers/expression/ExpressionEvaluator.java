@@ -17,6 +17,7 @@ class ExpressionEvaluator {
     public static ExpressionEvaluator withFunctionsFrom(Class<?> functionClass) {
         EvaluationContext context = new StandardEvaluationContext();
         of(functionClass.getMethods())
+                .filter(m -> !m.isSynthetic())
                 .filter(m -> isStatic(m.getModifiers()))
                 .forEach(m -> context.setVariable(m.getName(), m));
 
