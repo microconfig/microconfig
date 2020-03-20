@@ -21,7 +21,7 @@ public class EnvironmentResolveStrategy implements PlaceholderResolveStrategy {
     private final Map<String, EnvProperty> propertyByKey;
 
     @Override
-    public Optional<Property> resolve(String configType, String component, String env, String key) {
+    public Optional<Property> resolve(String component, String key, String env, String configType) {
         EnvProperty envProperty = propertyByKey.get(key);
         if (envProperty == null) return empty();
 

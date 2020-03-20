@@ -14,7 +14,7 @@ public class StandardResolveStrategy implements PlaceholderResolveStrategy {
     private final EnvironmentRepository environmentRepository;
 
     @Override
-    public Optional<Property> resolve(String configType, String component, String environment, String key) {
+    public Optional<Property> resolve(String component, String key, String environment, String configType) {
         return environmentRepository.getOrCreateByName(environment)
                 .findComponentWithName(component, false)
                 .getPropertiesFor(configTypeWithName(configType))

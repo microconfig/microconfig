@@ -22,7 +22,7 @@ class Placeholder {
     private final String defaultValue;
 
     public String resolveUsing(PlaceholderResolveStrategy strategy) {
-        return strategy.resolve(configType, component, environment, value)
+        return strategy.resolve(component, value, environment, configType)
                 .map(Property::getValue)
                 .orElseThrow(() -> new IllegalStateException("Cant resolve '" + this + "'"));
     }
