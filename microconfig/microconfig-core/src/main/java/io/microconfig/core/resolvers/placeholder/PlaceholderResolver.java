@@ -1,13 +1,17 @@
 package io.microconfig.core.resolvers.placeholder;
 
 import io.microconfig.core.properties.ComponentWithEnv;
+import io.microconfig.core.properties.impl.PropertyResolveException;
 import io.microconfig.core.resolvers.RecursiveResolver;
 import lombok.RequiredArgsConstructor;
 
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 
 import static io.microconfig.core.resolvers.placeholder.PlaceholderBorders.findPlaceholderIn;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.unmodifiableSet;
 
 @RequiredArgsConstructor
 public class PlaceholderResolver implements RecursiveResolver {
@@ -16,12 +20,14 @@ public class PlaceholderResolver implements RecursiveResolver {
 
     @Override
     public Optional<Statement> findStatementIn(CharSequence line) {
-        return findPlaceholderIn(line).map(PlaceholderStatement::new);
+        return findPlaceholderIn(line)
+                .map(b-> new PlaceholderStatement(b, emptySet()));
     }
 
     @RequiredArgsConstructor
     private class PlaceholderStatement implements Statement {
         private final PlaceholderBorders borders;
+        private final Set<Placeholder> visited;
 
         @Override
         public int getStartIndex() {
@@ -60,6 +66,14 @@ public class PlaceholderResolver implements RecursiveResolver {
                 if (defaultValue != null) return defaultValue;
                 throw e;
             }
+        }
+
+        private Set<Placeholder> updateVisited(Set<Placeholder> visited, Placeholder placeholder) {
+            Set<Placeholder> updated = new LinkedHashSet<>(visited);
+            if (!updated.add(placeholder)) {
+                throw new PropertyResolveException("Found cyclic dependencies: " + updated);
+            }
+            return unmodifiableSet(updated);
         }
     }
 }

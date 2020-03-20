@@ -2,6 +2,7 @@ package io.microconfig.core.resolvers.placeholder;
 
 import io.microconfig.core.properties.ComponentWithEnv;
 import io.microconfig.core.properties.Property;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -9,6 +10,7 @@ import lombok.With;
 import static lombok.AccessLevel.PACKAGE;
 
 @Getter
+@EqualsAndHashCode(exclude = "defaultValue")
 @RequiredArgsConstructor(access = PACKAGE)
 class Placeholder {
     private static final String SELF_REFERENCE = "this";
