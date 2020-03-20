@@ -3,7 +3,6 @@ package io.microconfig.core.properties.impl;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.PropertySource;
 import io.microconfig.core.properties.Resolver;
-import io.microconfig.utils.Os;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -12,7 +11,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
-import static io.microconfig.utils.StringUtils.*;
+import static io.microconfig.utils.StringUtils.findFirstIndexIn;
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
@@ -64,13 +63,6 @@ public class PropertyImpl implements Property {
 
     public static Map<String, String> asKeyValue(Collection<Property> properties) {
         return properties.stream().collect(toLinkedMap(Property::getKey, Property::getValue));
-    }
-
-    public Property escapeOnWindows() {
-        if (!Os.isWindows()) return this;
-
-        String escaped = ("user.home".equals(key)) ? unixLikePath(value) : escape(value);
-        return withValue(escaped);
     }
 
     @Override
