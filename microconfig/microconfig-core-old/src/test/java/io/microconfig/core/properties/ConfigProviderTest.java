@@ -119,7 +119,7 @@ class ConfigProviderTest {
 
     @Test
     void testCyclicDetect() {
-        assertThrows(PropertyResolveException.class, () -> provider.getProperties(byType("cyclicDetectTest"), "uat"));
+        assertThrows(PropertyResolveException.class, () -> provider.getProperties(byType("cyclicDetect"), "uat"));
     }
 
     @Test

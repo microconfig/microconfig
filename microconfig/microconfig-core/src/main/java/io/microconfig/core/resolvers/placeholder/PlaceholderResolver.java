@@ -13,6 +13,7 @@ import java.util.Set;
 import static io.microconfig.core.resolvers.placeholder.PlaceholderBorders.findPlaceholderIn;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
+import static java.util.stream.Collectors.joining;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
@@ -78,7 +79,8 @@ public class PlaceholderResolver implements RecursiveResolver {
         private PlaceholderResolver markVisited(Placeholder placeholder) {
             Set<Placeholder> updated = new LinkedHashSet<>(visited);
             if (!updated.add(placeholder)) {
-                throw new PropertyResolveException("Found cyclic dependencies: " + updated);
+                throw new PropertyResolveException("Found cyclic dependencies: \n" +
+                        updated.stream().map(Placeholder::toString).collect(joining(" -> ")));
             }
             return withVisited(unmodifiableSet(updated));
         }

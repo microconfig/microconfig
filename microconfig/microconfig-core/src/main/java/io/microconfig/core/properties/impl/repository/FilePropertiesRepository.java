@@ -15,8 +15,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static io.microconfig.core.properties.impl.repository.graph.ConfigFileFilters.*;
-import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 public class FilePropertiesRepository implements PropertiesRepository {
@@ -25,11 +23,10 @@ public class FilePropertiesRepository implements PropertiesRepository {
 
     @Override
     public List<Property> getPropertiesOf(String originalComponentName, String environment, ConfigType configType) {
-        return new ComponentSource(originalComponentName, environment, configType)
+        Collection<Property> properties = new ComponentSource(originalComponentName, environment, configType)
                 .getProperties()
-                .values().stream()
-                .sorted(comparing(Property::getKey))
-                .collect(toList());
+                .values();
+        return new ArrayList<>(properties);
     }
 
     @RequiredArgsConstructor
@@ -71,7 +68,7 @@ public class FilePropertiesRepository implements PropertiesRepository {
         }
 
         private Map<String, Property> collectPropertiesFrom(Stream<ConfigDefinition> componentConfigs) {
-            Map<String, Property> componentProperties = new HashMap<>();
+            Map<String, Property> componentProperties = new LinkedHashMap<>();
 
             componentConfigs.forEach(component -> {
                 componentProperties.putAll(collectIncludedProperties(component.getIncludes()));
@@ -85,7 +82,7 @@ public class FilePropertiesRepository implements PropertiesRepository {
             return includes.stream()
                     .filter(processedIncludes::add)
                     .map(include -> includedComponent(include).getProperties())
-                    .reduce(new HashMap<>(), (m1, m2) -> {
+                    .reduce(new LinkedHashMap<>(), (m1, m2) -> {
                         m1.putAll(m2);
                         return m1;
                     });

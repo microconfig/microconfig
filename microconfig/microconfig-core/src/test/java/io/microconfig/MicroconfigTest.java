@@ -1,15 +1,17 @@
-package io.microconfig.integration;
+package io.microconfig;
 
-import io.microconfig.Microconfig;
 import io.microconfig.core.properties.Properties;
 import io.microconfig.core.properties.Property;
+import io.microconfig.core.properties.impl.PropertyResolveException;
 import org.junit.jupiter.api.Test;
 
 import static io.microconfig.Microconfig.searchConfigsIn;
-import static io.microconfig.core.configtypes.impl.ConfigTypeFilters.eachConfigType;
+import static io.microconfig.core.configtypes.impl.ConfigTypeFilters.configType;
+import static io.microconfig.core.configtypes.impl.StandardConfigType.APPLICATION;
 import static io.microconfig.testutils.ClasspathUtils.classpathFile;
 import static io.microconfig.utils.StringUtils.splitKeyValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MicroconfigTest {
     private final Microconfig microconfig = searchConfigsIn(classpathFile("repo"));
@@ -80,6 +82,11 @@ public class MicroconfigTest {
         );
     }
 
+    @Test
+    void testCyclicDetect() {
+        assertThrows(PropertyResolveException.class, () -> buildComponent("cyclicDetect", "uat"));
+    }
+
     private void testAliases(String component, String... keyValue) {
         assertEquals(
                 splitKeyValue(keyValue),
@@ -90,7 +97,7 @@ public class MicroconfigTest {
     private Properties buildComponent(String component, String env) {
         return microconfig.inEnvironment(env)
                 .findComponentWithName(component, false)
-                .getPropertiesFor(eachConfigType())
+                .getPropertiesFor(configType(APPLICATION))
                 .resolveBy(microconfig.resolver())
                 .withoutTempValues();
     }

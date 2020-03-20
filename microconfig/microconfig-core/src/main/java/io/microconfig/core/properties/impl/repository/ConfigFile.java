@@ -15,10 +15,10 @@ import static io.microconfig.core.properties.impl.FilePropertySource.fileSource;
 import static io.microconfig.core.properties.impl.PropertyImpl.isTempProperty;
 import static io.microconfig.core.properties.impl.PropertyImpl.parse;
 import static io.microconfig.utils.CollectionUtils.join;
+import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static java.util.Collections.emptyList;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
 @RequiredArgsConstructor
 class ConfigFile {
@@ -66,7 +66,7 @@ class ConfigFile {
         private final List<Property> properties;
 
         public Map<String, Property> getProperties() {
-            return properties.stream().collect(toMap(Property::getKey, identity()));
+            return properties.stream().collect(toLinkedMap(Property::getKey, identity()));
         }
     }
 }
