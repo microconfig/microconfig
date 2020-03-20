@@ -61,13 +61,12 @@ class ComponentGroupDefinition {
                 .withAppendedComponents(emptyList());
     }
 
-    public ComponentGroup toGroup(ComponentFactory componentFactory,
-                                  String environment) {
+    public ComponentGroup toGroup(ComponentFactory componentFactory, String environment) {
         return new ComponentGroupImpl(
                 name,
                 ip,
                 new ComponentsImpl(
-                        forEach(components, c -> componentFactory.createComponent(c.getName(), c.getType(), environment))
+                        forEach(components, c -> c.toComponent(componentFactory, environment))
                 )
         );
     }
