@@ -1,4 +1,4 @@
-package io.microconfig.core.resolvers.placeholder.strategies.envdescriptor;
+package io.microconfig.core.resolvers.placeholder.strategies.environment;
 
 import io.microconfig.core.environments.Environment;
 import io.microconfig.core.environments.EnvironmentRepository;
@@ -16,7 +16,7 @@ import static io.microconfig.core.resolvers.placeholder.strategies.PlaceholderSo
 import static java.util.Optional.empty;
 
 @RequiredArgsConstructor
-public class EnvDescriptorResolveStrategy implements PlaceholderResolveStrategy {
+public class EnvironmentResolveStrategy implements PlaceholderResolveStrategy {
     private final EnvironmentRepository environmentRepository;
     private final Map<String, EnvProperty> propertyByKey;
 

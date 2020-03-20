@@ -1,8 +1,8 @@
-package io.microconfig.core.resolvers.placeholder.strategies.envdescriptor.properties;
+package io.microconfig.core.resolvers.placeholder.strategies.environment.properties;
 
 
 import io.microconfig.core.environments.Environment;
-import io.microconfig.core.resolvers.placeholder.strategies.envdescriptor.EnvProperty;
+import io.microconfig.core.resolvers.placeholder.strategies.environment.EnvProperty;
 
 import java.util.Optional;
 

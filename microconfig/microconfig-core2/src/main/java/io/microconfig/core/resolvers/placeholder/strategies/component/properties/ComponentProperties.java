@@ -12,15 +12,15 @@ import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
 
 @RequiredArgsConstructor
-public class ComponentPropertyFactory {
+public class ComponentProperties {
     private final ComponentGraph componentGraph;
     private final File rootDir;
     private final File destinationComponentDir;
 
     public Map<String, ComponentProperty> get() {
         return of(
-                new ComponentNameProperty(),
-                new ComponentConfigDirProperty(componentGraph),
+                new NameProperty(),
+                new ConfigDirProperty(componentGraph),
                 new ResultDirProperty(destinationComponentDir),
                 new ConfigRootDirProperty(rootDir)
         ).collect(toMap(ComponentProperty::key, identity()));

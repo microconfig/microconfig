@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class ComponentConfigDirProperty implements ComponentProperty {
+public class ConfigDirProperty implements ComponentProperty {
     private final ComponentGraph componentGraph;
 
     @Override

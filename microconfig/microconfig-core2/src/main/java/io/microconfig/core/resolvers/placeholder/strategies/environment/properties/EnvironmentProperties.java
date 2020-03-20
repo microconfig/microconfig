@@ -1,7 +1,7 @@
-package io.microconfig.core.resolvers.placeholder.strategies.envdescriptor.properties;
+package io.microconfig.core.resolvers.placeholder.strategies.environment.properties;
 
 
-import io.microconfig.core.resolvers.placeholder.strategies.envdescriptor.EnvProperty;
+import io.microconfig.core.resolvers.placeholder.strategies.environment.EnvProperty;
 
 import java.util.Map;
 
@@ -9,7 +9,7 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
 
-public class EnvDescriptorPropertiesFactory {
+public class EnvironmentProperties {
     public Map<String, EnvProperty> get() {
         return of(
                 new EnvNameProperty(),

@@ -17,10 +17,10 @@ import io.microconfig.core.resolvers.expression.ExpressionResolver;
 import io.microconfig.core.resolvers.placeholder.PlaceholderResolver;
 import io.microconfig.core.resolvers.placeholder.strategies.component.ComponentProperty;
 import io.microconfig.core.resolvers.placeholder.strategies.component.ComponentResolveStrategy;
-import io.microconfig.core.resolvers.placeholder.strategies.component.properties.ComponentPropertyFactory;
-import io.microconfig.core.resolvers.placeholder.strategies.envdescriptor.EnvDescriptorResolveStrategy;
-import io.microconfig.core.resolvers.placeholder.strategies.envdescriptor.EnvProperty;
-import io.microconfig.core.resolvers.placeholder.strategies.envdescriptor.properties.EnvDescriptorPropertiesFactory;
+import io.microconfig.core.resolvers.placeholder.strategies.component.properties.ComponentProperties;
+import io.microconfig.core.resolvers.placeholder.strategies.environment.EnvProperty;
+import io.microconfig.core.resolvers.placeholder.strategies.environment.EnvironmentResolveStrategy;
+import io.microconfig.core.resolvers.placeholder.strategies.environment.properties.EnvironmentProperties;
 import io.microconfig.core.resolvers.placeholder.strategies.standard.StandardResolveStrategy;
 import io.microconfig.io.DumpedFsReader;
 import io.microconfig.io.FsReader;
@@ -68,14 +68,14 @@ public class Microconfig {
     }
 
     private RecursiveResolver placeholderResolver() {
-        Map<String, ComponentProperty> componentSpecialProperties = new ComponentPropertyFactory(componentGraph(), rootDir, null).get();//todo;
-        Map<String, EnvProperty> envSpecialProperties = new EnvDescriptorPropertiesFactory().get();
+        Map<String, ComponentProperty> componentSpecialProperties = new ComponentProperties(componentGraph(), rootDir, null).get();//todo;
+        Map<String, EnvProperty> envSpecialProperties = new EnvironmentProperties().get();
 
         return new PlaceholderResolver(
                 composite(
                         systemPropertiesResolveStrategy(),
                         new ComponentResolveStrategy(componentSpecialProperties),
-                        new EnvDescriptorResolveStrategy(environments(), envSpecialProperties),
+                        new EnvironmentResolveStrategy(environments(), envSpecialProperties),
                         new StandardResolveStrategy(environments()),
                         envVariablesResolveStrategy()
                 ),

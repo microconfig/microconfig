@@ -1,4 +1,4 @@
-package io.microconfig.core.resolvers.placeholder.strategies.envdescriptor;
+package io.microconfig.core.resolvers.placeholder.strategies.environment;
 
 import io.microconfig.core.environments.Environment;
 

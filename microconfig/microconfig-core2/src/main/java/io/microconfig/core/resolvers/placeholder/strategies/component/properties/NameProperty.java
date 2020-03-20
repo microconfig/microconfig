@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import static java.util.Optional.of;
 
-public class ComponentNameProperty implements ComponentProperty {
+public class NameProperty implements ComponentProperty {
     @Override
     public String key() {
         return "name";
