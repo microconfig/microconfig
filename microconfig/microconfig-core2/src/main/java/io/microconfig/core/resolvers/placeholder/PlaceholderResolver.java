@@ -41,11 +41,10 @@ public class PlaceholderResolver implements RecursiveResolver {
             }
 
             return resolve(placeholder, root);
-            //dev
-            //c1 -> key=${c2@key}
-            //c2 -> key=${c3[prod]@key}
-            //c3 -> key=${c3@ip}
         }
+        //c1 -> key=${c2@key}
+        //c2 -> key=${c3[prod]@key}
+        //c3 -> key=${c3@ip}
 
         private boolean referencedTo(ComponentWithEnv c, Placeholder p) {
             return p.referencedTo(c) && !nonOverridableKeys.contains(p.getKey());
