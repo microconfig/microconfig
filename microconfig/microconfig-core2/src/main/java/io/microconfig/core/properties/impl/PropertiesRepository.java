@@ -6,5 +6,5 @@ import io.microconfig.core.properties.Property;
 import java.util.List;
 
 public interface PropertiesRepository {
-    List<Property> getPropertiesFor(String componentType, String environment, ConfigType configType);
+    List<Property> getPropertiesOf(String componentType, String environment, ConfigType configType);
 }

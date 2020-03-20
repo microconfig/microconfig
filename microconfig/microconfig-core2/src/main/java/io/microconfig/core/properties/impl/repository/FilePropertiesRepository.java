@@ -24,7 +24,7 @@ public class FilePropertiesRepository implements PropertiesRepository {
     private final ConfigIo ioService;
 
     @Override
-    public List<Property> getPropertiesFor(String componentType, String environment, ConfigType configType) {
+    public List<Property> getPropertiesOf(String componentType, String environment, ConfigType configType) {
         return new ComponentSource(componentType, environment, configType)
                 .getProperties()
                 .values().stream()
