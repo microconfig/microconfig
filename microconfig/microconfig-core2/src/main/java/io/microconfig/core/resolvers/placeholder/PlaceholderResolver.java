@@ -24,6 +24,16 @@ public class PlaceholderResolver implements RecursiveResolver {
         private final PlaceholderBorders borders;
 
         @Override
+        public int getStartIndex() {
+            return borders.getStartIndex();
+        }
+
+        @Override
+        public int getEndIndex() {
+            return borders.getEndIndex();
+        }
+
+        @Override
         public String resolveFor(ComponentWithEnv sourceOfValue,
                                  ComponentWithEnv root,
                                  String configType) {
@@ -41,16 +51,6 @@ public class PlaceholderResolver implements RecursiveResolver {
             //c1 -> key=${c2@key}
             //c2 -> key=${c3[prod]@key}
             //c3 -> key=${c3@ip}
-        }
-
-        @Override
-        public int getStartIndex() {
-            return borders.getStartIndex();
-        }
-
-        @Override
-        public int getEndIndex() {
-            return borders.getEndIndex();
         }
     }
 }

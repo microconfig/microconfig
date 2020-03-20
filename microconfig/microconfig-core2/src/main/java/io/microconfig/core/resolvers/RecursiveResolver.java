@@ -26,9 +26,7 @@ public interface RecursiveResolver extends Resolver {
     Optional<Statement> findStatementIn(CharSequence line);
 
     interface Statement {
-        String resolveFor(ComponentWithEnv currentComponent,
-                          ComponentWithEnv rootComponent,
-                          String configType);
+        String resolveFor(ComponentWithEnv sourceOfValue, ComponentWithEnv root, String configType);
 
         int getStartIndex();
 
