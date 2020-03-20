@@ -27,7 +27,7 @@ class ExpressionResolverTest {
     @Test
     void api() {
         String value = "I'm #{ 1 + 2} !";
-        Statement statement = resolver.findStatementIn(value).orElseThrow(IllegalStateException::new);
+        Statement statement = resolver.findStatementIn(new StringBuilder(value)).orElseThrow(IllegalStateException::new);
         assertEquals(4, statement.getStartIndex());
         assertEquals(13, statement.getEndIndex());
         assertEquals("#{ 1 + 2}", statement.toString());

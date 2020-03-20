@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface RecursiveResolver extends Resolver {
     @Override
-    default String resolve(CharSequence value,
+    default String resolve(String value,
                            ComponentWithEnv sourceOfValue,
                            ComponentWithEnv root,
                            String configType) {

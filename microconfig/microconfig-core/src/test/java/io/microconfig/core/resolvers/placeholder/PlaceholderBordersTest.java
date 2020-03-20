@@ -19,7 +19,7 @@ class PlaceholderBordersTest {
     }
 
     private void doTest(String line, String expected) {
-        PlaceholderBorders border = PlaceholderBorders.findPlaceholderIn(line).orElseThrow(IllegalStateException::new);
+        PlaceholderBorders border = PlaceholderBorders.findPlaceholderIn(new StringBuilder(line)).orElseThrow(IllegalStateException::new);
         assertEquals(expected, border.toString());
     }
 }
