@@ -42,7 +42,7 @@ public class PlaceholderResolver implements RecursiveResolver {
             //dev
             //c1 -> key=${c2@key}
             //c2 -> key=${c3[prod]@key}
-            //c3 -> key=${this@ip}
+            //c3 -> key=${c3@ip}
         }
 
         @Override
