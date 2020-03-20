@@ -8,21 +8,20 @@ import lombok.With;
 
 import static lombok.AccessLevel.PACKAGE;
 
+@Getter
 @RequiredArgsConstructor(access = PACKAGE)
 class Placeholder {
     private static final String SELF_REFERENCE = "this";
 
-    @Getter
     private final String configType;
     @With
     private final String component;
     private final String environment;
-    private final String value;
-    @Getter
+    private final String key;
     private final String defaultValue;
 
     public String resolveUsing(PlaceholderResolveStrategy strategy) {
-        return strategy.resolve(component, value, environment, configType)
+        return strategy.resolve(component, key, environment, configType)
                 .map(Property::getValue)
                 .orElseThrow(() -> new IllegalStateException("Cant resolve '" + this + "'"));
     }
@@ -35,6 +34,11 @@ class Placeholder {
         return component.equals(SELF_REFERENCE);
     }
 
+    public boolean referencedTo(ComponentWithEnv c) {
+        //todo old impl uses c.getComponentType
+        return component.equals(c.getComponent()) && environment.equals(c.getEnvironment());
+    }
+
     @Override
     public String toString() {
         return "${" +
@@ -42,7 +46,7 @@ class Placeholder {
                 component +
                 "[" + environment + "]" +
                 "@" +
-                value +
+                key +
                 (defaultValue == null ? "" : ":" + defaultValue) +
                 "}";
     }

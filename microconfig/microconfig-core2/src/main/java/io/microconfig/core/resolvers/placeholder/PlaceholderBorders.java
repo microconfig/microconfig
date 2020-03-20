@@ -21,7 +21,7 @@ class PlaceholderBorders {
     private final int startIndex;
     private final int configTypeEndIndex;
     private final int envIndex;
-    private final int valueIndex;
+    private final int keyIndex;
     private final int defaultValueIndex;
     @Getter
     private final int endIndex;
@@ -56,7 +56,7 @@ class PlaceholderBorders {
                 return withEnvIndex(i + 1).parseEnvName();
             }
             if (c == '@') {
-                return withValueIndex(i + 1).parseValue();
+                return withKeyIndex(i + 1).parseValue();
             }
             if (notAllowedSymbol(c)) {
                 return withStartIndex(i).searchOpenSign();
@@ -70,7 +70,7 @@ class PlaceholderBorders {
         for (int i = envIndex; i < line.length(); ++i) {
             char c = line.charAt(i);
             if (c == ']' && i + 1 < line.length() && line.charAt(i + 1) == '@') {
-                return withValueIndex(i + 2).parseValue();
+                return withKeyIndex(i + 2).parseValue();
             }
             if (notAllowedSymbol(c)) {
                 return withStartIndex(i).searchOpenSign();
@@ -81,7 +81,7 @@ class PlaceholderBorders {
     }
 
     private Optional<PlaceholderBorders> parseValue() {
-        for (int i = valueIndex; i < line.length(); ++i) {
+        for (int i = keyIndex; i < line.length(); ++i) {
             char c = line.charAt(i);
             if (c == ':') {
                 return withDefaultValueIndex(i + 1).parseDefaultValue();
@@ -129,15 +129,15 @@ class PlaceholderBorders {
     }
 
     private String getComponent() {
-        return line.substring(max(startIndex + 2, configTypeEndIndex + 3), envIndex < 0 ? valueIndex - 1 : envIndex - 1);
+        return line.substring(max(startIndex + 2, configTypeEndIndex + 3), envIndex < 0 ? keyIndex - 1 : envIndex - 1);
     }
 
     private String getEnvironment(String contextEnv) {
-        return envIndex < 0 ? contextEnv : line.subSequence(envIndex, valueIndex - 2).toString();
+        return envIndex < 0 ? contextEnv : line.subSequence(envIndex, keyIndex - 2).toString();
     }
 
-    private String getValue() {
-        return line.substring(valueIndex, defaultValueIndex < 0 ? endIndex - 1 : defaultValueIndex - 1);
+    private String getKey() {
+        return line.substring(keyIndex, defaultValueIndex < 0 ? endIndex - 1 : defaultValueIndex - 1);
     }
 
     private String getDefaultValue() {
@@ -149,7 +149,7 @@ class PlaceholderBorders {
                 getConfigType(contextConfigType),
                 getComponent(),
                 getEnvironment(contextEnv),
-                getValue(),
+                getKey(),
                 getDefaultValue()
         );
     }
