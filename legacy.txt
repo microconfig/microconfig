@@ -1,3 +1,2 @@
-removed log4j from config types,
 support for json env
 filename service.properties
