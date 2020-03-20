@@ -5,8 +5,7 @@ import lombok.With;
 
 @Value
 @With
-public class ComponentDescription {
-    String componentName;
-    String componentType;
+public class ComponentWitsEnv {
+    String component;
     String environment;
 }

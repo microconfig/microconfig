@@ -1,6 +1,6 @@
 package io.microconfig.core.resolvers;
 
-import io.microconfig.core.properties.ComponentDescription;
+import io.microconfig.core.properties.ComponentWitsEnv;
 import io.microconfig.core.properties.Resolver;
 
 import java.util.Optional;
@@ -8,8 +8,8 @@ import java.util.Optional;
 public interface RecursiveResolver extends Resolver {
     @Override
     default String resolve(CharSequence value,
-                           ComponentDescription currentComponent,
-                           ComponentDescription rootComponent,
+                           ComponentWitsEnv currentComponent,
+                           ComponentWitsEnv rootComponent,
                            String configType) {
         StringBuilder result = new StringBuilder(value);
         while (true) {
@@ -26,8 +26,8 @@ public interface RecursiveResolver extends Resolver {
     Optional<Statement> findStatementIn(CharSequence line);
 
     interface Statement {
-        String resolveFor(ComponentDescription currentComponent,
-                          ComponentDescription rootComponent,
+        String resolveFor(ComponentWitsEnv currentComponent,
+                          ComponentWitsEnv rootComponent,
                           String configType);
 
         int getStartIndex();

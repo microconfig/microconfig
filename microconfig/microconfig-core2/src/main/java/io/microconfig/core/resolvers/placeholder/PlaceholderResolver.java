@@ -1,6 +1,6 @@
 package io.microconfig.core.resolvers.placeholder;
 
-import io.microconfig.core.properties.ComponentDescription;
+import io.microconfig.core.properties.ComponentWitsEnv;
 import io.microconfig.core.resolvers.RecursiveResolver;
 import lombok.RequiredArgsConstructor;
 
@@ -24,8 +24,8 @@ public class PlaceholderResolver implements RecursiveResolver {
         private final PlaceholderBorders borders;
 
         @Override
-        public String resolveFor(ComponentDescription currentComponent,
-                                 ComponentDescription rootComponent,
+        public String resolveFor(ComponentWitsEnv currentComponent,
+                                 ComponentWitsEnv rootComponent,
                                  String configType) {
             //configType, currentComponent, rootComponent
             Placeholder placeholder = borders.toPlaceholder(configType, currentComponent.getEnvironment());

@@ -1,6 +1,6 @@
 package io.microconfig.core.properties.impl;
 
-import io.microconfig.core.properties.ComponentDescription;
+import io.microconfig.core.properties.ComponentWitsEnv;
 import io.microconfig.core.properties.Property;
 
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
@@ -15,23 +15,23 @@ public class PropertyResolveException extends RuntimeException {
         super(message);
     }
 
-    public PropertyResolveException(String unresolvedPlaceholder, Property sourceOfPlaceholder, ComponentDescription root,
+    public PropertyResolveException(String unresolvedPlaceholder, Property sourceOfPlaceholder, ComponentWitsEnv root,
                                     Throwable cause) {
         super(resolveExceptionMessage(unresolvedPlaceholder, sourceOfPlaceholder, root), cause);
     }
 
-    public PropertyResolveException(String unresolvedPlaceholder, Property sourceOfPlaceholder, ComponentDescription root) {
+    public PropertyResolveException(String unresolvedPlaceholder, Property sourceOfPlaceholder, ComponentWitsEnv root) {
         super(resolveExceptionMessage(unresolvedPlaceholder, sourceOfPlaceholder, root));
     }
 
-    public PropertyResolveException(String expression, ComponentDescription root, Throwable cause) {
+    public PropertyResolveException(String expression, ComponentWitsEnv root, Throwable cause) {
         super(format("Can't evaluate EL '%s'. Root component -> %s[%s]. " +
                         "Example of correct EL: #{'${component1@ip}' + ':' + ${ports@port1}}",
-                expression, root.getComponentName(), root.getEnvironment()), cause
+                expression, root.getComponent(), root.getEnvironment()), cause
         );
     }
 
-    private static String resolveExceptionMessage(String unresolvedPlaceholder, Property sourceOfPlaceholder, ComponentDescription root) {
+    private static String resolveExceptionMessage(String unresolvedPlaceholder, Property sourceOfPlaceholder, ComponentWitsEnv root) {
         return format("Can't resolve placeholder '%s' defined in " + LINES_SEPARATOR + "'%s', that property is a transitive dependency of '%s'.",
                 unresolvedPlaceholder,
                 sourceOfPlaceholder.getSource().sourceInfo(),

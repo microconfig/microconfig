@@ -1,6 +1,6 @@
 package io.microconfig.core.resolvers.expression;
 
-import io.microconfig.core.configtypes.ConfigType;
+import io.microconfig.core.properties.ComponentWitsEnv;
 import io.microconfig.core.resolvers.RecursiveResolver.Statement;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class Expression implements Statement {
     private final int endIndex;
 
     @Override
-    public String resolveFor(ConfigType _2, String _1) {
+    public String resolveFor(ComponentWitsEnv _1, ComponentWitsEnv _2, String _3) {
         try {
             return evaluator.evaluate(value);
         } catch (EvaluationException | ParseException e) {

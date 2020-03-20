@@ -42,7 +42,7 @@ public class TypedPropertiesImpl implements TypedProperties {
 
     @Override
     public TypedProperties resolveBy(Resolver resolver) {
-        return withProperties(forEach(properties, p -> p.resolveBy(resolver, configType)));
+        return withProperties(forEach(properties, p -> p.resolveBy(resolver, configType.getName())));
     }
 
     @Override
