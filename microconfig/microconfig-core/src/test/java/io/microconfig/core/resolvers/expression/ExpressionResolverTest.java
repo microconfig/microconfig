@@ -35,6 +35,6 @@ class ExpressionResolverTest {
     }
 
     private String resolve(String value) {
-        return resolver.resolve(value, null,null, null);
+        return resolver.resolve(value, null, null, null);
     }
 }
