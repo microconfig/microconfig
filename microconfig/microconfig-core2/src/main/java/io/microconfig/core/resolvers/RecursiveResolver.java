@@ -13,7 +13,7 @@ public interface RecursiveResolver extends Resolver {
             if (!optionalStatement.isPresent()) break;
 
             Statement statement = optionalStatement.get();
-            String resolved = statement.resolve(envContext, configType);
+            String resolved = statement.resolveFor(configType, envContext);
             result.replace(statement.getStartIndex(), statement.getEndIndex(), resolved);
         }
         return result.toString();
@@ -22,7 +22,7 @@ public interface RecursiveResolver extends Resolver {
     Optional<Statement> findStatementIn(CharSequence line);
 
     interface Statement {
-        String resolve(String env, ConfigType configType);
+        String resolveFor(ConfigType configType, String env);
 
         int getStartIndex();
 

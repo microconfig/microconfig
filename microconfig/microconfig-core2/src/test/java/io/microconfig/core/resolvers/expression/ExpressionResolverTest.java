@@ -32,7 +32,7 @@ class ExpressionResolverTest {
         assertEquals(4, statement.getStartIndex());
         assertEquals(13, statement.getEndIndex());
         assertEquals("#{ 1 + 2}", statement.toString());
-        assertEquals("3", statement.resolve("dev", APPLICATION));
+        assertEquals("3", statement.resolveFor(APPLICATION, "dev"));
     }
 
     private String resolve(String value) {
