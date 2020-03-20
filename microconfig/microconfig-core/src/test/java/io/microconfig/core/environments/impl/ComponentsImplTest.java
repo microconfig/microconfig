@@ -2,6 +2,7 @@ package io.microconfig.core.environments.impl;
 
 import io.microconfig.core.configtypes.ConfigTypeFilter;
 import io.microconfig.core.environments.Component;
+import io.microconfig.core.environments.Components;
 import io.microconfig.core.properties.Properties;
 import io.microconfig.core.properties.TypedProperties;
 import io.microconfig.core.properties.impl.PropertiesImpl;
@@ -22,7 +23,7 @@ class ComponentsImplTest {
     Properties twoProps = mock(Properties.class);
     TypedProperties twoTProps = mock(TypedProperties.class);
 
-    ComponentsImpl subj = new ComponentsImpl(asList(one, two));
+    Components subj = new ComponentsImpl(asList(one, two));
 
     @Test
     void filterPropertiesForContainedComponents() {

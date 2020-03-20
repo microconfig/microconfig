@@ -22,9 +22,6 @@ import static org.mockito.Mockito.when;
 class TypedPropertiesImplTest {
     Property key = mock(Property.class);
     Property var = mock(Property.class);
-    Resolver resolver = mock(Resolver.class);
-    PropertySerializer<String> serializer = (p, t, c, e) -> c;
-
     TypedProperties subj = withProperties(asList(key, var));
 
     @BeforeEach
@@ -61,6 +58,7 @@ class TypedPropertiesImplTest {
     void resolve() {
         Property keyR = mock(Property.class);
         Property varR = mock(Property.class);
+        Resolver resolver = mock(Resolver.class);
         when(key.resolveBy(resolver, APPLICATION.getName())).thenReturn(keyR);
         when(var.resolveBy(resolver, APPLICATION.getName())).thenReturn(varR);
 
@@ -75,6 +73,7 @@ class TypedPropertiesImplTest {
 
     @Test
     void serialize() {
+        PropertySerializer<String> serializer = (p, t, c, e) -> c;
         assertEquals("comp", subj.save(serializer));
     }
 

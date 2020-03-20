@@ -12,7 +12,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class ComponentDefinitionTest {
-    String alias = "alias§";
+    String alias = "alias";
     String name = "name";
 
     @Test

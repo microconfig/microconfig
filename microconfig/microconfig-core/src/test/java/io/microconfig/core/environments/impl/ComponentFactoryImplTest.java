@@ -11,7 +11,7 @@ class ComponentFactoryImplTest {
     ConfigTypeRepository configTypeRepository = mock(ConfigTypeRepository.class);
     PropertiesFactory propertiesFactory = mock(PropertiesFactory.class);
 
-    ComponentFactoryImpl subj = new ComponentFactoryImpl(configTypeRepository, propertiesFactory);
+    ComponentFactory subj = new ComponentFactoryImpl(configTypeRepository, propertiesFactory);
 
     @Test
     void createComponent() {

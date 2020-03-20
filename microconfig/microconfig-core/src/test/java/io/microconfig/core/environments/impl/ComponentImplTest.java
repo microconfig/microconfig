@@ -2,6 +2,7 @@ package io.microconfig.core.environments.impl;
 
 import io.microconfig.core.configtypes.ConfigTypeFilter;
 import io.microconfig.core.configtypes.ConfigTypeRepository;
+import io.microconfig.core.environments.Component;
 import io.microconfig.core.properties.Properties;
 import io.microconfig.core.properties.PropertiesFactory;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,8 @@ class ComponentImplTest {
     ConfigTypeRepository configTypeRepository = mock(ConfigTypeRepository.class);
     PropertiesFactory propertiesFactory = mock(PropertiesFactory.class);
     ConfigTypeFilter filter = mock(ConfigTypeFilter.class);
-    ComponentImpl subj = new ComponentImpl(configTypeRepository, propertiesFactory, "name", "original", "env");
+
+    Component subj = new ComponentImpl(configTypeRepository, propertiesFactory, "name", "original", "env");
 
     @Test
     void filterProperties() {
