@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.microconfig.core.configtypes.impl.StandardConfigType.APPLICATION;
-import static io.microconfig.utils.CollectionUtils.splitKeyValue;
+import static io.microconfig.utils.StringUtils.splitKeyValue;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
@@ -41,7 +41,7 @@ class TypedPropertiesImplTest {
     @Test
     void propertyWithKey() {
         assertEquals(of(key), subj.getPropertyWithKey("key"));
-        assertEquals(empty(), subj.getPropertyWithKey("other"));
+        assertEquals(empty(), subj.getPropertyWithKey("missing"));
     }
 
     @Test

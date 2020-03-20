@@ -1,7 +1,10 @@
 package io.microconfig.utils;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
+import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
@@ -20,12 +23,10 @@ public class StringUtils {
                         .collect(toList());
     }
 
-    public static String addOffsets(String value, int spacesCount) {
-        StringBuilder result = new StringBuilder(value);
-        for (int i = 0; i < spacesCount; i++) {
-            result.append(' ');
-        }
-        return result.toString();
+    public static Map<String, String> splitKeyValue(String... keyValue) {
+        return Stream.of(keyValue)
+                .map(s -> s.split("="))
+                .collect(toLinkedMap(s -> s[0], s -> s.length == 1 ? "" : s[1]));
     }
 
     public static int findFirstIndexIn(String keyValue, String chars) {
@@ -35,6 +36,14 @@ public class StringUtils {
                     return chars.chars().anyMatch(ch -> ch == c);
                 }).findFirst()
                 .orElse(-1);
+    }
+
+    public static String addOffsets(String value, int spacesCount) {
+        StringBuilder result = new StringBuilder(value);
+        for (int i = 0; i < spacesCount; i++) {
+            result.append(' ');
+        }
+        return result.toString();
     }
 
     public static String unixLikePath(String path) {

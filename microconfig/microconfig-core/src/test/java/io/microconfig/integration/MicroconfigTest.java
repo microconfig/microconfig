@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static io.microconfig.Microconfig.searchConfigsIn;
 import static io.microconfig.core.configtypes.impl.ConfigTypeFilters.eachConfigType;
 import static io.microconfig.testutils.ClasspathUtils.classpathFile;
-import static io.microconfig.utils.CollectionUtils.splitKeyValue;
+import static io.microconfig.utils.StringUtils.splitKeyValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MicroconfigTest {
