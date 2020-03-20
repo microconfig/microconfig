@@ -36,6 +36,10 @@ public class PlaceholderResolver implements RecursiveResolver {
         @Override
         public String resolveFor(ComponentWithEnv sourceOfValue, ComponentWithEnv root, String configType) {
             Placeholder placeholder = borders.toPlaceholder(configType, sourceOfValue.getEnvironment());
+            if (placeholder.isSelfReferenced()) {
+                placeholder = placeholder.withComponent(sourceOfValue.getComponent());
+            }
+
             try {
                 String maybePlaceholder = placeholder.resolveUsing(strategy);
                 return PlaceholderResolver.this.resolve(maybePlaceholder, placeholder.getReferencedComponent(), root, placeholder.getConfigType());

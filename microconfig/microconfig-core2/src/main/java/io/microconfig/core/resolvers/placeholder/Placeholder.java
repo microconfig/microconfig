@@ -4,6 +4,7 @@ import io.microconfig.core.properties.ComponentWithEnv;
 import io.microconfig.core.properties.Property;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.With;
 
 import static lombok.AccessLevel.PACKAGE;
 
@@ -13,6 +14,7 @@ class Placeholder {
 
     @Getter
     private final String configType;
+    @With
     private final String component;
     private final String environment;
     private final String value;
@@ -27,6 +29,10 @@ class Placeholder {
 
     public ComponentWithEnv getReferencedComponent() {
         return new ComponentWithEnv(component, environment);
+    }
+
+    public boolean isSelfReferenced() {
+        return component.equals(SELF_REFERENCE);
     }
 
     @Override
