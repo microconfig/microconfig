@@ -14,7 +14,7 @@ public class ComponentNameProperty implements ComponentProperty {
     }
 
     @Override
-    public Optional<String> value(String componentName, String __) {
-        return of(componentName);
+    public Optional<String> resolveFor(String component) {
+        return of(component);
     }
 }

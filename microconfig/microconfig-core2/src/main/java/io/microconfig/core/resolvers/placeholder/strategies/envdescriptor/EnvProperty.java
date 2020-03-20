@@ -7,5 +7,5 @@ import java.util.Optional;
 public interface EnvProperty {
     String key();
 
-    Optional<String> value(String componentName, String componentType, Environment environment);
+    Optional<String> resolveFor(String component, Environment environment);
 }

@@ -21,7 +21,7 @@ public class ConfigRootDirProperty implements ComponentProperty {
     }
 
     @Override
-    public Optional<String> value(String _1, String _2) {
+    public Optional<String> resolveFor(String __) {
         return of(configRoot);
     }
 }

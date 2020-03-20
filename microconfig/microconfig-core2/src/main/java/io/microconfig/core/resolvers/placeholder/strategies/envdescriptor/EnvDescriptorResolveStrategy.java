@@ -4,7 +4,6 @@ import io.microconfig.core.environments.Environment;
 import io.microconfig.core.environments.EnvironmentRepository;
 import io.microconfig.core.environments.impl.repository.EnvironmentException;
 import io.microconfig.core.properties.Property;
-import io.microconfig.core.resolvers.placeholder.Placeholder;
 import io.microconfig.core.resolvers.placeholder.PlaceholderResolveStrategy;
 import io.microconfig.core.resolvers.placeholder.strategies.PlaceholderSource;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +21,15 @@ public class EnvDescriptorResolveStrategy implements PlaceholderResolveStrategy 
     private final Map<String, EnvProperty> propertyByKey;
 
     @Override
-    public Optional<Property> resolve(Placeholder p) {
-        EnvProperty envProperty = propertyByKey.get(p.getValue());
+    public Optional<Property> resolve(String configType, String component, String env, String key) {
+        EnvProperty envProperty = propertyByKey.get(key);
         if (envProperty == null) return empty();
 
-        Environment environment = getEnvironment(p.getEnvironment());
+        Environment environment = getEnvironment(env);
         if (environment == null) return empty();
 
-        return envProperty.value(p.getComponent(), p.getComponent(), environment)//todo
-                .map(value -> tempProperty(p.getValue(), value, p.getEnvironment(), new PlaceholderSource(p.getComponent(), ENV_SOURCE)));
+        return envProperty.resolveFor(component, environment)//todo
+                .map(value -> tempProperty(key, value, env, new PlaceholderSource(component, ENV_SOURCE)));
     }
 
     private Environment getEnvironment(String environment) {

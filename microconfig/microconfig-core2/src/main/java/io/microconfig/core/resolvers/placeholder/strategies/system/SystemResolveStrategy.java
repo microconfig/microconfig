@@ -1,7 +1,6 @@
 package io.microconfig.core.resolvers.placeholder.strategies.system;
 
 import io.microconfig.core.properties.Property;
-import io.microconfig.core.resolvers.placeholder.Placeholder;
 import io.microconfig.core.resolvers.placeholder.PlaceholderResolveStrategy;
 import io.microconfig.core.resolvers.placeholder.strategies.PlaceholderSource;
 import io.microconfig.utils.Os;
@@ -21,7 +20,7 @@ public class SystemResolveStrategy implements PlaceholderResolveStrategy {
     public static final String ENV_OS_SOURCE = "env";
     public static final String SYSTEM_SOURCE = "system";
 
-    private final String propertyKey;
+    private final String type;
     private final UnaryOperator<String> resolver;
 
     public static PlaceholderResolveStrategy systemPropertiesResolveStrategy() {
@@ -33,12 +32,12 @@ public class SystemResolveStrategy implements PlaceholderResolveStrategy {
     }
 
     @Override
-    public Optional<Property> resolve(Placeholder p) {
-        if (!propertyKey.equals(p.getComponent())) return empty();
+    public Optional<Property> resolve(String configType, String component, String environment, String key) {
+        if (!type.equals(component)) return empty();
 
-        return ofNullable(resolver.apply(p.getValue()))
-                .map(v -> escapeOnWindows(v, p.getValue()))
-                .map(value -> tempProperty(p.getValue(), value, p.getEnvironment(), new PlaceholderSource(p.getComponent(), p.getComponent())));
+        return ofNullable(resolver.apply(key))
+                .map(v -> escapeOnWindows(v, key))
+                .map(v -> tempProperty(key, v, environment, new PlaceholderSource(component, type)));
     }
 
     private String escapeOnWindows(String value, String key) {

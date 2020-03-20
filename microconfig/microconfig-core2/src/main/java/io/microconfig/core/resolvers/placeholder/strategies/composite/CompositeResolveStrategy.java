@@ -1,7 +1,6 @@
 package io.microconfig.core.resolvers.placeholder.strategies.composite;
 
 import io.microconfig.core.properties.Property;
-import io.microconfig.core.resolvers.placeholder.Placeholder;
 import io.microconfig.core.resolvers.placeholder.PlaceholderResolveStrategy;
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +19,7 @@ public class CompositeResolveStrategy implements PlaceholderResolveStrategy {
     }
 
     @Override
-    public Optional<Property> resolve(Placeholder placeholder) {
-        return findFirstResult(strategies, s -> s.resolve(placeholder));
+    public Optional<Property> resolve(String configType, String component, String environment, String key) {
+        return findFirstResult(strategies, s -> s.resolve(configType, component, environment, key));
     }
 }

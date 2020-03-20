@@ -18,9 +18,13 @@ public class ComponentConfigDirProperty implements ComponentProperty {
     }
 
     @Override
-    public Optional<String> value(String __, String componentType) {
-        return componentGraph.getFolderOf(componentType)
+    public Optional<String> resolveFor(String component) {
+        return componentGraph.getFolderOf(getOriginalNameOf(component))
                 .map(File::getAbsolutePath)
                 .map(StringUtils::unixLikePath);
+    }
+
+    private String getOriginalNameOf(String component) {
+        return component; //todo
     }
 }

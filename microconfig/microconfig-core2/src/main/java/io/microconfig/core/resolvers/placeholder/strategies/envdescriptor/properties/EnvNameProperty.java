@@ -14,7 +14,7 @@ public class EnvNameProperty implements EnvProperty {
     }
 
     @Override
-    public Optional<String> value(String componentName, String componentType, Environment environment) {
+    public Optional<String> resolveFor(String __, Environment environment) {
         return of(environment.getName());
     }
 }
