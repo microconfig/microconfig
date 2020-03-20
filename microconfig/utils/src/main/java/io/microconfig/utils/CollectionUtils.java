@@ -1,7 +1,9 @@
 package io.microconfig.utils;
 
 import java.util.*;
+import java.util.stream.Stream;
 
+import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static java.lang.Math.max;
 import static java.util.Arrays.asList;
 
@@ -38,5 +40,11 @@ public class CollectionUtils {
     @SafeVarargs
     public static <T> Set<T> setOf(T... t) {
         return new LinkedHashSet<>(asList(t));
+    }
+
+    public static Map<String, String> splitKeyValue(String... keyValue) {
+        return Stream.of(keyValue)
+                .map(s -> s.split("="))
+                .collect(toLinkedMap(s -> s[0], s -> s.length == 1 ? "" : s[1]));
     }
 }

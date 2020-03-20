@@ -7,11 +7,10 @@ import io.microconfig.core.properties.TypedProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static io.microconfig.core.configtypes.impl.StandardConfigType.APPLICATION;
+import static io.microconfig.utils.CollectionUtils.splitKeyValue;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
@@ -47,10 +46,10 @@ class TypedPropertiesImplTest {
 
     @Test
     void propertiesMap() {
-        Map<String, String> expected = new HashMap<>();
-        expected.put("key", "value");
-        expected.put("var", "varlue");
-        assertEquals(expected, subj.propertiesAsKeyValue());
+        assertEquals(
+                splitKeyValue("key=value", "var=varlue"),
+                subj.propertiesAsKeyValue()
+        );
     }
 
     @Test
