@@ -4,6 +4,7 @@ import io.microconfig.core.properties.ComponentWithEnv;
 import io.microconfig.core.properties.impl.PropertyResolveException;
 import io.microconfig.core.resolvers.RecursiveResolver;
 import lombok.RequiredArgsConstructor;
+import lombok.With;
 
 import java.util.LinkedHashSet;
 import java.util.Optional;
@@ -12,22 +13,27 @@ import java.util.Set;
 import static io.microconfig.core.resolvers.placeholder.PlaceholderBorders.findPlaceholderIn;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
+import static lombok.AccessLevel.PRIVATE;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = PRIVATE)
 public class PlaceholderResolver implements RecursiveResolver {
     private final PlaceholderResolveStrategy strategy;
     private final Set<String> nonOverridableKeys;
+    @With
+    private final Set<Placeholder> visited;
+
+    public PlaceholderResolver(PlaceholderResolveStrategy strategy, Set<String> nonOverridableKeys) {
+        this(strategy, nonOverridableKeys, emptySet());
+    }
 
     @Override
     public Optional<Statement> findStatementIn(CharSequence line) {
-        return findPlaceholderIn(line)
-                .map(b-> new PlaceholderStatement(b, emptySet()));
+        return findPlaceholderIn(line).map(PlaceholderStatement::new);
     }
 
     @RequiredArgsConstructor
     private class PlaceholderStatement implements Statement {
         private final PlaceholderBorders borders;
-        private final Set<Placeholder> visited;
 
         @Override
         public int getStartIndex() {
@@ -49,10 +55,10 @@ public class PlaceholderResolver implements RecursiveResolver {
 
             return resolve(placeholder, root);
         }
+
         //c1 -> key=${c2@key}
         //c2 -> key=${c3[prod]@key}
         //c3 -> key=${c3@ip}
-
         private boolean referencedTo(ComponentWithEnv c, Placeholder p) {
             return p.referencedTo(c) && !nonOverridableKeys.contains(p.getKey());
         }
@@ -60,7 +66,8 @@ public class PlaceholderResolver implements RecursiveResolver {
         private String resolve(Placeholder placeholder, ComponentWithEnv root) {
             try {
                 String maybePlaceholder = placeholder.resolveUsing(strategy);
-                return PlaceholderResolver.this.resolve(maybePlaceholder, placeholder.getReferencedComponent(), root, placeholder.getConfigType());
+                return markVisited(placeholder)
+                        .resolve(maybePlaceholder, placeholder.getReferencedComponent(), root, placeholder.getConfigType());
             } catch (RuntimeException e) {
                 String defaultValue = placeholder.getDefaultValue();
                 if (defaultValue != null) return defaultValue;
@@ -68,12 +75,12 @@ public class PlaceholderResolver implements RecursiveResolver {
             }
         }
 
-        private Set<Placeholder> updateVisited(Set<Placeholder> visited, Placeholder placeholder) {
+        private PlaceholderResolver markVisited(Placeholder placeholder) {
             Set<Placeholder> updated = new LinkedHashSet<>(visited);
             if (!updated.add(placeholder)) {
                 throw new PropertyResolveException("Found cyclic dependencies: " + updated);
             }
-            return unmodifiableSet(updated);
+            return withVisited(unmodifiableSet(updated));
         }
     }
 }
