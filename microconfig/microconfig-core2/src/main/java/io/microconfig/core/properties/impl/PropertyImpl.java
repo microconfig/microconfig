@@ -1,6 +1,6 @@
 package io.microconfig.core.properties.impl;
 
-import io.microconfig.core.properties.ComponentWitsEnv;
+import io.microconfig.core.properties.ComponentWithEnv;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.PropertySource;
 import io.microconfig.core.properties.Resolver;
@@ -69,7 +69,7 @@ public class PropertyImpl implements Property {
     @Override
     public Property resolveBy(Resolver resolver, String configType) {
         try {
-            return withValue(resolver.resolve(value, new ComponentWitsEnv(source.getDeclaringComponent(), envContext), null, configType));
+            return withValue(resolver.resolve(value, new ComponentWithEnv(source.getDeclaringComponent(), envContext), null, configType));
         } catch (RuntimeException e) {
             throw new PropertyResolveException("Can't resolve property '" + this + "'", e); //todo
         }

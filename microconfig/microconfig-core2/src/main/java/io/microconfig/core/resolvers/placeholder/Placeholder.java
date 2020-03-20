@@ -1,6 +1,6 @@
 package io.microconfig.core.resolvers.placeholder;
 
-import io.microconfig.core.properties.ComponentWitsEnv;
+import io.microconfig.core.properties.ComponentWithEnv;
 import io.microconfig.core.properties.Property;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,8 +26,8 @@ public class Placeholder {
                 .orElseThrow(() -> new IllegalStateException("Cant resolve '" + this + "'"));
     }
 
-    public ComponentWitsEnv getReferenceComponent() {
-        return new ComponentWitsEnv(component, environment);
+    public ComponentWithEnv getReferencedComponent() {
+        return new ComponentWithEnv(component, environment);
     }
 
     @Override

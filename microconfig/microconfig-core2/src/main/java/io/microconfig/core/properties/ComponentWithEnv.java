@@ -5,7 +5,7 @@ import lombok.With;
 
 @Value
 @With
-public class ComponentWitsEnv {
+public class ComponentWithEnv {
     String component;
     String environment;
 }
