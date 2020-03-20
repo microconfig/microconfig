@@ -1,0 +1,79 @@
+package io.microconfig.core.properties.impl;
+
+import io.microconfig.core.properties.Property;
+import io.microconfig.core.properties.PropertySerializer;
+import io.microconfig.core.properties.Resolver;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static io.microconfig.core.configtypes.impl.StandardConfigType.APPLICATION;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+class TypedPropertiesImplTest {
+    Property key = mock(Property.class);
+    Property var = mock(Property.class);
+    Resolver resolver = mock(Resolver.class);
+    PropertySerializer<String> serializer = (p, t, c, e) -> c;
+
+    TypedPropertiesImpl subj = new TypedPropertiesImpl("comp", "env", APPLICATION, asList(key, var));
+
+    @BeforeEach
+    void setup() {
+        when(key.getKey()).thenReturn("key");
+        when(key.getValue()).thenReturn("value");
+        when(key.isTemp()).thenReturn(false);
+
+        when(var.getKey()).thenReturn("var");
+        when(var.getValue()).thenReturn("varlue");
+        when(var.isTemp()).thenReturn(true);
+    }
+
+    @Test
+    void propertyWithKey() {
+        assertEquals(of(key), subj.getPropertyWithKey("key"));
+        assertEquals(empty(), subj.getPropertyWithKey("other"));
+    }
+
+    @Test
+    void propertiesMap() {
+        Map<String, String> expected = new HashMap<>();
+        expected.put("key", "value");
+        expected.put("var", "varlue");
+        assertEquals(expected, subj.propertiesAsKeyValue());
+    }
+
+    @Test
+    void withoutTemp() {
+        assertEquals(subj.withProperties(singletonList(key)), subj.withoutTempValues());
+    }
+
+    @Test
+    void resolve() {
+        Property keyR = mock(Property.class);
+        Property varR = mock(Property.class);
+        when(key.resolveBy(resolver, APPLICATION.getType())).thenReturn(keyR);
+        when(var.resolveBy(resolver, APPLICATION.getType())).thenReturn(varR);
+
+        TypedPropertiesImpl expected = subj.withProperties(asList(keyR, varR));
+        assertEquals(expected, subj.resolveBy(resolver));
+    }
+
+    @Test
+    void configType() {
+        assertEquals(APPLICATION.getType(), subj.getConfigType());
+    }
+
+    @Test
+    void serialize() {
+        assertEquals("comp", subj.save(serializer));
+    }
+}

@@ -5,6 +5,7 @@ import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.PropertySerializer;
 import io.microconfig.core.properties.Resolver;
 import io.microconfig.core.properties.TypedProperties;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -16,16 +17,17 @@ import java.util.Optional;
 import static io.microconfig.core.properties.impl.PropertyImpl.asKeyValue;
 import static io.microconfig.utils.StreamUtils.filter;
 import static io.microconfig.utils.StreamUtils.forEach;
-import static lombok.AccessLevel.PRIVATE;
+import static lombok.AccessLevel.PACKAGE;
 
 @RequiredArgsConstructor
+@EqualsAndHashCode
 public class TypedPropertiesImpl implements TypedProperties {
     @Getter
     private final String component;
     private final String environment;
     private final ConfigType configType;
     @Getter
-    @With(PRIVATE)
+    @With(PACKAGE)
     private final List<Property> properties;
 
     @Override
