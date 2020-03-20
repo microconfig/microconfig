@@ -26,10 +26,10 @@ public interface RecursiveResolver extends Resolver {
     Optional<Statement> findStatementIn(CharSequence line);
 
     interface Statement {
-        String resolveFor(ComponentWithEnv sourceOfValue, ComponentWithEnv root, String configType);
-
         int getStartIndex();
 
         int getEndIndex();
+
+        String resolveFor(ComponentWithEnv sourceOfValue, ComponentWithEnv root, String configType);
     }
 }
