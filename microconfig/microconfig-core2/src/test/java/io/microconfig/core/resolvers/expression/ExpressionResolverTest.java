@@ -9,23 +9,23 @@ class ExpressionResolverTest {
     private ExpressionResolver resolver = new ExpressionResolver();
 
     @Test
-    void testStringApi() {
+    void stringApi() {
         assertEquals("5Wo", resolve("#{'Hello'.length() + 'World'.substring(0, 2)}"));
     }
 
     @Test
-    void testPredefinedFunctions() {
-        assertEquals("100m", resolve("#{#findGroup('Xmx(?<xmx>.+)', 'Xmx100m')}"));
-    }
-
-    @Test
-    void testConditionalsWork() {
+    void conditionals() {
 //        assertEquals("string2", resolve("#{(10 > 500) ? '${string1}' : '${string2}'}"));  //todo fix
         assertEquals("string2", resolve("#{(10 > 500) ? 'string1' : 'string2'}"));
     }
 
     @Test
-    void testSimpleApi() {
+    void predefinedFunctions() {
+        assertEquals("100m", resolve("#{#findGroup('Xmx(?<xmx>.+)', 'Xmx100m')}"));
+    }
+
+    @Test
+    void api() {
         String value = "I'm #{ 1 + 2} !";
         Statement statement = resolver.findStatementIn(value).orElseThrow(IllegalStateException::new);
         assertEquals(4, statement.getStartIndex());
