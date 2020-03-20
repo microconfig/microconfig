@@ -40,6 +40,14 @@ public class PlaceholderResolver implements RecursiveResolver {
                 placeholder = placeholder.withComponent(sourceOfValue.getComponent());
             }
 
+            return resolve(placeholder, root);
+            //dev
+            //c1 -> key=${c2@key}
+            //c2 -> key=${c3[prod]@key}
+            //c3 -> key=${c3@ip}
+        }
+
+        private String resolve(Placeholder placeholder, ComponentWithEnv root) {
             try {
                 String maybePlaceholder = placeholder.resolveUsing(strategy);
                 return PlaceholderResolver.this.resolve(maybePlaceholder, placeholder.getReferencedComponent(), root, placeholder.getConfigType());
@@ -48,11 +56,6 @@ public class PlaceholderResolver implements RecursiveResolver {
                 if (defaultValue != null) return defaultValue;
                 throw e;
             }
-
-            //dev
-            //c1 -> key=${c2@key}
-            //c2 -> key=${c3[prod]@key}
-            //c3 -> key=${c3@ip}
         }
     }
 }
