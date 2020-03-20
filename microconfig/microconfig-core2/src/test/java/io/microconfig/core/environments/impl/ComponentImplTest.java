@@ -18,14 +18,14 @@ class ComponentImplTest {
     ConfigTypeRepository configTypeRepository = mock(ConfigTypeRepository.class);
     PropertiesFactory propertiesFactory = mock(PropertiesFactory.class);
     ConfigTypeFilter filter = mock(ConfigTypeFilter.class);
-    ComponentImpl subj = new ComponentImpl(configTypeRepository, propertiesFactory, "name", "type", "env");
+    ComponentImpl subj = new ComponentImpl(configTypeRepository, propertiesFactory, "name", "original", "env");
 
     @Test
     void filterProperties() {
         Properties properties = mock(Properties.class);
         when(configTypeRepository.getConfigTypes()).thenReturn(asList(APPLICATION, DEPLOY));
         when(filter.selectTypes(asList(APPLICATION, DEPLOY))).thenReturn(singletonList(DEPLOY));
-        when(propertiesFactory.getPropertiesOf(name, "type", "env", singletonList(DEPLOY))).thenReturn(properties);
+        when(propertiesFactory.getPropertiesOf("name", "original", "env", singletonList(DEPLOY))).thenReturn(properties);
 
         assertEquals(properties, subj.getPropertiesFor(filter));
     }
