@@ -61,8 +61,8 @@ class TypedPropertiesImplTest {
     void resolve() {
         Property keyR = mock(Property.class);
         Property varR = mock(Property.class);
-        when(key.resolveBy(resolver, APPLICATION)).thenReturn(keyR);
-        when(var.resolveBy(resolver, APPLICATION)).thenReturn(varR);
+        when(key.resolveBy(resolver, APPLICATION.getName())).thenReturn(keyR);
+        when(var.resolveBy(resolver, APPLICATION.getName())).thenReturn(varR);
 
         TypedProperties expected = withProperties(asList(keyR, varR));
         assertEquals(expected, subj.resolveBy(resolver));

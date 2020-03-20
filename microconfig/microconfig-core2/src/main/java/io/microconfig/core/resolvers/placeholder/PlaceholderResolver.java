@@ -1,6 +1,5 @@
 package io.microconfig.core.resolvers.placeholder;
 
-import io.microconfig.core.configtypes.ConfigType;
 import io.microconfig.core.properties.ComponentDescription;
 import io.microconfig.core.resolvers.RecursiveResolver;
 import lombok.RequiredArgsConstructor;
@@ -27,12 +26,12 @@ public class PlaceholderResolver implements RecursiveResolver {
         @Override
         public String resolveFor(ComponentDescription currentComponent,
                                  ComponentDescription rootComponent,
-                                 ConfigType configType) {
+                                 String configType) {
             //configType, currentComponent, rootComponent
             Placeholder placeholder = borders.toPlaceholder(configType, currentComponent.getEnvironment());
             try {
                 String maybePlaceholder = placeholder.resolveUsing(strategy);
-                return PlaceholderResolver.this.resolve(maybePlaceholder, currentComponent, rootComponent, configType); //todo incorrect currentComponent can be changed
+                return PlaceholderResolver.this.resolve(maybePlaceholder, placeholder.getReferenceComponent(), rootComponent, placeholder.getConfigType());
             } catch (RuntimeException e) {
                 String defaultValue = placeholder.getDefaultValue();
                 if (defaultValue != null) return defaultValue;
