@@ -1,9 +1,7 @@
 package io.microconfig.core.properties;
 
-import io.microconfig.core.environments.Component;
-
 public interface PropertySource {
-    Component getComponent();
+    String getDeclaringComponent();
 
     default String sourceInfo() {
         return toString();

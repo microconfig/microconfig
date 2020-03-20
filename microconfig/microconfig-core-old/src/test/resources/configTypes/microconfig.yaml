@@ -11,11 +11,6 @@ configTypes:
         - .process
         - .proc
 
-  - helm:
-      resultFileName: values
-      sourceExtensions:
-        - .helm
-
   - deploy
   - env
   - secret

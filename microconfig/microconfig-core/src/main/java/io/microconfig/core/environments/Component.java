@@ -1,32 +1,12 @@
 package io.microconfig.core.environments;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import io.microconfig.core.configtypes.ConfigTypeFilter;
+import io.microconfig.core.properties.Properties;
 
-import java.io.File;
+public interface Component {
+    String getName();
 
-@Getter
-@EqualsAndHashCode
-@RequiredArgsConstructor
-public class Component {
-    private final String name; //alias, must be unique among env
-    private final String type;//folder name
+    String getEnvironment();
 
-    public static Component byNameAndType(String name, String type) {
-        return new Component(name, type);
-    }
-
-    public static Component byType(String type) {
-        return new Component(type, type);
-    }
-
-    public static Component bySourceFile(File file) {
-        return byType(file.getParentFile().getName());
-    }
-
-    @Override
-    public String toString() {
-        return name + ":" + type;
-    }
+    Properties getPropertiesFor(ConfigTypeFilter filter);
 }
