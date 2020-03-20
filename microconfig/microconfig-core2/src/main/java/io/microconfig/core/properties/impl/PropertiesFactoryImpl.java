@@ -17,18 +17,19 @@ public class PropertiesFactoryImpl implements PropertiesFactory {
     private final PropertiesRepository propertiesRepository;
 
     @Override
-    public Properties getPropertiesOf(String componentName, String componentOriginalName,
+    public Properties getPropertiesOf(String componentName,
+                                      String componentOriginalName,
                                       String environment,
                                       List<ConfigType> configTypes) {
         return new PropertiesImpl(
-                forEach(configTypes, readConfigsFor(componentOriginalName, environment))
+                forEach(configTypes, readConfigsFor(componentName, componentOriginalName, environment))
         );
     }
 
-    private Function<ConfigType, TypedProperties> readConfigsFor(String component, String environment) {
+    private Function<ConfigType, TypedProperties> readConfigsFor(String componentName, String componentOriginalName, String environment) {
         return configType -> {
-            List<Property> properties = propertiesRepository.getPropertiesOf(component, environment, configType);
-            return new TypedPropertiesImpl(component, environment, configType, properties);
+            List<Property> properties = propertiesRepository.getPropertiesOf(componentOriginalName, environment, configType);
+            return new TypedPropertiesImpl(componentName, environment, configType, properties);
         };
     }
 }
