@@ -17,7 +17,7 @@ public interface RecursiveResolver extends Resolver {
             if (!optionalStatement.isPresent()) break;
 
             Statement statement = optionalStatement.get();
-            String resolved = statement.resolveFor(sourceOfValue, root, configType);
+            String resolved = statement.resolveFor(configType, sourceOfValue, root);
             result.replace(statement.getStartIndex(), statement.getEndIndex(), resolved);
         }
         return result.toString();
@@ -30,6 +30,6 @@ public interface RecursiveResolver extends Resolver {
 
         int getEndIndex();
 
-        String resolveFor(ComponentWithEnv sourceOfValue, ComponentWithEnv root, String configType);
+        String resolveFor(String configType, ComponentWithEnv sourceOfValue, ComponentWithEnv root);
     }
 }

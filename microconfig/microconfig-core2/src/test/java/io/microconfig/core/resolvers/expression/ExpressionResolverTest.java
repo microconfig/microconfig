@@ -31,7 +31,7 @@ class ExpressionResolverTest {
         assertEquals(4, statement.getStartIndex());
         assertEquals(13, statement.getEndIndex());
         assertEquals("#{ 1 + 2}", statement.toString());
-        assertEquals("3", statement.resolveFor(null, null,null));
+        assertEquals("3", statement.resolveFor(null, null, null));
     }
 
     private String resolve(String value) {

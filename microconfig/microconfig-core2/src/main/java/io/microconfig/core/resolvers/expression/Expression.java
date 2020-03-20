@@ -20,7 +20,7 @@ class Expression implements Statement {
     private final int endIndex;
 
     @Override
-    public String resolveFor(ComponentWithEnv _1, ComponentWithEnv _2, String _3) {
+    public String resolveFor(String _1, ComponentWithEnv _2, ComponentWithEnv _3) {
         try {
             return evaluator.evaluate(value);
         } catch (EvaluationException | ParseException e) {
