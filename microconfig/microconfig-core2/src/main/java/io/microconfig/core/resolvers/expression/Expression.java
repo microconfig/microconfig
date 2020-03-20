@@ -10,7 +10,7 @@ import org.springframework.expression.ParseException;
 import static io.microconfig.core.resolvers.expression.ExpressionEvaluator.withFunctionsFrom;
 
 @RequiredArgsConstructor
-public class Expression implements Statement {
+class Expression implements Statement {
     private static final ExpressionEvaluator evaluator = withFunctionsFrom(PredefinedFunctions.class);
 
     private final String value;

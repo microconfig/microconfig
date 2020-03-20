@@ -10,7 +10,7 @@ import static java.lang.reflect.Modifier.isStatic;
 import static java.util.stream.Stream.of;
 
 @RequiredArgsConstructor
-public class ExpressionEvaluator {
+class ExpressionEvaluator {
     private final ExpressionParser parser;
     private final EvaluationContext context;
 

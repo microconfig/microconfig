@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import static lombok.AccessLevel.PACKAGE;
 
 @RequiredArgsConstructor(access = PACKAGE)
-public class Placeholder {
+class Placeholder {
     private static final String SELF_REFERENCE = "this";
 
     @Getter
