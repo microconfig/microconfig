@@ -17,17 +17,17 @@ import java.util.Optional;
 import static io.microconfig.core.properties.impl.PropertyImpl.asKeyValue;
 import static io.microconfig.utils.StreamUtils.filter;
 import static io.microconfig.utils.StreamUtils.forEach;
-import static lombok.AccessLevel.PACKAGE;
+import static lombok.AccessLevel.PRIVATE;
 
-@RequiredArgsConstructor
 @EqualsAndHashCode
+@RequiredArgsConstructor
 public class TypedPropertiesImpl implements TypedProperties {
     @Getter
     private final String component;
     private final String environment;
     private final ConfigType configType;
     @Getter
-    @With(PACKAGE)
+    @With(PRIVATE)
     private final List<Property> properties;
 
     @Override

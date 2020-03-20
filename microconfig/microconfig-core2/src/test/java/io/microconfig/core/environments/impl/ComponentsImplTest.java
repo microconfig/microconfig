@@ -7,9 +7,6 @@ import io.microconfig.core.properties.TypedProperties;
 import io.microconfig.core.properties.impl.PropertiesImpl;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-
-import static io.microconfig.core.properties.impl.PropertiesImpl.composite;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -3,10 +3,12 @@ package io.microconfig.core.properties.impl;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.PropertySerializer;
 import io.microconfig.core.properties.Resolver;
+import io.microconfig.core.properties.TypedProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static io.microconfig.core.configtypes.impl.StandardConfigType.APPLICATION;
@@ -24,7 +26,7 @@ class TypedPropertiesImplTest {
     Resolver resolver = mock(Resolver.class);
     PropertySerializer<String> serializer = (p, t, c, e) -> c;
 
-    TypedPropertiesImpl subj = new TypedPropertiesImpl("comp", "env", APPLICATION, asList(key, var));
+    TypedProperties subj = withProperties(asList(key, var));
 
     @BeforeEach
     void setup() {
@@ -53,7 +55,7 @@ class TypedPropertiesImplTest {
 
     @Test
     void withoutTemp() {
-        assertEquals(subj.withProperties(singletonList(key)), subj.withoutTempValues());
+        assertEquals(withProperties(singletonList(key)), subj.withoutTempValues());
     }
 
     @Test
@@ -63,7 +65,7 @@ class TypedPropertiesImplTest {
         when(key.resolveBy(resolver, APPLICATION.getType())).thenReturn(keyR);
         when(var.resolveBy(resolver, APPLICATION.getType())).thenReturn(varR);
 
-        TypedPropertiesImpl expected = subj.withProperties(asList(keyR, varR));
+        TypedProperties expected = withProperties(asList(keyR, varR));
         assertEquals(expected, subj.resolveBy(resolver));
     }
 
@@ -75,5 +77,9 @@ class TypedPropertiesImplTest {
     @Test
     void serialize() {
         assertEquals("comp", subj.save(serializer));
+    }
+
+    private TypedProperties withProperties(List<Property> properties) {
+        return new TypedPropertiesImpl("comp", "env", APPLICATION, properties);
     }
 }
