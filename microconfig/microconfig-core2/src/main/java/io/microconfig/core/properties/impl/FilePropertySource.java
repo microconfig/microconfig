@@ -19,12 +19,7 @@ public class FilePropertySource implements PropertySource {
     }
 
     @Override
-    public String getDeclaringComponentName() {
-        return getDeclaringComponentType();
-    }
-
-    @Override
-    public String getDeclaringComponentType() {
+    public String getDeclaringComponent() {
         return source.getParentFile().getName();
     }
 

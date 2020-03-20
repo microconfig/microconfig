@@ -28,12 +28,7 @@ public class PlaceholderSource implements PropertySource {
     }
 
     @Override
-    public String getDeclaringComponentName() {
-        return component;
-    }
-
-    @Override
-    public String getDeclaringComponentType() {
+    public String getDeclaringComponent() {
         return component;
     }
 
