@@ -1,5 +1,6 @@
 package io.microconfig.core.resolvers.placeholder;
 
+import io.microconfig.core.configtypes.ConfigType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -124,8 +125,8 @@ class PlaceholderBorders {
         return !isLetterOrDigit(c) && c != '.' && c != '_' && c != '-';
     }
 
-    private String getConfigType(String contextConfigType) {
-        return configTypeEndIndex < 0 ? contextConfigType : line.substring(startIndex + 2, configTypeEndIndex + 1);
+    private String getConfigType(ConfigType contextConfigType) {
+        return configTypeEndIndex < 0 ? contextConfigType.getName() : line.substring(startIndex + 2, configTypeEndIndex + 1);
     }
 
     private String getComponent() {
@@ -144,7 +145,7 @@ class PlaceholderBorders {
         return defaultValueIndex < 0 ? null : line.substring(defaultValueIndex, endIndex - 1);
     }
 
-    Placeholder toPlaceholder(String contextConfigType, String contextEnv) {
+    Placeholder toPlaceholder(ConfigType contextConfigType, String contextEnv) {
         return new Placeholder(
                 getConfigType(contextConfigType),
                 getComponent(),

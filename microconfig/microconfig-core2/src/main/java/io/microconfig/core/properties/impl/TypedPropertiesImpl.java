@@ -32,7 +32,7 @@ public class TypedPropertiesImpl implements TypedProperties {
 
     @Override
     public String getConfigType() {
-        return configType.getType();
+        return configType.getName();
     }
 
     @Override
@@ -42,7 +42,7 @@ public class TypedPropertiesImpl implements TypedProperties {
 
     @Override
     public TypedProperties resolveBy(Resolver resolver) {
-        return withProperties(forEach(properties, p -> p.resolveBy(resolver, configType.getType())));
+        return withProperties(forEach(properties, p -> p.resolveBy(resolver, configType)));
     }
 
     @Override

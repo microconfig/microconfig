@@ -23,7 +23,7 @@ class CustomConfigTypeRepositoryTest {
         for (int i = 0; i < expected.size(); i++) {
             ConfigType e = expected.get(i);
             ConfigType a = actual.get(i);
-            assertEquals(e.getType(), a.getType());
+            assertEquals(e.getName(), a.getName());
             assertEquals(e.getResultFileName(), a.getResultFileName());
             assertEquals(e.getSourceExtensions(), a.getSourceExtensions());
         }

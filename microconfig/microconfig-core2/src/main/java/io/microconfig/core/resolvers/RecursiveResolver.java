@@ -1,11 +1,12 @@
 package io.microconfig.core.resolvers;
 
+import io.microconfig.core.configtypes.ConfigType;
 import io.microconfig.core.properties.Resolver;
 
 import java.util.Optional;
 
 public interface RecursiveResolver extends Resolver {
-    default String resolve(CharSequence line, String env, String configType) {
+    default String resolve(CharSequence line, String env, ConfigType configType) {
         StringBuilder result = new StringBuilder(line);
         while (true) {
             Optional<Statement> optionalStatement = findStatementIn(result);
@@ -21,7 +22,7 @@ public interface RecursiveResolver extends Resolver {
     Optional<Statement> findStatementIn(CharSequence line);
 
     interface Statement {
-        String resolve(String env, String configType);
+        String resolve(String env, ConfigType configType);
 
         int getStartIndex();
 

@@ -16,7 +16,7 @@ class ConfigTypeImplTest {
     @Test
     void createByNameAndExtension() {
         ConfigType app = byNameAndExtensions("app", singleton(".yaml"), "application");
-        assertEquals("app", app.getType());
+        assertEquals("app", app.getName());
         assertEquals("application", app.getResultFileName());
         assertEquals(singleton(".yaml"), app.getSourceExtensions());
     }
@@ -24,7 +24,7 @@ class ConfigTypeImplTest {
     @Test
     void createByName() {
         ConfigType app = byName("app");
-        assertEquals("app", app.getType());
+        assertEquals("app", app.getName());
         assertEquals("app", app.getResultFileName());
         assertEquals(singleton(".app"), app.getSourceExtensions());
     }

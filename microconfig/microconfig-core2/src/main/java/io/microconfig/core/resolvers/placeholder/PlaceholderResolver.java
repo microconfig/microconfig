@@ -1,5 +1,6 @@
 package io.microconfig.core.resolvers.placeholder;
 
+import io.microconfig.core.configtypes.ConfigType;
 import io.microconfig.core.resolvers.RecursiveResolver;
 import lombok.RequiredArgsConstructor;
 
@@ -21,7 +22,7 @@ public class PlaceholderResolver implements RecursiveResolver {
         private final PlaceholderBorders borders;
 
         @Override
-        public String resolve(String env, String configType) {
+        public String resolve(String env, ConfigType configType) {
             Placeholder placeholder = borders.toPlaceholder(configType, env);
             try {
                 String maybePlaceholder = placeholder.resolveUsing(strategy);

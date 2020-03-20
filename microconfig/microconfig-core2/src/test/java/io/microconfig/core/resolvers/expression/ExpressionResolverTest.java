@@ -3,6 +3,7 @@ package io.microconfig.core.resolvers.expression;
 import io.microconfig.core.resolvers.RecursiveResolver.Statement;
 import org.junit.jupiter.api.Test;
 
+import static io.microconfig.core.configtypes.impl.StandardConfigType.APPLICATION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ExpressionResolverTest {
@@ -31,10 +32,10 @@ class ExpressionResolverTest {
         assertEquals(4, statement.getStartIndex());
         assertEquals(13, statement.getEndIndex());
         assertEquals("#{ 1 + 2}", statement.toString());
-        assertEquals("3", statement.resolve("dev", "app"));
+        assertEquals("3", statement.resolve("dev", APPLICATION));
     }
 
     private String resolve(String value) {
-        return resolver.resolve(value, "dev", "app");
+        return resolver.resolve(value, "dev", APPLICATION);
     }
 }

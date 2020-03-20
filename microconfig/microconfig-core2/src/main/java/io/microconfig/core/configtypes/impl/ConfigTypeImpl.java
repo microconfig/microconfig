@@ -15,7 +15,7 @@ import static java.util.Collections.singleton;
 @ToString
 @RequiredArgsConstructor
 public class ConfigTypeImpl implements ConfigType {
-    private final String type;
+    private final String name;
     private final Set<String> sourceExtensions;
     private final String resultFileName;
 

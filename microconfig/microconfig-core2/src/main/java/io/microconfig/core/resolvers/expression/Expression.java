@@ -1,5 +1,6 @@
 package io.microconfig.core.resolvers.expression;
 
+import io.microconfig.core.configtypes.ConfigType;
 import io.microconfig.core.resolvers.RecursiveResolver.Statement;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class Expression implements Statement {
     private final int endIndex;
 
     @Override
-    public String resolve(String _1, String _2) {
+    public String resolve(String _1, ConfigType _2) {
         try {
             return evaluator.evaluate(value);
         } catch (EvaluationException | ParseException e) {
