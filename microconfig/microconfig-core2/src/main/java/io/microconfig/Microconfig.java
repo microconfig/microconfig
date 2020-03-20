@@ -15,9 +15,11 @@ import io.microconfig.core.properties.impl.repository.FilePropertiesRepository;
 import io.microconfig.core.resolvers.RecursiveResolver;
 import io.microconfig.core.resolvers.expression.ExpressionResolver;
 import io.microconfig.core.resolvers.placeholder.PlaceholderResolver;
+import io.microconfig.core.resolvers.placeholder.strategies.component.ComponentProperty;
 import io.microconfig.core.resolvers.placeholder.strategies.component.ComponentResolveStrategy;
 import io.microconfig.core.resolvers.placeholder.strategies.component.properties.ComponentPropertyFactory;
 import io.microconfig.core.resolvers.placeholder.strategies.envdescriptor.EnvDescriptorResolveStrategy;
+import io.microconfig.core.resolvers.placeholder.strategies.envdescriptor.EnvProperty;
 import io.microconfig.core.resolvers.placeholder.strategies.envdescriptor.properties.EnvDescriptorPropertiesFactory;
 import io.microconfig.core.resolvers.placeholder.strategies.standard.StandardResolveStrategy;
 import io.microconfig.io.DumpedFsReader;
@@ -26,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.With;
 
 import java.io.File;
+import java.util.Map;
 
 import static io.microconfig.core.configtypes.impl.CompositeConfigTypeRepository.composite;
 import static io.microconfig.core.configtypes.impl.CustomConfigTypeRepository.findDescriptorIn;
@@ -35,6 +38,7 @@ import static io.microconfig.core.resolvers.ChainedResolver.chainOf;
 import static io.microconfig.core.resolvers.placeholder.strategies.composite.CompositeResolveStrategy.composite;
 import static io.microconfig.core.resolvers.placeholder.strategies.system.SystemResolveStrategy.envVariablesResolveStrategy;
 import static io.microconfig.core.resolvers.placeholder.strategies.system.SystemResolveStrategy.systemPropertiesResolveStrategy;
+import static io.microconfig.utils.CollectionUtils.joinToSet;
 import static io.microconfig.utils.FileUtils.canonical;
 
 @RequiredArgsConstructor
@@ -64,16 +68,19 @@ public class Microconfig {
     }
 
     private RecursiveResolver placeholderResolver() {
-        ComponentPropertyFactory componentProperties = new ComponentPropertyFactory(componentGraph(), rootDir, null); //todo;
-        EnvDescriptorPropertiesFactory envProperties = new EnvDescriptorPropertiesFactory();
+        Map<String, ComponentProperty> componentSpecialProperties = new ComponentPropertyFactory(componentGraph(), rootDir, null).get();//todo;
+        Map<String, EnvProperty> envSpecialProperties = new EnvDescriptorPropertiesFactory().get();
 
-        return new PlaceholderResolver(composite(
-                systemPropertiesResolveStrategy(),
-                new ComponentResolveStrategy(componentProperties.get()),
-                new EnvDescriptorResolveStrategy(environments(), envProperties.get()),
-                new StandardResolveStrategy(environments()),
-                envVariablesResolveStrategy()
-        ));
+        return new PlaceholderResolver(
+                composite(
+                        systemPropertiesResolveStrategy(),
+                        new ComponentResolveStrategy(componentSpecialProperties),
+                        new EnvDescriptorResolveStrategy(environments(), envSpecialProperties),
+                        new StandardResolveStrategy(environments()),
+                        envVariablesResolveStrategy()
+                ),
+                joinToSet(componentSpecialProperties.keySet(), envSpecialProperties.keySet())
+        );
     }
 
     private RecursiveResolver expressionResolver() {

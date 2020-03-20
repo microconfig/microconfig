@@ -5,12 +5,14 @@ import io.microconfig.core.resolvers.RecursiveResolver;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static io.microconfig.core.resolvers.placeholder.PlaceholderBorders.findPlaceholderIn;
 
 @RequiredArgsConstructor
 public class PlaceholderResolver implements RecursiveResolver {
     private final PlaceholderResolveStrategy strategy;
+    private final Set<String> nonOverridableKeys;
 
     @Override
     public Optional<Statement> findStatementIn(CharSequence line) {
