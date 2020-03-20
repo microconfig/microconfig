@@ -38,6 +38,7 @@ public class PlaceholderResolver implements RecursiveResolver {
             Placeholder placeholder = borders.toPlaceholder(configType, sourceOfValue.getEnvironment());
             if (placeholder.isSelfReferenced() || referencedTo(sourceOfValue, placeholder)) {
                 placeholder = placeholder.withComponent(sourceOfValue.getComponent());
+                //tryResolveForParents
             }
 
             return resolve(placeholder, root);
