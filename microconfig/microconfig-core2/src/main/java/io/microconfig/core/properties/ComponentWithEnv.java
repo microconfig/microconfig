@@ -8,4 +8,5 @@ import lombok.With;
 public class ComponentWithEnv {
     String component;
     String environment;
+    //todo add config type?? write test this override with diff types
 }
