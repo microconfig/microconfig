@@ -36,7 +36,7 @@ public class PlaceholderResolver implements RecursiveResolver {
         @Override
         public String resolveFor(String configType, ComponentWithEnv sourceOfValue, ComponentWithEnv root) {
             Placeholder placeholder = borders.toPlaceholder(configType, sourceOfValue.getEnvironment());
-            if (placeholder.isSelfReferenced() || canBeOverridden(placeholder, sourceOfValue)) {
+            if (placeholder.isSelfReferenced() || referencedTo(sourceOfValue, placeholder)) {
                 placeholder = placeholder.withComponent(sourceOfValue.getComponent());
             }
 
@@ -47,7 +47,7 @@ public class PlaceholderResolver implements RecursiveResolver {
             //c3 -> key=${c3@ip}
         }
 
-        private boolean canBeOverridden(Placeholder p, ComponentWithEnv c) {
+        private boolean referencedTo(ComponentWithEnv c, Placeholder p) {
             return p.referencedTo(c) && !nonOverridableKeys.contains(p.getKey());
         }
 
