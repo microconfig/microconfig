@@ -23,8 +23,8 @@ public class ExpressionResolver implements RecursiveResolver {
 
     @Override
     public Optional<Statement> findStatementIn(CharSequence line) {
-        Matcher matcher = expressionPattern.matcher(line);
-        return matcher.find() ? of(toExpression(matcher)) : empty();
+        Matcher expressionMatcher = expressionPattern.matcher(line);
+        return expressionMatcher.find() ? of(toExpression(expressionMatcher)) : empty();
     }
 
     private Expression toExpression(Matcher matcher) {
