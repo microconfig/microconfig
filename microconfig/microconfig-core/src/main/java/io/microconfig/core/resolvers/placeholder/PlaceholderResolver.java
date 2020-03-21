@@ -61,6 +61,9 @@ public class PlaceholderResolver implements RecursiveResolver {
         }
 
         private String overrideByParents(Placeholder p, ComponentWithEnv root) {
+            for (Placeholder visitedPlaceholder : visited) {
+                Placeholder overridden = p.overrideBy(p.getReferencedComponent());
+            }
             return null;
         }
 
