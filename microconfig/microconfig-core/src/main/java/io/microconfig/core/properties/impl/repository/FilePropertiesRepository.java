@@ -22,11 +22,8 @@ public class FilePropertiesRepository implements PropertiesRepository {
     private final ConfigIo ioService;
 
     @Override
-    public List<Property> getPropertiesOf(String originalComponentName, String environment, ConfigType configType) {
-        Collection<Property> properties = new ComponentSource(originalComponentName, environment, configType)
-                .getProperties()
-                .values();
-        return new ArrayList<>(properties);
+    public Map<String, Property> getPropertiesOf(String originalComponentName, String environment, ConfigType configType) {
+        return new ComponentSource(originalComponentName, environment, configType).getProperties();
     }
 
     @RequiredArgsConstructor

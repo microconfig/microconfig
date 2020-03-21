@@ -7,14 +7,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.UnaryOperator;
 
-import static io.microconfig.core.properties.impl.PropertyImpl.asKeyValue;
-import static io.microconfig.utils.StreamUtils.filter;
-import static io.microconfig.utils.StreamUtils.forEach;
+import static io.microconfig.utils.StreamUtils.toLinkedMap;
+import static java.util.function.Function.identity;
 import static lombok.AccessLevel.PRIVATE;
 
 @EqualsAndHashCode
@@ -26,7 +22,7 @@ public class TypedPropertiesImpl implements TypedProperties {
     private final String environment;
     @Getter
     @With(PRIVATE)
-    private final List<Property> properties;
+    private final Map<String, Property> properties;
 
     @Override
     public String getConfigType() {
@@ -35,40 +31,29 @@ public class TypedPropertiesImpl implements TypedProperties {
 
     @Override
     public TypedProperties withoutTempValues() {
-        return withProperties(filter(properties, p -> !p.isTemp()));
+//        return withProperties(filter(properties, p -> !p.isTemp()));
+        return this;
     }
 
     @Override
     public TypedProperties resolveBy(Resolver resolver) {
-        return withProperties(forEach(properties, resolvePropertyBy(resolver)));
+        ComponentWithEnv root = currentComponent();
+        Map<String, Property> resolved = properties.values()
+                .stream()
+                .map(p -> p.resolveBy(resolver, root))
+                .collect(toLinkedMap(Property::getKey, identity()));
+        return withProperties(resolved);
     }
 
-    @Override
-    public Map<String, String> propertiesAsKeyValue() {
-        return asKeyValue(getProperties());
-    }
-
-    @Override
-    //todo must work 0(1)
-    public Optional<Property> getPropertyWithKey(String key) {
-        return properties.stream()
-                .filter(p -> p.getKey().equals(key))
-                .findFirst();
-    }
 
     @Override
     public <T> T save(PropertySerializer<T> serializer) {
-        return serializer.serialize(properties, configType, component, environment);
+        return serializer.serialize(properties.values(), configType, component, environment);
     }
 
     @Override
     public String toString() {
         return currentComponent().toString();
-    }
-
-    private UnaryOperator<Property> resolvePropertyBy(Resolver resolver) {
-        ComponentWithEnv current = currentComponent();
-        return p -> p.resolveBy(resolver, current);
     }
 
     private ComponentWithEnv currentComponent() {

@@ -8,6 +8,7 @@ import io.microconfig.core.properties.TypedProperties;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import static io.microconfig.utils.StreamUtils.forEach;
@@ -28,7 +29,7 @@ public class PropertiesFactoryImpl implements PropertiesFactory {
 
     private Function<ConfigType, TypedProperties> readConfigsFor(String componentName, String componentOriginalName, String environment) {
         return configType -> {
-            List<Property> properties = propertiesRepository.getPropertiesOf(componentOriginalName, environment, configType);
+            Map<String, Property> properties = propertiesRepository.getPropertiesOf(componentOriginalName, environment, configType);
             return new TypedPropertiesImpl(configType, componentName, environment, properties);
         };
     }

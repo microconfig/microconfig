@@ -1,8 +1,6 @@
 package io.microconfig.core.properties;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public interface TypedProperties {
     String getComponent();
@@ -13,11 +11,7 @@ public interface TypedProperties {
 
     TypedProperties withoutTempValues();
 
-    List<Property> getProperties();
-
-    Map<String, String> propertiesAsKeyValue();
-
-    Optional<Property> getPropertyWithKey(String key);
+    Map<String, Property> getProperties();
 
     <T> T save(PropertySerializer<T> serializer);
 }

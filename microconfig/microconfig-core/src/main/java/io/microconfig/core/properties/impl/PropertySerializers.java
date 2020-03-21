@@ -5,7 +5,6 @@ import io.microconfig.core.properties.PropertySerializer;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.List;
 
 import static io.microconfig.core.properties.impl.io.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.impl.io.ConfigFormat.YAML;
@@ -34,7 +33,7 @@ public class PropertySerializers {
                 .serialize(properties);
     }
 
-    private static String extensionByContent(List<Property> properties) {
+    private static String extensionByContent(Collection<Property> properties) {
         return properties.isEmpty() || containsYamlProperties(properties) ? YAML.extension() : PROPERTIES.extension();
     }
 
