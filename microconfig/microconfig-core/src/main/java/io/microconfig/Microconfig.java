@@ -121,10 +121,10 @@ public class Microconfig {
 
     private PropertiesFactory componentPropertiesFactory() {
         return new PropertiesFactoryImpl(
-                new FilePropertiesRepository(
+               cache(new FilePropertiesRepository(
                         componentGraph(),
                         newConfigIo(fsReader)
-                )
+                ))
         );
     }
 
