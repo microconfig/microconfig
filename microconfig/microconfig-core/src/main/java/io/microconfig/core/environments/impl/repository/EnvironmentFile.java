@@ -70,7 +70,7 @@ class EnvironmentFile {
             try {
                 return parseGroup(groupEntry, envIp);
             } catch (RuntimeException e) {
-                throw new IllegalStateException("Can't parse group declaration: '" + groupEntry + "' in '" + envName + "' env.", e);
+                throw new EnvironmentException("Can't parse group declaration: '" + groupEntry + "' in '" + envName + "' env.", e);
             }
         });
     }
