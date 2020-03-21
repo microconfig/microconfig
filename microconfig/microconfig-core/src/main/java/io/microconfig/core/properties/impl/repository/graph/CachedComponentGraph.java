@@ -42,7 +42,7 @@ public class CachedComponentGraph implements ComponentGraph {
     private static Map<String, List<File>> collectFoldersByComponentType(Stream<Path> pathStream) {
         return pathStream.parallel()
                 .map(Path::toFile)
-                .filter(isDirectory())
+                .filter(File::isDirectory)
                 .collect(groupingBy(File::getName));
     }
 
@@ -73,13 +73,5 @@ public class CachedComponentGraph implements ComponentGraph {
                     "Consider renaming them, otherwise placeholder resolution works incorrectly");
         }
         return folders.isEmpty() ? empty() : of(folders.get(0));
-    }
-
-    private static Predicate<File> isDirectory() {
-        return f -> {
-            //Filter by ext works way faster than File::isDirectory.
-            //Implementation is correct because File::listFiles for file will return null and its handled in getConfigFiles()
-            return !f.getName().contains(".");
-        };
     }
 }
