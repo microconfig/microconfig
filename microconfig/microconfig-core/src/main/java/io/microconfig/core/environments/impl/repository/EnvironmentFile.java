@@ -8,6 +8,8 @@ import java.io.File;
 import java.util.*;
 import java.util.Map.Entry;
 
+import static io.microconfig.core.environments.impl.repository.ComponentDefinition.withAlias;
+import static io.microconfig.core.environments.impl.repository.ComponentDefinition.withName;
 import static io.microconfig.utils.FileUtils.getName;
 import static io.microconfig.utils.StreamUtils.forEach;
 import static java.util.Collections.emptyList;
@@ -93,10 +95,15 @@ class EnvironmentFile {
 
         return values.stream()
                 .filter(Objects::nonNull)
-                .map(s -> {
-                    String[] parts = s.split(":");
-                    if (parts.length > 2) throw new IllegalArgumentException("Incorrect component declaration: " + s);
-                    return parts.length == 1 ? ComponentDefinition.withName(parts[0]) : ComponentDefinition.withAlias(parts[0], parts[1]);
-                }).collect(toList());
+                .map(this::toComponentDefinition)
+                .collect(toList());
+    }
+
+    private ComponentDefinition toComponentDefinition(String s) {
+        String[] parts = s.split(":");
+        if (parts.length > 2) {
+            throw new IllegalArgumentException("Incorrect component declaration: " + s);
+        }
+        return parts.length == 1 ? withName(parts[0]) : withAlias(parts[0], parts[1]);
     }
 }
