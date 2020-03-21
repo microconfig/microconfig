@@ -1,0 +1,6 @@
+include:
+  env: staging
+  exclude:
+    - kafka
+
+portOffset: 100
