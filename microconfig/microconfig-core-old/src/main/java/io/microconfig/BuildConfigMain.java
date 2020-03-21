@@ -20,11 +20,11 @@ import static java.lang.System.currentTimeMillis;
  * root=C:\Projects\config\repo dest=C:\Projects\configs env=cr-dev6
  */
 public class BuildConfigMain {
-    private static final String ROOT = "root";
-    private static final String DEST = "dest";
-    private static final String ENV = "env";
-    private static final String GROUPS = "groups";
-    private static final String SERVICES = "services";
+    private static final String ROOT = "r";
+    private static final String DEST = "d";
+    private static final String ENV = "e";
+    private static final String GROUPS = "g";
+    private static final String SERVICES = "s";
 
     public static void main(String[] args) {
         CommandLineParamParser clp = CommandLineParamParser.parse(args);
