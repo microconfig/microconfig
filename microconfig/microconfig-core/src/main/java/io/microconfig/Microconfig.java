@@ -109,22 +109,22 @@ public class Microconfig {
 
         @Override
         public ComponentFactory componentFactory() {
-            return new ComponentFactoryImpl(
+            return cache(new ComponentFactoryImpl(
                     f.configTypes(),
                     f.componentPropertiesFactory()
-            );
+            ));
         }
 
         @Override
         public PropertiesFactory componentPropertiesFactory() {
-            return new PropertiesFactoryImpl(
+            return cache(new PropertiesFactoryImpl(
                     cache(
                             new FilePropertiesRepository(
                                     f.componentGraph(),
                                     newConfigIo(fsReader)
                             )
                     )
-            );
+            ));
         }
 
         @Override
