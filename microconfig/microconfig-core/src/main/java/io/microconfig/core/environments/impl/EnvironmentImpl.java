@@ -57,6 +57,7 @@ public class EnvironmentImpl implements Environment {
     }
 
     @Override
+    //todo must work 0(1)
     //todo maybe just make 2 private methods public instead of this flag check?
     public Component findComponentWithName(String componentName, boolean mustBeDeclaredInEnvDescriptor) {
         return mustBeDeclaredInEnvDescriptor

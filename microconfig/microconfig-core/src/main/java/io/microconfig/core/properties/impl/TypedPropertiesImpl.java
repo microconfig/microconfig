@@ -49,6 +49,7 @@ public class TypedPropertiesImpl implements TypedProperties {
     }
 
     @Override
+    //todo must work 0(1)
     public Optional<Property> getPropertyWithKey(String key) {
         return properties.stream()
                 .filter(p -> p.getKey().equals(key))
