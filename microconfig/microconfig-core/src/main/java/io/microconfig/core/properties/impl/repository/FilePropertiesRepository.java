@@ -3,8 +3,7 @@ package io.microconfig.core.properties.impl.repository;
 import io.microconfig.core.configtypes.ConfigType;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.impl.PropertiesRepository;
-import io.microconfig.core.properties.impl.io.ConfigIo;
-import io.microconfig.core.properties.impl.repository.ConfigFile.ConfigDefinition;
+import io.microconfig.core.properties.impl.repository.ConfigFileParser.ConfigDefinition;
 import io.microconfig.core.properties.impl.repository.graph.ComponentNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -19,7 +18,7 @@ import static io.microconfig.core.properties.impl.repository.graph.ConfigFileFil
 @RequiredArgsConstructor
 public class FilePropertiesRepository implements PropertiesRepository {
     private final ComponentGraph componentGraph;
-    private final ConfigIo ioService;
+    private final ConfigFileParser configFileParser;
 
     @Override
     public Map<String, Property> getPropertiesOf(String originalComponentName, String environment, ConfigType configType) {
@@ -60,8 +59,7 @@ public class FilePropertiesRepository implements PropertiesRepository {
 
         private Stream<ConfigDefinition> configDefinitionsFor(Predicate<File> filter) {
             return componentGraph.getConfigFilesFor(originalComponentName, filter)
-                    .map(file -> new ConfigFile(file, environment))
-                    .map(configFile -> configFile.parseUsing(ioService));
+                    .map(file -> configFileParser.parse(file, environment));
         }
 
         private Map<String, Property> collectPropertiesFrom(Stream<ConfigDefinition> componentConfigs) {
@@ -85,7 +83,6 @@ public class FilePropertiesRepository implements PropertiesRepository {
                     });
         }
 
-        //todo includes must be cached
         private ComponentSource includedComponent(Include include) {
             return withOriginalComponentName(include.getComponent())
                     .withEnvironment(include.getEnvironment());

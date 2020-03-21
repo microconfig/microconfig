@@ -11,6 +11,7 @@ import io.microconfig.core.properties.PropertiesFactory;
 import io.microconfig.core.properties.Resolver;
 import io.microconfig.core.properties.impl.PropertiesFactoryImpl;
 import io.microconfig.core.properties.impl.repository.ComponentGraph;
+import io.microconfig.core.properties.impl.repository.ConfigFileParserImpl;
 import io.microconfig.core.properties.impl.repository.FilePropertiesRepository;
 import io.microconfig.core.resolvers.RecursiveResolver;
 import io.microconfig.core.resolvers.expression.ExpressionResolver;
@@ -121,7 +122,7 @@ public class Microconfig {
                     cache(
                             new FilePropertiesRepository(
                                     f.componentGraph(),
-                                    newConfigIo(fsReader)
+                                    cache(new ConfigFileParserImpl(newConfigIo(fsReader)))
                             )
                     )
             ));

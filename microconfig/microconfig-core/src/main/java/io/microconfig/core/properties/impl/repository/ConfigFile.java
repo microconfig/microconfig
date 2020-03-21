@@ -3,7 +3,7 @@ package io.microconfig.core.properties.impl.repository;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.impl.io.ConfigIo;
 import io.microconfig.core.properties.impl.io.ConfigReader;
-import lombok.Getter;
+import io.microconfig.core.properties.impl.repository.ConfigFileParser.ConfigDefinition;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -14,11 +14,11 @@ import java.util.Map;
 import static io.microconfig.core.properties.impl.FilePropertySource.fileSource;
 import static io.microconfig.core.properties.impl.PropertyImpl.isTempProperty;
 import static io.microconfig.core.properties.impl.PropertyImpl.parse;
-import static io.microconfig.utils.CollectionUtils.join;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
-import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Stream.concat;
 
 @RequiredArgsConstructor
 class ConfigFile {
@@ -31,12 +31,12 @@ class ConfigFile {
         Map<Integer, String> commentByLineNumber = reader.commentsByLineNumber();
         List<Include> includes = parseIncludes(commentByLineNumber.values());
         if (containsIgnoreDirective(commentByLineNumber.values())) {
-            return new ConfigDefinition(includes, emptyList());
+            return new ConfigDefinition(includes, emptyMap());
         }
 
         List<Property> properties = reader.properties(environment);
         List<Property> tempProperties = parseTempProperties(commentByLineNumber);
-        return new ConfigDefinition(includes, join(properties, tempProperties));
+        return new ConfigDefinition(includes, joinToMap(properties, tempProperties));
     }
 
     private List<Property> parseTempProperties(Map<Integer, String> commentByLineNumber) {
@@ -59,14 +59,8 @@ class ConfigFile {
         return comments.stream().anyMatch(s -> s.startsWith("#@Ignore"));
     }
 
-    @RequiredArgsConstructor
-    static class ConfigDefinition {
-        @Getter
-        private final List<Include> includes;
-        private final List<Property> properties;
-
-        public Map<String, Property> getProperties() {
-            return properties.stream().collect(toLinkedMap(Property::getKey, identity()));
-        }
+    private Map<String, Property> joinToMap(List<Property> properties, List<Property> tempProperties) {
+        return concat(properties.stream(), tempProperties.stream())
+                .collect(toLinkedMap(Property::getKey, identity()));
     }
 }
