@@ -13,8 +13,10 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static io.microconfig.utils.FileUtils.walk;
+import static io.microconfig.utils.Logger.info;
 import static io.microconfig.utils.Logger.warn;
 import static io.microconfig.utils.StringUtils.symbolCountIn;
+import static java.lang.System.currentTimeMillis;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.Optional.empty;
@@ -35,7 +37,10 @@ public class CachedComponentGraph implements ComponentGraph {
         }
 
         try (Stream<Path> paths = walk(componentDir.toPath())) {
-            return new CachedComponentGraph(collectFoldersByComponentType(paths));
+            long t = currentTimeMillis();
+            CachedComponentGraph graph = new CachedComponentGraph(collectFoldersByComponentType(paths));
+            info("Traversed config dirs in " + (currentTimeMillis() - t) + ".ms");
+            return graph;
         }
     }
 
