@@ -83,6 +83,6 @@ public class PropertyImpl implements Property {
 
     @Override
     public String toString() {
-        return (temp ? "#" : "") + key + ": " + value;
+        return (temp ? "#" : "") + key + "=" + value;
     }
 }
