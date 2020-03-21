@@ -80,7 +80,7 @@ class TypedPropertiesImplTest {
     @Test
     void testToString() {
         assertEquals(
-                "app::comp[env]",
+                "comp[env]",
                 subj.toString()
         );
     }

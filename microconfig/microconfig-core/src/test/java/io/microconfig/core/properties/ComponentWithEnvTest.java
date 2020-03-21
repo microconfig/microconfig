@@ -8,7 +8,7 @@ class ComponentWithEnvTest {
     @Test
     void testToString(){
         assertEquals(
-                "app::comp[env]",
+                "comp[env]",
                 new ComponentWithEnv("app", "comp", "env").toString()
         );
     }

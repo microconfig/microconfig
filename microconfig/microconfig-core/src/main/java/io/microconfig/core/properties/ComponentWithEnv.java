@@ -3,8 +3,8 @@ package io.microconfig.core.properties;
 import lombok.Value;
 import lombok.With;
 
-@Value
 @With
+@Value
 public class ComponentWithEnv {
     String configType;
     String component;
@@ -13,6 +13,6 @@ public class ComponentWithEnv {
 
     @Override
     public String toString() {
-        return configType + "::" + component + "[" + environment + "]";
+        return component + "[" + environment + "]";
     }
 }

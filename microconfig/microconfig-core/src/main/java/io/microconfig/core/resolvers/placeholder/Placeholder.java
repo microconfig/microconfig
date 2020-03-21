@@ -51,7 +51,6 @@ class Placeholder {
     @Override
     public String toString() {
         return "${" +
-                configType + "::" +
                 component +
                 "[" + environment + "]" +
                 "@" +
