@@ -4,6 +4,7 @@ import io.microconfig.core.properties.impl.repository.ComponentGraph;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
@@ -41,8 +42,8 @@ public class CachedComponentGraph implements ComponentGraph {
 
     private static Map<String, List<File>> collectFoldersByComponentType(Stream<Path> pathStream) {
         return pathStream.parallel()
+                .filter(Files::isDirectory)
                 .map(Path::toFile)
-                .filter(File::isDirectory)
                 .collect(groupingBy(File::getName));
     }
 
