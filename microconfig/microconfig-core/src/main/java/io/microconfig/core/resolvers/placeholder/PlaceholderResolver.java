@@ -7,13 +7,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.With;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 import static io.microconfig.core.resolvers.placeholder.PlaceholderBorders.findPlaceholderIn;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Stream.of;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
@@ -51,20 +55,33 @@ public class PlaceholderResolver implements RecursiveResolver {
             Placeholder placeholder = borders.toPlaceholder(configType, sourceOfValue.getEnvironment());
 
             return canBeOverridden(placeholder, sourceOfValue) ?
-                    overrideByParents(placeholder, root) :
+                    overrideByParents(placeholder, sourceOfValue, root) :
                     resolve(placeholder, root);
         }
 
-        private boolean canBeOverridden(Placeholder p, ComponentWithEnv c) {
+        private boolean canBeOverridden(Placeholder p, ComponentWithEnv sourceOfValue) {
             return p.isSelfReferenced() ||
-                    (p.referencedTo(c) && !nonOverridableKeys.contains(p.getKey()));
+                    (p.referencedTo(sourceOfValue) && !nonOverridableKeys.contains(p.getKey()));
         }
 
-        private String overrideByParents(Placeholder p, ComponentWithEnv root) {
-            for (Placeholder visitedPlaceholder : visited) {
-                Placeholder overridden = p.overrideBy(p.getReferencedComponent());
-            }
-            return null;
+        private String overrideByParents(Placeholder p, ComponentWithEnv sourceOfValue, ComponentWithEnv root) {
+            Function<ComponentWithEnv, String> tryResolveFor = component -> {
+                try {
+                    return resolve(p.overrideBy(component), root);
+                } catch (RuntimeException e) {
+                    return null;
+                }
+            };
+
+            return of(
+                    of(root),
+                    visited.stream().map(Placeholder::getReferencedComponent),
+                    of(sourceOfValue)
+            ).flatMap(identity())
+                    .map(tryResolveFor)
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .orElseThrow(IllegalStateException::new);
         }
 
         private String resolve(Placeholder p, ComponentWithEnv root) {

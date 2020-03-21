@@ -19,7 +19,7 @@ public class MicroconfigTest {
     @Test
     void aliasesAndThis() {
         //todo
-//        testAliases("node1", "app.ip=172.30.162.4", "app.name=node1", "app.value=v1");
+        testAliases("node1", "app.ip=172.30.162.4", "app.name=node1", "app.value=v1");
 //        testAliases("node3", "app.ip=172.30.162.5", "app.name=node3", "app.value=v1");
 //        testAliases("node", "app.ip=172.30.162.5", "app.name=node", "app.value=v1");
     }
