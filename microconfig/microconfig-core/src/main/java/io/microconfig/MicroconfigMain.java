@@ -6,8 +6,7 @@ import java.io.File;
 import java.util.List;
 
 import static io.microconfig.Microconfig.searchConfigsIn;
-import static io.microconfig.core.configtypes.impl.ConfigTypeFilters.configType;
-import static io.microconfig.core.configtypes.impl.StandardConfigType.PROCESS;
+import static io.microconfig.core.configtypes.impl.ConfigTypeFilters.eachConfigType;
 import static io.microconfig.core.properties.impl.PropertySerializers.toFileIn;
 import static io.microconfig.utils.Logger.announce;
 
@@ -31,7 +30,7 @@ public class MicroconfigMain {
 
         val microconfig = searchConfigsIn(rootDir);
         microconfig.inEnvironment(env).findComponentsFrom(groups, services)
-                .getPropertiesFor(configType(PROCESS))
+                .getPropertiesFor(eachConfigType())
                 .resolveBy(microconfig.resolver())
                 .save(toFileIn(destinationDir));
 

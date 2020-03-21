@@ -35,19 +35,18 @@ public class BuildConfigMain {
         List<String> groups = clp.listValue(GROUPS);
         List<String> components = clp.listValue(SERVICES);
 
+        long t = currentTimeMillis();
         ConfigCommand configCommand = new BuildConfigCommandFactory(compositeProvider()).newCommand(new File(root), new File(destination));
         execute(configCommand, env, groups, components);
+        announce("Generated configs in " + ((currentTimeMillis() - t) + " ms"));
+
     }
 
     public static void execute(ConfigCommand configCommand, String env, List<String> groups, List<String> components) {
-        long t = currentTimeMillis();
-
         if (groups.isEmpty()) {
             configCommand.execute(new ComponentsToProcess(env, components));
         } else {
             groups.forEach(group -> configCommand.execute(new ComponentsToProcess(env, group, components)));
         }
-
-        announce("Generated configs in " + ((currentTimeMillis() - t) + " ms"));
     }
 }
