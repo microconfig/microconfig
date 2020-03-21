@@ -29,7 +29,7 @@ public class PropertiesFactoryImpl implements PropertiesFactory {
     private Function<ConfigType, TypedProperties> readConfigsFor(String componentName, String componentOriginalName, String environment) {
         return configType -> {
             List<Property> properties = propertiesRepository.getPropertiesOf(componentOriginalName, environment, configType);
-            return new TypedPropertiesImpl(componentName, environment, configType, properties);
+            return new TypedPropertiesImpl(configType, componentName, environment, properties);
         };
     }
 }

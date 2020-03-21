@@ -31,7 +31,7 @@ class Placeholder {
     }
 
     public ComponentWithEnv getReferencedComponent() {
-        return new ComponentWithEnv(component, environment);
+        return new ComponentWithEnv(configType, component, environment);
     }
 
     public boolean isSelfReferenced() {

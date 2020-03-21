@@ -1,13 +1,14 @@
 package io.microconfig.core.properties.impl;
 
 import io.microconfig.core.properties.PropertySource;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
-
 @Getter
+@EqualsAndHashCode
 @RequiredArgsConstructor
 public class FilePropertySource implements PropertySource {
     private final File source;

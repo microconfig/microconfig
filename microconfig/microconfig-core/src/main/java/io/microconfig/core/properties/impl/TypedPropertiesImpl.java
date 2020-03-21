@@ -1,10 +1,7 @@
 package io.microconfig.core.properties.impl;
 
 import io.microconfig.core.configtypes.ConfigType;
-import io.microconfig.core.properties.Property;
-import io.microconfig.core.properties.PropertySerializer;
-import io.microconfig.core.properties.Resolver;
-import io.microconfig.core.properties.TypedProperties;
+import io.microconfig.core.properties.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +10,7 @@ import lombok.With;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 
 import static io.microconfig.core.properties.impl.PropertyImpl.asKeyValue;
 import static io.microconfig.utils.StreamUtils.filter;
@@ -22,10 +20,10 @@ import static lombok.AccessLevel.PRIVATE;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class TypedPropertiesImpl implements TypedProperties {
+    private final ConfigType configType;
     @Getter
     private final String component;
     private final String environment;
-    private final ConfigType configType;
     @Getter
     @With(PRIVATE)
     private final List<Property> properties;
@@ -42,7 +40,7 @@ public class TypedPropertiesImpl implements TypedProperties {
 
     @Override
     public TypedProperties resolveBy(Resolver resolver) {
-        return withProperties(forEach(properties, p -> p.resolveBy(resolver, configType.getName())));
+        return withProperties(forEach(properties, resolvePropertyBy(resolver)));
     }
 
     @Override
@@ -60,5 +58,19 @@ public class TypedPropertiesImpl implements TypedProperties {
     @Override
     public <T> T save(PropertySerializer<T> serializer) {
         return serializer.serialize(properties, configType, component, environment);
+    }
+
+    @Override
+    public String toString() {
+        return currentComponent().toString();
+    }
+
+    private UnaryOperator<Property> resolvePropertyBy(Resolver resolver) {
+        ComponentWithEnv current = currentComponent();
+        return p -> p.resolveBy(resolver, current);
+    }
+
+    private ComponentWithEnv currentComponent() {
+        return new ComponentWithEnv(configType.getName(), component, environment);
     }
 }

@@ -4,6 +4,7 @@ import io.microconfig.core.properties.ComponentWithEnv;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.PropertySource;
 import io.microconfig.core.properties.Resolver;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -16,6 +17,7 @@ import static io.microconfig.utils.StringUtils.findFirstIndexIn;
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
+@EqualsAndHashCode
 @RequiredArgsConstructor(access = PRIVATE)
 public class PropertyImpl implements Property {
     private static final String TEMP_VALUE = "#var ";
@@ -67,12 +69,17 @@ public class PropertyImpl implements Property {
     }
 
     @Override
-    public Property resolveBy(Resolver resolver, String configType) {
+    public Property resolveBy(Resolver resolver, ComponentWithEnv root) {
         try {
-            return withValue(resolver.resolve(value, new ComponentWithEnv(source.getDeclaringComponent(), envContext), null, configType));
+            String resolved = resolver.resolve(value, currentComponent(root.getConfigType()), root);
+            return withValue(resolved);
         } catch (RuntimeException e) {
             throw new PropertyResolveException("Can't resolve property '" + this + "'", e); //todo
         }
+    }
+
+    private ComponentWithEnv currentComponent(String configType) { //todo
+        return new ComponentWithEnv(configType, source.getDeclaringComponent(), envContext);
     }
 
     @Override

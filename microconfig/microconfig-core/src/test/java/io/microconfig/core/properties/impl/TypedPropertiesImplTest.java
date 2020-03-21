@@ -1,9 +1,6 @@
 package io.microconfig.core.properties.impl;
 
-import io.microconfig.core.properties.Property;
-import io.microconfig.core.properties.PropertySerializer;
-import io.microconfig.core.properties.Resolver;
-import io.microconfig.core.properties.TypedProperties;
+import io.microconfig.core.properties.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,24 +17,24 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class TypedPropertiesImplTest {
-    Property key = mock(Property.class);
-    Property var = mock(Property.class);
-    TypedProperties subj = withProperties(asList(key, var));
+    Property p1 = mock(Property.class);
+    Property p2 = mock(Property.class);
+    TypedProperties subj = withProperties(asList(p1, p2));
 
     @BeforeEach
     void setup() {
-        when(key.getKey()).thenReturn("key");
-        when(key.getValue()).thenReturn("value");
-        when(key.isTemp()).thenReturn(false);
+        when(p1.getKey()).thenReturn("key");
+        when(p1.getValue()).thenReturn("value");
+        when(p1.isTemp()).thenReturn(false);
 
-        when(var.getKey()).thenReturn("var");
-        when(var.getValue()).thenReturn("varlue");
-        when(var.isTemp()).thenReturn(true);
+        when(p2.getKey()).thenReturn("var");
+        when(p2.getValue()).thenReturn("varlue");
+        when(p2.isTemp()).thenReturn(true);
     }
 
     @Test
     void propertyWithKey() {
-        assertEquals(of(key), subj.getPropertyWithKey("key"));
+        assertEquals(of(p1), subj.getPropertyWithKey("key"));
         assertEquals(empty(), subj.getPropertyWithKey("missing"));
     }
 
@@ -51,19 +48,22 @@ class TypedPropertiesImplTest {
 
     @Test
     void withoutTemp() {
-        assertEquals(withProperties(singletonList(key)), subj.withoutTempValues());
+        assertEquals(withProperties(singletonList(p1)), subj.withoutTempValues());
     }
 
     @Test
     void resolve() {
-        Property keyR = mock(Property.class);
-        Property varR = mock(Property.class);
+        Property resolved1 = mock(Property.class);
+        Property resolved2 = mock(Property.class);
         Resolver resolver = mock(Resolver.class);
-        when(key.resolveBy(resolver, APPLICATION.getName())).thenReturn(keyR);
-        when(var.resolveBy(resolver, APPLICATION.getName())).thenReturn(varR);
+        ComponentWithEnv root = new ComponentWithEnv(APPLICATION.getName(), "comp", "env");
+        when(p1.resolveBy(resolver, root)).thenReturn(resolved1);
+        when(p2.resolveBy(resolver, root)).thenReturn(resolved2);
 
-        TypedProperties expected = withProperties(asList(keyR, varR));
-        assertEquals(expected, subj.resolveBy(resolver));
+        assertEquals(
+                withProperties(asList(resolved1, resolved2)),
+                subj.resolveBy(resolver)
+        );
     }
 
     @Test
@@ -78,6 +78,6 @@ class TypedPropertiesImplTest {
     }
 
     private TypedProperties withProperties(List<Property> properties) {
-        return new TypedPropertiesImpl("comp", "env", APPLICATION, properties);
+        return new TypedPropertiesImpl(APPLICATION, "comp", "env", properties);
     }
 }
