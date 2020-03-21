@@ -30,7 +30,7 @@ class EnvironmentImplTest {
     List<ComponentGroup> groups = asList(group1, group2);
     ComponentFactory factory = mock(ComponentFactory.class);
 
-    Environment env = new EnvironmentImpl("dev", groups, factory);
+    Environment env = new EnvironmentImpl("dev", 1, groups, factory);
 
     @BeforeEach
     void setUp() {

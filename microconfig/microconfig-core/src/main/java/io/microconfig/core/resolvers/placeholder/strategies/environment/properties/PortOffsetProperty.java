@@ -5,6 +5,8 @@ import io.microconfig.core.resolvers.placeholder.strategies.environment.EnvPrope
 
 import java.util.Optional;
 
+import static java.util.Optional.of;
+
 public class PortOffsetProperty implements EnvProperty {
     @Override
     public String key() {
@@ -13,8 +15,7 @@ public class PortOffsetProperty implements EnvProperty {
 
     @Override
     public Optional<String> resolveFor(String component, Environment environment) {
-//        return environment.getPortOffset()
-//                .map(Object::toString);
-        return Optional.empty();
+        return of(environment.getPortOffset())
+                .map(String::valueOf);
     }
 }

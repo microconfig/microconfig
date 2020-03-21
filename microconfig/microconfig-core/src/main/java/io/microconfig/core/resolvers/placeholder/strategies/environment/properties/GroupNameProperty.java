@@ -5,15 +5,16 @@ import io.microconfig.core.resolvers.placeholder.strategies.environment.EnvPrope
 
 import java.util.Optional;
 
+import static java.util.Optional.of;
+
 public class GroupNameProperty implements EnvProperty {
     @Override
     public String key() {
         return "group";
     }
 
-    @Override
+    @Override //todo
     public Optional<String> resolveFor(String component, Environment environment) {
-//        return environment.findGroupWithComponent(componentName).getName();
-        return Optional.empty();
+        return of(environment.findGroupWithComponent(component).getName());
     }
 }

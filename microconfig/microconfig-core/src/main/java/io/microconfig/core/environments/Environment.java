@@ -5,6 +5,8 @@ import java.util.List;
 public interface Environment {
     String getName();
 
+    int getPortOffset();
+
     List<ComponentGroup> findGroupsWithIp(String ip);
 
     ComponentGroup findGroupWithName(String groupName);

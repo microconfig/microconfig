@@ -23,6 +23,8 @@ import static java.util.stream.Collectors.toMap;
 public class EnvironmentImpl implements Environment {
     @Getter
     private final String name;
+    @Getter
+    private final int portOffset;
     private final List<ComponentGroup> componentGroups;
     private final ComponentFactory componentFactory;
 

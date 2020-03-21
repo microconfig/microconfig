@@ -52,6 +52,7 @@ class EnvironmentDefinition {
     public Environment toEnvironment(ComponentFactory componentFactory) {
         return new EnvironmentImpl(
                 name,
+                portOffset,
                 forEach(groups, g -> g.toGroup(componentFactory, name)),
                 componentFactory
         );
