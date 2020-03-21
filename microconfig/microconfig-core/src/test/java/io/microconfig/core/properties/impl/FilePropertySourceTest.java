@@ -23,6 +23,11 @@ class FilePropertySourceTest {
     }
 
     @Test
+    void constructor() {
+        assertEquals(source, new FilePropertySource(file, 0, true));
+    }
+
+    @Test
     void parentComponent() {
         assertEquals("component", source.getDeclaringComponent());
     }
