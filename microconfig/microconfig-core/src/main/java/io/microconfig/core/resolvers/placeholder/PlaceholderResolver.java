@@ -108,5 +108,10 @@ public class PlaceholderResolver implements RecursiveResolver {
                     updated.stream().map(Placeholder::toString).collect(joining(" -> "))
             );
         }
+
+        @Override
+        public String toString() {
+            return borders.toString();
+        }
     }
 }

@@ -38,6 +38,7 @@ import static io.microconfig.core.resolvers.ChainedResolver.chainOf;
 import static io.microconfig.core.resolvers.placeholder.strategies.composite.CompositeResolveStrategy.composite;
 import static io.microconfig.core.resolvers.placeholder.strategies.system.SystemResolveStrategy.envVariablesResolveStrategy;
 import static io.microconfig.core.resolvers.placeholder.strategies.system.SystemResolveStrategy.systemPropertiesResolveStrategy;
+import static io.microconfig.utils.CacheProxy.cache;
 import static io.microconfig.utils.CollectionUtils.joinToSet;
 import static io.microconfig.utils.FileUtils.canonical;
 import static java.lang.System.currentTimeMillis;
@@ -73,16 +74,18 @@ public class Microconfig {
         Map<String, ComponentProperty> componentSpecialProperties = new ComponentProperties(componentGraph(), rootDir, null).get();//todo;
         Map<String, EnvProperty> envSpecialProperties = new EnvironmentProperties().get();
 
-        return new PlaceholderResolver(
-                composite(
-                        systemPropertiesResolveStrategy(),
-                        new ComponentResolveStrategy(componentSpecialProperties),
-                        new EnvironmentResolveStrategy(environments(), envSpecialProperties),
-                        new StandardResolveStrategy(environments()),
-                        envVariablesResolveStrategy()
-                ),
-                joinToSet(componentSpecialProperties.keySet(), envSpecialProperties.keySet())
-        );
+//        return cache(
+      return           new PlaceholderResolver(
+                        composite(
+                                systemPropertiesResolveStrategy(),
+                                new ComponentResolveStrategy(componentSpecialProperties),
+                                new EnvironmentResolveStrategy(environments(), envSpecialProperties),
+                                new StandardResolveStrategy(environments()),
+                                envVariablesResolveStrategy()
+                        ),
+                        joinToSet(componentSpecialProperties.keySet(), envSpecialProperties.keySet())
+                );
+//        );
     }
 
     private RecursiveResolver expressionResolver() {
@@ -90,10 +93,12 @@ public class Microconfig {
     }
 
     private EnvironmentRepository environments() {
-        return new FileEnvironmentRepository(
-                rootDir,
-                fsReader,
-                componentFactory()
+        return cache(
+                new FileEnvironmentRepository(
+                        rootDir,
+                        fsReader,
+                        componentFactory()
+                )
         );
     }
 
@@ -104,19 +109,21 @@ public class Microconfig {
         );
     }
 
+    private ConfigTypeRepository configTypes() {
+        return cache(
+                composite(
+                        findDescriptorIn(rootDir, fsReader),
+                        new StandardConfigTypeRepository()
+                )
+        );
+    }
+
     private PropertiesFactory componentPropertiesFactory() {
         return new PropertiesFactoryImpl(
                 new FilePropertiesRepository(
                         componentGraph(),
                         newConfigIo(fsReader)
                 )
-        );
-    }
-
-    private ConfigTypeRepository configTypes() {
-        return composite(
-                findDescriptorIn(rootDir, fsReader),
-                new StandardConfigTypeRepository()
         );
     }
 
