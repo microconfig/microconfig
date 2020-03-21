@@ -39,7 +39,7 @@ class TypedPropertiesImplTest {
     }
 
     @Test
-    void propertiesMap() {
+    void propertiesAsKeyValue() {
         assertEquals(
                 splitKeyValue("key=value", "var=varlue"),
                 subj.propertiesAsKeyValue()
@@ -47,7 +47,7 @@ class TypedPropertiesImplTest {
     }
 
     @Test
-    void withoutTemp() {
+    void withoutTempValues() {
         assertEquals(withProperties(singletonList(p1)), subj.withoutTempValues());
     }
 
@@ -75,6 +75,14 @@ class TypedPropertiesImplTest {
     void serialize() {
         PropertySerializer<String> serializer = (p, t, c, e) -> c;
         assertEquals("comp", subj.save(serializer));
+    }
+
+    @Test
+    void testToString() {
+        assertEquals(
+                "app::comp[env]",
+                subj.toString()
+        );
     }
 
     private TypedProperties withProperties(List<Property> properties) {

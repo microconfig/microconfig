@@ -81,7 +81,9 @@ public class PlaceholderResolver implements RecursiveResolver {
                     .map(tryResolveFor)
                     .filter(Objects::nonNull)
                     .findFirst()
-                    .orElseThrow(IllegalStateException::new);
+                    .orElseThrow(() -> {
+                        throw new PropertyResolveException(p.toString(), sourceOfValue, root);
+                    });
         }
 
         private String resolve(Placeholder p, ComponentWithEnv root) {

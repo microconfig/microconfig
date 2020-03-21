@@ -23,9 +23,8 @@ public class PropertyImpl implements Property {
     private static final String TEMP_VALUE = "#var ";
 
     private final String key;
-    @With
+    @With(PRIVATE)
     private final String value;
-    @With
     private final String envContext;
     private final boolean temp;
 
@@ -78,7 +77,7 @@ public class PropertyImpl implements Property {
         }
     }
 
-    private ComponentWithEnv currentComponent(String configType) { //todo
+    private ComponentWithEnv currentComponent(String configType) { //todo incorrect type?
         return new ComponentWithEnv(configType, source.getDeclaringComponent(), envContext);
     }
 

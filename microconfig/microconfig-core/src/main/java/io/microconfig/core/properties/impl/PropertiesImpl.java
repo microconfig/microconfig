@@ -12,8 +12,8 @@ import java.util.function.UnaryOperator;
 import static io.microconfig.core.properties.impl.PropertyImpl.asKeyValue;
 import static io.microconfig.utils.StreamUtils.*;
 
-@RequiredArgsConstructor
 @EqualsAndHashCode
+@RequiredArgsConstructor
 public class PropertiesImpl implements Properties {
     private final List<TypedProperties> properties;
 
