@@ -11,6 +11,7 @@ import static io.microconfig.core.properties.impl.io.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.impl.io.ConfigFormat.YAML;
 import static io.microconfig.core.properties.impl.io.selector.ConfigIoFactory.configIo;
 import static io.microconfig.utils.FileUtils.delete;
+import static io.microconfig.utils.Logger.info;
 
 public class PropertySerializers {
     public static PropertySerializer<File> toFileIn(File dir) {
@@ -22,6 +23,7 @@ public class PropertySerializers {
             if (!properties.isEmpty()) {
                 configIo().writeTo(resultFile).write(properties);
             }
+            info("Generated " + resultFile.getName() + " for " + componentName);
             return resultFile;
         };
     }

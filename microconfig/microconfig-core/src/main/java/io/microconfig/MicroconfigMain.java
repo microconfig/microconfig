@@ -1,6 +1,5 @@
 package io.microconfig;
 
-import io.microconfig.utils.Logger;
 import lombok.val;
 
 import java.io.File;
@@ -9,6 +8,7 @@ import java.util.List;
 import static io.microconfig.Microconfig.searchConfigsIn;
 import static io.microconfig.core.configtypes.impl.ConfigTypeFilters.eachConfigType;
 import static io.microconfig.core.properties.impl.PropertySerializers.toFileIn;
+import static io.microconfig.utils.Logger.announce;
 
 /**
  * Command line params example: *
@@ -34,6 +34,6 @@ public class MicroconfigMain {
                 .resolveBy(microconfig.resolver())
                 .save(toFileIn(destinationDir));
 
-        Logger.info("Processed configs in " + microconfig.msAfterCreation() + "ms.");
+        announce("\nGenerated configs for [" + env + "] env in " + microconfig.msAfterCreation() + "ms");
     }
 }
