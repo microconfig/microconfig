@@ -14,6 +14,7 @@ import io.microconfig.core.properties.io.ioservice.selector.ConfigIoServiceSelec
 import io.microconfig.core.properties.io.ioservice.yaml.YamlConfigIoService;
 import io.microconfig.core.properties.io.tree.CachedComponentTree;
 import io.microconfig.core.properties.io.tree.ComponentTree;
+import io.microconfig.core.properties.provider.ComponentParser;
 import io.microconfig.core.properties.provider.ComponentParserImpl;
 import io.microconfig.core.properties.provider.FileBasedConfigProvider;
 import io.microconfig.core.properties.resolver.PropertyResolver;
@@ -96,8 +97,9 @@ public class MicroconfigFactory {
     }
 
     public ConfigProvider newFileBasedProvider(ConfigType configType) {
+        ComponentParser parser = new ComponentParserImpl(configIoService);
         return cache(
-                new FileBasedConfigProvider(configType.getSourceExtensions(), componentTree, new ComponentParserImpl(configIoService))
+                new FileBasedConfigProvider(configType.getSourceExtensions(), componentTree, cache(parser))
         );
     }
 

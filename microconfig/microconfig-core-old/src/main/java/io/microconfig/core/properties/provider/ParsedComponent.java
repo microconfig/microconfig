@@ -10,7 +10,7 @@ import static java.util.stream.Collectors.toMap;
 
 
 @RequiredArgsConstructor
-class ParsedComponent {
+public class ParsedComponent {
     private final List<Include> includes;
     private final List<Property> properties;
 
