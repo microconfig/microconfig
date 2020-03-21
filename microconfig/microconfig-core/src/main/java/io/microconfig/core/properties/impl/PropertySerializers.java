@@ -22,8 +22,8 @@ public class PropertySerializers {
 
             if (!properties.isEmpty()) {
                 configIo().writeTo(resultFile).write(properties);
+                info("Generated " + resultFile.getName() + " for " + componentName);
             }
-            info("Generated " + resultFile.getName() + " for " + componentName);
             return resultFile;
         };
     }
