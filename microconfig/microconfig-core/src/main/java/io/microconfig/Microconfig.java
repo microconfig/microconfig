@@ -72,12 +72,10 @@ public class Microconfig {
     }
 
     public Resolver resolver() {
-        return cache(
-                chainOf(
-                        f.placeholderResolver(),
-                        f.expressionResolver()
-                )
-        );
+        return cache(chainOf(
+                f.placeholderResolver(),
+                f.expressionResolver()
+        ));
     }
 
     public interface ServiceFactory {
@@ -99,13 +97,11 @@ public class Microconfig {
     private class ServiceFactoryImpl implements ServiceFactory {
         @Override
         public EnvironmentRepository environments() {
-            return cache(
-                    new FileEnvironmentRepository(
-                            rootDir,
-                            fsReader,
-                            f.componentFactory()
-                    )
-            );
+            return cache(new FileEnvironmentRepository(
+                    rootDir,
+                    fsReader,
+                    f.componentFactory()
+            ));
         }
 
         @Override
@@ -119,8 +115,7 @@ public class Microconfig {
         @Override
         public PropertiesFactory componentPropertiesFactory() {
             return cache(new PropertiesFactoryImpl(
-                    cache(
-                            new FilePropertiesRepository(
+                    cache(new FilePropertiesRepository(
                                     f.componentGraph(),
                                     cache(new ConfigFileParserImpl(newConfigIo(fsReader)))
                             )
@@ -154,12 +149,10 @@ public class Microconfig {
 
         @Override
         public ConfigTypeRepository configTypes() {
-            return cache(
-                    composite(
-                            findDescriptorIn(rootDir, fsReader),
-                            new StandardConfigTypeRepository()
-                    )
-            );
+            return cache(composite(
+                    findDescriptorIn(rootDir, fsReader),
+                    new StandardConfigTypeRepository()
+            ));
         }
 
         @Override
