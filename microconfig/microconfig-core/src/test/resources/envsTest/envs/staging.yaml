@@ -1,0 +1,18 @@
+include:
+  env: dev
+
+ip: 10.20.0.1
+portOffset: 0
+
+payments:
+  exclude:
+    - payment-provider-mock
+
+infra:
+  ip: 10.20.10.1
+
+monitoring:
+  ip: 10.20.20.1
+  components:
+    - grafana
+    - prometheus
