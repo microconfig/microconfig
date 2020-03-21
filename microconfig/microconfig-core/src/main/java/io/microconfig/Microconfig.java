@@ -14,6 +14,7 @@ import io.microconfig.core.properties.impl.repository.ComponentGraph;
 import io.microconfig.core.properties.impl.repository.FilePropertiesRepository;
 import io.microconfig.core.resolvers.RecursiveResolver;
 import io.microconfig.core.resolvers.expression.ExpressionResolver;
+import io.microconfig.core.resolvers.placeholder.PlaceholderResolveStrategy;
 import io.microconfig.core.resolvers.placeholder.PlaceholderResolver;
 import io.microconfig.core.resolvers.placeholder.strategies.component.ComponentProperty;
 import io.microconfig.core.resolvers.placeholder.strategies.component.ComponentResolveStrategy;
@@ -64,28 +65,28 @@ public class Microconfig {
     }
 
     public Resolver resolver() {
-        return chainOf(
+        return cache(chainOf(
                 placeholderResolver(),
                 expressionResolver()
-        );
+        ));
     }
 
     private RecursiveResolver placeholderResolver() {
         Map<String, ComponentProperty> componentSpecialProperties = new ComponentProperties(componentGraph(), rootDir, null).get();//todo;
         Map<String, EnvProperty> envSpecialProperties = new EnvironmentProperties().get();
 
-//        return cache(
-      return           new PlaceholderResolver(
-                        composite(
-                                systemPropertiesResolveStrategy(),
-                                new ComponentResolveStrategy(componentSpecialProperties),
-                                new EnvironmentResolveStrategy(environments(), envSpecialProperties),
-                                new StandardResolveStrategy(environments()),
-                                envVariablesResolveStrategy()
-                        ),
-                        joinToSet(componentSpecialProperties.keySet(), envSpecialProperties.keySet())
-                );
-//        );
+        PlaceholderResolveStrategy strategy = cache(composite(
+                systemPropertiesResolveStrategy(),
+                new ComponentResolveStrategy(componentSpecialProperties),
+                new EnvironmentResolveStrategy(environments(), envSpecialProperties),
+                new StandardResolveStrategy(environments()),
+                envVariablesResolveStrategy()
+        ));
+
+        return new PlaceholderResolver(
+                strategy,
+                joinToSet(componentSpecialProperties.keySet(), envSpecialProperties.keySet())
+        );
     }
 
     private RecursiveResolver expressionResolver() {
