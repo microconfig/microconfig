@@ -8,6 +8,7 @@ import io.microconfig.core.environments.impl.ComponentFactoryImpl;
 import io.microconfig.core.properties.PropertiesFactory;
 import io.microconfig.io.DumpedFsReader;
 import io.microconfig.io.FsReader;
+import io.microconfig.utils.CollectionUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -18,6 +19,7 @@ import java.util.Set;
 
 import static io.microconfig.testutils.ClasspathUtils.classpathFile;
 import static java.util.Arrays.asList;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -54,7 +56,6 @@ class FileEnvironmentRepositoryTest {
         assertThrows(EnvironmentException.class, () -> repo.getByName("badGroup"));
     }
 
-
     @Test
     void sameEnvNamesException() {
         File badDir = classpathFile("envsTest/bad");
@@ -68,17 +69,18 @@ class FileEnvironmentRepositoryTest {
     @Test
     void parseEnvFiles() {
         List<Environment> environments = repo.environments();
-        assertEquals(4, environments.size());
+        assertEquals(5, environments.size());
 
         testDev(filter(environments, "dev"));
         testTest(filter(environments, "test"));
         testStaging(filter(environments, "staging"));
         testProd(filter(environments, "prod"));
+        testAlias(filter(environments, "alias"));
     }
 
     @Test
     void filterMethods() {
-        assertEquals(setOf("dev", "test", "staging", "prod"), repo.environmentNames());
+        assertEquals(CollectionUtils.setOf("alias", "dev", "test", "staging", "prod"), repo.environmentNames());
 
         assertEquals("dev", repo.getByName("dev").getName());
         assertThrows(EnvironmentException.class, () -> repo.getByName("bad"));
@@ -202,9 +204,18 @@ class FileEnvironmentRepositoryTest {
         );
     }
 
+    private void testAlias(Environment env) {
+        assertEquals(0, env.getPortOffset());
+
+        testGroup(env, "group", null,
+                "componentAlias1",
+                "componentAlias2"
+        );
+    }
+
     private void testGroup(Environment environment, String groupName, String ip, String... components) {
         ComponentGroup group = environment.findGroupWithName(groupName);
-        assertEquals(ip, group.getIp().get());
+        assertEquals(ofNullable(ip), group.getIp());
         testComponents(environment.getName(), asList(components), group.getComponents().asList());
     }
 
@@ -215,10 +226,6 @@ class FileEnvironmentRepositoryTest {
 
     private Environment filter(List<Environment> envs, String name) {
         return envs.stream().filter(e -> e.getName().equals(name)).findFirst().get();
-    }
-
-    private Set<String> setOf(String... strings) {
-        return new HashSet<>(asList(strings));
     }
 
 }
