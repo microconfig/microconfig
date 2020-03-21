@@ -85,6 +85,7 @@ public class FilePropertiesRepository implements PropertiesRepository {
                     });
         }
 
+        //todo includes must be cached
         private ComponentSource includedComponent(Include include) {
             return withOriginalComponentName(include.getComponent())
                     .withEnvironment(include.getEnvironment());
