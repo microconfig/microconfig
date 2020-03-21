@@ -2,7 +2,6 @@ package io.microconfig.core.properties.impl;
 
 import io.microconfig.core.properties.ComponentWithEnv;
 
-import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static java.lang.String.format;
 
 public class PropertyResolveException extends RuntimeException {
@@ -31,10 +30,10 @@ public class PropertyResolveException extends RuntimeException {
     }
 
     private static String resolveExceptionMessage(String unresolvedPlaceholder, ComponentWithEnv sourceOfPlaceholder, ComponentWithEnv root) {
-        return format("Can't resolve placeholder '%s' defined in " + LINES_SEPARATOR + "'%s', that property is a transitive dependency of '%s'.",
+        return format("Can't resolve placeholder '%s' defined in '%s'. That property is a transitive dependency of '%s'.",
                 unresolvedPlaceholder,
 //                sourceOfPlaceholder.getSource().sourceInfo(),
-                sourceOfPlaceholder, //todo
+                sourceOfPlaceholder, //todo line number
                 root
         );
     }
