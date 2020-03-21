@@ -43,13 +43,15 @@ import static io.microconfig.utils.CacheProxy.cache;
 import static io.microconfig.utils.CollectionUtils.joinToSet;
 import static io.microconfig.utils.FileUtils.canonical;
 import static java.lang.System.currentTimeMillis;
+import static lombok.AccessLevel.PRIVATE;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = PRIVATE)
 public class Microconfig {
+    private final long creationTime = currentTimeMillis();
     private final File rootDir;
     @With
     private final FsReader fsReader;
-    private final long creationTime = currentTimeMillis();
+    private final ServiceFactory f = cache(new ServiceFactoryImpl());
 
     public static Microconfig searchConfigsIn(File rootDir) {
         File canonical = canonical(rootDir);
@@ -60,79 +62,108 @@ public class Microconfig {
         return new Microconfig(canonical, new DumpedFsReader());
     }
 
+    public long msAfterCreation() {
+        return currentTimeMillis() - creationTime;
+    }
+
     public Environment inEnvironment(String name) {
-        return environments().getByName(name);
+        return f.environments().getByName(name);
     }
 
     public Resolver resolver() {
-        return cache(chainOf(
-                placeholderResolver(),
-                expressionResolver()
-        ));
-    }
-
-    private RecursiveResolver placeholderResolver() {
-        Map<String, ComponentProperty> componentSpecialProperties = new ComponentProperties(componentGraph(), rootDir, null).get();//todo;
-        Map<String, EnvProperty> envSpecialProperties = new EnvironmentProperties().get();
-
-        PlaceholderResolveStrategy strategy = cache(composite(
-                systemPropertiesResolveStrategy(),
-                new ComponentResolveStrategy(componentSpecialProperties),
-                new EnvironmentResolveStrategy(environments(), envSpecialProperties),
-                new StandardResolveStrategy(environments()),
-                envVariablesResolveStrategy()
-        ));
-
-        return new PlaceholderResolver(
-                strategy,
-                joinToSet(componentSpecialProperties.keySet(), envSpecialProperties.keySet())
-        );
-    }
-
-    private RecursiveResolver expressionResolver() {
-        return new ExpressionResolver();
-    }
-
-    private EnvironmentRepository environments() {
         return cache(
-                new FileEnvironmentRepository(
-                        rootDir,
-                        fsReader,
-                        componentFactory()
+                chainOf(
+                        f.placeholderResolver(),
+                        f.expressionResolver()
                 )
         );
     }
 
-    private ComponentFactory componentFactory() {
-        return new ComponentFactoryImpl(
-                configTypes(),
-                componentPropertiesFactory()
-        );
+    public interface ServiceFactory {
+        EnvironmentRepository environments();
+
+        RecursiveResolver placeholderResolver();
+
+        RecursiveResolver expressionResolver();
+
+        ComponentFactory componentFactory();
+
+        ConfigTypeRepository configTypes();
+
+        PropertiesFactory componentPropertiesFactory();
+
+        ComponentGraph componentGraph();
     }
 
-    private ConfigTypeRepository configTypes() {
-        return cache(
-                composite(
-                        findDescriptorIn(rootDir, fsReader),
-                        new StandardConfigTypeRepository()
-                )
-        );
-    }
+    private class ServiceFactoryImpl implements ServiceFactory {
+        @Override
+        public EnvironmentRepository environments() {
+            return cache(
+                    new FileEnvironmentRepository(
+                            rootDir,
+                            fsReader,
+                            f.componentFactory()
+                    )
+            );
+        }
 
-    private PropertiesFactory componentPropertiesFactory() {
-        return new PropertiesFactoryImpl(
-               cache(new FilePropertiesRepository(
-                        componentGraph(),
-                        newConfigIo(fsReader)
-                ))
-        );
-    }
+        @Override
+        public ComponentFactory componentFactory() {
+            return new ComponentFactoryImpl(
+                    f.configTypes(),
+                    f.componentPropertiesFactory()
+            );
+        }
 
-    private ComponentGraph componentGraph() {
-        return traverseFrom(rootDir);
-    }
+        @Override
+        public PropertiesFactory componentPropertiesFactory() {
+            return new PropertiesFactoryImpl(
+                    cache(
+                            new FilePropertiesRepository(
+                                    f.componentGraph(),
+                                    newConfigIo(fsReader)
+                            )
+                    )
+            );
+        }
 
-    public long msAfterCreation() {
-        return currentTimeMillis() - creationTime;
+        @Override
+        public RecursiveResolver placeholderResolver() {
+            Map<String, ComponentProperty> componentSpecialProperties = new ComponentProperties(f.componentGraph(), rootDir, null).get();//todo;
+            Map<String, EnvProperty> envSpecialProperties = new EnvironmentProperties().get();
+
+            PlaceholderResolveStrategy strategy = cache(composite(
+                    systemPropertiesResolveStrategy(),
+                    new ComponentResolveStrategy(componentSpecialProperties),
+                    new EnvironmentResolveStrategy(f.environments(), envSpecialProperties),
+                    new StandardResolveStrategy(f.environments()),
+                    envVariablesResolveStrategy()
+            ));
+
+            return new PlaceholderResolver(
+                    strategy,
+                    joinToSet(componentSpecialProperties.keySet(), envSpecialProperties.keySet())
+            );
+        }
+
+        @Override
+        public RecursiveResolver expressionResolver() {
+            return new ExpressionResolver();
+        }
+
+        @Override
+        public ConfigTypeRepository configTypes() {
+            return cache(
+                    composite(
+                            findDescriptorIn(rootDir, fsReader),
+                            new StandardConfigTypeRepository()
+                    )
+            );
+        }
+
+        @Override
+        public ComponentGraph componentGraph() {
+            return traverseFrom(rootDir);
+        }
     }
 }
