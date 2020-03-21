@@ -40,12 +40,14 @@ import static io.microconfig.core.resolvers.placeholder.strategies.system.System
 import static io.microconfig.core.resolvers.placeholder.strategies.system.SystemResolveStrategy.systemPropertiesResolveStrategy;
 import static io.microconfig.utils.CollectionUtils.joinToSet;
 import static io.microconfig.utils.FileUtils.canonical;
+import static java.lang.System.currentTimeMillis;
 
 @RequiredArgsConstructor
 public class Microconfig {
     private final File rootDir;
     @With
     private final FsReader fsReader;
+    private final long creationTime = currentTimeMillis();
 
     public static Microconfig searchConfigsIn(File rootDir) {
         File canonical = canonical(rootDir);
@@ -120,5 +122,9 @@ public class Microconfig {
 
     private ComponentGraph componentGraph() {
         return traverseFrom(rootDir);
+    }
+
+    public long msAfterCreation() {
+        return currentTimeMillis() - creationTime;
     }
 }

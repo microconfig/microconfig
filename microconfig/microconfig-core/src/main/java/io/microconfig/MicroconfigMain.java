@@ -1,5 +1,6 @@
 package io.microconfig;
 
+import io.microconfig.utils.Logger;
 import lombok.val;
 
 import java.io.File;
@@ -32,5 +33,7 @@ public class MicroconfigMain {
                 .getPropertiesFor(eachConfigType())
                 .resolveBy(microconfig.resolver())
                 .save(toFileIn(destinationDir));
+
+        Logger.info("Processed configs in " + microconfig.msAfterCreation() + "ms.");
     }
 }
