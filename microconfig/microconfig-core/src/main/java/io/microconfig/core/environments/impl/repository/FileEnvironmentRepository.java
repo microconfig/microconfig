@@ -96,7 +96,9 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     }
 
     private Function<String, EnvironmentDefinition> definitionRepository() {
-        return name -> envFileWith(name).map(parseDefinition()).orElseThrow(notFoundException(name));
+        return name -> envFileWith(name)
+                .map(parseDefinition())
+                .orElseThrow(notFoundException(name));
     }
 
     private Predicate<File> hasSupportedExtension() {
