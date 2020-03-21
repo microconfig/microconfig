@@ -41,7 +41,7 @@ class EnvironmentFile {
         String envIp = parseIp(keyValue);
         List<ComponentGroupDefinition> componentGroups = parseComponentGroups(keyValue, name, envIp);
 
-        return new EnvironmentDefinition(name, envIp, portOffset, envInclude, componentGroups, file);
+        return new EnvironmentDefinition(name, envIp, portOffset, envInclude, componentGroups);
     }
 
     @SuppressWarnings("unchecked")

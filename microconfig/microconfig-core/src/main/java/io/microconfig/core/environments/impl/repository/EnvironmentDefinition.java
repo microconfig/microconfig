@@ -26,8 +26,6 @@ class EnvironmentDefinition {
     @Getter
     private final List<ComponentGroupDefinition> groups;
 
-    private final File source;
-
     public EnvironmentDefinition processIncludeUsing(Function<String, EnvironmentDefinition> environmentRepository) {
         return envInclude.isEmpty() ? this : envInclude.includeTo(this, environmentRepository);
     }
