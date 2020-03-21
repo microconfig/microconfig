@@ -20,7 +20,7 @@ import static lombok.AccessLevel.PRIVATE;
 public class PlaceholderResolver implements RecursiveResolver {
     private final PlaceholderResolveStrategy strategy;
     private final Set<String> nonOverridableKeys;
-    @With
+    @With(PRIVATE)
     private final Set<Placeholder> visited;
 
     public PlaceholderResolver(PlaceholderResolveStrategy strategy, Set<String> nonOverridableKeys) {
