@@ -34,6 +34,6 @@ public class MicroconfigMain {
                 .resolveBy(microconfig.resolver())
                 .save(toFileIn(destinationDir));
 
-        announce("\nGenerated configs for [" + env + "] env in " + microconfig.msAfterCreation() + "ms");
+        announce("\nGenerated [" + env + "] configs in " + microconfig.msAfterCreation() + "ms");
     }
 }
