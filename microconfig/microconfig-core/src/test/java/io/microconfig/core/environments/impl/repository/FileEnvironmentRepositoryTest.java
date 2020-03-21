@@ -7,31 +7,91 @@ import io.microconfig.core.environments.Environment;
 import io.microconfig.core.environments.impl.ComponentFactoryImpl;
 import io.microconfig.core.properties.PropertiesFactory;
 import io.microconfig.io.DumpedFsReader;
+import io.microconfig.io.FsReader;
+import io.microconfig.utils.CollectionUtils;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static io.microconfig.testutils.ClasspathUtils.classpathFile;
 import static java.util.Arrays.asList;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class FileEnvironmentRepositoryTest {
-    File dir = classpathFile("envsTest");
+    File dir = classpathFile("envsTest/good");
     ConfigTypeRepository configType = mock(ConfigTypeRepository.class);
     PropertiesFactory propertiesFactory = mock(PropertiesFactory.class);
-    FileEnvironmentRepository repo = new FileEnvironmentRepository(dir, new DumpedFsReader(), new ComponentFactoryImpl(configType, propertiesFactory));
+    FsReader fsReader = new DumpedFsReader();
+    ComponentFactoryImpl componentFactory = new ComponentFactoryImpl(configType, propertiesFactory);
+    FileEnvironmentRepository repo = new FileEnvironmentRepository(dir, fsReader, componentFactory);
+
+    @Test
+    void noEnvDirException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new FileEnvironmentRepository(classpathFile("configTypes"), fsReader, componentFactory));
+    }
+
+    @Test
+    void envExceptionWrappingOnFileRead() {
+        FsReader badReader = Mockito.mock(FsReader.class);
+        when(badReader.readFully(any(File.class))).thenThrow(new IllegalArgumentException());
+        FileEnvironmentRepository repo = new FileEnvironmentRepository(dir, badReader, componentFactory);
+        assertThrows(EnvironmentException.class, () -> repo.environments());
+    }
+
+    @Test
+    void envExceptionWrappingOnGroupParse() {
+        File badDir = classpathFile("envsTest/bad");
+        FileEnvironmentRepository repo = new FileEnvironmentRepository(badDir, fsReader, componentFactory);
+        assertThrows(EnvironmentException.class, () -> repo.getByName("badGroup"));
+    }
+
+    @Test
+    void sameEnvNamesException() {
+        File badDir = classpathFile("envsTest/bad");
+        FileEnvironmentRepository repo = new FileEnvironmentRepository(badDir, fsReader, componentFactory);
+
+        assertThrows(EnvironmentException.class, () -> repo.getByName("bad"));
+        assertThrows(EnvironmentException.class, () -> repo.getByName("bad2"));
+        assertThrows(IllegalStateException.class, () -> repo.getByName("copy"));
+    }
 
     @Test
     void parseEnvFiles() {
         List<Environment> environments = repo.environments();
-        assertEquals(4, environments.size());
+        assertEquals(5, environments.size());
+
         testDev(filter(environments, "dev"));
         testTest(filter(environments, "test"));
         testStaging(filter(environments, "staging"));
         testProd(filter(environments, "prod"));
+        testAlias(filter(environments, "alias"));
+    }
+
+    @Test
+    void filterMethods() {
+        assertEquals(CollectionUtils.setOf("alias", "dev", "test", "staging", "prod"), repo.environmentNames());
+
+        assertEquals("dev", repo.getByName("dev").getName());
+        assertThrows(EnvironmentException.class, () -> repo.getByName("bad"));
+
+        Environment dev = repo.getOrCreateByName("dev");
+        assertEquals("dev", dev.getName());
+        assertEquals(11, dev.getAllComponents().asList().size());
+
+        Environment fake = repo.getOrCreateByName("fake");
+        assertEquals("fake", fake.getName());
+        assertEquals(0, fake.getAllComponents().asList().size());
     }
 
     private void testDev(Environment env) {
@@ -77,7 +137,8 @@ class FileEnvironmentRepositoryTest {
 
         testGroup(env, "infra", "10.0.10.1",
                 "service-discovery",
-                "api-gateway"
+                "api-gateway",
+                "selenium"
         );
 
         testGroup(env, "kafka", "10.0.0.1",
@@ -143,9 +204,18 @@ class FileEnvironmentRepositoryTest {
         );
     }
 
+    private void testAlias(Environment env) {
+        assertEquals(0, env.getPortOffset());
+
+        testGroup(env, "group", null,
+                "componentAlias1",
+                "componentAlias2"
+        );
+    }
+
     private void testGroup(Environment environment, String groupName, String ip, String... components) {
         ComponentGroup group = environment.findGroupWithName(groupName);
-        assertEquals(ip, group.getIp().get());
+        assertEquals(ofNullable(ip), group.getIp());
         testComponents(environment.getName(), asList(components), group.getComponents().asList());
     }
 

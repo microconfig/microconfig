@@ -2,3 +2,7 @@ include:
   env: dev
 
 portOffset: 100
+
+infra:
+  append:
+    - selenium
