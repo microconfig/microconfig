@@ -56,7 +56,7 @@ class PlaceholderBorders {
                 return withEnvIndex(i + 1).parseEnvName();
             }
             if (c == '@') {
-                return withKeyIndex(i + 1).parseValue();
+                return withKeyIndex(i + 1).parseKey();
             }
             if (notAllowedSymbol(c)) {
                 return withStartIndex(i).searchOpenSign();
@@ -70,7 +70,7 @@ class PlaceholderBorders {
         for (int i = envIndex; i < line.length(); ++i) {
             char c = line.charAt(i);
             if (c == ']' && i + 1 < line.length() && line.charAt(i + 1) == '@') {
-                return withKeyIndex(i + 2).parseValue();
+                return withKeyIndex(i + 2).parseKey();
             }
             if (notAllowedSymbol(c)) {
                 return withStartIndex(i).searchOpenSign();
@@ -80,7 +80,7 @@ class PlaceholderBorders {
         return empty();
     }
 
-    private Optional<PlaceholderBorders> parseValue() {
+    private Optional<PlaceholderBorders> parseKey() {
         for (int i = keyIndex; i < line.length(); ++i) {
             char c = line.charAt(i);
             if (c == ':') {

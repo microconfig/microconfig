@@ -78,11 +78,13 @@ public class PlaceholderResolver implements RecursiveResolver {
 
         private PlaceholderResolver markVisited(Placeholder placeholder) {
             Set<Placeholder> updated = new LinkedHashSet<>(visited);
-            if (!updated.add(placeholder)) {
-                throw new PropertyResolveException("Found cyclic dependencies: \n" +
-                        updated.stream().map(Placeholder::toString).collect(joining(" -> ")));
+            if (updated.add(placeholder)) {
+                return withVisited(unmodifiableSet(updated));
             }
-            return withVisited(unmodifiableSet(updated));
+
+            throw new PropertyResolveException("Found cyclic dependencies:\n" +
+                    updated.stream().map(Placeholder::toString).collect(joining(" -> "))
+            );
         }
     }
 }
