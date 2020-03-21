@@ -49,28 +49,28 @@ public class PlaceholderResolver implements RecursiveResolver {
         @Override
         public String resolveFor(String configType, ComponentWithEnv sourceOfValue, ComponentWithEnv root) {
             Placeholder placeholder = borders.toPlaceholder(configType, sourceOfValue.getEnvironment());
-            if (placeholder.isSelfReferenced() || referencedTo(sourceOfValue, placeholder)) {
-                placeholder = placeholder.withComponent(sourceOfValue.getComponent());
-                //tryResolveForParents
-            }
 
-            return resolve(placeholder, root);
+            return canBeOverridden(placeholder, sourceOfValue) ?
+                    overrideByParents(placeholder, root) :
+                    resolve(placeholder, root);
         }
 
-        //c1 -> key=${c2@key}
-        //c2 -> key=${c3[prod]@key}
-        //c3 -> key=${c3@ip}
-        private boolean referencedTo(ComponentWithEnv c, Placeholder p) {
-            return p.referencedTo(c) && !nonOverridableKeys.contains(p.getKey());
+        private boolean canBeOverridden(Placeholder p, ComponentWithEnv c) {
+            return p.isSelfReferenced() ||
+                    (p.referencedTo(c) && !nonOverridableKeys.contains(p.getKey()));
         }
 
-        private String resolve(Placeholder placeholder, ComponentWithEnv root) {
+        private String overrideByParents(Placeholder p, ComponentWithEnv root) {
+            return null;
+        }
+
+        private String resolve(Placeholder p, ComponentWithEnv root) {
             try {
-                String maybePlaceholder = placeholder.resolveUsing(strategy);
-                return markVisited(placeholder)
-                        .resolve(maybePlaceholder, placeholder.getReferencedComponent(), root, placeholder.getConfigType());
+                String resolvedValue = p.resolveUsing(strategy);
+                return markVisited(p)
+                        .resolve(resolvedValue, p.getReferencedComponent(), root, p.getConfigType());
             } catch (RuntimeException e) {
-                String defaultValue = placeholder.getDefaultValue();
+                String defaultValue = p.getDefaultValue();
                 if (defaultValue != null) return defaultValue;
                 throw e;
             }
