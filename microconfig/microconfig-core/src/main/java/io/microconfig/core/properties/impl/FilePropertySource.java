@@ -15,7 +15,7 @@ public class FilePropertySource implements PropertySource {
     private final int lineNumber; //starts from 0
     private final boolean yaml;
 
-    public static PropertySource fileSource(File file, int lineNumber, boolean yaml) {
+    public static FilePropertySource fileSource(File file, int lineNumber, boolean yaml) {
         return new FilePropertySource(file, lineNumber, yaml);
     }
 
