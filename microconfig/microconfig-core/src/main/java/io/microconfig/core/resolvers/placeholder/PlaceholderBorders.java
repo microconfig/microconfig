@@ -6,6 +6,7 @@ import lombok.With;
 
 import java.util.Optional;
 
+import static io.microconfig.utils.StringUtils.asStringBuilder;
 import static java.lang.Character.isLetterOrDigit;
 import static java.lang.Integer.max;
 import static java.util.Optional.empty;
@@ -27,8 +28,7 @@ class PlaceholderBorders {
     private final int endIndex;
 
     public static Optional<PlaceholderBorders> findPlaceholderIn(CharSequence line) {
-        StringBuilder sb = line instanceof StringBuilder ? (StringBuilder) line : new StringBuilder(line);
-        return new PlaceholderBorders(sb).searchOpenSign();
+        return new PlaceholderBorders(asStringBuilder(line)).searchOpenSign();
     }
 
     private PlaceholderBorders(StringBuilder line) {

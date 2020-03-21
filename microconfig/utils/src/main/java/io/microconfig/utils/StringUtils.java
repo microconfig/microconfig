@@ -59,4 +59,8 @@ public class StringUtils {
     public static long symbolCountIn(String line, char symbol) {
         return line.chars().filter(c -> c == symbol).count();
     }
+
+    public static StringBuilder asStringBuilder(CharSequence line) {
+        return line instanceof StringBuilder ? (StringBuilder) line : new StringBuilder(line);
+    }
 }
