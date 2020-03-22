@@ -13,6 +13,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
+import static io.microconfig.utils.Logger.info;
 import static io.microconfig.utils.StreamUtils.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
@@ -97,7 +98,9 @@ public class EnvironmentImpl implements Environment {
         };
 
         List<Component> componentFromGroups = componentsFromGroups.get();
-        return new ComponentsImpl(filterByComponents.apply(componentFromGroups));
+        List<Component> result = filterByComponents.apply(componentFromGroups);
+        info("Filtered " + result.size() + " component(s) in [" + name + "] env.");
+        return new ComponentsImpl(result);
     }
 
     private ComponentGroup findGroup(Predicate<ComponentGroup> groupPredicate, Supplier<String> description) {
