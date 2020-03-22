@@ -1,17 +1,14 @@
 package io.microconfig.core.properties.impl;
 
-import io.microconfig.core.properties.Properties;
-import io.microconfig.core.properties.PropertySerializer;
-import io.microconfig.core.properties.Resolver;
-import io.microconfig.core.properties.TypedProperties;
+import io.microconfig.core.properties.*;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.UnaryOperator;
 
-import static io.microconfig.utils.StreamUtils.flatMapEach;
-import static io.microconfig.utils.StreamUtils.forEach;
+import static io.microconfig.utils.StreamUtils.*;
 
 @EqualsAndHashCode
 @RequiredArgsConstructor
@@ -35,6 +32,11 @@ public class PropertiesImpl implements Properties {
     @Override
     public Properties resolveBy(Resolver resolver) {
         return forEachComponent(c -> c.resolveBy(resolver));
+    }
+
+    @Override
+    public Optional<Property> getPropertyWithKey(String key) {
+        return findFirstResult(properties, p -> p.getPropertyWithKey(key));
     }
 
     @Override

@@ -18,7 +18,6 @@ public class StandardResolveStrategy implements PlaceholderResolveStrategy {
         return environmentRepository.getOrCreateByName(environment)
                 .findComponentWithName(component, false)
                 .getPropertiesFor(configTypeWithName(configType))
-                .asList().get(0)
                 .getPropertyWithKey(key);
     }
 }
