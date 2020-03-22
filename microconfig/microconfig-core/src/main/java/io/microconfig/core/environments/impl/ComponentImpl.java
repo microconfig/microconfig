@@ -26,7 +26,6 @@ public class ComponentImpl implements Component {
 
     @Override
     public Properties getPropertiesFor(ConfigTypeFilter filter) {
-        //todo parallel
         List<ConfigType> filteredTypes = filter.selectTypes(configTypeRepository.getConfigTypes());
         return propertiesFactory.getPropertiesOf(name, originalName, environment, filteredTypes);
     }
