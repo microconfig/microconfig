@@ -28,7 +28,7 @@ public class MicroconfigMain {
         List<String> groups = params.groups();
         List<String> services = params.services();
 
-        val microconfig = searchConfigsIn(rootDir);
+        val microconfig = searchConfigsIn(rootDir).withDestinationDir(destinationDir);
         microconfig.inEnvironment(env).findComponentsFrom(groups, services)
                 .getPropertiesFor(eachConfigType())
                 .resolveBy(microconfig.resolver())

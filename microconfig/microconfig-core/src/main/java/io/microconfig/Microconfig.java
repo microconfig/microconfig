@@ -51,6 +51,8 @@ public class Microconfig {
     private final long creationTime = currentTimeMillis();
     private final File rootDir;
     @With
+    private final File destinationDir;
+    @With
     private final FsReader fsReader;
     private final ServiceFactory f = cache(new ServiceFactoryImpl());
 
@@ -60,7 +62,7 @@ public class Microconfig {
             throw new IllegalArgumentException("Root directory doesn't exist: " + rootDir);
         }
 
-        return new Microconfig(canonical, new DumpedFsReader());
+        return new Microconfig(canonical, new File(rootDir, "build"), new DumpedFsReader());
     }
 
     public long msAfterCreation() {
@@ -125,7 +127,7 @@ public class Microconfig {
 
         @Override
         public RecursiveResolver placeholderResolver() {
-            Map<String, ComponentProperty> componentSpecialProperties = new ComponentProperties(f.componentGraph(), rootDir, null).get();//todo;
+            Map<String, ComponentProperty> componentSpecialProperties = new ComponentProperties(f.componentGraph(), rootDir, destinationDir).get();
             Map<String, EnvProperty> envSpecialProperties = new EnvironmentProperties().get();
 
             PlaceholderResolveStrategy strategy = cache(composite(
