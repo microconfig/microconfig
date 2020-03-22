@@ -60,6 +60,6 @@ public class PropertiesImpl implements Properties {
     }
 
     private Properties forEachComponent(UnaryOperator<TypedProperties> applyFunction) {
-        return new PropertiesImpl(forEach(properties, applyFunction));
+        return new PropertiesImpl(forEach(properties.parallelStream(), applyFunction));
     }
 }

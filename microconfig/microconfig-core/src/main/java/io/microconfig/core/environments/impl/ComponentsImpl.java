@@ -25,7 +25,7 @@ public class ComponentsImpl implements Components {
     @Override
     public Properties getPropertiesFor(ConfigTypeFilter filter) {
         return composite(
-                forEach(components, c -> c.getPropertiesFor(filter))
+                forEach(components.parallelStream(), c -> c.getPropertiesFor(filter))
         );
     }
 
