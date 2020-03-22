@@ -7,11 +7,9 @@ import java.io.File;
 import static io.microconfig.core.properties.impl.FilePropertySource.fileSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 class FilePropertySourceTest {
-    File file = spy(new File("component/config.yaml"));
+    File file = new File("component/config.yaml");
     FilePropertySource source = fileSource(file, 0, true);
 
     @Test
@@ -33,7 +31,6 @@ class FilePropertySourceTest {
 
     @Test
     void string() {
-        when(file.getAbsolutePath()).thenReturn("path/component/config.yaml");
-        assertEquals("path/component/config.yaml:1", source.toString());
+        assertEquals(file.getAbsolutePath() + ":1", source.toString());
     }
 }
