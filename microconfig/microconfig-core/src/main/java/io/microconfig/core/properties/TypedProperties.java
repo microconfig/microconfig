@@ -1,5 +1,6 @@
 package io.microconfig.core.properties;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
@@ -12,9 +13,11 @@ public interface TypedProperties {
 
     TypedProperties withoutTempValues();
 
-    Map<String, Property> getProperties();
+    Map<String, Property> getPropertiesAsMap();
 
     Map<String, String> propertiesAsKeyValue();
+
+    Collection<Property> getProperties();
 
     Optional<Property> getPropertyWithKey(String key);
 

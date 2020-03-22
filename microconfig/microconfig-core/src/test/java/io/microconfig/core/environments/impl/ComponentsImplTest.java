@@ -30,8 +30,8 @@ class ComponentsImplTest {
         ConfigTypeFilter filter = mock(ConfigTypeFilter.class);
         when(one.getPropertiesFor(filter)).thenReturn(oneProps);
         when(two.getPropertiesFor(filter)).thenReturn(twoProps);
-        when(oneProps.asList()).thenReturn(singletonList(oneTProps));
-        when(twoProps.asList()).thenReturn(singletonList(twoTProps));
+        when(oneProps.asTypedProperties()).thenReturn(singletonList(oneTProps));
+        when(twoProps.asTypedProperties()).thenReturn(singletonList(twoTProps));
 
         Properties expected = new PropertiesImpl(asList(oneTProps, twoTProps));
         assertEquals(expected, subj.getPropertiesFor(filter));

@@ -4,6 +4,7 @@ import io.microconfig.core.properties.*;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
@@ -16,12 +17,7 @@ public class PropertiesImpl implements Properties {
     private final List<TypedProperties> properties;
 
     public static Properties composite(List<Properties> properties) {
-        return new PropertiesImpl(flatMapEach(properties, Properties::asList));
-    }
-
-    @Override
-    public List<TypedProperties> asList() {
-        return properties;
+        return new PropertiesImpl(flatMapEach(properties, Properties::asTypedProperties));
     }
 
     @Override
@@ -35,6 +31,11 @@ public class PropertiesImpl implements Properties {
     }
 
     @Override
+    public Collection<Property> getProperties() {
+        return flatMapEach(properties, TypedProperties::getProperties);
+    }
+
+    @Override
     public Optional<Property> getPropertyWithKey(String key) {
         return findFirstResult(properties, p -> p.getPropertyWithKey(key));
     }
@@ -42,6 +43,11 @@ public class PropertiesImpl implements Properties {
     @Override
     public <T> List<T> save(PropertySerializer<T> serializer) {
         return forEach(properties, p -> p.save(serializer));
+    }
+
+    @Override
+    public List<TypedProperties> asTypedProperties() {
+        return properties;
     }
 
     private Properties forEachComponent(UnaryOperator<TypedProperties> applyFunction) {

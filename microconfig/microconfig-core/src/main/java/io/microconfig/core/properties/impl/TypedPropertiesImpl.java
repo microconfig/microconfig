@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
@@ -24,7 +25,6 @@ public class TypedPropertiesImpl implements TypedProperties {
     @Getter
     private final String component;
     private final String environment;
-    @Getter
     @With(PRIVATE)
     private final Map<String, Property> properties;
 
@@ -48,10 +48,20 @@ public class TypedPropertiesImpl implements TypedProperties {
     }
 
     @Override
+    public Map<String, Property> getPropertiesAsMap() {
+        return properties;
+    }
+
+    @Override
     public Map<String, String> propertiesAsKeyValue() {
         return properties.values()
                 .stream()
                 .collect(toLinkedMap(Property::getKey, Property::getValue));
+    }
+
+    @Override
+    public Collection<Property> getProperties() {
+        return properties.values();
     }
 
     @Override
