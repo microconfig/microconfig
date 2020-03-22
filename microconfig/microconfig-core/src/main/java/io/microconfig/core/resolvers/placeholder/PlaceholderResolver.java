@@ -67,9 +67,9 @@ public class PlaceholderResolver implements RecursiveResolver {
         }
 
         private String overrideByParents(Placeholder p, ComponentWithEnv sourceOfValue, ComponentWithEnv root) {
-            Function<ComponentWithEnv, String> tryResolveFor = component -> {
+            Function<ComponentWithEnv, String> tryResolveFor = override -> {
                 try {
-                    return resolve(p.overrideBy(component), root);
+                    return resolve(p.overrideBy(override), root);
                 } catch (RuntimeException e) {
                     return null;
                 }

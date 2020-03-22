@@ -28,7 +28,7 @@ public class EnvironmentResolveStrategy implements PlaceholderResolveStrategy {
         Environment environment = getEnvironment(env);
         if (environment == null) return empty();
 
-        return envProperty.resolveFor(component, environment)//todo
+        return envProperty.resolveFor(component, environment)
                 .map(value -> tempProperty(key, value, env, new PlaceholderSource(component, ENV_SOURCE)));
     }
 
