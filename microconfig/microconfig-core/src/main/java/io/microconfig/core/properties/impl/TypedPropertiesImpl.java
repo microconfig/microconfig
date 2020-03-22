@@ -26,7 +26,7 @@ public class TypedPropertiesImpl implements TypedProperties {
     private final String component;
     private final String environment;
     @With(PRIVATE)
-    private final Map<String, Property> properties;
+    private final Map<String, Property> propertyByKey;
 
     @Override
     public String getConfigType() {
@@ -35,43 +35,43 @@ public class TypedPropertiesImpl implements TypedProperties {
 
     @Override
     public TypedProperties resolveBy(Resolver resolver) {
-        return withProperties(
-                forEach(properties.values(), resolveUsing(resolver), toPropertyMap())
+        return withPropertyByKey(
+                forEach(propertyByKey.values(), resolveUsing(resolver), toPropertyMap())
         );
     }
 
     @Override
     public TypedProperties withoutTempValues() {
-        return withProperties(
-                filter(properties.values(), p -> !p.isTemp(), toPropertyMap())
+        return withPropertyByKey(
+                filter(propertyByKey.values(), p -> !p.isTemp(), toPropertyMap())
         );
     }
 
     @Override
-    public Map<String, Property> getPropertiesAsMap() {
-        return properties;
+    public Map<String, Property> getPropertyByKeyMap() {
+        return propertyByKey;
     }
 
     @Override
-    public Map<String, String> propertiesAsKeyValue() {
-        return properties.values()
+    public Map<String, String> getPropertyValueByKeyMap() {
+        return propertyByKey.values()
                 .stream()
                 .collect(toLinkedMap(Property::getKey, Property::getValue));
     }
 
     @Override
     public Collection<Property> getProperties() {
-        return properties.values();
+        return propertyByKey.values();
     }
 
     @Override
     public Optional<Property> getPropertyWithKey(String key) {
-        return ofNullable(properties.get(key));
+        return ofNullable(propertyByKey.get(key));
     }
 
     @Override
     public <T> T save(PropertySerializer<T> serializer) {
-        return serializer.serialize(properties.values(), configType, component, environment);
+        return serializer.serialize(propertyByKey.values(), configType, component, environment);
     }
 
     @Override
