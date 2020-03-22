@@ -13,7 +13,9 @@ public interface Environment {
 
     ComponentGroup findGroupWithComponent(String componentName);
 
-    Component findComponentWithName(String componentName, boolean mustBeDeclaredInEnvDescriptor);
+    Component getComponentWithName(String componentName);
+
+    Component getOrCreateComponentWithName(String componentName);
 
     Components findComponentsFrom(List<String> groups, List<String> components);
 

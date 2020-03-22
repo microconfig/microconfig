@@ -76,19 +76,19 @@ class EnvironmentImplTest {
     @Test
     void getComponentWithName() {
         when(group1.findComponentWithName("two")).thenReturn(of(two));
-        assertEquals(two, env.findComponentWithName("two", true));
+        assertEquals(two, env.getComponentWithName("two"));
 
-        assertThrows(IllegalArgumentException.class, () -> env.findComponentWithName("four", true));
+        assertThrows(IllegalArgumentException.class, () -> env.getComponentWithName("four"));
     }
 
     @Test
-    void findComponentWithName() {
+    void getOrCreateComponentWithName() {
         when(group1.findComponentWithName("two")).thenReturn(of(two));
-        assertEquals(two, env.findComponentWithName("two", false));
+        assertEquals(two, env.getOrCreateComponentWithName("two"));
 
         Component four = mock(Component.class);
         when(factory.createComponent("four", "four", env.getName())).thenReturn(four);
-        assertEquals(four, env.findComponentWithName("four", false));
+        assertEquals(four, env.getOrCreateComponentWithName("four"));
     }
 
     @Test

@@ -58,20 +58,14 @@ public class EnvironmentImpl implements Environment {
     }
 
     @Override
-    //todo must work 0(1)
-    //todo maybe just make 2 private methods public instead of this flag check?
-    public Component findComponentWithName(String componentName, boolean mustBeDeclaredInEnvDescriptor) {
-        return mustBeDeclaredInEnvDescriptor
-                ? getComponent(componentName)
-                : findOrCreateComponent(componentName);
-    }
-
-    private Component getComponent(String componentName) {
+    public Component getComponentWithName(String componentName) {
         return findFirstResult(componentGroups, g -> g.findComponentWithName(componentName))
                 .orElseThrow(() -> new IllegalArgumentException(notFoundComponentMessage(componentName)));
     }
 
-    private Component findOrCreateComponent(String componentName) {
+    //todo must work 0(1)
+    @Override
+    public Component getOrCreateComponentWithName(String componentName) {
         return findFirstResult(componentGroups, g -> g.findComponentWithName(componentName))
                 .orElseGet(() -> componentFactory.createComponent(componentName, componentName, name));
     }
