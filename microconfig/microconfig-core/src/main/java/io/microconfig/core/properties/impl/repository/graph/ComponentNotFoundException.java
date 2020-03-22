@@ -20,6 +20,6 @@ public class ComponentNotFoundException extends RuntimeException {
     @Override
     public String getMessage() {
         return "Component '" + notFoundComponent + "' doesn't exist. " +
-                "Path to component: " + join(" -> ", path);
+                "Path from root: " + join(" -> ", path);
     }
 }
