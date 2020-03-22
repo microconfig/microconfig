@@ -40,7 +40,7 @@ class TypedPropertiesImplTest {
     void propertiesAsKeyValue() {
         assertEquals(
                 splitKeyValue("key=keyValue", "var=varValue"),
-                subj.getKeyValueMap()
+                subj.propertiesAsKeyValue()
         );
     }
 

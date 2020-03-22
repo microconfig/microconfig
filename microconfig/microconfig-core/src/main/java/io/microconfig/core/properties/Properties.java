@@ -11,6 +11,8 @@ public interface Properties {
 
     Collection<Property> getProperties();
 
+    Object propertiesAsKeyValue();
+
     Optional<Property> getPropertyWithKey(String key);
 
     <T> List<T> save(PropertySerializer<T> serializer);

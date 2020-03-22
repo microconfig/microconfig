@@ -15,7 +15,7 @@ public interface TypedProperties {
 
     Map<String, Property> getPropertiesAsMap();
 
-    Map<String, String> getKeyValueMap();
+    Map<String, String> propertiesAsKeyValue();
 
     Collection<Property> getProperties();
 

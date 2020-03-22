@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 
@@ -33,6 +34,14 @@ public class PropertiesImpl implements Properties {
     @Override
     public Collection<Property> getProperties() {
         return flatMapEach(properties, TypedProperties::getProperties);
+    }
+
+    @Override
+    public Map<String, String> propertiesAsKeyValue() {
+        return properties.stream()
+                .map(TypedProperties::getProperties)
+                .flatMap(Collection::stream)
+                .collect(toLinkedMap(Property::getKey, Property::getValue));
     }
 
     @Override
