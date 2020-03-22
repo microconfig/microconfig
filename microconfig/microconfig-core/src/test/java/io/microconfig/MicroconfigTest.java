@@ -74,7 +74,7 @@ public class MicroconfigTest {
     @Test
     void placeholderToAliases() {
         assertEquals(
-                splitKeyValue("ips=172.30.162.4 172.30.162.5 172.30.162.5", "properties=node1 node3 node"), //todo "dir=" + nodeConfigDir()),
+                splitKeyValue("ips=172.30.162.4 172.30.162.5 172.30.162.5", "properties=node1 node3 node", "dir=" + nodeConfigDir()),
                 buildComponent("placeholderToAlias", "aliases").propertiesAsKeyValue()
         );
     }

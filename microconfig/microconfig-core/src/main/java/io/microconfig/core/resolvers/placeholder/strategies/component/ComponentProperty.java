@@ -5,5 +5,5 @@ import java.util.Optional;
 public interface ComponentProperty {
     String key();
 
-    Optional<String> resolveFor(String component);
+    Optional<String> resolveFor(String component, String environment);
 }

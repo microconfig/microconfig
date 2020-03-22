@@ -20,6 +20,7 @@ public class ComponentImpl implements Component {
 
     @Getter
     private final String name;
+    @Getter
     private final String originalName;
     @Getter
     private final String environment;

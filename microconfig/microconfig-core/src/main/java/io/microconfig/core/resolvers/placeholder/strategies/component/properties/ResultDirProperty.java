@@ -19,7 +19,7 @@ public class ResultDirProperty implements ComponentProperty {
     }
 
     @Override
-    public Optional<String> resolveFor(String component) {
+    public Optional<String> resolveFor(String component, String __) {
         File dir = new File(destinationComponentDir, component);
         return of(unixLikePath(dir.getAbsolutePath()));
     }

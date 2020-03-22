@@ -21,7 +21,7 @@ public class ComponentResolveStrategy implements PlaceholderResolveStrategy {
         ComponentProperty componentProperty = propertyByKey.get(key);
 
         return ofNullable(componentProperty)
-                .flatMap(p -> p.resolveFor(component))
+                .flatMap(p -> p.resolveFor(component, environment))
                 .map(value -> tempProperty(component, value, environment, new PlaceholderSource(component, COMPONENT_SOURCE)));
     }
 }

@@ -127,7 +127,7 @@ public class Microconfig {
 
         @Override
         public RecursiveResolver placeholderResolver() {
-            Map<String, ComponentProperty> componentSpecialProperties = new ComponentProperties(f.componentGraph(), rootDir, destinationDir).get();
+            Map<String, ComponentProperty> componentSpecialProperties = new ComponentProperties(f.componentGraph(), f.environments(), rootDir, destinationDir).get();
             Map<String, EnvProperty> envSpecialProperties = new EnvironmentProperties().get();
 
             PlaceholderResolveStrategy strategy = cache(composite(
