@@ -1,6 +1,7 @@
 package io.microconfig.core.resolvers.placeholder;
 
 import io.microconfig.core.properties.ComponentWithEnv;
+import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.impl.PropertyResolveException;
 import io.microconfig.core.resolvers.RecursiveResolver;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +60,7 @@ public class PlaceholderResolver implements RecursiveResolver {
                     resolve(placeholder, root);
         }
 
-        //todo test overrides with env changes
+        //todo test overrides with env changes and configType
         private boolean canBeOverridden(Placeholder p, ComponentWithEnv sourceOfValue) {
             return p.isSelfReferenced() ||
                     (p.referencedTo(sourceOfValue) && !nonOverridableKeys.contains(p.getKey()));
@@ -87,9 +88,9 @@ public class PlaceholderResolver implements RecursiveResolver {
 
         private String resolve(Placeholder p, ComponentWithEnv root) {
             try {
-                String resolvedValue = p.resolveUsing(strategy);
-                return markVisited(p)
-                        .resolve(resolvedValue, p.getReferencedComponent(), root);
+                Property resolved = p.resolveUsing(strategy);
+                return resolved.resolveBy(currentResolverWithVisited(p), root)
+                        .getValue();
             } catch (RuntimeException e) {
                 String defaultValue = p.getDefaultValue();
                 if (defaultValue != null) return defaultValue;
@@ -97,7 +98,7 @@ public class PlaceholderResolver implements RecursiveResolver {
             }
         }
 
-        private PlaceholderResolver markVisited(Placeholder placeholder) {
+        private PlaceholderResolver currentResolverWithVisited(Placeholder placeholder) {
             Set<Placeholder> updated = new LinkedHashSet<>(visited);
             if (updated.add(placeholder)) {
                 return withVisited(unmodifiableSet(updated));

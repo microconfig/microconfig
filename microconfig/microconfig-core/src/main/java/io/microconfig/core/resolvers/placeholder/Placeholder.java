@@ -24,9 +24,8 @@ class Placeholder {
     private final String key;
     private final String defaultValue;
 
-    public String resolveUsing(PlaceholderResolveStrategy strategy) {
+    public Property resolveUsing(PlaceholderResolveStrategy strategy) {
         return strategy.resolve(component, key, environment, configType)
-                .map(Property::getValue)
                 .orElseThrow(() -> new IllegalStateException("Cant resolve '" + this + "'"));
     }
 
