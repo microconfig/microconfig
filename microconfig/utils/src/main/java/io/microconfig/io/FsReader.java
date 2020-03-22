@@ -10,5 +10,5 @@ public interface FsReader {
 
     List<String> readLines(File file);
 
-    Optional<String> firstLine(File file, Predicate<String> predicate);
+    Optional<String> firstLineOf(File file, Predicate<String> predicate);
 }

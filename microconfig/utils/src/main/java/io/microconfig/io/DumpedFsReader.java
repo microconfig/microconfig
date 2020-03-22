@@ -22,7 +22,7 @@ public class DumpedFsReader implements FsReader {
     }
 
     @Override
-    public Optional<String> firstLine(File file, Predicate<String> predicate) {
+    public Optional<String> firstLineOf(File file, Predicate<String> predicate) {
         try (Stream<String> lines = Files.lines(file.toPath())) {
             return lines.filter(predicate).findFirst();
         } catch (IOException e) {
