@@ -17,14 +17,6 @@ public class MicroconfigTest {
     private final Microconfig microconfig = searchConfigsIn(classpathFile("repo"));
 
     @Test
-    void placeholderToAliases() {
-        assertEquals(
-                splitKeyValue("ips=172.30.162.4 172.30.162.5 172.30.162.5", "properties=node1 node3 node"),
-                buildComponent("placeholderToAlias", "aliases").propertiesAsKeyValue()
-        );
-    }
-
-    @Test
     void ip() {
         String value = buildComponent("ip1", "uat")
                 .getPropertyWithKey("ip1.some-ip")
@@ -80,17 +72,29 @@ public class MicroconfigTest {
     }
 
     @Test
+    void placeholderToAliases() {
+        assertEquals(
+                splitKeyValue("ips=172.30.162.4 172.30.162.5 172.30.162.5", "properties=node1 node3 node"), //todo "dir=" + nodeConfigDir()),
+                buildComponent("placeholderToAlias", "aliases").propertiesAsKeyValue()
+        );
+    }
+
+    @Test
     void aliasesAndThis() {
         testAliases("node1", 4);
-//        testAliases("node3", 5);
-//        testAliases("node", 5);
+        testAliases("node3", 5);
+        testAliases("node", 5);
     }
 
     private void testAliases(String name, int ip) {
         assertEquals(
-                splitKeyValue("app.ip=172.30.162." + ip, "app.name=" + name, "app.value=v1", "app.dir=" + classpathFile("repo/components/aliases/node/service.properties").getParent()),
+                splitKeyValue("app.ip=172.30.162." + ip, "app.name=" + name, "app.value=v1", "app.dir=" + nodeConfigDir()),
                 buildComponent(name, "aliases").propertiesAsKeyValue()
         );
+    }
+
+    private String nodeConfigDir() {
+        return classpathFile("repo/components/aliases/node/service.properties").getParent();
     }
 
     private Properties buildComponent(String component, String env) {

@@ -19,8 +19,12 @@ public class ConfigDirProperty implements ComponentProperty {
 
     @Override
     public Optional<String> resolveFor(String component) {
-        return componentGraph.getFolderOf(component)
+        return componentGraph.getFolderOf(getOriginalNameOf(component))
                 .map(File::getAbsolutePath)
                 .map(StringUtils::unixLikePath);
+    }
+
+    private String getOriginalNameOf(String component) {
+        return component; //todo placeholder from one component to another doesnt work
     }
 }
