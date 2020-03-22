@@ -13,9 +13,9 @@ public interface TypedProperties {
 
     TypedProperties withoutTempValues();
 
-    Map<String, Property> getPropertyByKeyMap();
+    Map<String, Property> getPropertiesAsMap();
 
-    Map<String, String> getPropertyValueByKeyMap();
+    Map<String, String> getKeyValueMap();
 
     Collection<Property> getProperties();
 
