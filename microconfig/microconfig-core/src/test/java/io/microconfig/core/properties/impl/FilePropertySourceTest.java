@@ -1,13 +1,12 @@
 package io.microconfig.core.properties.impl;
 
-import io.microconfig.core.properties.PropertySource;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.io.File;
 
 import static io.microconfig.core.properties.impl.FilePropertySource.fileSource;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -19,7 +18,7 @@ class FilePropertySourceTest {
     void getters() {
         assertEquals(file, source.getSource());
         assertEquals(0, source.getLineNumber());
-        assertTrue( source.isYaml());
+        assertTrue(source.isYaml());
     }
 
     @Test

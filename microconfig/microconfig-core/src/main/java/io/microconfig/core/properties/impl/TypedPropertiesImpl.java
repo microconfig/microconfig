@@ -8,8 +8,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.With;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collector;
 
-import static io.microconfig.utils.StreamUtils.toLinkedMap;
+import static io.microconfig.utils.StreamUtils.*;
+import static java.util.Optional.ofNullable;
 import static java.util.function.Function.identity;
 import static lombok.AccessLevel.PRIVATE;
 
@@ -30,21 +34,30 @@ public class TypedPropertiesImpl implements TypedProperties {
     }
 
     @Override
-    public TypedProperties withoutTempValues() {
-//        return withProperties(filter(properties, p -> !p.isTemp()));
-        return this;
+    public TypedProperties resolveBy(Resolver resolver) {
+        return withProperties(
+                forEach(properties.values(), resolveUsing(resolver), toPropertyMap())
+        );
     }
 
     @Override
-    public TypedProperties resolveBy(Resolver resolver) {
-        ComponentWithEnv root = currentComponent();
-        Map<String, Property> resolved = properties.values()
-                .stream()
-                .map(p -> p.resolveBy(resolver, root))
-                .collect(toLinkedMap(Property::getKey, identity()));
-        return withProperties(resolved);
+    public TypedProperties withoutTempValues() {
+        return withProperties(
+                filter(properties.values(), p -> !p.isTemp(), toPropertyMap())
+        );
     }
 
+    @Override
+    public Map<String, String> propertiesAsKeyValue() {
+        return properties.values()
+                .stream()
+                .collect(toLinkedMap(Property::getKey, Property::getValue));
+    }
+
+    @Override
+    public Optional<Property> getPropertyWithKey(String key) {
+        return ofNullable(properties.get(key));
+    }
 
     @Override
     public <T> T save(PropertySerializer<T> serializer) {
@@ -56,7 +69,16 @@ public class TypedPropertiesImpl implements TypedProperties {
         return currentComponent().toString();
     }
 
+    private UnaryOperator<Property> resolveUsing(Resolver resolver) {
+        ComponentWithEnv root = currentComponent();
+        return property -> property.resolveBy(resolver, root);
+    }
+
     private ComponentWithEnv currentComponent() {
         return new ComponentWithEnv(configType.getName(), component, environment);
+    }
+
+    private Collector<Property, ?, Map<String, Property>> toPropertyMap() {
+        return toLinkedMap(Property::getKey, identity());
     }
 }

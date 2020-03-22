@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ComponentWithEnvTest {
     @Test
-    void testToString(){
+    void testToString() {
         assertEquals(
                 "comp[env]",
                 new ComponentWithEnv("app", "comp", "env").toString()

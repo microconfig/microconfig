@@ -13,9 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.File;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static io.microconfig.testutils.ClasspathUtils.classpathFile;
 import static java.util.Arrays.asList;

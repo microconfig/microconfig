@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import java.util.Optional;
 
 import static io.microconfig.core.configtypes.impl.ConfigTypeFilters.configTypeWithName;
-import static java.util.Optional.ofNullable;
 
 @RequiredArgsConstructor
 public class StandardResolveStrategy implements PlaceholderResolveStrategy {
@@ -16,12 +15,10 @@ public class StandardResolveStrategy implements PlaceholderResolveStrategy {
 
     @Override
     public Optional<Property> resolve(String component, String key, String environment, String configType) {
-        Property property = environmentRepository.getOrCreateByName(environment)
+        return environmentRepository.getOrCreateByName(environment)
                 .findComponentWithName(component, false)
                 .getPropertiesFor(configTypeWithName(configType))
                 .asList().get(0)
-                .getProperties()
-                .get(key);
-        return ofNullable(property);
+                .getPropertyWithKey(key);
     }
 }

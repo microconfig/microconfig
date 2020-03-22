@@ -37,9 +37,15 @@ public class StreamUtils {
 
     public static <T> List<T> filter(Collection<T> collection,
                                      Predicate<? super T> predicate) {
+        return filter(collection, predicate, toList());
+    }
+
+    public static <K, T> T filter(Collection<K> collection,
+                                  Predicate<? super K> predicate,
+                                  Collector<? super K, ?, T> collector) {
         return collection.stream()
                 .filter(predicate)
-                .collect(toList());
+                .collect(collector);
     }
 
     public static <K, V> Optional<V> findFirstResult(Collection<K> collection, Function<K, Optional<V>> getter) {
