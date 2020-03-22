@@ -128,7 +128,7 @@ public class MicroconfigFactory {
 
         return new PlaceholderResolver(
                 environmentProvider,
-                strategy,
+                cache(strategy),
                 joinToSet(componentProperties.get().keySet(), envProperties.get().keySet()),
                 configType.getType(),
                 resolverByType

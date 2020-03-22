@@ -29,7 +29,7 @@ public class BuildConfigsCommand implements ConfigCommand {
     public void execute(ComponentsToProcess context) {
         List<Component> componentsToBuild = context.components(environmentProvider);
 
-        int processedComponents = componentsToBuild.stream()  //todo paraller
+        int processedComponents = componentsToBuild.parallelStream()
                 .mapToInt(component -> processComponent(component, context.env()))
                 .sum();
 
