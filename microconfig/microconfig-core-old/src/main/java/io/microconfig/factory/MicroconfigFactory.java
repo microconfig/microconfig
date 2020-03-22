@@ -42,7 +42,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static io.microconfig.commands.buildconfigs.BuildConfigPostProcessor.emptyPostProcessor;
-import static io.microconfig.core.environments.filebased.EnvironmentParserImpl.yamlParser;
+import static io.microconfig.core.environments.filebased.EnvironmentParserImpl.parser;
 import static io.microconfig.core.properties.resolver.placeholder.strategies.composite.CompositeResolveStrategy.composite;
 import static io.microconfig.core.properties.resolver.placeholder.strategies.system.SystemResolveStrategy.envVariablesResolveStrategy;
 import static io.microconfig.core.properties.resolver.placeholder.strategies.system.SystemResolveStrategy.systemPropertiesResolveStrategy;
@@ -171,7 +171,7 @@ public class MicroconfigFactory {
         return cache(
                 new FileBasedEnvironmentProvider(
                         new File(root, ENV_DIR),
-                        yamlParser(),
+                        parser(),
                         fileReader
                 )
         );

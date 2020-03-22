@@ -1,5 +1,6 @@
 package io.microconfig.core.environments.filebased;
 
+import com.google.gson.Gson;
 import io.microconfig.core.environments.Component;
 import io.microconfig.core.environments.ComponentGroup;
 import io.microconfig.core.environments.EnvInclude;
@@ -7,9 +8,9 @@ import io.microconfig.core.environments.Environment;
 import lombok.RequiredArgsConstructor;
 import org.yaml.snakeyaml.Yaml;
 
+import java.io.File;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.function.Function;
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.*;
@@ -26,24 +27,24 @@ public class EnvironmentParserImpl implements EnvironmentParser {
     private static final String APPEND = "append";
     private static final String COMPONENTS = "components";
 
-    private final Function<String, Map<String, Object>> parser;
-
-    public static EnvironmentParser yamlParser() {
-        return new EnvironmentParserImpl(new Yaml()::load);
+    public static EnvironmentParser parser() {
+        return new EnvironmentParserImpl();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public Environment parse(String name, String content) {
+    public Environment parse(File envFile, String name, String content) {
         try {
-            return doParse(name, content);
+            Map<String, Object> keyValue = envFile.getName().endsWith(".yaml") ?
+                    new Yaml().load(content) :
+                    new Gson().fromJson(content, Map.class);
+            return doParse(name, keyValue);
         } catch (RuntimeException e) {
             throw new IllegalArgumentException("Can't parse '" + name + "' env", e);
         }
     }
 
-    private Environment doParse(String name, String content) {
-        Map<String, Object> keyValue = parser.apply(content);
-
+    private Environment doParse(String name, Map<String, Object> keyValue) {
         Optional<EnvInclude> envInclude = parseInclude(keyValue);
         Optional<Integer> portOffset = parsePortOffset(keyValue);
         Optional<String> envIp = parseIp(keyValue);

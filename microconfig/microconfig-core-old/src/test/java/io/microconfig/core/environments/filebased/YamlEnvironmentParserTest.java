@@ -6,12 +6,13 @@ import io.microconfig.core.environments.EnvInclude;
 import io.microconfig.core.environments.Environment;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static io.microconfig.core.environments.Component.byType;
-import static io.microconfig.core.environments.filebased.EnvironmentParserImpl.yamlParser;
+import static io.microconfig.core.environments.filebased.EnvironmentParserImpl.parser;
 import static io.microconfig.testutils.ClasspathUtils.read;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
@@ -20,13 +21,14 @@ import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class YamlEnvironmentParserTest {
-    private final EnvironmentParser parser = yamlParser();
+    private final EnvironmentParser parser = parser();
+    File file = new File("env.yaml");
 
     @Test
     void testBase() {
         String name = "baseYaml";
         String ip = "1.2.3.4";
-        Environment environment = parser.parse(name, read("test-props/envs/yaml/" + name + ".yaml"));
+        Environment environment = parser.parse(file, name, read("test-props/envs/yaml/" + name + ".yaml"));
         assertEquals(name, environment.getName());
         assertEquals(ip, environment.getIp().get());
         assertEquals(1, (int) environment.getPortOffset().get());
@@ -36,13 +38,13 @@ class YamlEnvironmentParserTest {
 
     @Test
     void testException() {
-        assertThrows(IllegalArgumentException.class, () -> parser.parse("dev", ":("));
+        assertThrows(IllegalArgumentException.class, () -> parser.parse(file, "dev", ":("));
     }
 
     @Test
     void testInclude() {
         String name = "includeYaml";
-        Environment environment = parser.parse(name, read("test-props/envs/yaml/" + name + ".yaml"));
+        Environment environment = parser.parse(file, name, read("test-props/envs/yaml/" + name + ".yaml"));
         assertEquals(name, environment.getName());
         String ip = "172.30.40.1";
         assertEquals(ip, environment.getIp().get());

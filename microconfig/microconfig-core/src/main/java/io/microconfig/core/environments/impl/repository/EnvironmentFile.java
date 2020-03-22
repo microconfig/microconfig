@@ -1,5 +1,6 @@
 package io.microconfig.core.environments.impl.repository;
 
+import com.google.gson.Gson;
 import io.microconfig.io.FsReader;
 import lombok.RequiredArgsConstructor;
 import org.yaml.snakeyaml.Yaml;
@@ -29,14 +30,21 @@ class EnvironmentFile {
 
     public EnvironmentDefinition parseUsing(FsReader fsReader) {
         try {
-            return parse(fsReader.readFully(file), getName(file));
+            return parse(parseToMap(fsReader), getName(file));
         } catch (RuntimeException e) {
             throw new EnvironmentException("Can't parse env file '" + file + "'", e);
         }
     }
 
-    private EnvironmentDefinition parse(String content, String name) {
-        Map<String, Object> keyValue = new Yaml().load(content);
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> parseToMap(FsReader reader) {
+        String content = reader.readFully(file);
+        return file.getName().endsWith(".json") ?
+                new Gson().fromJson(content, Map.class) :
+                new Yaml().load(content);
+    }
+
+    private EnvironmentDefinition parse(Map<String, Object> keyValue, String name) {
 
         EnvInclude envInclude = parseInclude(keyValue);
         int portOffset = parsePortOffset(keyValue);

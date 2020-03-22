@@ -14,5 +14,6 @@ publishing {
 dependencies {
     implementation project(':microconfig:utils'),
             lib.spring_el,
+            lib.gson,
             lib.snakeyaml
 }

@@ -45,7 +45,7 @@ public class FileBasedEnvironmentProvider implements EnvironmentProvider {
     public Environment getByName(String name) {
         File envFile = findEnvFile(name);
 
-        return parser.parse(name, fileReader.readFully(envFile))
+        return parser.parse(envFile, name, fileReader.readFully(envFile))
                 .withSource(envFile)
                 .processInclude(this)
                 .verifyUniqueComponentNames();
@@ -71,8 +71,8 @@ public class FileBasedEnvironmentProvider implements EnvironmentProvider {
 
     private Stream<File> envFiles(String envName) {
         Predicate<File> fileNamePredicate = envName == null ?
-                f -> f.getName().endsWith(".yaml") :
-                f -> f.getName().equals(envName + ".yaml");
+                f -> f.getName().endsWith(".yaml") || f.getName().endsWith(".json") :
+                f -> f.getName().equals(envName + ".yaml") || f.getName().equals(envName + ".json");
 
         return walk(envDir.toPath())
                 .map(Path::toFile)
