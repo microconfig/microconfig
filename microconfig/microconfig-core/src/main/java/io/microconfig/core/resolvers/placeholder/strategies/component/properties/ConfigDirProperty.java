@@ -9,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 import java.util.Optional;
 
-import static java.util.Optional.empty;
-
 @RequiredArgsConstructor
 public class ConfigDirProperty implements ComponentProperty {
     private final ComponentGraph componentGraph;
@@ -22,22 +20,20 @@ public class ConfigDirProperty implements ComponentProperty {
     }
 
     @Override
-    public Optional<String> resolveFor(String component, String environment) {
-        Optional<String> result = tryFind(component);
-        if (result.isPresent()) return result;
+    public Optional<String> resolveFor(String componentName, String environment) {
+        Optional<String> dir = findDirBy(componentName);
+        if (dir.isPresent()) return dir;
 
-        String originalName = getOriginalNameOf(component, environment);
-        if (originalName.equals(component)) return empty();
-        return tryFind(originalName);
+        return findDirBy(originalNameOf(componentName, environment));
     }
 
-    private Optional<String> tryFind(String component) {
+    private Optional<String> findDirBy(String component) {
         return componentGraph.getFolderOf(component)
                 .map(File::getAbsolutePath)
                 .map(StringUtils::unixLikePath);
     }
 
-    private String getOriginalNameOf(String component, String env) {
+    private String originalNameOf(String component, String env) {
         return environmentRepository.getOrCreateByName(env)
                 .getOrCreateComponentWithName(component)
                 .getOriginalName();
