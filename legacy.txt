@@ -1,2 +1,1 @@
-support for json env
 filename service.properties

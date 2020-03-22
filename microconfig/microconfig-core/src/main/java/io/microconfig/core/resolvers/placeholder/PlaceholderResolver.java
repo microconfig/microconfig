@@ -59,6 +59,7 @@ public class PlaceholderResolver implements RecursiveResolver {
                     resolve(placeholder, root);
         }
 
+        //todo test overrides with env changes
         private boolean canBeOverridden(Placeholder p, ComponentWithEnv sourceOfValue) {
             return p.isSelfReferenced() ||
                     (p.referencedTo(sourceOfValue) && !nonOverridableKeys.contains(p.getKey()));
