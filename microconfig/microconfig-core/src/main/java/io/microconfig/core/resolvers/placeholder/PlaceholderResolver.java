@@ -60,6 +60,7 @@ public class PlaceholderResolver implements RecursiveResolver {
                     resolve(placeholder, root);
         }
 
+        //todo add test cr-mc-feed
         //todo test overrides with env changes and configType
         private boolean canBeOverridden(Placeholder p, ComponentWithEnv sourceOfValue) {
             return p.isSelfReferenced() ||
