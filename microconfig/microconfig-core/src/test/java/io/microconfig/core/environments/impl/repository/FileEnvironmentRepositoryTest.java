@@ -4,6 +4,7 @@ import io.microconfig.core.configtypes.ConfigTypeRepository;
 import io.microconfig.core.environments.Component;
 import io.microconfig.core.environments.ComponentGroup;
 import io.microconfig.core.environments.Environment;
+import io.microconfig.core.environments.impl.ComponentFactory;
 import io.microconfig.core.environments.impl.ComponentFactoryImpl;
 import io.microconfig.core.properties.PropertiesFactory;
 import io.microconfig.io.DumpedFsReader;
@@ -30,7 +31,7 @@ class FileEnvironmentRepositoryTest {
     ConfigTypeRepository configType = mock(ConfigTypeRepository.class);
     PropertiesFactory propertiesFactory = mock(PropertiesFactory.class);
     FsReader fsReader = new DumpedFsReader();
-    ComponentFactoryImpl componentFactory = new ComponentFactoryImpl(configType, propertiesFactory);
+    ComponentFactory componentFactory = new ComponentFactoryImpl(configType, propertiesFactory);
     FileEnvironmentRepository repo = new FileEnvironmentRepository(dir, fsReader, componentFactory);
 
     @Test
@@ -44,7 +45,7 @@ class FileEnvironmentRepositoryTest {
         FsReader badReader = Mockito.mock(FsReader.class);
         when(badReader.readFully(any(File.class))).thenThrow(new IllegalArgumentException());
         FileEnvironmentRepository repo = new FileEnvironmentRepository(dir, badReader, componentFactory);
-        assertThrows(EnvironmentException.class, () -> repo.environments());
+        assertThrows(EnvironmentException.class, repo::environments);
     }
 
     @Test
@@ -223,7 +224,9 @@ class FileEnvironmentRepositoryTest {
     }
 
     private Environment filter(List<Environment> envs, String name) {
-        return envs.stream().filter(e -> e.getName().equals(name)).findFirst().get();
+        return envs.stream()
+                .filter(e -> e.getName().equals(name))
+                .findFirst()
+                .orElseThrow(IllegalStateException::new);
     }
-
 }
