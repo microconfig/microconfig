@@ -27,7 +27,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class FileEnvironmentRepositoryTest {
-    File dir = classpathFile("envsTest/good");
+    File dir = classpathFile("envs/good");
     ConfigTypeRepository configType = mock(ConfigTypeRepository.class);
     PropertiesFactory propertiesFactory = mock(PropertiesFactory.class);
     FsReader fsReader = new DumpedFsReader();
@@ -50,14 +50,14 @@ class FileEnvironmentRepositoryTest {
 
     @Test
     void envExceptionWrappingOnGroupParse() {
-        File badDir = classpathFile("envsTest/bad");
+        File badDir = classpathFile("envs/bad");
         FileEnvironmentRepository repo = new FileEnvironmentRepository(badDir, fsReader, componentFactory);
         assertThrows(EnvironmentException.class, () -> repo.getByName("badGroup"));
     }
 
     @Test
     void sameEnvNamesException() {
-        File badDir = classpathFile("envsTest/bad");
+        File badDir = classpathFile("envs/bad");
         FileEnvironmentRepository repo = new FileEnvironmentRepository(badDir, fsReader, componentFactory);
 
         assertThrows(EnvironmentException.class, () -> repo.getByName("bad"));
