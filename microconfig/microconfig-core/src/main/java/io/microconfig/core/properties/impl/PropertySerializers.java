@@ -1,10 +1,12 @@
 package io.microconfig.core.properties.impl;
 
+import io.microconfig.core.properties.ConfigFormat;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.PropertySerializer;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.function.Function;
 
 import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.ConfigFormat.YAML;
@@ -15,11 +17,14 @@ import static io.microconfig.utils.Logger.info;
 public class PropertySerializers {
     public static PropertySerializer<File> toFileIn(File dir) {
         return (properties, configType, componentName, __) -> {
-            String extension = extensionByConfigFormat(properties);
-            File resultFile = new File(dir, componentName + "/" + configType.getResultFileName() + extension);
-            delete(resultFile);
+            Function<ConfigFormat, File> getResultFile = cf ->
+                    new File(dir, componentName + "/" + configType.getResultFileName() + cf);
 
-            if (!properties.isEmpty()) {
+            File resultFile = getResultFile.apply(extensionByConfigFormat(properties));
+            if (properties.isEmpty()) {
+                delete(resultFile);
+                delete(getResultFile.apply(PROPERTIES));
+            } else {
                 configIo().writeTo(resultFile).write(properties);
                 info("Generated " + componentName + "/" + resultFile.getName());
             }
@@ -29,13 +34,12 @@ public class PropertySerializers {
 
     public static PropertySerializer<String> asString() {
         return (properties, _2, _3, _4) -> configIo()
-                .writeTo(new File(extensionByConfigFormat(properties)))
+                .writeTo(new File(extensionByConfigFormat(properties).extension()))
                 .serialize(properties);
     }
 
-    private static String extensionByConfigFormat(Collection<Property> properties) {
+    private static ConfigFormat extensionByConfigFormat(Collection<Property> properties) {
         return properties.isEmpty() || properties.stream().anyMatch(p -> p.getConfigFormat() == YAML) ?
-                YAML.extension() :
-                PROPERTIES.extension();
+                YAML : PROPERTIES;
     }
 }
