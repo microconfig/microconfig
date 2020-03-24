@@ -34,7 +34,7 @@ public class PropertySerializers {
     }
 
     private static String extensionByConfigFormat(Collection<Property> properties) {
-        return properties.stream().anyMatch(p -> p.getConfigFormat() == YAML) ?
+        return properties.isEmpty() || properties.stream().anyMatch(p -> p.getConfigFormat() == YAML) ?
                 YAML.extension() :
                 PROPERTIES.extension();
     }
