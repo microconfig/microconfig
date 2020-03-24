@@ -1,8 +1,8 @@
 package io.microconfig.core.resolvers.placeholder.strategies.component;
 
 import io.microconfig.core.properties.Property;
+import io.microconfig.core.properties.impl.DeclaringComponentImpl;
 import io.microconfig.core.resolvers.placeholder.PlaceholderResolveStrategy;
-import io.microconfig.core.resolvers.placeholder.strategies.DeclaringComponentImpl;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
@@ -22,6 +22,6 @@ public class ComponentResolveStrategy implements PlaceholderResolveStrategy {
 
         return ofNullable(componentProperty)
                 .flatMap(p -> p.resolveFor(component, environment))
-                .map(value -> property(component,  value, PROPERTIES, new DeclaringComponentImpl(configType, component, environment)));
+                .map(value -> property(component, value, PROPERTIES, new DeclaringComponentImpl(configType, component, environment)));
     }
 }

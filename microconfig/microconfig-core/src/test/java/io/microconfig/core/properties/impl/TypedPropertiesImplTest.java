@@ -1,7 +1,6 @@
 package io.microconfig.core.properties.impl;
 
 import io.microconfig.core.properties.*;
-import io.microconfig.core.resolvers.placeholder.strategies.DeclaringComponentImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

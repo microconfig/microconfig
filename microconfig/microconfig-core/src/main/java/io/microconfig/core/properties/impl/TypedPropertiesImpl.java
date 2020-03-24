@@ -2,7 +2,6 @@ package io.microconfig.core.properties.impl;
 
 import io.microconfig.core.configtypes.ConfigType;
 import io.microconfig.core.properties.*;
-import io.microconfig.core.resolvers.placeholder.strategies.DeclaringComponentImpl;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package io.microconfig.core.properties;
 
-import io.microconfig.core.resolvers.placeholder.strategies.DeclaringComponentImpl;
+import io.microconfig.core.properties.impl.DeclaringComponentImpl;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

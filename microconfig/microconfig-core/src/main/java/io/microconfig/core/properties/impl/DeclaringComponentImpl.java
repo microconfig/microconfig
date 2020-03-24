@@ -1,4 +1,4 @@
-package io.microconfig.core.resolvers.placeholder.strategies;
+package io.microconfig.core.properties.impl;
 
 import io.microconfig.core.properties.DeclaringComponent;
 import lombok.EqualsAndHashCode;

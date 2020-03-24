@@ -4,8 +4,8 @@ import io.microconfig.core.environments.Environment;
 import io.microconfig.core.environments.EnvironmentRepository;
 import io.microconfig.core.environments.impl.repository.EnvironmentException;
 import io.microconfig.core.properties.Property;
+import io.microconfig.core.properties.impl.DeclaringComponentImpl;
 import io.microconfig.core.resolvers.placeholder.PlaceholderResolveStrategy;
-import io.microconfig.core.resolvers.placeholder.strategies.DeclaringComponentImpl;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
