@@ -1,3 +1,7 @@
 p1: ${this@p2}
 p2: ${this@p3}
 p3: pro3
+
+k1: ${this@k2}
+k2: ${this@k3}
+k3: pro4

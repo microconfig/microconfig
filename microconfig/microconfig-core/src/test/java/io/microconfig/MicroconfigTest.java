@@ -80,6 +80,22 @@ public class MicroconfigTest {
     }
 
     @Test
+    void placeholderToAnotherConfigType() {
+        assertEquals(
+                splitKeyValue("p1=pro", "p2=app", "p3=app", "p4=app"),
+                buildComponent("configType", "dev").propertiesAsKeyValue()
+        );
+    }
+
+    @Test
+    void placeholderToAnotherComponentWithAnotherConfigType() {
+        assertEquals(
+                splitKeyValue("p1=pro3", "p2=app2", "p3=app3", "k1=pro4"),
+                buildComponent("appType", "dev").propertiesAsKeyValue()
+        );
+    }
+
+    @Test
     void aliasesAndThis() {
         testAliases("node1", 4);
         testAliases("node3", 5);
