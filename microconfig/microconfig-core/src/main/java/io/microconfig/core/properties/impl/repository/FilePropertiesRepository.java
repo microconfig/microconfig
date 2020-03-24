@@ -32,17 +32,17 @@ public class FilePropertiesRepository implements PropertiesRepository {
         @With
         private final String environment;
 
-        private final Set<String> configExtensions;
+        private final ConfigType configType;
         private final Set<Include> processedIncludes;
 
         public ComponentSource(String originalComponentName, String environment, ConfigType configType) {
-            this(originalComponentName, environment, configType.getSourceExtensions(), new LinkedHashSet<>());
+            this(originalComponentName, environment, configType, new LinkedHashSet<>());
         }
 
         public Map<String, Property> getProperties() {
-            Map<String, Property> basicProperties = filter(defaultConfig(configExtensions));
-            Map<String, Property> envSharedProperties = filter(configForMultipleEnvironments(configExtensions, environment));
-            Map<String, Property> envSpecificProperties = filter(configForOneEnvironment(configExtensions, environment));
+            Map<String, Property> basicProperties = filter(defaultConfig(configType.getSourceExtensions()));
+            Map<String, Property> envSharedProperties = filter(configForMultipleEnvironments(configType.getSourceExtensions(), environment));
+            Map<String, Property> envSpecificProperties = filter(configForOneEnvironment(configType.getSourceExtensions(), environment));
 
             basicProperties.putAll(envSharedProperties);
             basicProperties.putAll(envSpecificProperties);
@@ -59,7 +59,7 @@ public class FilePropertiesRepository implements PropertiesRepository {
 
         private Stream<ConfigDefinition> configDefinitionsFor(Predicate<File> filter) {
             return componentGraph.getConfigFilesFor(originalComponentName, filter)
-                    .map(file -> configFileParser.parse(file, environment));
+                    .map(file -> configFileParser.parse(file, configType.getName(), environment));
         }
 
         private Map<String, Property> collectPropertiesFrom(Stream<ConfigDefinition> componentConfigs) {

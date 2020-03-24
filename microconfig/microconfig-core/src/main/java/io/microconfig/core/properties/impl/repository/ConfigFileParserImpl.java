@@ -10,7 +10,7 @@ public class ConfigFileParserImpl implements ConfigFileParser {
     private final ConfigIo configIo;
 
     @Override
-    public ConfigDefinition parse(File file, String env) {
-        return new ConfigFile(file, env).parseUsing(configIo);
+    public ConfigDefinition parse(File file, String configType, String env) {
+        return new ConfigFile(file, configType, env).parseUsing(configIo);
     }
 }

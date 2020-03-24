@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface ConfigReader {
-    List<Property> properties(String env);
+    List<Property> properties(String configType, String environment);
 
     Map<String, String> propertiesAsMap();
 

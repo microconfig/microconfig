@@ -9,10 +9,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
-import java.util.Collection;
-import java.util.Map;
-
-import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static io.microconfig.utils.StringUtils.findFirstIndexIn;
 import static lombok.AccessLevel.PRIVATE;
 
@@ -25,14 +21,13 @@ public class PropertyImpl implements Property {
     private final String key;
     @With(PRIVATE)
     private final String value;
-    private final String envContext;
     private final boolean temp;
 
     private final PropertySource source;
 
-    public static Property parse(String keyValue, String envContext, PropertySource source) {
+    public static Property parse(String keyValue, PropertySource source) {
         boolean temp = isTempProperty(keyValue);
-        int separatorIndex = findKeyValueSeparatorIndexIn(keyValue);
+        int separatorIndex = findSeparatorIndexIn(keyValue);
         if (separatorIndex < 0) {
             throw new IllegalArgumentException("Property must contain ':' or '='. Bad property: " + keyValue + " in " + source);
         }
@@ -40,45 +35,37 @@ public class PropertyImpl implements Property {
         String key = keyValue.substring(temp ? TEMP_VALUE.length() : 0, separatorIndex).trim();
         String value = keyValue.substring(separatorIndex + 1).trim();
 
-        return new PropertyImpl(key, value, envContext, temp, source);
+        return new PropertyImpl(key, value, temp, source);
     }
 
-    public static Property property(String key, String value, String envContext, PropertySource source) {
-        return new PropertyImpl(key, value, envContext, false, source);
+    public static Property property(String key, String value, PropertySource source) {
+        return new PropertyImpl(key, value, false, source);
     }
 
-    public static PropertyImpl tempProperty(String key, String value, String envContext, PropertySource source) {
-        return new PropertyImpl(key, value, envContext, true, source);
-    }
-
-    public static int findKeyValueSeparatorIndexIn(String keyValue) {
+    public static int findSeparatorIndexIn(String keyValue) {
         return findFirstIndexIn(keyValue, ":=");
-    }
-
-    public static boolean isTempProperty(String line) {
-        return line.startsWith(TEMP_VALUE);
     }
 
     public static boolean isComment(String line) {
         return line.startsWith("#");
     }
 
-    public static Map<String, String> asKeyValue(Collection<Property> properties) {
-        return properties.stream().collect(toLinkedMap(Property::getKey, Property::getValue));
+    public static boolean isTempProperty(String line) {
+        return line.startsWith(TEMP_VALUE);
     }
 
     @Override
     public Property resolveBy(Resolver resolver, ComponentWithEnv root) {
         try {
-            String resolved = resolver.resolve(value, currentComponent(root.getConfigType()), root);
+            String resolved = resolver.resolve(value, currentComponent(), root);
             return withValue(resolved);
         } catch (RuntimeException e) {
             throw new PropertyResolveException("Can't resolve property '" + this + "'", e); //todo
         }
     }
 
-    private ComponentWithEnv currentComponent(String configType) { //todo incorrect type?
-        return new ComponentWithEnv(configType, source.getDeclaringComponent(), envContext);
+    private ComponentWithEnv currentComponent() {
+        return new ComponentWithEnv(source.getConfigType(), source.getComponent(), source.getEnvironment());
     }
 
     @Override

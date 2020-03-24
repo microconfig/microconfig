@@ -8,8 +8,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.Map;
 import java.util.Optional;
 
-import static io.microconfig.core.properties.impl.PropertyImpl.tempProperty;
-import static io.microconfig.core.resolvers.placeholder.strategies.PlaceholderSource.COMPONENT_SOURCE;
+import static io.microconfig.core.properties.impl.PropertyImpl.property;
 import static java.util.Optional.ofNullable;
 
 @RequiredArgsConstructor
@@ -22,6 +21,6 @@ public class ComponentResolveStrategy implements PlaceholderResolveStrategy {
 
         return ofNullable(componentProperty)
                 .flatMap(p -> p.resolveFor(component, environment))
-                .map(value -> tempProperty(component, value, environment, new PlaceholderSource(component, COMPONENT_SOURCE)));
+                .map(value -> property(component, value, new PlaceholderSource(configType, component, environment)));
     }
 }

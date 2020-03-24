@@ -5,9 +5,9 @@ public interface Property {
 
     String getValue();
 
-    PropertySource getSource();
-
     boolean isTemp();
+
+    PropertySource getSource();
 
     Property resolveBy(Resolver resolver, ComponentWithEnv root);
 }

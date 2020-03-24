@@ -23,6 +23,7 @@ import static java.util.stream.Stream.concat;
 @RequiredArgsConstructor
 class ConfigFile {
     private final File file;
+    private final String configType;
     private final String environment;
 
     public ConfigDefinition parseUsing(ConfigIo configIo) {
@@ -34,7 +35,7 @@ class ConfigFile {
             return new ConfigDefinition(includes, emptyMap());
         }
 
-        List<Property> properties = reader.properties(environment);
+        List<Property> properties = reader.properties(configType, environment);
         List<Property> tempProperties = parseTempProperties(commentByLineNumber);
         return new ConfigDefinition(includes, joinToMap(properties, tempProperties));
     }
@@ -43,7 +44,7 @@ class ConfigFile {
         return commentByLineNumber.entrySet()
                 .stream()
                 .filter(e -> isTempProperty(e.getValue()))
-                .map(e -> parse(e.getValue(), environment, fileSource(file, e.getKey(), false)))
+                .map(e -> parse(e.getValue(), fileSource(file, e.getKey(), false, configType, environment)))
                 .collect(toList());
     }
 

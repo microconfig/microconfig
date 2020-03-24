@@ -9,7 +9,6 @@ public class ComponentWithEnv {
     String configType;
     String component;
     String environment;
-    //todo add config type?? write test this override with diff types
 
     @Override
     public String toString() {

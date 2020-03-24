@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface ConfigFileParser {
-    ConfigDefinition parse(File file, String env);
+    ConfigDefinition parse(File file, String configType, String env);
 
     @Value
     class ConfigDefinition {

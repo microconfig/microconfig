@@ -22,11 +22,11 @@ public abstract class AbstractConfigReader implements ConfigReader {
     }
 
     @Override
-    public List<Property> properties(String env) {
-        return properties(env, false);
+    public List<Property> properties(String configType, String environment) {
+        return properties(configType, environment, false);
     }
 
-    protected abstract List<Property> properties(String env, boolean resolveEscape);
+    protected abstract List<Property> properties(String configType, String environment, boolean resolveEscape);
 
     @Override
     public Map<String, String> propertiesAsMap() {
@@ -51,7 +51,7 @@ public abstract class AbstractConfigReader implements ConfigReader {
     }
 
     private Map<String, String> propertiesToMap(boolean resolveEscape) {
-        return properties("", resolveEscape).stream()
+        return properties("", "", resolveEscape).stream()
                 .collect(toSortedMap(Property::getKey, Property::getValue));
     }
 }

@@ -11,8 +11,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.Map;
 import java.util.Optional;
 
-import static io.microconfig.core.properties.impl.PropertyImpl.tempProperty;
-import static io.microconfig.core.resolvers.placeholder.strategies.PlaceholderSource.ENV_SOURCE;
+import static io.microconfig.core.properties.impl.PropertyImpl.property;
 import static java.util.Optional.empty;
 
 @RequiredArgsConstructor
@@ -29,7 +28,7 @@ public class EnvironmentResolveStrategy implements PlaceholderResolveStrategy {
         if (environment == null) return empty();
 
         return envProperty.resolveFor(component, environment)
-                .map(value -> tempProperty(key, value, env, new PlaceholderSource(component, ENV_SOURCE)));
+                .map(value -> property(key, value, new PlaceholderSource(configType, component, env)));
     }
 
     private Environment getEnvironment(String environment) {

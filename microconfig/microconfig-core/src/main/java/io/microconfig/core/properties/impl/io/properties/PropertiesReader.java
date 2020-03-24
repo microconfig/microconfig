@@ -19,12 +19,12 @@ class PropertiesReader extends AbstractConfigReader {
     }
 
     @Override
-    protected List<Property> properties(String env, boolean resolveEscape) {
+    protected List<Property> properties(String configType, String environment, boolean resolveEscape) {
         List<Property> result = new ArrayList<>();
 
         StringBuilder currentLine = new StringBuilder();
-        for (int index = 0; index < lines.size(); index++) {
-            String line = lines.get(index);
+        for (int lineNumber = 0; lineNumber < lines.size(); lineNumber++) {
+            String line = lines.get(lineNumber);
             String trimmed = line.trim();
             if (trimmed.isEmpty() || isComment(trimmed)) continue;
 
@@ -38,7 +38,8 @@ class PropertiesReader extends AbstractConfigReader {
                 continue;
             }
 
-            Property property = PropertyImpl.parse(currentLine.toString(), env, fileSource(file, index, false));
+            Property property = PropertyImpl.parse(currentLine.toString(),
+                    fileSource(file, lineNumber, false, configType, environment));
             result.add(property);
             currentLine.setLength(0);
         }

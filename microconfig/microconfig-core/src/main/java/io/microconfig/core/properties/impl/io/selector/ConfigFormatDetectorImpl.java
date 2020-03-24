@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 import java.util.function.Predicate;
 
-import static io.microconfig.core.properties.impl.PropertyImpl.findKeyValueSeparatorIndexIn;
+import static io.microconfig.core.properties.impl.PropertyImpl.findSeparatorIndexIn;
 import static io.microconfig.core.properties.impl.PropertyImpl.isComment;
 import static io.microconfig.core.properties.impl.io.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.impl.io.ConfigFormat.YAML;
@@ -30,7 +30,7 @@ public class ConfigFormatDetectorImpl implements ConfigFormatDetector {
         String firstProperty = reader.firstLineOf(file, withValue()).orElse(null);
         if (firstProperty == null) return false;
 
-        int separatorIndex = findKeyValueSeparatorIndexIn(firstProperty);
+        int separatorIndex = findSeparatorIndexIn(firstProperty);
         if (separatorIndex < 0) {
             throw new IllegalArgumentException("Incorrect property " + firstProperty + " in " + file);
         }
