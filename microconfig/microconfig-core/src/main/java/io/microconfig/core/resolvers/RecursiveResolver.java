@@ -1,13 +1,13 @@
 package io.microconfig.core.resolvers;
 
-import io.microconfig.core.properties.ComponentWithEnv;
+import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.Resolver;
 
 import java.util.Optional;
 
 public interface RecursiveResolver extends Resolver {
     @Override
-    default String resolve(String value, ComponentWithEnv sourceOfValue, ComponentWithEnv root) {
+    default String resolve(String value, DeclaringComponent sourceOfValue, DeclaringComponent root) {
         StringBuilder result = new StringBuilder(value);
         while (true) {
             Optional<Statement> optionalStatement = findStatementIn(result);
@@ -27,6 +27,6 @@ public interface RecursiveResolver extends Resolver {
 
         int getEndIndex();
 
-        String resolveFor(ComponentWithEnv sourceOfValue, ComponentWithEnv root);
+        String resolveFor(DeclaringComponent sourceOfValue, DeclaringComponent root);
     }
 }

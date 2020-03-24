@@ -11,7 +11,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static io.microconfig.core.properties.impl.FilePropertySource.fileSource;
+import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
+import static io.microconfig.core.properties.impl.FileBasedComponent.fileSource;
 import static io.microconfig.core.properties.impl.PropertyImpl.isTempProperty;
 import static io.microconfig.core.properties.impl.PropertyImpl.parse;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
@@ -44,7 +45,7 @@ class ConfigFile {
         return commentByLineNumber.entrySet()
                 .stream()
                 .filter(e -> isTempProperty(e.getValue()))
-                .map(e -> parse(e.getValue(), fileSource(file, e.getKey(), false, configType, environment)))
+                .map(e -> parse(e.getValue(), PROPERTIES, fileSource(file, e.getKey(), false, configType, environment)))
                 .collect(toList());
     }
 

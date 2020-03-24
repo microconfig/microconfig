@@ -1,16 +1,16 @@
 package io.microconfig.core.properties.impl.io.selector;
 
-import io.microconfig.core.properties.impl.io.ConfigFormat;
+import io.microconfig.core.properties.ConfigFormat;
 import io.microconfig.io.FsReader;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.util.function.Predicate;
 
+import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
+import static io.microconfig.core.properties.ConfigFormat.YAML;
 import static io.microconfig.core.properties.impl.PropertyImpl.findSeparatorIndexIn;
 import static io.microconfig.core.properties.impl.PropertyImpl.isComment;
-import static io.microconfig.core.properties.impl.io.ConfigFormat.PROPERTIES;
-import static io.microconfig.core.properties.impl.io.ConfigFormat.YAML;
 
 
 @RequiredArgsConstructor

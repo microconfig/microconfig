@@ -4,13 +4,13 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static io.microconfig.core.properties.impl.FilePropertySource.fileSource;
+import static io.microconfig.core.properties.impl.FileBasedComponent.fileSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class FilePropertySourceTest {
+class FileBasedComponentTest {
     File file = new File("component/config.yaml");
-    FilePropertySource source = new FilePropertySource(file, 0, true, "app", "dev");
+    FileBasedComponent source = new FileBasedComponent(file, 0, true, "app", "dev");
 
     @Test
     void getters() {

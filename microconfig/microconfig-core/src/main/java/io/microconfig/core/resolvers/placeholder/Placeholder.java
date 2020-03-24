@@ -1,7 +1,8 @@
 package io.microconfig.core.resolvers.placeholder;
 
-import io.microconfig.core.properties.ComponentWithEnv;
+import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.Property;
+import io.microconfig.core.resolvers.placeholder.strategies.DeclaringComponentImpl;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -29,20 +30,19 @@ class Placeholder {
                 .orElseThrow(() -> new IllegalStateException("Cant resolve '" + this + "'"));
     }
 
-    public ComponentWithEnv getReferencedComponent() {
-        return new ComponentWithEnv(configType, component, environment);
+    public DeclaringComponent getReferencedComponent() {
+        return new DeclaringComponentImpl(configType, component, environment);
     }
 
     public boolean isSelfReferenced() {
         return component.equals(SELF_REFERENCE);
     }
 
-    public boolean referencedTo(ComponentWithEnv c) {
-        //todo old impl uses c.getComponentType
+    public boolean referencedTo(DeclaringComponent c) {
         return component.equals(c.getComponent()) && environment.equals(c.getEnvironment());
     }
 
-    public Placeholder overrideBy(ComponentWithEnv c) {
+    public Placeholder overrideBy(DeclaringComponent c) {
         return withComponent(c.getComponent())
                 .withEnvironment(c.getEnvironment());
     }

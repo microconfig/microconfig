@@ -1,6 +1,7 @@
 package io.microconfig.core.properties.impl;
 
 import io.microconfig.core.properties.*;
+import io.microconfig.core.resolvers.placeholder.strategies.DeclaringComponentImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -55,7 +56,7 @@ class TypedPropertiesImplTest {
         Property resolved2 = property("resolved2");
 
         Resolver resolver = mock(Resolver.class);
-        ComponentWithEnv root = new ComponentWithEnv(APPLICATION.getName(), "comp", "env");
+        DeclaringComponent root = new DeclaringComponentImpl(APPLICATION.getName(), "comp", "env");
         when(p1.resolveBy(resolver, root)).thenReturn(resolved1);
         when(p2.resolveBy(resolver, root)).thenReturn(resolved2);
 

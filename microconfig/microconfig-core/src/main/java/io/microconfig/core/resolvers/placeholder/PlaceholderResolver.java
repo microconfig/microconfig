@@ -1,6 +1,6 @@
 package io.microconfig.core.resolvers.placeholder;
 
-import io.microconfig.core.properties.ComponentWithEnv;
+import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.impl.PropertyResolveException;
 import io.microconfig.core.resolvers.RecursiveResolver;
@@ -52,7 +52,7 @@ public class PlaceholderResolver implements RecursiveResolver {
         }
 
         @Override
-        public String resolveFor(ComponentWithEnv sourceOfValue, ComponentWithEnv root) {
+        public String resolveFor(DeclaringComponent sourceOfValue, DeclaringComponent root) {
             Placeholder placeholder = borders.toPlaceholder(sourceOfValue.getConfigType(), sourceOfValue.getEnvironment());
 
             return canBeOverridden(placeholder, sourceOfValue) ?
@@ -60,15 +60,13 @@ public class PlaceholderResolver implements RecursiveResolver {
                     resolve(placeholder, root);
         }
 
-        //todo add test cr-mc-feed
-        //todo test overrides with env changes and configType
-        private boolean canBeOverridden(Placeholder p, ComponentWithEnv sourceOfValue) {
+        private boolean canBeOverridden(Placeholder p, DeclaringComponent sourceOfValue) {
             return p.isSelfReferenced() ||
                     (p.referencedTo(sourceOfValue) && !nonOverridableKeys.contains(p.getKey()));
         }
 
-        private String overrideByParents(Placeholder p, ComponentWithEnv sourceOfValue, ComponentWithEnv root) {
-            Function<ComponentWithEnv, String> tryResolveFor = override -> {
+        private String overrideByParents(Placeholder p, DeclaringComponent sourceOfValue, DeclaringComponent root) {
+            Function<DeclaringComponent, String> tryResolveFor = override -> {
                 try {
                     return resolve(p.overrideBy(override), root);
                 } catch (RuntimeException e) {
@@ -87,7 +85,7 @@ public class PlaceholderResolver implements RecursiveResolver {
                     .orElseThrow(() -> new PropertyResolveException(p.toString(), sourceOfValue, root));
         }
 
-        private String resolve(Placeholder p, ComponentWithEnv root) {
+        private String resolve(Placeholder p, DeclaringComponent root) {
             try {
                 Property resolved = p.resolveUsing(strategy);
                 return resolved.resolveBy(currentResolverWithVisited(p), root)

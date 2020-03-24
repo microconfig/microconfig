@@ -1,6 +1,6 @@
 package io.microconfig.core.properties;
 
-public interface PropertySource {
+public interface DeclaringComponent {
     String getConfigType();
 
     String getComponent();

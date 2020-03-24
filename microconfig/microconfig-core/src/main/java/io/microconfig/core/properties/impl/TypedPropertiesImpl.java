@@ -2,6 +2,7 @@ package io.microconfig.core.properties.impl;
 
 import io.microconfig.core.configtypes.ConfigType;
 import io.microconfig.core.properties.*;
+import io.microconfig.core.resolvers.placeholder.strategies.DeclaringComponentImpl;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -80,12 +81,12 @@ public class TypedPropertiesImpl implements TypedProperties {
     }
 
     private UnaryOperator<Property> resolveUsing(Resolver resolver) {
-        ComponentWithEnv root = currentComponent();
+        DeclaringComponent root = currentComponent();
         return property -> property.resolveBy(resolver, root);
     }
 
-    private ComponentWithEnv currentComponent() {
-        return new ComponentWithEnv(configType.getName(), component, environment);
+    private DeclaringComponent currentComponent() {
+        return new DeclaringComponentImpl(configType.getName(), component, environment);
     }
 
     private Collector<Property, ?, Map<String, Property>> toPropertyMap() {

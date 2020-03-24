@@ -1,8 +1,8 @@
 package io.microconfig.core.properties.impl;
 
-import io.microconfig.core.properties.ComponentWithEnv;
+import io.microconfig.core.properties.ConfigFormat;
+import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.Property;
-import io.microconfig.core.properties.PropertySource;
 import io.microconfig.core.properties.Resolver;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -22,10 +22,11 @@ public class PropertyImpl implements Property {
     @With(PRIVATE)
     private final String value;
     private final boolean temp;
+    private final ConfigFormat configFormat;
 
-    private final PropertySource source;
+    private final DeclaringComponent declaringComponent;
 
-    public static Property parse(String keyValue, PropertySource source) {
+    public static Property parse(String keyValue, ConfigFormat configFormat, DeclaringComponent source) {
         boolean temp = isTempProperty(keyValue);
         int separatorIndex = findSeparatorIndexIn(keyValue);
         if (separatorIndex < 0) {
@@ -35,11 +36,11 @@ public class PropertyImpl implements Property {
         String key = keyValue.substring(temp ? TEMP_VALUE.length() : 0, separatorIndex).trim();
         String value = keyValue.substring(separatorIndex + 1).trim();
 
-        return new PropertyImpl(key, value, temp, source);
+        return new PropertyImpl(key, value, temp, configFormat, source);
     }
 
-    public static Property property(String key, String value, PropertySource source) {
-        return new PropertyImpl(key, value, false, source);
+    public static Property property(String key, String value, ConfigFormat configFormat, DeclaringComponent source) {
+        return new PropertyImpl(key, value, false, configFormat, source);
     }
 
     public static int findSeparatorIndexIn(String keyValue) {
@@ -55,17 +56,13 @@ public class PropertyImpl implements Property {
     }
 
     @Override
-    public Property resolveBy(Resolver resolver, ComponentWithEnv root) {
+    public Property resolveBy(Resolver resolver, DeclaringComponent root) {
         try {
-            String resolved = resolver.resolve(value, currentComponent(), root);
+            String resolved = resolver.resolve(value, declaringComponent, root);
             return withValue(resolved);
         } catch (RuntimeException e) {
             throw new PropertyResolveException("Can't resolve property '" + this + "'", e); //todo
         }
-    }
-
-    private ComponentWithEnv currentComponent() {
-        return new ComponentWithEnv(source.getConfigType(), source.getComponent(), source.getEnvironment());
     }
 
     @Override

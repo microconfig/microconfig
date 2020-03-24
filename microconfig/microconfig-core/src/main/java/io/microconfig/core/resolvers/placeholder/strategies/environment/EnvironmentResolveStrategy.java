@@ -5,12 +5,13 @@ import io.microconfig.core.environments.EnvironmentRepository;
 import io.microconfig.core.environments.impl.repository.EnvironmentException;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.resolvers.placeholder.PlaceholderResolveStrategy;
-import io.microconfig.core.resolvers.placeholder.strategies.PlaceholderSource;
+import io.microconfig.core.resolvers.placeholder.strategies.DeclaringComponentImpl;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 import java.util.Optional;
 
+import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.impl.PropertyImpl.property;
 import static java.util.Optional.empty;
 
@@ -28,7 +29,7 @@ public class EnvironmentResolveStrategy implements PlaceholderResolveStrategy {
         if (environment == null) return empty();
 
         return envProperty.resolveFor(component, environment)
-                .map(value -> property(key, value, new PlaceholderSource(configType, component, env)));
+                .map(value -> property(key, value, PROPERTIES, new DeclaringComponentImpl(configType, component, env)));
     }
 
     private Environment getEnvironment(String environment) {

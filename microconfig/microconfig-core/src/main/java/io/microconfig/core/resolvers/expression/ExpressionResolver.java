@@ -1,6 +1,6 @@
 package io.microconfig.core.resolvers.expression;
 
-import io.microconfig.core.properties.ComponentWithEnv;
+import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.resolvers.RecursiveResolver;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +40,7 @@ public class ExpressionResolver implements RecursiveResolver {
         private final int endIndex;
 
         @Override
-        public String resolveFor(ComponentWithEnv _1, ComponentWithEnv _2) {
+        public String resolveFor(DeclaringComponent _1, DeclaringComponent _2) {
             try {
                 return evaluator.evaluate(value);
             } catch (EvaluationException | ParseException e) {

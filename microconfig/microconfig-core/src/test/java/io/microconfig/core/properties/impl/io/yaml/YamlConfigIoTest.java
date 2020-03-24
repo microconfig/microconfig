@@ -1,7 +1,7 @@
 package io.microconfig.core.properties.impl.io.yaml;
 
 import io.microconfig.core.properties.Property;
-import io.microconfig.core.properties.impl.FilePropertySource;
+import io.microconfig.core.properties.impl.FileBasedComponent;
 import io.microconfig.core.properties.impl.io.ConfigReader;
 import io.microconfig.io.DumpedFsReader;
 import org.junit.jupiter.api.Test;
@@ -32,9 +32,9 @@ class YamlConfigIoTest {
         assertEquals(expected, read.propertiesAsMap());
 
         List<Property> properties = read.properties("", "");
-        assertEquals(0, ((FilePropertySource) properties.get(0).getSource()).getLineNumber());
-        assertEquals(6, ((FilePropertySource) properties.get(1).getSource()).getLineNumber());
-        assertEquals(8, ((FilePropertySource) properties.get(2).getSource()).getLineNumber());
+        assertEquals(0, ((FileBasedComponent) properties.get(0).getDeclaringComponent()).getLineNumber());
+        assertEquals(6, ((FileBasedComponent) properties.get(1).getDeclaringComponent()).getLineNumber());
+        assertEquals(8, ((FileBasedComponent) properties.get(2).getDeclaringComponent()).getLineNumber());
     }
 
     @Test

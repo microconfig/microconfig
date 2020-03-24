@@ -7,7 +7,9 @@ public interface Property {
 
     boolean isTemp();
 
-    PropertySource getSource();
+    ConfigFormat getConfigFormat();
 
-    Property resolveBy(Resolver resolver, ComponentWithEnv root);
+    DeclaringComponent getDeclaringComponent();
+
+    Property resolveBy(Resolver resolver, DeclaringComponent root);
 }

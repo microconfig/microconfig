@@ -1,6 +1,6 @@
 package io.microconfig.core.properties.impl;
 
-import io.microconfig.core.properties.PropertySource;
+import io.microconfig.core.properties.DeclaringComponent;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,7 @@ import java.io.File;
 @Getter
 @EqualsAndHashCode
 @RequiredArgsConstructor
-public class FilePropertySource implements PropertySource {
+public class FileBasedComponent implements DeclaringComponent {
     private final File source;
     private final int lineNumber; //starts from 0
     @Getter
@@ -20,9 +20,9 @@ public class FilePropertySource implements PropertySource {
     @Getter
     private final String environment;
 
-    public static FilePropertySource fileSource(File file, int lineNumber, boolean yaml,
+    public static FileBasedComponent fileSource(File file, int lineNumber, boolean yaml,
                                                 String configType, String environment) {
-        return new FilePropertySource(file, lineNumber, yaml, configType, environment);
+        return new FileBasedComponent(file, lineNumber, yaml, configType, environment);
     }
 
     @Override

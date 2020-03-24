@@ -1,6 +1,6 @@
 package io.microconfig.core.properties.impl.io.selector;
 
-import io.microconfig.core.properties.impl.io.ConfigFormat;
+import io.microconfig.core.properties.ConfigFormat;
 import io.microconfig.core.properties.impl.io.ConfigIo;
 import io.microconfig.core.properties.impl.io.ConfigReader;
 import io.microconfig.core.properties.impl.io.ConfigWriter;
@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
-import static io.microconfig.core.properties.impl.io.ConfigFormat.PROPERTIES;
-import static io.microconfig.core.properties.impl.io.ConfigFormat.YAML;
+import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
+import static io.microconfig.core.properties.ConfigFormat.YAML;
 
 @RequiredArgsConstructor
 public class ConfigIoSelector implements ConfigIo {

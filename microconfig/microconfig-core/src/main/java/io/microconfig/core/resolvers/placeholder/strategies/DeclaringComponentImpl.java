@@ -1,6 +1,6 @@
 package io.microconfig.core.resolvers.placeholder.strategies;
 
-import io.microconfig.core.properties.PropertySource;
+import io.microconfig.core.properties.DeclaringComponent;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @EqualsAndHashCode
 @RequiredArgsConstructor
-public class PlaceholderSource implements PropertySource {
+public class DeclaringComponentImpl implements DeclaringComponent {
     private final String configType;
     private final String component;
     private final String environment;
