@@ -66,8 +66,11 @@ class TypedPropertiesImplTest {
     }
 
     @Test
-    void configType() {
-        assertEquals(APPLICATION.getName(), subj.getConfigType());
+    void declaringComponent() {
+        assertEquals(
+                new DeclaringComponentImpl(APPLICATION.getName(), "comp", "env"),
+                subj.getDeclaringComponent()
+        );
     }
 
     @Test

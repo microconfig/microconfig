@@ -3,7 +3,6 @@ package io.microconfig.core.properties.impl;
 import io.microconfig.core.configtypes.ConfigType;
 import io.microconfig.core.properties.*;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
@@ -22,15 +21,14 @@ import static lombok.AccessLevel.PRIVATE;
 @RequiredArgsConstructor
 public class TypedPropertiesImpl implements TypedProperties {
     private final ConfigType configType;
-    @Getter
     private final String component;
     private final String environment;
     @With(PRIVATE)
     private final Map<String, Property> propertyByKey;
 
     @Override
-    public String getConfigType() {
-        return configType.getName();
+    public DeclaringComponent getDeclaringComponent() {
+        return new DeclaringComponentImpl(configType.getName(), component, environment);
     }
 
     @Override
@@ -76,16 +74,12 @@ public class TypedPropertiesImpl implements TypedProperties {
 
     @Override
     public String toString() {
-        return currentComponent().toString();
+        return getDeclaringComponent().toString();
     }
 
     private UnaryOperator<Property> resolveUsing(Resolver resolver) {
-        DeclaringComponent root = currentComponent();
+        DeclaringComponent root = getDeclaringComponent();
         return property -> property.resolveBy(resolver, root);
-    }
-
-    private DeclaringComponent currentComponent() {
-        return new DeclaringComponentImpl(configType.getName(), component, environment);
     }
 
     private Collector<Property, ?, Map<String, Property>> toPropertyMap() {

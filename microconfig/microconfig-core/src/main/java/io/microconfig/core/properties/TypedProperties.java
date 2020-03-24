@@ -5,9 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface TypedProperties {
-    String getComponent();
-
-    String getConfigType();
+    DeclaringComponent getDeclaringComponent();
 
     TypedProperties resolveBy(Resolver resolver);
 
