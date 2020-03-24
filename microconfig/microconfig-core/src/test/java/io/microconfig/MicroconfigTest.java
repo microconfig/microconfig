@@ -3,7 +3,6 @@ package io.microconfig;
 import io.microconfig.core.properties.Properties;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.impl.PropertyResolveException;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static io.microconfig.Microconfig.searchConfigsIn;
@@ -81,8 +80,6 @@ public class MicroconfigTest {
     }
 
     @Test
-    @Disabled
-        //todo
     void placeholderToAnotherConfigType() {
         assertEquals(
                 splitKeyValue("p1=pro", "p2=app", "p3=app", "p4=pro", "p5=app", "p6=pro"),
