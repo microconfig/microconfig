@@ -1,1 +1,2 @@
-p2: pro
+p2: ${this@p3}
+p3: pro
