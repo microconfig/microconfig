@@ -31,7 +31,7 @@ class YamlConfigIoTest {
         ConfigReader read = yaml.readFrom(classpathFile("configFormats/yaml/parse/simple.yaml"));
         assertEquals(expected, read.propertiesAsMap());
 
-        List<Property> properties = read.properties("");
+        List<Property> properties = read.properties("", "");
         assertEquals(0, ((FilePropertySource) properties.get(0).getSource()).getLineNumber());
         assertEquals(6, ((FilePropertySource) properties.get(1).getSource()).getLineNumber());
         assertEquals(8, ((FilePropertySource) properties.get(2).getSource()).getLineNumber());

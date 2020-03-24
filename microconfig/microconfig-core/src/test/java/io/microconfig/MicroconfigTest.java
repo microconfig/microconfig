@@ -81,7 +81,8 @@ public class MicroconfigTest {
     }
 
     @Test
-    @Disabled //todo
+    @Disabled
+        //todo
     void placeholderToAnotherConfigType() {
         assertEquals(
                 splitKeyValue("p1=pro", "p2=app", "p3=app", "p4=pro", "p5=app", "p6=pro"),

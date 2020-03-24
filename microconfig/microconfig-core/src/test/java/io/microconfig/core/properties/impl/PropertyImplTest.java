@@ -6,15 +6,16 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
+import static io.microconfig.core.properties.impl.FilePropertySource.fileSource;
 import static io.microconfig.core.properties.impl.PropertyImpl.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PropertyImplTest {
-    PropertySource yamlSource = new FilePropertySource(new File("comp/config.yaml"), 0, true);
+    PropertySource yamlSource = fileSource(new File("comp/config.yaml"), 0, true, "app", "dev");
     Property yaml = parse("key: value", yamlSource);
     Property tempYaml = parse("#var var: value", yamlSource);
 
-    PropertySource propSource = new FilePropertySource(new File("comp/config.properties"), 0, false);
+    PropertySource propSource = fileSource(new File("comp/config.properties"), 0, false, "app", "dev");
     Property prop = parse("key=value", propSource);
     Property tempProp = parse("#var var=value", propSource);
 

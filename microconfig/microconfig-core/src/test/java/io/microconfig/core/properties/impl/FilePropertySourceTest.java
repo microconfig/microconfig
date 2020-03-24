@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FilePropertySourceTest {
     File file = new File("component/config.yaml");
-    FilePropertySource source = fileSource(file, 0, true);
+    FilePropertySource source = new FilePropertySource(file, 0, true, "app", "dev");
 
     @Test
     void getters() {
@@ -20,8 +20,8 @@ class FilePropertySourceTest {
     }
 
     @Test
-    void constructor() {
-        assertEquals(source, new FilePropertySource(file, 0, true));
+    void factoryMethod() {
+        assertEquals(source, fileSource(file, 0, true, "app", "dev"));
     }
 
     @Test
