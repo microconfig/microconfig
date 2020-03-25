@@ -2,7 +2,6 @@ package io.microconfig.utils;
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,12 +50,6 @@ public class CommandLineParamParser {
 
         printErrorAndExit(npeMessage);
         throw new AssertionError("Impossible");
-    }
-
-    private static void checkKeyAndValue(String[] pair) {
-        if (pair.length != 2) {
-            printErrorAndExit("Incorrect command line param " + Arrays.toString(pair));
-        }
     }
 
     private static void printErrorAndExit(String npeMessage) {
