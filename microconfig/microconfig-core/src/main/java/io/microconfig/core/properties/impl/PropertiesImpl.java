@@ -24,13 +24,13 @@ public class PropertiesImpl implements Properties {
     }
 
     @Override
-    public Properties withoutTempValues() {
-        return forEachComponent(TypedProperties::withoutTempValues);
+    public Properties resolveBy(Resolver resolver) {
+        return forEachComponent(c -> c.resolveBy(resolver));
     }
 
     @Override
-    public Properties resolveBy(Resolver resolver) {
-        return forEachComponent(c -> c.resolveBy(resolver));
+    public Properties withoutTempValues() {
+        return forEachComponent(TypedProperties::withoutTempValues);
     }
 
     @Override
