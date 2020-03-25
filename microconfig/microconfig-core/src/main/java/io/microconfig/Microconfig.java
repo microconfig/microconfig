@@ -70,7 +70,11 @@ public class Microconfig {
     }
 
     public Environment inEnvironment(String name) {
-        return f.environments().getByName(name);
+        return environments().getByName(name);
+    }
+
+    public EnvironmentRepository environments() {
+        return f.environments();
     }
 
     public Resolver resolver() {

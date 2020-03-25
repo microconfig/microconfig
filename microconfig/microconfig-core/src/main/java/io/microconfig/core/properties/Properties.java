@@ -2,6 +2,7 @@ package io.microconfig.core.properties;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface Properties {
@@ -9,9 +10,11 @@ public interface Properties {
 
     Properties withoutTempValues();
 
-    Collection<Property> getProperties();
+    Map<String, Property> getPropertiesAsMap();
 
-    Object propertiesAsKeyValue();
+    Map<String, String> getPropertiesAsKeyValue();
+
+    Collection<Property> getProperties();
 
     Optional<Property> getPropertyWithKey(String key);
 

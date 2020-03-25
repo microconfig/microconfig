@@ -13,7 +13,7 @@ public interface TypedProperties {
 
     Map<String, Property> getPropertiesAsMap();
 
-    Map<String, String> propertiesAsKeyValue();
+    Map<String, String> getPropertiesAsKeyValue();
 
     Collection<Property> getProperties();
 

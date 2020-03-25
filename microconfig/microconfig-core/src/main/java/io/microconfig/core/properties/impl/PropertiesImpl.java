@@ -8,9 +8,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 import static io.microconfig.utils.StreamUtils.*;
+import static java.util.function.Function.identity;
 
 @EqualsAndHashCode
 @RequiredArgsConstructor
@@ -32,16 +34,18 @@ public class PropertiesImpl implements Properties {
     }
 
     @Override
-    public Collection<Property> getProperties() {
-        return flatMapEach(properties, TypedProperties::getProperties);
+    public Map<String, Property> getPropertiesAsMap() {
+        return propertyKeyTo(identity());
     }
 
     @Override
-    public Map<String, String> propertiesAsKeyValue() {
-        return properties.stream()
-                .map(TypedProperties::getProperties)
-                .flatMap(Collection::stream)
-                .collect(toLinkedMap(Property::getKey, Property::getValue));
+    public Map<String, String> getPropertiesAsKeyValue() {
+        return propertyKeyTo(Property::getValue);
+    }
+
+    @Override
+    public Collection<Property> getProperties() {
+        return flatMapEach(properties, TypedProperties::getProperties);
     }
 
     @Override
@@ -61,5 +65,12 @@ public class PropertiesImpl implements Properties {
 
     private Properties forEachComponent(UnaryOperator<TypedProperties> applyFunction) {
         return new PropertiesImpl(forEach(properties.parallelStream(), applyFunction));
+    }
+
+    private <T> Map<String, T> propertyKeyTo(Function<Property, T> valueGetter) {
+        return properties.stream()
+                .map(TypedProperties::getProperties)
+                .flatMap(Collection::stream)
+                .collect(toLinkedMap(Property::getKey, valueGetter));
     }
 }

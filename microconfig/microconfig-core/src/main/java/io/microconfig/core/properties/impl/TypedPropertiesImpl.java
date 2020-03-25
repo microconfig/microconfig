@@ -51,7 +51,7 @@ public class TypedPropertiesImpl implements TypedProperties {
     }
 
     @Override
-    public Map<String, String> propertiesAsKeyValue() {
+    public Map<String, String> getPropertiesAsKeyValue() {
         return propertyByKey.values()
                 .stream()
                 .collect(toLinkedMap(Property::getKey, Property::getValue));
