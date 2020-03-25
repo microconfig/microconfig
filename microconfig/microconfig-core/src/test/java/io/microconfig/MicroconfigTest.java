@@ -5,10 +5,10 @@ import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.impl.PropertyResolveException;
 import org.junit.jupiter.api.Test;
 
+import static io.microconfig.ClasspathUtils.classpathFile;
 import static io.microconfig.Microconfig.searchConfigsIn;
 import static io.microconfig.core.configtypes.impl.ConfigTypeFilters.configType;
 import static io.microconfig.core.configtypes.impl.StandardConfigType.APPLICATION;
-import static io.microconfig.testutils.ClasspathUtils.classpathFile;
 import static io.microconfig.utils.StringUtils.splitKeyValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

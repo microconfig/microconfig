@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static io.microconfig.ClasspathUtils.classpathFile;
 import static io.microconfig.core.configtypes.impl.CustomConfigTypeRepository.findDescriptorIn;
-import static io.microconfig.testutils.ClasspathUtils.classpathFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CustomConfigTypeRepositoryTest {

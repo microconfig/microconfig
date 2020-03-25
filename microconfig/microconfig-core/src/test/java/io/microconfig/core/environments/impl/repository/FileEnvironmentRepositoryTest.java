@@ -16,7 +16,7 @@ import org.mockito.Mockito;
 import java.io.File;
 import java.util.List;
 
-import static io.microconfig.testutils.ClasspathUtils.classpathFile;
+import static io.microconfig.ClasspathUtils.classpathFile;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;

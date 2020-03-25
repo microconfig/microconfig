@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static io.microconfig.testutils.ClasspathUtils.classpathFile;
-import static io.microconfig.testutils.ClasspathUtils.read;
+import static io.microconfig.ClasspathUtils.classpathFile;
+import static io.microconfig.ClasspathUtils.read;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class YamlTreeImplTest {
