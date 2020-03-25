@@ -2,6 +2,7 @@ package io.microconfig.core.properties.impl;
 
 import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.Property;
+import io.microconfig.core.properties.Resolver;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -10,6 +11,8 @@ import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.impl.FileBasedComponent.fileSource;
 import static io.microconfig.core.properties.impl.PropertyImpl.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class PropertyImplTest {
     DeclaringComponent yamlSource = fileSource(new File("comp/config.yaml"), 0, true, "app", "dev");
@@ -59,11 +62,13 @@ class PropertyImplTest {
     @Test
     void helperMethods() {
         assertEquals(3, findSeparatorIndexIn("key: value"));
-        assertEquals(3, findSeparatorIndexIn("key=value"));
+        assertEquals(8, findSeparatorIndexIn("keyValue=value"));
         assertEquals(-1, findSeparatorIndexIn("key value"));
 
         assertTrue(isComment("# comment"));
+        assertFalse(isComment("comment"));
         assertTrue(isTempProperty("#var bla bla"));
+        assertFalse(isTempProperty("var bla"));
     }
 
     @Test
@@ -72,10 +77,14 @@ class PropertyImplTest {
         assertEquals("#var=value", tempProp.toString());
     }
 
-
     @Test
     void resolve() {
-        //todo
+        String resolved = "resolved";
+        Resolver resolver = mock(Resolver.class);
+        when(resolver.resolve("value", yamlSource, propSource)).thenReturn(resolved);
+        assertEquals(
+                property("key", resolved, PROPERTIES, yamlSource),
+                yaml.resolveBy(resolver, propSource)
+        );
     }
-
 }

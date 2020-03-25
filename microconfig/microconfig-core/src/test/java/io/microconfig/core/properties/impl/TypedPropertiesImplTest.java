@@ -4,7 +4,10 @@ import io.microconfig.core.properties.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import static io.microconfig.core.configtypes.impl.StandardConfigType.APPLICATION;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
@@ -31,22 +34,11 @@ class TypedPropertiesImplTest {
     }
 
     @Test
-    void propertyWithKey() {
-        assertEquals(of(p1), subj.getPropertyWithKey("key"));
-        assertEquals(empty(), subj.getPropertyWithKey("missing"));
-    }
-
-    @Test
-    void propertiesAsKeyValue() {
+    void getDeclaringComponent() {
         assertEquals(
-                splitKeyValue("key=keyValue", "var=varValue"),
-                subj.getPropertiesAsKeyValue()
+                new DeclaringComponentImpl("app", "comp", "env"),
+                subj.getDeclaringComponent()
         );
-    }
-
-    @Test
-    void withoutTempValues() {
-        assertEquals(withProperties(singletonList(p1)), subj.withoutTempValues());
     }
 
     @Test
@@ -66,11 +58,35 @@ class TypedPropertiesImplTest {
     }
 
     @Test
-    void declaringComponent() {
+    void withoutTempValues() {
+        assertEquals(withProperties(singletonList(p1)), subj.withoutTempValues());
+    }
+
+    @Test
+    void propertiesAsMap() {
+        Map<String, Property> expected = new HashMap<>();
+        expected.put("key", p1);
+        expected.put("var", p2);
+        assertEquals(expected, subj.getPropertiesAsMap());
+    }
+
+    @Test
+    void propertiesAsKeyValue() {
         assertEquals(
-                new DeclaringComponentImpl(APPLICATION.getName(), "comp", "env"),
-                subj.getDeclaringComponent()
+                splitKeyValue("key=keyValue", "var=varValue"),
+                subj.getPropertiesAsKeyValue()
         );
+    }
+
+    @Test
+    void properties() {
+        assertEquals(asList(p1, p2), new ArrayList<>(subj.getProperties()));
+    }
+
+    @Test
+    void propertyWithKey() {
+        assertEquals(of(p1), subj.getPropertyWithKey("key"));
+        assertEquals(empty(), subj.getPropertyWithKey("missing"));
     }
 
     @Test
