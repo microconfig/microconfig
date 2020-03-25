@@ -30,7 +30,7 @@ public class MicroconfigTest {
     void simpleInclude() {
         assertEquals(
                 splitKeyValue("key1=1", "key2=2", "key3=3", "key4=4"),
-                buildComponent("si1", "uat").propertiesAsKeyValue()
+                buildComponent("si1", "uat").getPropertiesAsKeyValue()
         );
     }
 
@@ -38,7 +38,7 @@ public class MicroconfigTest {
     void cyclicInclude() {
         assertEquals(
                 splitKeyValue("key1=1", "key2=2", "key3=3"),
-                buildComponent("ci1", "uat").propertiesAsKeyValue()
+                buildComponent("ci1", "uat").getPropertiesAsKeyValue()
         );
     }
 
@@ -46,7 +46,7 @@ public class MicroconfigTest {
     void predefinedFunction() {
         assertEquals(
                 splitKeyValue("notFound=", "xmx=0m", "xmxLine=Xmx100m"),
-                buildComponent("predefinedFunctions", "uat").propertiesAsKeyValue()
+                buildComponent("predefinedFunctions", "uat").getPropertiesAsKeyValue()
         );
     }
 
@@ -54,7 +54,7 @@ public class MicroconfigTest {
     void placeholderToSpel() {
         assertEquals(
                 splitKeyValue("test.mq.address=tcp://:6872", "test.mq.address2=tcp://:68720"),
-                buildComponent("pts", "dev").propertiesAsKeyValue()
+                buildComponent("pts", "dev").getPropertiesAsKeyValue()
         );
     }
 
@@ -62,7 +62,7 @@ public class MicroconfigTest {
     void thisToVar() {
         assertEquals(
                 splitKeyValue("c=3"),
-                buildComponent("var", "dev").propertiesAsKeyValue()
+                buildComponent("var", "dev").getPropertiesAsKeyValue()
         );
     }
 
@@ -75,7 +75,7 @@ public class MicroconfigTest {
     void placeholderToAliases() {
         assertEquals(
                 splitKeyValue("ips=172.30.162.4 172.30.162.5 172.30.162.5", "properties=node1 node3 node", "dir=" + nodeConfigDir()),
-                buildComponent("placeholderToAlias", "aliases").propertiesAsKeyValue()
+                buildComponent("placeholderToAlias", "aliases").getPropertiesAsKeyValue()
         );
     }
 
@@ -83,7 +83,7 @@ public class MicroconfigTest {
     void placeholderToAnotherConfigType() {
         assertEquals(
                 splitKeyValue("p1=pro", "p2=app", "p3=app", "p4=pro", "p5=app", "p6=pro"),
-                buildComponent("configType", "dev").propertiesAsKeyValue()
+                buildComponent("configType", "dev").getPropertiesAsKeyValue()
         );
     }
 
@@ -91,7 +91,7 @@ public class MicroconfigTest {
     void placeholderToAnotherComponentWithAnotherConfigType() {
         assertEquals(
                 splitKeyValue("p1=pro3", "p2=app2", "p3=app3", "k1=pro4"),
-                buildComponent("appType", "dev").propertiesAsKeyValue()
+                buildComponent("appType", "dev").getPropertiesAsKeyValue()
         );
     }
 
@@ -105,7 +105,7 @@ public class MicroconfigTest {
     private void testAliases(String name, int ip) {
         assertEquals(
                 splitKeyValue("app.ip=172.30.162." + ip, "app.name=" + name, "app.value=v1", "app.dir=" + nodeConfigDir()),
-                buildComponent(name, "aliases").propertiesAsKeyValue()
+                buildComponent(name, "aliases").getPropertiesAsKeyValue()
         );
     }
 
