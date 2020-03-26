@@ -16,8 +16,7 @@ import static io.microconfig.utils.ConsoleColor.red;
 import static io.microconfig.utils.FileUtils.getName;
 import static io.microconfig.utils.FileUtils.walk;
 import static io.microconfig.utils.IoUtils.readFully;
-import static io.microconfig.utils.Logger.announce;
-import static io.microconfig.utils.Logger.info;
+import static io.microconfig.utils.Logger.*;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.partitioningBy;
 
@@ -41,15 +40,16 @@ public class MicroconfigTest {
 
     //todo aliases. highlight error
     private boolean execute(File expectation) {
-        String component = expectation.getParentFile().getName();
-        String actual = build(component, getName(expectation));
+        String component = getComponentName(expectation);
+        String env = getEnvName(expectation);
+        String actual = build(component, env);
         String expected = readExpectation(expectation);
 
         boolean result = expected.equals(actual);
         if (result) {
-            announce("Succeed: '" + component + "'");
+            announce("Succeed '" + component + "'");
         } else {
-            info(red("Failed: '" + component + "'. Expected/Actual:")
+            info(red("Failed '" + component + "'. Expected/Actual:")
                     + "\n" + expected
                     + "\n***\n" + actual
             );
@@ -57,14 +57,33 @@ public class MicroconfigTest {
         return result;
     }
 
+    private String getComponentName(File expectation) {
+        String name = expectation.getName();
+        return name.contains(":") ?
+                name.substring(0, name.indexOf(':')) :
+                expectation.getParentFile().getName();
+    }
+
+    private String getEnvName(File expectation) {
+        String name = expectation.getName();
+        return name.contains(":") ?
+                name.substring(name.indexOf(':') + 1, name.lastIndexOf('.')) :
+                getName(expectation);
+    }
+
     private String build(String component, String env) {
-        return microconfig.environments()
-                .getOrCreateByName(env)
-                .getOrCreateComponentWithName(component)
-                .getPropertiesFor(configType(APPLICATION))
-                .resolveBy(microconfig.resolver())
-                .first()
-                .save(asString());
+        try {
+            return microconfig.environments()
+                    .getOrCreateByName(env)
+                    .getOrCreateComponentWithName(component)
+                    .getPropertiesFor(configType(APPLICATION))
+                    .resolveBy(microconfig.resolver())
+                    .first()
+                    .save(asString());
+        } catch (RuntimeException e) {
+            error("Failed '" + component + ":[" + env + "]'");
+            throw e;
+        }
     }
 
     private String readExpectation(File expectation) {
