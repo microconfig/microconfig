@@ -15,7 +15,9 @@ public class MicroconfigParams {
     }
 
     public File rootDir() {
-        return new File(parser.requiredValue("r", "set -r param (folder with 'components' and 'envs' directories)"));
+        return new File(
+                parser.requiredValue("r", "set -r param (folder with 'components' and 'envs' directories)")
+        );
     }
 
     public File destinationDir() {
