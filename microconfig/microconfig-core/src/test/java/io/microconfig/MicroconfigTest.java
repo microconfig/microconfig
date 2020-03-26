@@ -110,6 +110,7 @@ public class MicroconfigTest {
         return readFully(expectation)
                 .replace("${currentDir}", expectation.getParentFile().getAbsolutePath())
                 .replace("${componentsDir}", new File(root, "components").getAbsolutePath())
-                .replace("${space}", " ");
+                .replace("${space}", " ")
+                .replace("#todo", "");
     }
 }
