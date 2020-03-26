@@ -28,15 +28,15 @@ public class MicroconfigTest {
     void testAllComponents() {
         try (Stream<Path> stream = walk(classpathFile("repo").toPath())) {
             Map<Boolean, Long> resultToCount = stream.map(Path::toFile)
-                    .filter(this::isTest)
+                    .filter(this::isExpectation)
                     .map(this::execute)
                     .collect(partitioningBy(r -> r, counting()));
             info("\n\nSucceed: " + resultToCount.get(true) + ", Failed: " + resultToCount.get(false));
         }
     }
 
-    private boolean isTest(File file) {
-        return file.getName().endsWith(".test");
+    private boolean isExpectation(File file) {
+        return file.getName().endsWith(".expectation");
     }
 
     //todo aliases. highlight error
