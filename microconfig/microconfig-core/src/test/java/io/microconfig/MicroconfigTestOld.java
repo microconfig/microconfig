@@ -43,14 +43,6 @@ public class MicroconfigTestOld {
     }
 
     @Test
-    void predefinedFunction() {
-        assertEquals(
-                splitKeyValue("notFound=", "xmx=0m", "xmxLine=Xmx100m"),
-                buildComponent("predefinedFunctions", "uat").getPropertiesAsKeyValue()
-        );
-    }
-
-    @Test
     void placeholderToSpel() {
         assertEquals(
                 splitKeyValue("test.mq.address=tcp://:6872", "test.mq.address2=tcp://:68720"),
@@ -59,36 +51,8 @@ public class MicroconfigTestOld {
     }
 
     @Test
-    void thisToVar() {
-        assertEquals(
-                splitKeyValue("c=3"),
-                buildComponent("var", "dev").getPropertiesAsKeyValue()
-        );
-    }
-
-    @Test
     void testCyclicDetect() {
         assertThrows(PropertyResolveException.class, () -> buildComponent("cyclicDetect", "uat"));
-    }
-
-    @Test
-    void placeholderToAnotherConfigType() {
-        assertEquals(
-                splitKeyValue("p1=pro", "p2=app", "p3=app", "p4=pro", "p5=app", "p6=pro"),
-                buildComponent("configType", "dev").getPropertiesAsKeyValue()
-        );
-    }
-
-    @Test
-    void placeholderToAnotherComponentWithAnotherConfigType() {
-        assertEquals(
-                splitKeyValue("p1=pro3", "p2=app2", "p3=app3", "k1=pro4"),
-                buildComponent("appType", "dev").getPropertiesAsKeyValue()
-        );
-    }
-
-    private String nodeConfigDir() {
-        return classpathFile("repo/components/aliases/node/service.properties").getParent();
     }
 
     private Properties buildComponent(String component, String env) {
