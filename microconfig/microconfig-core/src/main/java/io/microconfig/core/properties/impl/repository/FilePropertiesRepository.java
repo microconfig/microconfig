@@ -66,14 +66,15 @@ public class FilePropertiesRepository implements PropertiesRepository {
             Map<String, Property> componentProperties = new LinkedHashMap<>();
 
             componentConfigs.forEach(component -> {
-                componentProperties.putAll(collectIncludedProperties(component.getIncludes()));
                 componentProperties.putAll(component.getProperties());
+                includedPropertiesFrom(component.getIncludes())
+                        .forEach(componentProperties::putIfAbsent);
             });
 
             return componentProperties;
         }
 
-        private Map<String, Property> collectIncludedProperties(List<Include> includes) {
+        private Map<String, Property> includedPropertiesFrom(List<Include> includes) {
             return includes.stream()
                     .filter(processedIncludes::add)
                     .map(include -> includedComponent(include).getProperties())

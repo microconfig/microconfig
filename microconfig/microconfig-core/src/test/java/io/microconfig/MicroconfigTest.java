@@ -24,7 +24,7 @@ public class MicroconfigTest {
     private final Microconfig microconfig = searchConfigsIn(root);
 
     public static void main(String[] args) {
-        new MicroconfigTest().findAndExecute("node3");
+        new MicroconfigTest().findAndExecute("si1");
     }
 
     @Test
@@ -48,7 +48,7 @@ public class MicroconfigTest {
         return file.getName().startsWith("expect.");
     }
 
-    //highlight error
+    //todo highlight error
     private boolean execute(File expectation) {
         String component = getComponentName(expectation);
         String env = getEnvName(expectation);
