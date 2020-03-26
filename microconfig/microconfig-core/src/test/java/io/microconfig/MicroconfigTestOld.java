@@ -72,14 +72,6 @@ public class MicroconfigTestOld {
     }
 
     @Test
-    void placeholderToAliases() {
-        assertEquals(
-                splitKeyValue("ips=172.30.162.4 172.30.162.5 172.30.162.5", "properties=node1 node3 node", "dir=" + nodeConfigDir()),
-                buildComponent("placeholderToAlias", "aliases").getPropertiesAsKeyValue()
-        );
-    }
-
-    @Test
     void placeholderToAnotherConfigType() {
         assertEquals(
                 splitKeyValue("p1=pro", "p2=app", "p3=app", "p4=pro", "p5=app", "p6=pro"),
@@ -92,20 +84,6 @@ public class MicroconfigTestOld {
         assertEquals(
                 splitKeyValue("p1=pro3", "p2=app2", "p3=app3", "k1=pro4"),
                 buildComponent("appType", "dev").getPropertiesAsKeyValue()
-        );
-    }
-
-    @Test
-    void aliasesAndThis() {
-        testAliases("node1", 4);
-        testAliases("node3", 5);
-        testAliases("node", 5);
-    }
-
-    private void testAliases(String name, int ip) {
-        assertEquals(
-                splitKeyValue("app.ip=172.30.162." + ip, "app.name=" + name, "app.value=v1", "app.dir=" + nodeConfigDir()),
-                buildComponent(name, "aliases").getPropertiesAsKeyValue()
         );
     }
 
