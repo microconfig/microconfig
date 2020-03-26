@@ -35,6 +35,4 @@ k27: ${app::this@k100:#{1 + 20}}
 k28: ${this@k100:${this@k101:${this@k102:${this@k1}hello}}}
 
 
-
-
 #test ref to another type
