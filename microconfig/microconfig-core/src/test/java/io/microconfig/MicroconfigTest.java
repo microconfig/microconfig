@@ -55,7 +55,6 @@ public class MicroconfigTest {
         }
     }
 
-
     private boolean isExpectation(File file) {
         return file.getName().startsWith("expect.");
     }
