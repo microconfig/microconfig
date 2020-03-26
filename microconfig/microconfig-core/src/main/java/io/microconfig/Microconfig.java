@@ -26,6 +26,7 @@ import io.microconfig.core.resolvers.placeholder.strategies.environment.properti
 import io.microconfig.core.resolvers.placeholder.strategies.standard.StandardResolveStrategy;
 import io.microconfig.io.DumpedFsReader;
 import io.microconfig.io.FsReader;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
@@ -54,7 +55,8 @@ public class Microconfig {
     private final File destinationDir;
     @With
     private final FsReader fsReader;
-    private final ServiceFactory f = cache(new ServiceFactoryImpl());
+
+    private final Dependencies dependencies = new Dependencies();
 
     public static Microconfig searchConfigsIn(File rootDir) {
         File canonical = canonical(rootDir);
@@ -74,71 +76,66 @@ public class Microconfig {
     }
 
     public EnvironmentRepository environments() {
-        return f.environments();
+        return dependencies.getEnvironments();
     }
 
     public Resolver resolver() {
         return cache(chainOf(
-                f.placeholderResolver(),
-                f.expressionResolver()
+                dependencies.getPlaceholderResolver(),
+                dependencies.getExpressionResolver()
         ));
     }
 
-    public interface ServiceFactory {
-        EnvironmentRepository environments();
+    private class Dependencies {
+        @Getter(lazy = true)
+        private final EnvironmentRepository environments = environments();
+        @Getter(lazy = true)
+        private final RecursiveResolver placeholderResolver = placeholderResolver();
+        @Getter(lazy = true)
+        private final RecursiveResolver expressionResolver = expressionResolver();
+        @Getter(lazy = true)
+        private final ComponentFactory componentFactory = componentFactory();
+        @Getter(lazy = true)
+        private final ConfigTypeRepository configTypes = configTypes();
+        @Getter(lazy = true)
+        private final PropertiesFactory componentPropertiesFactory = componentPropertiesFactory();
+        @Getter(lazy = true)
+        private final ComponentGraph componentGraph = componentGraph();
 
-        RecursiveResolver placeholderResolver();
-
-        RecursiveResolver expressionResolver();
-
-        ComponentFactory componentFactory();
-
-        ConfigTypeRepository configTypes();
-
-        PropertiesFactory componentPropertiesFactory();
-
-        ComponentGraph componentGraph();
-    }
-
-    private class ServiceFactoryImpl implements ServiceFactory {
-        @Override
-        public EnvironmentRepository environments() {
+        private EnvironmentRepository environments() {
             return cache(new FileEnvironmentRepository(
                     rootDir,
                     fsReader,
-                    f.componentFactory()
+                    getComponentFactory()
             ));
         }
 
-        @Override
-        public ComponentFactory componentFactory() {
+        private ComponentFactory componentFactory() {
             return cache(new ComponentFactoryImpl(
-                    f.configTypes(),
-                    f.componentPropertiesFactory()
+                    getConfigTypes(),
+                    getComponentPropertiesFactory()
             ));
         }
 
-        @Override
-        public PropertiesFactory componentPropertiesFactory() {
+        private PropertiesFactory componentPropertiesFactory() {
             return cache(new PropertiesFactoryImpl(
                     cache(new FilePropertiesRepository(
-                                    f.componentGraph(),
+                                    getComponentGraph(),
                                     cache(new ConfigFileParserImpl(newConfigIo(fsReader)))
                             )
                     )
             ));
         }
 
-        @Override
-        public RecursiveResolver placeholderResolver() {
-            Map<String, ComponentProperty> componentSpecialProperties = new ComponentProperties(f.componentGraph(), f.environments(), rootDir, destinationDir).get();
+        private RecursiveResolver placeholderResolver() {
+            Map<String, ComponentProperty> componentSpecialProperties = new ComponentProperties(getComponentGraph(), getEnvironments(), rootDir, destinationDir).get();
             Map<String, EnvProperty> envSpecialProperties = new EnvironmentProperties().get();
 
             PlaceholderResolveStrategy strategy = cache(composite(
                     systemPropertiesResolveStrategy(),
                     new ComponentResolveStrategy(componentSpecialProperties),
-                    new EnvironmentResolveStrategy(f.environments(), envSpecialProperties),
-                    new StandardResolveStrategy(f.environments()),
+                    new EnvironmentResolveStrategy(getEnvironments(), envSpecialProperties),
+                    new StandardResolveStrategy(getEnvironments()),
                     envVariablesResolveStrategy()
             ));
 
@@ -148,21 +145,18 @@ public class Microconfig {
             );
         }
 
-        @Override
-        public RecursiveResolver expressionResolver() {
+        private RecursiveResolver expressionResolver() {
             return new ExpressionResolver();
         }
 
-        @Override
-        public ConfigTypeRepository configTypes() {
+        private ConfigTypeRepository configTypes() {
             return cache(composite(
                     findDescriptorIn(rootDir, fsReader),
                     new StandardConfigTypeRepository()
             ));
         }
 
-        @Override
-        public ComponentGraph componentGraph() {
+        private ComponentGraph componentGraph() {
             return traverseFrom(rootDir);
         }
     }
