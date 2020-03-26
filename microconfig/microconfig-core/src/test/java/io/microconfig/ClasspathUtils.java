@@ -17,10 +17,6 @@ public class ClasspathUtils {
     }
 
     public static String read(String file) {
-        try {
-            return readFully(new ClassPathResource(file).getInputStream());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return readFully(classpathFile(file));
     }
 }
