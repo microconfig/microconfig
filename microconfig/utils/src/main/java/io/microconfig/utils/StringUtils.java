@@ -46,6 +46,10 @@ public class StringUtils {
         return result.toString();
     }
 
+    public static long symbolCountIn(String line, char symbol) {
+        return line.chars().filter(c -> c == symbol).count();
+    }
+
     public static String unixLikePath(String path) {
         return path.replace('\\', '/');
     }
@@ -54,10 +58,6 @@ public class StringUtils {
         String one = "\\";
         String two = "\\\\";
         return value.replace(two, one).replace(one, two);
-    }
-
-    public static long symbolCountIn(String line, char symbol) {
-        return line.chars().filter(c -> c == symbol).count();
     }
 
     public static StringBuilder asStringBuilder(CharSequence line) {
