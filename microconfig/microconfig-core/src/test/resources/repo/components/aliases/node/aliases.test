@@ -1,0 +1,4 @@
+app.ip=172.30.162.5
+app.name=node
+app.value=v1
+app.dir=${currentDir}

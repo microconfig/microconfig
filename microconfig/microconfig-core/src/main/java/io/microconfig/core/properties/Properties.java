@@ -21,4 +21,6 @@ public interface Properties {
     <T> List<T> save(PropertySerializer<T> serializer);
 
     List<TypedProperties> asTypedProperties();
+
+    TypedProperties first();
 }

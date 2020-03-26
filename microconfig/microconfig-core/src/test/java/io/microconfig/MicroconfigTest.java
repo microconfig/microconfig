@@ -1,123 +1,75 @@
 package io.microconfig;
 
-import io.microconfig.core.properties.Properties;
-import io.microconfig.core.properties.Property;
-import io.microconfig.core.properties.impl.PropertyResolveException;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import static io.microconfig.ClasspathUtils.classpathFile;
 import static io.microconfig.Microconfig.searchConfigsIn;
 import static io.microconfig.core.configtypes.impl.ConfigTypeFilters.configType;
 import static io.microconfig.core.configtypes.impl.StandardConfigType.APPLICATION;
-import static io.microconfig.utils.StringUtils.splitKeyValue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static io.microconfig.core.properties.impl.PropertySerializers.asString;
+import static io.microconfig.utils.ConsoleColor.red;
+import static io.microconfig.utils.FileUtils.getName;
+import static io.microconfig.utils.FileUtils.walk;
+import static io.microconfig.utils.IoUtils.readFully;
+import static io.microconfig.utils.Logger.announce;
+import static io.microconfig.utils.Logger.info;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.partitioningBy;
 
 public class MicroconfigTest {
     private final Microconfig microconfig = searchConfigsIn(classpathFile("repo"));
 
     @Test
-    void ip() {
-        String value = buildComponent("ip1", "uat")
-                .getPropertyWithKey("ip1.some-ip")
-                .map(Property::getValue)
-                .orElseThrow(IllegalStateException::new);
-
-        assertEquals("1.1.1.1", value);
+    void testAllComponents() {
+        try (Stream<Path> stream = walk(classpathFile("repo").toPath())) {
+            Map<Boolean, Long> result = stream.map(Path::toFile)
+                    .filter(this::isTest)
+                    .map(this::execute)
+                    .collect(partitioningBy(r -> r, counting()));
+            info("\n\nSucceed: " + result.get(true)
+                    + ", Failed: " + result.get(false));
+        }
     }
 
-    @Test
-    void simpleInclude() {
-        assertEquals(
-                splitKeyValue("key1=1", "key2=2", "key3=3", "key4=4"),
-                buildComponent("si1", "uat").getPropertiesAsKeyValue()
-        );
+    private boolean isTest(File file) {
+        return file.getName().endsWith(".test");
     }
 
-    @Test
-    void cyclicInclude() {
-        assertEquals(
-                splitKeyValue("key1=1", "key2=2", "key3=3"),
-                buildComponent("ci1", "uat").getPropertiesAsKeyValue()
-        );
+    //todo aliases. highlight error
+    private boolean execute(File expectation) {
+        String component = expectation.getParentFile().getName();
+        String actual = build(component, getName(expectation));
+        String expected = readExpectation(expectation);
+
+        boolean result = expected.equals(actual);
+        if (result) {
+            announce("Succeed: '" + component + "'");
+        } else {
+            info(red("Failed: '" + component + "'. Expected/Actual:")
+                    + "\n" + expected
+                    + "\n***\n" + actual
+            );
+        }
+        return result;
     }
 
-    @Test
-    void predefinedFunction() {
-        assertEquals(
-                splitKeyValue("notFound=", "xmx=0m", "xmxLine=Xmx100m"),
-                buildComponent("predefinedFunctions", "uat").getPropertiesAsKeyValue()
-        );
-    }
-
-    @Test
-    void placeholderToSpel() {
-        assertEquals(
-                splitKeyValue("test.mq.address=tcp://:6872", "test.mq.address2=tcp://:68720"),
-                buildComponent("pts", "dev").getPropertiesAsKeyValue()
-        );
-    }
-
-    @Test
-    void thisToVar() {
-        assertEquals(
-                splitKeyValue("c=3"),
-                buildComponent("var", "dev").getPropertiesAsKeyValue()
-        );
-    }
-
-    @Test
-    void testCyclicDetect() {
-        assertThrows(PropertyResolveException.class, () -> buildComponent("cyclicDetect", "uat"));
-    }
-
-    @Test
-    void placeholderToAliases() {
-        assertEquals(
-                splitKeyValue("ips=172.30.162.4 172.30.162.5 172.30.162.5", "properties=node1 node3 node", "dir=" + nodeConfigDir()),
-                buildComponent("placeholderToAlias", "aliases").getPropertiesAsKeyValue()
-        );
-    }
-
-    @Test
-    void placeholderToAnotherConfigType() {
-        assertEquals(
-                splitKeyValue("p1=pro", "p2=app", "p3=app", "p4=pro", "p5=app", "p6=pro"),
-                buildComponent("configType", "dev").getPropertiesAsKeyValue()
-        );
-    }
-
-    @Test
-    void placeholderToAnotherComponentWithAnotherConfigType() {
-        assertEquals(
-                splitKeyValue("p1=pro3", "p2=app2", "p3=app3", "k1=pro4"),
-                buildComponent("appType", "dev").getPropertiesAsKeyValue()
-        );
-    }
-
-    @Test
-    void aliasesAndThis() {
-        testAliases("node1", 4);
-        testAliases("node3", 5);
-        testAliases("node", 5);
-    }
-
-    private void testAliases(String name, int ip) {
-        assertEquals(
-                splitKeyValue("app.ip=172.30.162." + ip, "app.name=" + name, "app.value=v1", "app.dir=" + nodeConfigDir()),
-                buildComponent(name, "aliases").getPropertiesAsKeyValue()
-        );
-    }
-
-    private String nodeConfigDir() {
-        return classpathFile("repo/components/aliases/node/service.properties").getParent();
-    }
-
-    private Properties buildComponent(String component, String env) {
-        return microconfig.inEnvironment(env)
+    private String build(String component, String env) {
+        return microconfig.environments()
+                .getOrCreateByName(env)
                 .getOrCreateComponentWithName(component)
                 .getPropertiesFor(configType(APPLICATION))
                 .resolveBy(microconfig.resolver())
-                .withoutTempValues();
+                .first()
+                .save(asString());
+    }
+
+    private String readExpectation(File expectation) {
+        return readFully(expectation)
+                .replace("${currentDir}", expectation.getParentFile().getAbsolutePath());
     }
 }

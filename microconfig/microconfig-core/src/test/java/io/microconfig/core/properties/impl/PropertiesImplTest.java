@@ -107,8 +107,8 @@ class PropertiesImplTest {
     @Test
     void asTypedProperties() {
         assertEquals(asList(tp1, tp2), subj.asTypedProperties());
+        assertEquals(tp1, subj.first());
     }
-
 
     private Property getProperty(int order) {
         Property p = mock(Property.class);

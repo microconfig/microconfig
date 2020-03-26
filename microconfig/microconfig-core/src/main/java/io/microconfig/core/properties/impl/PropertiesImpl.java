@@ -63,6 +63,11 @@ public class PropertiesImpl implements Properties {
         return properties;
     }
 
+    @Override
+    public TypedProperties first() {
+        return properties.get(0);
+    }
+
     private Properties forEachComponent(UnaryOperator<TypedProperties> applyFunction) {
         return new PropertiesImpl(forEach(properties.parallelStream(), applyFunction));
     }
