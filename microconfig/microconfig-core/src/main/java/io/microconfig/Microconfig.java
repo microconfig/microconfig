@@ -63,7 +63,6 @@ public class Microconfig {
         if (!canonical.exists()) {
             throw new IllegalArgumentException("Root directory doesn't exist: " + rootDir);
         }
-
         return new Microconfig(canonical, new File(rootDir, "build"), new DumpedFsReader());
     }
 
