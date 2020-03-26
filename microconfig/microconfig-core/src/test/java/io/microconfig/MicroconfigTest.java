@@ -21,7 +21,8 @@ import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.partitioningBy;
 
 public class MicroconfigTest {
-    private final Microconfig microconfig = searchConfigsIn(classpathFile("repo"));
+    private final File root = classpathFile("repo");
+    private final Microconfig microconfig = searchConfigsIn(root);
 
     @Test
     void testAllComponents() {
@@ -35,10 +36,10 @@ public class MicroconfigTest {
     }
 
     private boolean isExpectation(File file) {
-        return file.getName().endsWith(".expectation");
+        return file.getName().endsWith(".expect");
     }
 
-    //todo aliases. highlight error
+    //highlight error
     private boolean execute(File expectation) {
         String component = getComponentName(expectation);
         String env = getEnvName(expectation);
@@ -88,6 +89,7 @@ public class MicroconfigTest {
 
     private String readExpectation(File expectation) {
         return readFully(expectation)
-                .replace("${currentDir}", expectation.getParentFile().getAbsolutePath());
+                .replace("${currentDir}", expectation.getParentFile().getAbsolutePath())
+                .replace("${componentsDir}", new File(root, "components").getAbsolutePath());
     }
 }
