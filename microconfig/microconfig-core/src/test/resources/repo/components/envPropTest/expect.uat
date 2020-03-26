@@ -1,0 +1,3 @@
+env.env=uat
+env.value=uat value
+env.dev=dev
