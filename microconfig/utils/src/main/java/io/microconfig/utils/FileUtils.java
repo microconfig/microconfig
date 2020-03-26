@@ -14,7 +14,6 @@ import static java.nio.file.Files.setPosixFilePermissions;
 import static java.util.Arrays.stream;
 import static java.util.stream.Stream.of;
 
-
 public class FileUtils {
     public static final String LINES_SEPARATOR = System.getProperty("line.separator");
 
