@@ -26,7 +26,8 @@ public class MicroconfigTest {
     private final Microconfig microconfig = searchConfigsIn(root);
 
     public static void main(String[] args) {
-        new MicroconfigTest().findAndExecute("si1");
+        new MicroconfigTest()
+                .findAndExecute("mergeList");
     }
 
     @Test
@@ -47,6 +48,10 @@ public class MicroconfigTest {
                     .map(this::execute)
                     .collect(partitioningBy(r -> r, counting()));
             info("\n\nSucceed: " + resultToCount.get(true) + ", Failed: " + resultToCount.get(false));
+
+            if (resultToCount.get(false) != 0) {
+                throw new AssertionError();
+            }
         }
     }
 
@@ -59,16 +64,16 @@ public class MicroconfigTest {
     private boolean execute(File expectation) {
         String component = getComponentName(expectation);
         String env = getEnvName(expectation);
-        String actual = doBuild(component, env);
-        String expected = readExpectation(expectation);
+        String a = doBuild(component, env).trim();
+        String e = readExpectation(expectation).trim();
 
-        boolean result = expected.equals(actual);
+        boolean result = e.equals(a);
         if (result) {
             announce("Succeed '" + component + "'");
         } else {
             info(red("Failed '" + component + "'. Expected/Actual:")
-                    + "\n" + expected
-                    + "\n***\n" + actual
+                    + "\n" + e
+                    + "'\n***\n" + a +"'"
             );
         }
         return result;
