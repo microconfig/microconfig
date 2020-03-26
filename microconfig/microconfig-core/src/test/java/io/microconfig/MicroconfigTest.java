@@ -73,7 +73,7 @@ public class MicroconfigTest {
         } else {
             info(red("Failed '" + component + "'. Expected/Actual:")
                     + "\n" + e
-                    + "'\n***\n" + a +"'"
+                    + "\n***\n" + a
             );
         }
         return result;
