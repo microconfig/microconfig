@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -26,29 +27,30 @@ public class EnvironmentImpl implements Environment {
     private final String name;
     @Getter
     private final int portOffset;
-    private final List<ComponentGroup> componentGroups;
+    private final List<ComponentGroup> groups;
     private final ComponentFactory componentFactory;
 
     @Override
     public List<ComponentGroup> findGroupsWithIp(String ip) {
-        return filter(componentGroups, g -> g.getIp().filter(ip::equals).isPresent());
+        return filter(groups, g -> g.getIp().filter(ip::equals).isPresent());
     }
 
     @Override
-    public ComponentGroup findGroupWithName(String groupName) {
+    public ComponentGroup getGroupWithName(String groupName) {
         return findGroup(group -> group.getName().equals(groupName),
                 () -> "groupName=" + groupName);
     }
 
     @Override
-    public ComponentGroup findGroupWithComponent(String componentName) {
-        return findGroup(group -> group.findComponentWithName(componentName).isPresent(),
-                () -> "componentName=" + componentName);
+    public Optional<ComponentGroup> findGroupWithComponent(String componentName) {
+        return groups.stream()
+                .filter(g -> g.findComponentWithName(componentName).isPresent())
+                .findFirst();
     }
 
     @Override
     public Components getAllComponents() {
-        List<Component> components = componentGroups.stream()
+        List<Component> components = groups.stream()
                 .map(ComponentGroup::getComponents)
                 .map(Components::asList)
                 .flatMap(List::stream)
@@ -59,14 +61,14 @@ public class EnvironmentImpl implements Environment {
 
     @Override
     public Component getComponentWithName(String componentName) {
-        return findFirstResult(componentGroups, g -> g.findComponentWithName(componentName))
+        return findFirstResult(groups, g -> g.findComponentWithName(componentName))
                 .orElseThrow(() -> new IllegalArgumentException(notFoundComponentMessage(componentName)));
     }
 
     //todo must work 0(1)
     @Override
     public Component getOrCreateComponentWithName(String componentName) {
-        return findFirstResult(componentGroups, g -> g.findComponentWithName(componentName))
+        return findFirstResult(groups, g -> g.findComponentWithName(componentName))
                 .orElseGet(() -> componentFactory.createComponent(componentName, componentName, name));
     }
 
@@ -76,7 +78,7 @@ public class EnvironmentImpl implements Environment {
             if (groups.isEmpty()) return getAllComponents().asList();
 
             return groups.stream()
-                    .map(this::findGroupWithName)
+                    .map(this::getGroupWithName)
                     .map(ComponentGroup::getComponents)
                     .map(Components::asList)
                     .flatMap(List::stream)
@@ -98,7 +100,7 @@ public class EnvironmentImpl implements Environment {
     }
 
     private ComponentGroup findGroup(Predicate<ComponentGroup> groupPredicate, Supplier<String> description) {
-        return componentGroups.stream()
+        return groups.stream()
                 .filter(groupPredicate)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Can't find group by filter: '" + description.get() + "' in env '" + name + "'"));
@@ -110,6 +112,6 @@ public class EnvironmentImpl implements Environment {
 
     @Override
     public String toString() {
-        return name + ": " + componentGroups;
+        return name + ": " + groups;
     }
 }

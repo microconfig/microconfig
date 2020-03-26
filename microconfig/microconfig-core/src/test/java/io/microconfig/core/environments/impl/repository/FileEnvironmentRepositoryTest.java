@@ -213,7 +213,7 @@ class FileEnvironmentRepositoryTest {
     }
 
     private void testGroup(Environment environment, String groupName, String ip, String... components) {
-        ComponentGroup group = environment.findGroupWithName(groupName);
+        ComponentGroup group = environment.getGroupWithName(groupName);
         assertEquals(ofNullable(ip), group.getIp());
         testComponents(environment.getName(), asList(components), group.getComponents().asList());
     }

@@ -1,6 +1,7 @@
 package io.microconfig.core.environments;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface Environment {
     String getName();
@@ -9,9 +10,9 @@ public interface Environment {
 
     List<ComponentGroup> findGroupsWithIp(String ip);
 
-    ComponentGroup findGroupWithName(String groupName);
+    ComponentGroup getGroupWithName(String groupName);
 
-    ComponentGroup findGroupWithComponent(String componentName);
+    Optional<ComponentGroup> findGroupWithComponent(String componentName);
 
     Component getComponentWithName(String componentName);
 

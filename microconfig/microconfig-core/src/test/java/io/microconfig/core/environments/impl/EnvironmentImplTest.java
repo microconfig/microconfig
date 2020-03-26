@@ -12,6 +12,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -56,16 +57,16 @@ class EnvironmentImplTest {
 
     @Test
     void findGroupByName() {
-        assertEquals(group2, env.findGroupWithName("group2"));
-        assertThrows(IllegalArgumentException.class, () -> env.findGroupWithName("group3"));
+        assertEquals(group2, env.getGroupWithName("group2"));
+        assertThrows(IllegalArgumentException.class, () -> env.getGroupWithName("group3"));
     }
 
     @Test
     void findGroupWithComponentName() {
         when(group2.findComponentWithName("three")).thenReturn(of(three));
 
-        assertEquals(group2, env.findGroupWithComponent("three"));
-        assertThrows(IllegalArgumentException.class, () -> env.findGroupWithComponent("not found"));
+        assertEquals(of(group2), env.findGroupWithComponent("three"));
+        assertEquals(empty(), env.findGroupWithComponent("not found"));
     }
 
     @Test
