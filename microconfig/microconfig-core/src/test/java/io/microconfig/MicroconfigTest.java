@@ -27,12 +27,11 @@ public class MicroconfigTest {
     @Test
     void testAllComponents() {
         try (Stream<Path> stream = walk(classpathFile("repo").toPath())) {
-            Map<Boolean, Long> result = stream.map(Path::toFile)
+            Map<Boolean, Long> resultToCount = stream.map(Path::toFile)
                     .filter(this::isTest)
                     .map(this::execute)
                     .collect(partitioningBy(r -> r, counting()));
-            info("\n\nSucceed: " + result.get(true)
-                    + ", Failed: " + result.get(false));
+            info("\n\nSucceed: " + resultToCount.get(true) + ", Failed: " + resultToCount.get(false));
         }
     }
 
