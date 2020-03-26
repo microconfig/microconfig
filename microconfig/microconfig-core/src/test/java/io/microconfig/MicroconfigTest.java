@@ -94,6 +94,7 @@ public class MicroconfigTest {
     private String readExpectation(File expectation) {
         return readFully(expectation)
                 .replace("${currentDir}", expectation.getParentFile().getAbsolutePath())
-                .replace("${componentsDir}", new File(root, "components").getAbsolutePath());
+                .replace("${componentsDir}", new File(root, "components").getAbsolutePath())
+                .replace("${space}", "");
     }
 }
