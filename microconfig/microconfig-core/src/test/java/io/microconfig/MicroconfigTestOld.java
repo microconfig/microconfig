@@ -1,59 +1,16 @@
 package io.microconfig;
 
 import io.microconfig.core.properties.Properties;
-import io.microconfig.core.properties.Property;
-import io.microconfig.core.properties.impl.PropertyResolveException;
-import org.junit.jupiter.api.Test;
 
 import static io.microconfig.ClasspathUtils.classpathFile;
 import static io.microconfig.Microconfig.searchConfigsIn;
 import static io.microconfig.core.configtypes.impl.ConfigTypeFilters.configType;
 import static io.microconfig.core.configtypes.impl.StandardConfigType.APPLICATION;
-import static io.microconfig.utils.StringUtils.splitKeyValue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MicroconfigTestOld {
     private final Microconfig microconfig = searchConfigsIn(classpathFile("repo"));
 
-    @Test
-    void ip() {
-        String value = buildComponent("ip1", "uat")
-                .getPropertyWithKey("ip1.some-ip")
-                .map(Property::getValue)
-                .orElseThrow(IllegalStateException::new);
 
-        assertEquals("1.1.1.1", value);
-    }
-
-    @Test
-    void simpleInclude() {
-        assertEquals(
-                splitKeyValue("key1=1", "key2=2", "key3=3", "key4=4"),
-                buildComponent("si1", "uat").getPropertiesAsKeyValue()
-        );
-    }
-
-    @Test
-    void cyclicInclude() {
-        assertEquals(
-                splitKeyValue("key1=1", "key2=2", "key3=3"),
-                buildComponent("ci1", "uat").getPropertiesAsKeyValue()
-        );
-    }
-
-    @Test
-    void placeholderToSpel() {
-        assertEquals(
-                splitKeyValue("test.mq.address=tcp://:6872", "test.mq.address2=tcp://:68720"),
-                buildComponent("pts", "dev").getPropertiesAsKeyValue()
-        );
-    }
-
-    @Test
-    void testCyclicDetect() {
-        assertThrows(PropertyResolveException.class, () -> buildComponent("cyclicDetect", "uat"));
-    }
 
     private Properties buildComponent(String component, String env) {
         return microconfig.inEnvironment(env)

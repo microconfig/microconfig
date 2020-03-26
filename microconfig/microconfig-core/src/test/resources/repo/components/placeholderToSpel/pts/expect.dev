@@ -1,0 +1,2 @@
+test.mq.address=tcp://:6872
+test.mq.address2=tcp://:68720

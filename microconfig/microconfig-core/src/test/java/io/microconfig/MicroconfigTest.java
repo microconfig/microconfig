@@ -1,5 +1,6 @@
 package io.microconfig;
 
+import io.microconfig.core.properties.impl.PropertyResolveException;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -18,6 +19,7 @@ import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.Logger.*;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.partitioningBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MicroconfigTest {
     private final File root = classpathFile("repo");
@@ -28,8 +30,13 @@ public class MicroconfigTest {
     }
 
     @Test
-    void testAllComponents() {
+    void findAndExecuteAll() {
         findAndExecute(null);
+    }
+
+    @Test
+    void testCyclicDetect() {
+        assertThrows(PropertyResolveException.class, () -> build("cyclicDetect", "uat"));
     }
 
     private void findAndExecute(String component) {
@@ -52,7 +59,7 @@ public class MicroconfigTest {
     private boolean execute(File expectation) {
         String component = getComponentName(expectation);
         String env = getEnvName(expectation);
-        String actual = build(component, env);
+        String actual = doBuild(component, env);
         String expected = readExpectation(expectation);
 
         boolean result = expected.equals(actual);
@@ -76,19 +83,23 @@ public class MicroconfigTest {
         return expectation.getName().split("\\.")[1];
     }
 
-    private String build(String component, String env) {
+    private String doBuild(String component, String env) {
         try {
-            return microconfig.environments()
-                    .getOrCreateByName(env)
-                    .getOrCreateComponentWithName(component)
-                    .getPropertiesFor(configType(APPLICATION))
-                    .resolveBy(microconfig.resolver())
-                    .first()
-                    .save(asString());
+            return build(component, env);
         } catch (RuntimeException e) {
             error("Failed '" + component + ":[" + env + "]'");
             throw e;
         }
+    }
+
+    private String build(String component, String env) {
+        return microconfig.environments()
+                .getOrCreateByName(env)
+                .getOrCreateComponentWithName(component)
+                .getPropertiesFor(configType(APPLICATION))
+                .resolveBy(microconfig.resolver())
+                .first()
+                .save(asString());
     }
 
     private String readExpectation(File expectation) {
