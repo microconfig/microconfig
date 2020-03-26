@@ -27,7 +27,7 @@ public class MicroconfigTest {
 
     public static void main(String[] args) {
         new MicroconfigTest()
-                .findAndExecute("mergeList");
+                .findAndExecute("envPropTest");
     }
 
     @Test
@@ -44,7 +44,7 @@ public class MicroconfigTest {
         try (Stream<Path> stream = walk(classpathFile("repo").toPath())) {
             Map<Boolean, Long> resultToCount = stream.map(Path::toFile)
                     .filter(this::isExpectation)
-                    .filter(f -> component == null || f.getName().equals(component))
+                    .filter(f -> component == null || f.getParentFile().getName().equals(component))
                     .map(this::execute)
                     .collect(partitioningBy(r -> r, counting()));
             info("\n\nSucceed: " + resultToCount.get(true) + ", Failed: " + resultToCount.get(false));
