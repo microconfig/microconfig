@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.com/microconfig/microconfig.svg?branch=master)](https://travis-ci.com/microconfig/microconfig)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.microconfig/microconfig-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.microconfig/microconfig-core)
+[![Slack badge](https://img.shields.io/badge/Join-Slack-brightgreen.svg)](https://join.slack.com/t/microconfig/shared_invite/zt-couuwwuo-vt5miXcv5RMmuXlNv1oKEQ)
 
 Microconfig is intended to make it easy and convenient to manage configuration for microservices (or just for a big amount of services) and reuse the common part.
 
