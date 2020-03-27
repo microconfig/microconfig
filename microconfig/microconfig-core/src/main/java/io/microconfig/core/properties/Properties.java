@@ -4,12 +4,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 public interface Properties {
     Properties resolveBy(Resolver resolver);
-
-    Properties and(Consumer<Properties> callback);
 
     Properties withoutTempValues();
 
