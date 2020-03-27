@@ -14,11 +14,11 @@ public interface Environment {
 
     Optional<ComponentGroup> findGroupWithComponent(String componentName);
 
-    Component getComponentWithName(String componentName);
+    Components getAllComponents();
 
-    Component getOrCreateComponentWithName(String componentName);
+    Component getComponentWithName(String componentName);
 
     Components findComponentsFrom(List<String> groups, List<String> components);
 
-    Components getAllComponents();
+    Component getOrCreateComponentWithName(String componentName);
 }

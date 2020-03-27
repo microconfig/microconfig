@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface TypedProperties {
-    DeclaringComponent getDeclaringComponent();
-
     TypedProperties resolveBy(Resolver resolver);
 
     TypedProperties withoutTempValues();
@@ -20,4 +18,6 @@ public interface TypedProperties {
     Optional<Property> getPropertyWithKey(String key);
 
     <T> T save(PropertySerializer<T> serializer);
+
+    DeclaringComponent getDeclaringComponent();
 }

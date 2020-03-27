@@ -65,17 +65,17 @@ public class EnvironmentImpl implements Environment {
 
     //todo must work 0(1)
     @Override
-    public Component getOrCreateComponentWithName(String componentName) {
-        return findFirstResult(groups, g -> g.findComponentWithName(componentName))
-                .orElseGet(() -> componentFactory.createComponent(componentName, componentName, name));
-    }
-
-    @Override
     public Components findComponentsFrom(List<String> groups, List<String> componentNames) {
         List<Component> componentsFromGroups = componentsFrom(groups);
         List<Component> result = filterBy(componentNames, componentsFromGroups);
         info("Filtered " + result.size() + " component(s) in [" + name + "] env.");
         return new ComponentsImpl(result, propertiesFactory);
+    }
+
+    @Override
+    public Component getOrCreateComponentWithName(String componentName) {
+        return findFirstResult(groups, g -> g.findComponentWithName(componentName))
+                .orElseGet(() -> componentFactory.createComponent(componentName, componentName, name));
     }
 
     private List<Component> componentsFrom(List<String> groups) {

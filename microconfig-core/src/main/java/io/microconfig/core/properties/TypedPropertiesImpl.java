@@ -26,11 +26,6 @@ public class TypedPropertiesImpl implements TypedProperties {
     private final Map<String, Property> propertyByKey;
 
     @Override
-    public DeclaringComponent getDeclaringComponent() {
-        return new DeclaringComponentImpl(configType.getName(), component, environment);
-    }
-
-    @Override
     public TypedProperties resolveBy(Resolver resolver) {
         return withPropertyByKey(
                 forEach(propertyByKey.values(), resolveUsing(resolver), toPropertyMap())
@@ -69,6 +64,11 @@ public class TypedPropertiesImpl implements TypedProperties {
     @Override
     public <T> T save(PropertySerializer<T> serializer) {
         return serializer.serialize(propertyByKey.values(), configType, component, environment);
+    }
+
+    @Override
+    public DeclaringComponent getDeclaringComponent() {
+        return new DeclaringComponentImpl(configType.getName(), component, environment);
     }
 
     @Override

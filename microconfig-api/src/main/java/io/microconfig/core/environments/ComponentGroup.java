@@ -7,7 +7,7 @@ public interface ComponentGroup {
 
     Optional<String> getIp();
 
-    Optional<Component> findComponentWithName(String name);
-
     Components getComponents();
+
+    Optional<Component> findComponentWithName(String name);
 }
