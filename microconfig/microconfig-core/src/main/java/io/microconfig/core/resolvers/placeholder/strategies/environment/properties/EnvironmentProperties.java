@@ -1,6 +1,5 @@
 package io.microconfig.core.resolvers.placeholder.strategies.environment.properties;
 
-
 import io.microconfig.core.resolvers.placeholder.strategies.environment.EnvProperty;
 
 import java.util.Map;

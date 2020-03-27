@@ -1,18 +1,10 @@
 apply plugin: 'application'
-apply plugin: 'com.github.johnrengelman.shadow'
 
 mainClassName = 'io.microconfig.MicroconfigMain'
 
-publishing {
-    publications {
-        shadow(MavenPublication) { publication ->
-            project.shadow.component(publication)
-        }
-    }
-}
-
 dependencies {
-    implementation project(':microconfig:utils'),
+    implementation project(':microconfig:microconfig-api'),
+            project(':microconfig:utils'),
             lib.spring_el,
             lib.gson,
             lib.snakeyaml

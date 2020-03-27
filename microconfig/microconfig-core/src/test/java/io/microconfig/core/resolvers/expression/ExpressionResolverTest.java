@@ -1,6 +1,6 @@
 package io.microconfig.core.resolvers.expression;
 
-import io.microconfig.core.resolvers.RecursiveResolver.Statement;
+import io.microconfig.core.resolvers.RecursiveResolver;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,7 +27,7 @@ class ExpressionResolverTest {
     @Test
     void api() {
         String value = "I'm #{ 1 + 2} !";
-        Statement statement = resolver.findStatementIn(new StringBuilder(value)).orElseThrow(IllegalStateException::new);
+        RecursiveResolver.Statement statement = resolver.findStatementIn(new StringBuilder(value)).orElseThrow(IllegalStateException::new);
         assertEquals(4, statement.getStartIndex());
         assertEquals(13, statement.getEndIndex());
         assertEquals("#{ 1 + 2}", statement.toString());

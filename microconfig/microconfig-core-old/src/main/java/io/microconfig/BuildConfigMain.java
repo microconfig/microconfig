@@ -3,7 +3,6 @@ package io.microconfig;
 import io.microconfig.commands.ComponentsToProcess;
 import io.microconfig.commands.ConfigCommand;
 import io.microconfig.factory.BuildConfigCommandFactory;
-import io.microconfig.utils.CommandLineParamParser;
 
 import java.io.File;
 import java.util.List;

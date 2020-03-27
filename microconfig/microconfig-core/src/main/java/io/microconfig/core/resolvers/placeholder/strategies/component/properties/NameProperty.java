@@ -1,6 +1,5 @@
 package io.microconfig.core.resolvers.placeholder.strategies.component.properties;
 
-
 import io.microconfig.core.resolvers.placeholder.strategies.component.ComponentProperty;
 
 import java.util.Optional;

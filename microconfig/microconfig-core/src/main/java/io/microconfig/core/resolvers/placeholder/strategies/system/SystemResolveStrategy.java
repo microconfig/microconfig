@@ -1,7 +1,7 @@
 package io.microconfig.core.resolvers.placeholder.strategies.system;
 
+import io.microconfig.core.properties.DeclaringComponentImpl;
 import io.microconfig.core.properties.Property;
-import io.microconfig.core.properties.impl.DeclaringComponentImpl;
 import io.microconfig.core.resolvers.placeholder.PlaceholderResolveStrategy;
 import io.microconfig.utils.Os;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
-import static io.microconfig.core.properties.impl.PropertyImpl.property;
+import static io.microconfig.core.properties.PropertyImpl.property;
 import static io.microconfig.utils.StringUtils.escape;
 import static io.microconfig.utils.StringUtils.unixLikePath;
 import static java.util.Optional.empty;

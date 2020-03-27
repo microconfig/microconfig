@@ -2,9 +2,9 @@ package io.microconfig.core.resolvers.placeholder.strategies.environment;
 
 import io.microconfig.core.environments.Environment;
 import io.microconfig.core.environments.EnvironmentRepository;
-import io.microconfig.core.environments.impl.repository.EnvironmentException;
+import io.microconfig.core.environments.repository.EnvironmentException;
+import io.microconfig.core.properties.DeclaringComponentImpl;
 import io.microconfig.core.properties.Property;
-import io.microconfig.core.properties.impl.DeclaringComponentImpl;
 import io.microconfig.core.resolvers.placeholder.PlaceholderResolveStrategy;
 import lombok.RequiredArgsConstructor;
 
@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
-import static io.microconfig.core.properties.impl.PropertyImpl.property;
+import static io.microconfig.core.properties.PropertyImpl.property;
 import static java.util.Optional.empty;
 
 @RequiredArgsConstructor

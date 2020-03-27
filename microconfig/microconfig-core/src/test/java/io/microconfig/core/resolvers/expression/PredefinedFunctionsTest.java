@@ -6,7 +6,6 @@ import static io.microconfig.core.resolvers.expression.PredefinedFunctions.findG
 import static io.microconfig.core.resolvers.expression.PredefinedFunctions.findGroupOrDefault;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 class PredefinedFunctionsTest {
     @Test
     void testFindGroup() {

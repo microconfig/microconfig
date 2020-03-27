@@ -1,7 +1,7 @@
 package io.microconfig.core.resolvers.placeholder.strategies.component.properties;
 
 import io.microconfig.core.environments.EnvironmentRepository;
-import io.microconfig.core.properties.impl.repository.ComponentGraph;
+import io.microconfig.core.properties.repository.ComponentGraph;
 import io.microconfig.core.resolvers.placeholder.strategies.component.ComponentProperty;
 import io.microconfig.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
