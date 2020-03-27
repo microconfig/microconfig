@@ -21,7 +21,6 @@ import static java.util.Collections.emptyList;
 class ComponentGroupDefinition {
     @Getter
     private final String name;
-    @Getter
     private final String ip;
     @Getter
     private final List<ComponentDefinition> components;
