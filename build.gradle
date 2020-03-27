@@ -15,6 +15,7 @@ allprojects {
     apply plugin: 'java'
     apply plugin: 'jacoco'
     apply plugin: 'maven-publish'
+    apply plugin: 'signing'
 
     group = 'io.microconfig'
     version = rootProject.version
@@ -26,12 +27,63 @@ allprojects {
         mavenCentral()
     }
 
+    java {
+        withJavadocJar()
+        withSourcesJar()
+    }
+
     publishing {
         publications {
             nexus(MavenPublication) {
+                pom {
+                    name = 'MicroConfig'
+                    description = 'Powerful tool for microservice configuration management'
+                    url = 'https://microconfig.io/'
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+                    scm {
+                        connection = 'scm:git:https://github.com/microconfig/microconfig.git'
+                        developerConnection = 'scm:git:https://github.com/microconfig/microconfig.git'
+                        url = 'https://microconfig.io'
+                    }
+                    developers {
+                        developer {
+                            id = 'amatorin'
+                            name = 'Alexander Matorin'
+                            email = 'alx.matorin@gmail.com'
+                        }
+                        developer {
+                            id = 'esladkovski'
+                            name = 'Evgeni Sladkovski'
+                            email = 'kapodes@gmail.com'
+                        }
+                        developer {
+                            id = 'apavlov'
+                            name = 'Artem Pavlov'
+                            email = 'admpavlov@yandex.ru'
+                        }
+                    }
+                }
                 from components.java
             }
         }
+        repositories {
+            maven {
+                url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                credentials {
+                    username ossrhUsername
+                    password ossrhPassword
+                }
+            }
+        }
+    }
+
+    signing {
+        sign publishing.publications.nexus
     }
 
     dependencies {
