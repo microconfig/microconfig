@@ -32,7 +32,6 @@ public class MicroconfigTest {
         try (Stream<Path> stream = walk(classpathFile("repo").toPath())) {
             return stream.map(Path::toFile)
                     .filter(this::isExpectation)
-//                    .filter(f -> f.getParentFile().getName().equals(""))
                     .map(this::toTest)
                     .collect(toList());
         }
@@ -44,7 +43,8 @@ public class MicroconfigTest {
     }
 
     private boolean isExpectation(File file) {
-        return file.getName().startsWith("expect.");
+        return //file.getParentFile().getName().equals("")) &&
+                file.getName().startsWith("expect.");
     }
 
     //todo highlight error
