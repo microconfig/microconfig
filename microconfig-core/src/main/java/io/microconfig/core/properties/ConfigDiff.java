@@ -15,21 +15,20 @@ public class ConfigDiff {
     private static final String DIFF_PREFIX = "diff-";
 
     public void storeDiffFor(File previousConfigFile, Collection<Property> newProperties) {
-        File diffFile = diffFileFor(previousConfigFile);
-
         Map<String, String> oldProperties = readOldConfig(previousConfigFile);
         Map<String, String> diff = compare(oldProperties, newProperties);
 
-        if (!diff.isEmpty()) {
+        File diffFile = diffFileFor(previousConfigFile);
+        if (diff.isEmpty()) {
+            delete(diffFile);
+        } else {
             warn("Stored " + diff.size() + " property changes to " + diffFile.getParentFile().getName() + "/" + diffFile.getName());
             configIo().writeTo(diffFile).write(diff);
         }
     }
 
     private File diffFileFor(File current) {
-        File diffFile = new File(current.getParent(), DIFF_PREFIX + current.getName());
-        delete(diffFile);
-        return diffFile;
+        return new File(current.getParent(), DIFF_PREFIX + current.getName());
     }
 
     private Map<String, String> readOldConfig(File current) {
@@ -45,7 +44,6 @@ public class ConfigDiff {
         if (old.isEmpty()) return emptyMap();
 
         Map<String, String> result = new TreeMap<>();
-
         for (Property p : current) {
             if (p.isTemp()) continue;
 
