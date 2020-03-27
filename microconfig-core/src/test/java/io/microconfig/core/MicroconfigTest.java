@@ -1,11 +1,13 @@
 package io.microconfig.core;
 
 import io.microconfig.core.properties.PropertyResolveException;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Map;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static io.microconfig.core.ClasspathReader.classpathFile;
@@ -13,26 +15,21 @@ import static io.microconfig.core.Microconfig.searchConfigsIn;
 import static io.microconfig.core.configtypes.ConfigTypeFilters.configType;
 import static io.microconfig.core.configtypes.StandardConfigType.APPLICATION;
 import static io.microconfig.core.properties.PropertySerializers.asString;
-import static io.microconfig.utils.ConsoleColor.red;
 import static io.microconfig.utils.FileUtils.walk;
 import static io.microconfig.utils.IoUtils.readFully;
-import static io.microconfig.utils.Logger.*;
-import static java.util.stream.Collectors.counting;
-import static java.util.stream.Collectors.partitioningBy;
+import static io.microconfig.utils.Logger.error;
+import static java.util.stream.Collectors.toList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 public class MicroconfigTest {
     private final File root = classpathFile("repo");
     private final Microconfig microconfig = searchConfigsIn(root);
 
-    public static void main(String[] args) {
-        new MicroconfigTest()
-                .findAndExecute("envPropTest");
-    }
-
-    @Test
-    void findAndExecuteAll() {
-        findAndExecute(null);
+    @TestFactory
+    List<DynamicTest> findTests() {
+        return findTests(null);
     }
 
     @Test
@@ -40,18 +37,13 @@ public class MicroconfigTest {
         assertThrows(PropertyResolveException.class, () -> build("cyclicDetect", "uat"));
     }
 
-    private void findAndExecute(String component) {
+    private List<DynamicTest> findTests(String component) {
         try (Stream<Path> stream = walk(classpathFile("repo").toPath())) {
-            Map<Boolean, Long> resultToCount = stream.map(Path::toFile)
+            return stream.map(Path::toFile)
                     .filter(this::isExpectation)
                     .filter(f -> component == null || f.getParentFile().getName().equals(component))
-                    .map(this::execute)
-                    .collect(partitioningBy(r -> r, counting()));
-            info("\n\nSucceed: " + resultToCount.get(true) + ", Failed: " + resultToCount.get(false));
-
-            if (resultToCount.get(false) != 0) {
-                throw new AssertionError();
-            }
+                    .map(this::toTest)
+                    .collect(toList());
         }
     }
 
@@ -60,22 +52,15 @@ public class MicroconfigTest {
     }
 
     //todo highlight error
-    private boolean execute(File expectation) {
+    private DynamicTest toTest(File expectation) {
         String component = getComponentName(expectation);
         String env = getEnvName(expectation);
-        String a = doBuild(component, env).trim();
-        String e = readExpectation(expectation).trim();
-
-        boolean result = e.equals(a);
-        if (result) {
-            announce("Succeed '" + component + "'");
-        } else {
-            info(red("Failed '" + component + "'. Expected/Actual:")
-                    + "\n" + e
-                    + "\n***\n" + a
+        return dynamicTest(component + "[" + env + "]", () -> {
+            assertEquals(
+                    readExpectation(expectation).trim(),
+                    doBuild(component, env).trim()
             );
-        }
-        return result;
+        });
     }
 
     private String getComponentName(File expectation) {
