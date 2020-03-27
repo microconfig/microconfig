@@ -2,6 +2,7 @@ package io.microconfig.core.properties;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
@@ -11,12 +12,22 @@ import static io.microconfig.utils.FileUtils.delete;
 import static io.microconfig.utils.Logger.info;
 
 public class PropertySerializers {
+    public static BiConsumer<File, Collection<Property>> withConfigDiff() {
+        ConfigDiff configDiff = new ConfigDiff();
+        return configDiff::storeDiffFor;
+    }
+
     public static PropertySerializer<File> toFileIn(File dir) {
+        return toFileIn(dir, (_1, _2) -> {
+        });
+    }
+
+    public static PropertySerializer<File> toFileIn(File dir, BiConsumer<File, Collection<Property>> listener) {
         return (properties, configType, componentName, __) -> {
-            Function<ConfigFormat, File> getResultFile = cf ->
-                    new File(dir, componentName + "/" + configType.getResultFileName() + cf);
+            Function<ConfigFormat, File> getResultFile = cf -> new File(dir, componentName + "/" + configType.getResultFileName() + cf.extension());
 
             File resultFile = getResultFile.apply(extensionByConfigFormat(properties));
+            listener.accept(resultFile, properties);
             if (properties.isEmpty()) {
                 delete(resultFile);
                 delete(getResultFile.apply(PROPERTIES));
