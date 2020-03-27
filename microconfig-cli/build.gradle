@@ -12,6 +12,6 @@ publishing {
 }
 
 dependencies {
-    implementation project(':microconfig:microconfig-core'),
-            project(':microconfig:utils')
+    implementation project(':microconfig-core'),
+            project(':utils')
 }
