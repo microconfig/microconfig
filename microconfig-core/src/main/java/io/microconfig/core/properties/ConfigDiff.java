@@ -2,6 +2,7 @@ package io.microconfig.core.properties;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -16,7 +17,7 @@ public class ConfigDiff {
 
     public void storeDiffFor(File previousConfigFile, Collection<Property> newProperties) {
         Map<String, String> oldProperties = readOldConfig(previousConfigFile);
-        Map<String, String> diff = compare(oldProperties, newProperties);
+        Map<String, String> diff = compare(new HashMap<>(oldProperties), newProperties);
 
         File diffFile = diffFileFor(previousConfigFile);
         if (diff.isEmpty()) {
