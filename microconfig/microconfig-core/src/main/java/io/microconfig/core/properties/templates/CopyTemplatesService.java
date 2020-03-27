@@ -1,13 +1,13 @@
-//package io.microconfig.core.properties.templates;
-//
-//import io.microconfig.core.properties.DeclaringComponent;
-//
-//import java.io.File;
-//import java.util.Map;
-//
-//public interface CopyTemplatesService {
-//    void copyTemplates(DeclaringComponent component,
-//                       File serviceDestinationDir,
-//                       Map<String, String> componentProperties,
-//                       PropertyResolver propertyResolver);
-//}
+package io.microconfig.core.properties.templates;
+
+import io.microconfig.core.configtypes.ConfigType;
+import io.microconfig.core.properties.Property;
+
+import java.util.Collection;
+
+public interface CopyTemplatesService {
+    void copyTemplates(Collection<Property> properties,
+                       ConfigType configType,
+                       String componentName,
+                       String environment);
+}
