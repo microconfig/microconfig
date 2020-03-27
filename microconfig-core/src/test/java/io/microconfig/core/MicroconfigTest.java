@@ -29,22 +29,18 @@ public class MicroconfigTest {
 
     @TestFactory
     List<DynamicTest> findTests() {
-        return findTests(null);
+        try (Stream<Path> stream = walk(classpathFile("repo").toPath())) {
+            return stream.map(Path::toFile)
+                    .filter(this::isExpectation)
+//                    .filter(f -> f.getParentFile().getName().equals(""))
+                    .map(this::toTest)
+                    .collect(toList());
+        }
     }
 
     @Test
     void testCyclicDetect() {
         assertThrows(PropertyResolveException.class, () -> build("cyclicDetect", "uat"));
-    }
-
-    private List<DynamicTest> findTests(String component) {
-        try (Stream<Path> stream = walk(classpathFile("repo").toPath())) {
-            return stream.map(Path::toFile)
-                    .filter(this::isExpectation)
-                    .filter(f -> component == null || f.getParentFile().getName().equals(component))
-                    .map(this::toTest)
-                    .collect(toList());
-        }
     }
 
     private boolean isExpectation(File file) {
