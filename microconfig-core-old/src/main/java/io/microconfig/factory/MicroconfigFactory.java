@@ -28,6 +28,7 @@ import io.microconfig.core.properties.resolver.placeholder.strategies.envdescrip
 import io.microconfig.core.properties.resolver.placeholder.strategies.envdescriptor.properties.EnvDescriptorPropertiesFactory;
 import io.microconfig.core.properties.resolver.placeholder.strategies.standard.StandardResolveStrategy;
 import io.microconfig.core.properties.serializer.ConfigSerializer;
+import io.microconfig.core.properties.serializer.diff.DiffSerializer;
 import io.microconfig.core.properties.serializer.file.FilenameGenerator;
 import io.microconfig.core.properties.serializer.file.FilenameGeneratorImpl;
 import io.microconfig.core.properties.serializer.file.LegacyFilenameGenerator;
@@ -149,13 +150,13 @@ public class MicroconfigFactory {
     }
 
     private ConfigSerializer configSerializer(ConfigType configType) {
-//        return new DiffSerializer(
-        return new ToFileConfigSerializer(
-                getFilenameGenerator(configType),
+        return new DiffSerializer(
+                new ToFileConfigSerializer(
+                        getFilenameGenerator(configType),
+                        configIoService
+                ),
                 configIoService
         );
-//                configIoService
-//        );
     }
 
     //public for ide plugin
