@@ -14,10 +14,10 @@ import static java.util.Collections.emptyMap;
 public class ConfigDiff {
     private static final String DIFF_PREFIX = "diff-";
 
-    public void storeDiffFor(File current, Collection<Property> newProperties) {
-        File diffFile = diffFile(current);
+    public void storeDiffFor(File previousConfigFile, Collection<Property> newProperties) {
+        File diffFile = diffFileFor(previousConfigFile);
 
-        Map<String, String> oldProperties = readOldConfig(current);
+        Map<String, String> oldProperties = readOldConfig(previousConfigFile);
         Map<String, String> diff = compare(oldProperties, newProperties);
 
         if (!diff.isEmpty()) {
@@ -26,7 +26,7 @@ public class ConfigDiff {
         }
     }
 
-    private File diffFile(File current) {
+    private File diffFileFor(File current) {
         File diffFile = new File(current.getParent(), DIFF_PREFIX + current.getName());
         delete(diffFile);
         return diffFile;
