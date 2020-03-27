@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 
 import static io.microconfig.utils.Logger.info;
 import static io.microconfig.utils.StreamUtils.*;
@@ -72,33 +71,34 @@ public class EnvironmentImpl implements Environment {
     }
 
     @Override
-    public Components findComponentsFrom(List<String> groups, List<String> components) {
-        Supplier<List<Component>> componentsFromGroups = () -> {
-            if (groups.isEmpty()) return getAllComponents().asList();
-
-            return groups.stream()
-                    .map(this::getGroupWithName)
-                    .map(ComponentGroup::getComponents)
-                    .map(Components::asList)
-                    .flatMap(List::stream)
-                    .collect(toList());
-        };
-
-        UnaryOperator<List<Component>> filterByComponents = componentFromGroups -> {
-            if (components.isEmpty()) return componentFromGroups;
-
-            Map<String, Component> componentByName = componentFromGroups.stream()
-                    .collect(toMap(Component::getName, identity()));
-            return forEach(components, name -> requireNonNull(componentByName.get(name), () -> notFoundComponentMessage(name)));
-        };
-
-        List<Component> componentFromGroups = componentsFromGroups.get();
-        List<Component> result = filterByComponents.apply(componentFromGroups);
+    public Components findComponentsFrom(List<String> groups, List<String> componentNames) {
+        List<Component> componentsFromGroups = componentsFrom(groups);
+        List<Component> result = filterBy(componentNames, componentsFromGroups);
         info("Filtered " + result.size() + " component(s) in [" + name + "] env.");
         return new ComponentsImpl(result, propertiesFactory);
     }
 
-    private ComponentGroup findGroup(Predicate<ComponentGroup> groupPredicate, Supplier<String> description) {
+    private List<Component> componentsFrom(List<String> groups) {
+        if (groups.isEmpty()) return getAllComponents().asList();
+
+        return groups.stream()
+                .map(this::getGroupWithName)
+                .map(ComponentGroup::getComponents)
+                .map(Components::asList)
+                .flatMap(List::stream)
+                .collect(toList());
+    }
+
+    private List<Component> filterBy(List<String> components, List<Component> componentFromGroups) {
+        if (components.isEmpty()) return componentFromGroups;
+
+        Map<String, Component> componentByName = componentFromGroups.stream()
+                .collect(toMap(Component::getName, identity()));
+        return forEach(components, name -> requireNonNull(componentByName.get(name), () -> notFoundComponentMessage(name)));
+    }
+
+    private ComponentGroup findGroup(Predicate<ComponentGroup> groupPredicate,
+                                     Supplier<String> description) {
         return groups.stream()
                 .filter(groupPredicate)
                 .findFirst()
