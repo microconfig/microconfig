@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static io.microconfig.core.properties.PropertiesImpl.composite;
+import static io.microconfig.core.properties.PropertiesImpl.flat;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -30,7 +30,7 @@ class PropertiesImplTest {
 
         assertEquals(
                 subj,
-                composite(asList(prop.apply(tp1), prop.apply(tp2)))
+                flat(asList(prop.apply(tp1), prop.apply(tp2)))
         );
     }
 

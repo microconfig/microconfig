@@ -34,7 +34,7 @@ class ComponentsImplTest {
         when(twoProps.asTypedProperties()).thenReturn(singletonList(twoTProps));
 
         Properties expected = new PropertiesImpl(asList(oneTProps, twoTProps));
-        when(factory.composite(asList(oneProps, twoProps))).thenReturn(expected);
+        when(factory.flat(asList(oneProps, twoProps))).thenReturn(expected);
         assertEquals(expected, subj.getPropertiesFor(filter));
     }
 

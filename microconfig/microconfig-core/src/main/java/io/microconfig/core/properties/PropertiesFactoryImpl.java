@@ -24,8 +24,8 @@ public class PropertiesFactoryImpl implements PropertiesFactory {
     }
 
     @Override
-    public Properties composite(List<Properties> properties) {
-        return PropertiesImpl.composite(properties);
+    public Properties flat(List<Properties> properties) {
+        return PropertiesImpl.flat(properties);
     }
 
     private Function<ConfigType, TypedProperties> readConfigsFor(String componentName, String componentOriginalName, String environment) {

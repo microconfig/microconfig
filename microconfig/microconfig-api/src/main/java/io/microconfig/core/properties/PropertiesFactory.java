@@ -10,5 +10,5 @@ public interface PropertiesFactory {
                                String environment,
                                List<ConfigType> configTypes);
 
-    Properties composite(List<Properties> properties);
+    Properties flat(List<Properties> properties);
 }

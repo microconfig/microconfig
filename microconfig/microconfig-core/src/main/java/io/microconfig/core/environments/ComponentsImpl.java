@@ -23,7 +23,7 @@ public class ComponentsImpl implements Components {
 
     @Override
     public Properties getPropertiesFor(ConfigTypeFilter configType) {
-        return propertiesFactory.composite(
+        return propertiesFactory.flat(
                 forEach(components.parallelStream(), c -> c.getPropertiesFor(configType))
         );
     }
