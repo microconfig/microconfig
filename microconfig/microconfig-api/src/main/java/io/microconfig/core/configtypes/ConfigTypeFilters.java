@@ -1,12 +1,13 @@
 package io.microconfig.core.configtypes;
 
+import io.microconfig.utils.FileUtils;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static io.microconfig.utils.FileUtils.getExtension;
 import static io.microconfig.utils.StreamUtils.filter;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toSet;
@@ -37,7 +38,7 @@ public class ConfigTypeFilters {
     }
 
     public static ConfigTypeFilter configTypeWithExtensionOf(File file) {
-        String ext = getExtension(file);
+        String ext = FileUtils.getExtension(file);
         if (ext.isEmpty()) {
             throw new IllegalArgumentException("File " + file + " doesn't have an extension. Unable to resolve component type.");
         }
