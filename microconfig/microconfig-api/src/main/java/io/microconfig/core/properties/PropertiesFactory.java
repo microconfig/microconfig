@@ -9,4 +9,6 @@ public interface PropertiesFactory {
                                String componentOriginalName,
                                String environment,
                                List<ConfigType> configTypes);
+
+    Properties composite(List<Properties> properties);
 }

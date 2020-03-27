@@ -3,6 +3,7 @@ package io.microconfig.core.environments.repository;
 import io.microconfig.core.environments.ComponentFactory;
 import io.microconfig.core.environments.Environment;
 import io.microconfig.core.environments.EnvironmentImpl;
+import io.microconfig.core.properties.PropertiesFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -46,12 +47,13 @@ class EnvironmentDefinition {
         return this;
     }
 
-    public Environment toEnvironment(ComponentFactory componentFactory) {
+    public Environment toEnvironment(ComponentFactory componentFactory, PropertiesFactory propertiesFactory) {
         return new EnvironmentImpl(
                 name,
                 portOffset,
-                forEach(groups, g -> g.toGroup(componentFactory, name)),
-                componentFactory
+                forEach(groups, g -> g.toGroup(componentFactory, propertiesFactory, name)),
+                componentFactory,
+                propertiesFactory
         );
     }
 }

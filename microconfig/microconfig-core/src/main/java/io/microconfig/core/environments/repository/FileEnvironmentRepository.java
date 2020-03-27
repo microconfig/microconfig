@@ -4,6 +4,7 @@ import io.microconfig.core.environments.ComponentFactory;
 import io.microconfig.core.environments.Environment;
 import io.microconfig.core.environments.EnvironmentImpl;
 import io.microconfig.core.environments.EnvironmentRepository;
+import io.microconfig.core.properties.PropertiesFactory;
 import io.microconfig.io.FsReader;
 import io.microconfig.utils.FileUtils;
 
@@ -34,9 +35,12 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     private final File envDir;
     private final FsReader fsReader;
     private final ComponentFactory componentFactory;
+    private final PropertiesFactory propertiesFactory;
 
-    public FileEnvironmentRepository(File rootDir, FsReader fsReader, ComponentFactory componentFactory) {
+    public FileEnvironmentRepository(File rootDir, FsReader fsReader,
+                                     ComponentFactory componentFactory, PropertiesFactory propertiesFactory) {
         this.envDir = new File(rootDir, ENV_DIR);
+        this.propertiesFactory = propertiesFactory;
         if (!envDir.exists()) {
             throw new IllegalArgumentException("Env directory doesn't exist: " + envDir);
         }
@@ -85,7 +89,7 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     }
 
     private Function<File, Environment> parse() {
-        return parseDefinition().andThen(def -> def.toEnvironment(componentFactory));
+        return parseDefinition().andThen(def -> def.toEnvironment(componentFactory, propertiesFactory));
     }
 
     private Function<File, EnvironmentDefinition> parseDefinition() {
@@ -117,6 +121,6 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     }
 
     private Supplier<Environment> fakeEnvWith(String name) {
-        return () -> new EnvironmentImpl(name, 0, emptyList(), componentFactory);
+        return () -> new EnvironmentImpl(name, 0, emptyList(), componentFactory, propertiesFactory);
     }
 }

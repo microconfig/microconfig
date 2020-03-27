@@ -91,7 +91,7 @@ public class Microconfig {
         @Getter(lazy = true)
         private final ConfigTypeRepository configTypes = configTypes();
         @Getter(lazy = true)
-        private final PropertiesFactory componentPropertiesFactory = componentPropertiesFactory();
+        private final PropertiesFactory propertiesFactory = propertiesFactory();
         @Getter(lazy = true)
         private final ComponentGraph componentGraph = componentGraph();
 
@@ -99,18 +99,19 @@ public class Microconfig {
             return cache(new FileEnvironmentRepository(
                     rootDir,
                     fsReader,
-                    getComponentFactory()
-            ));
+                    getComponentFactory(),
+                    getPropertiesFactory())
+            );
         }
 
         private ComponentFactory componentFactory() {
             return cache(new ComponentFactoryImpl(
                     getConfigTypes(),
-                    getComponentPropertiesFactory()
+                    getPropertiesFactory()
             ));
         }
 
-        private PropertiesFactory componentPropertiesFactory() {
+        private PropertiesFactory propertiesFactory() {
             return cache(new PropertiesFactoryImpl(
                     cache(new FilePropertiesRepository(
                                     getComponentGraph(),

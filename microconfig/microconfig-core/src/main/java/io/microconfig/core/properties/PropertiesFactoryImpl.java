@@ -23,6 +23,11 @@ public class PropertiesFactoryImpl implements PropertiesFactory {
         );
     }
 
+    @Override
+    public Properties composite(List<Properties> properties) {
+        return PropertiesImpl.composite(properties);
+    }
+
     private Function<ConfigType, TypedProperties> readConfigsFor(String componentName, String componentOriginalName, String environment) {
         return configType -> {
             Map<String, Property> properties = propertiesRepository.getPropertiesOf(componentOriginalName, environment, configType);

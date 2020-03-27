@@ -4,6 +4,7 @@ import io.microconfig.core.environments.ComponentFactory;
 import io.microconfig.core.environments.ComponentGroup;
 import io.microconfig.core.environments.ComponentGroupImpl;
 import io.microconfig.core.environments.ComponentsImpl;
+import io.microconfig.core.properties.PropertiesFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -61,12 +62,13 @@ class ComponentGroupDefinition {
                 .withAppendedComponents(emptyList());
     }
 
-    public ComponentGroup toGroup(ComponentFactory componentFactory, String environment) {
+    public ComponentGroup toGroup(ComponentFactory componentFactory, PropertiesFactory propertiesFactory, String environment) {
         return new ComponentGroupImpl(
                 name,
                 ip,
                 new ComponentsImpl(
-                        forEach(components, c -> c.toComponent(componentFactory, environment))
+                        forEach(components, c -> c.toComponent(componentFactory, environment)),
+                        propertiesFactory
                 )
         );
     }

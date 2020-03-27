@@ -1,5 +1,6 @@
 package io.microconfig.core.environments;
 
+import io.microconfig.core.properties.PropertiesFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -24,7 +25,9 @@ public class EnvironmentImpl implements Environment {
     @Getter
     private final int portOffset;
     private final List<ComponentGroup> groups;
+
     private final ComponentFactory componentFactory;
+    private final PropertiesFactory propertiesFactory;
 
     @Override
     public List<ComponentGroup> findGroupsWithIp(String ip) {
@@ -52,7 +55,7 @@ public class EnvironmentImpl implements Environment {
                 .flatMap(List::stream)
                 .collect(toList());
 
-        return new ComponentsImpl(components);
+        return new ComponentsImpl(components, propertiesFactory);
     }
 
     @Override
@@ -92,7 +95,7 @@ public class EnvironmentImpl implements Environment {
         List<Component> componentFromGroups = componentsFromGroups.get();
         List<Component> result = filterByComponents.apply(componentFromGroups);
         info("Filtered " + result.size() + " component(s) in [" + name + "] env.");
-        return new ComponentsImpl(result);
+        return new ComponentsImpl(result, propertiesFactory);
     }
 
     private ComponentGroup findGroup(Predicate<ComponentGroup> groupPredicate, Supplier<String> description) {

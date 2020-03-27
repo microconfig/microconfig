@@ -2,6 +2,7 @@ package io.microconfig.core.environments;
 
 import io.microconfig.core.configtypes.ConfigTypeFilter;
 import io.microconfig.core.properties.Properties;
+import io.microconfig.core.properties.PropertiesFactory;
 import io.microconfig.core.properties.PropertiesImpl;
 import io.microconfig.core.properties.TypedProperties;
 import org.junit.jupiter.api.Test;
@@ -20,8 +21,9 @@ class ComponentsImplTest {
     Component two = mock(Component.class);
     Properties twoProps = mock(Properties.class);
     TypedProperties twoTProps = mock(TypedProperties.class);
+    PropertiesFactory factory = mock(PropertiesFactory.class);
 
-    Components subj = new ComponentsImpl(asList(one, two));
+    Components subj = new ComponentsImpl(asList(one, two), factory);
 
     @Test
     void filterPropertiesForContainedComponents() {
@@ -32,6 +34,7 @@ class ComponentsImplTest {
         when(twoProps.asTypedProperties()).thenReturn(singletonList(twoTProps));
 
         Properties expected = new PropertiesImpl(asList(oneTProps, twoTProps));
+        when(factory.composite(asList(oneProps, twoProps))).thenReturn(expected);
         assertEquals(expected, subj.getPropertiesFor(filter));
     }
 

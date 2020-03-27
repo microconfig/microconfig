@@ -27,33 +27,33 @@ class FileEnvironmentRepositoryTest {
     PropertiesFactory propertiesFactory = mock(PropertiesFactory.class);
     FsReader fsReader = new DumpedFsReader();
     ComponentFactory componentFactory = new ComponentFactoryImpl(configType, propertiesFactory);
-    FileEnvironmentRepository repo = new FileEnvironmentRepository(dir, fsReader, componentFactory);
+    FileEnvironmentRepository repo = new FileEnvironmentRepository(dir, fsReader, componentFactory, propertiesFactory);
 
     @Test
     void noEnvDirException() {
         assertThrows(IllegalArgumentException.class,
-                () -> new FileEnvironmentRepository(classpathFile("configTypes"), fsReader, componentFactory));
+                () -> new FileEnvironmentRepository(classpathFile("configTypes"), fsReader, componentFactory, propertiesFactory));
     }
 
     @Test
     void envExceptionWrappingOnFileRead() {
         FsReader badReader = mock(FsReader.class);
         when(badReader.readFully(any(File.class))).thenThrow(new IllegalArgumentException());
-        FileEnvironmentRepository repo = new FileEnvironmentRepository(dir, badReader, componentFactory);
+        FileEnvironmentRepository repo = new FileEnvironmentRepository(dir, badReader, componentFactory, propertiesFactory);
         assertThrows(EnvironmentException.class, repo::environments);
     }
 
     @Test
     void envExceptionWrappingOnGroupParse() {
         File badDir = classpathFile("envs/bad");
-        FileEnvironmentRepository repo = new FileEnvironmentRepository(badDir, fsReader, componentFactory);
+        FileEnvironmentRepository repo = new FileEnvironmentRepository(badDir, fsReader, componentFactory, propertiesFactory);
         assertThrows(EnvironmentException.class, () -> repo.getByName("badGroup"));
     }
 
     @Test
     void sameEnvNamesException() {
         File badDir = classpathFile("envs/bad");
-        FileEnvironmentRepository repo = new FileEnvironmentRepository(badDir, fsReader, componentFactory);
+        FileEnvironmentRepository repo = new FileEnvironmentRepository(badDir, fsReader, componentFactory, propertiesFactory);
 
         assertThrows(EnvironmentException.class, () -> repo.getByName("bad"));
         assertThrows(EnvironmentException.class, () -> repo.getByName("bad2"));

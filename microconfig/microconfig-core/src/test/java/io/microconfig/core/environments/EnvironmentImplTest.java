@@ -1,5 +1,6 @@
 package io.microconfig.core.environments;
 
+import io.microconfig.core.properties.PropertiesFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,8 +27,9 @@ class EnvironmentImplTest {
 
     List<ComponentGroup> groups = asList(group1, group2);
     ComponentFactory factory = mock(ComponentFactory.class);
+    PropertiesFactory factory2 = mock(PropertiesFactory.class);
 
-    Environment env = new EnvironmentImpl("dev", 1, groups, factory);
+    Environment env = new EnvironmentImpl("dev", 1, groups, factory, factory2);
 
     @BeforeEach
     void setUp() {
@@ -67,7 +69,7 @@ class EnvironmentImplTest {
 
     @Test
     void getAllComponents() {
-        assertEquals(new ComponentsImpl((asList(one, two, three))), env.getAllComponents());
+        assertEquals(new ComponentsImpl(asList(one, two, three), factory2), env.getAllComponents());
     }
 
     @Test
@@ -109,6 +111,6 @@ class EnvironmentImplTest {
     }
 
     private Components components(Component... components) {
-        return new ComponentsImpl(asList(components));
+        return new ComponentsImpl(asList(components), factory2);
     }
 }
