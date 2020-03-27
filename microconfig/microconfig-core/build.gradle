@@ -1,10 +1,9 @@
-apply plugin: 'application'
-
-mainClassName = 'io.microconfig.MicroconfigMain'
+apply plugin: 'java-library'
 
 dependencies {
-    implementation project(':microconfig:microconfig-api'),
-            project(':microconfig:utils'),
+    api project(':microconfig:microconfig-api')
+
+    implementation project(':microconfig:utils'),
             lib.spring_el,
             lib.gson,
             lib.snakeyaml
