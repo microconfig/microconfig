@@ -18,13 +18,13 @@ public class FilePropertiesRepository implements PropertiesRepository {
 
     @Override
     public Map<String, Property> getPropertiesOf(String originalComponentName, String environment, ConfigType configType) {
-        return new ComponentSource(originalComponentName, environment, configType, new LinkedHashSet<>()).getProperties();
+        return new OriginalComponent(originalComponentName, environment, configType, new LinkedHashSet<>()).getProperties();
     }
 
     @RequiredArgsConstructor
-    private class ComponentSource {
+    private class OriginalComponent {
         @With
-        private final String originalComponentName;
+        private final String component;
         @With
         private final String environment;
         private final ConfigType configType;
@@ -32,37 +32,36 @@ public class FilePropertiesRepository implements PropertiesRepository {
         private final Set<Include> processedIncludes;
 
         public Map<String, Property> getProperties() {
-            return collectPropertiesFrom(configFiles());
+            return readAndParse(configFiles());
         }
 
         private List<ConfigFile> configFiles() {
-            try {
-                return configFileRepository.getConfigFilesFor(originalComponentName, environment, configType);
-            } catch (ComponentNotFoundException e) {
-                throw e.withParentComponent(originalComponentName); //todo test
-            }
+            return configFileRepository.getConfigFilesFor(component, environment, configType);
         }
 
-        private Map<String, Property> collectPropertiesFrom(List<ConfigFile> componentConfigs) {
+        private Map<String, Property> readAndParse(List<ConfigFile> componentConfigs) {
             return componentConfigs.stream()
-                    .map(cf -> cf.parseUsing(configIo))
-                    .map(this::getComponentProperties)
+                    .map(this::parse)
                     .reduce(new LinkedHashMap<>(), (m1, m2) -> {
                         m1.putAll(m2);
                         return m1;
                     });
         }
 
-        private Map<String, Property> getComponentProperties(ConfigDefinition component) {
-            return component.getBaseAndIncludedProperties(this::includeResolver);
+        private Map<String, Property> parse(ConfigFile configFile) {
+            return configFile.parseUsing(configIo).getBaseAndIncludedProperties(this::includeResolver);
         }
 
         private Map<String, Property> includeResolver(Include include) {
-            return processedIncludes.add(include) ? componentFrom(include).getProperties() : emptyMap();
+            try {
+                return processedIncludes.add(include) ? componentFrom(include).getProperties() : emptyMap();
+            } catch (ComponentNotFoundException e) {
+                throw e.withParentComponent(component); //todo test include after placeholder
+            }
         }
 
-        private ComponentSource componentFrom(Include include) {
-            return withOriginalComponentName(include.getComponent())
+        private OriginalComponent componentFrom(Include include) {
+            return withComponent(include.getComponent())
                     .withEnvironment(include.getEnvironment());
         }
     }
