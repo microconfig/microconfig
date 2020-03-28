@@ -2,38 +2,54 @@ package io.microconfig.core.properties.templates;
 
 import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.Resolver;
+import lombok.RequiredArgsConstructor;
+import lombok.With;
 
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static io.microconfig.utils.FileUtils.copyPermissions;
+import static io.microconfig.utils.FileUtils.write;
 import static io.microconfig.utils.IoUtils.readFully;
+import static io.microconfig.utils.Logger.info;
 import static io.microconfig.utils.Logger.warn;
 import static io.microconfig.utils.StringUtils.addOffsets;
 import static java.util.regex.Matcher.quoteReplacement;
+import static lombok.AccessLevel.PRIVATE;
 
+@RequiredArgsConstructor
 class Template {
     private final File source;
-    private final String text;
+    private final Pattern pattern;
+    @With(PRIVATE)
+    private final String content;
 
-    Template(File source) {
+    Template(File source, Pattern pattern) {
         if (!source.exists() || !source.isFile()) {
             throw new IllegalStateException("Missing template file: " + this);
         }
         this.source = source;
-        this.text = readFully(source);
+        this.pattern = pattern;
+        this.content = readFully(source);
     }
 
-    String resolvePlaceholdersBy(Resolver resolver, DeclaringComponent currentComponent, Pattern pattern) {
-        Matcher m = pattern.matcher(text);
-        if (!m.find()) return text;
+    public Template resolveBy(Resolver resolver, DeclaringComponent currentComponent) {
+        Matcher m = pattern.matcher(content);
+        if (!m.find()) return this;
 
         StringBuffer result = new StringBuffer();
         do {
             doResolve(m, result, resolver, currentComponent);
         } while (m.find());
         m.appendTail(result);
-        return result.toString();
+        return withContent(result.toString());
+    }
+
+    public void copyTo(File destinationFile){
+        write(destinationFile, content);
+        copyPermissions(source.toPath(), destinationFile.toPath());
+        info("Copied template: " + source + " -> " + destinationFile);
     }
 
     private void doResolve(Matcher m, StringBuffer result, Resolver resolver, DeclaringComponent currentComponent) {
@@ -51,7 +67,7 @@ class Template {
     }
 
     private String addOffsetForMultiLineValue(Matcher m, String value) {
-        int lineBeginIndex = text.lastIndexOf("\n", m.start());
+        int lineBeginIndex = content.lastIndexOf("\n", m.start());
         int placeholderOffset = m.start() - lineBeginIndex - 1;
         return value.replace("\n", addOffsets("\n", placeholderOffset));
     }

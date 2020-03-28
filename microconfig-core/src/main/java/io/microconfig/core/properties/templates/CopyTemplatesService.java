@@ -11,9 +11,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static io.microconfig.core.properties.templates.TemplatePattern.defaultPattern;
-import static io.microconfig.utils.FileUtils.copyPermissions;
-import static io.microconfig.utils.FileUtils.write;
-import static io.microconfig.utils.Logger.info;
 
 @RequiredArgsConstructor
 public class CopyTemplatesService {
@@ -67,46 +64,34 @@ public class CopyTemplatesService {
         private String toFile;
 
         private void resolveAndCopy(Resolver resolver, DeclaringComponent currentComponent, File destinationDir) {
-            checkCorrectness();
-
-            File fromFile = absoluteFromFile(destinationDir);
-            File toFile = absoluteToFile(destinationDir);
-
-            Template template = toTemplate(fromFile);
-
-            String content = template.resolvePlaceholdersBy(resolver, currentComponent, templatePattern.getPattern());
-            write(toFile, content);
-            copyPermissions(fromFile.toPath(), toFile.toPath());
-
-            info("Copied template: " + fromFile + " -> " + toFile);
+            toTemplate()
+                    .resolveBy(resolver, currentComponent)
+                    .copyTo(getDestinationFile(destinationDir));
         }
 
-        private void checkCorrectness() {
+        private Template toTemplate() {
             if (!isCorrect()) {
                 throw new IllegalStateException("Incomplete template def: " + this);
             }
+            return new Template(getTemplateFile(), templatePattern.getPattern());
         }
 
         private boolean isCorrect() {
             return fromFile != null && toFile != null;
         }
 
-        private File absoluteFromFile(File serviceDir) {
+        private File getTemplateFile() {
             File path = new File(fromFile);
             if (!path.isAbsolute()) {
-                throw new IllegalArgumentException("Using relative path for template '" + fromFile + "' for component '" + serviceDir.getName() + "'. "
+                throw new IllegalArgumentException("Using relative path for template '" + fromFile + "'. "
                         + "Template path must be absolute. Consider using '${this@configRoot}\\..' or '${component_name@configDir}\\..' to build absolute path");
             }
             return path;
         }
 
-        private File absoluteToFile(File serviceDir) {
+        private File getDestinationFile(File serviceDir) {
             File path = new File(toFile);
             return path.isAbsolute() ? path : new File(serviceDir, path.getPath());
-        }
-
-        private Template toTemplate(File fromFile) {
-            return new Template(fromFile);
         }
 
         public void setFromFile(String fromFile) {
