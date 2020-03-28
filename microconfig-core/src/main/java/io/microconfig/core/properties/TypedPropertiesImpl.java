@@ -2,6 +2,7 @@ package io.microconfig.core.properties;
 
 import io.microconfig.core.configtypes.ConfigType;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
@@ -19,11 +20,17 @@ import static lombok.AccessLevel.PRIVATE;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class TypedPropertiesImpl implements TypedProperties {
+    @Getter
     private final ConfigType configType;
     private final String component;
     private final String environment;
     @With(PRIVATE)
     private final Map<String, Property> propertyByKey;
+
+    @Override
+    public DeclaringComponent getDeclaringComponent() {
+        return new DeclaringComponentImpl(configType.getName(), component, environment);
+    }
 
     @Override
     public TypedProperties resolveBy(Resolver resolver) {
@@ -64,11 +71,6 @@ public class TypedPropertiesImpl implements TypedProperties {
     @Override
     public <T> T save(PropertySerializer<T> serializer) {
         return serializer.serialize(propertyByKey.values(), configType, component, environment);
-    }
-
-    @Override
-    public DeclaringComponent getDeclaringComponent() {
-        return new DeclaringComponentImpl(configType.getName(), component, environment);
     }
 
     @Override
