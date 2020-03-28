@@ -49,7 +49,7 @@ class EnvironmentFile {
         EnvInclude envInclude = parseInclude(keyValue);
         int portOffset = parsePortOffset(keyValue);
         String envIp = parseIp(keyValue);
-        List<ComponentGroupDefinition> componentGroups = parseComponentGroups(keyValue, name, envIp);
+        List<ComponentGroupDefinition> componentGroups = parseComponentGroups(keyValue, envIp);
 
         return new EnvironmentDefinition(name, envIp, portOffset, envInclude, componentGroups);
     }
@@ -73,12 +73,12 @@ class EnvironmentFile {
         return (String) keyValue.remove(IP);
     }
 
-    private List<ComponentGroupDefinition> parseComponentGroups(Map<String, Object> keyValue, String envName, String envIp) {
+    private List<ComponentGroupDefinition> parseComponentGroups(Map<String, Object> keyValue, String envIp) {
         return forEach(keyValue.entrySet(), groupEntry -> {
             try {
                 return parseGroup(groupEntry, envIp);
             } catch (RuntimeException e) {
-                throw new EnvironmentException("Can't parse group declaration: '" + groupEntry + "' in '" + envName + "' env.", e);
+                throw new EnvironmentException("Can't parse group declaration: '" + groupEntry, e);
             }
         });
     }

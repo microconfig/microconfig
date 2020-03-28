@@ -18,6 +18,7 @@ import static io.microconfig.core.properties.serializers.PropertySerializers.asS
 import static io.microconfig.utils.FileUtils.walk;
 import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.Logger.error;
+import static io.microconfig.utils.StringUtils.unixLikePath;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -47,7 +48,6 @@ public class MicroconfigTest {
                 file.getName().startsWith("expect.");
     }
 
-    //todo highlight error
     private DynamicTest toTest(File expectation) {
         String component = getComponentName(expectation);
         String env = getEnvName(expectation);
@@ -89,9 +89,16 @@ public class MicroconfigTest {
 
     private String readExpectation(File expectation) {
         return readFully(expectation)
-                .replace("${currentDir}", expectation.getParentFile().getAbsolutePath())
-                .replace("${componentsDir}", new File(root, "components").getAbsolutePath())
+                .replace("${configDir}", expectation.getParentFile().getAbsolutePath())
+                .replace("${configRoot}", toPath(root))
+                .replace("${resultDir}", toPath(new File(root, "build")))
+                .replace("${userHome}", toPath(new File(System.getProperty("user.home"))))
+                .replace("${user}", System.getenv("USER"))
                 .replace("${space}", " ")
                 .replace("#todo", "");
+    }
+
+    private String toPath(File file) {
+        return unixLikePath(file.getAbsolutePath());
     }
 }

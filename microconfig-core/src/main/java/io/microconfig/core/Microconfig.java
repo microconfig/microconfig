@@ -126,10 +126,10 @@ public class Microconfig {
 
             PlaceholderResolveStrategy strategy = cache(composite(
                     systemPropertiesResolveStrategy(),
+                    envVariablesResolveStrategy(),
                     new ComponentResolveStrategy(componentSpecialProperties),
                     new EnvironmentResolveStrategy(getEnvironments(), envSpecialProperties),
-                    new StandardResolveStrategy(getEnvironments()),
-                    envVariablesResolveStrategy()
+                    new StandardResolveStrategy(getEnvironments())
             ));
 
             return new PlaceholderResolver(
