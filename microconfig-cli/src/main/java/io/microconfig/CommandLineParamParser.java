@@ -33,8 +33,11 @@ public class CommandLineParamParser {
     }
 
     public String valueOr(String key, String defaultValue) {
-        String v = keyToValue.get(key);
-        return isEmpty(v) ? defaultValue : v;
+        String value = keyToValue.get(key);
+        if (isEmpty(value)) return defaultValue;
+
+        return value.startsWith("\"") && value.endsWith("\"") ?
+                value.substring(1, value.length() - 1) : value;
     }
 
     public List<String> listValue(String key) {
@@ -43,10 +46,7 @@ public class CommandLineParamParser {
 
     public String requiredValue(String key, String npeMessage) {
         String value = value(key);
-        if (value != null) {
-            return value.startsWith("\"") && value.endsWith("\"") ?
-                    value.substring(1, value.length() - 1) : value;
-        }
+        if (value != null) return value;
 
         printErrorAndExit(npeMessage);
         throw new AssertionError("Impossible");

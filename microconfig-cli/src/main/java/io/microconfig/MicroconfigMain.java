@@ -18,7 +18,7 @@ import static java.lang.System.currentTimeMillis;
  */
 //todo update documentation
 public class MicroconfigMain {
-    public static void main(String[] args) {
+    public static void main(String... args) {
         val params = MicroconfigParams.parse(args);
 
         File rootDir = params.rootDir();
