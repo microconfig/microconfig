@@ -10,6 +10,7 @@ import static io.microconfig.core.Microconfig.searchConfigsIn;
 import static io.microconfig.core.configtypes.ConfigTypeFilters.eachConfigType;
 import static io.microconfig.core.properties.serializers.PropertySerializers.toFileIn;
 import static io.microconfig.core.properties.serializers.PropertySerializers.withConfigDiff;
+import static io.microconfig.core.properties.templates.CopyTemplatesService.resolveTemplatesBy;
 
 @RequiredArgsConstructor
 public class MicroconfigRunner {
@@ -21,6 +22,7 @@ public class MicroconfigRunner {
         microconfig.inEnvironment(env).findComponentsFrom(groups, services)
                 .getPropertiesFor(eachConfigType())
                 .resolveBy(microconfig.resolver())
+                .forEachComponent(resolveTemplatesBy(microconfig.resolver()))
                 .save(toFileIn(destinationDir, withConfigDiff()));
     }
 }

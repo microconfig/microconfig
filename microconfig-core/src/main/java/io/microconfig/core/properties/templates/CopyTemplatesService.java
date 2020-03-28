@@ -3,12 +3,14 @@ package io.microconfig.core.properties.templates;
 import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.Resolver;
+import io.microconfig.core.properties.TypedProperties;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static io.microconfig.core.properties.templates.TemplatePattern.defaultPattern;
 
@@ -20,13 +22,21 @@ public class CopyTemplatesService {
         this(defaultPattern());
     }
 
-    public void copyTemplatesOf(DeclaringComponent currentComponent,
+    public static Consumer<TypedProperties> resolveTemplatesBy(Resolver resolver) {
+        CopyTemplatesService copyTemplatesService = new CopyTemplatesService();
+        return p -> copyTemplatesService.resolveTemplate(
+                p.getDeclaringComponent(),
+                p.getPropertiesAsMap(),
+                resolver
+        );
+    }
+
+    public void resolveTemplate(DeclaringComponent currentComponent,
                                 Map<String, Property> componentProperties,
-                                Resolver resolver,
-                                File destinationDir) {
+                                Resolver resolver) {
         findTemplateDefinitionsFrom(componentProperties.values()).forEach(def -> {
             try {
-                def.resolveAndCopy(resolver, currentComponent, destinationDir);
+                def.resolveAndCopy(resolver, currentComponent);
             } catch (RuntimeException e) {
                 throw new IllegalStateException("Template error: " + def + ", component: " + currentComponent, e);
             }
@@ -63,10 +73,10 @@ public class CopyTemplatesService {
         private String fromFile;
         private String toFile;
 
-        private void resolveAndCopy(Resolver resolver, DeclaringComponent currentComponent, File destinationDir) {
+        private void resolveAndCopy(Resolver resolver, DeclaringComponent currentComponent) {
             toTemplate()
                     .resolveBy(resolver, currentComponent)
-                    .copyTo(getDestinationFile(destinationDir));
+                    .copyTo(getDestinationFile(resolver, currentComponent));
         }
 
         private Template toTemplate() {
@@ -89,9 +99,13 @@ public class CopyTemplatesService {
             return path;
         }
 
-        private File getDestinationFile(File serviceDir) {
+        private File getDestinationFile(Resolver resolver, DeclaringComponent currentComponent) {
             File path = new File(toFile);
-            return path.isAbsolute() ? path : new File(serviceDir, path.getPath());
+            return path.isAbsolute() ? path : new File(getDestinationDir(resolver, currentComponent), path.getPath());
+        }
+
+        private String getDestinationDir(Resolver resolver, DeclaringComponent currentComponent) {
+            return resolver.resolve("${this@resultDir}", currentComponent, currentComponent);
         }
 
         public void setFromFile(String fromFile) {

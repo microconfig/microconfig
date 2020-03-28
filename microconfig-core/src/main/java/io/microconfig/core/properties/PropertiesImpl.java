@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
@@ -24,12 +25,12 @@ public class PropertiesImpl implements Properties {
 
     @Override
     public Properties resolveBy(Resolver resolver) {
-        return forEachComponent(c -> c.resolveBy(resolver));
+        return withEachComponent(c -> c.resolveBy(resolver));
     }
 
     @Override
     public Properties withoutTempValues() {
-        return forEachComponent(TypedProperties::withoutTempValues);
+        return withEachComponent(TypedProperties::withoutTempValues);
     }
 
     @Override
@@ -67,7 +68,13 @@ public class PropertiesImpl implements Properties {
         return properties.get(0);
     }
 
-    private Properties forEachComponent(UnaryOperator<TypedProperties> applyFunction) {
+    @Override
+    public Properties forEachComponent(Consumer<TypedProperties> callback) {
+        properties.forEach(callback);
+        return this;
+    }
+
+    private Properties withEachComponent(UnaryOperator<TypedProperties> applyFunction) {
         return new PropertiesImpl(forEach(properties.parallelStream(), applyFunction));
     }
 
