@@ -2,6 +2,7 @@ package io.microconfig.core.properties.templates;
 
 import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.Resolver;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
@@ -24,9 +25,10 @@ class Template {
     private final File source;
     private final Pattern pattern;
     @With(PRIVATE)
+    @Getter
     private final String content;
 
-    Template(File source, Pattern pattern) {
+     Template(File source, Pattern pattern) {
         if (!source.exists() || !source.isFile()) {
             throw new IllegalStateException("Missing template file: " + this);
         }
