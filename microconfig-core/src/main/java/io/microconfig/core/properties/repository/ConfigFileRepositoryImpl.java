@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import static io.microconfig.utils.FileUtils.getExtension;
 import static io.microconfig.utils.FileUtils.walk;
 import static io.microconfig.utils.Logger.warn;
-import static io.microconfig.utils.StringUtils.symbolCountIn;
+import static io.microconfig.utils.StringUtils.dotCountIn;
 import static java.lang.Long.MIN_VALUE;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
@@ -69,7 +69,7 @@ public class ConfigFileRepositoryImpl implements ConfigFileRepository {
     }
 
     private Predicate<File> forEnv(String environment) {
-        return f -> symbolCountIn(f.getName(), '.') == 1 || f.getName().contains('.' + environment + '.');
+        return f -> dotCountIn(f.getName()) == 1 || f.getName().contains('.' + environment + '.');
     }
 
     private Comparator<File> configPriority() {
@@ -78,7 +78,7 @@ public class ConfigFileRepositoryImpl implements ConfigFileRepository {
     }
 
     private long amountOfEnvironments(File f) {
-        long envCount = symbolCountIn(f.getName(), '.') - 1;
+        long envCount = dotCountIn(f.getName()) - 1;
         if (envCount == 0) return MIN_VALUE;
         return -1 * envCount;
     }

@@ -46,6 +46,10 @@ public class StringUtils {
         return result.toString();
     }
 
+    public static long dotCountIn(String line) {
+        return symbolCountIn(line, '.');
+    }
+
     public static long symbolCountIn(String line, char symbol) {
         return line.chars().filter(c -> c == symbol).count();
     }

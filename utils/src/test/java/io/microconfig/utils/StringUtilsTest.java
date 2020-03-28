@@ -61,6 +61,8 @@ class StringUtilsTest {
         assertEquals(2, symbolCountIn(line, 'o'));
         assertEquals(0, symbolCountIn(line, 'z'));
         assertEquals(0, symbolCountIn("", 'z'));
+        assertEquals(4, dotCountIn("1fdw.234.4.."));
+        assertEquals(0, dotCountIn(line));
     }
 
     @Test
