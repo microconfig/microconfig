@@ -10,8 +10,8 @@ import java.util.regex.Pattern;
 import static java.util.Collections.singletonList;
 import static java.util.regex.Pattern.compile;
 
-@Getter
 @With
+@Getter
 @Builder
 public class TemplatePattern {
     public static final String DEFAULT_TEMPLATE_PREFIX = "microconfig.template.";

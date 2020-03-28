@@ -28,7 +28,7 @@ class Template {
     @Getter
     private final String content;
 
-     Template(File source, Pattern pattern) {
+    Template(File source, Pattern pattern) {
         if (!source.exists() || !source.isFile()) {
             throw new IllegalStateException("Missing template file: " + this);
         }
