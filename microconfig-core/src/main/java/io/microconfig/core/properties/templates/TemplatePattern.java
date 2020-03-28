@@ -17,7 +17,11 @@ public class TemplatePattern {
     public static final String DEFAULT_TEMPLATE_PREFIX = "microconfig.template.";
     public static final String DEFAULT_FROM_FILE_SUFFIX = ".fromFile";
     public static final String DEFAULT_TO_FILE_SUFFIX = ".toFile";
-    public static final Pattern DEFAULT_PATTERN = compile("(?<escaped>\\\\)?(?<placeholder>\\$\\{(?<name>.+?)(?::(?<defuvalue>.*?))??})");
+    public static final Pattern DEFAULT_PATTERN =
+            compile("(?<escaped>\\\\)?" +
+                    "(?<placeholder>\\$\\{(?<name>.+?)" +
+                    "(?::(?<defuvalue>.*?))??})"
+            );
 
     private final List<String> templatePrefixes;
     private final String fromFileSuffix;
@@ -43,6 +47,7 @@ public class TemplatePattern {
                 .map(p -> {
                     int endIndex = str.endsWith(fromFileSuffix) ? fromFileSuffix.length() : toFileSuffix.length();
                     return str.substring(p.length(), str.length() - endIndex);
-                }).findFirst().get();
+                }).findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Incorrect template " + str));
     }
 }

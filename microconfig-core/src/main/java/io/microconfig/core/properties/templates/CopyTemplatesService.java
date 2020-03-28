@@ -33,7 +33,7 @@ public class CopyTemplatesService {
         });
     }
 
-    //todo exception handling
+    //todo test exception handling
     private Collection<TemplateDefinition> findTemplateDefinitionsFrom(Collection<Property> componentProperties) {
         Map<String, TemplateDefinition> templateByName = new LinkedHashMap<>();
 

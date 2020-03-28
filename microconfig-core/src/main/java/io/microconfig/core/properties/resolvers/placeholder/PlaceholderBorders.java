@@ -15,7 +15,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 @With(PRIVATE)
 @RequiredArgsConstructor
-class PlaceholderBorders {
+public class PlaceholderBorders {
     private final StringBuilder line;
 
     @Getter

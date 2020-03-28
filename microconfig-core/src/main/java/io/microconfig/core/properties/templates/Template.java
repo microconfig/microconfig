@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders.findPlaceholderIn;
 import static io.microconfig.utils.FileUtils.copyPermissions;
 import static io.microconfig.utils.FileUtils.write;
 import static io.microconfig.utils.IoUtils.readFully;
@@ -46,7 +47,7 @@ class Template {
         return withContent(result.toString());
     }
 
-    public void copyTo(File destinationFile){
+    public void copyTo(File destinationFile) {
         write(destinationFile, content);
         copyPermissions(source.toPath(), destinationFile.toPath());
         info("Copied template: " + source + " -> " + destinationFile);
@@ -58,44 +59,42 @@ class Template {
             return;
         }
 
-        String placeholder = m.group();
-        String value = resolve(placeholder, currentComponent, resolver);
-        if (value == null) return;
+        String placeholder = normalize(m.group());
+        if (placeholder == null) return;
+        String resolved = resolve(placeholder, currentComponent, resolver);
 
-        String finalValue = addOffsetForMultiLineValue(m, value);
+        String finalValue = addOffsetForMultiLineValue(resolved, m);
         m.appendReplacement(result, quoteReplacement(finalValue));
     }
 
-    private String addOffsetForMultiLineValue(Matcher m, String value) {
-        int lineBeginIndex = content.lastIndexOf("\n", m.start());
-        int placeholderOffset = m.start() - lineBeginIndex - 1;
-        return value.replace("\n", addOffsets("\n", placeholderOffset));
+    private String normalize(String placeholder) {
+        if (isValidPlaceholder(placeholder)) return placeholder;
+
+        String newFormat = "${this@" + placeholder.substring("${".length());
+        if (isValidPlaceholder(newFormat)) return newFormat;
+        return null;
+    }
+
+    public static boolean isValidPlaceholder(String value) {
+        return findPlaceholderIn(value).isPresent();
     }
 
     private String resolve(String placeholder, DeclaringComponent currentComponent, Resolver resolver) {
-        boolean microconfigFormatPlaceholder = isValidPlaceholder(placeholder);
-        if (!microconfigFormatPlaceholder) {
-            String newFormat = "${this@" + placeholder.substring("${".length());
-            if (!isValidPlaceholder(newFormat)) return null;
-            placeholder = newFormat;
-        }
-
         try {
             return doResolve(placeholder, resolver, currentComponent);
         } catch (RuntimeException e) {
-            if (microconfigFormatPlaceholder) {
-                warn("Template placeholder error: " + e.getMessage());
-            }
+            warn("Template placeholder error: " + e.getMessage()); //todo test
             return null;
         }
     }
 
-    public static boolean isValidPlaceholder(String value) {
-//        return Placeholder.parse(value).isValid();
-        return false;
-    }
-
     private String doResolve(String placeholder, Resolver resolver, DeclaringComponent currentComponent) {
         return resolver.resolve(placeholder, currentComponent, currentComponent);
+    }
+
+    private String addOffsetForMultiLineValue(String value, Matcher m) {
+        int lineBeginIndex = content.lastIndexOf("\n", m.start());
+        int placeholderOffset = m.start() - lineBeginIndex - 1;
+        return value.replace("\n", addOffsets("\n", placeholderOffset));
     }
 }
