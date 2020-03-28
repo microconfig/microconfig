@@ -1,4 +1,4 @@
-package io.microconfig.core.properties.repository.configs;
+package io.microconfig.core.properties.repository;
 
 import java.io.File;
 import java.util.Set;

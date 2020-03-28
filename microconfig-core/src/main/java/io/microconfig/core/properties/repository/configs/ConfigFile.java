@@ -1,9 +1,11 @@
-package io.microconfig.core.properties.repository;
+package io.microconfig.core.properties.repository.configs;
 
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.io.ConfigIo;
 import io.microconfig.core.properties.io.ConfigReader;
 import io.microconfig.core.properties.repository.ConfigFileParser.ConfigDefinition;
+import io.microconfig.core.properties.repository.Include;
+import io.microconfig.core.properties.repository.Includes;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

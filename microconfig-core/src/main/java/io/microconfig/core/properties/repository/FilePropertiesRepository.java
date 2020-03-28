@@ -13,7 +13,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static io.microconfig.core.properties.repository.configs.ConfigFileFilters.*;
+import static io.microconfig.core.properties.repository.ConfigFileFilters.*;
 
 @RequiredArgsConstructor
 public class FilePropertiesRepository implements PropertiesRepository {
