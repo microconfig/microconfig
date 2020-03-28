@@ -13,7 +13,6 @@ import java.util.Map;
 import static io.microconfig.core.properties.templates.TemplatePattern.defaultPattern;
 import static io.microconfig.utils.FileUtils.copyPermissions;
 import static io.microconfig.utils.FileUtils.write;
-import static io.microconfig.utils.Logger.error;
 import static io.microconfig.utils.Logger.info;
 
 @RequiredArgsConstructor
@@ -24,15 +23,15 @@ public class CopyTemplatesService {
         this(defaultPattern());
     }
 
-    public void copyTemplates(DeclaringComponent currentComponent,
-                              File serviceDestinationDir,
-                              Map<String, Property> componentProperties,
-                              Resolver resolver) {
+    public void copyTemplatesOf(DeclaringComponent currentComponent,
+                                Map<String, Property> componentProperties,
+                                Resolver resolver,
+                                File destinationDir) {
         findTemplateDefinitionsFrom(componentProperties.values()).forEach(def -> {
             try {
-                def.resolveAndCopy(resolver, currentComponent, serviceDestinationDir);
+                def.resolveAndCopy(resolver, currentComponent, destinationDir);
             } catch (RuntimeException e) {
-                error("Template error: " + def + ", component: " + currentComponent, e);
+                throw new IllegalStateException("Template error: " + def + ", component: " + currentComponent, e);
             }
         });
     }
