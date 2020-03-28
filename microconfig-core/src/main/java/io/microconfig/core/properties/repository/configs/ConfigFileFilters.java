@@ -1,4 +1,4 @@
-package io.microconfig.core.properties.repository.graph;
+package io.microconfig.core.properties.repository.configs;
 
 import java.io.File;
 import java.util.Set;

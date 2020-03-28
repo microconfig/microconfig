@@ -1,7 +1,7 @@
 package io.microconfig.core.resolvers.placeholder.strategies.component.properties;
 
 import io.microconfig.core.environments.EnvironmentRepository;
-import io.microconfig.core.properties.repository.ComponentGraph;
+import io.microconfig.core.properties.repository.ConfigFileRepository;
 import io.microconfig.core.resolvers.placeholder.strategies.component.ComponentProperty;
 import io.microconfig.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 public class ConfigDirProperty implements ComponentProperty {
-    private final ComponentGraph componentGraph;
+    private final ConfigFileRepository configFileRepository;
     private final EnvironmentRepository environmentRepository;
 
     @Override
@@ -28,7 +28,7 @@ public class ConfigDirProperty implements ComponentProperty {
     }
 
     private Optional<String> findDirBy(String component) {
-        return componentGraph.getFolderOf(component)
+        return configFileRepository.getFolderOf(component)
                 .map(File::getAbsolutePath)
                 .map(StringUtils::unixLikePath);
     }

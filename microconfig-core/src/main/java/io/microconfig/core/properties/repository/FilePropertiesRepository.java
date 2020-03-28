@@ -4,7 +4,7 @@ import io.microconfig.core.configtypes.ConfigType;
 import io.microconfig.core.properties.PropertiesRepository;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.repository.ConfigFileParser.ConfigDefinition;
-import io.microconfig.core.properties.repository.graph.ComponentNotFoundException;
+import io.microconfig.core.properties.repository.configs.ComponentNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
@@ -13,11 +13,11 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static io.microconfig.core.properties.repository.graph.ConfigFileFilters.*;
+import static io.microconfig.core.properties.repository.configs.ConfigFileFilters.*;
 
 @RequiredArgsConstructor
 public class FilePropertiesRepository implements PropertiesRepository {
-    private final ComponentGraph componentGraph;
+    private final ConfigFileRepository configFileRepository;
     private final ConfigFileParser configFileParser;
 
     @Override
@@ -58,7 +58,7 @@ public class FilePropertiesRepository implements PropertiesRepository {
         }
 
         private Stream<ConfigDefinition> configDefinitionsFor(Predicate<File> filter) {
-            return componentGraph.getConfigFilesFor(originalComponentName, filter)
+            return configFileRepository.getConfigFilesFor(originalComponentName, filter)
                     .map(file -> configFileParser.parse(file, configType.getName(), environment));
         }
 

@@ -1,6 +1,6 @@
-package io.microconfig.core.properties.repository.graph;
+package io.microconfig.core.properties.repository.configs;
 
-import io.microconfig.core.properties.repository.ComponentGraph;
+import io.microconfig.core.properties.repository.ConfigFileRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -24,19 +24,19 @@ import static java.util.stream.Collectors.groupingBy;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
-public class CachedComponentGraph implements ComponentGraph {
+public class CachedConfigFileRepository implements ConfigFileRepository {
     public static final String COMPONENTS_DIR = "components";
 
     private final Map<String, List<File>> foldersByComponentType;
 
-    public static ComponentGraph traverseFrom(File rootDir) {
+    public static ConfigFileRepository traverseFrom(File rootDir) {
         File componentDir = new File(rootDir, COMPONENTS_DIR);
         if (!componentDir.exists()) {
             throw new IllegalArgumentException("Root directory must contain 'components' dir");
         }
 
         try (Stream<Path> paths = walk(componentDir.toPath())) {
-            return new CachedComponentGraph(collectFoldersByComponentType(paths));
+            return new CachedConfigFileRepository(collectFoldersByComponentType(paths));
         }
     }
 

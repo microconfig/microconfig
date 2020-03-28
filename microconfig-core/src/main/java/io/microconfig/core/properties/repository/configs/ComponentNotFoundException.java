@@ -1,4 +1,4 @@
-package io.microconfig.core.properties.repository.graph;
+package io.microconfig.core.properties.repository.configs;
 
 import lombok.RequiredArgsConstructor;
 
