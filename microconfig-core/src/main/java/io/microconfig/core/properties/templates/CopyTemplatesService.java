@@ -12,7 +12,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import static io.microconfig.core.properties.templates.TemplatePattern.DEFAULT_TEMPLATE_PREFIX;
 import static io.microconfig.core.properties.templates.TemplatePattern.defaultPattern;
+import static io.microconfig.utils.Logger.info;
+import static java.util.Arrays.asList;
 
 @RequiredArgsConstructor
 public class CopyTemplatesService {
@@ -23,7 +26,8 @@ public class CopyTemplatesService {
     }
 
     public static Consumer<TypedProperties> resolveTemplatesBy(Resolver resolver) {
-        CopyTemplatesService copyTemplatesService = new CopyTemplatesService();
+        TemplatePattern templatePattern = defaultPattern().withTemplatePrefixes(asList(DEFAULT_TEMPLATE_PREFIX, "mgmt.template."));
+        CopyTemplatesService copyTemplatesService = new CopyTemplatesService(templatePattern);
         return p -> copyTemplatesService.resolveTemplate(
                 p.getDeclaringComponent(),
                 p.getPropertiesAsMap(),
@@ -70,13 +74,15 @@ public class CopyTemplatesService {
     private class TemplateDefinition {
         private final String name;
 
-        private String fromFile;
-        private String toFile;
+        private File fromFile;
+        private File toFile;
 
         private void resolveAndCopy(Resolver resolver, DeclaringComponent currentComponent) {
             toTemplate()
                     .resolveBy(resolver, currentComponent)
                     .copyTo(getDestinationFile(resolver, currentComponent));
+            info("Copied '" + currentComponent.getComponent() + "' template ../" + fromFile.getParentFile().getName() + "/" + fromFile.getName() + " -> " + toFile);
+
         }
 
         private Template toTemplate() {
@@ -91,17 +97,15 @@ public class CopyTemplatesService {
         }
 
         private File getTemplateFile() {
-            File path = new File(fromFile);
-            if (!path.isAbsolute()) {
+            if (!fromFile.isAbsolute()) {
                 throw new IllegalArgumentException("Using relative path for template '" + fromFile + "'. "
                         + "Template path must be absolute. Consider using '${this@configRoot}\\..' or '${component_name@configDir}\\..' to build absolute path");
             }
-            return path;
+            return fromFile;
         }
 
         private File getDestinationFile(Resolver resolver, DeclaringComponent currentComponent) {
-            File path = new File(toFile);
-            return path.isAbsolute() ? path : new File(getDestinationDir(resolver, currentComponent), path.getPath());
+            return toFile.isAbsolute() ? toFile : new File(getDestinationDir(resolver, currentComponent), toFile.getPath());
         }
 
         private String getDestinationDir(Resolver resolver, DeclaringComponent currentComponent) {
@@ -109,14 +113,14 @@ public class CopyTemplatesService {
         }
 
         public void setFromFile(String fromFile) {
-            this.fromFile = fromFile;
+            this.fromFile = new File(fromFile);
             if (this.toFile == null) {
-                setToFile(new File(fromFile).getName());
+                setToFile(this.fromFile.getName());
             }
         }
 
         public void setToFile(String toFile) {
-            this.toFile = toFile;
+            this.toFile = new File(toFile);
         }
 
         @Override

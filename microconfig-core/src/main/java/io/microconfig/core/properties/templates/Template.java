@@ -14,8 +14,6 @@ import static io.microconfig.core.properties.resolvers.placeholder.PlaceholderBo
 import static io.microconfig.utils.FileUtils.copyPermissions;
 import static io.microconfig.utils.FileUtils.write;
 import static io.microconfig.utils.IoUtils.readFully;
-import static io.microconfig.utils.Logger.info;
-import static io.microconfig.utils.Logger.warn;
 import static io.microconfig.utils.StringUtils.addOffsets;
 import static java.util.regex.Matcher.quoteReplacement;
 import static lombok.AccessLevel.PRIVATE;
@@ -52,7 +50,6 @@ class Template {
     public void copyTo(File destinationFile) {
         write(destinationFile, content);
         copyPermissions(source.toPath(), destinationFile.toPath());
-        info("Copied template: " + source + " -> " + destinationFile);
     }
 
     private void doResolve(Matcher m, StringBuffer result, Resolver resolver, DeclaringComponent currentComponent) {
@@ -61,20 +58,11 @@ class Template {
             return;
         }
 
-        String placeholder = normalize(m.group());
-        if (placeholder == null) return;
-        String resolved = resolve(placeholder, currentComponent, resolver);
+        String resolved = resolve(m.group(), currentComponent, resolver);
+        if (resolved == null) return;
 
         String finalValue = addOffsetForMultiLineValue(resolved, m);
         m.appendReplacement(result, quoteReplacement(finalValue));
-    }
-
-    private String normalize(String placeholder) {
-        if (isValidPlaceholder(placeholder)) return placeholder;
-
-        String newFormat = "${this@" + placeholder.substring("${".length());
-        if (isValidPlaceholder(newFormat)) return newFormat;
-        return null;
     }
 
     public static boolean isValidPlaceholder(String value) {
@@ -82,10 +70,15 @@ class Template {
     }
 
     private String resolve(String placeholder, DeclaringComponent currentComponent, Resolver resolver) {
-        try {
+        if (isValidPlaceholder(placeholder)) {
             return doResolve(placeholder, resolver, currentComponent);
+        }
+
+        String newFormat = "${this@" + placeholder.substring("${".length());
+        if (!isValidPlaceholder(newFormat)) return null;
+        try {
+            return doResolve(newFormat, resolver, currentComponent);
         } catch (RuntimeException e) {
-            warn("Template placeholder error: " + e.getMessage()); //todo test
             return null;
         }
     }

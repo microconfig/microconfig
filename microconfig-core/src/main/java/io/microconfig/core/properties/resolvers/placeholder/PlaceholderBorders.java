@@ -56,7 +56,9 @@ public class PlaceholderBorders {
                 return withEnvIndex(i + 1).parseEnvName();
             }
             if (c == '@') {
-                return withKeyIndex(i + 1).parseKey();
+                return (startIndex + 2 == i) ?
+                        withStartIndex(i).searchOpenSign() :
+                        withKeyIndex(i + 1).parseKey();
             }
             if (notAllowedSymbol(c)) {
                 return withStartIndex(i).searchOpenSign();
@@ -87,7 +89,9 @@ public class PlaceholderBorders {
                 return withDefaultValueIndex(i + 1).parseDefaultValue();
             }
             if (c == '}') {
-                return of(withEndIndex(i + 1));
+                return keyIndex == i ?
+                        withStartIndex(i).searchOpenSign() :
+                        of(withEndIndex(i + 1));
             }
             if (notAllowedSymbol(c) && c != '/' && c != '\\') {
                 return withStartIndex(i).searchOpenSign();

@@ -16,6 +16,7 @@ class PlaceholderBordersTest {
         doTest("${component@value${c2@v2}}", "${c2@v2}");
         doTest("${component@${c2@v2}}", "${c2@v2}");
         doTest("${${c1@v1}@${c2@v2}}", "${c1@v1}");
+        doTest("${@} ${ @ } ${c@} ${@k} ${c@v}", "${c@v}");
     }
 
     private void doTest(String line, String expected) {
