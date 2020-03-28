@@ -25,7 +25,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
 public class ConfigFileRepositoryImpl implements ConfigFileRepository {
-    public static final String COMPONENTS_DIR = "components";
+    private static final String COMPONENTS_DIR = "components";
 
     private final Map<String, List<File>> foldersByComponentType;
 
@@ -47,7 +47,7 @@ public class ConfigFileRepositoryImpl implements ConfigFileRepository {
                 .collect(groupingBy(File::getName));
     }
 
-    @Override
+    @Override //todo includes from diff components shouldn't be parsed multiple times
     public List<ConfigFile> getConfigFilesOf(String component, String environment, ConfigType configType) {
         List<File> dirs = foldersByComponentType.getOrDefault(component, emptyList());
         if (dirs.isEmpty()) {
