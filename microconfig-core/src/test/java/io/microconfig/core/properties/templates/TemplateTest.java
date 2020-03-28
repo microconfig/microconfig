@@ -1,6 +1,5 @@
 package io.microconfig.core.properties.templates;
 
-import io.microconfig.core.Microconfig;
 import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.DeclaringComponentImpl;
 import io.microconfig.core.properties.Resolver;
@@ -9,11 +8,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.File;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
 import static io.microconfig.core.ClasspathReader.classpathFile;
+import static io.microconfig.core.Microconfig.searchConfigsIn;
 import static io.microconfig.core.properties.templates.TemplatePattern.defaultPattern;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -25,52 +25,44 @@ class TemplateTest {
     @ParameterizedTest
     @ValueSource(strings = {"${ip:default}", "${this@ip}"})
     void resolveIp(String placeholder) {
-        String result = new Template(source, templatePattern, placeholder).resolveBy(resolver(), root).getContent();
-        assertEquals("172.30.162.3", result);
+        resolve(placeholder, "172.30.162.3");
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"default", ""})
     void resolveDefaultValue(String defaultValue) {
-        Template template = new Template(source, templatePattern, "${param:" + defaultValue + "}");
-        String result = template.resolveBy(resolver(), root).getContent();
-        assertEquals(defaultValue, result);
+        resolve("${param:" + defaultValue + "}", defaultValue);
     }
 
     @Test
     void testEscaped() {
-        Template template = new Template(source, templatePattern, "\\${param:default}");
-        String result = template.resolveBy(resolver(), root).getContent();
-        assertEquals("${param:default}", result);
+        resolve("\\${param:default}", "${param:default}");
     }
 
     @Test
     void testExtendedPattern() {
-        Template template = new Template(source, templatePattern, "aaa${env}bbb\\${xxx}ccc${missing_param:---}ddd");
-        String result = template.resolveBy(resolver(), root).getContent();
-        assertEquals("aaauatbbb${xxx}ccc---ddd", result);
+        resolve("aaa${env}bbb\\${xxx}ccc${missing_param:---}ddd", "aaauatbbb${xxx}ccc---ddd");
     }
 
     @Test
     void testEnvProperties() {
-        Map.Entry<String, String> entry = System.getenv().entrySet().iterator().next();
-        Template template = new Template(source, templatePattern, "${env@" + entry.getKey() + "}");
-        String result = template.resolveBy(resolver(), root).getContent();
+        Entry<String, String> entry = System.getenv().entrySet().iterator().next();
+        String result = new Template(source, templatePattern, "${env@" + entry.getKey() + "}").
+                resolveBy(resolver(), root).getContent();
         UnaryOperator<String> escape = v -> v.replaceAll("\\\\+", "/");
         assertEquals(escape.apply(entry.getValue()), escape.apply(result));
     }
 
     @Test
     void testSystemProperties() {
-        Template template = new Template(source, templatePattern, "${system@user.name}");
-        String result = template.resolveBy(resolver(), root).getContent();
-        assertEquals(System.getProperty("user.name"), result);
+        resolve("${system@user.name}", System.getProperty("user.name"));
     }
 
     @Test
     void testMultiLinePlaceholderInTemplate() {
-        Template template = new Template(classpathFile("templates/templateWithMultiLines.yaml"), templatePattern);
-        String result = template.resolveBy(resolver(), new DeclaringComponentImpl("app", "mergeLists", "some")).getContent();
+        String result = new Template(classpathFile("templates/templateWithMultiLines.yaml"), templatePattern)
+                .resolveBy(resolver(), new DeclaringComponentImpl("app", "mergeLists", "some"))
+                .getContent();
         assertEquals("key1:\n" +
                 "  key2:\n" +
                 "    key3:\n" +
@@ -88,6 +80,12 @@ class TemplateTest {
     }
 
     private Resolver resolver() {
-        return Microconfig.searchConfigsIn(classpathFile("repo")).resolver();
+        return searchConfigsIn(classpathFile("repo")).resolver();
+    }
+
+    private void resolve(String placeholder, String expected) {
+        Template template = new Template(source, templatePattern, placeholder);
+        String result = template.resolveBy(resolver(), root).getContent();
+        assertEquals(expected, result);
     }
 }
