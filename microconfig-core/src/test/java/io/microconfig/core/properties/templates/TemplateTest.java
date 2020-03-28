@@ -5,10 +5,11 @@ import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.DeclaringComponentImpl;
 import io.microconfig.core.properties.Resolver;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.File;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
@@ -17,26 +18,23 @@ import static io.microconfig.core.properties.templates.TemplatePattern.defaultPa
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TemplateTest {
-    private final DeclaringComponent root = new DeclaringComponentImpl("app", "th-server", "uat");
-    private final Pattern templatePattern = defaultPattern().getPattern();
-    private final File source = new File("source");
+    DeclaringComponent root = new DeclaringComponentImpl("app", "th-server", "uat");
+    Pattern templatePattern = defaultPattern().getPattern();
+    File source = new File("source");
 
-    @Test
-    void testResolve() {
-        Consumer<String> testIp = prop -> {
-            String result = new Template(source, templatePattern, prop).resolveBy(resolver(), root).getContent();
-            assertEquals("172.30.162.3", result);
-        };
-
-        testIp.accept("${ip:default}");
-        testIp.accept("${this@ip}");
+    @ParameterizedTest
+    @ValueSource(strings = {"${ip:default}", "${this@ip}"})
+    void resolveIp(String placeholder) {
+        String result = new Template(source, templatePattern, placeholder).resolveBy(resolver(), root).getContent();
+        assertEquals("172.30.162.3", result);
     }
 
-    @Test
-    void testMissedParameter() {
-        Template template = new Template(source, templatePattern, "${param:default}");
+    @ParameterizedTest
+    @ValueSource(strings = {"default", ""})
+    void resolveDefaultValue(String defaultValue) {
+        Template template = new Template(source, templatePattern, "${param:" + defaultValue + "}");
         String result = template.resolveBy(resolver(), root).getContent();
-        assertEquals("default", result);
+        assertEquals(defaultValue, result);
     }
 
     @Test
