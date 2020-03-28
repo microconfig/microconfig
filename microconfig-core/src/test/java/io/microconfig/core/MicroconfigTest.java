@@ -14,7 +14,7 @@ import static io.microconfig.core.ClasspathReader.classpathFile;
 import static io.microconfig.core.Microconfig.searchConfigsIn;
 import static io.microconfig.core.configtypes.ConfigTypeFilters.configType;
 import static io.microconfig.core.configtypes.StandardConfigType.APPLICATION;
-import static io.microconfig.core.properties.PropertySerializers.asString;
+import static io.microconfig.core.properties.serializers.PropertySerializers.asString;
 import static io.microconfig.utils.FileUtils.walk;
 import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.Logger.error;
