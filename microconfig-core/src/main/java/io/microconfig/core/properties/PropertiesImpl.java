@@ -70,7 +70,7 @@ public class PropertiesImpl implements Properties {
 
     @Override
     public Properties forEachComponent(Consumer<TypedProperties> callback) {
-        properties.forEach(callback);
+        properties.parallelStream().forEach(callback);
         return this;
     }
 
