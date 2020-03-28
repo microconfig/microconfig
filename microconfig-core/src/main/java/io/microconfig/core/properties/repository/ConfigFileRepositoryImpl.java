@@ -20,6 +20,7 @@ import static java.util.Comparator.comparing;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
@@ -47,7 +48,7 @@ public class ConfigFileRepositoryImpl implements ConfigFileRepository {
     }
 
     @Override
-    public Stream<ConfigFile> getConfigFilesFor(String component, String environment, ConfigType configType) {
+    public List<ConfigFile> getConfigFilesFor(String component, String environment, ConfigType configType) {
         List<File> dirs = foldersByComponentType.getOrDefault(component, emptyList());
         if (dirs.isEmpty()) {
             throw new ComponentNotFoundException(component);
@@ -59,7 +60,8 @@ public class ConfigFileRepositoryImpl implements ConfigFileRepository {
                 .flatMap(Stream::of)
                 .filter(configWith(configType).and(forEnv(environment)))
                 .sorted(configPriority())
-                .map(f -> new ConfigFile(f, configType.getName(), environment));
+                .map(f -> new ConfigFile(f, configType.getName(), environment))
+                .collect(toList());
     }
 
     private Predicate<File> configWith(ConfigType configType) {
