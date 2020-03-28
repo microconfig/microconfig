@@ -36,11 +36,11 @@ public class FilePropertiesRepository implements PropertiesRepository {
         }
 
         private List<ConfigFile> configFiles() {
-            return configFileRepository.getConfigFilesFor(component, environment, configType);
+            return configFileRepository.getConfigFilesOf(component, environment, configType);
         }
 
-        private Map<String, Property> readAndParse(List<ConfigFile> componentConfigs) {
-            return componentConfigs.stream()
+        private Map<String, Property> readAndParse(List<ConfigFile> componentConfigFiles) {
+            return componentConfigFiles.stream()
                     .map(this::parse)
                     .reduce(new LinkedHashMap<>(), (m1, m2) -> {
                         m1.putAll(m2);
@@ -49,7 +49,8 @@ public class FilePropertiesRepository implements PropertiesRepository {
         }
 
         private Map<String, Property> parse(ConfigFile configFile) {
-            return configFile.parseUsing(configIo).getBaseAndIncludedProperties(this::includeResolver);
+            return configFile.parseUsing(configIo)
+                    .getBaseAndIncludedProperties(this::includeResolver);
         }
 
         private Map<String, Property> includeResolver(Include include) {

@@ -26,18 +26,18 @@ public class ConfigFile {
     private final String configType;
     private final String environment;
 
-    public ConfigDefinition parseUsing(ConfigIo configIo) {
+    public RawConfig parseUsing(ConfigIo configIo) {
         ConfigReader reader = configIo.readFrom(file);
 
         Map<Integer, String> commentByLineNumber = reader.commentsByLineNumber();
         List<Include> includes = parseIncludes(commentByLineNumber.values());
         if (containsIgnoreDirective(commentByLineNumber.values())) {
-            return new ConfigDefinition(includes, emptyMap());
+            return new RawConfig(includes, emptyMap());
         }
 
         List<Property> properties = reader.properties(configType, environment);
         List<Property> tempProperties = parseTempProperties(commentByLineNumber);
-        return new ConfigDefinition(includes, joinToMap(properties, tempProperties));
+        return new RawConfig(includes, joinToMap(properties, tempProperties));
     }
 
     private List<Property> parseTempProperties(Map<Integer, String> commentByLineNumber) {

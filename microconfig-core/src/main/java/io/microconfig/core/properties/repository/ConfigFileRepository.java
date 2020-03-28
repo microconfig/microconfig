@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ConfigFileRepository {
-    List<ConfigFile> getConfigFilesFor(String component, String environment, ConfigType configType);
+    List<ConfigFile> getConfigFilesOf(String component, String environment, ConfigType configType);
 
     Optional<File> getFolderOf(String component);
 }

@@ -48,7 +48,7 @@ public class ConfigFileRepositoryImpl implements ConfigFileRepository {
     }
 
     @Override
-    public List<ConfigFile> getConfigFilesFor(String component, String environment, ConfigType configType) {
+    public List<ConfigFile> getConfigFilesOf(String component, String environment, ConfigType configType) {
         List<File> dirs = foldersByComponentType.getOrDefault(component, emptyList());
         if (dirs.isEmpty()) {
             throw new ComponentNotFoundException(component);

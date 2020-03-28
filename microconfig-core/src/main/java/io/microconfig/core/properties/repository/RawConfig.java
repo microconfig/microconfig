@@ -9,19 +9,19 @@ import java.util.Map;
 import java.util.function.Function;
 
 @RequiredArgsConstructor
-public class ConfigDefinition {
+public class RawConfig {
     private final List<Include> includes;
-    private final Map<String, Property> properties;
+    private final Map<String, Property> declaredProperties;
 
     public Map<String, Property> getBaseAndIncludedProperties(Function<Include, Map<String, Property>> includeResolver) {
-        if (includes.isEmpty()) return properties;
+        if (includes.isEmpty()) return declaredProperties;
 
-        Map<String, Property> componentProperties = new LinkedHashMap<>(properties);
-        getIncludedConfigs(includeResolver).forEach(componentProperties::putIfAbsent);
-        return componentProperties;
+        Map<String, Property> allProperties = new LinkedHashMap<>(declaredProperties);
+        getIncludedPropertiesUsing(includeResolver).forEach(allProperties::putIfAbsent);
+        return allProperties;
     }
 
-    private Map<String, Property> getIncludedConfigs(Function<Include, Map<String, Property>> includeResolver) {
+    private Map<String, Property> getIncludedPropertiesUsing(Function<Include, Map<String, Property>> includeResolver) {
         return includes.stream().map(includeResolver)
                 .reduce(new LinkedHashMap<>(), (m1, m2) -> {
                     m1.putAll(m2);
