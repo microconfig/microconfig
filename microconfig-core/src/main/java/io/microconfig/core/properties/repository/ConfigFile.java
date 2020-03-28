@@ -1,11 +1,8 @@
-package io.microconfig.core.properties.repository.configs;
+package io.microconfig.core.properties.repository;
 
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.io.ConfigIo;
 import io.microconfig.core.properties.io.ConfigReader;
-import io.microconfig.core.properties.repository.ConfigFileParser.ConfigDefinition;
-import io.microconfig.core.properties.repository.Include;
-import io.microconfig.core.properties.repository.Includes;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -24,7 +21,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.concat;
 
 @RequiredArgsConstructor
-class ConfigFile {
+public class ConfigFile {
     private final File file;
     private final String configType;
     private final String environment;

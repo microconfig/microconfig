@@ -3,22 +3,17 @@ package io.microconfig.core.properties.repository;
 import io.microconfig.core.configtypes.ConfigType;
 import io.microconfig.core.properties.PropertiesRepository;
 import io.microconfig.core.properties.Property;
-import io.microconfig.core.properties.repository.ConfigFileParser.ConfigDefinition;
-import io.microconfig.core.properties.repository.configs.ComponentNotFoundException;
+import io.microconfig.core.properties.io.ConfigIo;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
-import java.io.File;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
-
-import static io.microconfig.core.properties.repository.ConfigFileFilters.*;
 
 @RequiredArgsConstructor
 public class FilePropertiesRepository implements PropertiesRepository {
     private final ConfigFileRepository configFileRepository;
-    private final ConfigFileParser configFileParser;
+    private final ConfigIo configIo;
 
     @Override
     public Map<String, Property> getPropertiesOf(String originalComponentName, String environment, ConfigType configType) {
@@ -40,36 +35,26 @@ public class FilePropertiesRepository implements PropertiesRepository {
         }
 
         public Map<String, Property> getProperties() {
-            Map<String, Property> basicProperties = filter(defaultConfig(configType.getSourceExtensions()));
-            Map<String, Property> envSharedProperties = filter(configForMultipleEnvironments(configType.getSourceExtensions(), environment));
-            Map<String, Property> envSpecificProperties = filter(configForOneEnvironment(configType.getSourceExtensions(), environment));
-
-            basicProperties.putAll(envSharedProperties);
-            basicProperties.putAll(envSpecificProperties);
-            return basicProperties;
-        }
-
-        private Map<String, Property> filter(Predicate<File> configFilter) {
             try {
-                return collectPropertiesFrom(configDefinitionsFor(configFilter));
+                return collectPropertiesFrom(configFiles());
             } catch (ComponentNotFoundException e) {
                 throw e.withParentComponent(originalComponentName);
             }
         }
 
-        private Stream<ConfigDefinition> configDefinitionsFor(Predicate<File> filter) {
-            return configFileRepository.getConfigFilesFor(originalComponentName, filter)
-                    .map(file -> configFileParser.parse(file, configType.getName(), environment));
+        private Stream<ConfigFile> configFiles() {
+            return configFileRepository.getConfigFilesFor(originalComponentName, environment, configType);
         }
 
-        private Map<String, Property> collectPropertiesFrom(Stream<ConfigDefinition> componentConfigs) {
+        private Map<String, Property> collectPropertiesFrom(Stream<ConfigFile> componentConfigs) {
             Map<String, Property> componentProperties = new LinkedHashMap<>();
 
-            componentConfigs.forEach(component -> {
-                componentProperties.putAll(component.getProperties());
-                includedPropertiesFrom(component.getIncludes())
-                        .forEach(componentProperties::putIfAbsent);
-            });
+            componentConfigs.map(cf -> cf.parseUsing(configIo))
+                    .forEach(component -> {
+                        componentProperties.putAll(component.getProperties());
+                        includedPropertiesFrom(component.getIncludes())
+                                .forEach(componentProperties::putIfAbsent);
+                    });
 
             return componentProperties;
         }

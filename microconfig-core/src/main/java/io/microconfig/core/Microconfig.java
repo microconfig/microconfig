@@ -12,7 +12,6 @@ import io.microconfig.core.properties.PropertiesFactoryImpl;
 import io.microconfig.core.properties.Resolver;
 import io.microconfig.core.properties.repository.ConfigFileRepository;
 import io.microconfig.core.properties.repository.FilePropertiesRepository;
-import io.microconfig.core.properties.repository.configs.ConfigFileParserImpl;
 import io.microconfig.core.resolvers.RecursiveResolver;
 import io.microconfig.core.resolvers.expression.ExpressionResolver;
 import io.microconfig.core.resolvers.placeholder.PlaceholderResolveStrategy;
@@ -36,7 +35,7 @@ import java.util.Map;
 import static io.microconfig.core.configtypes.CompositeConfigTypeRepository.composite;
 import static io.microconfig.core.configtypes.CustomConfigTypeRepository.findDescriptorIn;
 import static io.microconfig.core.properties.io.selector.ConfigIoFactory.newConfigIo;
-import static io.microconfig.core.properties.repository.configs.CachedConfigFileRepository.traverseFrom;
+import static io.microconfig.core.properties.repository.ConfigFileRepositoryImpl.traverseFrom;
 import static io.microconfig.core.resolvers.ChainedResolver.chainOf;
 import static io.microconfig.core.resolvers.placeholder.strategies.composite.CompositeResolveStrategy.composite;
 import static io.microconfig.core.resolvers.placeholder.strategies.system.SystemResolveStrategy.envVariablesResolveStrategy;
@@ -113,12 +112,12 @@ public class Microconfig {
 
         private PropertiesFactory propertiesFactory() {
             return cache(new PropertiesFactoryImpl(
-                    cache(new FilePropertiesRepository(
+                            cache(new FilePropertiesRepository(
                                     getConfigFileRepository(),
-                                    cache(new ConfigFileParserImpl(newConfigIo(fsReader)))
+                                    newConfigIo(fsReader))
                             )
                     )
-            ));
+            );
         }
 
         private RecursiveResolver placeholderResolver() {
