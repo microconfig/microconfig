@@ -39,6 +39,11 @@ public class MicroconfigTest {
     }
 
     @Test
+    void testIncorrectRootDir() {
+        assertThrows(IllegalArgumentException.class, () -> searchConfigsIn(new File("missingDir")));
+    }
+
+    @Test
     void testCyclicDetect() {
         assertThrows(PropertyResolveException.class, () -> build("cyclicDetect", "uat"));
     }
