@@ -25,8 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 public class MicroconfigTest {
-    private final File root = classpathFile("repo");
-    private final Microconfig microconfig = searchConfigsIn(root);
+    File root = classpathFile("repo");
+    Microconfig microconfig = searchConfigsIn(root);
 
     @TestFactory
     List<DynamicTest> findTests() {

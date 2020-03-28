@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ExpressionResolverTest {
-    private ExpressionResolver resolver = new ExpressionResolver();
+    ExpressionResolver resolver = new ExpressionResolver();
 
     @Test
     void stringApi() {

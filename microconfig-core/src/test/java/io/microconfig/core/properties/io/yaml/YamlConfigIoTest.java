@@ -16,7 +16,7 @@ import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class YamlConfigIoTest {
-    private final YamlConfigIo yaml = new YamlConfigIo(new DumpedFsReader());
+    YamlConfigIo yaml = new YamlConfigIo(new DumpedFsReader());
 
     @Test
     void testSimpleYaml() {

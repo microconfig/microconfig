@@ -1,9 +1,6 @@
 package io.microconfig.core.configtypes;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
@@ -12,16 +9,13 @@ import static io.microconfig.core.configtypes.StandardConfigType.*;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
 class CompositeConfigTypeRepositoryTest {
-    @Mock
-    private ConfigTypeRepository r1;
-    @Mock
-    private ConfigTypeRepository r2;
-    @Mock
-    private ConfigTypeRepository r3;
+    ConfigTypeRepository r1 = mock(ConfigTypeRepository.class);
+    ConfigTypeRepository r2 = mock(ConfigTypeRepository.class);
+    ConfigTypeRepository r3 = mock(ConfigTypeRepository.class);
 
     @Test
     void returnsFirstNotEmptyTypes() {

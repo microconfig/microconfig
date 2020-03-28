@@ -8,10 +8,10 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TemplatePatternTest {
-    private TemplatePattern templatePattern = defaultPattern()
+    TemplatePattern templatePattern = defaultPattern()
             .withTemplatePrefixes(asList(DEFAULT_TEMPLATE_PREFIX, "mgmt.template."));
-    private String microTemplate = "microconfig.template.logback.fromFile";
-    private String mgmtTemplate = "mgmt.template.t2.toFile";
+    String microTemplate = "microconfig.template.logback.fromFile";
+    String mgmtTemplate = "mgmt.template.t2.toFile";
 
     @Test
     void startsWithTemplatePrefix() {

@@ -12,7 +12,7 @@ import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PropertiesConfigIoTest {
-    private final PropertiesConfigIo ioService = new PropertiesConfigIo(new DumpedFsReader());
+    PropertiesConfigIo ioService = new PropertiesConfigIo(new DumpedFsReader());
 
     @Test
     void test() {
