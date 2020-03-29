@@ -25,7 +25,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
 public class ConfigFileRepositoryImpl implements ConfigFileRepository {
-    private static final String COMPONENTS_DIR = "components";
+    public static final String COMPONENTS_DIR = "components";
 
     private final Map<String, List<File>> foldersByComponentType;
 
