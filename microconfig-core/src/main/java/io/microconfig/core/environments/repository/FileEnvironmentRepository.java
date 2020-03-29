@@ -30,7 +30,7 @@ import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
 public class FileEnvironmentRepository implements EnvironmentRepository {
-    private static final String ENV_DIR = "envs";
+    public static final String ENV_DIR = "envs";
 
     private final File envDir;
     private final FsReader fsReader;
