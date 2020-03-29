@@ -53,6 +53,7 @@ public class Microconfig {
     @With
     private final FsReader fsReader;
 
+    @Getter
     private final Dependencies dependencies = new Dependencies();
 
     public static Microconfig searchConfigsIn(File rootDir) {
@@ -78,7 +79,7 @@ public class Microconfig {
         ));
     }
 
-    private class Dependencies {
+    public class Dependencies {
         @Getter(lazy = true)
         private final EnvironmentRepository environments = environments();
         @Getter(lazy = true)
