@@ -15,7 +15,7 @@ allprojects {
     apply plugin: 'java'
     apply plugin: 'jacoco'
     apply plugin: 'maven-publish'
-//    apply plugin: 'signing'
+//    apply plugin: 'signing' //todo
 
     group = 'io.microconfig'
     version = rootProject.version
