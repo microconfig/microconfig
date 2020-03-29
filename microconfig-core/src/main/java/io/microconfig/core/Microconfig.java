@@ -72,28 +72,23 @@ public class Microconfig {
         return dependencies.getEnvironments();
     }
 
-    public Resolver resolver() {
-        return cache(chainOf(
-                dependencies.getPlaceholderResolver(),
-                dependencies.getExpressionResolver()
-        ));
-    }
+   public Resolver resolver() {
+        return dependencies.getResolver();
+   }
 
     public class Dependencies {
         @Getter(lazy = true)
         private final EnvironmentRepository environments = environments();
         @Getter(lazy = true)
-        private final RecursiveResolver placeholderResolver = placeholderResolver();
-        @Getter(lazy = true)
-        private final RecursiveResolver expressionResolver = expressionResolver();
-        @Getter(lazy = true)
         private final ComponentFactory componentFactory = componentFactory();
         @Getter(lazy = true)
-        private final ConfigTypeRepository configTypes = configTypes();
+        private final ConfigTypeRepository configTypeRepository = configTypeRepository();
         @Getter(lazy = true)
         private final PropertiesFactory propertiesFactory = propertiesFactory();
         @Getter(lazy = true)
         private final ConfigFileRepository configFileRepository = configFileRepository();
+        @Getter(lazy = true)
+        private final Resolver resolver = resolver();
 
         private EnvironmentRepository environments() {
             return cache(new FileEnvironmentRepository(
@@ -106,7 +101,7 @@ public class Microconfig {
 
         private ComponentFactory componentFactory() {
             return cache(new ComponentFactoryImpl(
-                    getConfigTypes(),
+                    getConfigTypeRepository(),
                     getPropertiesFactory()
             ));
         }
@@ -119,6 +114,13 @@ public class Microconfig {
                             )
                     )
             );
+        }
+
+        public Resolver resolver() {
+            return cache(chainOf(
+                    placeholderResolver(),
+                    new ExpressionResolver()
+            ));
         }
 
         private RecursiveResolver placeholderResolver() {
@@ -139,11 +141,7 @@ public class Microconfig {
             );
         }
 
-        private RecursiveResolver expressionResolver() {
-            return new ExpressionResolver();
-        }
-
-        private ConfigTypeRepository configTypes() {
+        private ConfigTypeRepository configTypeRepository() {
             return cache(composite(
                     findDescriptorIn(rootDir, fsReader),
                     new StandardConfigTypeRepository()
