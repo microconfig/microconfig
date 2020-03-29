@@ -12,10 +12,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static io.microconfig.core.properties.templates.TemplatePattern.DEFAULT_TEMPLATE_PREFIX;
 import static io.microconfig.core.properties.templates.TemplatePattern.defaultPattern;
 import static io.microconfig.utils.Logger.info;
-import static java.util.Arrays.asList;
 
 @RequiredArgsConstructor
 public class CopyTemplatesService {
@@ -26,8 +24,7 @@ public class CopyTemplatesService {
     }
 
     public static Consumer<TypedProperties> resolveTemplatesBy(Resolver resolver) {
-        TemplatePattern templatePattern = defaultPattern().withTemplatePrefixes(asList(DEFAULT_TEMPLATE_PREFIX, "mgmt.template."));
-        CopyTemplatesService copyTemplatesService = new CopyTemplatesService(templatePattern);
+        CopyTemplatesService copyTemplatesService = new CopyTemplatesService();
         return p -> copyTemplatesService.resolveTemplate(
                 p.getDeclaringComponent(),
                 p.getPropertiesAsMap(),
