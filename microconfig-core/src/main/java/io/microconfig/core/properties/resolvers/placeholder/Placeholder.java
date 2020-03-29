@@ -14,7 +14,7 @@ import static lombok.AccessLevel.PRIVATE;
 @Getter
 @EqualsAndHashCode(exclude = "defaultValue")
 @RequiredArgsConstructor(access = PACKAGE)
-class Placeholder {
+public class Placeholder {
     private static final String SELF_REFERENCE = "this";
 
     private final String configType;
