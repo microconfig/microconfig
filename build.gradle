@@ -15,7 +15,7 @@ allprojects {
     apply plugin: 'java'
     apply plugin: 'jacoco'
     apply plugin: 'maven-publish'
-    apply plugin: 'signing'
+//    apply plugin: 'signing'
 
     group = 'io.microconfig'
     version = rootProject.version
@@ -82,9 +82,9 @@ allprojects {
         }
     }
 
-    signing {
-        sign publishing.publications.nexus
-    }
+//    signing {
+//        sign publishing.publications.nexus
+//    }
 
     dependencies {
         implementation platform(lib.spring_bom)
