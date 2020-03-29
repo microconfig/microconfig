@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.With;
 
 import static lombok.AccessLevel.PACKAGE;
-import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @EqualsAndHashCode(exclude = "defaultValue")
@@ -18,9 +17,9 @@ public class Placeholder {
     private static final String SELF_REFERENCE = "this";
 
     private final String configType;
-    @With(PRIVATE)
+    @With
     private final String component;
-    @With(PRIVATE)
+    @With
     private final String environment;
     private final String key;
     private final String defaultValue;
