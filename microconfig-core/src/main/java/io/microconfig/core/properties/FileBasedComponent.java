@@ -12,11 +12,8 @@ import java.io.File;
 public class FileBasedComponent implements DeclaringComponent {
     private final File source;
     private final int lineNumber; //starts from 0
-    @Getter
     private final boolean yaml;
-    @Getter
     private final String configType;
-    @Getter
     private final String environment;
 
     public static FileBasedComponent fileSource(File file, int lineNumber, boolean yaml,

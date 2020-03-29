@@ -28,7 +28,13 @@ public class PlaceholderBorders {
     private final int endIndex;
 
     public static Optional<PlaceholderBorders> findPlaceholderIn(CharSequence line) {
-        return new PlaceholderBorders(asStringBuilder(line)).searchOpenSign();
+        return findPlaceholderIn(line, 0);
+    }
+
+    public static Optional<PlaceholderBorders> findPlaceholderIn(CharSequence line, int startIndex) {
+        return new PlaceholderBorders(asStringBuilder(line))
+                .withStartIndex(startIndex)
+                .searchOpenSign();
     }
 
     private PlaceholderBorders(StringBuilder line) {
