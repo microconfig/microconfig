@@ -1,4 +1,5 @@
 apply from: 'lib.gradle'
+apply from: 'pom.gradle'
 
 buildscript {
     repositories {
@@ -35,38 +36,10 @@ allprojects {
     publishing {
         publications {
             nexus(MavenPublication) {
-                pom {
-                    name = 'MicroConfig'
-                    description = 'Powerful tool for microservice configuration management'
-                    url = 'https://microconfig.io/'
-                    licenses {
-                        license {
-                            name = 'The Apache License, Version 2.0'
-                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        }
-                    }
-                    scm {
-                        connection = 'scm:git:https://github.com/microconfig/microconfig.git'
-                        developerConnection = 'scm:git:https://github.com/microconfig/microconfig.git'
-                        url = 'https://microconfig.io'
-                    }
-                    developers {
-                        developer {
-                            id = 'amatorin'
-                            name = 'Alexander Matorin'
-                            email = 'alx.matorin@gmail.com'
-                        }
-                        developer {
-                            id = 'esladkovski'
-                            name = 'Evgeni Sladkovski'
-                            email = 'kapodes@gmail.com'
-                        }
-                        developer {
-                            id = 'apavlov'
-                            name = 'Artem Pavlov'
-                            email = 'admpavlov@yandex.ru'
-                        }
-                    }
+                pom.withXml {
+                    def root = asNode()
+                    root.appendNode('description', pomDescription)
+                    root.children().last() + pomConfig
                 }
                 from components.java
             }
