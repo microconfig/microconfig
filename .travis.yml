@@ -5,7 +5,7 @@ addons:
   sonarcloud:
     organization: "microconfig"
     token:
-      secure: 1af5536c0c3c5324be41e6e3b71fd17a5cb055af
+      secure: "TNw3N1QnafaBsTRAMFoSSfRvonPRVtSZqGfkRRiVvL5VaGSszA95mbZHJRLJ8ssYutmlSffOPL41S8o53Xqm0Y7FoBAm29sqyZQy6srA7eEFYdfDxecJ8w1Kq3eP1sWHy3PiAqh9HG6UP7/bO7prC0yu6EoltBFCfmauvVGmKd7uxtnCycnn9fyagOidkZ+TqlFwqzH6wTJdgZw2p/XZ+1DJlGCuML/4wFKgNBrvIP+9robfMFRmqjbMLrdDD36KxNkIzwhFhBDAYAh9qgg0tBGgvDHue8AUK+tzniokGFAYf+su3tj40hI8Qu/+7loToYmwQwg8MPInHKVX1bRabOq7sfCXP/+St8lGI45GxwNInI9IC6/YQ8B2wSVKknQmU6kGNq+HcgvhpWABcyJPNumUWwJzhbzt+W8WpJ4PTTBjGDosvJIY9sanFy/ppf9L/ksrbdn9VyAWYLe9gqex1q9O3GDCOqwDCxO+v9lWABdzs1TmmL5q1YOrJpv/MA0TMenMoe0Oe9WdWq/Zd7TfTYBm0MmIH9w0Qt2X+4EzvoAW45pv+TKw+9PvD0wkgIT+VVIIHZwHAE1KDbJnvsszCExVeJ8jeqnFQOXo03y6IbOPRJJKZoxFEQwe6x6oF2kXgDwj6/GoK91VxliByu8K05c5mx/XM9J0ERhKAGh/KsU="
 
 script:
   - ./gradlew sonarqube
