@@ -5,7 +5,7 @@ addons:
   sonarcloud:
     organization: "microconfig"
     token:
-      secure: 1af5536c0c3c5324be41e6e3b71fd17a5cb055af # encrypted value of your token
+      secure: 1af5536c0c3c5324be41e6e3b71fd17a5cb055af
 
 script:
   - ./gradlew sonarqube
