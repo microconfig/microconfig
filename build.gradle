@@ -13,12 +13,13 @@ buildscript {
     }
 }
 
-apply plugin: 'org.sonarqube'
 
 allprojects {
     apply plugin: 'java'
     apply plugin: 'jacoco'
     apply plugin: 'maven-publish'
+    apply plugin: 'org.sonarqube'
+
 //    apply plugin: 'signing' //todo
 
     group = 'io.microconfig'
