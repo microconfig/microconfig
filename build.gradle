@@ -13,6 +13,8 @@ buildscript {
     }
 }
 
+apply plugin: 'org.sonarqube'
+
 allprojects {
     apply plugin: 'java'
     apply plugin: 'jacoco'
@@ -70,6 +72,23 @@ allprojects {
         testImplementation lib.junit, lib.mokito
     }
 
+    sonarqube {
+        properties {
+            property "sonar.projectKey", "microconfig_microconfig"
+            property "sonar.sources", "src"
+            property "sonar.binaries", "build/classes"
+            property "sonar.inclusions", "src/main/java/**/*.java"
+        }
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled true
+            html.enabled true
+        }
+    }
+
+
     test {
         useJUnitPlatform()
         exclude '**/*IT.class'
@@ -77,12 +96,5 @@ allprojects {
 
     task sourceJar(type: Jar) {
         from sourceSets.main.allJava
-    }
-}
-
-apply plugin: 'org.sonarqube'
-sonarqube {
-    properties {
-        property "sonar.projectKey", "microconfig_microconfig"
     }
 }
