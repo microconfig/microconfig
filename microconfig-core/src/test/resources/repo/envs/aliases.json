@@ -12,7 +12,8 @@
     ip: 172.30.162.5,
     components: [
       "node3:node",
-      node
+      node,
+      "aliasType100:aliasType2"
     ]
   }
 }

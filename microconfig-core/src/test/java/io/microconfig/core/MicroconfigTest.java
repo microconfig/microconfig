@@ -28,9 +28,6 @@ public class MicroconfigTest {
     File root = classpathFile("repo");
     Microconfig microconfig = searchConfigsIn(root);
 
-    //todo placeholder to other type via alias
-    //todo cyclic dependency via different config type
-
     @TestFactory
     List<DynamicTest> findTests() {
         try (Stream<Path> stream = walk(classpathFile("repo").toPath())) {
@@ -49,6 +46,7 @@ public class MicroconfigTest {
     @Test
     void testCyclicDetect() {
         assertThrows(PropertyResolveException.class, () -> build("cyclicDetect", "uat"));
+        assertThrows(PropertyResolveException.class, () -> build("cyclicDetectBetweenConfigTypes", "uat"));
     }
 
     private boolean isExpectation(File file) {
