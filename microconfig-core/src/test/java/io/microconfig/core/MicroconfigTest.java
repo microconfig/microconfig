@@ -56,12 +56,11 @@ public class MicroconfigTest {
     private DynamicTest toTest(File expectation) {
         String component = getComponentName(expectation);
         String env = getEnvName(expectation);
-        return dynamicTest(component + "[" + env + "]", () -> {
-            assertEquals(
-                    readExpectation(expectation).trim(),
-                    doBuild(component, env).trim()
-            );
-        });
+        return dynamicTest(component + "[" + env + "]", () ->
+                assertEquals(
+                        readExpectation(expectation).trim(),
+                        doBuild(component, env).trim()
+                ));
     }
 
     private String getComponentName(File expectation) {
