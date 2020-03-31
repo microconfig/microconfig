@@ -30,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.With;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 import static io.microconfig.core.configtypes.CompositeConfigTypeRepository.composite;
@@ -43,6 +44,7 @@ import static io.microconfig.core.properties.resolvers.placeholder.strategies.sy
 import static io.microconfig.utils.CacheProxy.cache;
 import static io.microconfig.utils.CollectionUtils.joinToSet;
 import static io.microconfig.utils.FileUtils.canonical;
+import static java.util.Collections.emptyList;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
@@ -52,6 +54,8 @@ public class Microconfig {
     private final File destinationDir;
     @With
     private final FsReader fsReader;
+    @With
+    private final List<PlaceholderResolveStrategy> additionalPlaceholderResolvers = emptyList();
 
     @Getter
     private final Dependencies dependencies = new Dependencies();
@@ -72,9 +76,9 @@ public class Microconfig {
         return dependencies.getEnvironments();
     }
 
-   public Resolver resolver() {
+    public Resolver resolver() {
         return dependencies.getResolver();
-   }
+    }
 
     public class Dependencies {
         @Getter(lazy = true)
