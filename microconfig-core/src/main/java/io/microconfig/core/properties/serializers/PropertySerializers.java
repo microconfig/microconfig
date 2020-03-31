@@ -26,6 +26,14 @@ public class PropertySerializers {
         });
     }
 
+    public static PropertySerializer<ConfigResult> asConfigResult() {
+        return (properties, configType, componentName, __) -> {
+            String fileName = configType.getResultFileName() + extensionByConfigFormat(properties).extension();
+            String output = configIo().writeTo(new File(fileName)).serialize(properties);
+            return new ConfigResult(fileName, configType.getName(), output);
+        };
+    }
+
     public static PropertySerializer<File> toFileIn(File dir, BiConsumer<File, Collection<Property>> listener) {
         return (properties, configType, componentName, __) -> {
             Function<ConfigFormat, File> getResultFile = cf -> new File(dir, componentName + "/" + configType.getResultFileName() + cf.extension());
