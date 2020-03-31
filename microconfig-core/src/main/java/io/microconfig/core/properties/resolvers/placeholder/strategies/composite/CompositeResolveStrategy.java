@@ -8,14 +8,13 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.microconfig.utils.StreamUtils.findFirstResult;
-import static java.util.Arrays.asList;
 
 @RequiredArgsConstructor
 public class CompositeResolveStrategy implements PlaceholderResolveStrategy {
     private final List<PlaceholderResolveStrategy> strategies;
 
-    public static PlaceholderResolveStrategy composite(PlaceholderResolveStrategy... strategies) {
-        return new CompositeResolveStrategy(asList(strategies));
+    public static PlaceholderResolveStrategy composite(List<PlaceholderResolveStrategy> strategies) {
+        return new CompositeResolveStrategy(strategies);
     }
 
     @Override

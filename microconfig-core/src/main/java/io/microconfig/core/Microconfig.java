@@ -42,8 +42,10 @@ import static io.microconfig.core.properties.resolvers.placeholder.strategies.co
 import static io.microconfig.core.properties.resolvers.placeholder.strategies.system.SystemResolveStrategy.envVariablesResolveStrategy;
 import static io.microconfig.core.properties.resolvers.placeholder.strategies.system.SystemResolveStrategy.systemPropertiesResolveStrategy;
 import static io.microconfig.utils.CacheProxy.cache;
+import static io.microconfig.utils.CollectionUtils.join;
 import static io.microconfig.utils.CollectionUtils.joinToSet;
 import static io.microconfig.utils.FileUtils.canonical;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static lombok.AccessLevel.PRIVATE;
 
@@ -55,7 +57,7 @@ public class Microconfig {
     @With
     private final FsReader fsReader;
     @With
-    private final List<PlaceholderResolveStrategy> additionalPlaceholderResolvers = emptyList();
+    private final List<PlaceholderResolveStrategy> additionalPlaceholderResolvers;
 
     @Getter
     private final Dependencies dependencies = new Dependencies();
@@ -65,7 +67,7 @@ public class Microconfig {
         if (!canonical.exists()) {
             throw new IllegalArgumentException("Root directory doesn't exist: " + rootDir);
         }
-        return new Microconfig(canonical, new File(rootDir, "build"), new DumpedFsReader());
+        return new Microconfig(canonical, new File(rootDir, "build"), new DumpedFsReader(), emptyList());
     }
 
     public Environment inEnvironment(String name) {
@@ -131,13 +133,16 @@ public class Microconfig {
             Map<String, ComponentProperty> componentSpecialProperties = new ComponentProperties(getConfigFileRepository(), getEnvironments(), rootDir, destinationDir).get();
             Map<String, EnvProperty> envSpecialProperties = new EnvironmentProperties().get();
 
-            PlaceholderResolveStrategy strategy = cache(composite(
-                    systemPropertiesResolveStrategy(),
-                    envVariablesResolveStrategy(),
-                    new ComponentResolveStrategy(componentSpecialProperties),
-                    new EnvironmentResolveStrategy(getEnvironments(), envSpecialProperties),
-                    new StandardResolveStrategy(getEnvironments())
-            ));
+            PlaceholderResolveStrategy strategy = cache(composite(join(
+                    additionalPlaceholderResolvers,
+                    asList(
+                            systemPropertiesResolveStrategy(),
+                            envVariablesResolveStrategy(),
+                            new ComponentResolveStrategy(componentSpecialProperties),
+                            new EnvironmentResolveStrategy(getEnvironments(), envSpecialProperties),
+                            new StandardResolveStrategy(getEnvironments())
+                    )
+            )));
 
             return new PlaceholderResolver(
                     strategy,
