@@ -82,8 +82,7 @@ public class MicroconfigTest {
     }
 
     private String build(String component, String env) {
-        return microconfig.environments()
-                .getOrCreateByName(env)
+        return microconfig.environments().getOrCreateByName(env)
                 .getOrCreateComponentWithName(component)
                 .getPropertiesFor(configType(APPLICATION))
                 .resolveBy(microconfig.resolver())
