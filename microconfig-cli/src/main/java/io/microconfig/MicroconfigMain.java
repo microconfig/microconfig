@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.List;
 
 import static io.microconfig.utils.Logger.announce;
+import static io.microconfig.utils.Logger.error;
 import static java.lang.System.currentTimeMillis;
 
 /**
@@ -27,8 +28,15 @@ public class MicroconfigMain {
         List<String> groups = params.groups();
         List<String> services = params.services();
 
-        long startTime = currentTimeMillis();
-        new MicroconfigRunner(rootDir, destinationDir).build(env, groups, services);
-        announce("\nGenerated [" + env + "] configs in " + (currentTimeMillis() - startTime) + "ms");
+        try {
+            long startTime = currentTimeMillis();
+            new MicroconfigRunner(rootDir, destinationDir).build(env, groups, services);
+            announce("\nGenerated [" + env + "] configs in " + (currentTimeMillis() - startTime) + "ms");
+        } catch (RuntimeException e) {
+            if (params.stacktrace()) {
+                throw e;
+            }
+            error(e.getMessage());
+        }
     }
 }

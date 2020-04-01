@@ -34,4 +34,9 @@ public class MicroconfigParams {
     public List<String> services() {
         return parser.listValue("s");
     }
+
+    //todo --stacktrace
+    public boolean stacktrace() {
+        return parser.booleanValue("stacktrace");
+    }
 }

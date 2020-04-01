@@ -56,4 +56,8 @@ public class CommandLineParamParser {
         error(npeMessage);
         System.exit(-1);
     }
+
+    public boolean booleanValue(String key) {
+        return "true".equals(value(key));
+    }
 }
