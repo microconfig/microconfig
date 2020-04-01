@@ -1,14 +1,12 @@
 package io.microconfig.core.properties;
 
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import static java.util.Optional.ofNullable;
 
-@RequiredArgsConstructor
 public class ResolveException extends RuntimeException {
-    private final DeclaringComponent root;
     private final DeclaringComponent current;
+    private final DeclaringComponent root;
     @Setter
     private Property property;
 
