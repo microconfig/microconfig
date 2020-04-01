@@ -12,6 +12,13 @@ public class ResolveException extends RuntimeException {
     @Setter
     private Property property;
 
+    public ResolveException(DeclaringComponent current, DeclaringComponent root, String message) {
+        super(message);
+        this.root = root;
+        this.current = current;
+        this.property = null;
+    }
+
     public ResolveException(DeclaringComponent current, DeclaringComponent root, String message, Throwable cause) {
         super(message, cause);
         this.root = root;
@@ -38,7 +45,7 @@ public class ResolveException extends RuntimeException {
 
     private String getCauseMessage() {
         return ofNullable(getCause())
-                .map(t -> ":" + t.getMessage())
+                .map(Throwable::getMessage)
                 .orElse("");
     }
 }

@@ -3,7 +3,7 @@ package io.microconfig.core.properties.resolvers.placeholder;
 import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.PlaceholderResolveStrategy;
 import io.microconfig.core.properties.Property;
-import io.microconfig.core.properties.PropertyResolveException;
+import io.microconfig.core.properties.ResolveException;
 import io.microconfig.core.properties.resolvers.RecursiveResolver;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -56,9 +56,13 @@ public class PlaceholderResolver implements RecursiveResolver {
         public String resolveFor(DeclaringComponent sourceOfValue, DeclaringComponent root) {
             Placeholder placeholder = borders.toPlaceholder(sourceOfValue.getConfigType(), sourceOfValue.getEnvironment());
 
-            return canBeOverridden(placeholder, sourceOfValue) ?
-                    overrideByParents(placeholder, sourceOfValue, root) :
-                    resolve(placeholder, root);
+            try {
+                return canBeOverridden(placeholder, sourceOfValue) ?
+                        overrideByParents(placeholder, sourceOfValue, root) :
+                        resolve(placeholder, root);
+            } catch (RuntimeException e) {
+                throw new ResolveException(sourceOfValue, root, "Can't resolve " + this, e);
+            }
         }
 
         private boolean canBeOverridden(Placeholder p, DeclaringComponent sourceOfValue) {
@@ -83,7 +87,7 @@ public class PlaceholderResolver implements RecursiveResolver {
                     .map(tryResolveFor)
                     .filter(Objects::nonNull)
                     .findFirst()
-                    .orElseThrow(() -> new PropertyResolveException(p.toString(), sourceOfValue, root));
+                    .orElseThrow(() -> new ResolveException(sourceOfValue, root, "Can't resolve placeholder " + this));
         }
 
         private String resolve(Placeholder p, DeclaringComponent root) {
@@ -104,7 +108,7 @@ public class PlaceholderResolver implements RecursiveResolver {
                 return withVisited(unmodifiableSet(updated));
             }
 
-            throw new PropertyResolveException("Found cyclic dependencies:\n" +
+            throw new IllegalStateException("Found cyclic dependencies:\n" +
                     updated.stream().map(Placeholder::toString).collect(joining(" -> "))
             );
         }

@@ -19,7 +19,11 @@ public class ComponentNotFoundException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return "Component '" + notFoundComponent + "' doesn't exist. " +
-                "Dependency chain: " + join(" -> ", path) + " -> " + notFoundComponent;
+        return "Component '" + notFoundComponent + "' doesn't exist." +
+                chainMessage();
+    }
+
+    private String chainMessage() {
+        return path.isEmpty() ? "" : " Dependency chain: " + join(" -> ", path) + " -> " + notFoundComponent;
     }
 }

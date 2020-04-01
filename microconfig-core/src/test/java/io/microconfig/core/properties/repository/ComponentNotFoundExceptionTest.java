@@ -15,7 +15,7 @@ class ComponentNotFoundExceptionTest {
         try {
             throw exception;
         } catch (ComponentNotFoundException e) {
-            assertEquals("Component 'p4' doesn't exist. Dependency chain: p1 -> p2 -> p3", e.getMessage());
+            assertEquals("Component 'p4' doesn't exist. Dependency chain: p1 -> p2 -> p3 -> p4", e.getMessage());
         }
     }
 }

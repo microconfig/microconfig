@@ -1,6 +1,6 @@
 package io.microconfig.core;
 
-import io.microconfig.core.properties.PropertyResolveException;
+import io.microconfig.core.properties.ResolveException;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
@@ -45,8 +45,8 @@ public class MicroconfigTest {
 
     @Test
     void testCyclicDetect() {
-        assertThrows(PropertyResolveException.class, () -> build("cyclicDetect", "uat"));
-        assertThrows(PropertyResolveException.class, () -> build("cyclicDetectBetweenConfigTypes", "uat"));
+        assertThrows(ResolveException.class, () -> build("cyclicDetect", "uat"));
+        assertThrows(ResolveException.class, () -> build("cyclicDetectBetweenConfigTypes", "uat"));
     }
 
     private boolean isExpectation(File file) {

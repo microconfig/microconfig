@@ -31,6 +31,6 @@ class FileBasedComponentTest {
 
     @Test
     void string() {
-        assertEquals(file.getAbsolutePath() + ":1", source.toString());
+        assertEquals(file + ":1", source.toString());
     }
 }
