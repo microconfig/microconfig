@@ -43,7 +43,7 @@ public class ExpressionResolver implements RecursiveResolver {
             try {
                 return evaluator.evaluate(value);
             } catch (RuntimeException e) {
-                throw new ResolveException(component, root, "Expression '" + this + "' error", e);
+                throw new ResolveException(component, root, "Can't evaluate '" + this + "'", e);
             }
         }
 

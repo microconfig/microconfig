@@ -1,6 +1,7 @@
 package io.microconfig.core.properties;
 
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import static java.util.Optional.ofNullable;
 
@@ -8,25 +9,36 @@ import static java.util.Optional.ofNullable;
 public class ResolveException extends RuntimeException {
     private final DeclaringComponent root;
     private final DeclaringComponent current;
+    @Setter
+    private Property property;
 
     public ResolveException(DeclaringComponent current, DeclaringComponent root, String message, Throwable cause) {
         super(message, cause);
         this.root = root;
         this.current = current;
+        this.property = null;
     }
 
     @Override
     public String getMessage() {
-        return componentInfo() + super.getMessage() + getCauseMessage();
+        return componentInfo() + super.getMessage() + "\n" + getCauseMessage();
     }
 
     private String componentInfo() {
-        return "Can't build root component '" + root + "'.\nException in '" + current + "'.\n";
+        return "Can't build configs for root component '" + root + "'.\n" +
+                "Exception in '" + current + "'\n" +
+                propertyMessage();
+    }
+
+    private String propertyMessage() {
+        return ofNullable(property)
+                .map(p -> "Property: " + p + "\n")
+                .orElse("");
     }
 
     private String getCauseMessage() {
         return ofNullable(getCause())
-                .map(Throwable::getMessage)
-                .map(m -> ": " + m).orElse("");
+                .map(t -> ":" + t.getMessage())
+                .orElse("");
     }
 }
