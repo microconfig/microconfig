@@ -28,6 +28,6 @@ public class FileBasedComponent implements DeclaringComponent {
 
     @Override
     public String toString() {
-        return source.getAbsolutePath() + ":" + (lineNumber + 1);
+        return source + ":" + (lineNumber + 1);
     }
 }
