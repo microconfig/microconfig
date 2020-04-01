@@ -53,12 +53,8 @@ public class PropertyImpl implements Property {
 
     @Override
     public Property resolveBy(Resolver resolver, DeclaringComponent root) {
-        try {
-            String resolved = resolver.resolve(value, declaringComponent, root);
-            return withValue(resolved);
-        } catch (RuntimeException e) {
-            throw new PropertyResolveException("Can't resolve property '" + this + "'", e); //todo
-        }
+        String resolved = resolver.resolve(value, declaringComponent, root);
+        return withValue(resolved);
     }
 
     @Override

@@ -1,17 +1,17 @@
 package io.microconfig.core.properties.resolvers.expression;
 
 import io.microconfig.core.properties.DeclaringComponent;
+import io.microconfig.core.properties.PropertyResolveException;
 import io.microconfig.core.properties.resolvers.RecursiveResolver;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.expression.EvaluationException;
-import org.springframework.expression.ParseException;
 
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.microconfig.core.properties.resolvers.expression.ExpressionEvaluator.withFunctionsFrom;
+import static java.lang.String.format;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.regex.Pattern.compile;
@@ -40,11 +40,16 @@ public class ExpressionResolver implements RecursiveResolver {
         private final int endIndex;
 
         @Override
-        public String resolveFor(DeclaringComponent _1, DeclaringComponent _2) {
+        public String resolveFor(DeclaringComponent component, DeclaringComponent root) {
             try {
                 return evaluator.evaluate(value);
-            } catch (EvaluationException | ParseException e) {
-                throw new RuntimeException(e);//todo
+            } catch (RuntimeException e) {
+                throw new PropertyResolveException(format(
+                        "Can't evaluate expression '%s' declared in '%s', root is %s." +
+                                "\nExample of correct EL: #{'${component1@ip}' + ':' + ${ports@port1}}",
+                        this, component, root) + "" +
+                        "\nEvaluation exception: " + e.getMessage()
+                );
             }
         }
 

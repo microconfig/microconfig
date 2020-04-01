@@ -33,9 +33,10 @@ public class MicroconfigMain {
             new MicroconfigRunner(rootDir, destinationDir).build(env, groups, services);
             announce("\nGenerated [" + env + "] configs in " + (currentTimeMillis() - startTime) + "ms");
         } catch (RuntimeException e) {
-            if (params.stacktrace()) {
+            if (params.stacktrace() || e.getMessage() == null) {
                 throw e;
             }
+
             error(e.getMessage());
         }
     }
