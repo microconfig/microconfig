@@ -1,6 +1,4 @@
-package io.microconfig.core.properties.resolvers.placeholder;
-
-import io.microconfig.core.properties.Property;
+package io.microconfig.core.properties;
 
 import java.util.Optional;
 

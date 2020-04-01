@@ -1,6 +1,7 @@
 package io.microconfig.core.properties.resolvers.placeholder;
 
 import io.microconfig.core.properties.DeclaringComponent;
+import io.microconfig.core.properties.PlaceholderResolveStrategy;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.PropertyResolveException;
 import io.microconfig.core.properties.resolvers.RecursiveResolver;

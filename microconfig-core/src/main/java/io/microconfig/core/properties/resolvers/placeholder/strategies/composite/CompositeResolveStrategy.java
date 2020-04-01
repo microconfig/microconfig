@@ -1,7 +1,7 @@
 package io.microconfig.core.properties.resolvers.placeholder.strategies.composite;
 
+import io.microconfig.core.properties.PlaceholderResolveStrategy;
 import io.microconfig.core.properties.Property;
-import io.microconfig.core.properties.resolvers.placeholder.PlaceholderResolveStrategy;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;

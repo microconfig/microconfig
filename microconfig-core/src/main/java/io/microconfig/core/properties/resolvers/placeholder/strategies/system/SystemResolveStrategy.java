@@ -1,8 +1,8 @@
 package io.microconfig.core.properties.resolvers.placeholder.strategies.system;
 
 import io.microconfig.core.properties.DeclaringComponentImpl;
+import io.microconfig.core.properties.PlaceholderResolveStrategy;
 import io.microconfig.core.properties.Property;
-import io.microconfig.core.properties.resolvers.placeholder.PlaceholderResolveStrategy;
 import io.microconfig.utils.Os;
 import lombok.RequiredArgsConstructor;
 

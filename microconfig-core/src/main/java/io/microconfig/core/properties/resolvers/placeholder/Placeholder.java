@@ -2,6 +2,7 @@ package io.microconfig.core.properties.resolvers.placeholder;
 
 import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.DeclaringComponentImpl;
+import io.microconfig.core.properties.PlaceholderResolveStrategy;
 import io.microconfig.core.properties.Property;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
