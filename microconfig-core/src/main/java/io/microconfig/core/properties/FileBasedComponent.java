@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
+import static io.microconfig.utils.StringUtils.unixLikePath;
+
 @Getter
 @EqualsAndHashCode
 @RequiredArgsConstructor
@@ -28,6 +30,12 @@ public class FileBasedComponent implements DeclaringComponent {
 
     @Override
     public String toString() {
-        return source + ":" + (lineNumber + 1); //todo relative path
+        return relativeSource() + ":" + (lineNumber + 1);
+    }
+
+    private String relativeSource() {
+        String path = unixLikePath(source.toString());
+        int rootIndex = path.indexOf("/components/");
+        return rootIndex < 0 ? path : ".." + path.substring(rootIndex);
     }
 }

@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FileBasedComponentTest {
-    File file = new File("component/config.yaml");
+    File file = new File("root/components/comp/config.yaml");
     FileBasedComponent source = new FileBasedComponent(file, 0, true, "app", "dev");
 
     @Test
@@ -26,11 +26,11 @@ class FileBasedComponentTest {
 
     @Test
     void parentComponent() {
-        assertEquals("component", source.getComponent());
+        assertEquals("comp", source.getComponent());
     }
 
     @Test
     void string() {
-        assertEquals(file + ":1", source.toString());
+        assertEquals( "../components/comp/config.yaml:1", source.toString());
     }
 }
