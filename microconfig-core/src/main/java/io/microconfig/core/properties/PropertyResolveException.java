@@ -11,10 +11,6 @@ public class PropertyResolveException extends RuntimeException {
         super(message);
     }
 
-    public PropertyResolveException(String unresolvedValue, DeclaringComponent sourceOfPlaceholder, DeclaringComponent root,
-                                    Throwable cause) {
-        super(resolveExceptionMessage(unresolvedValue, sourceOfPlaceholder, root), cause);
-    }
 
     public PropertyResolveException(String unresolvedValue, DeclaringComponent sourceOfPlaceholder, DeclaringComponent root) {
         super(resolveExceptionMessage(unresolvedValue, sourceOfPlaceholder, root));

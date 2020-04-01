@@ -1,7 +1,7 @@
 package io.microconfig.core.properties.resolvers.expression;
 
 import io.microconfig.core.properties.DeclaringComponent;
-import io.microconfig.core.properties.PropertyResolveException;
+import io.microconfig.core.properties.ResolveException;
 import io.microconfig.core.properties.resolvers.RecursiveResolver;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.microconfig.core.properties.resolvers.expression.ExpressionEvaluator.withFunctionsFrom;
-import static java.lang.String.format;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.regex.Pattern.compile;
@@ -44,10 +43,7 @@ public class ExpressionResolver implements RecursiveResolver {
             try {
                 return evaluator.evaluate(value);
             } catch (RuntimeException e) {
-                throw new PropertyResolveException(format(
-                        "Can't evaluate expression '%s' declared in '%s'. Root component '%s'.", this, component, root)
-                        + "\nEvaluation exception: " + e.getMessage()
-                );
+                throw new ResolveException(component, root, "Expression '" + this + "' error", e);
             }
         }
 
