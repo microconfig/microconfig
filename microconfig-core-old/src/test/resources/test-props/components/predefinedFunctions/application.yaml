@@ -1,3 +1,0 @@
-xmx: #{#findGroup('Xmx(?<xmx>.+)', '${this@xmxLine}').substring(2)}
-notFound: #{#findGroup('Xmx2(?<xmx>.+)', '${this@xmxLine}')}
-xmxLine: Xmx100m

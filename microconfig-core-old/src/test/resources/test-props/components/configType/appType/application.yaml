@@ -1,3 +1,0 @@
-p1: ${process::processType@p1}
-p2: app2
-p3: app3

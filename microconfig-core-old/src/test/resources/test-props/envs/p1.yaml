@@ -1,6 +1,0 @@
-portOffset: 100
-p1:
-  ip: 1.1.1.1
-  components:
-    - ip3
-    - portOffsetTest

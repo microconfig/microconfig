@@ -1,8 +1,0 @@
-cr.cf.tfs.out.archiveDir: dirV
-cr.cf.tfs.out: outV
-cr.cf.tfs.out.shouldArchive: true
-
-cr2.cf.tfs:
-  out: outV
-  out.shouldArchive: true
-  out.archiveDir: dirV

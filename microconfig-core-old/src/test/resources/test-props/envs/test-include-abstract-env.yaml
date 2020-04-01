@@ -1,8 +1,0 @@
-include:
-  env: "base-env"
-fnd1:
-  ip: "172.30.162.8"
-fnd2:
-  ip: "172.30.162.9"
-  components:
-    "th-cache-node8"
