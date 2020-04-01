@@ -79,7 +79,7 @@ class Template {
         try {
             return doResolve(newFormat, resolver, currentComponent);
         } catch (RuntimeException e) {
-            return null;
+            return null;//todo warn
         }
     }
 
