@@ -42,14 +42,11 @@ public class Includes {
 
     private int componentStartIndex() {
         String lower = line.toLowerCase();
-        {
-            int index = tryPrefix(lower, PREFIX);
-            if (index >= 0) return index;
-        }
-        {
-            int index = tryPrefix(lower, PREFIX2);
-            if (index >= 0) return index;
-        }
+        int index = tryPrefix(lower, PREFIX);
+        if (index >= 0) return index;
+
+        int index2 = tryPrefix(lower, PREFIX2);
+        if (index2 >= 0) return index2;
 
         throw new IllegalArgumentException("Include must start with " + PREFIX + " or " + PREFIX2);
     }
