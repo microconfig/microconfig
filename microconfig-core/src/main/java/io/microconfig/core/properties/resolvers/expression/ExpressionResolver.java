@@ -44,11 +44,9 @@ public class ExpressionResolver implements RecursiveResolver {
             try {
                 return evaluator.evaluate(value);
             } catch (RuntimeException e) {
-                throw new PropertyResolveException(format(
-                        "Can't evaluate expression '%s' declared in '%s', root is %s." +
-                                "\nExample of correct EL: #{'${component1@ip}' + ':' + ${ports@port1}}",
-                        this, component, root) + "" +
-                        "\nEvaluation exception: " + e.getMessage()
+                throw new PropertyResolveException(
+                        format("Can't evaluate expression '%s' declared in '%s', root is %s.", this, component, root) +
+                                "\nEvaluation exception: " + e.getMessage()
                 );
             }
         }
