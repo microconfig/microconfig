@@ -63,7 +63,6 @@ public class EnvironmentImpl implements Environment {
                 .orElseThrow(() -> new IllegalArgumentException(notFoundComponentMessage(componentName)));
     }
 
-    //todo must work 0(1)
     @Override
     public Components findComponentsFrom(List<String> groups, List<String> componentNames) {
         List<Component> componentsFromGroups = componentsFrom(groups);
