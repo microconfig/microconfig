@@ -93,7 +93,7 @@ public class EnvironmentImpl implements Environment {
 
         Map<String, Component> componentByName = componentFromGroups.stream()
                 .collect(toMap(Component::getName, identity()));
-        return forEach(components, name -> requireNonNull(componentByName.get(name), () -> notFoundComponentMessage(name)));
+        return forEach(components, c -> requireNonNull(componentByName.get(c), () -> notFoundComponentMessage(c)));
     }
 
     private ComponentGroup findGroup(Predicate<ComponentGroup> groupPredicate,
