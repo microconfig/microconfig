@@ -29,10 +29,11 @@ class EnvironmentFile {
     private final File file;
 
     public EnvironmentDefinition parseUsing(FsReader fsReader) {
+        String name = getName(file);
         try {
-            return parse(parseToMap(fsReader), getName(file));
+            return parse(parseToMap(fsReader), name);
         } catch (RuntimeException e) {
-            throw new EnvironmentException("Can't parse env file '" + file + "'", e);
+            throw new EnvironmentException("Can't parse environment '" + name + "'", e);
         }
     }
 

@@ -2,6 +2,7 @@ package io.microconfig.core.properties;
 
 import lombok.Setter;
 
+import static io.microconfig.utils.StringUtils.getCauseMessage;
 import static java.util.Optional.ofNullable;
 
 public class ResolveException extends RuntimeException {
@@ -26,7 +27,7 @@ public class ResolveException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return componentInfo() + super.getMessage() + "\n" + getCauseMessage();
+        return componentInfo() + super.getMessage() + "\n" + getCauseMessage(this);
     }
 
     private String componentInfo() {
@@ -38,12 +39,6 @@ public class ResolveException extends RuntimeException {
     private String propertyMessage() {
         return ofNullable(property)
                 .map(p -> "Property: " + p + "\n")
-                .orElse("");
-    }
-
-    private String getCauseMessage() {
-        return ofNullable(getCause())
-                .map(Throwable::getMessage)
                 .orElse("");
     }
 }

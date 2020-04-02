@@ -41,7 +41,7 @@ class EnvironmentDefinition {
                 .collect(toList());
 
         if (!notUniqueComponents.isEmpty()) {
-            throw new IllegalStateException("Env '" + name + "' contains several declarations of: " + notUniqueComponents);
+            throw new IllegalStateException("Environment '" + name + "' contains several declarations of: " + notUniqueComponents);
         }
 
         return this;

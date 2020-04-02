@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 import static java.util.stream.Stream.of;
@@ -66,5 +67,11 @@ public class StringUtils {
 
     public static StringBuilder asStringBuilder(CharSequence line) {
         return line instanceof StringBuilder ? (StringBuilder) line : new StringBuilder(line);
+    }
+
+    public static String getCauseMessage(Throwable t) {
+        return ofNullable(t.getCause())
+                .map(Throwable::getMessage)
+                .orElse("");
     }
 }

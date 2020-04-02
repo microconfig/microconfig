@@ -17,6 +17,7 @@ import static io.microconfig.core.properties.serializers.PropertySerializers.asS
 import static io.microconfig.utils.FileUtils.walk;
 import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.StringUtils.unixLikePath;
+import static java.lang.Math.min;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -55,10 +56,16 @@ public class MicroconfigTest {
 
     private DynamicTest toTest(File expectation, String component, String env) {
         return dynamicTest(component + "[" + env + "]", () ->
-                assertEquals(
-                        readExpectation(expectation).trim(),
-                        build(component, env).trim()
-                ));
+        {
+            String expected = readExpectation(expectation).trim();
+            String actual = build(component, env).trim();
+
+            if (expectation.getName().startsWith("exception")) {
+                assertEquals(expected, actual.substring(0, min(expected.length(), actual.length())));
+            } else {
+                assertEquals(expected, actual);
+            }
+        });
     }
 
     private String getComponentName(File expectation) {
