@@ -92,7 +92,7 @@ class YamlReader extends AbstractConfigReader {
         String line = lines.get(index);
         int separatorIndex = line.indexOf(':', currentOffset);
         if (separatorIndex < 0) {
-            throw new IllegalArgumentException("Bad property: '" + line + "' in " + new FileBasedComponent(file, index, true, configType, env) +
+            throw new IllegalArgumentException("Incorrect delimiter '" + line + "' in " + new FileBasedComponent(file, index, true, configType, env) +
                     "\nYaml property must contain ':' as delimiter.");
         }
 
