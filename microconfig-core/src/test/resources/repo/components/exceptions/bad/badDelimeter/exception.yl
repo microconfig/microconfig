@@ -1,0 +1,2 @@
+Bad property: 'key=value' in ../components/exceptions/bad/badDelimeter/application.yl.yaml:1
+Yaml property must contain ':' as delimiter.

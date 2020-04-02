@@ -1,0 +1,2 @@
+Bad property: keyvalue in ../components/exceptions/bad/badDelimeter/application.prop.properties:1.
+Property must contain ':' or '=' as delimiter.
