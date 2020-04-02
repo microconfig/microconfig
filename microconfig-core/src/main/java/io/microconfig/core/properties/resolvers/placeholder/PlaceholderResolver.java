@@ -1,9 +1,6 @@
 package io.microconfig.core.properties.resolvers.placeholder;
 
-import io.microconfig.core.properties.DeclaringComponent;
-import io.microconfig.core.properties.PlaceholderResolveStrategy;
-import io.microconfig.core.properties.Property;
-import io.microconfig.core.properties.ResolveException;
+import io.microconfig.core.properties.*;
 import io.microconfig.core.properties.resolvers.RecursiveResolver;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -84,6 +81,7 @@ public class PlaceholderResolver implements RecursiveResolver {
                     visited.stream().map(Placeholder::getReferencedComponent),
                     of(sourceOfValue)
             ).flatMap(identity())
+                    .map(DeclaringComponentImpl::copyOf).distinct()//for correct distinct
                     .map(tryResolveFor)
                     .filter(Objects::nonNull)
                     .findFirst()

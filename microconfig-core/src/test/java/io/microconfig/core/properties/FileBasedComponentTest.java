@@ -31,6 +31,6 @@ class FileBasedComponentTest {
 
     @Test
     void string() {
-        assertEquals( "../components/comp/config.yaml:1", source.toString());
+        assertEquals("../components/comp/config.yaml:1", source.toString());
     }
 }

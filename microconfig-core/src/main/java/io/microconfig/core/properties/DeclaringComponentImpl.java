@@ -16,4 +16,8 @@ public class DeclaringComponentImpl implements DeclaringComponent {
     public String toString() {
         return component + "[" + environment + "]";
     }
+
+    public static DeclaringComponent copyOf(DeclaringComponent c) {
+        return c instanceof DeclaringComponentImpl ? c : new DeclaringComponentImpl(c.getConfigType(), c.getComponent(), c.getEnvironment());
+    }
 }
