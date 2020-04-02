@@ -1,7 +1,6 @@
 package io.microconfig.core.properties.io.properties;
 
 import io.microconfig.core.properties.Property;
-import io.microconfig.core.properties.PropertyImpl;
 import io.microconfig.core.properties.io.AbstractConfigReader;
 import io.microconfig.io.FsReader;
 
@@ -12,6 +11,7 @@ import java.util.List;
 import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.FileBasedComponent.fileSource;
 import static io.microconfig.core.properties.PropertyImpl.isComment;
+import static io.microconfig.core.properties.PropertyImpl.parse;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 
 class PropertiesReader extends AbstractConfigReader {
@@ -39,7 +39,7 @@ class PropertiesReader extends AbstractConfigReader {
                 continue;
             }
 
-            Property property = PropertyImpl.parse(currentLine.toString(), PROPERTIES,
+            Property property = parse(currentLine.toString(), PROPERTIES,
                     fileSource(file, lineNumber, false, configType, environment));
             result.add(property);
             currentLine.setLength(0);

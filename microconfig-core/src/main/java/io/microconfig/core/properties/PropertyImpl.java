@@ -26,7 +26,7 @@ public class PropertyImpl implements Property {
         boolean temp = isTempProperty(keyValue);
         int separatorIndex = findSeparatorIndexIn(keyValue);
         if (separatorIndex < 0) {
-            throw new IllegalArgumentException("Property must contain ':' or '='. Bad property: " + keyValue + " in " + source);
+            throw new IllegalArgumentException("Property must contain ':' or '='.\nBad property: " + keyValue + " in " + source);
         }
 
         String key = keyValue.substring(temp ? TEMP_VALUE.length() : 0, separatorIndex).trim();
