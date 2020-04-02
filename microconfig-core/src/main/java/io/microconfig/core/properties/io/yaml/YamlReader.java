@@ -92,7 +92,8 @@ class YamlReader extends AbstractConfigReader {
         String line = lines.get(index);
         int separatorIndex = line.indexOf(':', currentOffset);
         if (separatorIndex < 0) {
-            throw new IllegalArgumentException("Yaml property must contain ':' as delimiter. Bad property: '" + line + "' in " + new FileBasedComponent(file, index, true, configType, env));
+            throw new IllegalArgumentException("Yaml property must contain ':' as delimiter." +
+                    "\nBad property: '" + line + "' in " + new FileBasedComponent(file, index, true, configType, env));
         }
 
         removePropertiesWithBiggerOffset(currentProperty, currentOffset);
