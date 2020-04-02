@@ -79,7 +79,7 @@ class EnvironmentFile {
             try {
                 return parseGroup(groupEntry, envIp);
             } catch (RuntimeException e) {
-                throw new EnvironmentException("Can't parse group declaration: '" + groupEntry, e);
+                throw new EnvironmentException("Can't parse group declaration: '" + groupEntry + "'", e);
             }
         });
     }
