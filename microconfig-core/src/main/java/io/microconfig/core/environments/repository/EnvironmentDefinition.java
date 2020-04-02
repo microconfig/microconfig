@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.With;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
 
 import static io.microconfig.utils.StreamUtils.forEach;
@@ -37,7 +37,7 @@ class EnvironmentDefinition {
                 .collect(groupingBy(ComponentDefinition::getName, counting()))
                 .entrySet().stream()
                 .filter(e -> e.getValue() > 1)
-                .map(Map.Entry::getKey)
+                .map(Entry::getKey)
                 .collect(toList());
 
         if (!notUniqueComponents.isEmpty()) {
