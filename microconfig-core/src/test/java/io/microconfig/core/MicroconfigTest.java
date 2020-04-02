@@ -1,6 +1,5 @@
 package io.microconfig.core;
 
-import io.microconfig.core.properties.ResolveException;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
@@ -17,7 +16,6 @@ import static io.microconfig.core.configtypes.StandardConfigType.APPLICATION;
 import static io.microconfig.core.properties.serializers.PropertySerializers.asString;
 import static io.microconfig.utils.FileUtils.walk;
 import static io.microconfig.utils.IoUtils.readFully;
-import static io.microconfig.utils.Logger.error;
 import static io.microconfig.utils.StringUtils.unixLikePath;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,24 +41,23 @@ public class MicroconfigTest {
         assertThrows(IllegalArgumentException.class, () -> searchConfigsIn(new File("missingDir")));
     }
 
-    @Test
-    void testCyclicDetect() {
-        assertThrows(ResolveException.class, () -> build("cyclicDetect", "uat"));
-        assertThrows(ResolveException.class, () -> build("cyclicDetectBetweenConfigTypes", "uat"));
-    }
-
     private boolean isExpectation(File file) {
         return //file.getParentFile().getName().equals("ic1") &&
-                file.getName().startsWith("expect.");
+                file.getName().startsWith("expect.") ||
+                        file.getName().startsWith("exception.");
     }
 
     private DynamicTest toTest(File expectation) {
         String component = getComponentName(expectation);
         String env = getEnvName(expectation);
+        return toTest(expectation, component, env);
+    }
+
+    private DynamicTest toTest(File expectation, String component, String env) {
         return dynamicTest(component + "[" + env + "]", () ->
                 assertEquals(
                         readExpectation(expectation).trim(),
-                        doBuild(component, env).trim()
+                        build(component, env).trim()
                 ));
     }
 
@@ -73,22 +70,17 @@ public class MicroconfigTest {
         return expectation.getName().split("\\.")[1];
     }
 
-    private String doBuild(String component, String env) {
-        try {
-            return build(component, env);
-        } catch (RuntimeException e) {
-            error("Failed '" + component + ":[" + env + "]'");
-            throw e;
-        }
-    }
-
     private String build(String component, String env) {
-        return microconfig.environments().getOrCreateByName(env)
-                .getOrCreateComponentWithName(component)
-                .getPropertiesFor(configType(APPLICATION))
-                .resolveBy(microconfig.resolver())
-                .first()
-                .save(asString());
+        try {
+            return microconfig.environments().getOrCreateByName(env)
+                    .getOrCreateComponentWithName(component)
+                    .getPropertiesFor(configType(APPLICATION))
+                    .resolveBy(microconfig.resolver())
+                    .first()
+                    .save(asString());
+        } catch (RuntimeException e) {
+            return e.getMessage();
+        }
     }
 
     private String readExpectation(File expectation) {
