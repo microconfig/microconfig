@@ -1,5 +1,6 @@
 package io.microconfig.core.properties.io.yaml;
 
+import io.microconfig.core.properties.FileBasedComponent;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.io.AbstractConfigReader;
 import io.microconfig.io.FsReader;
@@ -91,7 +92,7 @@ class YamlReader extends AbstractConfigReader {
         String line = lines.get(index);
         int separatorIndex = line.indexOf(':', currentOffset);
         if (separatorIndex < 0) {
-            throw new IllegalArgumentException("Yaml property must contain ':'. For *.properties use '='. Bad property: '" + line + "' in " + file);
+            throw new IllegalArgumentException("Yaml property must contain ':' as delimiter. Bad property: '" + line + "' in " + new FileBasedComponent(file, index, true, configType, env));
         }
 
         removePropertiesWithBiggerOffset(currentProperty, currentOffset);

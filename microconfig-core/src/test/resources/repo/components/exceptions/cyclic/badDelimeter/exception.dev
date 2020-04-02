@@ -1,4 +1,1 @@
-Can't build configs for root component 'cyclicDetect[dev]'.
-Exception in '../components/exceptions/cyclic/cyclicDetect/service.properties:1'
-Property: cyclic.c1=${cyclicDetect@cyclic.c2}
-Can't resolve ${cyclicd}
+Yaml property must contain ':' as delimiter. Bad property: 'key=value' in ../components/exceptions/cyclic/badDelimeter/application.yaml:1
