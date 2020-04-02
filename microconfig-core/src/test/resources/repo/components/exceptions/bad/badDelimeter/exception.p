@@ -1,2 +1,2 @@
 Property must contain ':' or '='.
-Bad property: keyvalue in ../components/exceptions/cyclic/badDelimeter/application.p.properties:1
+Bad property: keyvalue in ../components/exceptions/bad/badDelimeter/application.p.properties:1
