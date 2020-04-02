@@ -42,7 +42,7 @@ public class MicroconfigTest {
     }
 
     private boolean isExpectation(File file) {
-        return file.getParentFile().getName().equals("cyclicDetect") &&
+        return //file.getParentFile().getName().equals("cyclicDetect") &&
                 (file.getName().startsWith("expect.") ||
                         file.getName().startsWith("exception."));
     }
