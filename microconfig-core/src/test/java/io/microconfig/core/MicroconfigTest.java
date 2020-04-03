@@ -48,7 +48,7 @@ public class MicroconfigTest {
     private boolean isExpectation(File file) {
         String name = file.getName();
         return //file.getParentFile().getName().equals("includeBadEnv") &&
-                (name.startsWith("truncate.") || name.startsWith("exception."));
+                (name.startsWith("expect.") || name.startsWith("truncate.") || name.startsWith("exception."));
     }
 
     private DynamicTest toTest(File expectation) {
