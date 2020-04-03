@@ -1,0 +1,5 @@
+Can't build configs for root component 'placeholderToBadExpression[dev]'.
+Exception in '../components/exceptions/placeholderToBad/placeholderToBadExpression/application.yaml:1'
+Property: key=${badExpression@key}
+Can't evaluate '#{10/0}'
+/ by zero

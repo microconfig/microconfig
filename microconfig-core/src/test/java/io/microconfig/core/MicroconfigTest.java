@@ -27,6 +27,9 @@ public class MicroconfigTest {
     File root = classpathFile("repo");
     Microconfig microconfig = searchConfigsIn(root);
 
+    //todo test placeholder to normal key in component with notResolvable another key
+    //todo duplication of exception messages
+
     @TestFactory
     List<DynamicTest> findTests() {
         try (Stream<Path> stream = walk(classpathFile("repo").toPath())) {

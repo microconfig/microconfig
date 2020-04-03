@@ -1,0 +1,9 @@
+Can't build configs for root component 'placeholderToBadPlaceholder[component]'.
+Exception in '../components/exceptions/placeholderToBad/placeholderToBadPlaceholder/application.component.yaml:1'
+Property: key=${badPlaceholder@key}
+Can't resolve ${badPlaceholder@key}
+Can't build configs for root component 'placeholderToBadPlaceholder[component]'.
+Exception in '../components/exceptions/bad/badPlaceholder/application.component.yaml:1'
+Property: key=${missing@missing}
+Can't resolve ${missing@missing}
+Component 'missing' doesn't exist.
