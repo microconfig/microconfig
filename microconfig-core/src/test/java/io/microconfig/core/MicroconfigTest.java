@@ -44,7 +44,7 @@ public class MicroconfigTest {
 
     private boolean isExpectation(File file) {
         String name = file.getName();
-        return //file.getParentFile().getName().equals("cyclicDetect") &&
+        return //file.getParentFile().getName().equals("includeBadEnv") &&
                 (name.startsWith("truncate.") || name.startsWith("exception."));
     }
 
