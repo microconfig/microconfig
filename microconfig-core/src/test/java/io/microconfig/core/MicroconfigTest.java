@@ -43,9 +43,9 @@ public class MicroconfigTest {
     }
 
     private boolean isExpectation(File file) {
+        String name = file.getName();
         return //file.getParentFile().getName().equals("cyclicDetect") &&
-                (file.getName().startsWith("expect.") ||
-                        file.getName().startsWith("exception."));
+                (name.startsWith("truncate.") || name.startsWith("exception."));
     }
 
     private DynamicTest toTest(File expectation) {
@@ -60,7 +60,7 @@ public class MicroconfigTest {
             String expected = readExpectation(expectation).trim();
             String actual = build(component, env).trim();
 
-            if (expectation.getName().startsWith("exception")) {
+            if (expectation.getName().startsWith("truncate.")) {
                 assertEquals(expected, actual.substring(0, min(expected.length(), actual.length())));
             } else {
                 assertEquals(expected, actual);
