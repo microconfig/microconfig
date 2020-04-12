@@ -27,12 +27,19 @@ public class ResolveException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return componentInfo() + super.getMessage() + "\n" + getCauseMessage(this);
+        return rootComponentInfo() + problemInfo();
     }
 
-    private String componentInfo() {
-        return "Can't build configs for root component '" + root + "'.\n" +
-                "Exception in\n"  +
+    private String problemInfo() {
+        return exceptionInfo() + super.getMessage() + "\n" + causeMessage();
+    }
+
+    private String rootComponentInfo() {
+        return "Can't build configs for root component '" + root + "'.\n";
+    }
+
+    private String exceptionInfo() {
+        return "Exception in\n" +
                 "\t" + current + "'\n" +
                 propertyMessage();
     }
@@ -41,5 +48,12 @@ public class ResolveException extends RuntimeException {
         return ofNullable(property)
                 .map(p -> "\t" + p + "\n")
                 .orElse("");
+    }
+
+    private String causeMessage() {
+        if (getCause() instanceof ResolveException) {
+            return "Cause: " + ((ResolveException) getCause()).problemInfo();
+        }
+        return getCauseMessage(this);
     }
 }

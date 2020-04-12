@@ -3,8 +3,7 @@ Exception in
 	../components/exceptions/placeholderToBad/placeholderToBadPlaceholder/application.component.yaml:1'
 	key=${badPlaceholder@key}
 Can't resolve ${badPlaceholder@key}
-Cause: Can't build configs for root component 'placeholderToBadPlaceholder[component]'.#todo
-Exception in
+Cause: Exception in
 	../components/exceptions/bad/badPlaceholder/application.component.yaml:1'
 	key=${missing@missing}
 Can't resolve ${missing@missing}
