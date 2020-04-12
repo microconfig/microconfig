@@ -18,7 +18,6 @@ import static java.lang.System.exit;
  * VM speedup params:
  * -Xverify:none -XX:TieredStopAtLevel=1
  */
-//todo update documentation
 public class MicroconfigMain {
     public static void main(String... args) {
         val params = MicroconfigParams.parse(args);

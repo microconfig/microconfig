@@ -35,7 +35,6 @@ public class MicroconfigParams {
         return parser.listValue("s");
     }
 
-    //todo --stacktrace
     public boolean stacktrace() {
         return parser.booleanValue("stacktrace");
     }
