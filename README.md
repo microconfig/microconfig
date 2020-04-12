@@ -893,27 +893,29 @@ During the config build Microconfig inlines all includes, resolves placeholders,
 To run the build you can download Microconfig release from https://github.com/microconfig/microconfig/releases.
 
 The required build params:
-* `root` - full or relative config root dir. 
-* `dest` - full or relative build destination dir.
-* `env` - environment name (environment is used as a config profile, also as a group of services to build configs).
+* `-r` - full or relative config root dir. 
+* `-e` - environment name (environment is used as a config profile, also as a group of services to build configs).
+
+Optional build param:
+* `-d` - full or relative build destination dir. Default = ${currentFolder}/build
 
 To build configs not for the whole environment but only for specific services you can use the following optional params:
-* `groups` - a comma-separated list of component groups to build configs. 
-* `services` - a comma-separated list of services to build configs. 
+* `-g` - a comma-separated list of component groups to build configs. 
+* `-s` - a comma-separated list of services to build configs. 
 
 Command line params example (Java 8+ required):
 ```
-java -jar microconfig.jar root=repo dest=configs env=prod
+java -jar microconfig.jar -r repo -d configs -e prod
 ```
 
 To add system properties use `-D`
 ```
-java -DtaskId=3456 -DsomeParam=value -jar microconfig.jar root=repo dest=configs env=prod
+java -DtaskId=3456 -DsomeParam=value -jar microconfig.jar -r repo -d configs -e prod
 ```
 
 To speed up the build up to 3 times you can add `-Xverify:none` and `-XX:TieredStopAtLevel=1` Java VM params. Although build time for even big projects with hundreds of services is about 1-4 seconds.
 ```
-java -Xverify:none -XX:TieredStopAtLevel=1 -jar microconfig.jar root=repo dest=configs env=prod
+java -Xverify:none -XX:TieredStopAtLevel=1 -jar microconfig.jar -r repo -e prod
 ```
 
 Let's see examples of initial and destination folder layouts: 
