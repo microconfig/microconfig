@@ -1,5 +1,10 @@
 package io.microconfig.utils;
 
+import lombok.RequiredArgsConstructor;
+
+import static lombok.AccessLevel.PRIVATE;
+
+@RequiredArgsConstructor(access = PRIVATE)
 public class ConsoleColor {
     private static final String GREEN = "\u001B[32m";
     private static final String RED = "\u001B[31m";

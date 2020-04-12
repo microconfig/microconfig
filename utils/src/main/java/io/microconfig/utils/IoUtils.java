@@ -1,11 +1,15 @@
 package io.microconfig.utils;
 
+import lombok.RequiredArgsConstructor;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
+import static lombok.AccessLevel.PRIVATE;
 
+@RequiredArgsConstructor(access = PRIVATE)
 public class IoUtils {
     public static String readFully(File file) {
         try {

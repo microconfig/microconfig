@@ -1,5 +1,7 @@
 package io.microconfig.utils;
 
+import lombok.RequiredArgsConstructor;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,7 +15,9 @@ import static java.nio.file.Files.createDirectories;
 import static java.nio.file.Files.setPosixFilePermissions;
 import static java.util.Arrays.stream;
 import static java.util.stream.Stream.of;
+import static lombok.AccessLevel.PRIVATE;
 
+@RequiredArgsConstructor(access = PRIVATE)
 public class FileUtils {
     public static final String LINES_SEPARATOR = System.getProperty("line.separator");
 

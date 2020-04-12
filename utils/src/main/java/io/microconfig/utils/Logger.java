@@ -1,10 +1,14 @@
 package io.microconfig.utils;
 
+import lombok.RequiredArgsConstructor;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import static io.microconfig.utils.ConsoleColor.*;
+import static lombok.AccessLevel.PRIVATE;
 
+@RequiredArgsConstructor(access = PRIVATE)
 public class Logger {
     private static volatile boolean errorOccurred;
 

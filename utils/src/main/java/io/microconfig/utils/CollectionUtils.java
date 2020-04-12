@@ -1,10 +1,14 @@
 package io.microconfig.utils;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.*;
 
 import static java.lang.Math.max;
 import static java.util.Arrays.asList;
+import static lombok.AccessLevel.PRIVATE;
 
+@RequiredArgsConstructor(access = PRIVATE)
 public class CollectionUtils {
     public static <T> T singleValue(Collection<T> values) {
         if (values.size() != 1) {

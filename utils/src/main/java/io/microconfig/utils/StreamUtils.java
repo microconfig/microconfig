@@ -1,5 +1,7 @@
 package io.microconfig.utils;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -10,7 +12,9 @@ import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
+import static lombok.AccessLevel.PRIVATE;
 
+@RequiredArgsConstructor(access = PRIVATE)
 public class StreamUtils {
     public static <K, V> List<V> forEach(Collection<K> collection,
                                          Function<? super K, ? extends V> applyFunction) {

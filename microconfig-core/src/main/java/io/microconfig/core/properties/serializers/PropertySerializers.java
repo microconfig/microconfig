@@ -5,6 +5,7 @@ import io.microconfig.core.environments.EnvironmentRepository;
 import io.microconfig.core.properties.ConfigFormat;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.PropertySerializer;
+import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.util.Collection;
@@ -17,7 +18,9 @@ import static io.microconfig.core.properties.ConfigFormat.YAML;
 import static io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo;
 import static io.microconfig.utils.FileUtils.delete;
 import static io.microconfig.utils.Logger.info;
+import static lombok.AccessLevel.PRIVATE;
 
+@RequiredArgsConstructor(access = PRIVATE)
 public class PropertySerializers {
     public static BiConsumer<File, Collection<Property>> withConfigDiff() {
         ConfigDiff configDiff = new ConfigDiff();

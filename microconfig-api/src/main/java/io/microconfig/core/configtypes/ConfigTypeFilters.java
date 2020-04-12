@@ -1,5 +1,7 @@
 package io.microconfig.core.configtypes;
 
+import lombok.RequiredArgsConstructor;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
@@ -10,7 +12,9 @@ import static io.microconfig.utils.FileUtils.getExtension;
 import static io.microconfig.utils.StreamUtils.filter;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toSet;
+import static lombok.AccessLevel.PRIVATE;
 
+@RequiredArgsConstructor(access = PRIVATE)
 public class ConfigTypeFilters {
     public static ConfigTypeFilter eachConfigType() {
         return types -> types;

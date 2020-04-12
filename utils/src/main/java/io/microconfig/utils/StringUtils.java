@@ -1,5 +1,7 @@
 package io.microconfig.utils;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -10,7 +12,9 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 import static java.util.stream.Stream.of;
+import static lombok.AccessLevel.PRIVATE;
 
+@RequiredArgsConstructor(access = PRIVATE)
 public class StringUtils {
     public static boolean isEmpty(String str) {
         return str == null || str.isEmpty();
