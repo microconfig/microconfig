@@ -1,7 +1,7 @@
 package io.microconfig.core.properties.resolvers.placeholder.strategies.component.properties;
 
 import io.microconfig.core.environments.EnvironmentRepository;
-import io.microconfig.core.properties.repository.ConfigFileRepository;
+import io.microconfig.core.properties.repository.ComponentGraph;
 import io.microconfig.core.properties.resolvers.placeholder.strategies.component.ComponentProperty;
 import lombok.RequiredArgsConstructor;
 
@@ -14,7 +14,7 @@ import static java.util.stream.Stream.of;
 
 @RequiredArgsConstructor
 public class ComponentProperties {
-    private final ConfigFileRepository configFileRepository;
+    private final ComponentGraph componentGraph;
     private final EnvironmentRepository environmentRepository;
     private final File rootDir;
     private final File destinationComponentDir;
@@ -22,7 +22,7 @@ public class ComponentProperties {
     public Map<String, ComponentProperty> get() {
         return of(
                 new NameProperty(),
-                new ConfigDirProperty(configFileRepository, environmentRepository),
+                new ConfigDirProperty(componentGraph, environmentRepository),
                 new ResultDirProperty(destinationComponentDir),
                 new ConfigRootDirProperty(rootDir)
         ).collect(toMap(ComponentProperty::key, identity()));

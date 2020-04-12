@@ -19,8 +19,8 @@ public class ComponentNotFoundException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return "Component '" + notFoundComponent + "' doesn't exist." +
-                chainMessage();
+        return "Component '" + notFoundComponent + "' doesn't exist."
+                + chainMessage();
     }
 
     private String chainMessage() {

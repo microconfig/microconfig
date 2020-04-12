@@ -24,19 +24,19 @@ import static java.util.stream.Collectors.toList;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
-public class ConfigFileRepositoryImpl implements ConfigFileRepository {
+public class ComponentGraphImpl implements ComponentGraph {
     public static final String COMPONENTS_DIR = "components";
 
     private final Map<String, List<File>> foldersByComponentType;
 
-    public static ConfigFileRepository traverseFrom(File rootDir) {
+    public static ComponentGraph traverseFrom(File rootDir) {
         File componentDir = new File(rootDir, COMPONENTS_DIR);
         if (!componentDir.exists()) {
             throw new IllegalArgumentException("Root directory must contain 'components' dir");
         }
 
         try (Stream<Path> paths = walk(componentDir.toPath())) {
-            return new ConfigFileRepositoryImpl(collectFoldersByComponentType(paths));
+            return new ComponentGraphImpl(collectFoldersByComponentType(paths));
         }
     }
 

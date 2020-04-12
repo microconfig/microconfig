@@ -11,7 +11,7 @@ import io.microconfig.core.properties.PlaceholderResolveStrategy;
 import io.microconfig.core.properties.PropertiesFactory;
 import io.microconfig.core.properties.PropertiesFactoryImpl;
 import io.microconfig.core.properties.Resolver;
-import io.microconfig.core.properties.repository.ConfigFileRepository;
+import io.microconfig.core.properties.repository.ComponentGraph;
 import io.microconfig.core.properties.repository.FilePropertiesRepository;
 import io.microconfig.core.properties.resolvers.RecursiveResolver;
 import io.microconfig.core.properties.resolvers.expression.ExpressionResolver;
@@ -36,7 +36,7 @@ import java.util.Map;
 import static io.microconfig.core.configtypes.CompositeConfigTypeRepository.composite;
 import static io.microconfig.core.configtypes.CustomConfigTypeRepository.findDescriptorIn;
 import static io.microconfig.core.properties.io.selector.ConfigIoFactory.newConfigIo;
-import static io.microconfig.core.properties.repository.ConfigFileRepositoryImpl.traverseFrom;
+import static io.microconfig.core.properties.repository.ComponentGraphImpl.traverseFrom;
 import static io.microconfig.core.properties.resolvers.ChainedResolver.chainOf;
 import static io.microconfig.core.properties.resolvers.placeholder.strategies.composite.CompositeResolveStrategy.composite;
 import static io.microconfig.core.properties.resolvers.placeholder.strategies.system.SystemResolveStrategy.envVariablesResolveStrategy;
@@ -92,7 +92,7 @@ public class Microconfig {
         @Getter(lazy = true)
         private final PropertiesFactory propertiesFactory = propertiesFactory();
         @Getter(lazy = true)
-        private final ConfigFileRepository configFileRepository = configFileRepository();
+        private final ComponentGraph componentGraph = configFileRepository();
         @Getter(lazy = true)
         private final Resolver resolver = resolver();
 
@@ -115,7 +115,7 @@ public class Microconfig {
         private PropertiesFactory propertiesFactory() {
             return cache(new PropertiesFactoryImpl(
                             cache(new FilePropertiesRepository(
-                                    getConfigFileRepository(),
+                                    getComponentGraph(),
                                     newConfigIo(fsReader))
                             )
                     )
@@ -130,7 +130,7 @@ public class Microconfig {
         }
 
         private RecursiveResolver placeholderResolver() {
-            Map<String, ComponentProperty> componentSpecialProperties = new ComponentProperties(getConfigFileRepository(), getEnvironments(), rootDir, destinationDir).get();
+            Map<String, ComponentProperty> componentSpecialProperties = new ComponentProperties(getComponentGraph(), getEnvironments(), rootDir, destinationDir).get();
             Map<String, EnvProperty> envSpecialProperties = new EnvironmentProperties().get();
 
             PlaceholderResolveStrategy strategy = cache(composite(join(
@@ -157,7 +157,7 @@ public class Microconfig {
             ));
         }
 
-        private ConfigFileRepository configFileRepository() {
+        private ComponentGraph configFileRepository() {
             return traverseFrom(rootDir);
         }
     }

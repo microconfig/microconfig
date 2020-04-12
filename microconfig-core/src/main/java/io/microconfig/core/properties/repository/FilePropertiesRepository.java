@@ -13,7 +13,7 @@ import static java.util.Collections.emptyMap;
 
 @RequiredArgsConstructor
 public class FilePropertiesRepository implements PropertiesRepository {
-    private final ConfigFileRepository configFileRepository;
+    private final ComponentGraph componentGraph;
     private final ConfigIo configIo;
 
     @Override
@@ -36,7 +36,7 @@ public class FilePropertiesRepository implements PropertiesRepository {
         }
 
         private List<ConfigFile> configFiles() {
-            return configFileRepository.getConfigFilesOf(component, environment, configType);
+            return componentGraph.getConfigFilesOf(component, environment, configType);
         }
 
         private Map<String, Property> readAndParse(List<ConfigFile> componentConfigFiles) {
@@ -57,7 +57,7 @@ public class FilePropertiesRepository implements PropertiesRepository {
             try {
                 return processedIncludes.add(include) ? componentFrom(include).getProperties() : emptyMap();
             } catch (ComponentNotFoundException e) {
-                throw e.withParentComponent(component); //todo test include after placeholder
+                throw e.withParentComponent(component);
             }
         }
 
