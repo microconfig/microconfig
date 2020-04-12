@@ -1,7 +1,9 @@
 Can't build configs for root component 'cyclicDetectBetweenConfigTypes[dev]'.
-Exception in '../components/exceptions/bad/cyclic/cyclicDetectBetweenConfigTypes/service.properties:1'
-Property: key=${process::this@key2}
+Exception in
+	../components/exceptions/bad/cyclic/cyclicDetectBetweenConfigTypes/service.properties:1'
+	key=${process::this@key2}
 Can't resolve ${process::this@key2}
-Can't build configs for root component 'cyclicDetectBetweenConfigTypes[dev]'.
-Exception in '../components/exceptions/bad/cyclic/cyclicDetectBetweenConfigTypes/service.properties:1'
-Can't resolve placeholder ${process::this@key2}
+Cause: Can't build configs for root component 'cyclicDetectBetweenConfigTypes[dev]'.
+Exception in
+	../components/exceptions/bad/cyclic/cyclicDetectBetweenConfigTypes/service.properties:1'
+Can't resolve placeholder ${process::this@key2}#todo

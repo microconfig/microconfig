@@ -1,7 +1,9 @@
 Can't build configs for root component 'cyclicDetect[dev]'.
-Exception in '../components/exceptions/bad/cyclic/cyclicDetect/service.properties:1'
-Property: cyclic.c1=${cyclicDetect@cyclic.c2}
+Exception in
+	../components/exceptions/bad/cyclic/cyclicDetect/service.properties:1'
+	cyclic.c1=${cyclicDetect@cyclic.c2}
 Can't resolve ${cyclicDetect@cyclic.c2}
-Can't build configs for root component 'cyclicDetect[dev]'.
-Exception in '../components/exceptions/bad/cyclic/cyclicDetect/service.properties:1'
-Can't resolve placeholder ${cyclicDetect@cyclic.c2}
+Cause: Can't build configs for root component 'cyclicDetect[dev]'.
+Exception in
+	../components/exceptions/bad/cyclic/cyclicDetect/service.properties:1'
+Can't resolve placeholder ${cyclicDetect@cyclic.c2}#todo

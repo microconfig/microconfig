@@ -71,7 +71,7 @@ public class StringUtils {
 
     public static String getCauseMessage(Throwable t) {
         return ofNullable(t.getCause())
-                .map(Throwable::getMessage)
+                .map(throwable -> "Cause: " + throwable.getMessage())
                 .orElse("");
     }
 }

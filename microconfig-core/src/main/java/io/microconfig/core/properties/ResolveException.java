@@ -32,13 +32,14 @@ public class ResolveException extends RuntimeException {
 
     private String componentInfo() {
         return "Can't build configs for root component '" + root + "'.\n" +
-                "Exception in '" + current + "'\n" +
+                "Exception in\n"  +
+                "\t" + current + "'\n" +
                 propertyMessage();
     }
 
     private String propertyMessage() {
         return ofNullable(property)
-                .map(p -> "Property: " + p + "\n")
+                .map(p -> "\t" + p + "\n")
                 .orElse("");
     }
 }

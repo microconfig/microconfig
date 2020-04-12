@@ -1,5 +1,6 @@
 Can't build configs for root component 'placeholderToBadInclude[dev]'.
-Exception in '../components/exceptions/placeholderToBad/placeholderToBadInclude/application.yaml:1'
-Property: key=${badInclude@key}
+Exception in
+	../components/exceptions/placeholderToBad/placeholderToBadInclude/application.yaml:1'
+	key=${badInclude@key}
 Can't resolve ${badInclude@key}
-Component 'missing' doesn't exist. Dependency chain: badInclude -> missing
+Cause: Component 'missing' doesn't exist. Dependency chain: badInclude -> missing

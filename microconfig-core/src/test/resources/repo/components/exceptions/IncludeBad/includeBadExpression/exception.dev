@@ -1,5 +1,6 @@
 Can't build configs for root component 'includeBadExpression[dev]'.
-Exception in '../components/exceptions/bad/badExpression/application.yaml:1'
-Property: key=#{10/0}
-Can't evaluate '#{10/0}'
-/ by zero
+Exception in
+	../components/exceptions/bad/badExpression/application.yaml:1'
+	key=#{10/0}
+Can't evaluate #{10/0}
+Cause: / by zero
