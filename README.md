@@ -896,8 +896,9 @@ The required build params:
 * `-r` - full or relative config root dir. 
 * `-e` - environment name (environment is used as a config profile, also as a group of services to build configs).
 
-Optional build param:
+Optional build params:
 * `-d` - full or relative build destination dir. Default = ${currentFolder}/build
+* `-stacktrace` - Show full stacktrace in case of exceptions. Values: true/false. Default: false  
 
 To build configs not for the whole environment but only for specific services you can use the following optional params:
 * `-g` - a comma-separated list of component groups to build configs. 
