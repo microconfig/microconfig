@@ -9,6 +9,7 @@ import java.util.List;
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.Logger.error;
 import static java.lang.System.currentTimeMillis;
+import static java.lang.System.exit;
 
 /**
  * Command line params example: *
@@ -38,6 +39,7 @@ public class MicroconfigMain {
             }
 
             error(e.getMessage());
+            exit(-1);
         }
     }
 }
