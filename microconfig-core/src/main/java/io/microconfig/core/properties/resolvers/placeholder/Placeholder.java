@@ -27,7 +27,7 @@ public class Placeholder {
 
     public Property resolveUsing(PlaceholderResolveStrategy strategy) {
         return strategy.resolve(component, key, environment, configType)
-                .orElseThrow(() -> new IllegalStateException("Cant resolve '" + this + "'"));
+                .orElseThrow(() -> new IllegalStateException("Can't resolve " + this));
     }
 
     public DeclaringComponent getReferencedComponent() {
