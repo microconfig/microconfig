@@ -1,0 +1,5 @@
+k1: #{${simple@k2} *100}
+k2: ${simple@k3:1}3
+k3: ${simple2@k2:3}
+k4: 4
+k5: ${simple2@k1}

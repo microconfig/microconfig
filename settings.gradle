@@ -1,4 +1,6 @@
 rootProject.name = 'microconfig-root'
 
-include ':microconfig:microconfig-core',
-        ':microconfig:utils'
+include ':microconfig-api',
+        ':microconfig-core',
+        ':microconfig-cli',
+        ':utils'

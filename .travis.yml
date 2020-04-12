@@ -1,8 +1,13 @@
 language: java
-jdk: openjdk11
+dist: trusty
+jdk: openjdk8
+
+addons:
+  sonarcloud:
+    organization: "microconfig"
+    token: 73371217f9b049ece1f4ba72f70212e6fcdbaa52
 
 script:
   - ./gradlew check
-  - ./gradlew codeCoverageReport
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - ./gradlew jacocoTestReport
+  - ./gradlew sonarqube

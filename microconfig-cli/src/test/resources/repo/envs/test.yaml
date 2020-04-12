@@ -1,0 +1,4 @@
+group:
+  components:
+    - component
+    - component2:component

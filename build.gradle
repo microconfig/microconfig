@@ -3,23 +3,23 @@ apply from: 'pom.gradle'
 
 buildscript {
     repositories {
-//        if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
-//            maven { url "http://172.30.162.1/nexus/content/groups/public" }
-//        }
-        mavenCentral()        
+        mavenCentral()
         jcenter()
     }
 
     dependencies {
         classpath "com.github.jengelman.gradle.plugins:shadow:5.2.0"
+        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.8'
     }
 }
 
+
 allprojects {
     apply plugin: 'java'
-    apply plugin: 'maven'
     apply plugin: 'jacoco'
     apply plugin: 'maven-publish'
+    apply plugin: 'org.sonarqube'
+
     apply plugin: 'signing'
 
     group = 'io.microconfig'
@@ -28,10 +28,7 @@ allprojects {
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
-    repositories {        
-//        if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
-//            maven { url "http://172.30.162.1/nexus/content/groups/public" }
-//        }
+    repositories {
         mavenCentral()
     }
 
@@ -67,14 +64,28 @@ allprojects {
     }
 
     dependencies {
-        implementation platform("org.springframework.boot:spring-boot-dependencies:2.2.5.RELEASE")
+        implementation platform(lib.spring_bom)
 
         compileOnly lib.lombok
+        testCompileOnly lib.lombok
         annotationProcessor lib.lombok
 
-        testImplementation 'org.junit.jupiter:junit-jupiter-engine',
-                'org.mockito:mockito-junit-jupiter'
+        testImplementation lib.junit, lib.mokito
     }
+
+    sonarqube {
+        properties {
+            property "sonar.projectKey", "microconfig_microconfig"
+        }
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled true
+            html.enabled true
+        }
+    }
+
 
     test {
         useJUnitPlatform()
@@ -84,23 +95,4 @@ allprojects {
     task sourceJar(type: Jar) {
         from sourceSets.main.allJava
     }
-}
-
-task codeCoverageReport(type: JacocoReport) {
-    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
-
-    subprojects.each {
-        sourceSets it.sourceSets.main
-    }
-
-    reports {
-        xml.enabled true
-        html.enabled false
-        csv.enabled false
-        xml.setDestination(file("${buildDir}/reports/jacoco/report.xml"))
-    }
-}
-
-codeCoverageReport.dependsOn {
-    subprojects*.test
 }

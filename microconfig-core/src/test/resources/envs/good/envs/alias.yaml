@@ -1,0 +1,4 @@
+group:
+  components:
+    - componentAlias1:component
+    - componentAlias2:component

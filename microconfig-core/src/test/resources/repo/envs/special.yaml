@@ -1,0 +1,12 @@
+portOffset: 17
+ip: 1.2.3.40
+
+specialGroup:
+  components:
+    - some1
+    - specialPlaceholders
+
+specialGroup2:
+  ip: 2.3.4.40
+  components:
+    - specialPlaceholders2:specialPlaceholders

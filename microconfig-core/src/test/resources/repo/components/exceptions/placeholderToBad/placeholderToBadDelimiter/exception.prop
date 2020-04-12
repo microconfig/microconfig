@@ -1,0 +1,7 @@
+Can't build configs for root component 'placeholderToBadDelimiter[prop]'.
+Exception in
+	../components/exceptions/placeholderToBad/placeholderToBadDelimiter/application.prop.properties:1'
+	key=${badDelimiter@keyvalue}
+Can't resolve ${badDelimiter@keyvalue}
+Cause: Incorrect delimiter in 'keyvalue' in '../components/exceptions/bad/badDelimiter/application.prop.properties:1'
+Property must contain ':' or '=' as delimiter.

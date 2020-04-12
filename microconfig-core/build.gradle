@@ -1,0 +1,10 @@
+apply plugin: 'java-library'
+
+dependencies {
+    api project(':microconfig-api')
+
+    implementation project(':utils'),
+            lib.spring_el,
+            lib.gson,
+            lib.snakeyaml
+}

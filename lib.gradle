@@ -1,6 +1,11 @@
 ext {
-    lib = [            
-            snakeyaml         : 'org.yaml:snakeyaml:1.26',
-            lombok            : 'org.projectlombok:lombok:1.18.12'
+    lib = [
+            spring_bom: "org.springframework.boot:spring-boot-dependencies:2.2.6.RELEASE",
+            lombok    : 'org.projectlombok:lombok:1.18.12',
+            spring_el : 'org.springframework:spring-expression',
+            snakeyaml : 'org.yaml:snakeyaml',
+            gson      : 'com.google.code.gson:gson',
+            junit     : ['org.junit.jupiter:junit-jupiter-engine', 'org.junit.jupiter:junit-jupiter-params'],
+            mokito    : 'org.mockito:mockito-junit-jupiter',
     ].withDefault({ key -> throw new IllegalArgumentException("Unknown library '$key'") })
 }

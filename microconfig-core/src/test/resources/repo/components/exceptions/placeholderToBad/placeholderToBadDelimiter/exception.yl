@@ -1,0 +1,7 @@
+Can't build configs for root component 'placeholderToBadDelimiter[yl]'.
+Exception in
+	../components/exceptions/placeholderToBad/placeholderToBadDelimiter/application.yl.yaml:1'
+	key=${badDelimiter@key}
+Can't resolve ${badDelimiter@key}
+Cause: Incorrect delimiter in 'key=value' in '../components/exceptions/bad/badDelimiter/application.yl.yaml:1'
+Yaml property must contain ':' as delimiter.

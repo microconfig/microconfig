@@ -1,0 +1,11 @@
+component.configDir=${configDir}
+component.configRoot=${configRoot}
+component.name=specialPlaceholders2
+component.resultDir=${resultDir}/specialPlaceholders2
+env.order=0
+env.env=special
+env.group=specialGroup2
+env.ip=2.3.4.40
+env.portOffset=17
+system.userHome=${userHome}
+envOs.user=${user}
