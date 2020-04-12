@@ -75,7 +75,7 @@ allprojects {
 
     sonarqube {
         properties {
-            property "sonar.projectKey", "microconfig"
+            property "sonar.projectKey", "microconfig_microconfig"
         }
     }
 
