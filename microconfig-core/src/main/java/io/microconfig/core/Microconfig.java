@@ -49,6 +49,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static lombok.AccessLevel.PRIVATE;
 
+@Getter
 @RequiredArgsConstructor(access = PRIVATE)
 public class Microconfig {
     private final File rootDir;
@@ -59,7 +60,6 @@ public class Microconfig {
     @With
     private final List<PlaceholderResolveStrategy> additionalPlaceholderResolvers;
 
-    @Getter
     private final Dependencies dependencies = new Dependencies();
 
     public static Microconfig searchConfigsIn(File rootDir) {

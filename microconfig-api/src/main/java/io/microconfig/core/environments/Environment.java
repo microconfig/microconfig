@@ -6,7 +6,11 @@ import java.util.Optional;
 public interface Environment {
     String getName();
 
+    Object getSource();
+
     int getPortOffset();
+
+    List<ComponentGroup> getGroups();
 
     List<ComponentGroup> findGroupsWithIp(String ip);
 

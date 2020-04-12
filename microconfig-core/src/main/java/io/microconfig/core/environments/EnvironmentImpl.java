@@ -4,6 +4,7 @@ import io.microconfig.core.properties.PropertiesFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,9 +21,12 @@ import static java.util.stream.Collectors.toMap;
 @RequiredArgsConstructor
 public class EnvironmentImpl implements Environment {
     @Getter
+    private final File source;
+    @Getter
     private final String name;
     @Getter
     private final int portOffset;
+    @Getter
     private final List<ComponentGroup> groups;
 
     private final ComponentFactory componentFactory;

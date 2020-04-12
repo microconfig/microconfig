@@ -121,6 +121,6 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     }
 
     private Supplier<Environment> fakeEnvWith(String name) {
-        return () -> new EnvironmentImpl(name, 0, emptyList(), componentFactory, propertiesFactory);
+        return () -> new EnvironmentImpl(null, name, 0, emptyList(), componentFactory, propertiesFactory);
     }
 }

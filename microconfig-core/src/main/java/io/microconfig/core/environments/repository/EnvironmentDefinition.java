@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.function.Function;
@@ -18,6 +19,7 @@ import static java.util.stream.Collectors.*;
 @With
 @RequiredArgsConstructor
 class EnvironmentDefinition {
+    private final File source;
     private final String name;
     @Getter
     private final String ip;
@@ -49,6 +51,7 @@ class EnvironmentDefinition {
 
     public Environment toEnvironment(ComponentFactory componentFactory, PropertiesFactory propertiesFactory) {
         return new EnvironmentImpl(
+                source,
                 name,
                 portOffset,
                 forEach(groups, g -> g.toGroup(componentFactory, propertiesFactory, name)),
