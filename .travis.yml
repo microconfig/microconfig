@@ -5,8 +5,7 @@ jdk: openjdk8
 addons:
   sonarcloud:
     organization: "microconfig"
-    token:
-      secure: yQSedZ6rOalvplRgp/AZBk46biN4z5P0YTPfADMSTE1LRFVKiH1EQbLrjKa+ReTjaPIZTUEELtVA6Mej8I13SWFGe1rQiwavz1LuXe+PK6yfFgZ+HHa+iZZAbG2Mw2zsZesOkxQRkBzdnRsDnxVxfb03XqcHk/ZO/ZwcslWs/5ps1AeO1JkhsfPdOrCEJjnUDTRhlo/OdhDqjcf5z4SilZ3MY90F+00DzV+7qMEPeLVXisp1HPcl5TVf4oSRB2bxRbalbMM05wZQOetuOeYOa+Sf68u3lPxpuwROKFzw6xFEjynY3Ykal/bESr4cBXt/zADSnb0l9bfrouTdr2gqvY3xnnghjD3R7AO5sgI8Zmq/IhOU5DqQFsEbSiicEkxj2MSj0NtrOpNnFzk+gTkYX+xFx6WHw86Hl3nuxbsvrsGl/NiyiiQl1ipme3fYG1krbKSXipB21T7t7tXTQC5bU1Fv5eZdVgcy5g3Pitkmyad95K0oLFfrBJw004mz8mDY8QbNoc0UxHeqMmjzEKNO5SdMtjBxt5z/PmGfG8uUDO+1DuHAr9PwyH+DfWkPPF20wRgHUNaws0Aj2G0SgZ4anAFogABijGNiikOdb1Y6bTpYGXUiCmy7AMtWa2UAoFc98Gl5D9u7GWx+JTVF6Pc3fIoIOcBKBMDBmjphA/YUaRI=
+    token: 73371217f9b049ece1f4ba72f70212e6fcdbaa52
 
 script:
   - ./gradlew check
