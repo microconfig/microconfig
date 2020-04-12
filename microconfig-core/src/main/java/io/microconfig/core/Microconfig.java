@@ -28,6 +28,7 @@ import io.microconfig.io.FsReader;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
+import lombok.experimental.Accessors;
 
 import java.io.File;
 import java.util.List;
@@ -49,6 +50,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static lombok.AccessLevel.PRIVATE;
 
+@Accessors(fluent = true)
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
 public class Microconfig {
@@ -75,62 +77,62 @@ public class Microconfig {
     }
 
     public EnvironmentRepository environments() {
-        return dependencies.getEnvironments();
+        return dependencies.environments();
     }
 
     public Resolver resolver() {
-        return dependencies.getResolver();
+        return dependencies.resolver();
     }
 
     public class Dependencies {
         @Getter(lazy = true)
-        private final EnvironmentRepository environments = environments();
+        private final EnvironmentRepository environments = initEnvironments();
         @Getter(lazy = true)
-        private final ComponentFactory componentFactory = componentFactory();
+        private final ComponentFactory componentFactory = initComponentFactory();
         @Getter(lazy = true)
-        private final ConfigTypeRepository configTypeRepository = configTypeRepository();
+        private final ConfigTypeRepository configTypeRepository = initConfigTypeRepository();
         @Getter(lazy = true)
-        private final PropertiesFactory propertiesFactory = propertiesFactory();
+        private final PropertiesFactory propertiesFactory = initPropertiesFactory();
         @Getter(lazy = true)
-        private final ComponentGraph componentGraph = componentGraph();
+        private final ComponentGraph componentGraph = initComponentGraph();
         @Getter(lazy = true)
-        private final Resolver resolver = resolver();
+        private final Resolver resolver = initResolver();
 
-        private EnvironmentRepository environments() {
+        private EnvironmentRepository initEnvironments() {
             return cache(new FileEnvironmentRepository(
                     rootDir,
                     fsReader,
-                    getComponentFactory(),
-                    getPropertiesFactory())
+                    componentFactory(),
+                    propertiesFactory())
             );
         }
 
-        private ComponentFactory componentFactory() {
+        private ComponentFactory initComponentFactory() {
             return cache(new ComponentFactoryImpl(
-                    getConfigTypeRepository(),
-                    getPropertiesFactory()
+                    configTypeRepository(),
+                    propertiesFactory()
             ));
         }
 
-        private PropertiesFactory propertiesFactory() {
+        private PropertiesFactory initPropertiesFactory() {
             return cache(new PropertiesFactoryImpl(
                             cache(new FilePropertiesRepository(
-                                    getComponentGraph(),
+                                    componentGraph(),
                                     newConfigIo(fsReader))
                             )
                     )
             );
         }
 
-        public Resolver resolver() {
+        public Resolver initResolver() {
             return cache(chainOf(
-                    placeholderResolver(),
+                    initPlaceholderResolver(),
                     new ExpressionResolver()
             ));
         }
 
-        private RecursiveResolver placeholderResolver() {
-            Map<String, ComponentProperty> componentSpecialProperties = new ComponentProperties(getComponentGraph(), getEnvironments(), rootDir, destinationDir).get();
+        private RecursiveResolver initPlaceholderResolver() {
+            Map<String, ComponentProperty> componentSpecialProperties = new ComponentProperties(componentGraph(), environments(), rootDir, destinationDir).get();
             Map<String, EnvProperty> envSpecialProperties = new EnvironmentProperties().get();
 
             PlaceholderResolveStrategy strategy = cache(composite(join(
@@ -139,8 +141,8 @@ public class Microconfig {
                             systemPropertiesResolveStrategy(),
                             envVariablesResolveStrategy(),
                             new ComponentResolveStrategy(componentSpecialProperties),
-                            new EnvironmentResolveStrategy(getEnvironments(), envSpecialProperties),
-                            new StandardResolveStrategy(getEnvironments())
+                            new EnvironmentResolveStrategy(environments(), envSpecialProperties),
+                            new StandardResolveStrategy(environments())
                     )
             )));
 
@@ -150,14 +152,14 @@ public class Microconfig {
             );
         }
 
-        private ConfigTypeRepository configTypeRepository() {
+        private ConfigTypeRepository initConfigTypeRepository() {
             return cache(composite(
                     findDescriptorIn(rootDir, fsReader),
                     new StandardConfigTypeRepository()
             ));
         }
 
-        private ComponentGraph componentGraph() {
+        private ComponentGraph initComponentGraph() {
             return traverseFrom(rootDir);
         }
     }
