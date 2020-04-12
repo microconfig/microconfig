@@ -28,7 +28,7 @@ public class MicroconfigRunner {
                 .save(toFiles());
     }
 
-    public PropertySerializer<File> toFiles() {
+    private PropertySerializer<File> toFiles() {
         return toFileWithLegacySupport(
                 toFileIn(microconfig.getDestinationDir(), withConfigDiff()),
                 microconfig.getDependencies().getEnvironments()
