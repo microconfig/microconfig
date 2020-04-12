@@ -1,6 +1,6 @@
 language: java
 dist: trusty
-jdk: openjdk11trav
+jdk: openjdk8
 
 addons:
   sonarcloud:
