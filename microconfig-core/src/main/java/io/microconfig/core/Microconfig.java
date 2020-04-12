@@ -92,7 +92,7 @@ public class Microconfig {
         @Getter(lazy = true)
         private final PropertiesFactory propertiesFactory = propertiesFactory();
         @Getter(lazy = true)
-        private final ComponentGraph componentGraph = configFileRepository();
+        private final ComponentGraph componentGraph = componentGraph();
         @Getter(lazy = true)
         private final Resolver resolver = resolver();
 
@@ -157,7 +157,7 @@ public class Microconfig {
             ));
         }
 
-        private ComponentGraph configFileRepository() {
+        private ComponentGraph componentGraph() {
             return traverseFrom(rootDir);
         }
     }
