@@ -20,7 +20,7 @@ allprojects {
     apply plugin: 'maven-publish'
     apply plugin: 'org.sonarqube'
 
-//    apply plugin: 'signing' //todo
+    apply plugin: 'signing'
 
     group = 'io.microconfig'
     version = rootProject.version
@@ -59,9 +59,9 @@ allprojects {
         }
     }
 
-//    signing {
-//        sign publishing.publications.nexus
-//    }
+    signing {
+        sign publishing.publications.nexus
+    }
 
     dependencies {
         implementation platform(lib.spring_bom)
