@@ -29,7 +29,7 @@ public class MicroconfigRunner {
     }
 
     private PropertySerializer<File> toFiles() {
-        return toFileWithLegacySupport(
+        return withLegacySupport(
                 toFileIn(microconfig.getDestinationDir(), withConfigDiff()),
                 microconfig.getDependencies().getEnvironments()
         );
