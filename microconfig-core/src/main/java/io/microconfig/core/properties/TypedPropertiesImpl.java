@@ -47,6 +47,13 @@ public class TypedPropertiesImpl implements TypedProperties {
     }
 
     @Override
+    public TypedProperties withPrefix(String prefix) {
+        return withPropertyByKey(
+            filter(propertyByKey.values(), p -> p.getKey().startsWith(prefix), toPropertyMap())
+        );
+    }
+
+    @Override
     public Map<String, Property> getPropertiesAsMap() {
         return propertyByKey;
     }

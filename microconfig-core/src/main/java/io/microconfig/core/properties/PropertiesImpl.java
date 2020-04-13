@@ -34,6 +34,11 @@ public class PropertiesImpl implements Properties {
     }
 
     @Override
+    public Properties withPrefix(String prefix) {
+        return new PropertiesImpl(forEach(properties, tp -> tp.withPrefix(prefix)));
+    }
+
+    @Override
     public Map<String, Property> getPropertiesAsMap() {
         return propertyKeyTo(identity());
     }

@@ -11,6 +11,8 @@ public interface Properties {
 
     Properties withoutTempValues();
 
+    Properties withPrefix(String prefix);
+
     Map<String, Property> getPropertiesAsMap();
 
     Map<String, String> getPropertiesAsKeyValue();
