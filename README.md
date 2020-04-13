@@ -906,7 +906,7 @@ To build configs not for the whole environment but only for specific services yo
 
 Command line params example (Java 8+ required):
 ```
-java -jar microconfig.jar -r repo -d configs -e prod
+java -jar microconfig.jar -r repo -e prod
 ```
 
 To add system properties use `-D`
