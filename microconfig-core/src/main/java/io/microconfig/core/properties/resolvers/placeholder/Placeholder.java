@@ -18,6 +18,7 @@ public class Placeholder {
     private static final String SELF_REFERENCE = "this";
 
     private final String configType;
+    private final String root;
     @With
     private final String component;
     @With
@@ -26,7 +27,7 @@ public class Placeholder {
     private final String defaultValue;
 
     public Property resolveUsing(PlaceholderResolveStrategy strategy) {
-        return strategy.resolve(component, key, environment, configType)
+        return strategy.resolve(root, component, key, environment, configType)
                 .orElseThrow(() -> new IllegalStateException("Can't resolve " + this));
     }
 

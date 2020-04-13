@@ -17,7 +17,7 @@ public class ComponentResolveStrategy implements PlaceholderResolveStrategy {
     private final Map<String, ComponentProperty> propertyByKey;
 
     @Override
-    public Optional<Property> resolve(String component, String key, String environment, String configType) {
+    public Optional<Property> resolve(String root, String component, String key, String environment, String configType) {
         ComponentProperty componentProperty = propertyByKey.get(key);
 
         return ofNullable(componentProperty)

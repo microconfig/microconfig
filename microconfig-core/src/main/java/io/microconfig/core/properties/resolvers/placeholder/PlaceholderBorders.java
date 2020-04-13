@@ -154,9 +154,10 @@ public class PlaceholderBorders {
         return defaultValueIndex < 0 ? null : line.substring(defaultValueIndex, endIndex - 1);
     }
 
-    public Placeholder toPlaceholder(String contextConfigType, String contextEnv) {
+    public Placeholder toPlaceholder(String root, String contextConfigType, String contextEnv) {
         return new Placeholder(
                 getConfigType(contextConfigType),
+                root,
                 getComponent(),
                 getEnvironment(contextEnv),
                 getKey(),
