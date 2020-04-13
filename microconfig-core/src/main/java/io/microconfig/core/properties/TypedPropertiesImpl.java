@@ -9,6 +9,7 @@ import lombok.With;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
 
@@ -35,22 +36,18 @@ public class TypedPropertiesImpl implements TypedProperties {
     @Override
     public TypedProperties resolveBy(Resolver resolver) {
         return withPropertyByKey(
-                forEach(propertyByKey.values(), resolveUsing(resolver), toPropertyMap())
+            forEach(propertyByKey.values(), resolveUsing(resolver), toPropertyMap())
         );
     }
 
     @Override
     public TypedProperties withoutTempValues() {
-        return withPropertyByKey(
-                filter(propertyByKey.values(), p -> !p.isTemp(), toPropertyMap())
-        );
+        return filterProperties(p -> !p.isTemp());
     }
 
     @Override
     public TypedProperties withPrefix(String prefix) {
-        return withPropertyByKey(
-            filter(propertyByKey.values(), p -> p.getKey().startsWith(prefix), toPropertyMap())
-        );
+        return filterProperties(p -> p.getKey().startsWith(prefix));
     }
 
     @Override
@@ -61,8 +58,8 @@ public class TypedPropertiesImpl implements TypedProperties {
     @Override
     public Map<String, String> getPropertiesAsKeyValue() {
         return propertyByKey.values()
-                .stream()
-                .collect(toLinkedMap(Property::getKey, Property::getValue));
+            .stream()
+            .collect(toLinkedMap(Property::getKey, Property::getValue));
     }
 
     @Override
@@ -88,6 +85,10 @@ public class TypedPropertiesImpl implements TypedProperties {
     private UnaryOperator<Property> resolveUsing(Resolver resolver) {
         DeclaringComponent root = getDeclaringComponent();
         return property -> property.resolveBy(resolver, root);
+    }
+
+    private TypedProperties filterProperties(Predicate<Property> filter) {
+        return withPropertyByKey(filter(propertyByKey.values(), filter, toPropertyMap()));
     }
 
     private Collector<Property, ?, Map<String, Property>> toPropertyMap() {

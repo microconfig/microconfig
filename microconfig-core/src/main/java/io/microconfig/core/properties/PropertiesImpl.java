@@ -35,7 +35,7 @@ public class PropertiesImpl implements Properties {
 
     @Override
     public Properties withPrefix(String prefix) {
-        return new PropertiesImpl(forEach(properties, tp -> tp.withPrefix(prefix)));
+        return withEachComponent(tp -> tp.withPrefix(prefix));
     }
 
     @Override
@@ -85,8 +85,8 @@ public class PropertiesImpl implements Properties {
 
     private <T> Map<String, T> propertyKeyTo(Function<Property, T> valueGetter) {
         return properties.stream()
-                .map(TypedProperties::getProperties)
-                .flatMap(Collection::stream)
-                .collect(toLinkedMap(Property::getKey, valueGetter));
+            .map(TypedProperties::getProperties)
+            .flatMap(Collection::stream)
+            .collect(toLinkedMap(Property::getKey, valueGetter));
     }
 }
