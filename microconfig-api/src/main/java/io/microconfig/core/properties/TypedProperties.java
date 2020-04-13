@@ -15,6 +15,8 @@ public interface TypedProperties {
 
     TypedProperties withoutTempValues();
 
+    TypedProperties withPrefix(String prefix);
+
     Map<String, Property> getPropertiesAsMap();
 
     Map<String, String> getPropertiesAsKeyValue();
