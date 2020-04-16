@@ -1,5 +1,5 @@
 apply from: 'lib.gradle'
-apply from: 'pom.gradle'
+apply from: 'pomSettings.gradle'
 
 buildscript {
     repositories {
