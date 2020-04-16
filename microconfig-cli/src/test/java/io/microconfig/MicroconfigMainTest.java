@@ -35,6 +35,6 @@ class MicroconfigMainTest {
     private void checkFileExist(String name, final String fileName) {
         File resultFile = new File(destinationDir, name + "/" + fileName);
         assertTrue(resultFile.exists());
-        assertEquals("key: " + getName(resultFile) + "\n", readFully(resultFile));
+        assertEquals("key: " + getName(resultFile), readFully(resultFile).trim());
     }
 }

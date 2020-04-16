@@ -61,10 +61,13 @@ public class MicroconfigTest {
             String actual = build(component, env).trim();
 
             if (expectation.getName().startsWith("truncate.")) {
-                assertEquals(expected, actual.substring(0, min(expected.length(), actual.length())));
-            } else {
-                assertEquals(expected, actual);
+                actual = actual.substring(0, min(expected.length(), actual.length()));
             }
+
+            assertEquals(
+                    expected.replace("\r\n", "\n"),
+                    actual.replace("\r\n", "\n")
+            );
         });
     }
 
@@ -92,11 +95,10 @@ public class MicroconfigTest {
 
     private String readExpectation(File expectation) {
         return readFully(expectation)
-                .replace("${configDir}", expectation.getParentFile().getAbsolutePath())
+                .replace("${configDir}", toPath(expectation.getParentFile()))
                 .replace("${configRoot}", toPath(root))
                 .replace("${resultDir}", toPath(new File(root, "build")))
                 .replace("${userHome}", toPath(new File(System.getProperty("user.home"))))
-                .replace("${user}", System.getenv("USER"))
                 .replace("${space}", " ")
                 .replace("#todo", "");
     }
