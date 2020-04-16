@@ -63,6 +63,10 @@ public class StringUtils {
         return path.replace('\\', '/');
     }
 
+    public static String toUnixPathSeparator(String line) {
+        return line.replace("\r\n", "\n");
+    }
+
     public static String escape(String value) {
         String one = "\\";
         String two = "\\\\";

@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import static io.microconfig.core.ClasspathReader.classpathFile;
 import static io.microconfig.core.Microconfig.searchConfigsIn;
 import static io.microconfig.core.properties.templates.TemplatePattern.defaultPattern;
+import static io.microconfig.utils.StringUtils.toUnixPathSeparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TemplateTest {
@@ -76,7 +77,7 @@ class TemplateTest {
                 "      \n" +
                 "\n" +
                 "\n" +
-                "key10: mergeLists", result);
+                "key10: mergeLists", toUnixPathSeparator(result));
     }
 
     private Resolver resolver() {

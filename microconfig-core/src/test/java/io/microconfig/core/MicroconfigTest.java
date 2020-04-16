@@ -16,6 +16,7 @@ import static io.microconfig.core.configtypes.StandardConfigType.APPLICATION;
 import static io.microconfig.core.properties.serializers.PropertySerializers.asString;
 import static io.microconfig.utils.FileUtils.walk;
 import static io.microconfig.utils.IoUtils.readFully;
+import static io.microconfig.utils.StringUtils.toUnixPathSeparator;
 import static io.microconfig.utils.StringUtils.unixLikePath;
 import static java.lang.Math.min;
 import static java.util.stream.Collectors.toList;
@@ -65,8 +66,8 @@ public class MicroconfigTest {
             }
 
             assertEquals(
-                    expected.replace("\r\n", "\n"),
-                    actual.replace("\r\n", "\n")
+                    toUnixPathSeparator(expected),
+                    toUnixPathSeparator(actual)
             );
         });
     }

@@ -9,6 +9,7 @@ import java.util.TreeMap;
 
 import static io.microconfig.core.ClasspathReader.classpathFile;
 import static io.microconfig.core.ClasspathReader.read;
+import static io.microconfig.utils.StringUtils.toUnixPathSeparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class YamlTreeImplTest {
@@ -40,12 +41,18 @@ class YamlTreeImplTest {
 
     @Test
     void testSortOrder() {
-        assertEquals(read("configFormats/yaml/sortOrder/result.yaml"), toYaml("configFormats/yaml/sortOrder/initial.yaml"));
+        assertStringEquals(
+                read("configFormats/yaml/sortOrder/result.yaml"),
+                toYaml("configFormats/yaml/sortOrder/initial.yaml")
+        );
     }
 
     @Test
     void testList() {
-        assertEquals(read("configFormats/yaml/list/resultList.yaml"), toYaml("configFormats/yaml/list/list.yaml").replace("services: ", "services:"));
+        assertStringEquals(
+                read("configFormats/yaml/list/resultList.yaml"),
+                toYaml("configFormats/yaml/list/list.yaml").replace("services: ", "services:")
+        );
     }
 
     @Test
@@ -66,13 +73,20 @@ class YamlTreeImplTest {
         assertEquals(expected, actual);
     }
 
-    private void doCompare(String expected, Map<String, String> initial) {
-        assertEquals(read(expected), new YamlTreeImpl().toYaml(initial));
-    }
-
     private String toYaml(String file) {
         return new YamlTreeImpl().toYaml(
                 new YamlReader(classpathFile(file), new DumpedFsReader()).propertiesAsMap()
+        );
+    }
+
+    private void doCompare(String expected, Map<String, String> initial) {
+        assertStringEquals(read(expected), new YamlTreeImpl().toYaml(initial));
+    }
+
+    private void assertStringEquals(String expected, String actual) {
+        assertEquals(
+                toUnixPathSeparator(expected),
+                toUnixPathSeparator(actual)
         );
     }
 }
