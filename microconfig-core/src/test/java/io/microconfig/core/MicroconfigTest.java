@@ -45,7 +45,7 @@ public class MicroconfigTest {
 
     private boolean isExpectation(File file) {
         String name = file.getName();
-        return //file.getParentFile().getName().equals("includeBadEnv") &&
+        return file.getParentFile().getName().equals("placeholderToMap") &&
                 (name.startsWith("expect.") || name.startsWith("truncate.") || name.startsWith("exception."));
     }
 

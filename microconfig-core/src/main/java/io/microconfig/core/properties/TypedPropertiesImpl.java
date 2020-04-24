@@ -13,9 +13,12 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
 
+import static io.microconfig.core.properties.ConfigFormat.YAML;
 import static io.microconfig.utils.StreamUtils.*;
-import static java.util.Optional.ofNullable;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.joining;
 import static lombok.AccessLevel.PRIVATE;
 
 @EqualsAndHashCode
@@ -36,13 +39,13 @@ public class TypedPropertiesImpl implements TypedProperties {
     @Override
     public TypedProperties resolveBy(Resolver resolver) {
         return withPropertyByKey(
-            forEach(propertyByKey.values(), resolveUsing(resolver), toPropertyMap())
+                forEach(propertyByKey.values(), resolveUsing(resolver), toPropertyMap())
         );
     }
 
     @Override
-    public TypedProperties withoutTempValues() {
-        return filterProperties(p -> !p.isTemp());
+    public TypedProperties withoutVars() {
+        return filterProperties(p -> !p.isVar());
     }
 
     @Override
@@ -58,8 +61,8 @@ public class TypedPropertiesImpl implements TypedProperties {
     @Override
     public Map<String, String> getPropertiesAsKeyValue() {
         return propertyByKey.values()
-            .stream()
-            .collect(toLinkedMap(Property::getKey, Property::getValue));
+                .stream()
+                .collect(toLinkedMap(Property::getKey, Property::getValue));
     }
 
     @Override
@@ -69,7 +72,16 @@ public class TypedPropertiesImpl implements TypedProperties {
 
     @Override
     public Optional<Property> getPropertyWithKey(String key) {
-        return ofNullable(propertyByKey.get(key));
+        Property property = propertyByKey.get(key);
+        if (property != null) return of(property);
+
+        Collection<Property> withPrefix = withPrefix(key).getProperties();
+        if (withPrefix.isEmpty()) return empty();
+
+        String value = withPrefix.stream()
+                .map(p -> "\n  " + p.getKey().substring(key.length() + 1) + ": " + p.getValue())
+                .collect(joining(""));
+        return of(PropertyImpl.property(key, value, YAML, getDeclaringComponent()));
     }
 
     @Override

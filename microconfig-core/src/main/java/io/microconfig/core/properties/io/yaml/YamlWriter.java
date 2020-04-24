@@ -35,7 +35,7 @@ public class YamlWriter implements ConfigWriter {
     public String serialize(Collection<Property> properties) {
         return serializeMap(
                 properties.stream()
-                        .filter(p -> !p.isTemp())
+                        .filter(p -> !p.isVar())
                         .collect(toSortedMap(Property::getKey, Property::getValue))
         );
     }

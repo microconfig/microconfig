@@ -52,12 +52,12 @@ class PropertiesImplTest {
     void withoutTempValues() {
         TypedProperties r1 = mock(TypedProperties.class);
         TypedProperties r2 = mock(TypedProperties.class);
-        when(tp1.withoutTempValues()).thenReturn(r1);
-        when(tp2.withoutTempValues()).thenReturn(r2);
+        when(tp1.withoutVars()).thenReturn(r1);
+        when(tp2.withoutVars()).thenReturn(r2);
 
         assertEquals(
                 new PropertiesImpl(asList(r1, r2)),
-                subj.withoutTempValues()
+                subj.withoutVars()
         );
     }
 

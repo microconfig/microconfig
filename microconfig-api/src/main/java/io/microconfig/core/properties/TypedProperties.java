@@ -13,7 +13,7 @@ public interface TypedProperties {
 
     TypedProperties resolveBy(Resolver resolver);
 
-    TypedProperties withoutTempValues();
+    TypedProperties withoutVars();
 
     TypedProperties withPrefix(String prefix);
 

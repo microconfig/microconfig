@@ -28,8 +28,8 @@ class TypedPropertiesImplTest {
 
     @BeforeEach
     void setup() {
-        when(p1.isTemp()).thenReturn(false);
-        when(p2.isTemp()).thenReturn(true);
+        when(p1.isVar()).thenReturn(false);
+        when(p2.isVar()).thenReturn(true);
     }
 
     @Test
@@ -58,7 +58,7 @@ class TypedPropertiesImplTest {
 
     @Test
     void withoutTempValues() {
-        assertEquals(withProperties(singletonList(p1)), subj.withoutTempValues());
+        assertEquals(withProperties(singletonList(p1)), subj.withoutVars());
     }
 
     @Test
