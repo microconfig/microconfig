@@ -1,6 +1,7 @@
 package io.microconfig.core.properties;
 
 import io.microconfig.core.configtypes.ConfigType;
+import io.microconfig.core.properties.io.yaml.YamlTreeImpl;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,6 @@ import static io.microconfig.utils.StreamUtils.*;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.joining;
 import static lombok.AccessLevel.PRIVATE;
 
 @EqualsAndHashCode
@@ -78,9 +78,10 @@ public class TypedPropertiesImpl implements TypedProperties {
         Collection<Property> withPrefix = withPrefix(key).getProperties();
         if (withPrefix.isEmpty()) return empty();
 
-        String value = withPrefix.stream()
-                .map(p -> "\n  " + p.getKey().substring(key.length() + 1) + ": " + p.getValue())
-                .collect(joining(""));
+        Map<String, String> yaml = withPrefix.stream()
+                .collect(toLinkedMap(Property::getKey, Property::getValue));
+        String value = new YamlTreeImpl().toYaml(yaml);
+
         return of(PropertyImpl.property(key, value, YAML, getDeclaringComponent()));
     }
 

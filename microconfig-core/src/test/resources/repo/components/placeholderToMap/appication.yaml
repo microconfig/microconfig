@@ -7,4 +7,6 @@ key1:
   key5: 4
 
 
-key0: ${this@key1}
+key0:
+  zzzzzz:
+    vvvvvvv: ${this@key1}
