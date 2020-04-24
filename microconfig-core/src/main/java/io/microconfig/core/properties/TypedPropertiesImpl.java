@@ -77,20 +77,6 @@ public class TypedPropertiesImpl implements TypedProperties {
         return property != null ? of(property) : tryFindByPrefix(key);
     }
 
-    private Optional<Property> tryFindByPrefix(String originalKey) {
-        if (!originalKey.endsWith(".*")) return empty();
-
-        String key = originalKey.substring(0, originalKey.length() - 2);
-        Collection<Property> withPrefix = withPrefix(key).getProperties();
-        if (withPrefix.isEmpty()) return empty();
-
-        Map<String, String> yaml = withPrefix.stream()
-                .collect(toLinkedMap(property -> property.getKey().substring(key.length() + 1), Property::getValue));
-        String value = new YamlTreeImpl(false).toYaml(yaml);
-
-        return of(property(key, value, YAML, getDeclaringComponent()));
-    }
-
     @Override
     public <T> T save(PropertySerializer<T> serializer) {
         return serializer.serialize(propertyByKey.values(), configType, component, environment);
@@ -112,5 +98,21 @@ public class TypedPropertiesImpl implements TypedProperties {
 
     private Collector<Property, ?, Map<String, Property>> toPropertyMap() {
         return toLinkedMap(Property::getKey, identity());
+    }
+
+    private Optional<Property> tryFindByPrefix(String originalKey) {
+        if (!originalKey.endsWith(".*")) return empty();
+
+        String key = originalKey.substring(0, originalKey.length() - 2);
+        Collection<Property> withPrefix = withPrefix(key).getProperties();
+        if (withPrefix.isEmpty()) return empty();
+
+        return of(property(key, toYaml(withPrefix, key), YAML, getDeclaringComponent()));
+    }
+
+    private String toYaml(Collection<Property> withPrefix, String key) {
+        Map<String, String> yaml = withPrefix.stream()
+                .collect(toLinkedMap(property -> property.getKey().substring(key.length() + 1), Property::getValue));
+        return new YamlTreeImpl(false).toYaml(yaml);
     }
 }
