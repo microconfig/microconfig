@@ -54,8 +54,18 @@ public class YamlTreeImpl implements YamlTree {
         }
 
         private String offsetForMultilineValue(int parts, String value) {
-            if (!value.startsWith("-")) return value;
+            if (value.startsWith("-")) {
+                return withOffsets(parts, value);
+            }
 
+            if (value.startsWith("\\")) {
+                return withOffsets(parts, value.substring(1));
+            }
+
+            return value;
+        }
+
+        private String withOffsets(int parts, String value) {
             return (LINES_SEPARATOR + value)
                     .replace(LINES_SEPARATOR, addOffsets(LINES_SEPARATOR, parts * OFFSET));
         }

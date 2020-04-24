@@ -9,4 +9,5 @@ key1:
 
 key0:
   zzzzzz:
-    vvvvvvv: ${this@key1}
+    vvvvvvv:
+      \${this@key1}
