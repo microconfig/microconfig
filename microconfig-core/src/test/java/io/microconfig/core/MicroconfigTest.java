@@ -56,8 +56,7 @@ public class MicroconfigTest {
     }
 
     private DynamicTest toTest(File expectation, String component, String env) {
-        return dynamicTest(component + "[" + env + "]", () ->
-        {
+        return dynamicTest(component + "[" + env + "]", () -> {
             String expected = readExpectation(expectation).trim();
             String actual = build(component, env).trim();
 
