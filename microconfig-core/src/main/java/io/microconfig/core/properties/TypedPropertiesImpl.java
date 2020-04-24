@@ -73,8 +73,10 @@ public class TypedPropertiesImpl implements TypedProperties {
     @Override
     public Optional<Property> getPropertyWithKey(String key) {
         Property property = propertyByKey.get(key);
-        if (property != null) return of(property);
+        return property != null ? of(property) : tryFindByPrefix(key);
+    }
 
+    private Optional<Property> tryFindByPrefix(String key) {
         Collection<Property> withPrefix = withPrefix(key).getProperties();
         if (withPrefix.isEmpty()) return empty();
 

@@ -45,7 +45,7 @@ public class MicroconfigTest {
 
     private boolean isExpectation(File file) {
         String name = file.getName();
-        return file.getParentFile().getName().equals("placeholderToMap") &&
+        return //file.getParentFile().getName().equals("yamlMultiline") &&
                 (name.startsWith("expect.") || name.startsWith("truncate.") || name.startsWith("exception."));
     }
 
