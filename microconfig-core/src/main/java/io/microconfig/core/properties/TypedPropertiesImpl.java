@@ -15,6 +15,7 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
 
 import static io.microconfig.core.properties.ConfigFormat.YAML;
+import static io.microconfig.core.properties.PropertyImpl.property;
 import static io.microconfig.utils.StreamUtils.*;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -76,7 +77,10 @@ public class TypedPropertiesImpl implements TypedProperties {
         return property != null ? of(property) : tryFindByPrefix(key);
     }
 
-    private Optional<Property> tryFindByPrefix(String key) {
+    private Optional<Property> tryFindByPrefix(String originalKey) {
+        if (!originalKey.endsWith(".*")) return empty();
+
+        String key = originalKey.substring(0, originalKey.length() - 2);
         Collection<Property> withPrefix = withPrefix(key).getProperties();
         if (withPrefix.isEmpty()) return empty();
 
@@ -84,7 +88,7 @@ public class TypedPropertiesImpl implements TypedProperties {
                 .collect(toLinkedMap(Property::getKey, Property::getValue));
         String value = new YamlTreeImpl().toYaml(yaml);
 
-        return of(PropertyImpl.property(key, value, YAML, getDeclaringComponent()));
+        return of(property(key, value, YAML, getDeclaringComponent()));
     }
 
     @Override
