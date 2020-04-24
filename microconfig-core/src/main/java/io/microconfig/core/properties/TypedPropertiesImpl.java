@@ -85,8 +85,8 @@ public class TypedPropertiesImpl implements TypedProperties {
         if (withPrefix.isEmpty()) return empty();
 
         Map<String, String> yaml = withPrefix.stream()
-                .collect(toLinkedMap(Property::getKey, Property::getValue));
-        String value = new YamlTreeImpl().toYaml(yaml);
+                .collect(toLinkedMap(property -> property.getKey().substring(key.length() + 1), Property::getValue));
+        String value = new YamlTreeImpl(false).toYaml(yaml);
 
         return of(property(key, value, YAML, getDeclaringComponent()));
     }
