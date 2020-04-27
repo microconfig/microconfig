@@ -456,6 +456,27 @@ In the example Microconfig will try to:
 
 If a placeholder doesn't have a default value and that placeholder can't be resolved, Microconfig throws an exception with the detailed problem description.
 
+## Placeholder to multiple values
+It's possible to have placeholder to multiple keys. Use the following syntax `${component@key.*}` 
+
+Example:
+```
+key1:
+  key2: 2
+  key3: 3
+
+link:
+  \${this@key1.*}
+```
+
+'link' result:
+```
+link:
+ key1:
+  key2: 2
+  key3: 3
+```
+
 ## Specials placeholders
 As we discussed the syntax for placeholders looks like `${component@property}`.
 Microconfig has several special useful placeholders:

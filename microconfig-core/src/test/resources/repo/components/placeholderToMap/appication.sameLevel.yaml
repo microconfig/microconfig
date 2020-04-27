@@ -1,0 +1,7 @@
+key1:
+  key2: 2
+  key4:
+    key5: 5
+
+multiple:
+  \${this@key1.*}
