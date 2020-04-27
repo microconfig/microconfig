@@ -469,6 +469,7 @@ link:
   \${this@key1.*}
 ```
 
+'link' result:
 ```
 link:
  key1:
