@@ -3,12 +3,10 @@ package io.microconfig.core.properties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static io.microconfig.core.configtypes.StandardConfigType.APPLICATION;
+import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static io.microconfig.utils.StringUtils.splitKeyValue;
 import static java.util.Arrays.asList;
@@ -86,6 +84,18 @@ class TypedPropertiesImplTest {
     void propertyWithKey() {
         assertEquals(of(p1), subj.getPropertyWithKey("key"));
         assertEquals(empty(), subj.getPropertyWithKey("missing"));
+    }
+
+    @Test
+    void getMultipleProperties() {
+        TypedProperties tp = withProperties(asList(property("k1.k2"), property("k1.k3"), property("k4")));
+        assertEquals(
+                        "k2: k1.k2Value" + LINES_SEPARATOR +
+                        "k3: k1.k3Value",
+                tp.getPropertyWithKey("k1.*").get().getValue()
+        );
+
+        assertEquals(Optional.empty(), tp.getPropertyWithKey("missing.*"));
     }
 
     @Test
