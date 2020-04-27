@@ -1,7 +1,5 @@
-key1:
-  key2: 2
-  key4:
-    key5: 5
+#var key1.key2: 2
 
 multiple:
+  level1: 1
   \${this@key1.*}
