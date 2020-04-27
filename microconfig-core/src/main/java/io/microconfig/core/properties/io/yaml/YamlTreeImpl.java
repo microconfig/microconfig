@@ -75,7 +75,7 @@ public class YamlTreeImpl implements YamlTree {
         }
 
         private String withOffsets(int parts, String value) {
-            return (LINES_SEPARATOR + value)
+            return (LINES_SEPARATOR + value) //todo test on win
                     .replace(LINES_SEPARATOR, addOffsets(LINES_SEPARATOR, parts * OFFSET));
         }
 
