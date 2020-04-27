@@ -14,6 +14,7 @@ import static io.microconfig.utils.FileUtils.getExtension;
 import static io.microconfig.utils.FileUtils.walk;
 import static io.microconfig.utils.Logger.warn;
 import static io.microconfig.utils.StringUtils.dotCountIn;
+import static io.microconfig.utils.StringUtils.isEmpty;
 import static java.lang.Long.MIN_VALUE;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
@@ -69,7 +70,7 @@ public class ComponentGraphImpl implements ComponentGraph {
     }
 
     private Predicate<File> forEnv(String environment) {
-        return f -> dotCountIn(f.getName()) == 1 || f.getName().contains('.' + environment + '.');
+        return f -> dotCountIn(f.getName()) == 1 || isEmpty(environment) || f.getName().contains('.' + environment + '.');
     }
 
     private Comparator<File> configPriority() {
