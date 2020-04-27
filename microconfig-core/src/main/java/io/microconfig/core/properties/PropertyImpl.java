@@ -17,7 +17,7 @@ public class PropertyImpl implements Property {
     private final String key;
     @With(PRIVATE)
     private final String value;
-    private final boolean temp;
+    private final boolean var;
     private final ConfigFormat configFormat;
 
     private final DeclaringComponent declaringComponent;
@@ -65,6 +65,6 @@ public class PropertyImpl implements Property {
 
     @Override
     public String toString() {
-        return (temp ? "#" : "") + key + "=" + value;
+        return (var ? "#" : "") + key + "=" + value;
     }
 }

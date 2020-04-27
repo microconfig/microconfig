@@ -31,16 +31,16 @@ class YamlReader extends AbstractConfigReader {
         List<Property> result = new ArrayList<>();
 
         Deque<KeyOffset> currentProperty = new ArrayDeque<>();
-        for (int index = 0; index < lines.size(); index++) {
-            String line = lines.get(index);
+        for (int lineNumber = 0; lineNumber < lines.size(); lineNumber++) {
+            String line = lines.get(lineNumber);
             if (skip(line)) continue;
 
             int currentOffset = offsetIndex(line);
 
             if (isMultilineValue(line, currentOffset)) {
-                index = addMultilineValue(result, currentProperty, currentOffset, index, configType, environment);
+                lineNumber = addMultilineValue(result, currentProperty, currentOffset, lineNumber, configType, environment);
             } else {
-                parseSimpleProperty(result, currentProperty, currentOffset, index, configType, environment);
+                parseSimpleProperty(result, currentProperty, currentOffset, lineNumber, configType, environment);
             }
         }
 
@@ -49,15 +49,15 @@ class YamlReader extends AbstractConfigReader {
 
     private boolean isMultilineValue(String line, int currentOffset) {
         char c = line.charAt(currentOffset);
-        return c == '-' || c == '[' || c == '>'
+        return c == '-' || c == '[' || c == '\\'
                 || (c == '$' && line.length() > currentOffset + 1 && line.charAt(currentOffset + 1) == '{');
     }
 
     private int addMultilineValue(List<Property> result,
                                   Deque<KeyOffset> currentProperty, int currentOffset,
-                                  int originalIndex, String configType, String env) {
+                                  int originalLineNumber, String configType, String env) {
         StringBuilder value = new StringBuilder();
-        int index = originalIndex;
+        int index = originalLineNumber;
         while (true) {
             String line = lines.get(index);
             if (!line.isEmpty()) {
@@ -74,7 +74,7 @@ class YamlReader extends AbstractConfigReader {
             ++index;
         }
 
-        addValue(result, currentProperty, currentOffset, originalIndex, null, value.toString(), configType, env);
+        addValue(result, currentProperty, currentOffset, originalLineNumber, null, value.toString(), configType, env);
         return index;
     }
 

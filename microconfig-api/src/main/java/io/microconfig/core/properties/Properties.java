@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 public interface Properties {
     Properties resolveBy(Resolver resolver);
 
-    Properties withoutTempValues();
+    Properties withoutVars();
 
     Properties withPrefix(String prefix);
 

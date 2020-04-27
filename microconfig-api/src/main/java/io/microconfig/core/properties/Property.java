@@ -5,7 +5,7 @@ public interface Property {
 
     String getValue();
 
-    boolean isTemp();
+    boolean isVar();
 
     ConfigFormat getConfigFormat();
 

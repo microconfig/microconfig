@@ -99,7 +99,7 @@ public class PlaceholderBorders {
                         withStartIndex(i).searchOpenSign() :
                         of(withEndIndex(i + 1));
             }
-            if (notAllowedSymbol(c) && c != '/' && c != '\\') {
+            if (notAllowedSymbol(c) && c != '*' && c != '/' && c != '\\') {
                 return withStartIndex(i).searchOpenSign();
             }
         }

@@ -25,12 +25,12 @@ class PropertyImplTest {
         assertEquals("key", yaml.getKey());
         assertEquals("value", yaml.getValue());
         assertEquals(yamlSource, yaml.getDeclaringComponent());
-        assertFalse(yaml.isTemp());
+        assertFalse(yaml.isVar());
 
         assertEquals("var", tempYaml.getKey());
         assertEquals("value", tempYaml.getValue());
         assertEquals(yamlSource, tempYaml.getDeclaringComponent());
-        assertTrue(tempYaml.isTemp());
+        assertTrue(tempYaml.isVar());
     }
 
     @Test
@@ -38,12 +38,12 @@ class PropertyImplTest {
         assertEquals("key", prop.getKey());
         assertEquals("value", prop.getValue());
         assertEquals(propSource, prop.getDeclaringComponent());
-        assertFalse(prop.isTemp());
+        assertFalse(prop.isVar());
 
         assertEquals("var", tempProp.getKey());
         assertEquals("value", tempProp.getValue());
         assertEquals(propSource, tempProp.getDeclaringComponent());
-        assertTrue(tempProp.isTemp());
+        assertTrue(tempProp.isVar());
     }
 
     @Test

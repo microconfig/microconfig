@@ -3,7 +3,7 @@ key1:
     key3:
       - name: n1
         v: v2
-      ${this@level_1.level_2}
+      ${this@level_1.level_2.level_3}
 
 
 key10: ${this@name}

@@ -45,7 +45,7 @@ public class MicroconfigTest {
 
     private boolean isExpectation(File file) {
         String name = file.getName();
-        return //file.getParentFile().getName().equals("includeBadEnv") &&
+        return //file.getParentFile().getName().equals("yamlMultiline") &&
                 (name.startsWith("expect.") || name.startsWith("truncate.") || name.startsWith("exception."));
     }
 
@@ -56,8 +56,7 @@ public class MicroconfigTest {
     }
 
     private DynamicTest toTest(File expectation, String component, String env) {
-        return dynamicTest(component + "[" + env + "]", () ->
-        {
+        return dynamicTest(component + "[" + env + "]", () -> {
             String expected = readExpectation(expectation).trim();
             String actual = build(component, env).trim();
 

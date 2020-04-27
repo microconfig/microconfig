@@ -29,8 +29,8 @@ public class PropertiesImpl implements Properties {
     }
 
     @Override
-    public Properties withoutTempValues() {
-        return withEachComponent(TypedProperties::withoutTempValues);
+    public Properties withoutVars() {
+        return withEachComponent(TypedProperties::withoutVars);
     }
 
     @Override

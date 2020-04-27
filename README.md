@@ -417,6 +417,22 @@ In the example below after the build process: datasource.url: jdbc:oracle:thin:@
  
 #var oracle.host: 100.30.162.80         
 ```
+## Removing base properties
+Using `#var` you can remove properties from the result config file. You can include some config and override any property with #var to exclude it from the result config file.
+
+Let's remove 'payments.system.retries' property for 'dev' environment:
+
+**db-client/application.yaml**
+```yaml
+datasource:
+  minimum-pool-size: 2  
+  maximum-pool-size: 5
+```
+**payments/application.yaml**
+```yaml
+#include db-client
+#var datasource.minimum-pool-size:  // will not be included into result config       
+```
 
 ## Placeholder's default value
 You can specify a default value for a placeholder using the following syntax: ${component@property:**defaultValue**}
@@ -440,18 +456,25 @@ In the example Microconfig will try to:
 
 If a placeholder doesn't have a default value and that placeholder can't be resolved, Microconfig throws an exception with the detailed problem description.
 
-## Removing base properties
-Using `#var` you can remove properties from the result config file. You can include some config and override any property with #var to exclude it from the result config file.
+## Placeholder to multiple values
+It's possible to have placeholder to multiple keys. Use the following syntax `${component@key.*}` 
 
-Let's remove 'payments.system.retries' property for 'dev' environment:
-
-**payments/application.yaml**
-```yaml
-payments.system.retries: 3
+Example:
 ```
-**payments/application.dev.yaml**
-```yaml
-#var payments.system.retries: // will not be included into result config    
+key1:
+  key2: 2
+  key3: 3
+
+link:
+  \${this@key1.*}
+```
+
+'link' result:
+```
+link:
+ key1:
+  key2: 2
+  key3: 3
 ```
 ## Specials placeholders
 As we discussed the syntax for placeholders looks like `${component@property}`.

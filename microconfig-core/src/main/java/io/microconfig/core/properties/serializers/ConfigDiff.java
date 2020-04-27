@@ -48,7 +48,7 @@ public class ConfigDiff {
 
         Map<String, String> result = new TreeMap<>();
         for (Property p : current) {
-            if (p.isTemp()) continue;
+            if (p.isVar()) continue;
 
             String oldValue = old.remove(p.getKey());
             if (oldValue == null) {

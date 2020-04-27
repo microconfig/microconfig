@@ -15,6 +15,15 @@ import static java.util.stream.Collectors.toList;
 
 public class YamlTreeImpl implements YamlTree {
     private static final int OFFSET = 2;
+    private final boolean addEmptyLineAfterSections;
+
+    public YamlTreeImpl() {
+        this(true);
+    }
+
+    public YamlTreeImpl(boolean addEmptyLineAfterSections) {
+        this.addEmptyLineAfterSections = addEmptyLineAfterSections;
+    }
 
     @Override
     public String toYaml(Map<String, String> flatProperties) {
@@ -54,9 +63,19 @@ public class YamlTreeImpl implements YamlTree {
         }
 
         private String offsetForMultilineValue(int parts, String value) {
-            if (!value.startsWith("-")) return value;
+            if (value.startsWith("-")) {
+                return withOffsets(parts, value);
+            }
 
-            return (LINES_SEPARATOR + value)
+            if (value.startsWith("\\")) {
+                return withOffsets(parts, value.substring(1));
+            }
+
+            return value;
+        }
+
+        private String withOffsets(int parts, String value) {
+            return (LINES_SEPARATOR + value) //todo test on win
                     .replace(LINES_SEPARATOR, addOffsets(LINES_SEPARATOR, parts * OFFSET));
         }
 
@@ -87,7 +106,7 @@ public class YamlTreeImpl implements YamlTree {
         }
     }
 
-    static class YamlDumper {
+    class YamlDumper {
         private final StringBuilder result = new StringBuilder();
 
         String toYamlFromTree(Map<String, Object> tree) {
@@ -102,7 +121,7 @@ public class YamlTreeImpl implements YamlTree {
                 result.append(addOffsets("", indent)).append(e.getKey());
                 dumpValue(e.getValue(), indent + OFFSET);
 
-                if (emptyLine) {
+                if (addEmptyLineAfterSections && emptyLine) {
                     result.append(LINES_SEPARATOR);
                 }
             });

@@ -30,7 +30,7 @@ class PropertiesWriter implements ConfigWriter {
     @Override
     public String serialize(Collection<Property> properties) {
         return properties.stream()
-                .filter(p -> !p.isTemp())
+                .filter(p -> !p.isVar())
                 .map(Property::toString)
                 .collect(joining(LINES_SEPARATOR));
     }
