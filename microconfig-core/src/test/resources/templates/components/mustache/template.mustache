@@ -2,5 +2,7 @@ Hello, ${this@name}!
 
 {{#mc.items}}
 Name:  {{name}}
-Price: {{price}}
+  {{#price}}
+      v: {{value}}
+  {{/price}}
 {{/mc.items}}
