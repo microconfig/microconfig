@@ -8,7 +8,7 @@ import static io.microconfig.core.configtypes.ConfigTypeFilters.configType;
 import static io.microconfig.core.configtypes.StandardConfigType.APPLICATION;
 import static io.microconfig.core.properties.templates.TemplatesService.resolveTemplatesBy;
 
-public class TemplateTest {
+public class TemplatesTest {
     Microconfig microconfig = searchConfigsIn(classpathFile("templates"));
 
     @Test

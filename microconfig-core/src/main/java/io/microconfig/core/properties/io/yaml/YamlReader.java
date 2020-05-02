@@ -18,6 +18,7 @@ import static io.microconfig.core.properties.PropertyImpl.isComment;
 import static io.microconfig.core.properties.PropertyImpl.property;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static java.lang.Character.isWhitespace;
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.IntStream.range;
 
@@ -49,8 +50,8 @@ class YamlReader extends AbstractConfigReader {
 
     private boolean isMultilineValue(String line, int currentOffset) {
         char c = line.charAt(currentOffset);
-        return c == '-' || c == '[' || c == '\\'
-                || (c == '$' && line.length() > currentOffset + 1 && line.charAt(currentOffset + 1) == '{');
+        return asList('-', '[',  ']', '\\','{').contains(c) ||
+                (c == '$' && line.length() > currentOffset + 1 && line.charAt(currentOffset + 1) == '{');
     }
 
     private int addMultilineValue(List<Property> result,
