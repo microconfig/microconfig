@@ -19,12 +19,16 @@ public class MustacheTemplateProcessor implements TemplateContentPostProcessor {
 
     @Override
     public String process(String templateName, File source, String content, TypedProperties properties) {
-        if (!source.getName().endsWith("." + MUSTACHE) && !templateName.contains(MUSTACHE)) return content;
+        if (!isMustacheTemplate(source, templateName)) return content;
 
         info("Using mustache template for " + properties.getDeclaringComponent().getComponent() + "/" + source.getName());
         return compile(content)
                 .execute(new StringWriter(), toYaml(properties))
                 .toString();
+    }
+
+    private boolean isMustacheTemplate(File source, String templateName) {
+        return source.getName().endsWith("." + MUSTACHE) || templateName.contains(MUSTACHE);
     }
 
     private Map<String, Object> toYaml(TypedProperties properties) {
