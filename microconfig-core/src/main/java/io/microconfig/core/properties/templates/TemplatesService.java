@@ -76,7 +76,7 @@ public class TemplatesService {
             DeclaringComponent currentComponent = properties.getDeclaringComponent();
             toTemplate()
                     .resolveBy(resolver, currentComponent)
-                    .postProcessContent(templateContentPostProcessor, properties)
+                    .postProcessContent(templateContentPostProcessor, name, properties)
                     .copyTo(destinationFileFor(currentComponent, resolver));
             info("Copied '" + currentComponent.getComponent() + "' template ../" + fromFile.getParentFile().getName() + "/" + fromFile.getName() + " -> " + toFile);
 
