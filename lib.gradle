@@ -5,6 +5,7 @@ ext {
             spring_el : 'org.springframework:spring-expression',
             snakeyaml : 'org.yaml:snakeyaml',
             gson      : 'com.google.code.gson:gson',
+            mustache:  'com.github.spullara.mustache.java:compiler:0.9.6',
             junit     : ['org.junit.jupiter:junit-jupiter-engine', 'org.junit.jupiter:junit-jupiter-params'],
             mokito    : 'org.mockito:mockito-junit-jupiter',
     ].withDefault({ key -> throw new IllegalArgumentException("Unknown library '$key'") })

@@ -1,0 +1,4 @@
+dependencies {
+    implementation project(':microconfig-api'),
+            lib.mustache
+}
