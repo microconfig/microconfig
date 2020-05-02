@@ -9,31 +9,27 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.File;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.util.Map;
 
-import static java.util.stream.Collectors.joining;
-
 public class MustacheTemplateProcessor implements TemplateContentPostProcessor {
-    private static final String MUSTACHE = ".mustache";
+    private static final String MUSTACHE = "mustache";
 
     @Override
     public String process(String templateName, File source, String content, TypedProperties properties) {
-        if (!source.getName().endsWith(MUSTACHE) && !templateName.contains(MUSTACHE)) return content;
+        if (!source.getName().endsWith("." + MUSTACHE) && !templateName.contains(MUSTACHE)) return content;
 
-        Mustache mustache = compile(content);
-
-        StringWriter sw = new StringWriter();
-        Writer writer = mustache.execute(sw, toYaml(properties));
-        return writer.toString();
+        return compile(content)
+                .execute(new StringWriter(), toYaml(properties))
+                .toString();
     }
 
     private Map<String, Object> toYaml(TypedProperties properties) {
-        String text = properties.getProperties()
-                .stream()
-                .map(p -> p.getKey() + ": " + p.getValue())
-                .collect(joining("\n"));
-        return new Yaml().load(text);
+        String text = new YamlTreeImpl().toYaml(properties.getPropertiesAsKeyValue());
+        try {
+            return new Yaml().load(text);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Mustache compile(String source) {
