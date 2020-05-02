@@ -30,7 +30,7 @@ public class MicroconfigTest {
 
     @TestFactory
     List<DynamicTest> findTests() {
-        try (Stream<Path> stream = walk(classpathFile("repo").toPath())) {
+        try (Stream<Path> stream = walk(root.toPath())) {
             return stream.map(Path::toFile)
                     .filter(this::isExpectation)
                     .map(this::toTest)

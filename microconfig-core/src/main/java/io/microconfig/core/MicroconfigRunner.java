@@ -9,7 +9,7 @@ import java.util.List;
 import static io.microconfig.core.Microconfig.searchConfigsIn;
 import static io.microconfig.core.configtypes.ConfigTypeFilters.eachConfigType;
 import static io.microconfig.core.properties.serializers.PropertySerializers.*;
-import static io.microconfig.core.properties.templates.CopyTemplatesService.resolveTemplatesBy;
+import static io.microconfig.core.properties.templates.TemplatesService.resolveTemplatesBy;
 
 @RequiredArgsConstructor
 public class MicroconfigRunner {

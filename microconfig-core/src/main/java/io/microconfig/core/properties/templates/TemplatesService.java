@@ -4,6 +4,8 @@ import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.Resolver;
 import io.microconfig.core.properties.TypedProperties;
+import io.microconfig.core.templates.TemplateContentPostProcessor;
+import io.microconfig.templates.mustache.MustacheTemplateProcessor;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -16,30 +18,26 @@ import static io.microconfig.core.properties.templates.TemplatePattern.defaultPa
 import static io.microconfig.utils.Logger.info;
 
 @RequiredArgsConstructor
-public class CopyTemplatesService {
+public class TemplatesService {
     private final TemplatePattern templatePattern;
+    private final TemplateContentPostProcessor templateContentPostProcessor;
 
-    public CopyTemplatesService() {
-        this(defaultPattern());
+    public TemplatesService() {
+        this(defaultPattern(), new MustacheTemplateProcessor());
     }
 
     public static Consumer<TypedProperties> resolveTemplatesBy(Resolver resolver) {
-        CopyTemplatesService copyTemplatesService = new CopyTemplatesService();
-        return p -> copyTemplatesService.resolveTemplate(
-                p.getDeclaringComponent(),
-                p.getPropertiesAsMap(),
-                resolver
-        );
+        TemplatesService templatesService = new TemplatesService();
+        return tp -> templatesService.resolveTemplate(tp, resolver);
     }
 
-    public void resolveTemplate(DeclaringComponent currentComponent,
-                                Map<String, Property> componentProperties,
-                                Resolver resolver) {
-        findTemplateDefinitionsFrom(componentProperties.values()).forEach(def -> {
+    public void resolveTemplate(TypedProperties properties, Resolver resolver) {
+        Collection<TemplateDefinition> templateDefinitions = findTemplateDefinitionsFrom(properties.getProperties());
+        templateDefinitions.forEach(def -> {
             try {
-                def.resolveAndCopy(resolver, currentComponent);
+                def.resolveAndCopy(resolver, properties);
             } catch (RuntimeException e) {
-                throw new IllegalStateException("Template error: " + def + ", component: " + currentComponent, e);
+                throw new IllegalStateException("Template error: " + def + ", component: " + properties.getDeclaringComponent(), e);
             }
         });
     }
@@ -74,10 +72,12 @@ public class CopyTemplatesService {
         private File fromFile;
         private File toFile;
 
-        private void resolveAndCopy(Resolver resolver, DeclaringComponent currentComponent) {
+        private void resolveAndCopy(Resolver resolver, TypedProperties properties) {
+            DeclaringComponent currentComponent = properties.getDeclaringComponent();
             toTemplate()
                     .resolveBy(resolver, currentComponent)
-                    .copyTo(getDestinationFile(resolver, currentComponent));
+                    .postProcessContent(templateContentPostProcessor, properties)
+                    .copyTo(destinationFileFor(currentComponent, resolver));
             info("Copied '" + currentComponent.getComponent() + "' template ../" + fromFile.getParentFile().getName() + "/" + fromFile.getName() + " -> " + toFile);
 
         }
@@ -101,11 +101,11 @@ public class CopyTemplatesService {
             return fromFile;
         }
 
-        private File getDestinationFile(Resolver resolver, DeclaringComponent currentComponent) {
-            return toFile.isAbsolute() ? toFile : new File(getDestinationDir(resolver, currentComponent), toFile.getPath());
+        private File destinationFileFor(DeclaringComponent currentComponent, Resolver resolver) {
+            return toFile.isAbsolute() ? toFile : new File(destinationDir(currentComponent, resolver), toFile.getPath());
         }
 
-        private String getDestinationDir(Resolver resolver, DeclaringComponent currentComponent) {
+        private String destinationDir(DeclaringComponent currentComponent, Resolver resolver) {
             return resolver.resolve("${this@resultDir}", currentComponent, currentComponent);
         }
 

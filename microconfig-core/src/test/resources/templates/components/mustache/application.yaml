@@ -1,0 +1,3 @@
+microconfig.template.mustache.fromFile: ${mustache@configDir}/template.mustache
+
+mc.items: [{name: n1, price: 10}, {name: n2, price: 20}]

@@ -1,0 +1,7 @@
+{
+  some.repo: [
+    { name: resque },
+    { name: hub },
+    { name: rip }
+  ]
+}

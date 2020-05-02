@@ -2,6 +2,8 @@ package io.microconfig.core.properties.templates;
 
 import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.Resolver;
+import io.microconfig.core.properties.TypedProperties;
+import io.microconfig.core.templates.TemplateContentPostProcessor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -16,13 +18,12 @@ import static io.microconfig.utils.FileUtils.write;
 import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.StringUtils.addOffsets;
 import static java.util.regex.Matcher.quoteReplacement;
-import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor
 class Template {
     private final File source;
     private final Pattern pattern;
-    @With(PRIVATE)
+    @With
     @Getter
     private final String content;
 
@@ -44,7 +45,12 @@ class Template {
             doResolve(m, result, resolver, currentComponent);
         } while (m.find());
         m.appendTail(result);
-        return withContent(result.toString());
+        String content = result.toString();
+        return withContent(content);
+    }
+
+    public Template postProcessContent(TemplateContentPostProcessor postProcessor, TypedProperties properties) {
+        return withContent(postProcessor.process(source, content, properties));
     }
 
     public void copyTo(File destinationFile) {
