@@ -4,12 +4,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 public interface Properties {
     Properties resolveBy(Resolver resolver);
 
     Properties withoutVars();
+
+    Properties without(Predicate<Property> excluded);
 
     Properties withPrefix(String prefix);
 
@@ -25,7 +28,7 @@ public interface Properties {
 
     List<TypedProperties> asTypedProperties();
 
-    Properties forEachComponent(Consumer<TypedProperties> callback);
+    Properties forEachComponent(UnaryOperator<TypedProperties> callback);
 
     TypedProperties first();
 }

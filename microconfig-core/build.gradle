@@ -4,7 +4,7 @@ dependencies {
     api project(':microconfig-api')
 
     implementation project(':utils'),
-            project(':microconfig-templates:mustache'),
+            lib.mustache,
             lib.spring_el,
             lib.gson,
             lib.snakeyaml

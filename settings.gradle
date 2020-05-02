@@ -4,6 +4,4 @@ include ':microconfig-api',
         ':microconfig-core',
         ':microconfig-cli'
 
-include ':microconfig-templates:mustache'
-
 include ':utils'

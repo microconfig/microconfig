@@ -5,6 +5,7 @@ import io.microconfig.core.configtypes.ConfigType;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public interface TypedProperties {
     ConfigType getConfigType();
@@ -14,6 +15,8 @@ public interface TypedProperties {
     TypedProperties resolveBy(Resolver resolver);
 
     TypedProperties withoutVars();
+
+    TypedProperties without(Predicate<Property> excluded);
 
     TypedProperties withPrefix(String prefix);
 

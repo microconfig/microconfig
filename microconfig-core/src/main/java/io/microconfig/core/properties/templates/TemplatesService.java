@@ -5,14 +5,13 @@ import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.Resolver;
 import io.microconfig.core.properties.TypedProperties;
 import io.microconfig.core.templates.TemplateContentPostProcessor;
-import io.microconfig.templates.mustache.MustacheTemplateProcessor;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 import static io.microconfig.core.properties.templates.TemplatePattern.defaultPattern;
 import static io.microconfig.utils.Logger.info;
@@ -26,9 +25,12 @@ public class TemplatesService {
         this(defaultPattern(), new MustacheTemplateProcessor());
     }
 
-    public static Consumer<TypedProperties> resolveTemplatesBy(Resolver resolver) {
+    public static UnaryOperator<TypedProperties> resolveTemplatesBy(Resolver resolver) {
         TemplatesService templatesService = new TemplatesService();
-        return tp -> templatesService.resolveTemplate(tp, resolver);
+        return tp -> {
+            templatesService.resolveTemplate(tp, resolver);
+            return tp.without(p -> templatesService.templatePattern.startsWithTemplatePrefix(p.getKey()));
+        };
     }
 
     public void resolveTemplate(TypedProperties properties, Resolver resolver) {

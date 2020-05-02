@@ -7,8 +7,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 import static io.microconfig.utils.StreamUtils.*;
@@ -31,6 +31,11 @@ public class PropertiesImpl implements Properties {
     @Override
     public Properties withoutVars() {
         return withEachComponent(TypedProperties::withoutVars);
+    }
+
+    @Override
+    public Properties without(Predicate<Property> excluded) {
+        return withEachComponent(c -> c.without(excluded));
     }
 
     @Override
@@ -74,9 +79,8 @@ public class PropertiesImpl implements Properties {
     }
 
     @Override
-    public Properties forEachComponent(Consumer<TypedProperties> callback) {
-        properties.parallelStream().forEach(callback);
-        return this;
+    public Properties forEachComponent(UnaryOperator<TypedProperties> callback) {
+        return withEachComponent(callback);
     }
 
     private Properties withEachComponent(UnaryOperator<TypedProperties> applyFunction) {

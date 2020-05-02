@@ -1,7 +1,0 @@
-dependencies {
-    implementation project(':microconfig-api'),
-            project(':utils'),
-            lib.mustache,
-            lib.gson,
-            lib.snakeyaml
-}
