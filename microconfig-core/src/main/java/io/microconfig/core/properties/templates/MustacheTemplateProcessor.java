@@ -29,11 +29,7 @@ public class MustacheTemplateProcessor implements TemplateContentPostProcessor {
 
     private Map<String, Object> toYaml(TypedProperties properties) {
         String text = new YamlTreeImpl().toYaml(properties.getPropertiesAsKeyValue());
-        try {
-            return new Yaml().load(text);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return new Yaml().load(text);
     }
 
     private Mustache compile(String source) {

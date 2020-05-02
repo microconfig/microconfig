@@ -78,7 +78,11 @@ public class StringUtils {
     }
 
     public static String getCauseMessage(Throwable t) {
-        return ofNullable(t.getCause())
+        return getExceptionMessage(t.getCause());
+    }
+
+    public static String getExceptionMessage(Throwable t) {
+        return ofNullable(t)
                 .map(throwable -> "Cause: " + throwable.getMessage())
                 .orElse("");
     }

@@ -15,6 +15,7 @@ import java.util.function.UnaryOperator;
 
 import static io.microconfig.core.properties.templates.TemplatePattern.defaultPattern;
 import static io.microconfig.utils.Logger.info;
+import static io.microconfig.utils.StringUtils.getExceptionMessage;
 
 @RequiredArgsConstructor
 public class TemplatesService {
@@ -39,7 +40,11 @@ public class TemplatesService {
             try {
                 def.resolveAndCopy(resolver, properties);
             } catch (RuntimeException e) {
-                throw new IllegalStateException("Template error: " + def + ", component: " + properties.getDeclaringComponent(), e);
+                throw new IllegalStateException(
+                        "Template error: " + def +
+                                "\nComponent: " + properties.getDeclaringComponent() +
+                                "\n" + getExceptionMessage(e), e
+                );
             }
         });
     }
