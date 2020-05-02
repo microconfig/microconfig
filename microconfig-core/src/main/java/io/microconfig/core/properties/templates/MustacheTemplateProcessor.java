@@ -31,13 +31,13 @@ public class MustacheTemplateProcessor implements TemplateContentPostProcessor {
         return source.getName().endsWith("." + MUSTACHE) || templateName.contains(MUSTACHE);
     }
 
-    private Map<String, Object> toYaml(TypedProperties properties) {
-        String text = new YamlTreeImpl().toYaml(properties.getPropertiesAsKeyValue());
-        return new Yaml().load(text);
-    }
-
     private Mustache compile(String source) {
         return new DefaultMustacheFactory()
                 .compile(new StringReader(source), "");
+    }
+
+    private Map<String, Object> toYaml(TypedProperties properties) {
+        String text = new YamlTreeImpl().toYaml(properties.getPropertiesAsKeyValue());
+        return new Yaml().load(text);
     }
 }
