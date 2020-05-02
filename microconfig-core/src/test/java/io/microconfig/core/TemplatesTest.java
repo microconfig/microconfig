@@ -11,7 +11,7 @@ import static io.microconfig.core.properties.templates.TemplatesService.resolveT
 public class TemplatesTest {
     Microconfig microconfig = searchConfigsIn(classpathFile("templates"));
 
-    @Test
+    @Test //todo test include
     void testMustache() {
         microconfig.environments().getOrCreateByName("dev")
                 .getOrCreateComponentWithName("mustache")
