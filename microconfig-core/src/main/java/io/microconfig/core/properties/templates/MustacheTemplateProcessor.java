@@ -8,6 +8,7 @@ import io.microconfig.core.templates.TemplateContentPostProcessor;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
+import java.io.FileReader;
 import java.util.Map;
 
 import static io.microconfig.utils.Logger.info;
@@ -20,15 +21,25 @@ public class MustacheTemplateProcessor implements TemplateContentPostProcessor {
         if (!isMustacheTemplate(source, templateName)) return content;
 
         info("Using mustache template for " + properties.getDeclaringComponent().getComponent() + "/" + source.getName());
-        return compile(content).execute(toYaml(properties));
+        return compile(source, content).execute(toYaml(properties));
     }
 
     private boolean isMustacheTemplate(File source, String templateName) {
         return source.getName().endsWith("." + MUSTACHE) || templateName.contains(MUSTACHE);
     }
 
-    private Template compile(String source) {
-        return Mustache.compiler().compile(source);
+    private Template compile(File currentTemplate, String source) {
+        return Mustache.compiler()
+                .withLoader(templateLoader(currentTemplate))
+                .compile(source);
+    }
+
+    private Mustache.TemplateLoader templateLoader(File currentTemplate) {
+        return fileName -> {
+            File newTemplate = new File(fileName);
+            File fullPath = newTemplate.isAbsolute() ? newTemplate : new File(currentTemplate.getParent(), fileName);
+            return new FileReader(fullPath);
+        };
     }
 
     private Map<String, Object> toYaml(TypedProperties properties) {
