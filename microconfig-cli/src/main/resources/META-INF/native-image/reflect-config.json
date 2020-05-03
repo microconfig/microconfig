@@ -1,0 +1,15 @@
+[
+{
+  "name":"io.microconfig.core.properties.resolvers.expression.functions.CustomStringApi",
+  "allPublicMethods":true
+},
+{
+  "name":"java.sql.Date"
+},
+{
+  "name":"java.sql.Timestamp"
+},
+{
+  "name":"org.springframework.util.ConcurrentReferenceHashMap$Segment[]"
+}
+]
