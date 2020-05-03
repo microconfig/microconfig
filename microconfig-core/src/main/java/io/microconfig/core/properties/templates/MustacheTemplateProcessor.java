@@ -17,15 +17,17 @@ public class MustacheTemplateProcessor implements TemplateContentPostProcessor {
     private static final String MUSTACHE = "mustache";
 
     @Override
-    public String process(String templateName, File source, String content, TypedProperties properties) {
-        if (!isMustacheTemplate(source, templateName)) return content;
+    public String process(String templateType,
+                          File source, String templateContent,
+                          TypedProperties properties) {
+        if (!isMustacheTemplate(source, templateType)) return templateContent;
 
         info("Using mustache template for " + properties.getDeclaringComponent().getComponent() + "/" + source.getName());
-        return compile(source, content).execute(toYaml(properties));
+        return compile(source, templateContent).execute(toYaml(properties));
     }
 
-    private boolean isMustacheTemplate(File source, String templateName) {
-        return source.getName().endsWith("." + MUSTACHE) || templateName.contains(MUSTACHE);
+    private boolean isMustacheTemplate(File source, String templateType) {
+        return source.getName().endsWith("." + MUSTACHE) || templateType.equals(MUSTACHE);
     }
 
     private Template compile(File currentTemplate, String source) {

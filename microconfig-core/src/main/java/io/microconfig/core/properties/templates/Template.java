@@ -49,8 +49,11 @@ class Template {
         return withContent(content);
     }
 
-    public Template postProcessContent(TemplateContentPostProcessor postProcessor, String templateName, TypedProperties properties) {
-        return withContent(postProcessor.process(templateName, source, content, properties));
+    public Template postProcessContent(TemplateContentPostProcessor postProcessor,
+                                       String templateType, TypedProperties properties) {
+        return withContent(
+                postProcessor.process(templateType, source, content, properties)
+        );
     }
 
     public void copyTo(File destinationFile) {

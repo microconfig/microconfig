@@ -27,7 +27,7 @@ public class TemplatePattern {
 
     public static TemplatePattern defaultPattern() {
         return TemplatePattern.builder()
-                .templatePrefixes(asList("microconfig.template.", "mc.template.", "mc.mustache"))
+                .templatePrefixes(asList("microconfig.template.", "mc.template.", "mc.mustache."))
                 .fromFileSuffix(".fromFile")
                 .toFileSuffix(".toFile")
                 .pattern(DEFAULT_PATTERN)
@@ -36,6 +36,12 @@ public class TemplatePattern {
 
     public boolean startsWithTemplatePrefix(String key) {
         return templatePrefixes.stream().anyMatch(key::startsWith);
+    }
+
+    public String extractTemplateType(String str) {
+        int templateTypeStartIndex = str.indexOf('.') + 1;
+        int secondDot = str.indexOf('.', templateTypeStartIndex);
+        return str.substring(templateTypeStartIndex, secondDot);
     }
 
     public String extractTemplateName(String str) {

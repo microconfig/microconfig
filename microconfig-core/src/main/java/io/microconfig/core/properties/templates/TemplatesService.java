@@ -69,12 +69,16 @@ public class TemplatesService {
     }
 
     private TemplateDefinition getOrCreate(String key, Map<String, TemplateDefinition> templates) {
-        return templates.computeIfAbsent(templatePattern.extractTemplateName(key), TemplateDefinition::new);
+        return templates.computeIfAbsent(
+                templatePattern.extractTemplateName(key),
+                templateName -> new TemplateDefinition(templatePattern.extractTemplateType(key), templateName)
+        );
     }
 
     @RequiredArgsConstructor
     private class TemplateDefinition {
-        private final String name;
+        private final String templateType;
+        private final String templateName;
 
         private File fromFile;
         private File toFile;
@@ -83,7 +87,7 @@ public class TemplatesService {
             DeclaringComponent currentComponent = properties.getDeclaringComponent();
             toTemplate()
                     .resolveBy(resolver, currentComponent)
-                    .postProcessContent(templateContentPostProcessor, name, properties)
+                    .postProcessContent(templateContentPostProcessor, templateType, properties)
                     .copyTo(destinationFileFor(currentComponent, resolver));
             info("Copied '" + currentComponent.getComponent() + "' template ../" + fromFile.getParentFile().getName() + "/" + fromFile.getName() + " -> " + toFile);
 
@@ -129,7 +133,7 @@ public class TemplatesService {
 
         @Override
         public String toString() {
-            return "templateName: '" + name + "', file: '" + fromFile + "' -> '" + toFile + "'";
+            return "templateName: '" + templateName + "', file: '" + fromFile + "' -> '" + toFile + "'";
         }
     }
 }
