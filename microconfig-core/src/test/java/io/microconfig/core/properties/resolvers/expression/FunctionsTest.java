@@ -2,11 +2,11 @@ package io.microconfig.core.properties.resolvers.expression;
 
 import org.junit.jupiter.api.Test;
 
-import static io.microconfig.core.properties.resolvers.expression.PredefinedFunctions.findGroup;
-import static io.microconfig.core.properties.resolvers.expression.PredefinedFunctions.findGroupOrDefault;
+import static io.microconfig.core.properties.resolvers.expression.functions.Functions.findGroup;
+import static io.microconfig.core.properties.resolvers.expression.functions.Functions.findGroupOrDefault;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class PredefinedFunctionsTest {
+class FunctionsTest {
     @Test
     void testFindGroup() {
         assertEquals("100m", findGroup("xmx(?<xmx>.+)", "xmx100m"));

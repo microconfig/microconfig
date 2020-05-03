@@ -1,11 +1,11 @@
-package io.microconfig.core.properties.resolvers.expression;
+package io.microconfig.core.properties.resolvers.expression.functions;
 
 import java.util.regex.Matcher;
 
 import static java.lang.Math.min;
 import static java.util.regex.Pattern.compile;
 
-public class PredefinedFunctions {
+public class Functions {
     public static String findGroup(String regex, String line) {
         return findGroupOrDefault(regex, line, "");
     }

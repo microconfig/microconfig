@@ -14,9 +14,10 @@ class ExpressionEvaluator {
     private final ExpressionParser parser;
     private final EvaluationContext context;
 
-    public static ExpressionEvaluator withFunctionsFrom(Class<?> functionClass) {
+    public static ExpressionEvaluator withFunctionsFrom(Class<?>... functionClasses) {
         EvaluationContext context = new StandardEvaluationContext();
-        of(functionClass.getMethods())
+        of(functionClasses)
+                .flatMap(c -> of(c.getMethods()))
                 .filter(m -> isStatic(m.getModifiers()))
                 .forEach(m -> context.setVariable(m.getName(), m));
 
