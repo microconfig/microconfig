@@ -805,6 +805,7 @@ Let's imagine we want to configure different Logback appenders on different envi
 
  **logback-template/application.yaml**
  ```yaml   
+mc.mustache.logback.fromFile: ${logback@configDir}/logback.xml
 #var appender.rolling: true
  ``` 
 
@@ -812,6 +813,17 @@ Let's imagine we want to configure different Logback appenders on different envi
  ```yaml   
 #var appender.rolling: false
  ``` 
+
+Microconfig uses Mustache if the template declaration starts with `mc.mustache` prefix:
+```
+mc.mustache.logback.fromFile: ${logback@configDir}/logback.xml
+```
+or the template file has  `*.mustache` extension:  
+``` 
+mc.template.logback:
+  fromFile: ${logback@configDir}/logback.mustache
+  toFile: logger.xml
+```
 
 # Environment descriptor
 As we discussed every service can have default and environment-specific configurations, also we can extract a common configuration to some components. 
