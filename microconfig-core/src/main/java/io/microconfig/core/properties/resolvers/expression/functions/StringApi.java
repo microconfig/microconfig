@@ -45,6 +45,10 @@ public class StringApi {
         return line.endsWith(substring);
     }
 
+    public static char chartAt(String line, int index) {
+        return line.charAt(index);
+    }
+
     public static boolean matcher(String line, String regex) {
         return line.matches(regex);
     }
@@ -53,11 +57,23 @@ public class StringApi {
         return line.equalsIgnoreCase(line2);
     }
 
+    public static String trim(String line) {
+        return line.trim();
+    }
+
     public static String replace(String line, CharSequence target, CharSequence replacement) {
         return line.replace(target, replacement);
     }
 
-    public static String trim(String line) {
-        return line.trim();
+    public static String replaceAll(String line, String regex, String replacement) {
+        return line.replaceAll(regex, replacement);
+    }
+
+    public static String delete(String line, CharSequence target) {
+        return line.replace(target, "");
+    }
+
+    public static String[] split(String line, String regex) {
+        return line.split(regex);
     }
 }

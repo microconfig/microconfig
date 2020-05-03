@@ -2,8 +2,8 @@ package io.microconfig.core.properties.resolvers.expression;
 
 import org.junit.jupiter.api.Test;
 
-import static io.microconfig.core.properties.resolvers.expression.functions.Functions.findGroup;
-import static io.microconfig.core.properties.resolvers.expression.functions.Functions.findGroupOrDefault;
+import static io.microconfig.core.properties.resolvers.expression.functions.CustomStringApi.findGroup;
+import static io.microconfig.core.properties.resolvers.expression.functions.CustomStringApi.findGroupOrDefault;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FunctionsTest {
