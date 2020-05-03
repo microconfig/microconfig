@@ -7,16 +7,13 @@ import lombok.With;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static java.util.Collections.singletonList;
+import static java.util.Arrays.asList;
 import static java.util.regex.Pattern.compile;
 
 @With
 @Getter
 @Builder
 public class TemplatePattern {
-    public static final String DEFAULT_TEMPLATE_PREFIX = "microconfig.template.";
-    public static final String DEFAULT_FROM_FILE_SUFFIX = ".fromFile";
-    public static final String DEFAULT_TO_FILE_SUFFIX = ".toFile";
     public static final Pattern DEFAULT_PATTERN =
             compile("(?<escaped>\\\\)?" +
                     "(?<placeholder>\\$\\{(?<name>.+?)" +
@@ -30,9 +27,9 @@ public class TemplatePattern {
 
     public static TemplatePattern defaultPattern() {
         return TemplatePattern.builder()
-                .templatePrefixes(singletonList(DEFAULT_TEMPLATE_PREFIX))
-                .fromFileSuffix(DEFAULT_FROM_FILE_SUFFIX)
-                .toFileSuffix(DEFAULT_TO_FILE_SUFFIX)
+                .templatePrefixes(asList("microconfig.template.", "mc.template.", "mc.mustache"))
+                .fromFileSuffix(".fromFile")
+                .toFileSuffix(".toFile")
                 .pattern(DEFAULT_PATTERN)
                 .build();
     }

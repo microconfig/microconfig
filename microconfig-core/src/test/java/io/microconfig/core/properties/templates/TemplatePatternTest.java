@@ -2,14 +2,13 @@ package io.microconfig.core.properties.templates;
 
 import org.junit.jupiter.api.Test;
 
-import static io.microconfig.core.properties.templates.TemplatePattern.DEFAULT_TEMPLATE_PREFIX;
 import static io.microconfig.core.properties.templates.TemplatePattern.defaultPattern;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TemplatePatternTest {
     TemplatePattern templatePattern = defaultPattern()
-            .withTemplatePrefixes(asList(DEFAULT_TEMPLATE_PREFIX, "mgmt.template."));
+            .withTemplatePrefixes(asList("microconfig.template.", "mgmt.template."));
     String microTemplate = "microconfig.template.logback.fromFile";
     String mgmtTemplate = "mgmt.template.t2.toFile";
 
