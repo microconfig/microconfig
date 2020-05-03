@@ -3,5 +3,5 @@ mc.mustache.tmpl:
   toFile: template.yaml
 
 mc.items:
-  - { name: item12, prices: [value: 1, value: 12]}
-  - { name: item2, prices: [value: 3, value: 4]}
+  - {name: item12, prices: [value: 1, value: 12]}
+  - {name: item2, prices: [value: 3, value: 4]}
