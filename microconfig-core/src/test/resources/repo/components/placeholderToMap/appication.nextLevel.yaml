@@ -7,7 +7,7 @@ key1:
   key5: 4
 
 
-key0:
+multiple:
   zzzzzz:
     vvvvvvv:
       \${this@key1.*}

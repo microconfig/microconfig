@@ -20,7 +20,7 @@ class PropertiesReader extends AbstractConfigReader {
     }
 
     @Override
-    protected List<Property> properties(String configType, String environment, boolean resolveEscape) {
+    public List<Property> properties(String configType, String environment) {
         List<Property> result = new ArrayList<>();
 
         StringBuilder currentLine = new StringBuilder();
@@ -31,16 +31,13 @@ class PropertiesReader extends AbstractConfigReader {
 
             currentLine.append(trimmed);
             if (isMultilineValue(trimmed)) {
-                if (resolveEscape) {
-                    currentLine.setLength(currentLine.length() - 1);
-                } else {
-                    currentLine.append(LINES_SEPARATOR);
-                }
+                currentLine.append(LINES_SEPARATOR);
                 continue;
             }
 
             Property property = parse(currentLine.toString(), PROPERTIES,
-                    fileSource(file, lineNumber, false, configType, environment));
+                    fileSource(file, lineNumber, false, configType, environment)
+            );
             result.add(property);
             currentLine.setLength(0);
         }

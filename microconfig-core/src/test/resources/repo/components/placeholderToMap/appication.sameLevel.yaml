@@ -1,0 +1,5 @@
+key1.key2: 2
+
+multiple:
+  level1: 1
+  \${this@key1.*}

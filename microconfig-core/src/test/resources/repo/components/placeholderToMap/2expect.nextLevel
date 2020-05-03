@@ -1,4 +1,12 @@
-key0:
+key1:
+  key5: 4
+  key2:
+    key4: 3
+    key3:
+      v1: 1
+      v2: 2
+
+multiple:
   zzzzzz:
     vvvvvvv:${space}
       key5: 4
@@ -7,11 +15,3 @@ key0:
         key3:
           v1: 1
           v2: 2
-
-key1:
-  key5: 4
-  key2:
-    key4: 3
-    key3:
-      v1: 1
-      v2: 2

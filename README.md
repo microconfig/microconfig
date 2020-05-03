@@ -701,7 +701,7 @@ repo
 ```xml
 <configuration>
     <appender class="ch.qos.logback.core.FileAppender">
-        <file>logs/${application.name}.log</file>
+        <file>logs/${this@application.name}.log</file>
             <encoder>
                 <pattern>%d [%thread] %highlight(%-5level) %cyan(%logger{15}) %msg %n</pattern>
             </encoder>
@@ -715,17 +715,17 @@ Let's configure the order and payment services to use this template.
 ```yaml
 #include service-discovery-client
 
-microconfig.template.logback.fromFile: ${logback@configDir}/logback.xml # full path to logback.xml, @configDir - special placeholder property
+mc.template.logback.fromFile: ${logback@configDir}/logback.xml # full path to logback.xml, @configDir - special placeholder property
 ```
 
 **payments/application.yaml**
 ```yaml
 #include service-discovery-client
 
-microconfig.template.logback.fromFile: ${logback@configDir}/logback.xml
+mc.template.logback.fromFile: ${logback@configDir}/logback.xml
 ```  
    
-It's better to extract the common property `microconfig.template.logback.fromFile` to logback-template/application.yaml and then use #include.
+It's better to extract the common property `mc.template.logback.fromFile` to logback-template/application.yaml and then use #include.
 
 ```
 repo
@@ -736,7 +736,7 @@ repo
 ```    
 **logback-template/application.yaml**
 ```yaml   
-microconfig.template.logback.fromFile: ${logback@configDir}/logback.xml
+mc.template.logback.fromFile: ${logback@configDir}/logback.xml
 ```
 **orders-template/application.yaml**
 ```yaml
@@ -747,21 +747,16 @@ microconfig.template.logback.fromFile: ${logback@configDir}/logback.xml
 #include service-discovery-client, logback-template
 ```  
 
-As you can see the placeholder syntax inside template `${propName}`  differs from the Microconfig syntax `${component@propName}`, it doesn't specify a component name.
-You can use the standard Microconfig syntax for placeholder as well. ${propName} = ${**this**@propName}.
-
-If Microconfig can't resolve a template placeholder, Microconfig logs a warning and leaves the template text unresolved.
-
 As we saw in the above text the order and payment services include the `application.name` property from service-discovery-client.
 During the config build Microconfig will replace `${application.name}` inside logback.xml with the service's property value and copy the resulting file 'logback.xml' to the relevant folder for each service.
 
 If you want to declare a property for a template only and don't want this property to be included into the result config file you can use `#var` keyword. 
 
-If you want to override the template destination filename you can use `microconfig.template.${templateName}.toFile=${someFile}` property. For example:  
+If you want to override the template destination filename you can use `mc.template.${templateName}.toFile=${someFile}` property. For example:  
  
  **logback-template/application.yaml**
  ```yaml   
- microconfig.template.logback:
+ mc.template.logback:
    fromFile: ${logback@configDir}/logback.xml
    toFile: logs/logback-descriptor.xml
  ``` 
@@ -770,7 +765,7 @@ You can use the absolute or the relative path for `toFile` property. The relativ
 
 So the template dependency declaration syntax looks like:   
 ```
-microconfig.template.${templateName}:
+mc.template.${templateName}:
   fromFile: ${sourceTemplateFile}
   toFile: ${resolvedTemplateDestinationFile}
 ```
@@ -788,13 +783,52 @@ repo
 ```
 **logback-template/application.prod.yaml**
 ```yaml   
-microconfig.template.logback.fromFile: ${logback@configDir}/logback-prod.xml
+mc.template.logback.fromFile: ${logback@configDir}/logback-prod.xml
 ``` 
+## Mustache template engine support
+If resolving placeholders inside templates is not enough for you, you can use [Mustache template engine](https://mustache.github.io/mustache.5.html). With Mustache you can use loops, conditions and includes.
+
+Let's imagine we want to configure different Logback appenders on different environments. We can use condition 'appender.rolling' and override this value on different environments.
+
+```
+{{#appender.rolling}}
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/${this@name}.log</file>
+    </appender>
+{{/appender.rolling}}
+{{^appender.rolling}}
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/${this@name}.log</file>
+    </appender>
+{{/appender.rolling}}
+```
+
+ **logback-template/application.yaml**
+ ```yaml   
+mc.mustache.logback.fromFile: ${logback@configDir}/logback.xml
+#var appender.rolling: true
+ ``` 
+
+ **logback-template/application.test.yaml**
+ ```yaml   
+#var appender.rolling: false
+ ``` 
+
+Microconfig uses Mustache if the template declaration starts with `mc.mustache` prefix:
+```
+mc.mustache.logback.fromFile: ${logback@configDir}/logback.xml
+```
+or the template file has  `*.mustache` extension:  
+``` 
+mc.template.logback:
+  fromFile: ${logback@configDir}/logback.mustache
+  toFile: logger.xml
+```
 
 # Environment descriptor
 As we discussed every service can have default and environment-specific configurations, also we can extract a common configuration to some components. 
 During the build phase we want to build configs for a subset of our components, only for real services on a concrete environment.
-Of course you can pass the environment name and the list of service names as parameters to build the configuration. But this is not very convenient if you want to build configuration for a large number of services.
+Of course, you can pass the environment name and the list of service names as parameters to build the configuration. But this is not very convenient if you want to build configuration for a large number of services.
 
 So Microconfig allows specifying a list of service names on a special environment descriptor and then use only the environment name to build configs for all services listed on that descriptor.
 

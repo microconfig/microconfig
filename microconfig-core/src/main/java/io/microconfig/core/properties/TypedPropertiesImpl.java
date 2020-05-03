@@ -46,12 +46,17 @@ public class TypedPropertiesImpl implements TypedProperties {
 
     @Override
     public TypedProperties withoutVars() {
-        return filterProperties(p -> !p.isVar());
+        return without(Property::isVar);
+    }
+
+    @Override
+    public TypedProperties without(Predicate<Property> excluded) {
+        return withProperties(excluded.negate());
     }
 
     @Override
     public TypedProperties withPrefix(String prefix) {
-        return filterProperties(p -> p.getKey().startsWith(prefix));
+        return withProperties(p -> p.getKey().startsWith(prefix));
     }
 
     @Override
@@ -82,6 +87,10 @@ public class TypedPropertiesImpl implements TypedProperties {
         return serializer.serialize(propertyByKey.values(), configType, component, environment);
     }
 
+    private TypedProperties withProperties(Predicate<Property> filter) {
+        return withPropertyByKey(filter(propertyByKey.values(), filter, toPropertyMap()));
+    }
+
     @Override
     public String toString() {
         return getDeclaringComponent().toString();
@@ -90,10 +99,6 @@ public class TypedPropertiesImpl implements TypedProperties {
     private UnaryOperator<Property> resolveUsing(Resolver resolver) {
         DeclaringComponent root = getDeclaringComponent();
         return property -> property.resolveBy(resolver, root);
-    }
-
-    private TypedProperties filterProperties(Predicate<Property> filter) {
-        return withPropertyByKey(filter(propertyByKey.values(), filter, toPropertyMap()));
     }
 
     private Collector<Property, ?, Map<String, Property>> toPropertyMap() {

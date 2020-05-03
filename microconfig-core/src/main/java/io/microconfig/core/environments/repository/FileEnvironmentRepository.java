@@ -42,7 +42,7 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
         this.envDir = new File(rootDir, ENV_DIR);
         this.propertiesFactory = propertiesFactory;
         if (!envDir.exists()) {
-            throw new IllegalArgumentException("Env directory doesn't exist: " + envDir);
+            throw new IllegalArgumentException("'" + ENV_DIR + "' directory doesn't exist: " + envDir);
         }
         this.fsReader = fsReader;
         this.componentFactory = componentFactory;

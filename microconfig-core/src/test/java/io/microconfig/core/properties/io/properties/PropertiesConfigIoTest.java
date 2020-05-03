@@ -17,12 +17,11 @@ class PropertiesConfigIoTest {
     @Test
     void test() {
         File file = classpathFile("configFormats/properties/propLine.properties");
-        assertEquals(expectedMap(false), ioService.readFrom(file).propertiesAsMap());
-        assertEquals(expectedMap(true), ioService.readFrom(file).escapeResolvedPropertiesAsMap());
+        assertEquals(expectedMap(), ioService.readFrom(file).propertiesAsMap());
     }
 
-    private Map<String, String> expectedMap(boolean resolveEscape) {
-        String multilineEscape = resolveEscape ? "" : "\\" + LINES_SEPARATOR;
+    private Map<String, String> expectedMap() {
+        String multilineEscape = "\\" + LINES_SEPARATOR;
         Map<String, String> expected = new TreeMap<>();
         expected.put("p", "p_v");
         expected.put("p2", "p2_v");

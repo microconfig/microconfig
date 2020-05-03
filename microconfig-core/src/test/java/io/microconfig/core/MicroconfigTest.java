@@ -30,7 +30,7 @@ public class MicroconfigTest {
 
     @TestFactory
     List<DynamicTest> findTests() {
-        try (Stream<Path> stream = walk(classpathFile("repo").toPath())) {
+        try (Stream<Path> stream = walk(root.toPath())) {
             return stream.map(Path::toFile)
                     .filter(this::isExpectation)
                     .map(this::toTest)
@@ -45,7 +45,7 @@ public class MicroconfigTest {
 
     private boolean isExpectation(File file) {
         String name = file.getName();
-        return //file.getParentFile().getName().equals("yamlMultiline") &&
+        return file.getParentFile().getName().equals("placeholderToMap") &&
                 (name.startsWith("expect.") || name.startsWith("truncate.") || name.startsWith("exception."));
     }
 
