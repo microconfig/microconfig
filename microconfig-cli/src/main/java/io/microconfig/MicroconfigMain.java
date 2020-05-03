@@ -19,7 +19,9 @@ import static java.lang.System.exit;
  * -Xverify:none -XX:TieredStopAtLevel=1
  */
 public class MicroconfigMain {
+
     public static void main(String... args) {
+        System.getProperties().setProperty("org.apache.logging.log4j.simplelog.StatusLogger.level", "OFF");
         val params = MicroconfigParams.parse(args);
 
         File rootDir = params.rootDir();

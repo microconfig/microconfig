@@ -5,3 +5,4 @@ native-image \
 #    -H:+PrintClassInitialization \
 #    --allow-incomplete-classpath \
 #    --report-unsupported-elements-at-runtime \
+#  -Dorg.apache.logging.log4j.simplelog.StatusLogger.level=OFF \
