@@ -20,6 +20,10 @@ public class CustomStringApi {
         return getEncoder().encodeToString(line.getBytes());
     }
 
+    public static String delete(String line, String toDelete) {
+        return line.replace(toDelete, "");
+    }
+
     public static String substringAfterFirst(String line, String substring) {
         int i = line.indexOf(substring);
         if (i < 0) return "";
