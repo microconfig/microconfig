@@ -957,9 +957,9 @@ To add system properties use `-D`
 java -DtaskId=3456 -DsomeParam=value -jar microconfig.jar -r repo -d configs -e prod
 ```
 
-To speed up the build up to 3 times you can add `-Xverify:none` and `-XX:TieredStopAtLevel=1` Java VM params. Although build time for even big projects with hundreds of services is about 1-4 seconds.
+To speed up the build up to 3 times you can add `-XX:TieredStopAtLevel=1` Java VM param. Although build time for even big projects with hundreds of services is about 1-2 seconds.
 ```
-java -Xverify:none -XX:TieredStopAtLevel=1 -jar microconfig.jar -r repo -e prod
+java -XX:TieredStopAtLevel=1 -jar microconfig.jar -r repo -e prod
 ```
 
 Let's see examples of initial and destination folder layouts: 
