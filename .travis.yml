@@ -1,7 +1,7 @@
 os: osx
 language: java
 dist: trusty
-jdk: openjdk8
+jdk: openjdk9
 
 addons:
   sonarcloud:
