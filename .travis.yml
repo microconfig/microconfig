@@ -1,4 +1,4 @@
-os: osx
+os: windows
 language: java
 dist: trusty
 jdk: openjdk9
