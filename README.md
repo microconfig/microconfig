@@ -1008,7 +1008,7 @@ configs
     └───logback.xml
 ```
 
-You can try to build configs from the dedicated example repo: https://github.com/microconfig/configs-layout-example 
+You can try to build configs from the dedicated example repo: https://github.com/microconfig/microconfig-quickstart 
 
 ## Viewing differences between config versions 
 During the config build, Microconfig compares newly generated files to files generated during the previous build for each service for each config type.
