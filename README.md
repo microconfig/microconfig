@@ -566,7 +566,7 @@ Microconfig default config types:
 * `env` – for *.env
 
 # Expression language
-Microconfig supports a powerful expression language based on [Spring EL](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#expressions).
+Microconfig supports math expressions, conditions and Java [String API](https://docs.oracle.com/javase/8/docs/api/java/lang/String.html).
 
 Let's see some examples:
 
@@ -581,11 +581,11 @@ datasource.maximum-pool-size: #{${this@datasource.minimum-pool-size} + 10}
 healthcheck.logSuccessMarker: Started ${this@mainClassNameWithoutPackage}
 #var mainClassNameWithoutPackage: #{'${this@java.main}'.substring('${this@java.main}'.lastIndexOf('.') + 1)}
 
-#Using Java import and Base64 API
-sessionKey: #{T(java.util.Base64).getEncoder().encodeToString('Some value'.bytes)}  
+#Condition
+#var releaseType: #{'${this@version}'.endsWith('-SNAPSHOT') ? 'snapshot' : 'release'}
+
 ```
-Inside EL you can write any Java code in one line and Microconfig placeholders. Of course, you shouldn't overuse this to keep configuration readable.
- 
+
 # Environment specific properties
 Microconfig allows specifying environment specific properties (add/remove/override). For instance, you want to increase the connection-pool-size for dbs and increase the amount of memory for prod env.
 To add/remove/override properties for the environment, you can create application.**${ENVNAME}**.yaml file in the config folder. 
