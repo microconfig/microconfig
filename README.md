@@ -222,8 +222,7 @@ And replace explicit configs with includes
 
 **orders/application.yaml**
 ```yaml
-#include service-discovery-client
-#include oracle-db-client
+#include service-discovery-client, oracle-db-client
 
 server.port: 9000
 application.name: orders # better to get name from folder
@@ -233,8 +232,7 @@ statistics.enableExtendedStatistics: true
 
 **payments/application.yaml**
 ```yaml
-#include service-discovery-client
-#include oracle-db-client
+#include service-discovery-client, oracle-db-client
 
 server.port: 8080
 application.name: payments # better to get name from folder
@@ -316,11 +314,11 @@ datasource.url: jdbc:oracle:thin:@172.30.162.127:1521:ARMSDEV #partial duplicati
 #include payment-db
 ```
 
-Also includes can be in one line:
+Includes can be in one line or on different lines:
 
-**payments/application.yaml**
 ```yaml
-#include service-discovery-client, oracle-db-client    
+#include service-discovery-client
+#include oracle-db-client, monitoring    
 ```
 
 # Placeholders
