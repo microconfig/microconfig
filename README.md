@@ -5,7 +5,7 @@
 [![Build Status](https://travis-ci.com/microconfig/microconfig.svg?branch=master)](https://travis-ci.com/microconfig/microconfig)
 [![Slack badge](https://img.shields.io/badge/Join-Slack-brightgreen.svg)](https://join.slack.com/t/microconfig/shared_invite/zt-dflf2m0n-wOPVfAmk5eiHPn_9Omff7Q)
 
-We recommend to start with [Microconfig Quick start](https://microconfig.io/features.html#/) and then continue reading this documentation.
+We recommend to start with [Microconfig Features guide](https://microconfig.io/features.html#/) and then continue reading this documentation.
 
 
 # Microconfig overview and features
