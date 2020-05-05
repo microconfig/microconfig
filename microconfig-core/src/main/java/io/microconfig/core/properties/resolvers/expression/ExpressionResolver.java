@@ -19,7 +19,7 @@ import static java.util.regex.Pattern.compile;
 @RequiredArgsConstructor
 public class ExpressionResolver implements RecursiveResolver {
     private final Pattern expressionPattern = compile("#\\{(?<value>[^{]+?)}");
-    private final ExpressionEvaluator evaluator = withFunctionsFrom(CustomStringApi.class);
+    private final ExpressionEvaluator evaluator = withFunctionsFrom(CustomStringApi.class, System.class);
 
     @Override
     public Optional<Statement> findStatementIn(CharSequence line) {

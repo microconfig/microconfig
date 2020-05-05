@@ -26,19 +26,16 @@ public class CustomStringApi {
 
     public static String substringAfterFirst(String line, String substring) {
         int i = line.indexOf(substring);
-        if (i < 0) return "";
-        return line.substring(i + substring.length());
+        return substringAfter(line, i, substring);
     }
 
     public static String substringAfterLast(String line, String substring) {
         int i = line.lastIndexOf(substring);
-        if (i < 0) return "";
-        return line.substring(i + substring.length());
+        return substringAfter(line, i, substring);
     }
 
-    public static String substringBeforeFirst(String line, String substring) {
-        int i = line.indexOf(substring);
+    private static String substringAfter(String line, int i, String substring) {
         if (i < 0) return "";
-        return line.substring(0, i);
+        return line.substring(i + substring.length());
     }
 }
