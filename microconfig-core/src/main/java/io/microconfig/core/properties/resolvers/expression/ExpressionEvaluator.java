@@ -16,10 +16,10 @@ class ExpressionEvaluator {
     private final EvaluationContext context;
 
     public static ExpressionEvaluator withFunctionsFrom(Class<?>... functionClasses) {
-        EvaluationContext context = forReadOnlyDataBinding()
-                .withInstanceMethods()
-                .build();
-//        EvaluationContext context = new StandardEvaluationContext();
+//        EvaluationContext context = forReadOnlyDataBinding()
+//                .withInstanceMethods()
+//                .build();
+        EvaluationContext context = new StandardEvaluationContext();
 
         of(functionClasses)
                 .flatMap(c -> of(c.getMethods()))
