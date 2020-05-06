@@ -8,6 +8,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.stream.Stream.of;
+import static org.springframework.expression.spel.support.SimpleEvaluationContext.forReadOnlyDataBinding;
 
 @RequiredArgsConstructor
 class ExpressionEvaluator {
@@ -15,10 +16,10 @@ class ExpressionEvaluator {
     private final EvaluationContext context;
 
     public static ExpressionEvaluator withFunctionsFrom(Class<?>... functionClasses) {
-//        EvaluationContext context = forReadOnlyDataBinding()
-//                .withInstanceMethods()
-//                .build();
-        EvaluationContext context = new StandardEvaluationContext();
+        EvaluationContext context = forReadOnlyDataBinding()
+                .withInstanceMethods()
+                .build();
+//        EvaluationContext context = new StandardEvaluationContext();
 
         of(functionClasses)
                 .flatMap(c -> of(c.getMethods()))
