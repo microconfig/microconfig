@@ -1,0 +1,30 @@
+# This workflow will build a Java project with Gradle
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+
+name: MacOS X Native Image
+
+on:
+  push:
+    branches: [ binary ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Download GraalVM
+        shell: bash
+        run: curl -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-20.0.0/graalvm-ce-java11-darwin-amd64-20.0.0.tar.gz -o graalvm.tar.gz
+#      - name: checkout
+#        uses: actions/checkout@v2
+
+#      - name: Set up JDK 1.8
+#        uses: actions/setup-java@v1
+#        with:
+#          java-version: 1.8
+#      - name: Grant execute permission for gradlew
+#        run: chmod +x gradlew
+#      - name: Download graalvm 20
+#        run: chmod +x gradlew
+#    - name: Build with Gradle
+#      run: ./gradlew build
