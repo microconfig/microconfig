@@ -2,7 +2,6 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.microconfig/microconfig-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.microconfig/microconfig-core)
-[![Build Status](https://travis-ci.com/microconfig/microconfig.svg?branch=master)](https://travis-ci.com/microconfig/microconfig)
 [![Slack badge](https://img.shields.io/badge/Join-Slack-brightgreen.svg)](https://join.slack.com/t/microconfig/shared_invite/zt-dflf2m0n-wOPVfAmk5eiHPn_9Omff7Q)
 
 We recommend to start with [Microconfig Features guide](https://microconfig.io/features.html#/) and then continue reading this documentation.
