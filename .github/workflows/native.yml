@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Install GraalVM Native Image
         shell: bash
-        run: graalvm-mac.sh
+        run: ./graalvm-mac.sh
 #      - name: checkout
 #        uses: actions/checkout@v2
 
