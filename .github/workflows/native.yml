@@ -12,9 +12,9 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - name: Download GraalVM
+      - name: Install GraalVM Native Image
         shell: bash
-        run: curl -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-20.0.0/graalvm-ce-java11-darwin-amd64-20.0.0.tar.gz -o graalvm.tar.gz
+        run: graalvm-mac.sh
 #      - name: checkout
 #        uses: actions/checkout@v2
 
