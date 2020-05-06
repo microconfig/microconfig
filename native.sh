@@ -1,4 +1,4 @@
-.graalvm/bin/native-image -jar microconfig-cli/build/libs/*.jar
+.graalvm/bin/native-image -jar microconfig-cli/build/libs/microconfig-cli-*-all.jar
 
 
 #    -H:+PrintClassInitialization \
