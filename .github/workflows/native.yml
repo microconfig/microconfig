@@ -12,17 +12,11 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - name: Debug
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Install GraalVM Native Image
         shell: bash
-        run: ls
-      - name: Debug2
-        shell: bash
-        run: echo $PWD
-#      - name: Install GraalVM Native Image
-#        shell: bash
-#        run: ./graalvm-mac.sh
-#      - name: checkout
-#        uses: actions/checkout@v2
+        run: ./graalvm-mac.sh
 
 #      - name: Set up JDK 1.8
 #        uses: actions/setup-java@v1
