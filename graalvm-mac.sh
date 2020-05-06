@@ -5,5 +5,5 @@ rm graalvm.tar.gz
 mv .graalvm/graalvm-ce-java11-20.0.0/Contents/Home/* .graalvm/
 rm -rf .graalvm/graalvm-ce-java11-20.0.0
 chmod +x .graalvm/bin/gu
-.graalvm/bin/gu install native-image
+.graalvm/bin/gu install -n native-image
 .graalvm/bin/native-image --version
