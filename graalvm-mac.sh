@@ -2,8 +2,8 @@ curl -sL https://github.com/graalvm/graalvm-ce-dev-builds/releases/download/20.1
 mkdir .graalvm
 tar -xf graalvm.tar.gz -C .graalvm
 rm graalvm.tar.gz
-mv .graalvm/graalvm-ce-java8-20.0.0/Contents/Home/* .graalvm/
-rm -rf .graalvm/graalvm-ce-java8-20.0.0
+mv .graalvm/graalvm-ce-java11-20.1.0-dev/Contents/Home/* .graalvm/
+rm -rf .graalvm/graalvm-ce-java11-20.1.0-dev
 chmod +x .graalvm/bin/gu
 .graalvm/bin/gu install -n native-image
 .graalvm/bin/native-image --version

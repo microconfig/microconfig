@@ -18,3 +18,5 @@ build/
 .graalvm/
 classes/
 out/
+
+microconfig
