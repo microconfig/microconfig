@@ -69,6 +69,10 @@
   "allPublicMethods":true
 },
 {
+  "name":"java.lang.System",
+  "allPublicMethods":true
+},
+{
   "name":"java.sql.Date"
 },
 {

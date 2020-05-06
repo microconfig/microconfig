@@ -29,4 +29,7 @@ jobs:
       - name: Build Binary
         shell: bash
         run: ./native.sh
-
+      - uses: actions/upload-artifact@v2
+        with:
+          name: microconfig
+          path: ./microconfig
