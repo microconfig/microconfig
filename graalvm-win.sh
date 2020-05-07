@@ -4,5 +4,4 @@ rm graalvm.zip
 mv graalvm/graalvm-ce-java11-20.1.0-dev/* graalvm/
 rm -rf graalvm/graalvm-ce-java11-20.1.0-dev
 graalvm/bin/gu.cmd install -n native-image
-ls graalvm/bin
 graalvm/bin/native-image.cmd --version
