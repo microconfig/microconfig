@@ -18,6 +18,8 @@ jobs:
       - name: win compiler init
         shell: cmd
         run: call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
+      - name: checkout
+        uses: actions/checkout@v2
       - name: Install GraalVM Native Image
         shell: bash
         run: ./graalvm-win.sh
