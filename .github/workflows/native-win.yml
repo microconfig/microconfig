@@ -17,9 +17,9 @@ jobs:
 #        run: choco install visualstudio2017-workload-vctools --no-progress
       - name: checkout
         uses: actions/checkout@v2
-#      - name: Install GraalVM Native Image
-#        shell: bash
-#        run: ./graalvm-win.sh
+      - name: Install GraalVM Native Image
+        shell: bash
+        run: ./graalvm-win.sh
 #      - name: Set up JDK
 #        uses: actions/setup-java@v1
 #        with:
