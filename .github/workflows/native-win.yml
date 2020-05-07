@@ -12,9 +12,12 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: win compiler
+      - name: win compiler install
         shell: bash
-        run: choco install visualstudio2017-workload-vctools
+        run: choco install windows-sdk-7.1 kb2519277 --no-progress
+      - name: win compiler init
+        shell: cmd
+        run: call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd"
 #      - name: win compiler download
 #        shell: bash
 #        run: curl -sL http://download.microsoft.com/download/F/1/0/F10113F5-B750-4969-A255-274341AC6BCE/GRMSDKX_EN_DVD.iso -o dvd.iso
