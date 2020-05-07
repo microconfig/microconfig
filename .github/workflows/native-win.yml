@@ -14,31 +14,23 @@ jobs:
     steps:
       - name: win compiler install
         shell: bash
-        run: choco install windows-sdk-7.1 kb2519277 --no-progress
+        run: choco install visualstudio2017-workload-vctools --no-progress
       - name: win compiler init
         shell: cmd
-        run: call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd"
-#      - name: win compiler download
-#        shell: bash
-#        run: curl -sL http://download.microsoft.com/download/F/1/0/F10113F5-B750-4969-A255-274341AC6BCE/GRMSDKX_EN_DVD.iso -o dvd.iso
-#      - name: win compiler mount
-#        shell: powershell
-#        run: Mount-DiskImage -ImagePath dvd.iso
-#      - name: checkout
-#        uses: actions/checkout@v2
-#      - name: Install GraalVM Native Image
-#        shell: bash
-#        run: ./graalvm-win.sh
-#      - name: Set up JDK
-#        uses: actions/setup-java@v1
-#        with:
-#          java-version: 1.8
-#      - name: Build Jar
-#        run: chmod +x gradlew && ./gradlew shadowJar
-#      - name: Build Binary
-#        shell: bash
-#        run: graalvm/bin/native-image.cmd -jar microconfig-cli/build/libs/microconfig-cli-*-all.jar
-#      - uses: actions/upload-artifact@v2
-#        with:
-#          name: microconfig
-#          path: microconfig.exe
+        run: call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
+      - name: Install GraalVM Native Image
+        shell: bash
+        run: ./graalvm-win.sh
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build Jar
+        run: chmod +x gradlew && ./gradlew shadowJar
+      - name: Build Binary
+        shell: bash
+        run: graalvm/bin/native-image.cmd -jar microconfig-cli/build/libs/microconfig-cli-*-all.jar
+      - uses: actions/upload-artifact@v2
+        with:
+          name: microconfig
+          path: microconfig.exe
