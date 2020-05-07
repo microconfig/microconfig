@@ -23,10 +23,10 @@ jobs:
           java-version: 1.8
       - name: Build Jar
         run: gradlew.bat shadowJar
-#      - name: Build Binary
-#        shell: bash
-#        run: ./native.sh
-#      - uses: actions/upload-artifact@v2
-#        with:
-#          name: microconfig
-#          path: microconfig.exe
+      - name: Build Binary
+        shell: bash
+        run: graalvm/bin/native-image.cmd -jar microconfig-cli/build/libs/microconfig-cli-*-all.jar
+      - uses: actions/upload-artifact@v2
+        with:
+          name: microconfig
+          path: microconfig.exe
