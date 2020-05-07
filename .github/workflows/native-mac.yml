@@ -5,7 +5,7 @@ name: MacOS X Native Image
 
 on:
   push:
-    branches: [ binary ]
+    branches: [ none ]
 
 jobs:
   build:
