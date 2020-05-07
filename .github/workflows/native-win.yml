@@ -12,15 +12,9 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: win compiler download
+      - name: win compiler
         shell: bash
-        run: curl -sL https://download.microsoft.com/download/7/5/0/75040801-126C-4591-BCE4-4CD1FD1499AA/VC-Compiler-KB2519277.exe -o vc-compiler.exe
-      - name: dir
-        shell: cmd
-        run: dir
-      - name: win compiler install
-        shell: cmd
-        run: vc-compiler.exe -q
+        run: choco install visualstudio2017-workload-vctools
 #      - name: win compiler download
 #        shell: bash
 #        run: curl -sL http://download.microsoft.com/download/F/1/0/F10113F5-B750-4969-A255-274341AC6BCE/GRMSDKX_EN_DVD.iso -o dvd.iso
