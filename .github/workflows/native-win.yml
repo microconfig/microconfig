@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: win compiler download
         shell: bash
-        run: curl -sL https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422 -o vc-compiler.exe
+        run: curl -sL curl -sL https://download.microsoft.com/download/7/5/0/75040801-126C-4591-BCE4-4CD1FD1499AA/VC-Compiler-KB2519277.exe -o vc-compiler.exe
       - name: dir
         shell: cmd
         run: dir
