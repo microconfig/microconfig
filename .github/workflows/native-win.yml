@@ -22,7 +22,7 @@ jobs:
         with:
           java-version: 1.8
       - name: Build Jar
-        run: gradlew.bat shadowJar
+        run: chmod +x gradlew && ./gradlew shadowJar
       - name: Build Binary
         shell: bash
         run: graalvm/bin/native-image.cmd -jar microconfig-cli/build/libs/microconfig-cli-*-all.jar
