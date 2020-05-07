@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: win compiler download
-        shell: powershell
+        shell: bash
         run: curl -sL http://download.microsoft.com/download/F/1/0/F10113F5-B750-4969-A255-274341AC6BCE/GRMSDKX_EN_DVD.iso -o dvd.iso
       - name: win compiler mount
         shell: powershell
