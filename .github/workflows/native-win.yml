@@ -12,20 +12,20 @@ jobs:
     runs-on: windows-latest
 
     steps:
-#      - name: win compiler install
-#        shell: bash
-#        run: choco install visualstudio2017-workload-vctools --no-progress
+      - name: win compiler install
+        shell: bash
+        run: choco install visualstudio2017-workload-vctools --no-progress
       - name: checkout
         uses: actions/checkout@v2
       - name: Install GraalVM Native Image
         shell: bash
         run: ./graalvm-win.sh
-#      - name: Set up JDK
-#        uses: actions/setup-java@v1
-#        with:
-#          java-version: 1.8
-#      - name: Build Jar
-#        run: chmod +x gradlew && ./gradlew shadowJar
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build Jar
+        run: chmod +x gradlew && ./gradlew shadowJar
       - name: Build Binary
         shell: cmd
         run: native.bat
