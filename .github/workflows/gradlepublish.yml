@@ -4,8 +4,8 @@
 name: Publish to Maven Central Staging repository
 
 on:
-  release:
-    types: [published, created, edited]
+  push:
+    branches: [ relase ]
 
 jobs:
   build:
