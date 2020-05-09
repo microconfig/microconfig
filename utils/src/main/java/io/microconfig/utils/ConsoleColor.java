@@ -2,6 +2,7 @@ package io.microconfig.utils;
 
 import lombok.RequiredArgsConstructor;
 
+import static io.microconfig.utils.Os.isWindows;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
@@ -24,6 +25,7 @@ public class ConsoleColor {
     }
 
     private static String applyColor(String message, String color) {
+        if (isWindows()) return message;
         return message.isEmpty() ? "" : color + message + RESET;
     }
 }
