@@ -5,7 +5,7 @@ name: "Native Image: Windows"
 
 on:
   push:
-    branches: [ none ]
+    branches: [ binary ]
 
 jobs:
   build:
@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Install GraalVM Native Image
         shell: bash
-        run: ./graalvm-win.sh
+        run: native/graalvm-win.sh
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
@@ -28,7 +28,7 @@ jobs:
         run: mv microconfig-cli/build/libs/microconfig-cli-*-all.jar microconfig-cli/build/libs/microconfig.jar
       - name: Build Binary
         shell: cmd
-        run: native.bat
+        run: native\native.bat
       - uses: actions/upload-artifact@v2
         with:
           name: microconfig-windows

@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Install GraalVM Native Image
         shell: bash
-        run: ./graalvm-linux.sh
+        run: native/graalvm-linux.sh
       - name: Grant execute permission for gradlew
         shell: bash
         run: chmod +x gradlew
@@ -28,7 +28,7 @@ jobs:
         run: ./gradlew shadowJar
       - name: Build Binary
         shell: bash
-        run: ./native.sh
+        run: native/native.sh
       - uses: actions/upload-artifact@v2
         with:
           name: microconfig-linux
