@@ -1,4 +1,4 @@
-name: "Build Native Binary"
+name: "Build Release"
 
 on:
   push:
@@ -47,54 +47,53 @@ jobs:
           name: microconfig-linux
           path: ./microconfig
 
-#  windows:
-#    name: "Build Windows"
-#    needs: build
-#    runs-on: windows-2016
-#    steps:
-#      - name: checkout
-#        uses: actions/checkout@v2
-#      - name: Download Jar
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: microconfig.jar
-#      - name: Install GraalVM Native Image
-#        shell: bash
-#        run: .github/scripts/native/graalvm-win.sh
-#      - name: Build Binary
-#        shell: bash
-#        run: .github/scripts/native/native.bat
-#      - uses: actions/upload-artifact@v2
-#        with:
-#          name: microconfig-windows
-#          path: microconfig.exe
-#
-#  macos:
-#    name: "Build MacOS"
-#    needs: build
-#    runs-on: macos-latest
-#    steps:
-#      - name: checkout
-#        uses: actions/checkout@v2
-#      - name: Download Jar
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: microconfig.jar
-#      - name: Install GraalVM Native Image
-#        shell: bash
-#        run: .github/scripts/native/graalvm-mac.sh
-#      - name: Build Binary
-#        shell: bash
-#        run: .github/scripts/native/native.sh
-#      - uses: actions/upload-artifact@v2
-#        with:
-#          name: microconfig-macos
-#          path: ./microconfig
+  windows:
+    name: "Build Windows"
+    needs: build
+    runs-on: windows-2016
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Download Jar
+        uses: actions/download-artifact@v2
+        with:
+          name: microconfig.jar
+      - name: Install GraalVM Native Image
+        shell: bash
+        run: .github/scripts/native/graalvm-win.sh
+      - name: Build Binary
+        shell: bash
+        run: .github/scripts/native/native.bat
+      - uses: actions/upload-artifact@v2
+        with:
+          name: microconfig-windows
+          path: microconfig.exe
+
+  macos:
+    name: "Build MacOS"
+    needs: build
+    runs-on: macos-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Download Jar
+        uses: actions/download-artifact@v2
+        with:
+          name: microconfig.jar
+      - name: Install GraalVM Native Image
+        shell: bash
+        run: .github/scripts/native/graalvm-mac.sh
+      - name: Build Binary
+        shell: bash
+        run: .github/scripts/native/native.sh
+      - uses: actions/upload-artifact@v2
+        with:
+          name: microconfig-macos
+          path: ./microconfig
 
   release:
     name: "Create release"
-#    needs: [linux, macos, windows]
-    needs: [linux]
+    needs: [linux, macos, windows]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -105,26 +104,34 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: Tag name
+          tag_name: v.0.0.0
           release_name: Release name
           draft: true
           prerelease: false
 
-#      - name: Download Jar
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: microconfig.jar
+      - name: Download Jar
+        uses: actions/download-artifact@v2
+        with:
+          name: microconfig.jar
+      - name: Upload Jar Release
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: microconfig.jar
+          asset_name: microconfig.jar
+          asset_content_type: application/java-archive
 
-      - name: Download Linux Binary
+      - name: Download Binary
         uses: actions/download-artifact@v2
         with:
           name: microconfig-linux
-
-      - name: Zip Linux Binary
+      - name: Zip
         shell: bash
         run: zip -m microconfig-linux.zip microconfig
-
-      - name: Upload Linux Release
+      - name: Upload Release Artifact
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
@@ -133,4 +140,40 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: microconfig-linux.zip
           asset_name: microconfig-linux.zip
+          asset_content_type: application/zip
+
+      - name: Download Binary
+        uses: actions/download-artifact@v2
+        with:
+          name: microconfig-macos
+      - name: Zip
+        shell: bash
+        run: zip -m microconfig-macos.zip microconfig
+      - name: Upload Release Artifact
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: microconfig-macos.zip
+          asset_name: microconfig-macos.zip
+          asset_content_type: application/zip
+
+      - name: Download Binary
+        uses: actions/download-artifact@v2
+        with:
+          name: microconfig-windows
+      - name: Zip
+        shell: bash
+        run: zip -m microconfig-windows.zip microconfig.exe
+      - name: Upload Release Artifact
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: microconfig-windows.zip
+          asset_name: microconfig-windows.zip
           asset_content_type: application/zip
