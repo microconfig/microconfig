@@ -1,0 +1,1 @@
+version=$(head -1 gradle.properties); version="v${version/*=}"; git tag -a $version -m "release $version"; git push --tags
