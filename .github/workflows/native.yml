@@ -114,7 +114,6 @@ jobs:
         with:
           name: microconfig.jar
       - name: Upload Jar Release
-        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -132,7 +131,6 @@ jobs:
         shell: bash
         run: zip -m microconfig-linux.zip microconfig
       - name: Upload Release Artifact
-        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -150,7 +148,6 @@ jobs:
         shell: bash
         run: zip -m microconfig-macos.zip microconfig
       - name: Upload Release Artifact
-        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
