@@ -1,11 +1,11 @@
 # This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created
 # For more information see: https://github.com/actions/setup-java#publishing-using-gradle
 
-name: Publish to Maven Central Staging repository
+name: Publish to Maven Central Staging
 
 on:
-  push:
-    branches: [ release ]
+  release:
+    types: [created]
 
 jobs:
   build:
