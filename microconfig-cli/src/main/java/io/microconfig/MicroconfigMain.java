@@ -15,7 +15,7 @@ import static java.lang.System.*;
  * -r configs/repo -d build -e dev
  * <p>
  * VM speedup params:
- * -Xverify:none -XX:TieredStopAtLevel=1
+ * -XX:TieredStopAtLevel=1
  */
 public class MicroconfigMain {
     public static void main(String... args) {
