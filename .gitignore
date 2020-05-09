@@ -15,5 +15,8 @@
 target/
 build/
 .gradle/
+.graalvm/
 classes/
 out/
+
+microconfig

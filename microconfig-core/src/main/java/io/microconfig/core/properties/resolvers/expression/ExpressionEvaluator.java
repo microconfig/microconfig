@@ -8,6 +8,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.stream.Stream.of;
+import static org.springframework.expression.spel.support.SimpleEvaluationContext.forReadOnlyDataBinding;
 
 @RequiredArgsConstructor
 class ExpressionEvaluator {

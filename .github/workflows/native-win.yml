@@ -1,0 +1,32 @@
+name: "Native Image: Windows"
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: windows-2016
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Install GraalVM Native Image
+        shell: bash
+        run: native/graalvm-win.sh
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build Jar
+        run: chmod +x gradlew && ./gradlew shadowJar
+      - name: Rename Jar
+        shell: bash
+        run: mv microconfig-cli/build/libs/microconfig-cli-*-all.jar microconfig-cli/build/libs/microconfig.jar
+      - name: Build Binary
+        shell: cmd
+        run: native\native.bat
+      - uses: actions/upload-artifact@v2
+        with:
+          name: microconfig-windows
+          path: microconfig.exe

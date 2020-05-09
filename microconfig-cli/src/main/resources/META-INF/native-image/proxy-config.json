@@ -1,0 +1,10 @@
+[
+  ["io.microconfig.core.configtypes.ConfigTypeRepository"],
+  ["io.microconfig.core.environments.ComponentFactory"],
+  ["io.microconfig.core.environments.EnvironmentRepository"],
+  ["io.microconfig.core.properties.PlaceholderResolveStrategy"],
+  ["io.microconfig.core.properties.PropertiesFactory"],
+  ["io.microconfig.core.properties.PropertiesRepository"],
+  ["io.microconfig.core.properties.io.selector.ConfigFormatDetector"],
+  ["io.microconfig.core.properties.resolvers.RecursiveResolver"]
+]

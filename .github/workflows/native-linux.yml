@@ -1,0 +1,32 @@
+name: "Native Image: Linux"
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Install GraalVM Native Image
+        shell: bash
+        run: native/graalvm-linux.sh
+      - name: Grant execute permission for gradlew
+        shell: bash
+        run: chmod +x gradlew
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build Jar
+        run: ./gradlew shadowJar
+      - name: Build Binary
+        shell: bash
+        run: native/native.sh
+      - uses: actions/upload-artifact@v2
+        with:
+          name: microconfig-linux
+          path: ./microconfig
