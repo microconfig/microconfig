@@ -1,5 +1,4 @@
-curl -sL https://github.com/graalvm/graalvm-ce-dev-builds/releases/download/20.1.0-dev-20200506_1135/graalvm-ce-java11-linux-amd64-20.1.0-dev.tar.gz
- -o graalvm.tar.gz
+curl -sL https://github.com/graalvm/graalvm-ce-dev-builds/releases/download/20.1.0-dev-20200506_1135/graalvm-ce-java11-linux-amd64-20.1.0-dev.tar.gz -o graalvm.tar.gz
 mkdir .graalvm
 tar -xf graalvm.tar.gz -C .graalvm
 rm graalvm.tar.gz
