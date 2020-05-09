@@ -21,7 +21,7 @@ ext {
             }
             developer {
                 id 'esladkovski'
-                name 'Evgeni Sladkovski'
+                name 'Evgeni Sladkowski'
                 email 'kapodes@gmail.com'
             }
             developer {
