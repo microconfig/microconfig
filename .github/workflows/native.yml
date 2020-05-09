@@ -36,61 +36,57 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: microconfig.jar
-      - name: ls
+      - name: Install GraalVM Native Image
         shell: bash
-        run: ls -lh
-#      - name: Install GraalVM Native Image
-#        shell: bash
-#        run: .github/scripts/native/graalvm-linux.sh
-#      - name: Build Binary
-#        shell: bash
-#        run: .github/scripts/native/native.sh
-#      - uses: actions/upload-artifact@v2
-#        with:
-#          name: microconfig-linux
-#          path: ./microconfig
+        run: .github/scripts/native/graalvm-linux.sh
+      - name: Build Binary
+        shell: bash
+        run: .github/scripts/native/native.sh
+      - uses: actions/upload-artifact@v2
+        with:
+          name: microconfig-linux
+          path: ./microconfig
 
-#  windows:
-#    name: "Build Windows"
-#    needs: build
-#    runs-on: windows-2016
-#    steps:
-#      - name: Download Jar
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: microconfig.jar
-#      - name: checkout
-#        uses: actions/checkout@v2
-#      - name: Install GraalVM Native Image
-#        shell: bash
-#        run: .github/scripts/native/graalvm-win.sh
-#      - name: Build Binary
-#        shell: bash
-#        run: .github/scripts/native/native.bat
-#      - uses: actions/upload-artifact@v2
-#        with:
-#          name: microconfig-windows
-#          path: microconfig.exe
-#
-#  macos:
-#    name: "Build MacOS"
-#    needs: build
-#    runs-on: macos-latest
-#    steps:
-#      - name: Download Jar
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: microconfig.jar
-#      - name: checkout
-#        uses: actions/checkout@v2
-#      - name: Install GraalVM Native Image
-#        shell: bash
-#        run: .github/scripts/native/graalvm-mac.sh
-#      - name: Build Binary
-#        shell: bash
-#        run: .github/scripts/native/native.sh
-#      - uses: actions/upload-artifact@v2
-#        with:
-#          name: microconfig-macos
-#          path: ./microconfig
-#
+  windows:
+    name: "Build Windows"
+    needs: build
+    runs-on: windows-2016
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Download Jar
+        uses: actions/download-artifact@v2
+        with:
+          name: microconfig.jar
+      - name: Install GraalVM Native Image
+        shell: bash
+        run: .github/scripts/native/graalvm-win.sh
+      - name: Build Binary
+        shell: bash
+        run: .github/scripts/native/native.bat
+      - uses: actions/upload-artifact@v2
+        with:
+          name: microconfig-windows
+          path: microconfig.exe
+
+  macos:
+    name: "Build MacOS"
+    needs: build
+    runs-on: macos-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Download Jar
+        uses: actions/download-artifact@v2
+        with:
+          name: microconfig.jar
+      - name: Install GraalVM Native Image
+        shell: bash
+        run: .github/scripts/native/graalvm-mac.sh
+      - name: Build Binary
+        shell: bash
+        run: .github/scripts/native/native.sh
+      - uses: actions/upload-artifact@v2
+        with:
+          name: microconfig-macos
+          path: ./microconfig
