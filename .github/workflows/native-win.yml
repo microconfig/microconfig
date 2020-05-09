@@ -26,6 +26,9 @@ jobs:
           java-version: 1.8
       - name: Build Jar
         run: chmod +x gradlew && ./gradlew shadowJar
+      - name: Rename Jar
+        shell: bash
+        run: mv microconfig-cli/build/libs/microconfig-cli-*-all.jar microconfig-cli/build/libs/microconfig.jar
       - name: Build Binary
         shell: cmd
         run: native.bat
