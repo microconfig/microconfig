@@ -31,5 +31,5 @@ jobs:
         run: ./native.sh
       - uses: actions/upload-artifact@v2
         with:
-          name: microconfig
+          name: microconfig-macos
           path: ./microconfig

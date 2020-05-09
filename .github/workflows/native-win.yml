@@ -5,16 +5,13 @@ name: Windows Native Image
 
 on:
   push:
-    branches: [ binary ]
+    branches: [ none ]
 
 jobs:
   build:
     runs-on: windows-2016
 
     steps:
-#      - name: win compiler install
-#        shell: bash
-#        run: choco install visualstudio2017-workload-vctools --no-progress
       - name: checkout
         uses: actions/checkout@v2
       - name: Install GraalVM Native Image
@@ -34,5 +31,5 @@ jobs:
         run: native.bat
       - uses: actions/upload-artifact@v2
         with:
-          name: microconfig
+          name: microconfig-windows
           path: microconfig.exe
