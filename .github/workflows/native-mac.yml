@@ -2,7 +2,7 @@ name: "Native Image: MacOS X"
 
 on:
   release:
-    types: [created]
+    types: [published]
 
 jobs:
   build:
