@@ -2,7 +2,7 @@ name: "Build Native Binary"
 
 on:
   push:
-    branch: [native-binary]
+    branch: [release]
 
 jobs:
   build:
