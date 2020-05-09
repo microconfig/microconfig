@@ -19,9 +19,9 @@ publishing {
     }
 }
 
-//signing {
-//    sign publishing.publications.shadow
-//}
+signing {
+    sign publishing.publications.shadow
+}
 
 dependencies {
     implementation project(':microconfig-core'),
