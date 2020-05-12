@@ -1,0 +1,5 @@
+placeholderedKey: ${placeholderOverride2@placeholderedKey}
+placeholderedKey2: ${placeholderOverride2[dev2]@placeholderedKey}
+placeholderedKey3: ${this[dev2]@placeholderedKey}
+simpleKey: ${placeholderOverride2@simpleKey}
+v: 1

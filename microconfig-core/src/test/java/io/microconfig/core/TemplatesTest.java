@@ -23,7 +23,7 @@ public class TemplatesTest {
         File root = classpathFile("templates");
         Microconfig microconfig = searchConfigsIn(root).withDestinationDir(destinationDir);
         microconfig.environments().getOrCreateByName("dev")
-                .getOrCreateComponentWithName("mustache")
+                .findComponentWithName("mustache")
                 .getPropertiesFor(configType(APPLICATION))
                 .resolveBy(microconfig.resolver())
                 .forEachComponent(resolveTemplatesBy(microconfig.resolver()));

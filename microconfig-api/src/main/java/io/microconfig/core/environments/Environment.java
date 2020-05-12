@@ -24,5 +24,5 @@ public interface Environment {
 
     Components findComponentsFrom(List<String> groups, List<String> components);
 
-    Component getOrCreateComponentWithName(String componentName);
+    Component findComponentWithName(String componentName);
 }

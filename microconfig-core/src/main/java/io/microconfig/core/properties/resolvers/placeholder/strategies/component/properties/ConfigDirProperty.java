@@ -35,7 +35,7 @@ public class ConfigDirProperty implements ComponentProperty {
 
     private String originalNameOf(String component, String env) {
         return environmentRepository.getOrCreateByName(env)
-                .getOrCreateComponentWithName(component)
+                .findComponentWithName(component)
                 .getOriginalName();
     }
 }

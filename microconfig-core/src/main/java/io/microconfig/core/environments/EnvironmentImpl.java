@@ -76,7 +76,7 @@ public class EnvironmentImpl implements Environment {
     }
 
     @Override
-    public Component getOrCreateComponentWithName(String componentName) {
+    public Component findComponentWithName(String componentName) {
         return findFirstResult(groups, g -> g.findComponentWithName(componentName))
                 .orElseGet(() -> componentFactory.createComponent(componentName, componentName, name));
     }

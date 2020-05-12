@@ -1,0 +1,4 @@
+direct2: ${tec03[prod]@direct2}
+ref: ${this[uat]@direct2}
+ref2: ${this[prod]@direct3}
+direct3: ${tec03@direct2}
