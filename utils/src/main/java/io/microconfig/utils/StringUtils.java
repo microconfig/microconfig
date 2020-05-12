@@ -64,7 +64,7 @@ public class StringUtils {
     }
 
     public static String toUnixPathSeparator(String line) {
-        return line.replace("\r\n", "\n");
+        return line.replace("\r\n", "\n").trim();
     }
 
     public static String escape(String value) {
