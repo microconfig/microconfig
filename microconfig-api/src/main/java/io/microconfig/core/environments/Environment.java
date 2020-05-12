@@ -1,12 +1,13 @@
 package io.microconfig.core.environments;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
 public interface Environment {
     String getName();
 
-    Object getSource();
+    File getSource();
 
     int getPortOffset();
 

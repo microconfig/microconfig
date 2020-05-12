@@ -72,7 +72,7 @@ public class PropertySerializers {
                                                                    EnvironmentRepository environmentRepository) {
         return (properties, configType, componentName, environment) -> {
             if (configType.getName().equals(APPLICATION.getName())) {
-                Object envSource = environmentRepository.getByName(environment).getSource();
+                File envSource = environmentRepository.getByName(environment).getSource();
                 if (envSource != null && envSource.toString().endsWith(".json")) {
                     configType = new ConfigTypeImpl(configType.getName(), configType.getSourceExtensions(), "service");
                 }
