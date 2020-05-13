@@ -27,7 +27,7 @@ public class TemplatePattern {
 
     public static TemplatePattern defaultPattern() {
         return TemplatePattern.builder()
-                .templatePrefixes(asList("microconfig.template.", "mc.template.", "mc.mustache."))
+                .templatePrefixes(asList("microconfig.template.", "mc.template.", "mc.mustache.", "microconfig.mustache."))
                 .fromFileSuffix(".fromFile")
                 .toFileSuffix(".toFile")
                 .pattern(DEFAULT_PATTERN)
