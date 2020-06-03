@@ -9,8 +9,8 @@ publishing {
         shadow(MavenPublication) { publication ->
             project.shadow.component(publication)
             afterEvaluate {
-                ant.move file: "${rootDir}/gradle.properties",
-                        todir: "${buildDir}/resources"
+                ant.copy file: "${rootDir}/gradle.properties",
+                        tofile: "${buildDir}/resources/version.properties"
 
                 pom.withXml {
                     def root = asNode()

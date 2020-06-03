@@ -52,7 +52,7 @@ public class MicroconfigMain {
     }
 
     private static void printVersion() {
-        String version = readClasspathResource("gradle.properties").split("\n")[0].split("=")[1].trim();
+        String version = readClasspathResource("version.properties").split("\n")[0].split("=")[1].trim();
         info(version);
     }
 }
