@@ -50,6 +50,6 @@ class MicroconfigParamsTest {
 
     @Test
     void testVersion() {
-        assertTrue(parse("-version").version());
+        assertTrue(parse("-v").version());
     }
 }
