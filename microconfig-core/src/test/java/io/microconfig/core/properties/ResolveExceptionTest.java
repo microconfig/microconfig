@@ -15,9 +15,9 @@ class ResolveExceptionTest {
     void withoutCause() {
         ResolveException exception = new ResolveException(current, root, "Can't resolve placeholder");
         assertEquals("Can't build configs for root component 'root[e]'.\n" +
-                        "Exception in\n" +
-                        "\tcurrent[e1]'\n" +
-                        "Can't resolve placeholder", exception.getMessage().trim());
+                "Exception in\n" +
+                "\tcurrent[e1]'\n" +
+                "Can't resolve placeholder", exception.getMessage().trim());
 
         exception.setProperty(p);
         assertEquals("Can't build configs for root component 'root[e]'.\n" +

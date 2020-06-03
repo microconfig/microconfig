@@ -90,7 +90,7 @@ class TypedPropertiesImplTest {
     void getMultipleProperties() {
         TypedProperties tp = withProperties(asList(property("k1.k2"), property("k1.k3"), property("k4")));
         assertEquals(
-                        "k2: k1.k2Value" + LINES_SEPARATOR +
+                "k2: k1.k2Value" + LINES_SEPARATOR +
                         "k3: k1.k3Value",
                 tp.getPropertyWithKey("k1.*").get().getValue()
         );

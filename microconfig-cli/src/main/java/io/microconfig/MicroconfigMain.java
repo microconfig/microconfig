@@ -6,8 +6,8 @@ import lombok.val;
 import java.io.File;
 import java.util.List;
 
-import static io.microconfig.utils.Logger.announce;
-import static io.microconfig.utils.Logger.error;
+import static io.microconfig.utils.IoUtils.readClasspathResource;
+import static io.microconfig.utils.Logger.*;
 import static java.lang.System.*;
 
 /**
@@ -22,6 +22,10 @@ public class MicroconfigMain {
         loggerOff();
 
         val params = MicroconfigParams.parse(args);
+        if (params.version()) {
+            printVersion();
+            return;
+        }
 
         File rootDir = params.rootDir();
         File destinationDir = params.destinationDir();
@@ -45,5 +49,10 @@ public class MicroconfigMain {
 
     private static void loggerOff() {
         getProperties().setProperty("org.apache.logging.log4j.simplelog.StatusLogger.level", "OFF");
+    }
+
+    private static void printVersion() {
+        String version = readClasspathResource("version.properties").split("\n")[0].split("=")[1].trim();
+        info(version);
     }
 }

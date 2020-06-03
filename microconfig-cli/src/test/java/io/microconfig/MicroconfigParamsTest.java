@@ -8,6 +8,7 @@ import static io.microconfig.MicroconfigParams.parse;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MicroconfigParamsTest {
     MicroconfigParams params = parse(
@@ -45,5 +46,10 @@ class MicroconfigParamsTest {
     void services() {
         assertEquals(asList("s1", "s2"), params.services());
         assertEquals(emptyList(), empty.services());
+    }
+
+    @Test
+    void testVersion() {
+        assertTrue(parse("-v").version());
     }
 }

@@ -19,6 +19,16 @@ publishing {
     }
 }
 
+task copyVersion {
+    doLast {
+        ant.copy file: "${rootDir}/gradle.properties",
+                tofile: "${buildDir}/resources/main/version.properties"
+    }
+}
+
+compileJava.finalizedBy(copyVersion)
+
+
 signing {
     sign publishing.publications.shadow
 }
