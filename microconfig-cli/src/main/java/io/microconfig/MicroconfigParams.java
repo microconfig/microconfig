@@ -38,6 +38,6 @@ public class MicroconfigParams {
     }
 
     public boolean version() {
-        return parser.contains("v") || parser.contains("version");
+        return parser.contains("v");
     }
 }
