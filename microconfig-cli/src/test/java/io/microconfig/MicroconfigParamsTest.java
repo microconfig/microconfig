@@ -11,42 +11,42 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MicroconfigParamsTest {
-//    MicroconfigParams params = parse(
-//            "-r", "configs/repo",
-//            "-d", "destination",
-//            "-e", "dev",
-//            "-g", "g1,g2",
-//            "-s", "s1, s2"
-//    );
-//    MicroconfigParams empty = MicroconfigParams.parse();
-//
-//    @Test
-//    void rootDir() {
-//        assertEquals(new File("configs/repo"), params.rootDir());
-//    }
-//
-//    @Test
-//    void destinationDir() {
-//        assertEquals(new File("destination"), params.destinationDir());
-//        assertEquals(new File("build"), empty.destinationDir());
-//    }
-//
-//    @Test
-//    void env() {
-//        assertEquals("dev", params.env());
-//    }
-//
-//    @Test
-//    void groups() {
-//        assertEquals(asList("g1", "g2"), params.groups());
-//        assertEquals(emptyList(), empty.groups());
-//    }
-//
-//    @Test
-//    void services() {
-//        assertEquals(asList("s1", "s2"), params.services());
-//        assertEquals(emptyList(), empty.services());
-//    }
+    MicroconfigParams params = parse(
+            "-r", "configs/repo",
+            "-d", "destination",
+            "-e", "dev",
+            "-g", "g1,g2",
+            "-s", "s1, s2"
+    );
+    MicroconfigParams empty = MicroconfigParams.parse();
+
+    @Test
+    void rootDir() {
+        assertEquals(new File("configs/repo"), params.rootDir());
+    }
+
+    @Test
+    void destinationDir() {
+        assertEquals(new File("destination"), params.destinationDir());
+        assertEquals(new File("build"), empty.destinationDir());
+    }
+
+    @Test
+    void env() {
+        assertEquals("dev", params.env());
+    }
+
+    @Test
+    void groups() {
+        assertEquals(asList("g1", "g2"), params.groups());
+        assertEquals(emptyList(), empty.groups());
+    }
+
+    @Test
+    void services() {
+        assertEquals(asList("s1", "s2"), params.services());
+        assertEquals(emptyList(), empty.services());
+    }
 
     @Test
     void testVersion() {
