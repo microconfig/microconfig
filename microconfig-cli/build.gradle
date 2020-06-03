@@ -9,9 +9,6 @@ publishing {
         shadow(MavenPublication) { publication ->
             project.shadow.component(publication)
             afterEvaluate {
-                ant.copy file: "${rootDir}/gradle.properties",
-                        tofile: "${buildDir}/resources/version.properties"
-
                 pom.withXml {
                     def root = asNode()
                     root.appendNode('description', pomDescription)
@@ -21,6 +18,15 @@ publishing {
         }
     }
 }
+
+task copyVersion {
+    doLast {
+        ant.copy file: "${rootDir}/gradle.properties",
+                tofile: "${buildDir}/resources/main/version.properties"
+    }
+}
+
+compileJava.finalizedBy(copyVersion)
 
 
 signing {
