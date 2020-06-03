@@ -16,9 +16,9 @@ public class CommandLineParamParser {
 
     public static CommandLineParamParser parse(String... args) {
         Map<String, String> params = new HashMap<>();
-        for (int i = 0; i < args.length - 1; i += 2) {
+        for (int i = 0; i < args.length; i += 2) {
             String key = args[i];
-            String value = args[i + 1];
+            String value = i < args.length - 1 ? args[i + 1] : null;
             if (!key.startsWith("-")) {
                 printErrorAndExit("key '" + key + "' must start with -");
             }
@@ -59,5 +59,9 @@ public class CommandLineParamParser {
 
     public boolean booleanValue(String key) {
         return "true".equals(value(key));
+    }
+
+    public boolean contains(String key) {
+        return keyToValue.containsKey(key);
     }
 }

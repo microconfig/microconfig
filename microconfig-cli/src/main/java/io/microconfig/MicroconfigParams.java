@@ -36,4 +36,8 @@ public class MicroconfigParams {
     public boolean stacktrace() {
         return parser.booleanValue("stacktrace");
     }
+
+    public boolean version() {
+        return parser.contains("version");
+    }
 }

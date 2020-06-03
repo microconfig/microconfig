@@ -19,6 +19,10 @@ public class IoUtils {
         }
     }
 
+    public static String readClasspathResource(String file) {
+        return readFully(IoUtils.class.getClassLoader().getResourceAsStream(file));
+    }
+
     public static String readFully(InputStream is) {
         try (InputStream input = is) {
             ByteArrayOutputStream output = new ByteArrayOutputStream();

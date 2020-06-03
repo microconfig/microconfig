@@ -50,7 +50,7 @@ class YamlReader extends AbstractConfigReader {
 
     private boolean isMultilineValue(String line, int currentOffset) {
         char c = line.charAt(currentOffset);
-        return asList('-', '[',  ']', '\\','{').contains(c) ||
+        return asList('-', '[', ']', '\\', '{').contains(c) ||
                 (c == '$' && line.length() > currentOffset + 1 && line.charAt(currentOffset + 1) == '{');
     }
 
