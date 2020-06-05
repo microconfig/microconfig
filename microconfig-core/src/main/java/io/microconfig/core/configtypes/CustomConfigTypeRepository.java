@@ -1,21 +1,24 @@
 package io.microconfig.core.configtypes;
 
+import io.microconfig.core.properties.repository.ComponentGraph;
+import io.microconfig.core.properties.repository.ComponentGraphImpl;
 import io.microconfig.io.FsReader;
 import lombok.RequiredArgsConstructor;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.nio.file.Files;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static io.microconfig.core.configtypes.ConfigTypeImpl.byName;
 import static io.microconfig.core.configtypes.ConfigTypeImpl.byNameAndExtensions;
+import static io.microconfig.core.properties.repository.ComponentGraphImpl.traverseFrom;
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.StreamUtils.forEach;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
+import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 public class CustomConfigTypeRepository implements ConfigTypeRepository {
@@ -23,9 +26,10 @@ public class CustomConfigTypeRepository implements ConfigTypeRepository {
 
     private final FsReader fsReader;
     private final File descriptorFile;
+    private final File rootDir;
 
     public static ConfigTypeRepository findDescriptorIn(File rootDir, FsReader fsReader) {
-        return new CustomConfigTypeRepository(fsReader, new File(rootDir, DESCRIPTOR));
+        return new CustomConfigTypeRepository(fsReader, new File(rootDir, DESCRIPTOR), rootDir);
     }
 
     @Override
@@ -41,7 +45,7 @@ public class CustomConfigTypeRepository implements ConfigTypeRepository {
 
     private List<ConfigType> parseConfigTypes() {
         try {
-            return new MicroconfigDescriptor(fsReader.readFully(descriptorFile)).getConfigTypes();
+            return new MicroconfigDescriptor(fsReader.readFully(descriptorFile), fsReader).getConfigTypes(rootDir);
         } catch (RuntimeException e) {
             throw new RuntimeException("Can't parse descriptor: " + descriptorFile, e);
         }
@@ -49,6 +53,49 @@ public class CustomConfigTypeRepository implements ConfigTypeRepository {
 
     @RequiredArgsConstructor
     private static class MicroconfigDescriptor {
+        private static final String INCLUDE = "include";
+        private static final String DEFAULT = "default";
+
+        private final String content;
+        private final FsReader reader;
+
+        private List<ConfigType> getConfigTypes(File rootDir) {
+            List<ConfigType> configTypes = new MicroconfigTypeDescriptor(content).getConfigTypes();
+            configTypes.addAll(getIncludedConfigTypes(rootDir));
+            configTypes.addAll(getDefaultConfigTypes());
+            return configTypes;
+        }
+
+        private List<ConfigType> getDefaultConfigTypes() {
+            boolean includeDefault = getIncludes().stream().anyMatch(name -> name.equals(DEFAULT));
+            return includeDefault ? new StandardConfigTypeRepository().getConfigTypes() : emptyList();
+        }
+
+        private List<ConfigType> getIncludedConfigTypes(File rootDir) {
+            if (!(new File(rootDir, "components").exists())) return emptyList();
+            ComponentGraph componentGraph = traverseFrom(rootDir);
+            return getIncludes().stream()
+                    .filter(name -> !name.equals(DEFAULT))
+                    .map(componentGraph::getFolderOf)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .map(file -> new File(file, DESCRIPTOR))
+                    .map(reader::readFully)
+                    .map(MicroconfigTypeDescriptor::new)
+                    .map(MicroconfigTypeDescriptor::getConfigTypes)
+                    .flatMap(Collection::stream)
+                    .collect(toList());
+        }
+
+        @SuppressWarnings("unchecked")
+        private List<String> getIncludes() {
+            Map<String, Object> descriptor = new Yaml().load(content);
+            return (List<String>) descriptor.getOrDefault(INCLUDE, emptyList());
+        }
+    }
+
+    @RequiredArgsConstructor
+    private static class MicroconfigTypeDescriptor {
         private static final String CONFIG_TYPES = "configTypes";
         private static final String SOURCE_EXTENSIONS = "sourceExtensions";
         private static final String RESULT_FILE_NAME = "resultFileName";

@@ -1,0 +1,5 @@
+configTypes:
+  - custom:
+      resultFileName: result
+      sourceExtensions:
+        - .cst
