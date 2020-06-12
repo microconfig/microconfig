@@ -7,8 +7,7 @@ import java.io.File;
 import static io.microconfig.MicroconfigParams.parse;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class MicroconfigParamsTest {
     MicroconfigParams params = parse(
@@ -16,7 +15,8 @@ class MicroconfigParamsTest {
             "-d", "destination",
             "-e", "dev",
             "-g", "g1,g2",
-            "-s", "s1, s2"
+            "-s", "s1, s2",
+            "-output", "json"
     );
     MicroconfigParams empty = MicroconfigParams.parse();
 
@@ -46,6 +46,12 @@ class MicroconfigParamsTest {
     void services() {
         assertEquals(asList("s1", "s2"), params.services());
         assertEquals(emptyList(), empty.services());
+    }
+
+    @Test
+    void jsonOutput() {
+        assertFalse(empty.jsonOutput());
+        assertTrue(params.jsonOutput());
     }
 
     @Test

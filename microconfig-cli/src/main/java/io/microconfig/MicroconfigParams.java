@@ -41,7 +41,7 @@ public class MicroconfigParams {
         return parser.contains("v");
     }
 
-    public boolean consoleOutput() {
-        return parser.booleanValue("output");
+    public boolean jsonOutput() {
+        return "json".equals(parser.value("output"));
     }
 }

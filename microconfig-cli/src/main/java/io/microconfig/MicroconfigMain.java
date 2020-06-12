@@ -29,7 +29,7 @@ public class MicroconfigMain {
     private final List<String> groups;
     private final List<String> services;
     private final boolean stacktrace;
-    private final boolean consoleOutput;
+    private final boolean jsonOutput;
 
     public static void main(String... args) {
         loggerOff();
@@ -46,9 +46,9 @@ public class MicroconfigMain {
         List<String> groups = params.groups();
         List<String> services = params.services();
         boolean stacktrace = params.stacktrace();
-        boolean consoleOutput = params.consoleOutput();
+        boolean jsonOutput = params.jsonOutput();
 
-        new MicroconfigMain(rootDir, destinationDir, env, groups, services, stacktrace, consoleOutput).build();
+        new MicroconfigMain(rootDir, destinationDir, env, groups, services, stacktrace, jsonOutput).build();
     }
 
     private void build() {
@@ -67,12 +67,12 @@ public class MicroconfigMain {
     }
 
     private void doBuild() {
-        enableLogger(!consoleOutput);
+        enableLogger(!jsonOutput);
 
         MicroconfigRunner runner = new MicroconfigRunner(rootDir, destinationDir);
 
         Properties properties = runner.buildProperties(env, groups, services);
-        if (consoleOutput) {
+        if (jsonOutput) {
             out.println(toJson(properties.save(asConfigResult())));
         } else {
             properties.save(runner.toFiles());
