@@ -36,7 +36,7 @@ public class PropertySerializers {
         return (properties, configType, componentName, __) -> {
             String fileName = configType.getResultFileName() + extensionByConfigFormat(properties).extension();
             String output = properties.isEmpty() ? "" : configIo().writeTo(new File(fileName)).serialize(properties);
-            return new ConfigResult(fileName, configType.getName(), output);
+            return new ConfigResult(componentName, configType.getName(), fileName, output);
         };
     }
 
