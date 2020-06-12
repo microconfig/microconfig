@@ -1,11 +1,15 @@
 package io.microconfig;
 
 import io.microconfig.core.MicroconfigRunner;
+import io.microconfig.core.properties.Properties;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 import java.io.File;
 import java.util.List;
 
+import static io.microconfig.core.properties.serializers.ConfigResult.toJson;
+import static io.microconfig.core.properties.serializers.PropertySerializers.asConfigResult;
 import static io.microconfig.utils.IoUtils.readClasspathResource;
 import static io.microconfig.utils.Logger.*;
 import static java.lang.System.*;
@@ -17,7 +21,16 @@ import static java.lang.System.*;
  * VM speedup params:
  * -XX:TieredStopAtLevel=1
  */
+@RequiredArgsConstructor
 public class MicroconfigMain {
+    private final File rootDir;
+    private final File destinationDir;
+    private final String env;
+    private final List<String> groups;
+    private final List<String> services;
+    private final boolean stacktrace;
+    private final boolean consoleOutput;
+
     public static void main(String... args) {
         loggerOff();
 
@@ -32,18 +45,37 @@ public class MicroconfigMain {
         String env = params.env();
         List<String> groups = params.groups();
         List<String> services = params.services();
+        boolean stacktrace = params.stacktrace();
+        boolean consoleOutput = params.consoleOutput();
 
+        new MicroconfigMain(rootDir, destinationDir, env, groups, services, stacktrace, consoleOutput).build();
+    }
+
+    private void build() {
         try {
             long startTime = currentTimeMillis();
-            new MicroconfigRunner(rootDir, destinationDir).build(env, groups, services);
+            doBuild();
             announce("\nGenerated [" + env + "] configs in " + (currentTimeMillis() - startTime) + "ms");
         } catch (RuntimeException e) {
-            if (params.stacktrace() || e.getMessage() == null) {
+            if (stacktrace || e.getMessage() == null) {
                 throw e;
             }
 
             error(e.getMessage());
             exit(-1);
+        }
+    }
+
+    private void doBuild() {
+        enableLogger(!consoleOutput);
+
+        MicroconfigRunner runner = new MicroconfigRunner(rootDir, destinationDir);
+
+        Properties properties = runner.buildProperties(env, groups, services);
+        if (consoleOutput) {
+            out.println(toJson(properties.save(asConfigResult())));
+        } else {
+            properties.save(runner.toFiles());
         }
     }
 
