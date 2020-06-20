@@ -10,6 +10,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
 public class Logger {
+    private static volatile boolean enabled = true;
     private static volatile boolean errorOccurred;
 
     public static void error(Throwable e) {
@@ -31,11 +32,6 @@ public class Logger {
         error(out.toString());
     }
 
-    public static void error(String message) {
-        info(red(message));
-        errorOccurred = true;
-    }
-
     public static void warn(String message) {
         info(yellow(message));
     }
@@ -45,10 +41,20 @@ public class Logger {
     }
 
     public static void info(String message) {
+        if (!enabled) return;
         System.out.println(message);
+    }
+
+    public static void error(String message) {
+        errorOccurred = true;
+        System.out.println(red(message));
     }
 
     public static boolean isErrorOccurred() {
         return errorOccurred;
+    }
+
+    public static void enableLogger(boolean enabled) {
+        Logger.enabled = enabled;
     }
 }

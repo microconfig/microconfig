@@ -36,7 +36,7 @@ public class PropertySerializers {
         return (properties, configType, componentName, __) -> {
             String fileName = configType.getResultFileName() + extensionByConfigFormat(properties).extension();
             String output = properties.isEmpty() ? "" : configIo().writeTo(new File(fileName)).serialize(properties);
-            return new ConfigResult(fileName, configType.getName(), output);
+            return new ConfigResult(componentName, configType.getName(), fileName, output);
         };
     }
 
@@ -68,8 +68,8 @@ public class PropertySerializers {
                 YAML : PROPERTIES;
     }
 
-    public static PropertySerializer<File> withLegacySupportSaveTo(PropertySerializer<File> serializer,
-                                                                   EnvironmentRepository environmentRepository) {
+    public static PropertySerializer<File> withLegacySupport(PropertySerializer<File> serializer,
+                                                             EnvironmentRepository environmentRepository) {
         return (properties, configType, componentName, environment) -> {
             if (configType.getName().equals(APPLICATION.getName())) {
                 File envSource = environmentRepository.getByName(environment).getSource();

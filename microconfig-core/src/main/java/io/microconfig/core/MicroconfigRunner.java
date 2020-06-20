@@ -1,5 +1,6 @@
 package io.microconfig.core;
 
+import io.microconfig.core.properties.Properties;
 import io.microconfig.core.properties.PropertySerializer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -22,16 +23,19 @@ public class MicroconfigRunner {
                 .withDestinationDir(destinationDir);
     }
 
-    public void build(String env, List<String> groups, List<String> services) {
-        microconfig.inEnvironment(env).findComponentsFrom(groups, services)
+    public Properties buildProperties(String env, List<String> groups, List<String> services) {
+        return microconfig.inEnvironment(env).findComponentsFrom(groups, services)
                 .getPropertiesFor(eachConfigType())
                 .resolveBy(microconfig.resolver())
-                .forEachComponent(resolveTemplatesBy(microconfig.resolver()))
-                .save(toFiles());
+                .forEachComponent(resolveTemplatesBy(microconfig.resolver()));
     }
 
-    private PropertySerializer<File> toFiles() {
-        return withLegacySupportSaveTo(toFileIn(microconfig.destinationDir(), withConfigDiff()),
+    public void build(String env, List<String> groups, List<String> services) {
+        buildProperties(env, groups, services).save(toFiles());
+    }
+
+    public PropertySerializer<File> toFiles() {
+        return withLegacySupport(toFileIn(microconfig.destinationDir(), withConfigDiff()),
                 microconfig.environments()
         );
     }
