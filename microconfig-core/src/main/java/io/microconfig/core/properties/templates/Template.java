@@ -29,7 +29,7 @@ class Template {
 
     Template(File source, Pattern pattern) {
         if (!source.exists() || !source.isFile()) {
-            throw new IllegalStateException("Missing template file: " + this);
+            throw new IllegalStateException("Missing template file: " + source);
         }
         this.source = source;
         this.pattern = pattern;
