@@ -6,7 +6,7 @@
     {"pattern":"\\QMETA-INF/services/org.apache.logging.log4j.spi.Provider\\E"}, 
     {"pattern":"\\QMETA-INF/services/org.apache.logging.log4j.util.PropertySource\\E"}, 
     {"pattern":"\\Qcom/oracle/truffle/nfi/impl/NFILanguageImpl.class\\E"}, 
-    {"pattern":"\\Qlog4j2.xml\\E"},
+    {"pattern":"\\Qlog4j2.xml\\E"}, 
     {"pattern":"\\Qversion.properties\\E"}
   ],
   "bundles":[]

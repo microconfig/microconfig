@@ -44,6 +44,14 @@
   "allPublicMethods":true
 },
 {
+  "name":"io.microconfig.core.properties.serializers.ConfigResult$FileResult",
+  "allDeclaredFields":true
+},
+{
+  "name":"io.microconfig.core.properties.serializers.ConfigResult$ServiceConfigs",
+  "allDeclaredFields":true
+},
+{
   "name":"java.io.ObjectInputStream",
   "allPublicMethods":true
 },
@@ -73,10 +81,18 @@
   "allPublicMethods":true
 },
 {
+  "name":"java.lang.reflect.AccessibleObject",
+  "fields":[{"name":"override"}]
+},
+{
   "name":"java.sql.Date"
 },
 {
   "name":"java.sql.Timestamp"
+},
+{
+  "name":"java.util.ArrayList",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"org.apache.logging.log4j.core.config.AppenderRef[]"
@@ -320,5 +336,14 @@
 },
 {
   "name":"org.springframework.util.ConcurrentReferenceHashMap$Segment[]"
+},
+{
+  "name":"sun.misc.Unsafe",
+  "fields":[{"name":"theUnsafe"}],
+  "methods":[
+    {"name":"allocateInstance","parameterTypes":["java.lang.Class"] }, 
+    {"name":"objectFieldOffset","parameterTypes":["java.lang.reflect.Field"] }, 
+    {"name":"putBoolean","parameterTypes":["java.lang.Object","long","boolean"] }
+  ]
 }
 ]
