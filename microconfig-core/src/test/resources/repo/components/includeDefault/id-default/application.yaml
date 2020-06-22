@@ -1,0 +1,1 @@
+value: ${this@value2:default}

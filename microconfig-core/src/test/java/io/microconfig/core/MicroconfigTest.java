@@ -51,7 +51,7 @@ public class MicroconfigTest {
 
     private boolean overriddenTest(File file) {
         String testName = System.getProperty("test");
-        return testName == null || file.getParentFile().getName().equals(testName);
+        return testName == null || file.getParentFile().getAbsolutePath().contains(testName);
     }
 
     private DynamicTest toTest(File expectation) {
