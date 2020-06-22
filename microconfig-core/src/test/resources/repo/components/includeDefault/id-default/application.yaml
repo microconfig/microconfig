@@ -1,1 +1,2 @@
 value: ${this@value2:default}
+#default value resolved because of override strategy
