@@ -34,7 +34,7 @@ signing {
 }
 
 dependencies {
-    runtime group: 'org.apache.logging.log4j', name: 'log4j-core'
+    runtimeOnly 'org.apache.logging.log4j:log4j-core'
 
     implementation project(':microconfig-core'),
             project(':utils')
