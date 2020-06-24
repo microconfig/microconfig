@@ -17,6 +17,7 @@ configTypes:
         - .helm
 
   - deploy
+  - k8s
   - env
   - secret
   - log4j
