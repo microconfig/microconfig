@@ -14,6 +14,7 @@ public enum StandardConfigType implements ConfigType {
     PROCESS("process", setOf(".process", ".proc"), "process"),
     HELM("helm", setOf(".helm"), "values"),
     DEPLOY("deploy"),
+    K8S("k8s"),
     ENV("env"),
     SECRET("secret"),
     LOG4J("log4j"),
