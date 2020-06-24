@@ -58,6 +58,8 @@ public class PlaceholderResolver implements RecursiveResolver {
                         overrideByParents(placeholder, sourceOfValue, root) :
                         resolve(placeholder, root);
             } catch (RuntimeException e) {
+                String defaultValue = placeholder.getDefaultValue();
+                if (defaultValue != null) return defaultValue;
                 throw new ResolveException(sourceOfValue, root, "Can't resolve " + this, e);
             }
         }
@@ -89,15 +91,9 @@ public class PlaceholderResolver implements RecursiveResolver {
         }
 
         private String resolve(Placeholder p, DeclaringComponent root) {
-            try {
-                Property resolved = p.resolveUsing(strategy);
-                return resolved.resolveBy(currentResolverWithVisited(p), root)
-                        .getValue();
-            } catch (RuntimeException e) {
-                String defaultValue = p.getDefaultValue();
-                if (defaultValue != null) return defaultValue;
-                throw e;
-            }
+            Property resolved = p.resolveUsing(strategy);
+            return resolved.resolveBy(currentResolverWithVisited(p), root)
+                    .getValue();
         }
 
         private PlaceholderResolver currentResolverWithVisited(Placeholder placeholder) {
