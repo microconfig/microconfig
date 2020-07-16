@@ -4,6 +4,7 @@ import io.microconfig.core.properties.FileBasedComponent;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.io.AbstractConfigReader;
 import io.microconfig.io.FsReader;
+import io.microconfig.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -17,6 +18,7 @@ import static io.microconfig.core.properties.FileBasedComponent.fileSource;
 import static io.microconfig.core.properties.PropertyImpl.isComment;
 import static io.microconfig.core.properties.PropertyImpl.property;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
+import static io.microconfig.utils.StringUtils.isBlank;
 import static java.lang.Character.isWhitespace;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
@@ -116,7 +118,7 @@ class YamlReader extends AbstractConfigReader {
     }
 
     private boolean valueEmpty(String line, int separatorIndex) {
-        return line.substring(separatorIndex + 1).trim().isEmpty();
+        return isBlank(line.substring(separatorIndex + 1));
     }
 
     private void removePropertiesWithBiggerOffset(Deque<KeyOffset> currentProperty, int currentOffset) {

@@ -86,4 +86,8 @@ public class StringUtils {
                 .map(throwable -> "Cause: " + throwable.getMessage())
                 .orElse("");
     }
+
+    public static boolean isBlank(String line) {
+        return line.chars().allMatch(Character::isWhitespace);
+    }
 }
