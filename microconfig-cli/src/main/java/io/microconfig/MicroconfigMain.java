@@ -32,7 +32,6 @@ public class MicroconfigMain {
     private final boolean jsonOutput;
 
     public static void main(String... args) {
-        loggerOff();
 
         val params = MicroconfigParams.parse(args);
         if (params.version()) {
@@ -77,10 +76,6 @@ public class MicroconfigMain {
         } else {
             properties.save(runner.toFiles());
         }
-    }
-
-    private static void loggerOff() {
-        getProperties().setProperty("org.apache.logging.log4j.simplelog.StatusLogger.level", "OFF");
     }
 
     private static void printVersion() {
