@@ -33,7 +33,6 @@ public class TemplatesService {
 
     public void resolveTemplate(TypedProperties properties, Resolver resolver) {
         Collection<TemplateDefinition> templateDefinitions = findTemplateDefinitionsFrom(properties.getProperties());
-        System.out.println(properties.getDeclaringComponent() + " " + templateDefinitions);
         templateDefinitions.forEach(def -> {
             try {
                 def.resolveAndCopy(resolver, properties);
