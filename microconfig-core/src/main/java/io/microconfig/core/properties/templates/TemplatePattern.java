@@ -21,12 +21,12 @@ public class TemplatePattern {
             );
 
     private final List<String> templatePrefixes;
-    private final Pattern pattern;
+    private final Pattern placeholderPattern;
 
     public static TemplatePattern defaultPattern() {
         return TemplatePattern.builder()
                 .templatePrefixes(asList("microconfig.template.", "mc.template.", "mc.mustache.", "microconfig.mustache."))
-                .pattern(DEFAULT_PATTERN)
+                .placeholderPattern(DEFAULT_PATTERN)
                 .build();
     }
 

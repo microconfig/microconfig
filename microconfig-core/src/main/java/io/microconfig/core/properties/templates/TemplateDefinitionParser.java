@@ -1,6 +1,4 @@
-package io.microconfig.core.properties.templates.definition.parser;
-
-import io.microconfig.core.properties.templates.TemplateDefinition;
+package io.microconfig.core.properties.templates;
 
 import java.util.Collection;
 

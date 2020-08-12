@@ -1,6 +1,7 @@
 package io.microconfig.core.properties.templates.definition.parser;
 
 import io.microconfig.core.properties.templates.TemplateDefinition;
+import io.microconfig.core.properties.templates.TemplateDefinitionParser;
 import io.microconfig.core.properties.templates.TemplatePattern;
 import lombok.RequiredArgsConstructor;
 
@@ -44,12 +45,14 @@ public class ArrowNotationParser implements TemplateDefinitionParser {
 
     private void processWithAsterisk(String key, String from, String to) {
         String fromDir = from.substring(0, from.length() - 2);
-        try (Stream<Path> list = list(new File(fromDir).toPath())) {
-            list.forEach(path ->
-                    addTemplateDefinition(key, templatePattern.extractTemplateName(key) + "[" + path.getFileName() + "]",
-                            path.toString(), to + "/" + path.getFileName()));
+        try (Stream<Path> templates = list(new File(fromDir).toPath())) {
+            templates.forEach(path -> addTemplateDefinition(key,
+                    templatePattern.extractTemplateName(key) + "[" + path.getFileName() + "]",
+                    path.toString(),
+                    to + "/" + path.getFileName()
+            ));
         } catch (IOException e) {
-            throw new RuntimeException("Can't list files in dir " + from);
+            throw new RuntimeException("Can't get templates from dir " + from, e);
         }
     }
 
@@ -57,6 +60,7 @@ public class ArrowNotationParser implements TemplateDefinitionParser {
         TemplateDefinition templateDefinition = new TemplateDefinition(templatePattern.extractTemplateType(key), name, templatePattern);
         templateDefinition.setFromFile(from);
         templateDefinition.setToFile(to);
+
         templates.add(templateDefinition);
     }
 }

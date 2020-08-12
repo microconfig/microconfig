@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TemplateTest {
     DeclaringComponent root = new DeclaringComponentImpl("app", "th-server", "uat");
-    Pattern templatePattern = defaultPattern().getPattern();
+    Pattern templatePattern = defaultPattern().getPlaceholderPattern();
     File source = new File("source");
 
     @ParameterizedTest

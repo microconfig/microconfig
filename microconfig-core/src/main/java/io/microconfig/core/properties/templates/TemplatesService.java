@@ -5,15 +5,16 @@ import io.microconfig.core.properties.Resolver;
 import io.microconfig.core.properties.TypedProperties;
 import io.microconfig.core.properties.templates.definition.parser.ArrowNotationParser;
 import io.microconfig.core.properties.templates.definition.parser.FromToNotationParser;
-import io.microconfig.core.properties.templates.definition.parser.TemplateDefinitionParser;
 import lombok.RequiredArgsConstructor;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 import java.util.function.UnaryOperator;
 
 import static io.microconfig.core.properties.templates.TemplatePattern.defaultPattern;
 import static io.microconfig.utils.StringUtils.getExceptionMessage;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 public class TemplatesService {
@@ -49,17 +50,15 @@ public class TemplatesService {
     //todo test exception handling
     private Collection<TemplateDefinition> findTemplateDefinitionsFrom(Collection<Property> componentProperties) {
         List<TemplateDefinitionParser> templateDefinitionParsers = getTemplateDefinitionParsers();
-        Map<String, TemplateDefinition> templateByName = new LinkedHashMap<>();
 
         componentProperties.stream()
                 .filter(p -> templatePattern.startsWithTemplatePrefix(p.getKey()))
                 .forEach(p -> templateDefinitionParsers.forEach(parser -> parser.add(p.getKey(), p.getValue())));
 
-        templateDefinitionParsers.stream()
+        return templateDefinitionParsers.stream()
                 .map(TemplateDefinitionParser::getDefinitions)
                 .flatMap(Collection::stream)
-                .forEach(definition -> templateByName.put(definition.getTemplateName(), definition));
-        return templateByName.values();
+                .collect(toList());
     }
 
     private List<TemplateDefinitionParser> getTemplateDefinitionParsers() {

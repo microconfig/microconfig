@@ -1,6 +1,7 @@
 package io.microconfig.core.properties.templates.definition.parser;
 
 import io.microconfig.core.properties.templates.TemplateDefinition;
+import io.microconfig.core.properties.templates.TemplateDefinitionParser;
 import io.microconfig.core.properties.templates.TemplatePattern;
 import lombok.RequiredArgsConstructor;
 
