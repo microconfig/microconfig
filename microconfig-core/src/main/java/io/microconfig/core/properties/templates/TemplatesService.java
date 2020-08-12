@@ -97,7 +97,7 @@ public class TemplatesService {
             if (!isCorrect()) {
                 throw new IllegalStateException("Incomplete template def: " + this);
             }
-            return new Template(getTemplateFile(), templatePattern.getPattern());
+            return new Template(templateName, getTemplateFile(), templatePattern.getPattern());
         }
 
         private boolean isCorrect() {

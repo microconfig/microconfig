@@ -48,7 +48,7 @@ class TemplateTest {
     @Test
     void testEnvProperties() {
         Entry<String, String> entry = System.getenv().entrySet().iterator().next();
-        String result = new Template(source, templatePattern, "${env@" + entry.getKey() + "}").
+        String result = new Template("name", source, templatePattern, "${env@" + entry.getKey() + "}").
                 resolveBy(resolver(), root).getContent();
         UnaryOperator<String> escape = v -> v.replaceAll("\\\\+", "/");
         assertEquals(escape.apply(entry.getValue()), escape.apply(result));
@@ -61,7 +61,7 @@ class TemplateTest {
 
     @Test
     void testMultiLinePlaceholderInTemplate() {
-        String result = new Template(classpathFile("templates/templateWithMultiLines.yaml"), templatePattern)
+        String result = new Template("name", classpathFile("templates/templateWithMultiLines.yaml"), templatePattern)
                 .resolveBy(resolver(), new DeclaringComponentImpl("app", "mergeLists", "some"))
                 .getContent();
         assertEquals("key1:\n" +
@@ -85,7 +85,7 @@ class TemplateTest {
     }
 
     private void resolve(String placeholder, String expected) {
-        Template template = new Template(source, templatePattern, placeholder);
+        Template template = new Template("name", source, templatePattern, placeholder);
         String result = template.resolveBy(resolver(), root).getContent();
         assertEquals(expected, result);
     }
