@@ -774,6 +774,11 @@ mc.template.${templateName}:
 ```
 `${templateName}` - is used only for mapping `fromFile` and `toFile` properties.
 
+Also, you can use a short one line syntax using ->
+ ```
+ mc.template.${templateName}: ${sourceTemplateFile} -> ${resolvedTemplateDestinationFile}
+ ```
+
 Let's override the file that will be copied on the prod environment:
 ```
 repo
@@ -832,6 +837,10 @@ or the template file has  `*.mustache` extension:
 mc.template.logback:
   fromFile: ${logback@configDir}/logback.mustache
   toFile: logger.xml
+```
+or the short version
+``` 
+mc.template.logback: ${logback@configDir}/logback.mustache -> logger.xml
 ```
 
 # Environment descriptor
