@@ -39,8 +39,9 @@ class Template {
     }
 
     public Template resolveBy(Resolver resolver, DeclaringComponent currentComponent) {
-        Matcher m = pattern.matcher(content.replace("${this@templateName}", templateName));
-        if (!m.find()) return this;
+        String replaced = content.replace("${this@templateName}", templateName);
+        Matcher m = pattern.matcher(replaced);
+        if (!m.find()) return withContent(replaced);
 
         StringBuffer result = new StringBuffer();
         do {

@@ -1,9 +1,9 @@
 package io.microconfig.core.properties.templates;
 
+import io.microconfig.core.properties.Property;
+
 import java.util.Collection;
 
 public interface TemplateDefinitionParser {
-    void add(String key, String value);
-
-    Collection<TemplateDefinition> getDefinitions();
+    Collection<TemplateDefinition> parse(Collection<Property> componentProperties);
 }
