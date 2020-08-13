@@ -40,7 +40,7 @@ public class TemplateDefinition {
         if (!isCorrect()) {
             throw new IllegalStateException("Incomplete template def: " + this);
         }
-        return new Template(getTemplateFile(), templatePattern.getPlaceholderPattern());
+        return new Template(templateName, getTemplateFile(), templatePattern.getPlaceholderPattern());
     }
 
     private boolean isCorrect() {
