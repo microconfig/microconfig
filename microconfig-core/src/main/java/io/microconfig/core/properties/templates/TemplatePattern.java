@@ -21,16 +21,12 @@ public class TemplatePattern {
             );
 
     private final List<String> templatePrefixes;
-    private final String fromFileSuffix;
-    private final String toFileSuffix;
-    private final Pattern pattern;
+    private final Pattern placeholderPattern;
 
     public static TemplatePattern defaultPattern() {
         return TemplatePattern.builder()
                 .templatePrefixes(asList("microconfig.template.", "mc.template.", "mc.mustache.", "microconfig.mustache."))
-                .fromFileSuffix(".fromFile")
-                .toFileSuffix(".toFile")
-                .pattern(DEFAULT_PATTERN)
+                .placeholderPattern(DEFAULT_PATTERN)
                 .build();
     }
 
@@ -47,10 +43,9 @@ public class TemplatePattern {
     public String extractTemplateName(String str) {
         return templatePrefixes.stream()
                 .filter(str::startsWith)
-                .map(p -> {
-                    int endIndex = str.endsWith(fromFileSuffix) ? fromFileSuffix.length() : toFileSuffix.length();
-                    return str.substring(p.length(), str.length() - endIndex);
-                }).findFirst()
+                .map(prefix -> str.replaceFirst(prefix, ""))
+                .map(key -> key.split("\\.")[0])
+                .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Incorrect template " + str));
     }
 }
