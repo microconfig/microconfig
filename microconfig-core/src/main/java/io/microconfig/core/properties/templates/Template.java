@@ -21,23 +21,25 @@ import static java.util.regex.Matcher.quoteReplacement;
 
 @RequiredArgsConstructor
 class Template {
+    private final String templateName;
     private final File source;
     private final Pattern pattern;
     @With
     @Getter
     private final String content;
 
-    Template(File source, Pattern pattern) {
+    Template(String templateName, File source, Pattern pattern) {
         if (!source.exists() || !source.isFile()) {
             throw new IllegalStateException("Missing template file: " + source);
         }
+        this.templateName = templateName;
         this.source = source;
         this.pattern = pattern;
         this.content = readFully(source);
     }
 
     public Template resolveBy(Resolver resolver, DeclaringComponent currentComponent) {
-        Matcher m = pattern.matcher(content);
+        Matcher m = pattern.matcher(content.replace("${this@templateName}", templateName));
         if (!m.find()) return this;
 
         StringBuffer result = new StringBuffer();

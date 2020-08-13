@@ -32,7 +32,6 @@ public class MicroconfigMain {
     private final boolean jsonOutput;
 
     public static void main(String... args) {
-
         val params = MicroconfigParams.parse(args);
         if (params.version()) {
             printVersion();
