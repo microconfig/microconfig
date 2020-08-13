@@ -741,11 +741,11 @@ repo
 ```yaml   
 mc.template.logback.fromFile: ${logback@configDir}/logback.xml
 ```
-**orders-template/application.yaml**
+**orders-service/application.yaml**
 ```yaml
 #include service-discovery-client, logback-template
 ```
-**payments-template/application.yaml**
+**payments-service/application.yaml**
 ```yaml
 #include service-discovery-client, logback-template
 ```  
