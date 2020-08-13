@@ -969,7 +969,9 @@ To add system properties use `-D`
 java -DtaskId=3456 -DsomeParam=value -jar microconfig.jar -r repo -d configs -e prod
 ```
 
-To speed up the build up to 3 times you can add `-XX:TieredStopAtLevel=1` Java VM param. Although build time for even big projects with hundreds of services is about 1-2 seconds.
+To speed up the build up to 3 times you can add `-XX:TieredStopAtLevel=1` Java VM param. 
+For binary compiled distribution of MC(Mac, Linux, Win) you don't need XX:TieredStopAtLevel, it works ~5 times faster than jar version(cause we don't spend time in runtime to compile the code, but the peak performance is the same)
+Although the build time for even big projects with hundreds of services is about 1-3 seconds.
 ```
 java -XX:TieredStopAtLevel=1 -jar microconfig.jar -r repo -e prod
 ```
