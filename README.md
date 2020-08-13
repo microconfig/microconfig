@@ -64,7 +64,7 @@ Let’s take a look at a basic folder layout that you can keep in a dedicated re
 
 For every service, you have to create a folder with a unique name(the name of the service). In the service directory, we will keep common and environment specific configurations.
 
-So, let’s imagine we have 4 microservices: 'order-service', 'payment-service', 'service-discovery', and 'api-gateway'. For convenience, we can group services by layers: 'infra' for infrastructure services and 'core' for our business domain services. The resulting layout will look like:
+So, let’s imagine we have 4 microservices: 'orders', 'payments', 'service-discovery', and 'api-gateway'. For convenience, we can group services by layers: 'infra' for infrastructure services and 'core' for our business domain services. The resulting layout will look like:
 
 ```
 repo
@@ -540,15 +540,15 @@ As we discussed Microconfig supports different config types and detects the type
 
 Let’s see the example how it works:
 
-‘Order-service’ has ‘service.port’ property in application.**yaml**, so you can declare a placeholder to this property from application config types only (*.yaml or *.properties). If you declare that placeholder in, for example, *.process files, Microconfig will not resolve it and throw an exception.
+‘orders’ has ‘service.port’ property in application.**yaml**, so you can declare a placeholder to this property from application config types only (*.yaml or *.properties). If you declare that placeholder in, for example, *.process files, Microconfig will not resolve it and throw an exception.
 
 **someComponent/application.yaml**
 ```yaml
-orderPort: ${order-service@server.port} # works
+orderPort: ${orders@server.port} # works
 ```
 **someComponent/application.process**
 ```yaml
-orderPort: ${order-service@server.port} # doesn’t work
+orderPort: ${orders@server.port} # doesn’t work
 ```
 
 If you need to declare a placeholder to a property from another config type you have to specify the config type using the following syntax: ${**configType**::component@property}.
@@ -557,7 +557,7 @@ For our example the correct syntax:
 
 **someComponent/application.process**
 ```yaml
-orderPort: ${app::order-service@server.port}
+orderPort: ${app::orders@server.port}
 ```
 
 Microconfig default config types:
@@ -741,11 +741,11 @@ repo
 ```yaml   
 mc.template.logback.fromFile: ${logback@configDir}/logback.xml
 ```
-**orders-service/application.yaml**
+**orders/application.yaml**
 ```yaml
 #include service-discovery-client, logback-template
 ```
-**payments-service/application.yaml**
+**payments/application.yaml**
 ```yaml
 #include service-discovery-client, logback-template
 ```  
@@ -869,13 +869,13 @@ Let's see the environment descriptor format:
 orders:  
   components:  
     - order-db-patcher
-    - order-service
+    - orders
     - order-ui
 
 payments:
   components:
     - payment-db-patcher
-    - payment-service
+    - payments
     - payment-ui
 
 infra:
@@ -895,7 +895,7 @@ environment name = filename
 orders: # component group name
   components:  
     - order-db-patcher # component name(folder)
-    - order-service # component name
+    - orders # component name
     - order-ui # component name
 ``` 
 
@@ -921,7 +921,7 @@ tests_dashboard: # added new component group 'tests_dashboard'
 
 You can use the optional param `ip` for the environment or component groups and then use it via `${componentName@ip}`.
 
-For instance, `${order-service@ip}` will be resolved to 12.53.12.67, `${payment-ui@ip}` will be resolved to 170.53.12.80.   
+For instance, `${orders@ip}` will be resolved to 12.53.12.67, `${payment-ui@ip}` will be resolved to 170.53.12.80.   
 ```yaml
 ip: 170.53.12.80 # default ip
 
@@ -929,13 +929,13 @@ orders:
   ip: 12.53.12.67 # ip overridden for the group
   components:  
     - order-db-patcher
-    - order-service
+    - orders
     - order-ui
 
 payments:  
   components:
     - payment-db-patcher
-    - payment-service
+    - payments
     - payment-ui    
 ```
 
