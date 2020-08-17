@@ -13,8 +13,9 @@ import java.util.List;
 import static io.microconfig.core.properties.ConfigFormat.YAML;
 import static io.microconfig.core.properties.PropertyImpl.property;
 import static io.microconfig.core.properties.templates.TemplatePattern.defaultPattern;
+import static io.microconfig.utils.StringUtils.unixLikePath;
 import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
 class SquareBracketsNotationParserTest {
@@ -41,7 +42,7 @@ class SquareBracketsNotationParserTest {
 
     private void assertTemplateDefinition(String name, String from, String to, TemplateDefinition templateDefinition) {
         assertEquals(name, templateDefinition.getTemplateName());
-        assertEquals(tempDir + "/" + from, templateDefinition.getFromFile().toString());
-        assertEquals(tempDir + "/" + to, templateDefinition.getToFile().toString());
+        assertEquals(unixLikePath(tempDir + "/" + from), unixLikePath(templateDefinition.getFromFile().toString()));
+        assertEquals(unixLikePath(tempDir + "/" + to), unixLikePath(templateDefinition.getToFile().toString()));
     }
 }
