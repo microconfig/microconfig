@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 import static io.microconfig.core.properties.templates.TemplatePattern.defaultPattern;
 import static io.microconfig.utils.StringUtils.getExceptionMessage;
