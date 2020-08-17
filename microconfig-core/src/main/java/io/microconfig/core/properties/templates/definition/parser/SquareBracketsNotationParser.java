@@ -34,7 +34,7 @@ public class SquareBracketsNotationParser implements TemplateDefinitionParser {
         String[] split = property.getValue().trim().split(" -> ");
         if (split.length != 2) return emptyList();
 
-        Matcher matcher = compile(".*\\.\\[(.*)\\]").matcher(property.getKey());
+        Matcher matcher = compile(".*\\.\\[(.*)]").matcher(property.getKey());
         if (!matcher.matches()) return emptyList();
 
         String templateType = templatePattern.extractTemplateType(property.getKey());
