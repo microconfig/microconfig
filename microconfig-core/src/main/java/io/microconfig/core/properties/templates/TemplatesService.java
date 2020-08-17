@@ -5,6 +5,7 @@ import io.microconfig.core.properties.Resolver;
 import io.microconfig.core.properties.TypedProperties;
 import io.microconfig.core.properties.templates.definition.parser.ArrowNotationParser;
 import io.microconfig.core.properties.templates.definition.parser.FromToNotationParser;
+import io.microconfig.core.properties.templates.definition.parser.SquareBracketsNotationParser;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
@@ -19,9 +20,14 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class TemplatesService {
     private final TemplatePattern templatePattern;
+    private final List<TemplateDefinitionParser> templateDefinitionParsers;
 
     public TemplatesService() {
         this.templatePattern = defaultPattern();
+        this.templateDefinitionParsers = asList(
+                new FromToNotationParser(templatePattern),
+                new ArrowNotationParser(templatePattern),
+                new SquareBracketsNotationParser(templatePattern));
     }
 
     public static UnaryOperator<TypedProperties> resolveTemplatesBy(Resolver resolver) {
@@ -49,19 +55,12 @@ public class TemplatesService {
 
     //todo test exception handling
     private Collection<TemplateDefinition> findTemplateDefinitionsFrom(Collection<Property> componentProperties) {
-        List<TemplateDefinitionParser> templateDefinitionParsers = getTemplateDefinitionParsers();
-
-        componentProperties.stream()
+        List<Property> templateProperties = componentProperties.stream()
                 .filter(p -> templatePattern.startsWithTemplatePrefix(p.getKey()))
-                .forEach(p -> templateDefinitionParsers.forEach(parser -> parser.add(p.getKey(), p.getValue())));
-
+                .collect(toList());
         return templateDefinitionParsers.stream()
-                .map(TemplateDefinitionParser::getDefinitions)
+                .map(parser -> parser.parse(templateProperties))
                 .flatMap(Collection::stream)
                 .collect(toList());
-    }
-
-    private List<TemplateDefinitionParser> getTemplateDefinitionParsers() {
-        return asList(new FromToNotationParser(templatePattern), new ArrowNotationParser(templatePattern));
     }
 }

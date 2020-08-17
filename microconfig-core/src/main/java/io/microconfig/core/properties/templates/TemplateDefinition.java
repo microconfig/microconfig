@@ -24,7 +24,9 @@ public class TemplateDefinition {
         this(templateType, templateName, pattern, new MustacheTemplateProcessor());
     }
 
+    @Getter
     private File fromFile;
+    @Getter
     private File toFile;
 
     public void resolveAndCopy(Resolver resolver, TypedProperties properties) {
@@ -71,7 +73,7 @@ public class TemplateDefinition {
     }
 
     public void setToFile(String toFile) {
-        this.toFile = new File(toFile);
+        this.toFile = new File(toFile.replace("${templateName}", templateName));
     }
 
     @Override
