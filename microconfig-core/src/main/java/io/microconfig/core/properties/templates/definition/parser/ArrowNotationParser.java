@@ -30,7 +30,7 @@ public class ArrowNotationParser implements TemplateDefinitionParser {
                 .collect(toList());
     }
 
-    public List<TemplateDefinition> processProperty(Property property) {
+    private List<TemplateDefinition> processProperty(Property property) {
         if (!correctNotation(property.getKey())) return emptyList();
 
         String[] split = property.getValue().trim().split(" -> ");
