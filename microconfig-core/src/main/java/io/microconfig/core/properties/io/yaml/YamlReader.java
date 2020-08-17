@@ -4,7 +4,6 @@ import io.microconfig.core.properties.FileBasedComponent;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.io.AbstractConfigReader;
 import io.microconfig.io.FsReader;
-import io.microconfig.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
