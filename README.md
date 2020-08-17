@@ -778,6 +778,15 @@ Also, you can use a short one line syntax using ->
  ```
  mc.template.${templateName}: ${sourceTemplateFile} -> ${resolvedTemplateDestinationFile}
  ```
+Using arrow notation you can also resolve directories with templates. This will resolve all files inside `${sourceTemplateDir}`. Source filename is used as target filename.
+ ```
+ mc.template.${templateName}: ${sourceTemplateDir}/* -> ${resolvedTemplateDestinationDir}
+ ```
+Or create multiple templates with different `${templateName}` from a single template file. 
+Note the usage of `${templateName}` placeholder inside target filename to create different files based on template name.
+ ```
+ mc.template.[${templateName1},${templateName2}]: ${sourceTemplateFile} -> ${resolvedTemplateDestinationDir}/targetName-${templateName}.xml
+ ```
 
 Let's override the file that will be copied on the prod environment:
 ```
