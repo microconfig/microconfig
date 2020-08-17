@@ -8,6 +8,6 @@ addons:
     token: 73371217f9b049ece1f4ba72f70212e6fcdbaa52
 
 script:
-  - ./gradlew check
-  - ./gradlew jacocoTestReport
-  - ./gradlew sonarqube
+  - ./gradlew check --stacktrace
+  - ./gradlew jacocoTestReport --stacktrace
+  - ./gradlew sonarqube --stacktrace
