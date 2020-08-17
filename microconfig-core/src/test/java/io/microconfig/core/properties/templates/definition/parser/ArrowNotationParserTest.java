@@ -3,6 +3,7 @@ package io.microconfig.core.properties.templates.definition.parser;
 import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.templates.TemplateDefinition;
+import io.microconfig.utils.FileUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -15,6 +16,7 @@ import java.util.List;
 import static io.microconfig.core.properties.ConfigFormat.YAML;
 import static io.microconfig.core.properties.PropertyImpl.property;
 import static io.microconfig.core.properties.templates.TemplatePattern.defaultPattern;
+import static io.microconfig.utils.StringUtils.unixLikePath;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -52,8 +54,8 @@ class ArrowNotationParserTest {
 
     private void assertTemplateDefinition(String from, String to, TemplateDefinition templateDefinition) {
         assertEquals("name", templateDefinition.getTemplateName());
-        assertEquals(tempDir + "/" + from, templateDefinition.getFromFile().toString());
-        assertEquals(tempDir + "/" + to, templateDefinition.getToFile().toString());
+        assertEquals(tempDir + "/" + from, unixLikePath(templateDefinition.getFromFile().toString()));
+        assertEquals(tempDir + "/" + to, unixLikePath(templateDefinition.getToFile().toString()));
     }
 
     private void createFile(String s) throws IOException {
