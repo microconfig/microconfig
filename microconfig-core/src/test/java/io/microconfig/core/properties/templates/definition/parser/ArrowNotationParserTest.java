@@ -27,7 +27,7 @@ class ArrowNotationParserTest {
     @Test
     void singleFile() {
         List<TemplateDefinition> templateDefinitions = parseArrowProperty("mc.template.name", "a.yaml", "b.yaml");
-        assertTemplateDefinition("a.yaml", "b.yaml", templateDefinitions.get(0));
+        assertTemplateDefinition("a.yaml", "b.yaml", templateDefinitions);
     }
 
     @Test
@@ -36,8 +36,9 @@ class ArrowNotationParserTest {
         createFile("second.yaml");
 
         List<TemplateDefinition> templateDefinitions = parseArrowProperty("mc.template.name", "*", "dir");
-        assertTemplateDefinition("first.yaml", "dir/first.yaml", templateDefinitions.get(0));
-        assertTemplateDefinition("second.yaml", "dir/second.yaml", templateDefinitions.get(1));
+        assertEquals(2, templateDefinitions.size());
+        assertTemplateDefinition("first.yaml", "dir/first.yaml", templateDefinitions);
+        assertTemplateDefinition("second.yaml", "dir/second.yaml", templateDefinitions);
     }
 
     @Test
@@ -51,10 +52,13 @@ class ArrowNotationParserTest {
         return new ArrayList<>(new ArrowNotationParser(defaultPattern()).parse(singletonList(property)));
     }
 
-    private void assertTemplateDefinition(String from, String to, TemplateDefinition templateDefinition) {
-        assertEquals("name", templateDefinition.getTemplateName());
-        assertEquals(unixLikePath(new File(tempDir, from).toString()), unixLikePath(templateDefinition.getFromFile().toString()));
-        assertEquals(unixLikePath(new File(tempDir, to).toString()), unixLikePath(templateDefinition.getToFile().toString()));
+    private void assertTemplateDefinition(String from, String to, List<TemplateDefinition> templateDefinitions) {
+        templateDefinitions.stream()
+                .filter(td -> td.getTemplateName().equals("name"))
+                .filter(td -> unixLikePath(td.getFromFile().toString()).equals(unixLikePath(new File(tempDir, from).toString())))
+                .filter(td -> unixLikePath(td.getToFile().toString()).equals(unixLikePath(new File(tempDir, to).toString())))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Template " + from + "->" + to + " not found"));
     }
 
     private void createFile(String s) throws IOException {
