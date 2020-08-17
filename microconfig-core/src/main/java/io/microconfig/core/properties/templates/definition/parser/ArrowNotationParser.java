@@ -10,18 +10,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.nio.file.Files.list;
 import static java.nio.file.Files.readString;
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.List.of;
-import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
@@ -37,21 +33,15 @@ public class ArrowNotationParser implements TemplateDefinitionParser {
     }
 
     public List<TemplateDefinition> processProperty(Property property) {
-        String key = property.getKey();
-        if (!key.endsWith(templatePattern.extractTemplateName(key))) return emptyList();
-        if (key.contains("[")) return emptyList();
+        if (!correctNotation(property.getKey())) return emptyList();
 
         String[] split = property.getValue().trim().split(" -> ");
         if (split.length != 2) return emptyList();
 
-        return process(key, split[0], split[1]);
-    }
-
-    private List<TemplateDefinition> process(String key, String from, String to) {
-        if (from.endsWith("/*")) {
-            return processWithAsterisk(key, from, to);
+        if (split[0].endsWith("/*")) {
+            return processWithAsterisk(property.getKey(), split[0], split[1]);
         }
-        return singletonList(createTemplate(key, from, to));
+        return singletonList(createTemplate(property.getKey(), split[0], split[1]));
     }
 
     private List<TemplateDefinition> processWithAsterisk(String key, String from, String to) {
@@ -66,11 +56,16 @@ public class ArrowNotationParser implements TemplateDefinitionParser {
     }
 
     private TemplateDefinition createTemplate(String key, String from, String to) {
-        TemplateDefinition templateDefinition = new TemplateDefinition(templatePattern.extractTemplateType(key),
+        TemplateDefinition templateDefinition = new TemplateDefinition(
+                templatePattern.extractTemplateType(key),
                 templatePattern.extractTemplateName(key),
                 templatePattern);
         templateDefinition.setFromFile(from);
         templateDefinition.setToFile(to);
         return templateDefinition;
+    }
+
+    private boolean correctNotation(String key) {
+        return key.endsWith(templatePattern.extractTemplateName(key)) && !key.contains("[");
     }
 }
