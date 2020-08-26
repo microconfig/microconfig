@@ -39,7 +39,7 @@ class Template {
     }
 
     public Template resolveBy(Resolver resolver, DeclaringComponent currentComponent) {
-        String replaced = content.replace("${this@templateName}", templateName);
+        String replaced = content.replace("${this@templateName}", templateNameWithoutBrackets());
         Matcher m = pattern.matcher(replaced);
         if (!m.find()) return withContent(replaced);
 
@@ -50,6 +50,10 @@ class Template {
         m.appendTail(result);
         String content = result.toString();
         return withContent(content);
+    }
+
+    String templateNameWithoutBrackets() {
+        return templateName.replaceFirst("\\[.+]$", "");
     }
 
     public Template postProcessContent(TemplateContentPostProcessor postProcessor,

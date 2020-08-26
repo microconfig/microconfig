@@ -46,6 +46,12 @@ class TemplateTest {
     }
 
     @Test
+    void templateNameWithoutBrackets() {
+        Template template = new Template("name[12]", source, TemplatePattern.DEFAULT_PATTERN, "content");
+        assertEquals("name", template.templateNameWithoutBrackets());
+    }
+
+    @Test
     void testEnvProperties() {
         Entry<String, String> entry = System.getenv().entrySet().iterator().next();
         String result = new Template("name", source, templatePattern, "${env@" + entry.getKey() + "}").
