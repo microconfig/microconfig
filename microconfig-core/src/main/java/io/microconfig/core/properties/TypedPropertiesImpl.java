@@ -2,12 +2,14 @@ package io.microconfig.core.properties;
 
 import io.microconfig.core.configtypes.ConfigType;
 import io.microconfig.core.properties.io.yaml.YamlTreeImpl;
+import io.microconfig.core.templates.Template;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -21,6 +23,7 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.function.Function.identity;
 import static lombok.AccessLevel.PRIVATE;
+import static lombok.AccessLevel.PUBLIC;
 
 @EqualsAndHashCode
 @RequiredArgsConstructor
@@ -31,6 +34,8 @@ public class TypedPropertiesImpl implements TypedProperties {
     private final String environment;
     @With(PRIVATE)
     private final Map<String, Property> propertyByKey;
+    @With(PUBLIC)
+    private final List<Template> templates;
 
     @Override
     public DeclaringComponent getDeclaringComponent() {
@@ -84,7 +89,7 @@ public class TypedPropertiesImpl implements TypedProperties {
 
     @Override
     public <T> T save(PropertySerializer<T> serializer) {
-        return serializer.serialize(propertyByKey.values(), configType, component, environment);
+        return serializer.serialize(propertyByKey.values(), templates, configType, component, environment);
     }
 
     private TypedProperties withProperties(Predicate<Property> filter) {

@@ -3,6 +3,7 @@ package io.microconfig.core.properties.templates;
 import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.Resolver;
 import io.microconfig.core.properties.TypedProperties;
+import io.microconfig.core.templates.Template;
 import io.microconfig.core.templates.TemplateContentPostProcessor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 
 import static io.microconfig.utils.Logger.info;
+import static io.microconfig.utils.StringUtils.getExceptionMessage;
 
 @RequiredArgsConstructor
 public class TemplateDefinition {
@@ -29,20 +31,37 @@ public class TemplateDefinition {
     @Getter
     private File toFile;
 
+    public Template resolve(Resolver resolver, TypedProperties properties) {
+        DeclaringComponent currentComponent = properties.getDeclaringComponent();
+        File destinationFile = destinationFileFor(currentComponent, resolver);
+        try {
+            return toTemplate(destinationFile)
+                    .resolveBy(resolver, currentComponent)
+                    .postProcessContent(templateContentPostProcessor, templateType, properties);
+        } catch (RuntimeException e) {
+            throw new IllegalStateException(
+                    "Template error: " + this +
+                            "\nComponent: " + currentComponent +
+                            "\n" + getExceptionMessage(e), e
+            );
+        }
+    }
+
     public void resolveAndCopy(Resolver resolver, TypedProperties properties) {
         DeclaringComponent currentComponent = properties.getDeclaringComponent();
-        toTemplate()
+        File destinationFile = destinationFileFor(currentComponent, resolver);
+        toTemplate(destinationFile)
                 .resolveBy(resolver, currentComponent)
                 .postProcessContent(templateContentPostProcessor, templateType, properties)
-                .copyTo(destinationFileFor(currentComponent, resolver));
+                .copyTo();
         info("Copied '" + currentComponent.getComponent() + "' template ../" + fromFile.getParentFile().getName() + "/" + fromFile.getName() + " -> " + toFile);
     }
 
-    private Template toTemplate() {
+    private TemplateImpl toTemplate(File destination) {
         if (!isCorrect()) {
             throw new IllegalStateException("Incomplete template def: " + this);
         }
-        return new Template(templateName, getTemplateFile(), templatePattern.getPlaceholderPattern());
+        return new TemplateImpl(templateName, getTemplateFile(), destination, templatePattern.getPlaceholderPattern());
     }
 
     private boolean isCorrect() {

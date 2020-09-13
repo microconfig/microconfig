@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 import static io.microconfig.utils.StreamUtils.forEach;
 import static io.microconfig.utils.StringUtils.isEmpty;
@@ -18,6 +19,7 @@ public class ConfigResult {
     private final String configType;
     private final String fileName;
     private final String content;
+    private final Map<String, String> templates;
 
     public static String toJson(List<ConfigResult> configResults) {
         return new Gson().toJson(groupsByService(configResults));
@@ -40,6 +42,7 @@ public class ConfigResult {
         ServiceConfigs(String service, List<ConfigResult> configResults) {
             this.service = service;
             this.files = forEach(configResults, FileResult::new);
+            files.addAll(forEach(configResults.stream().flatMap(cr -> cr.getTemplates().entrySet().stream()), FileResult::new));
         }
     }
 
@@ -52,6 +55,10 @@ public class ConfigResult {
 
         FileResult(ConfigResult configResult) {
             this(configResult.getConfigType(), configResult.getFileName(), configResult.getContent());
+        }
+
+        public FileResult(Map.Entry<String, String> template) {
+            this("template", template.getKey(), template.getValue());
         }
     }
 }

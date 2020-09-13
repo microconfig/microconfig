@@ -10,6 +10,7 @@ import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static io.microconfig.utils.StringUtils.splitKeyValue;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -100,7 +101,7 @@ class TypedPropertiesImplTest {
 
     @Test
     void serialize() {
-        PropertySerializer<String> serializer = (p, t, c, e) -> c;
+        PropertySerializer<String> serializer = (p, t, ct, c, e) -> c;
         assertEquals("comp", subj.save(serializer));
     }
 
@@ -114,7 +115,8 @@ class TypedPropertiesImplTest {
 
     private TypedProperties withProperties(Collection<Property> properties) {
         return new TypedPropertiesImpl(APPLICATION, "comp", "env",
-                properties.stream().collect(toLinkedMap(Property::getKey, identity()))
+                properties.stream().collect(toLinkedMap(Property::getKey, identity())),
+                emptyList()
         );
     }
 

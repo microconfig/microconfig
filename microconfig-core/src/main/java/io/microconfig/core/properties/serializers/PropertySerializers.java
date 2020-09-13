@@ -5,10 +5,12 @@ import io.microconfig.core.environments.EnvironmentRepository;
 import io.microconfig.core.properties.ConfigFormat;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.PropertySerializer;
+import io.microconfig.core.templates.Template;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -16,8 +18,9 @@ import static io.microconfig.core.configtypes.StandardConfigType.APPLICATION;
 import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.ConfigFormat.YAML;
 import static io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo;
-import static io.microconfig.utils.FileUtils.delete;
+import static io.microconfig.utils.FileUtils.*;
 import static io.microconfig.utils.Logger.info;
+import static java.util.stream.Collectors.toMap;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
@@ -27,21 +30,17 @@ public class PropertySerializers {
         return configDiff::storeDiffFor;
     }
 
-    public static PropertySerializer<File> toFileIn(File dir) {
-        return toFileIn(dir, (_1, _2) -> {
-        });
-    }
-
     public static PropertySerializer<ConfigResult> asConfigResult() {
-        return (properties, configType, componentName, __) -> {
+        return (properties, templates, configType, componentName, __) -> {
             String fileName = configType.getResultFileName() + extensionByConfigFormat(properties).extension();
             String output = properties.isEmpty() ? "" : configIo().writeTo(new File(fileName)).serialize(properties);
-            return new ConfigResult(componentName, configType.getName(), fileName, output);
+            Map<String, String> tmpl = templates.stream().collect(toMap(Template::getFileName, Template::getContent));
+            return new ConfigResult(componentName, configType.getName(), fileName, output, tmpl);
         };
     }
 
     public static PropertySerializer<File> toFileIn(File dir, BiConsumer<File, Collection<Property>> listener) {
-        return (properties, configType, componentName, __) -> {
+        return (properties, templates, configType, componentName, __) -> {
             Function<ConfigFormat, File> getResultFile = cf -> new File(dir, componentName + "/" + configType.getResultFileName() + cf.extension());
 
             File resultFile = getResultFile.apply(extensionByConfigFormat(properties));
@@ -52,13 +51,20 @@ public class PropertySerializers {
             } else {
                 configIo().writeTo(resultFile).write(properties);
                 info("Generated " + componentName + "/" + resultFile.getName());
+                templates.forEach(t -> copyTemplate(t, componentName));
             }
             return resultFile;
         };
     }
 
+    private static void copyTemplate(Template template, String componentName) {
+        write(template.getDestination(), template.getContent());
+        copyPermissions(template.getSource().toPath(), template.getDestination().toPath());
+        info("Copied '" + componentName + "' template ../" + template.getSource().getParentFile().getName() + "/" + template.getSource().getName() + " -> " + template.getFileName());
+    }
+
     public static PropertySerializer<String> asString() {
-        return (properties, _2, _3, _4) -> configIo()
+        return (properties, _2, _3, _4, _5) -> configIo()
                 .writeTo(new File(extensionByConfigFormat(properties).extension()))
                 .serialize(properties);
     }
@@ -70,7 +76,7 @@ public class PropertySerializers {
 
     public static PropertySerializer<File> withLegacySupport(PropertySerializer<File> serializer,
                                                              EnvironmentRepository environmentRepository) {
-        return (properties, configType, componentName, environment) -> {
+        return (properties, templates, configType, componentName, environment) -> {
             if (configType.getName().equals(APPLICATION.getName())) {
                 File envSource = environmentRepository.getByName(environment).getSource();
                 if (envSource != null && envSource.toString().endsWith(".json")) {
@@ -78,7 +84,7 @@ public class PropertySerializers {
                 }
             }
 
-            return serializer.serialize(properties, configType, componentName, environment);
+            return serializer.serialize(properties, templates, configType, componentName, environment);
         };
     }
 }
