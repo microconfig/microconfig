@@ -20,7 +20,10 @@ public class PropertiesImpl implements Properties {
     private final List<TypedProperties> properties;
 
     public static Properties flat(List<Properties> properties) {
-        return new PropertiesImpl(flatMapEach(properties, Properties::asTypedProperties));
+        return new PropertiesImpl(filter(
+                flatMapEach(properties, Properties::asTypedProperties),
+                tp -> !tp.getProperties().isEmpty()
+        ));
     }
 
     @Override
