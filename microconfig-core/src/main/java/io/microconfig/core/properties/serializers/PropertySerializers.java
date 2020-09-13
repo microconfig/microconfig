@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -20,7 +19,6 @@ import static io.microconfig.core.properties.ConfigFormat.YAML;
 import static io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo;
 import static io.microconfig.utils.FileUtils.*;
 import static io.microconfig.utils.Logger.info;
-import static java.util.stream.Collectors.toMap;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
@@ -34,8 +32,7 @@ public class PropertySerializers {
         return (properties, templates, configType, componentName, __) -> {
             String fileName = configType.getResultFileName() + extensionByConfigFormat(properties).extension();
             String output = properties.isEmpty() ? "" : configIo().writeTo(new File(fileName)).serialize(properties);
-            Map<String, String> tmpl = templates.stream().collect(toMap(Template::getFileName, Template::getContent));
-            return new ConfigResult(componentName, configType.getName(), fileName, output, tmpl);
+            return new ConfigResult(componentName, configType.getName(), fileName, output, templates);
         };
     }
 

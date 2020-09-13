@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 
-import static io.microconfig.utils.Logger.info;
 import static io.microconfig.utils.StringUtils.getExceptionMessage;
 
 @RequiredArgsConstructor
@@ -45,16 +44,6 @@ public class TemplateDefinition {
                             "\n" + getExceptionMessage(e), e
             );
         }
-    }
-
-    public void resolveAndCopy(Resolver resolver, TypedProperties properties) {
-        DeclaringComponent currentComponent = properties.getDeclaringComponent();
-        File destinationFile = destinationFileFor(currentComponent, resolver);
-        toTemplate(destinationFile)
-                .resolveBy(resolver, currentComponent)
-                .postProcessContent(templateContentPostProcessor, templateType, properties)
-                .copyTo();
-        info("Copied '" + currentComponent.getComponent() + "' template ../" + fromFile.getParentFile().getName() + "/" + fromFile.getName() + " -> " + toFile);
     }
 
     private TemplateImpl toTemplate(File destination) {
