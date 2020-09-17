@@ -14,8 +14,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders.findPlaceholderIn;
-import static io.microconfig.utils.FileUtils.copyPermissions;
-import static io.microconfig.utils.FileUtils.write;
 import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.StringUtils.addOffsets;
 import static java.util.regex.Matcher.quoteReplacement;
@@ -66,11 +64,6 @@ public class TemplateImpl implements Template {
         return withContent(
                 postProcessor.process(templateType, source, content, properties)
         );
-    }
-
-    public void copyTo() {
-        write(destination, content);
-        copyPermissions(source.toPath(), destination.toPath());
     }
 
     private void doResolve(Matcher m, StringBuffer result, Resolver resolver, DeclaringComponent currentComponent) {
