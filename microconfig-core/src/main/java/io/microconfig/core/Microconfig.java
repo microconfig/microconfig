@@ -25,6 +25,7 @@ import io.microconfig.core.properties.resolvers.placeholder.strategies.environme
 import io.microconfig.core.properties.resolvers.placeholder.strategies.standard.StandardResolveStrategy;
 import io.microconfig.io.DumpedFsReader;
 import io.microconfig.io.FsReader;
+import io.microconfig.utils.Logger;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -46,6 +47,7 @@ import static io.microconfig.utils.CacheProxy.cache;
 import static io.microconfig.utils.CollectionUtils.join;
 import static io.microconfig.utils.CollectionUtils.joinToSet;
 import static io.microconfig.utils.FileUtils.canonical;
+import static io.microconfig.utils.Logger.enableLogger;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static lombok.AccessLevel.PRIVATE;
@@ -82,6 +84,10 @@ public class Microconfig {
 
     public Resolver resolver() {
         return dependencies.resolver();
+    }
+
+    public void logger(boolean enabled) {
+        enableLogger(enabled);
     }
 
     public class Dependencies {
