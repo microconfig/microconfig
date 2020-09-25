@@ -2,6 +2,7 @@ package io.microconfig.core.properties.resolvers.placeholder;
 
 import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.DeclaringComponentImpl;
+import io.microconfig.core.properties.Placeholder;
 import io.microconfig.core.properties.PlaceholderResolveStrategy;
 import io.microconfig.core.properties.Property;
 import lombok.EqualsAndHashCode;
@@ -14,10 +15,11 @@ import static lombok.AccessLevel.PACKAGE;
 @Getter
 @EqualsAndHashCode(exclude = "defaultValue")
 @RequiredArgsConstructor(access = PACKAGE)
-public class Placeholder {
+public class PlaceholderImpl implements Placeholder {
     private static final String SELF_REFERENCE = "this";
 
     private final String configType;
+    private final String rootComponent;
     @With
     private final String component;
     @With
@@ -25,23 +27,28 @@ public class Placeholder {
     private final String key;
     private final String defaultValue;
 
+    @Override
     public Property resolveUsing(PlaceholderResolveStrategy strategy) {
-        return strategy.resolve(component, key, environment, configType)
+        return strategy.resolve(this)
                 .orElseThrow(() -> new IllegalStateException("Can't resolve " + this));
     }
 
+    @Override
     public DeclaringComponent getReferencedComponent() {
         return new DeclaringComponentImpl(configType, component, environment);
     }
 
+    @Override
     public boolean isSelfReferenced() {
         return component.equals(SELF_REFERENCE);
     }
 
+    @Override
     public boolean referencedTo(DeclaringComponent c) {
         return component.equals(c.getComponent()) && environment.equals(c.getEnvironment());
     }
 
+    @Override
     public Placeholder overrideBy(DeclaringComponent c) {
         return withComponent(c.getComponent())
                 .withEnvironment(c.getEnvironment());

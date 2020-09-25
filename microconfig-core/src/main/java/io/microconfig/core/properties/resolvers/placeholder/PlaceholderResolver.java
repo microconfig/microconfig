@@ -51,7 +51,7 @@ public class PlaceholderResolver implements RecursiveResolver {
 
         @Override
         public String resolveFor(DeclaringComponent sourceOfValue, DeclaringComponent root) {
-            Placeholder placeholder = borders.toPlaceholder(sourceOfValue.getConfigType(), sourceOfValue.getEnvironment());
+            Placeholder placeholder = borders.toPlaceholder(root, sourceOfValue.getConfigType(), sourceOfValue.getEnvironment());
 
             try {
                 return canBeOverridden(placeholder, sourceOfValue) ?

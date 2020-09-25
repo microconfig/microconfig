@@ -1,6 +1,7 @@
 package io.microconfig.core.properties.resolvers.placeholder.strategies.system;
 
 import io.microconfig.core.properties.DeclaringComponentImpl;
+import io.microconfig.core.properties.Placeholder;
 import io.microconfig.core.properties.PlaceholderResolveStrategy;
 import io.microconfig.core.properties.Property;
 import io.microconfig.utils.Os;
@@ -33,12 +34,13 @@ public class SystemResolveStrategy implements PlaceholderResolveStrategy {
     }
 
     @Override
-    public Optional<Property> resolve(String component, String key, String environment, String configType) {
-        if (!type.equals(component)) return empty();
+    public Optional<Property> resolve(Placeholder placeholder) {
+        if (!type.equals(placeholder.getComponent())) return empty();
 
-        return ofNullable(resolver.apply(key))
-                .map(v -> escapeOnWindows(v, key))
-                .map(v -> property(key, v, PROPERTIES, new DeclaringComponentImpl(configType, component, environment)));
+        return ofNullable(resolver.apply(placeholder.getKey()))
+                .map(v -> escapeOnWindows(v, placeholder.getKey()))
+                .map(v -> property(placeholder.getKey(), v, PROPERTIES,
+                        new DeclaringComponentImpl(placeholder.getConfigType(), placeholder.getComponent(), placeholder.getEnvironment())));
     }
 
     private String escapeOnWindows(String value, String key) {
