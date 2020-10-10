@@ -1,6 +1,7 @@
 package io.microconfig.core.environments;
 
 import io.microconfig.core.properties.PropertiesFactory;
+import io.microconfig.core.properties.repository.ComponentNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -13,7 +14,6 @@ import java.util.function.Supplier;
 
 import static io.microconfig.utils.Logger.info;
 import static io.microconfig.utils.StreamUtils.*;
-import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -64,7 +64,7 @@ public class EnvironmentImpl implements Environment {
     @Override
     public Component getComponentWithName(String componentName) {
         return findFirstResult(groups, g -> g.findComponentWithName(componentName))
-                .orElseThrow(() -> new IllegalArgumentException(notFoundComponentMessage(componentName)));
+                .orElseThrow(() -> new ComponentNotFoundException(componentName));
     }
 
     @Override
@@ -97,7 +97,14 @@ public class EnvironmentImpl implements Environment {
 
         Map<String, Component> componentByName = componentFromGroups.stream()
                 .collect(toMap(Component::getName, identity()));
-        return forEach(components, c -> requireNonNull(componentByName.get(c), () -> notFoundComponentMessage(c)));
+
+        return forEach(components, c -> componentOrEx(componentByName, c));
+    }
+
+    private Component componentOrEx(Map<String, Component> componentByName, String component) {
+        Component c = componentByName.get(component);
+        if (c == null) throw new ComponentNotFoundException(component);
+        return c;
     }
 
     private ComponentGroup findGroup(Predicate<ComponentGroup> groupPredicate,
@@ -106,10 +113,6 @@ public class EnvironmentImpl implements Environment {
                 .filter(groupPredicate)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Can't find group by filter: '" + description.get() + "' in env '" + name + "'"));
-    }
-
-    private String notFoundComponentMessage(String component) {
-        return "Component '" + component + "' is not configured for env '" + name + "'";
     }
 
     @Override

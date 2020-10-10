@@ -6,7 +6,7 @@ import static io.microconfig.core.properties.templates.TemplatePattern.defaultPa
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-class TemplatePatternTest {
+class TemplateImplPatternTest {
     TemplatePattern templatePattern = defaultPattern()
             .withTemplatePrefixes(asList("microconfig.template.", "mgmt.template."));
     String microTemplate = "microconfig.template.logback.fromFile";

@@ -3,6 +3,7 @@ package io.microconfig.core.properties.templates;
 import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.Resolver;
 import io.microconfig.core.properties.TypedProperties;
+import io.microconfig.core.templates.Template;
 import io.microconfig.core.templates.TemplateContentPostProcessor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,32 +14,34 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders.findPlaceholderIn;
-import static io.microconfig.utils.FileUtils.copyPermissions;
-import static io.microconfig.utils.FileUtils.write;
 import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.StringUtils.addOffsets;
 import static java.util.regex.Matcher.quoteReplacement;
 
 @RequiredArgsConstructor
-class Template {
+public class TemplateImpl implements Template {
     private final String templateName;
+    @Getter
     private final File source;
+    @Getter
+    private final File destination;
     private final Pattern pattern;
     @With
     @Getter
     private final String content;
 
-    Template(String templateName, File source, Pattern pattern) {
+    TemplateImpl(String templateName, File source, File destination, Pattern pattern) {
         if (!source.exists() || !source.isFile()) {
             throw new IllegalStateException("Missing template file: " + source);
         }
         this.templateName = templateName;
         this.source = source;
+        this.destination = destination;
         this.pattern = pattern;
         this.content = readFully(source);
     }
 
-    public Template resolveBy(Resolver resolver, DeclaringComponent currentComponent) {
+    public TemplateImpl resolveBy(Resolver resolver, DeclaringComponent currentComponent) {
         String replaced = content.replace("${this@templateName}", templateNameWithoutBrackets());
         Matcher m = pattern.matcher(replaced);
         if (!m.find()) return withContent(replaced);
@@ -56,16 +59,11 @@ class Template {
         return templateName.replaceFirst("\\[.+]$", "");
     }
 
-    public Template postProcessContent(TemplateContentPostProcessor postProcessor,
-                                       String templateType, TypedProperties properties) {
+    public TemplateImpl postProcessContent(TemplateContentPostProcessor postProcessor,
+                                           String templateType, TypedProperties properties) {
         return withContent(
                 postProcessor.process(templateType, source, content, properties)
         );
-    }
-
-    public void copyTo(File destinationFile) {
-        write(destinationFile, content);
-        copyPermissions(source.toPath(), destinationFile.toPath());
     }
 
     private void doResolve(Matcher m, StringBuffer result, Resolver resolver, DeclaringComponent currentComponent) {
@@ -107,5 +105,10 @@ class Template {
         int lineBeginIndex = content.lastIndexOf('\n', m.start());
         int placeholderOffset = m.start() - lineBeginIndex - 1;
         return value.replace("\n", addOffsets("\n", placeholderOffset));
+    }
+
+    @Override
+    public String getFileName() {
+        return destination.getName();
     }
 }

@@ -1,8 +1,10 @@
 package io.microconfig.core.properties;
 
 import io.microconfig.core.configtypes.ConfigType;
+import io.microconfig.core.templates.Template;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -19,6 +21,8 @@ public interface TypedProperties {
     TypedProperties without(Predicate<Property> excluded);
 
     TypedProperties withPrefix(String prefix);
+
+    TypedProperties withTemplates(List<Template> templates);
 
     Map<String, Property> getPropertiesAsMap();
 

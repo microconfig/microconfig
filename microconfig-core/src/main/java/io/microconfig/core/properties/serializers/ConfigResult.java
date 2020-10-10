@@ -1,12 +1,14 @@
 package io.microconfig.core.properties.serializers;
 
 import com.google.gson.Gson;
+import io.microconfig.core.templates.Template;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import static io.microconfig.utils.StreamUtils.flatMapEach;
 import static io.microconfig.utils.StreamUtils.forEach;
 import static io.microconfig.utils.StringUtils.isEmpty;
 import static java.util.stream.Collectors.groupingBy;
@@ -18,6 +20,7 @@ public class ConfigResult {
     private final String configType;
     private final String fileName;
     private final String content;
+    private final List<Template> templates;
 
     public static String toJson(List<ConfigResult> configResults) {
         return new Gson().toJson(groupsByService(configResults));
@@ -40,6 +43,7 @@ public class ConfigResult {
         ServiceConfigs(String service, List<ConfigResult> configResults) {
             this.service = service;
             this.files = forEach(configResults, FileResult::new);
+            files.addAll(forEach(flatMapEach(configResults, ConfigResult::getTemplates), FileResult::new));
         }
     }
 
@@ -52,6 +56,10 @@ public class ConfigResult {
 
         FileResult(ConfigResult configResult) {
             this(configResult.getConfigType(), configResult.getFileName(), configResult.getContent());
+        }
+
+        public FileResult(Template template) {
+            this("template", template.getFileName(), template.getContent());
         }
     }
 }

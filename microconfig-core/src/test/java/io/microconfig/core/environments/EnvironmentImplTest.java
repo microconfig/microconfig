@@ -1,6 +1,7 @@
 package io.microconfig.core.environments;
 
 import io.microconfig.core.properties.PropertiesFactory;
+import io.microconfig.core.properties.repository.ComponentNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -77,7 +78,7 @@ class EnvironmentImplTest {
         when(group1.findComponentWithName("two")).thenReturn(of(two));
         assertEquals(two, env.getComponentWithName("two"));
 
-        assertThrows(IllegalArgumentException.class, () -> env.getComponentWithName("four"));
+        assertThrows(ComponentNotFoundException.class, () -> env.getComponentWithName("four"));
     }
 
     @Test
@@ -100,7 +101,7 @@ class EnvironmentImplTest {
 
         assertThrows(IllegalArgumentException.class, () -> env.findComponentsFrom(singletonList("bad"), singletonList("bad")));
         assertThrows(IllegalArgumentException.class, () -> env.findComponentsFrom(singletonList("bad"), emptyList()));
-        assertThrows(NullPointerException.class, () -> env.findComponentsFrom(emptyList(), singletonList("bad")));
+        assertThrows(ComponentNotFoundException.class, () -> env.findComponentsFrom(emptyList(), singletonList("bad")));
     }
 
     @Test

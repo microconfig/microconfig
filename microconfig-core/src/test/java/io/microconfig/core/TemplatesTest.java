@@ -22,11 +22,13 @@ public class TemplatesTest {
     void testMustache() {
         File root = classpathFile("templates");
         Microconfig microconfig = searchConfigsIn(root).withDestinationDir(destinationDir);
+        MicroconfigRunner runner = new MicroconfigRunner(root, destinationDir);
         microconfig.environments().getOrCreateByName("dev")
                 .findComponentWithName("mustache")
                 .getPropertiesFor(configType(APPLICATION))
                 .resolveBy(microconfig.resolver())
-                .forEachComponent(resolveTemplatesBy(microconfig.resolver()));
+                .forEachComponent(resolveTemplatesBy(microconfig.resolver()))
+                .save(runner.toFiles());
 
         assertEquals(
                 toUnixPathSeparator(readFully(new File(root, "components/mustache/expect.dev"))).trim(),
