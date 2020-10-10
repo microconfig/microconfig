@@ -33,7 +33,7 @@ public class SystemResolveStrategy implements PlaceholderResolveStrategy {
     }
 
     @Override
-    public Optional<Property> resolve(String component, String key, String environment, String configType) {
+    public Optional<Property> resolve(String component, String key, String environment, String configType, String _1) {
         if (!type.equals(component)) return empty();
 
         return ofNullable(resolver.apply(key))

@@ -91,7 +91,7 @@ public class PlaceholderResolver implements RecursiveResolver {
         }
 
         private String resolve(Placeholder p, DeclaringComponent root) {
-            Property resolved = p.resolveUsing(strategy);
+            Property resolved = p.resolveUsing(strategy, root);
             return resolved.resolveBy(currentResolverWithVisited(p), root)
                     .getValue();
         }

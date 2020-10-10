@@ -25,8 +25,8 @@ public class Placeholder {
     private final String key;
     private final String defaultValue;
 
-    public Property resolveUsing(PlaceholderResolveStrategy strategy) {
-        return strategy.resolve(component, key, environment, configType)
+    public Property resolveUsing(PlaceholderResolveStrategy strategy, DeclaringComponent root) {
+        return strategy.resolve(component, key, environment, configType, root.getComponent())
                 .orElseThrow(() -> new IllegalStateException("Can't resolve " + this));
     }
 

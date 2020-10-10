@@ -1,4 +1,4 @@
-package io.microconfig.core.templates;
+package io.microconfig.core.properties.templates;
 
 import io.microconfig.core.properties.TypedProperties;
 

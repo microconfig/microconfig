@@ -18,7 +18,7 @@ public class CompositeResolveStrategy implements PlaceholderResolveStrategy {
     }
 
     @Override
-    public Optional<Property> resolve(String component, String key, String environment, String configType) {
-        return findFirstResult(strategies, s -> s.resolve(component, key, environment, configType));
+    public Optional<Property> resolve(String component, String key, String environment, String configType, String root) {
+        return findFirstResult(strategies, s -> s.resolve(component, key, environment, configType, root));
     }
 }
