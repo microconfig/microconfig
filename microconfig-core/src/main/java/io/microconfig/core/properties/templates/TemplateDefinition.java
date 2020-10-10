@@ -4,7 +4,6 @@ import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.Resolver;
 import io.microconfig.core.properties.TypedProperties;
 import io.microconfig.core.templates.Template;
-import io.microconfig.core.templates.TemplateContentPostProcessor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

@@ -4,7 +4,6 @@ import com.samskivert.mustache.Mustache;
 import com.samskivert.mustache.Template;
 import io.microconfig.core.properties.TypedProperties;
 import io.microconfig.core.properties.io.yaml.YamlTreeImpl;
-import io.microconfig.core.templates.TemplateContentPostProcessor;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;

@@ -4,7 +4,6 @@ import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.Resolver;
 import io.microconfig.core.properties.TypedProperties;
 import io.microconfig.core.templates.Template;
-import io.microconfig.core.templates.TemplateContentPostProcessor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -41,7 +40,11 @@ public class TemplateImpl implements Template {
         this.content = readFully(source);
     }
 
-    public TemplateImpl resolveBy(Resolver resolver, DeclaringComponent currentComponent) {
+    public static boolean isValidPlaceholder(String value) {
+        return findPlaceholderIn(value).isPresent();
+    }
+
+    TemplateImpl resolveBy(Resolver resolver, DeclaringComponent currentComponent) {
         String replaced = content.replace("${this@templateName}", templateNameWithoutBrackets());
         Matcher m = pattern.matcher(replaced);
         if (!m.find()) return withContent(replaced);
@@ -59,8 +62,8 @@ public class TemplateImpl implements Template {
         return templateName.replaceFirst("\\[.+]$", "");
     }
 
-    public TemplateImpl postProcessContent(TemplateContentPostProcessor postProcessor,
-                                           String templateType, TypedProperties properties) {
+    TemplateImpl postProcessContent(TemplateContentPostProcessor postProcessor,
+                                    String templateType, TypedProperties properties) {
         return withContent(
                 postProcessor.process(templateType, source, content, properties)
         );
@@ -77,10 +80,6 @@ public class TemplateImpl implements Template {
 
         String finalValue = addOffsetForMultiLineValue(resolved, m);
         m.appendReplacement(result, quoteReplacement(finalValue));
-    }
-
-    public static boolean isValidPlaceholder(String value) {
-        return findPlaceholderIn(value).isPresent();
     }
 
     private String resolve(String placeholder, DeclaringComponent currentComponent, Resolver resolver) {
