@@ -25,7 +25,6 @@ import io.microconfig.core.properties.resolvers.placeholder.strategies.environme
 import io.microconfig.core.properties.resolvers.placeholder.strategies.standard.StandardResolveStrategy;
 import io.microconfig.io.DumpedFsReader;
 import io.microconfig.io.FsReader;
-import io.microconfig.utils.Logger;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
