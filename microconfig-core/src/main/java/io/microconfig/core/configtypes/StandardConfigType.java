@@ -10,7 +10,7 @@ import static io.microconfig.utils.CollectionUtils.setOf;
 @Getter
 @RequiredArgsConstructor
 public enum StandardConfigType implements ConfigType {
-    APPLICATION("app", setOf(".properties", ".yaml"), "application"),
+    APPLICATION("app", setOf(".properties", ".yaml", ".yml"), "application"),
     PROCESS("process", setOf(".process", ".proc"), "process"),
     HELM("helm", setOf(".helm"), "values"),
     DEPLOY("deploy"),
