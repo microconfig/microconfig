@@ -4,6 +4,7 @@ configTypes:
       sourceExtensions:
         - .properties
         - .yaml
+        - .yml
 
   - process:
       resultFileName: process

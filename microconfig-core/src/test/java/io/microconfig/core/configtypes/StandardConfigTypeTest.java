@@ -11,7 +11,7 @@ class StandardConfigTypeTest {
     public void shouldImplementConfigType() {
         ConfigType app = APPLICATION;
         assertEquals("app", app.getName());
-        assertEquals(setOf(".yaml", ".properties"), app.getSourceExtensions());
+        assertEquals(setOf(".yml", ".yaml", ".properties"), app.getSourceExtensions());
         assertEquals("application", app.getResultFileName());
     }
 }
