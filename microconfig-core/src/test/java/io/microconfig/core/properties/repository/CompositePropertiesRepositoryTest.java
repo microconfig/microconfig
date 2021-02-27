@@ -13,11 +13,14 @@ import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.PropertyImpl.property;
 import static io.microconfig.core.properties.repository.CompositePropertiesRepository.compositeOf;
 import static java.util.Arrays.stream;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class CompositePropertiesRepositoryTest {
@@ -46,6 +49,13 @@ class CompositePropertiesRepositoryTest {
 
         Map<String, Property> result = subj.getPropertiesOf("component", "dev", APPLICATION);
         assertEquals(emptyMap(), result);
+    }
+
+    @Test
+    public void should_return_same_repository_if_only_one_supplied(){
+        PropertiesRepository repo = mock(PropertiesRepository.class);
+        assertSame(repo, compositeOf(singletonList(repo)));
+        assertSame(repo, compositeOf(emptyList(), repo));
     }
 
     private Map<String, Property> propsMap(Property... props) {
