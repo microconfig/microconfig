@@ -10,8 +10,10 @@ import io.microconfig.core.environments.repository.FileEnvironmentRepository;
 import io.microconfig.core.properties.PlaceholderResolveStrategy;
 import io.microconfig.core.properties.PropertiesFactory;
 import io.microconfig.core.properties.PropertiesFactoryImpl;
+import io.microconfig.core.properties.PropertiesRepository;
 import io.microconfig.core.properties.Resolver;
 import io.microconfig.core.properties.repository.ComponentGraph;
+import io.microconfig.core.properties.repository.CompositePropertiesRepository;
 import io.microconfig.core.properties.repository.FilePropertiesRepository;
 import io.microconfig.core.properties.resolvers.RecursiveResolver;
 import io.microconfig.core.properties.resolvers.expression.ExpressionResolver;
@@ -25,6 +27,7 @@ import io.microconfig.core.properties.resolvers.placeholder.strategies.environme
 import io.microconfig.core.properties.resolvers.placeholder.strategies.standard.StandardResolveStrategy;
 import io.microconfig.io.DumpedFsReader;
 import io.microconfig.io.FsReader;
+import io.microconfig.utils.CollectionUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -38,6 +41,7 @@ import static io.microconfig.core.configtypes.CompositeConfigTypeRepository.comp
 import static io.microconfig.core.configtypes.CustomConfigTypeRepository.findDescriptorIn;
 import static io.microconfig.core.properties.io.selector.ConfigIoFactory.newConfigIo;
 import static io.microconfig.core.properties.repository.ComponentGraphImpl.traverseFrom;
+import static io.microconfig.core.properties.repository.CompositePropertiesRepository.compositeOf;
 import static io.microconfig.core.properties.resolvers.ChainedResolver.chainOf;
 import static io.microconfig.core.properties.resolvers.placeholder.strategies.composite.CompositeResolveStrategy.composite;
 import static io.microconfig.core.properties.resolvers.placeholder.strategies.system.SystemResolveStrategy.envVariablesResolveStrategy;
@@ -49,6 +53,7 @@ import static io.microconfig.utils.FileUtils.canonical;
 import static io.microconfig.utils.Logger.enableLogger;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static lombok.AccessLevel.PRIVATE;
 
 @Accessors(fluent = true)
@@ -62,6 +67,8 @@ public class Microconfig {
     private final FsReader fsReader;
     @With
     private final List<PlaceholderResolveStrategy> additionalPlaceholderResolvers;
+    @With
+    private final List<PropertiesRepository> additionalPropertiesRepositories;
 
     private final Dependencies dependencies = new Dependencies();
 
@@ -70,7 +77,7 @@ public class Microconfig {
         if (!canonical.exists()) {
             throw new IllegalArgumentException("Root directory doesn't exist: " + rootDir);
         }
-        return new Microconfig(canonical, new File(rootDir, "build"), new DumpedFsReader(), emptyList());
+        return new Microconfig(canonical, new File(rootDir, "build"), new DumpedFsReader(), emptyList(), emptyList());
     }
 
     public Environment inEnvironment(String name) {
@@ -120,13 +127,14 @@ public class Microconfig {
         }
 
         private PropertiesFactory initPropertiesFactory() {
-            return cache(new PropertiesFactoryImpl(
-                            cache(new FilePropertiesRepository(
-                                    componentGraph(),
-                                    newConfigIo(fsReader))
-                            )
-                    )
+            PropertiesRepository fileRepository = new FilePropertiesRepository(
+                    componentGraph(),
+                    newConfigIo(fsReader)
             );
+
+            return cache(new PropertiesFactoryImpl(
+                    cache(compositeOf(additionalPropertiesRepositories, fileRepository))
+            ));
         }
 
         public Resolver initResolver() {
