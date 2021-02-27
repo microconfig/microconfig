@@ -1,11 +1,12 @@
 package io.microconfig.core.properties;
 
+import io.microconfig.core.exceptions.MicroconfigException;
 import lombok.Setter;
 
 import static io.microconfig.utils.StringUtils.getCauseMessage;
 import static java.util.Optional.ofNullable;
 
-public class ResolveException extends RuntimeException {
+public class ResolveException extends MicroconfigException {
     private final DeclaringComponent current;
     private final DeclaringComponent root;
     @Setter

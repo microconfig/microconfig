@@ -1,5 +1,6 @@
 package io.microconfig.core.properties.repository;
 
+import io.microconfig.core.exceptions.MicroconfigException;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayDeque;
@@ -8,7 +9,7 @@ import java.util.Deque;
 import static java.lang.String.join;
 
 @RequiredArgsConstructor
-public class ComponentNotFoundException extends RuntimeException {
+public class ComponentNotFoundException extends MicroconfigException {
     private final String notFoundComponent;
     private final Deque<String> path = new ArrayDeque<>();
 
