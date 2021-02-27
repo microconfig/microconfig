@@ -26,10 +26,10 @@ public class CompositePropertiesRepository implements PropertiesRepository {
     public Map<String, Property> getPropertiesOf(String originalComponentName, String environment, ConfigType configType) {
         return repositories.stream()
                 .map(r -> r.getPropertiesOf(originalComponentName, environment, configType))
-                .reduce(new LinkedHashMap<>(), this::merge);
+                .reduce(new LinkedHashMap<>(), this::mergeSecondToFirst);
     }
 
-    private Map<String, Property> merge(Map<String, Property> one, Map<String, Property> two) {
+    private Map<String, Property> mergeSecondToFirst(Map<String, Property> one, Map<String, Property> two) {
         two.forEach(one::putIfAbsent);
         return one;
     }
