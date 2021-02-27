@@ -6,7 +6,7 @@ import lombok.Setter;
 import static io.microconfig.utils.StringUtils.getCauseMessage;
 import static java.util.Optional.ofNullable;
 
-public class ResolveException extends RuntimeException implements MicroconfigException {
+public class ResolveException extends MicroconfigException {
     private final DeclaringComponent current;
     private final DeclaringComponent root;
     @Setter

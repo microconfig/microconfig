@@ -4,7 +4,7 @@ import io.microconfig.core.exceptions.MicroconfigException;
 
 import static io.microconfig.utils.StringUtils.getCauseMessage;
 
-public class EnvironmentException extends RuntimeException implements MicroconfigException {
+public class EnvironmentException extends MicroconfigException {
     public EnvironmentException(String message) {
         super(message);
     }

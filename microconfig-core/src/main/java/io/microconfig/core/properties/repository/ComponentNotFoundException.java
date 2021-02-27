@@ -9,7 +9,7 @@ import java.util.Deque;
 import static java.lang.String.join;
 
 @RequiredArgsConstructor
-public class ComponentNotFoundException extends RuntimeException implements MicroconfigException {
+public class ComponentNotFoundException extends MicroconfigException {
     private final String notFoundComponent;
     private final Deque<String> path = new ArrayDeque<>();
 
