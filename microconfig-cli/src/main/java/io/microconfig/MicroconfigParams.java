@@ -17,12 +17,12 @@ public class MicroconfigParams {
         return new File(parser.valueOr("r", "."));
     }
 
-    public File destinationDir() {
-        return new File(parser.valueOr("d", "build"));
+    public String destinationDir() {
+        return parser.valueOr("d", "build");
     }
 
-    public String env() {
-        return parser.requiredValue("e", "set -e (environment)");
+    public List<String> envs() {
+        return parser.listValue("e");
     }
 
     public List<String> groups() {

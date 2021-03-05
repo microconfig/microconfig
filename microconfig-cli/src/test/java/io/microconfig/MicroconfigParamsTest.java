@@ -13,7 +13,7 @@ class MicroconfigParamsTest {
     MicroconfigParams params = parse(
             "-r", "configs/repo",
             "-d", "destination",
-            "-e", "dev",
+            "-e", "dev, test",
             "-g", "g1,g2",
             "-s", "s1, s2",
             "-output", "json"
@@ -27,13 +27,15 @@ class MicroconfigParamsTest {
 
     @Test
     void destinationDir() {
-        assertEquals(new File("destination"), params.destinationDir());
-        assertEquals(new File("build"), empty.destinationDir());
+        assertEquals("destination", params.destinationDir());
+        assertEquals("build", empty.destinationDir());
     }
 
     @Test
     void env() {
-        assertEquals("dev", params.env());
+        assertEquals(2,params.envs().size());
+        assertEquals("dev", params.envs().get(0));
+        assertEquals("test", params.envs().get(1));
     }
 
     @Test

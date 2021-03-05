@@ -1,12 +1,16 @@
 package io.microconfig;
 
+import io.microconfig.core.Microconfig;
 import io.microconfig.core.MicroconfigRunner;
 import io.microconfig.core.properties.Properties;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static io.microconfig.core.properties.serializers.ConfigResult.toJson;
 import static io.microconfig.core.properties.serializers.PropertySerializers.asConfigResult;
@@ -24,8 +28,8 @@ import static java.lang.System.*;
 @RequiredArgsConstructor
 public class MicroconfigMain {
     private final File rootDir;
-    private final File destinationDir;
-    private final String env;
+    private final String destinationDir;
+    private final List<String> envs;
     private final List<String> groups;
     private final List<String> services;
     private final boolean stacktrace;
@@ -39,21 +43,22 @@ public class MicroconfigMain {
         }
 
         File rootDir = params.rootDir();
-        File destinationDir = params.destinationDir();
-        String env = params.env();
+        String destinationDir = params.destinationDir();
+        List<String> envs = params.envs();
         List<String> groups = params.groups();
         List<String> services = params.services();
         boolean stacktrace = params.stacktrace();
         boolean jsonOutput = params.jsonOutput();
 
-        new MicroconfigMain(rootDir, destinationDir, env, groups, services, stacktrace, jsonOutput).build();
+        new MicroconfigMain(rootDir, destinationDir, envs, groups, services, stacktrace, jsonOutput).build();
     }
 
     private void build() {
         try {
-            long startTime = currentTimeMillis();
-            doBuild();
-            announce("\nGenerated [" + env + "] configs in " + (currentTimeMillis() - startTime) + "ms");
+            enableLogger(!jsonOutput);
+            doBuild(envs.contains("*")
+                    ? new MicroconfigRunner(rootDir, null).getMicroconfig().environments().environmentNames()
+                    : new HashSet<>(envs));
         } catch (RuntimeException e) {
             if (stacktrace || e.getMessage() == null) {
                 throw e;
@@ -64,17 +69,19 @@ public class MicroconfigMain {
         }
     }
 
-    private void doBuild() {
-        enableLogger(!jsonOutput);
-
-        MicroconfigRunner runner = new MicroconfigRunner(rootDir, destinationDir);
-
-        Properties properties = runner.buildProperties(env, groups, services);
-        if (jsonOutput) {
-            out.println(toJson(properties.save(asConfigResult())));
-        } else {
-            properties.save(runner.toFiles());
-        }
+    private void doBuild(Set<String> envs) {
+        envs.forEach(env -> {
+            long startTime = currentTimeMillis();
+            MicroconfigRunner runner = new MicroconfigRunner(rootDir, new File(String.format("%s/%s", destinationDir, env)));
+            runner.getMicroconfig().environments();
+            Properties properties = runner.buildProperties(env, groups, services);
+            if (jsonOutput) {
+                out.println(toJson(properties.save(asConfigResult())));
+            } else {
+                properties.save(runner.toFiles());
+            }
+            announce("\nGenerated [" + env + "] configs in " + (currentTimeMillis() - startTime) + "ms");
+        });
     }
 
     private static void printVersion() {
