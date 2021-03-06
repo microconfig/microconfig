@@ -40,6 +40,10 @@ public class PropertyImpl implements Property {
         return new PropertyImpl(key, value, false, configFormat, source);
     }
 
+    public static Property varProperty(String key, String value, ConfigFormat configFormat, DeclaringComponent source) {
+        return new PropertyImpl(key, value, true, configFormat, source);
+    }
+
     public static int findSeparatorIndexIn(String keyValue) {
         return findFirstIndexIn(keyValue, ":=");
     }
