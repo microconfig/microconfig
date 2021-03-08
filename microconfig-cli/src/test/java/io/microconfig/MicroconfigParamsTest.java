@@ -3,6 +3,8 @@ package io.microconfig;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import static io.microconfig.MicroconfigParams.parse;
 import static java.util.Arrays.asList;
@@ -36,14 +38,15 @@ class MicroconfigParamsTest {
 
     @Test
     void env() {
-        assertEquals("dev", params.env());
+        assertEquals("dev", params.environments().stream().findFirst().get());
     }
 
     @Test
     void envs() {
-        assertEquals(2,params.envs().size());
-        assertEquals("dev", params.envs().get(0));
-        assertEquals("test", params.envs().get(1));
+        List<String> envs = new ArrayList<>(params.environments());
+        assertEquals(2, envs.size());
+        assertEquals("dev", envs.get(0));
+        assertEquals("test", envs.get(1));
     }
 
     @Test

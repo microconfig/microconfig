@@ -3,7 +3,11 @@ package io.microconfig;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+
+import static io.microconfig.CommandLineParamParser.printErrorAndExit;
 
 @RequiredArgsConstructor
 public class MicroconfigParams {
@@ -19,14 +23,6 @@ public class MicroconfigParams {
 
     public String destinationDir() {
         return parser.valueOr("d", "build");
-    }
-
-    public String env() {
-        return parser.value("e");
-    }
-
-    public List<String> envs() {
-        return parser.listValue("envs");
     }
 
     public List<String> groups() {
@@ -47,5 +43,20 @@ public class MicroconfigParams {
 
     public boolean jsonOutput() {
         return "json".equals(parser.value("output"));
+    }
+
+    public Set<String> environments() {
+        Set<String> environments = new LinkedHashSet<>(parser.listValue("envs"));
+        String env = parser.value("e");
+        if (env != null) {
+            if (env.equals("*")) {
+                printErrorAndExit("use -envs instead of -e to pass `*` as a value");
+            }
+            environments.add(env);
+        }
+        if (environments.isEmpty()) {
+            printErrorAndExit("set `-e (environment)` or `-envs (env1),(env2)...`");
+        }
+        return environments;
     }
 }

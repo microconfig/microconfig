@@ -5,14 +5,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static io.microconfig.utils.FileUtils.getName;
 import static io.microconfig.utils.IoUtils.readFully;
@@ -40,18 +36,9 @@ class MicroconfigMainTest {
         checkComponentBuildResult("component2", null);
     }
 
-
-    private static Stream<Arguments> provideEnvironments(){
-        return Stream.of(
-                Arguments.of(Collections.singletonList("env2")),
-                Arguments.of(Collections.singletonList("env3")),
-                Arguments.of(asList("env2","env3"))
-        );
-    }
-
-    @ParameterizedTest()
-    @MethodSource("provideEnvironments")
-    void should_generate_config_for_multiple_envs_when_envs_param_given(List<String> environments) {
+    @Test
+    void should_generate_config_for_multiple_envs_when_envs_param_given() {
+        List<String> environments = asList("env2","env3");
         MicroconfigMain.main("-envs", String.join(",",environments), "-r", escape(root), "-d", escape(destinationDir.getAbsolutePath()));
         for (String component : components) {
             for(String environment : environments){
@@ -61,7 +48,7 @@ class MicroconfigMainTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"env1, *", "*, env1", "*"})
+    @ValueSource(strings = {"env1, *", "*, env1","*"})
     void should_generate_config_for_all_envs_when_star_in_envs_list(String envs) {
         MicroconfigMain.main("-envs", envs, "-r", escape(root), "-d", escape(destinationDir.getAbsolutePath()));
         for (String component : components) {
