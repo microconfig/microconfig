@@ -21,8 +21,12 @@ public class MicroconfigParams {
         return parser.valueOr("d", "build");
     }
 
+    public String env() {
+        return parser.value("e");
+    }
+
     public List<String> envs() {
-        return parser.listValue("e");
+        return parser.listValue("envs");
     }
 
     public List<String> groups() {

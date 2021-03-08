@@ -2,7 +2,12 @@ package io.microconfig.utils;
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import static java.lang.Math.max;
 import static java.util.Arrays.asList;
@@ -42,5 +47,9 @@ public class CollectionUtils {
     @SafeVarargs
     public static <T> Set<T> setOf(T... t) {
         return new LinkedHashSet<>(asList(t));
+    }
+
+    public static boolean isCollectionEmpty(Collection c){
+        return c==null || c.isEmpty();
     }
 }

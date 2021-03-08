@@ -1,5 +1,7 @@
 package io.microconfig;
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,20 +26,33 @@ class MicroconfigMainTest {
 
     final static List<String> components = asList("component","component2");
 
+    private String root;
+
+    @BeforeEach
+    void setup(){
+        root = getClass().getClassLoader().getResource("repo").getFile();
+    }
+
+    @Test
+    void should_generate_config_for_single_env_when_e_param_given() {
+        MicroconfigMain.main("-e", "env1", "-r", escape(root), "-d", escape(destinationDir.getAbsolutePath()));
+        checkComponentBuildResult("component", null);
+        checkComponentBuildResult("component2", null);
+    }
+
+
     private static Stream<Arguments> provideEnvironments(){
         return Stream.of(
-                Arguments.of(Collections.singletonList("env1")),
                 Arguments.of(Collections.singletonList("env2")),
-                Arguments.of(asList("env1","env2"))
+                Arguments.of(Collections.singletonList("env3")),
+                Arguments.of(asList("env2","env3"))
         );
     }
 
     @ParameterizedTest()
     @MethodSource("provideEnvironments")
-    void main(List<String> environments) {
-        String root = getClass().getClassLoader().getResource("repo").getFile();
-        MicroconfigMain.main("-e", String.join(",",environments), "-r", escape(root), "-d", escape(destinationDir.getAbsolutePath()));
-
+    void should_generate_config_for_multiple_envs_when_envs_param_given(List<String> environments) {
+        MicroconfigMain.main("-envs", String.join(",",environments), "-r", escape(root), "-d", escape(destinationDir.getAbsolutePath()));
         for (String component : components) {
             for(String environment : environments){
                 checkComponentBuildResult(component, environment);
@@ -46,10 +61,9 @@ class MicroconfigMainTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"env1, *", "*, env2", "*"})
-    void config_for_all_envs_generated_when_star_in_env_list(String envs) {
-        String root = getClass().getClassLoader().getResource("repo").getFile();
-        MicroconfigMain.main("-e", envs, "-r", escape(root), "-d", escape(destinationDir.getAbsolutePath()));
+    @ValueSource(strings = {"env1, *", "*, env1", "*"})
+    void should_generate_config_for_all_envs_when_star_in_envs_list(String envs) {
+        MicroconfigMain.main("-envs", envs, "-r", escape(root), "-d", escape(destinationDir.getAbsolutePath()));
         for (String component : components) {
             for(String environment: asList("env1","env2")){
                 checkComponentBuildResult(component, environment);
@@ -67,8 +81,20 @@ class MicroconfigMainTest {
     }
 
     private void checkFileExist(String name, final String fileName, final String env) {
-        File resultFile = new File(destinationDir, String.format("%s/%s/%s", env, name, fileName));
+        String targetPath;
+        if(env!=null){
+            targetPath =String.format("%s/%s/%s", env, name, fileName);
+        } else {
+            targetPath = String.format("%s/%s", name, fileName);
+        }
+        File resultFile = new File(destinationDir, targetPath);
         assertTrue(resultFile.exists());
         assertEquals("key: " + getName(resultFile), readFully(resultFile).trim());
+    }
+
+    @Ignore
+    @Test
+    void should_throw_error_if_env_and_envs_both_empty(){
+        //TODO would be good to test that an exception occurrs when env and envs are both empty
     }
 }

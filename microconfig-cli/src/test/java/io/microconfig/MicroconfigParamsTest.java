@@ -7,13 +7,16 @@ import java.io.File;
 import static io.microconfig.MicroconfigParams.parse;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MicroconfigParamsTest {
     MicroconfigParams params = parse(
             "-r", "configs/repo",
             "-d", "destination",
-            "-e", "dev, test",
+            "-e", "dev",
+            "-envs", "dev, test",
             "-g", "g1,g2",
             "-s", "s1, s2",
             "-output", "json"
@@ -33,6 +36,11 @@ class MicroconfigParamsTest {
 
     @Test
     void env() {
+        assertEquals("dev", params.env());
+    }
+
+    @Test
+    void envs() {
         assertEquals(2,params.envs().size());
         assertEquals("dev", params.envs().get(0));
         assertEquals("test", params.envs().get(1));
