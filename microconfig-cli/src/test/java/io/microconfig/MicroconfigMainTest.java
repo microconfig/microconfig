@@ -14,7 +14,6 @@ import static io.microconfig.utils.FileUtils.getName;
 import static io.microconfig.utils.IoUtils.readFully;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MicroconfigMainTest {
     @TempDir
@@ -32,8 +31,8 @@ class MicroconfigMainTest {
     @Test
     void should_generate_config_for_single_env_when_e_param_given() {
         MicroconfigMain.main("-e", "env1", "-r", escape(root), "-d", escape(destinationDir.getAbsolutePath()));
-        checkComponentBuildResult("component", null);
-        checkComponentBuildResult("component2", null);
+        checkConfigGeneratedFor("component", null);
+        checkConfigGeneratedFor("component2", null);
     }
 
     @Test
@@ -42,7 +41,7 @@ class MicroconfigMainTest {
         MicroconfigMain.main("-envs", String.join(",",environments), "-r", escape(root), "-d", escape(destinationDir.getAbsolutePath()));
         for (String component : components) {
             for(String environment : environments){
-                checkComponentBuildResult(component, environment);
+                checkConfigGeneratedFor(component, environment);
             }
         }
     }
@@ -53,8 +52,20 @@ class MicroconfigMainTest {
         MicroconfigMain.main("-envs", envs, "-r", escape(root), "-d", escape(destinationDir.getAbsolutePath()));
         for (String component : components) {
             for(String environment: asList("env1","env2")){
-                checkComponentBuildResult(component, environment);
+                checkConfigGeneratedFor(component, environment);
             }
+        }
+    }
+
+    @Test
+    void should_not_generate_config_for_excluded_envs(){
+        String envs = "env1, !env2, env3";
+        MicroconfigMain.main("-envs", envs, "-r", escape(root), "-d", escape(destinationDir.getAbsolutePath()));
+        for (String component : components) {
+            for(String environment: asList("env1","env3")){
+                checkConfigGeneratedFor(component, environment);
+            }
+            checkConfigNotGeneratedFor(component, "env2");
         }
     }
 
@@ -62,21 +73,33 @@ class MicroconfigMainTest {
         return "\"" + name + "\"";
     }
 
-    private void checkComponentBuildResult(String component, String env) {
-        checkFileExist(component, "application.yaml", env);
-        checkFileExist(component, "deploy.yaml", env);
+    private void checkConfigGeneratedFor(String component, String nestedDirectory){
+        checkComponentBuildResult(component, nestedDirectory, true);
     }
 
-    private void checkFileExist(String name, final String fileName, final String env) {
-        String targetPath;
-        if(env!=null){
-            targetPath =String.format("%s/%s/%s", env, name, fileName);
-        } else {
-            targetPath = String.format("%s/%s", name, fileName);
+    private void checkConfigNotGeneratedFor(String component, String nestedDirectory){
+        checkComponentBuildResult(component, nestedDirectory, false);
+    }
+
+    private void checkComponentBuildResult(String component, String nestedDirectory, boolean shouldFileExist) {
+        checkFileExist(buildFilePath(component, "application.yaml", nestedDirectory), shouldFileExist);
+        checkFileExist(buildFilePath(component, "deploy.yaml", nestedDirectory), shouldFileExist);
+    }
+
+    private String buildFilePath(String component, String fileName, String nestedDirectory){
+        String result = String.format("%s/%s/", component, fileName);
+        if(nestedDirectory!=null){
+            result = String.format("%s/%s", nestedDirectory, result);
         }
-        File resultFile = new File(destinationDir, targetPath);
-        assertTrue(resultFile.exists());
-        assertEquals("key: " + getName(resultFile), readFully(resultFile).trim());
+        return result;
+    }
+
+    private void checkFileExist(String filePath, boolean shouldFileExist) {
+        File resultFile = new File(destinationDir, filePath);
+        assertEquals(shouldFileExist, resultFile.exists());
+        if(shouldFileExist) {
+            assertEquals("key: " + getName(resultFile), readFully(resultFile).trim());
+        }
     }
 
     @Ignore

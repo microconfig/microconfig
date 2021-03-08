@@ -6,11 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.BiFunction;
 
 import static io.microconfig.core.properties.serializers.ConfigResult.toJson;
 import static io.microconfig.core.properties.serializers.PropertySerializers.asConfigResult;
@@ -22,6 +20,7 @@ import static io.microconfig.utils.Logger.info;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.System.exit;
 import static java.lang.System.out;
+import static java.util.stream.Collectors.toCollection;
 
 /**
  * Command line params example: *
@@ -61,20 +60,7 @@ public class MicroconfigMain {
     private void build() {
         try {
             enableLogger(!jsonOutput);
-            Map<String, String> envsToBuild = new HashMap<>();
-
-            if(environments.size()==1 && !environments.stream().findFirst().get().equals("*")){
-                envsToBuild.put(environments.stream().findFirst().get(), destinationDir);
-            } else {
-                BiFunction<String, Map<String,String>, String> stageForBuild = (e, m) -> m.put(e,String.format("%s/%s", destinationDir, e));
-                if (environments.contains("*")) {
-                    getAllEnvs().forEach(e -> stageForBuild.apply(e,envsToBuild));
-                } else {
-                    environments.forEach(e -> stageForBuild.apply(e,envsToBuild));
-                }
-            }
-
-            doBuild(envsToBuild);
+            doBuild();
         } catch (RuntimeException e) {
             if (stacktrace || e.getMessage() == null) {
                 throw e;
@@ -84,15 +70,13 @@ public class MicroconfigMain {
         }
     }
 
-    private Set<String> getAllEnvs(){
-        return new MicroconfigRunner(rootDir, null).getMicroconfig().environments().environmentNames();
-    }
+    private void doBuild() {
+        Set<String> envsToBuild = chooseEnvironments();
 
-    private void doBuild(Map<String, String> envsToBuild) {
-        envsToBuild.keySet().forEach(e -> {
+        envsToBuild.forEach(e -> {
             long startTime = currentTimeMillis();
-            MicroconfigRunner runner = new MicroconfigRunner(rootDir, new File(envsToBuild.get(e)));
-            runner.getMicroconfig().environments();
+            String filePath = envsToBuild.size()>1 ? String.format("%s/%s", destinationDir, e) : destinationDir;
+            MicroconfigRunner runner = new MicroconfigRunner(rootDir, new File(filePath));
             Properties properties = runner.buildProperties(e, groups, services);
             if (jsonOutput) {
                 out.println(toJson(properties.save(asConfigResult())));
@@ -101,6 +85,21 @@ public class MicroconfigMain {
             }
             announce("\nGenerated [" + e + "] configs in " + (currentTimeMillis() - startTime) + "ms");
         });
+    }
+
+    private Set<String> chooseEnvironments() {
+        MicroconfigRunner runner = new MicroconfigRunner(rootDir, null);
+        if (!environments.contains("*")) {
+            return environments.stream()
+                    .filter(e -> !e.startsWith("!"))
+                    .collect(toCollection(LinkedHashSet::new));
+        }
+        return runner.getMicroconfig()
+                .environments()
+                .environmentNames()
+                .stream()
+                .filter(e -> !environments.contains("!" + e))
+                .collect(toCollection(LinkedHashSet::new));
     }
 
     private static void printVersion() {
