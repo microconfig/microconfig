@@ -958,7 +958,9 @@ To run the build you can download Microconfig release from https://github.com/mi
 
 The required build params:
 * `-r` - full or relative config root dir. 
-* `-e` - environment name (environment is used as a config profile, also as a group of services to build configs).
+* either `-e` or `-envs`.
+    * `-e` - environment name (environment is used as a config profile, also as a group of services to build configs).
+    * `-envs` - a comma separated list of environment names, can include "*" for all environments.
 
 Optional build params:
 * `-d` - full or relative build destination dir. Default = ${currentFolder}/build
