@@ -960,7 +960,8 @@ The required build params:
 * `-r` - full or relative config root dir. 
 * either `-e` or `-envs`.
     * `-e` - environment name (environment is used as a config profile, also as a group of services to build configs).
-    * `-envs` - a comma separated list of environment names. Use "*" for all environments, and ! to exclude an environment. E.g. `-envs *, !base` to generate config for all environments _except_ `base`.
+    * `-envs` - a comma separated list of environment names. Use "*" for all environments, and ! to exclude an environment. E.g. `-envs *,!base` to generate config for all environments _except_ `base`.   
+    _*Please note that there are no spaces between `-envs` values._
 
 Optional build params:
 * `-d` - full or relative build destination dir. Default = ${currentFolder}/build
