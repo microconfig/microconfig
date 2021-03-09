@@ -18,12 +18,12 @@ class MicroconfigMainTest {
     @TempDir
     File destinationDir;
 
-    final static List<String> components = asList("component","component2");
+    final static List<String> components = asList("component", "component2");
 
     private String root;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         root = getClass().getClassLoader().getResource("repo").getFile();
     }
 
@@ -36,32 +36,32 @@ class MicroconfigMainTest {
 
     @Test
     void should_generate_config_for_multiple_envs_when_envs_param_given() {
-        List<String> environments = asList("env2","env3");
-        MicroconfigMain.main("-envs", String.join(",",environments), "-r", escape(root), "-d", escape(destinationDir.getAbsolutePath()));
+        List<String> environments = asList("env2", "env3");
+        MicroconfigMain.main("-envs", String.join(",", environments), "-r", escape(root), "-d", escape(destinationDir.getAbsolutePath()));
         for (String component : components) {
-            for(String environment : environments){
+            for (String environment : environments) {
                 checkConfigGeneratedFor(component, environment);
             }
         }
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"env1, *", "*, env1","*"})
+    @ValueSource(strings = {"env1, *", "*, env1", "*"})
     void should_generate_config_for_all_envs_when_star_in_envs_list(String envs) {
         MicroconfigMain.main("-envs", envs, "-r", escape(root), "-d", escape(destinationDir.getAbsolutePath()));
         for (String component : components) {
-            for(String environment: asList("env1","env2")){
+            for (String environment : asList("env1", "env2")) {
                 checkConfigGeneratedFor(component, environment);
             }
         }
     }
 
     @Test
-    void should_not_generate_config_for_excluded_envs(){
+    void should_not_generate_config_for_excluded_envs() {
         String envs = "env1, !env2, env3";
         MicroconfigMain.main("-envs", envs, "-r", escape(root), "-d", escape(destinationDir.getAbsolutePath()));
         for (String component : components) {
-            for(String environment: asList("env1","env3")){
+            for (String environment : asList("env1", "env3")) {
                 checkConfigGeneratedFor(component, environment);
             }
             checkConfigNotGeneratedFor(component, "env2");
@@ -72,11 +72,11 @@ class MicroconfigMainTest {
         return "\"" + name + "\"";
     }
 
-    private void checkConfigGeneratedFor(String component, String nestedDirectory){
+    private void checkConfigGeneratedFor(String component, String nestedDirectory) {
         checkComponentBuildResult(component, nestedDirectory, true);
     }
 
-    private void checkConfigNotGeneratedFor(String component, String nestedDirectory){
+    private void checkConfigNotGeneratedFor(String component, String nestedDirectory) {
         checkComponentBuildResult(component, nestedDirectory, false);
     }
 
@@ -85,9 +85,9 @@ class MicroconfigMainTest {
         checkFileExist(buildFilePath(component, "deploy.yaml", nestedDirectory), shouldFileExist);
     }
 
-    private String buildFilePath(String component, String fileName, String nestedDirectory){
+    private String buildFilePath(String component, String fileName, String nestedDirectory) {
         String result = String.format("%s/%s/", component, fileName);
-        if(nestedDirectory!=null){
+        if (nestedDirectory != null) {
             result = String.format("%s/%s", nestedDirectory, result);
         }
         return result;
@@ -96,7 +96,7 @@ class MicroconfigMainTest {
     private void checkFileExist(String filePath, boolean shouldFileExist) {
         File resultFile = new File(destinationDir, filePath);
         assertEquals(shouldFileExist, resultFile.exists());
-        if(shouldFileExist) {
+        if (shouldFileExist) {
             assertEquals("key: " + getName(resultFile), readFully(resultFile).trim());
         }
     }
