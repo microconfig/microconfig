@@ -3,8 +3,7 @@ package io.microconfig;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
 
 import static io.microconfig.MicroconfigParams.parse;
 import static java.util.Arrays.asList;
@@ -43,10 +42,7 @@ class MicroconfigParamsTest {
 
     @Test
     void envs() {
-        List<String> envs = new ArrayList<>(params.environments());
-        assertEquals(2, envs.size());
-        assertEquals("dev", envs.get(0));
-        assertEquals("test", envs.get(1));
+        assertEquals(new LinkedHashSet<>(asList("dev","test")), params.environments());
     }
 
     @Test
