@@ -61,6 +61,6 @@ public class MicroconfigParams {
     }
 
     public boolean isSingleEnvBuild() {
-        return parser.value("e") != null && !parser.contains("envs");
+        return parser.contains("e") && !parser.contains("envs");
     }
 }
