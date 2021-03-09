@@ -1,6 +1,5 @@
 package io.microconfig;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -100,11 +99,5 @@ class MicroconfigMainTest {
         if(shouldFileExist) {
             assertEquals("key: " + getName(resultFile), readFully(resultFile).trim());
         }
-    }
-
-    @Ignore
-    @Test
-    void should_throw_error_if_env_and_envs_both_empty(){
-        //TODO would be good to test that an exception occurrs when env and envs are both empty
     }
 }
