@@ -48,8 +48,4 @@ public class CollectionUtils {
     public static <T> Set<T> setOf(T... t) {
         return new LinkedHashSet<>(asList(t));
     }
-
-    public static boolean isCollectionEmpty(Collection c){
-        return c==null || c.isEmpty();
-    }
 }
