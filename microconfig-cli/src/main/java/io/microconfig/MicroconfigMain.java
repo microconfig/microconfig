@@ -75,7 +75,7 @@ public class MicroconfigMain {
 
         envsToBuild.forEach(e -> {
             long startTime = currentTimeMillis();
-            String filePath = envsToBuild.size()>1 ? String.format("%s/%s", destinationDir, e) : destinationDir;
+            String filePath = envsToBuild.size() > 1 ? destinationDir + "/" + e : destinationDir;
             MicroconfigRunner runner = new MicroconfigRunner(rootDir, new File(filePath));
             Properties properties = runner.buildProperties(e, groups, services);
             if (jsonOutput) {
