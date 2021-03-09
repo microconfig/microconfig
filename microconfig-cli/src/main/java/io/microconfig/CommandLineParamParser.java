@@ -22,9 +22,9 @@ public class CommandLineParamParser {
             if (!key.startsWith("-")) {
                 printErrorAndExit("key '" + key + "' must start with -");
             }
-
             params.put(key.substring(1), value);
         }
+
         return new CommandLineParamParser(params);
     }
 
@@ -52,7 +52,7 @@ public class CommandLineParamParser {
         throw new AssertionError("Impossible");
     }
 
-    private static void printErrorAndExit(String npeMessage) {
+    public static void printErrorAndExit(String npeMessage) {
         error(npeMessage);
         System.exit(-1);
     }

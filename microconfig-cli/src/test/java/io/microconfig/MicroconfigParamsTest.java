@@ -3,22 +3,27 @@ package io.microconfig;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.LinkedHashSet;
 
 import static io.microconfig.MicroconfigParams.parse;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MicroconfigParamsTest {
     MicroconfigParams params = parse(
             "-r", "configs/repo",
             "-d", "destination",
             "-e", "dev",
+            "-envs", "dev, test",
             "-g", "g1,g2",
             "-s", "s1, s2",
             "-output", "json"
     );
     MicroconfigParams empty = MicroconfigParams.parse();
+    MicroconfigParams singleEnvBuild = parse("-e", "dev");
 
     @Test
     void rootDir() {
@@ -27,13 +32,18 @@ class MicroconfigParamsTest {
 
     @Test
     void destinationDir() {
-        assertEquals(new File("destination"), params.destinationDir());
-        assertEquals(new File("build"), empty.destinationDir());
+        assertEquals("destination", params.destinationDir());
+        assertEquals("build", empty.destinationDir());
     }
 
     @Test
     void env() {
-        assertEquals("dev", params.env());
+        assertEquals("dev", params.environments().stream().findFirst().get());
+    }
+
+    @Test
+    void envs() {
+        assertEquals(new LinkedHashSet<>(asList("dev", "test")), params.environments());
     }
 
     @Test
@@ -57,5 +67,11 @@ class MicroconfigParamsTest {
     @Test
     void testVersion() {
         assertTrue(parse("-v").version());
+    }
+
+    @Test
+    void isSingleEnvBuild() {
+        assertFalse(params.isSingleEnvBuild());
+        assertTrue(singleEnvBuild.isSingleEnvBuild());
     }
 }
