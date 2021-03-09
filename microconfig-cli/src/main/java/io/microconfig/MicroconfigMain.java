@@ -2,6 +2,7 @@ package io.microconfig;
 
 import io.microconfig.core.MicroconfigRunner;
 import io.microconfig.core.properties.Properties;
+import io.microconfig.core.properties.serializers.ConfigResult;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 
@@ -13,13 +14,9 @@ import java.util.Set;
 import static io.microconfig.core.properties.serializers.ConfigResult.toJson;
 import static io.microconfig.core.properties.serializers.PropertySerializers.asConfigResult;
 import static io.microconfig.utils.IoUtils.readClasspathResource;
-import static io.microconfig.utils.Logger.announce;
-import static io.microconfig.utils.Logger.enableLogger;
-import static io.microconfig.utils.Logger.error;
-import static io.microconfig.utils.Logger.info;
+import static io.microconfig.utils.Logger.*;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.System.exit;
-import static java.lang.System.out;
 import static java.util.stream.Collectors.toCollection;
 
 /**
@@ -56,7 +53,9 @@ public class MicroconfigMain {
         boolean jsonOutput = params.jsonOutput();
         boolean isSingleEnvBuild = params.isSingleEnvBuild();
 
-        new MicroconfigMain(rootDir, destinationDir, environments, groups, services, stacktrace, jsonOutput, isSingleEnvBuild).build();
+        new MicroconfigMain(rootDir, destinationDir, environments, groups, services,
+                stacktrace, jsonOutput, isSingleEnvBuild)
+                .build();
     }
 
     private void build() {
@@ -64,39 +63,37 @@ public class MicroconfigMain {
             enableLogger(!jsonOutput);
             doBuild();
         } catch (RuntimeException e) {
-            if (stacktrace || e.getMessage() == null) {
-                throw e;
-            }
+            if (stacktrace || e.getMessage() == null) throw e;
             error(e.getMessage());
             exit(-1);
         }
     }
 
     private void doBuild() {
-        Set<String> envsToBuild = chooseEnvironments();
-
-        envsToBuild.forEach(e -> {
+        environmentsToBuild().forEach(env -> {
             long startTime = currentTimeMillis();
-            String filePath = isSingleEnvBuild ? destinationDir : destinationDir + "/" + e;
-            MicroconfigRunner runner = new MicroconfigRunner(rootDir, new File(filePath));
-            Properties properties = runner.buildProperties(e, groups, services);
+            String resultDestinationDir = isSingleEnvBuild ? destinationDir : destinationDir + "/" + env;
+            MicroconfigRunner runner = new MicroconfigRunner(rootDir, new File(resultDestinationDir));
+            Properties properties = runner.buildProperties(env, groups, services);
             if (jsonOutput) {
-                out.println(toJson(properties.save(asConfigResult())));
+                List<ConfigResult> results = properties.save(asConfigResult());
+                System.out.println(toJson(results));
             } else {
                 properties.save(runner.toFiles());
             }
-            announce("\nGenerated [" + e + "] configs in " + (currentTimeMillis() - startTime) + "ms");
+            announce("\nGenerated [" + env + "] configs in " + (currentTimeMillis() - startTime) + "ms");
         });
     }
 
-    private Set<String> chooseEnvironments() {
-        MicroconfigRunner runner = new MicroconfigRunner(rootDir, null);
+    private Set<String> environmentsToBuild() {
         if (!environments.contains("*")) {
             return environments.stream()
                     .filter(e -> !e.startsWith("!"))
                     .collect(toCollection(LinkedHashSet::new));
         }
-        return runner.getMicroconfig()
+
+        return new MicroconfigRunner(rootDir, new File(destinationDir))
+                .getMicroconfig()
                 .environments()
                 .environmentNames()
                 .stream()
@@ -105,7 +102,6 @@ public class MicroconfigMain {
     }
 
     private static void printVersion() {
-        String version = readClasspathResource("version.properties").split("\n")[0].split("=")[1].trim();
-        info(version);
+        info(readClasspathResource("version.properties").split("\n")[0].split("=")[1].trim());
     }
 }

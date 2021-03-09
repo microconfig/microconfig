@@ -8,9 +8,7 @@ import java.util.LinkedHashSet;
 import static io.microconfig.MicroconfigParams.parse;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class MicroconfigParamsTest {
     MicroconfigParams params = parse(
@@ -38,7 +36,7 @@ class MicroconfigParamsTest {
 
     @Test
     void env() {
-        assertEquals("dev", params.environments().stream().findFirst().get());
+        assertEquals("dev", params.environments().iterator().next());
     }
 
     @Test
