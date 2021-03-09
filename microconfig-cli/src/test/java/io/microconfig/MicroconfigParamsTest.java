@@ -42,7 +42,7 @@ class MicroconfigParamsTest {
 
     @Test
     void envs() {
-        assertEquals(new LinkedHashSet<>(asList("dev","test")), params.environments());
+        assertEquals(new LinkedHashSet<>(asList("dev", "test")), params.environments());
     }
 
     @Test
