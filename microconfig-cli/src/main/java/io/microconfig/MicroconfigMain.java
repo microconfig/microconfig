@@ -38,6 +38,7 @@ public class MicroconfigMain {
     private final List<String> services;
     private final boolean stacktrace;
     private final boolean jsonOutput;
+    private final boolean isSingleEnvBuild;
 
     public static void main(String... args) {
         val params = MicroconfigParams.parse(args);
@@ -53,8 +54,9 @@ public class MicroconfigMain {
         List<String> services = params.services();
         boolean stacktrace = params.stacktrace();
         boolean jsonOutput = params.jsonOutput();
+        boolean isSingleEnvBuild = params.isSingleEnvBuild();
 
-        new MicroconfigMain(rootDir, destinationDir, environments, groups, services, stacktrace, jsonOutput).build();
+        new MicroconfigMain(rootDir, destinationDir, environments, groups, services, stacktrace, jsonOutput, isSingleEnvBuild).build();
     }
 
     private void build() {
@@ -75,7 +77,7 @@ public class MicroconfigMain {
 
         envsToBuild.forEach(e -> {
             long startTime = currentTimeMillis();
-            String filePath = envsToBuild.size() > 1 ? destinationDir + "/" + e : destinationDir;
+            String filePath = isSingleEnvBuild ? destinationDir : destinationDir + "/" + e;
             MicroconfigRunner runner = new MicroconfigRunner(rootDir, new File(filePath));
             Properties properties = runner.buildProperties(e, groups, services);
             if (jsonOutput) {

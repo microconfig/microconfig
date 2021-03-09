@@ -23,6 +23,7 @@ class MicroconfigParamsTest {
             "-output", "json"
     );
     MicroconfigParams empty = MicroconfigParams.parse();
+    MicroconfigParams singleEnvBuild = parse("-e", "dev");
 
     @Test
     void rootDir() {
@@ -66,5 +67,11 @@ class MicroconfigParamsTest {
     @Test
     void testVersion() {
         assertTrue(parse("-v").version());
+    }
+
+    @Test
+    void isSingleEnvBuild() {
+        assertFalse(params.isSingleEnvBuild());
+        assertTrue(singleEnvBuild.isSingleEnvBuild());
     }
 }
