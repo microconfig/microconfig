@@ -57,7 +57,7 @@ public class ConfigTypeFilters {
         if(resultFileExtension==null){
             return types -> types;
         } else if(!Pattern.matches("\\G\\.[^\\.]\\S+", resultFileExtension)){
-            throw new IllegalArgumentException("File extension [" + resultFileExtension + "] is not valid. Must start with a . and not be empty");
+            throw new IllegalArgumentException("Result file extension [" + resultFileExtension + "] is not valid. Must start with a . and not be empty or contain spaces");
         }
         return types -> types.stream()
                 .filter(t -> t.getResultFileExtension().equals(resultFileExtension))

@@ -37,7 +37,7 @@ public class ConfigTypeImpl implements ConfigType {
         }
 
         if(resultFileExtension!=null && !Pattern.matches("\\G\\.[^\\.]\\S+", resultFileExtension)){
-            throw new IllegalArgumentException("Result file extensions must start with '.' and not be empty if provided. Current: " + resultFileExtension);
+            throw new IllegalArgumentException("Result file extension [" + resultFileExtension + "] is not valid. Must start with a . and not be empty or contain spaces");
         }
 
         return new ConfigTypeImpl(name, sourceExtensions, resultFileName, resultFileExtension);

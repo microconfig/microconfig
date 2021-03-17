@@ -90,6 +90,8 @@ class ConfigTypeFiltersTest {
         assertThrows(IllegalArgumentException.class, () -> configTypeWithResultFileExtension("."));
         assertThrows(IllegalArgumentException.class, () -> configTypeWithResultFileExtension(". "));
         assertThrows(IllegalArgumentException.class, () -> configTypeWithResultFileExtension(".."));
+        assertThrows(IllegalArgumentException.class, () -> configTypeWithResultFileExtension(" .almostgood"));
+        assertThrows(IllegalArgumentException.class, () -> configTypeWithResultFileExtension(".so close"));
     }
 
     private ConfigType type(String name) {
