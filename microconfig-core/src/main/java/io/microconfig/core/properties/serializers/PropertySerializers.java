@@ -1,5 +1,6 @@
 package io.microconfig.core.properties.serializers;
 
+import io.microconfig.core.configtypes.ConfigType;
 import io.microconfig.core.configtypes.ConfigTypeImpl;
 import io.microconfig.core.environments.EnvironmentRepository;
 import io.microconfig.core.properties.ConfigFormat;
@@ -38,7 +39,7 @@ public class PropertySerializers {
 
     public static PropertySerializer<File> toFileIn(File dir, BiConsumer<File, Collection<Property>> listener) {
         return (properties, templates, configType, componentName, __) -> {
-            Function<ConfigFormat, File> getResultFile = cf -> new File(dir, componentName + "/" + configType.getResultFileName() + cf.extension());
+            Function<ConfigFormat, File> getResultFile = cf -> new File(dir, componentName + "/" + configType.getResultFileName() + getFileExtension(cf, configType));
 
             File resultFile = getResultFile.apply(extensionByConfigFormat(properties));
             listener.accept(resultFile, properties);
@@ -52,6 +53,12 @@ public class PropertySerializers {
             }
             return resultFile;
         };
+    }
+
+    private static String getFileExtension(ConfigFormat configFormat, ConfigType configType){
+        return configType.getResultFileExtension() == null
+                ? configFormat.extension()
+                : configType.getResultFileExtension();
     }
 
     private static void copyTemplate(Template template, String componentName) {

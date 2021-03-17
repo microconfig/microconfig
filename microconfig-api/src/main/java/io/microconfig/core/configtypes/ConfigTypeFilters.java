@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import static io.microconfig.utils.CollectionUtils.setOf;
 import static io.microconfig.utils.FileUtils.getExtension;
@@ -50,6 +51,19 @@ public class ConfigTypeFilters {
                 .findFirst()
                 .map(Collections::singletonList)
                 .orElseThrow(() -> new IllegalArgumentException("Unsupported config extension '" + ext + "'"));
+    }
+
+    public static ConfigTypeFilter configTypeWithResultFileExtension(String resultFileExtension){
+        if(resultFileExtension==null){
+            return types -> types;
+        } else if(!Pattern.matches("\\G\\.[^\\.]\\S+", resultFileExtension)){
+            throw new IllegalArgumentException("File extension [" + resultFileExtension + "] is not valid. Must start with a . and not be empty");
+        }
+        return types -> types.stream()
+                .filter(t -> t.getResultFileExtension().equals(resultFileExtension))
+                .findFirst()
+                .map(Collections::singletonList)
+                .orElseThrow(() -> new IllegalArgumentException("Unsupported result file extension ["+resultFileExtension+"]"));
     }
 
     private static void validateNames(Set<String> names, List<ConfigType> supportedTypes) {

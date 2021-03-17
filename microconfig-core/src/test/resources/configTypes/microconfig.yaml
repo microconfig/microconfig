@@ -23,3 +23,9 @@ configTypes:
   - secret
   - log4j
   - log4j2
+
+  - custom:
+      resultFileName: customName
+      resultFileExtension: .cust
+      sourceExtensions:
+        - .custom

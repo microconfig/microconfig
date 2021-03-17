@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static io.microconfig.core.configtypes.ConfigTypeImpl.byName;
-import static io.microconfig.core.configtypes.ConfigTypeImpl.byNameAndExtensions;
+import static io.microconfig.core.configtypes.ConfigTypeImpl.byNameAndExtensionsAndResultFileExtension;
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.StreamUtils.forEach;
 import static java.util.Collections.emptyList;
@@ -52,6 +52,7 @@ public class CustomConfigTypeRepository implements ConfigTypeRepository {
         private static final String CONFIG_TYPES = "configTypes";
         private static final String SOURCE_EXTENSIONS = "sourceExtensions";
         private static final String RESULT_FILE_NAME = "resultFileName";
+        private static final String RESULT_FILE_EXTENSION = "resultFileExtension";
 
         private final String content;
 
@@ -73,8 +74,9 @@ public class CustomConfigTypeRepository implements ConfigTypeRepository {
             Map<String, Object> attributes = (Map<String, Object>) configType.get(type);
             Set<String> sourceExtensions = attributes.containsKey(SOURCE_EXTENSIONS) ? new LinkedHashSet<>((List<String>) attributes.get(SOURCE_EXTENSIONS)) : singleton(type);
             String resultFileName = (String) attributes.getOrDefault(RESULT_FILE_NAME, type);
+            String resultFileExtension = (String) attributes.getOrDefault(RESULT_FILE_EXTENSION, null);
 
-            return byNameAndExtensions(type, sourceExtensions, resultFileName);
+            return byNameAndExtensionsAndResultFileExtension(type, sourceExtensions, resultFileName, resultFileExtension);
         }
     }
 }

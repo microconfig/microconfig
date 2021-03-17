@@ -27,4 +27,5 @@ public enum StandardConfigType implements ConfigType {
     private final String name;
     private final Set<String> sourceExtensions;
     private final String resultFileName;
+    private String resultFileExtension;
 }

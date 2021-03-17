@@ -8,4 +8,6 @@ public interface ConfigType {
     Set<String> getSourceExtensions();
 
     String getResultFileName();
+
+    String getResultFileExtension();
 }
