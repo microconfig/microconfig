@@ -45,10 +45,12 @@ public class PropertySerializers {
             if (properties.isEmpty()) {
                 delete(resultFile);
                 delete(getResultFile.apply(PROPERTIES));
-            } else {
+            }
+
+            templates.forEach(t -> copyTemplate(t, componentName));
+            if (!properties.isEmpty()) {
                 configIo().writeTo(resultFile).write(properties);
                 info("Generated " + componentName + "/" + resultFile.getName());
-                templates.forEach(t -> copyTemplate(t, componentName));
             }
             return resultFile;
         };
