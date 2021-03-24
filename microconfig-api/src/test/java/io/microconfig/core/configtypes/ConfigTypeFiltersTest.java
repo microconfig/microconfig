@@ -70,30 +70,6 @@ class ConfigTypeFiltersTest {
         assertThrows(IllegalArgumentException.class, () -> configTypeWithExtensionOf(badFile).selectTypes(supportedTypes));
     }
 
-    @Test
-    void selectByResultFileExtension(){
-        assertEquals(
-                asList(app),
-                configTypeWithResultFileExtension(".app").selectTypes(supportedTypes)
-        );
-        assertEquals(
-                supportedTypes,
-                configTypeWithResultFileExtension(null).selectTypes(supportedTypes)
-        );
-    }
-
-    @Test
-    void failOnInvalidResultFileExtensions(){
-        assertThrows(IllegalArgumentException.class, () -> configTypeWithResultFileExtension("nodot"));
-        assertThrows(IllegalArgumentException.class, () -> configTypeWithResultFileExtension(""));
-        assertThrows(IllegalArgumentException.class, () -> configTypeWithResultFileExtension(" "));
-        assertThrows(IllegalArgumentException.class, () -> configTypeWithResultFileExtension("."));
-        assertThrows(IllegalArgumentException.class, () -> configTypeWithResultFileExtension(". "));
-        assertThrows(IllegalArgumentException.class, () -> configTypeWithResultFileExtension(".."));
-        assertThrows(IllegalArgumentException.class, () -> configTypeWithResultFileExtension(" .almostgood"));
-        assertThrows(IllegalArgumentException.class, () -> configTypeWithResultFileExtension(".so close"));
-    }
-
     private ConfigType type(String name) {
         ConfigType ct = mock(ConfigType.class);
         when(ct.getName()).thenReturn(name);

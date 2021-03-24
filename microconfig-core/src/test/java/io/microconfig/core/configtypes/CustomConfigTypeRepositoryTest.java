@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.microconfig.core.ClasspathReader.classpathFile;
+import static io.microconfig.core.configtypes.ConfigTypeImpl.byNameAndExtensionsAndResultFileExtension;
 import static io.microconfig.core.configtypes.CustomConfigTypeRepository.findDescriptorIn;
 import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,7 +18,12 @@ class CustomConfigTypeRepositoryTest {
         ConfigTypeRepository customRepo = findDescriptorIn(classpathFile("configTypes"), new DumpedFsReader());
 
         List<ConfigType> expected = new ArrayList<>(new StandardConfigTypeRepository().getConfigTypes());
-        expected.add(ConfigTypeImpl.byNameAndExtensionsAndResultFileExtension("custom", singleton(".custom"),"customName",".cust"));
+        expected.add(byNameAndExtensionsAndResultFileExtension(
+                "custom",
+                singleton(".custom"),
+                "customName",
+                ".cust"
+        ));
 
         List<ConfigType> actual = customRepo.getConfigTypes();
 

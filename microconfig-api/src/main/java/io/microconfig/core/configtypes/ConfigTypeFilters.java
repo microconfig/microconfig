@@ -53,19 +53,6 @@ public class ConfigTypeFilters {
                 .orElseThrow(() -> new IllegalArgumentException("Unsupported config extension '" + ext + "'"));
     }
 
-    public static ConfigTypeFilter configTypeWithResultFileExtension(String resultFileExtension){
-        if(resultFileExtension==null){
-            return types -> types;
-        } else if(!Pattern.matches("\\G\\.[^\\.]\\S+", resultFileExtension)){
-            throw new IllegalArgumentException("Result file extension [" + resultFileExtension + "] is not valid. Must start with a . and not be empty or contain spaces");
-        }
-        return types -> types.stream()
-                .filter(t -> t.getResultFileExtension().equals(resultFileExtension))
-                .findFirst()
-                .map(Collections::singletonList)
-                .orElseThrow(() -> new IllegalArgumentException("Unsupported result file extension ["+resultFileExtension+"]"));
-    }
-
     private static void validateNames(Set<String> names, List<ConfigType> supportedTypes) {
         Set<String> supportedNames = supportedTypes.stream().map(ConfigType::getName).collect(toSet());
         List<String> unsupportedNames = filter(names, n -> !supportedNames.contains(n));

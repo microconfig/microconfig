@@ -39,15 +39,16 @@ public class PropertySerializers {
 
     public static PropertySerializer<File> toFileIn(File dir, BiConsumer<File, Collection<Property>> listener) {
         return (properties, templates, configType, componentName, __) -> {
-            Function<ConfigFormat, File> getResultFile = cf -> new File(dir, componentName + "/" + configType.getResultFileName() + getFileExtension(cf, configType));
+            Function<ConfigFormat, File> getResultFile = cf -> new File(dir, componentName + "/" + configType.getResultFileName() + getFileExtension(configType, cf));
 
-            File resultFile = getResultFile.apply(extensionByConfigFormat(properties));
+            ConfigFormat cf = extensionByConfigFormat(properties);
+            File resultFile = getResultFile.apply(cf);
             listener.accept(resultFile, properties);
             if (properties.isEmpty()) {
                 delete(resultFile);
                 delete(getResultFile.apply(PROPERTIES));
             } else {
-                configIo().writeTo(resultFile).write(properties);
+                configIo(cf).writeTo(resultFile).write(properties);
                 info("Generated " + componentName + "/" + resultFile.getName());
                 templates.forEach(t -> copyTemplate(t, componentName));
             }
@@ -55,10 +56,9 @@ public class PropertySerializers {
         };
     }
 
-    private static String getFileExtension(ConfigFormat configFormat, ConfigType configType){
-        return configType.getResultFileExtension() == null
-                ? configFormat.extension()
-                : configType.getResultFileExtension();
+    private static String getFileExtension(ConfigType configType, ConfigFormat configFormat) {
+        String resultFileExtension = configType.getResultFileExtension();
+        return resultFileExtension != null ? resultFileExtension : configFormat.extension();
     }
 
     private static void copyTemplate(Template template, String componentName) {
@@ -76,8 +76,7 @@ public class PropertySerializers {
     }
 
     private static ConfigFormat extensionByConfigFormat(Collection<Property> properties) {
-        return properties.isEmpty() || properties.stream().anyMatch(p -> p.getConfigFormat() == YAML) ?
-                YAML : PROPERTIES;
+        return properties.isEmpty() || properties.stream().anyMatch(p -> p.getConfigFormat() == YAML) ? YAML : PROPERTIES;
     }
 
     public static PropertySerializer<File> withLegacySupport(PropertySerializer<File> serializer,
@@ -86,7 +85,7 @@ public class PropertySerializers {
             if (configType.getName().equals(APPLICATION.getName())) {
                 File envSource = environmentRepository.getByName(environment).getSource();
                 if (envSource != null && envSource.toString().endsWith(".json")) {
-                    configType = new ConfigTypeImpl(configType.getName(), configType.getSourceExtensions(), "service");
+                    configType = new ConfigTypeImpl(configType.getName(), configType.getSourceExtensions(), "service", null);
                 }
             }
 
