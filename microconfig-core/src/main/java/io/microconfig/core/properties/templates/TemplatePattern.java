@@ -14,7 +14,7 @@ import static java.util.regex.Pattern.compile;
 @Getter
 @Builder
 public class TemplatePattern {
-    public static final Pattern DEFAULT_PATTERN =
+    public static final Pattern DEFAULT_PLACEHOLDER_PATTERN =
             compile("(?<escaped>\\\\)?" +
                     "(?<placeholder>\\$\\{(?<name>.+?)" +
                     "(?::(?<defuvalue>.*?))??})"
@@ -25,8 +25,14 @@ public class TemplatePattern {
 
     public static TemplatePattern defaultPattern() {
         return TemplatePattern.builder()
-                .templatePrefixes(asList("microconfig.template.", "mc.template.", "mc.mustache.", "microconfig.mustache."))
-                .placeholderPattern(DEFAULT_PATTERN)
+                .templatePrefixes(asList(
+                        "microconfig.template.",
+                        "microconfig.mustache.",
+                        "microconfig.file.",
+                        "mc.template.",
+                        "mc.mustache.",
+                        "mc.file."
+                )).placeholderPattern(DEFAULT_PLACEHOLDER_PATTERN)
                 .build();
     }
 

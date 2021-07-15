@@ -57,7 +57,7 @@ public class PropertySerializers {
     }
 
     private static void copyTemplate(Template template, String componentName) {
-        write(template.getDestination(), template.getContent());
+        write(template.getDestination().toPath(), template.getContentAsBytes());
         copyPermissions(template.getSource().toPath(), template.getDestination().toPath());
         info("Copied '" + componentName + "' template ../"
                 + template.getSource().getParentFile().getName()

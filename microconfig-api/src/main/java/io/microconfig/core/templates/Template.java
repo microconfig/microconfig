@@ -10,4 +10,6 @@ public interface Template {
     String getFileName();
 
     String getContent();
+
+    byte[] getContentAsBytes();
 }

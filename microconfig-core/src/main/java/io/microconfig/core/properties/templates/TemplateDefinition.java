@@ -30,10 +30,16 @@ public class TemplateDefinition {
     private File toFile;
 
     public Template resolve(Resolver resolver, TypedProperties properties) {
+        if (isBinaryTemplate()) return toBinaryTemplate(resolver, properties);
+        return toStringTemplate(resolver, properties);
+    }
+
+    private StringTemplate toStringTemplate(Resolver resolver,
+                                            TypedProperties properties) {
         DeclaringComponent currentComponent = properties.getDeclaringComponent();
-        File destinationFile = destinationFileFor(currentComponent, resolver);
         try {
-            return toTemplate(destinationFile)
+            File destinationFile = destinationFileFor(currentComponent, resolver);
+            return toStringTemplate(destinationFile)
                     .resolveBy(resolver, currentComponent)
                     .postProcessContent(templateContentPostProcessor, templateType, properties);
         } catch (RuntimeException e) {
@@ -45,11 +51,21 @@ public class TemplateDefinition {
         }
     }
 
-    private TemplateImpl toTemplate(File destination) {
+    private Template toBinaryTemplate(Resolver resolver, TypedProperties properties) {
+        DeclaringComponent currentComponent = properties.getDeclaringComponent();
+        File destinationFile = destinationFileFor(currentComponent, resolver);
+        return new BinaryTemplate(templateName, getTemplateFile(), destinationFile);
+    }
+
+    private boolean isBinaryTemplate() {
+        return templateType.equals("file");
+    }
+
+    private StringTemplate toStringTemplate(File destination) {
         if (!isCorrect()) {
             throw new IllegalStateException("Incomplete template def: " + this);
         }
-        return new TemplateImpl(templateName, getTemplateFile(), destination, templatePattern.getPlaceholderPattern());
+        return new StringTemplate(templateName, getTemplateFile(), destination, templatePattern.getPlaceholderPattern());
     }
 
     private boolean isCorrect() {
@@ -60,6 +76,9 @@ public class TemplateDefinition {
         if (!fromFile.isAbsolute()) {
             throw new IllegalArgumentException("Using relative path for template '" + fromFile + "'. "
                     + "Template path must be absolute. Consider using '${this@configRoot}\\..' or '${component_name@configDir}\\..' to build absolute path");
+        }
+        if (!fromFile.exists() || !fromFile.isFile()) {
+            throw new IllegalStateException("Missing template file: " + fromFile);
         }
         return fromFile;
     }

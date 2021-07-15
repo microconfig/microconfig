@@ -36,9 +36,13 @@ public class FileUtils {
     }
 
     public static void write(Path file, String content, OpenOption... options) {
+        write(file, content.getBytes(), options);
+    }
+
+    public static void write(Path file, byte[] content, OpenOption... options) {
         try {
             createDirectories(file.getParent());
-            Files.write(file, content.getBytes(), options);
+            Files.write(file, content, options);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

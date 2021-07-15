@@ -18,7 +18,7 @@ import static io.microconfig.core.properties.templates.TemplatePattern.defaultPa
 import static io.microconfig.utils.StringUtils.toUnixPathSeparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class TemplateImplTest {
+class StringTemplateTest {
     DeclaringComponent root = new DeclaringComponentImpl("app", "th-server", "uat");
     Pattern templatePattern = defaultPattern().getPlaceholderPattern();
     File source = new File("source");
@@ -48,14 +48,14 @@ class TemplateImplTest {
 
     @Test
     void templateNameWithoutBrackets() {
-        TemplateImpl template = new TemplateImpl("name[12]", source, destination, TemplatePattern.DEFAULT_PATTERN, "content");
+        StringTemplate template = new StringTemplate("name[12]", source, destination, TemplatePattern.DEFAULT_PLACEHOLDER_PATTERN, "content");
         assertEquals("name", template.templateNameWithoutBrackets());
     }
 
     @Test
     void testEnvProperties() {
         Entry<String, String> entry = System.getenv().entrySet().iterator().next();
-        String result = new TemplateImpl("name", source, destination, templatePattern, "${env@" + entry.getKey() + "}").
+        String result = new StringTemplate("name", source, destination, templatePattern, "${env@" + entry.getKey() + "}").
                 resolveBy(resolver(), root).getContent();
         UnaryOperator<String> escape = v -> v.replaceAll("\\\\+", "/");
         assertEquals(escape.apply(entry.getValue()), escape.apply(result));
@@ -68,7 +68,7 @@ class TemplateImplTest {
 
     @Test
     void testMultiLinePlaceholderInTemplate() {
-        String result = new TemplateImpl("name", classpathFile("templates/templateWithMultiLines.yaml"), destination, templatePattern)
+        String result = new StringTemplate("name", classpathFile("templates/templateWithMultiLines.yaml"), destination, templatePattern)
                 .resolveBy(resolver(), new DeclaringComponentImpl("app", "mergeLists", "some"))
                 .getContent();
         assertEquals("key1:\n" +
@@ -92,7 +92,7 @@ class TemplateImplTest {
     }
 
     private void resolve(String placeholder, String expected) {
-        TemplateImpl template = new TemplateImpl("name", source, destination, templatePattern, placeholder);
+        StringTemplate template = new StringTemplate("name", source, destination, templatePattern, placeholder);
         String result = template.resolveBy(resolver(), root).getContent();
         assertEquals(expected, result);
     }
