@@ -1,6 +1,7 @@
 package io.microconfig.core.properties.serializers;
 
 import com.google.gson.Gson;
+import io.microconfig.core.properties.templates.BinaryTemplate;
 import io.microconfig.core.templates.Template;
 import lombok.Data;
 import lombok.Getter;
@@ -52,14 +53,16 @@ public class ConfigResult {
     public static class FileResult {
         private final String configType;
         private final String fileName;
-        private final String content;
+        private final Object content;
 
         FileResult(ConfigResult configResult) {
             this(configResult.getConfigType(), configResult.getFileName(), configResult.getContent());
         }
 
         public FileResult(Template template) {
-            this("template", template.getFileName(), template.getContent());
+            this("template", template.getFileName(),
+                    template instanceof BinaryTemplate ? template.getContentAsBytes() : template.getContent()
+            );
         }
     }
 }

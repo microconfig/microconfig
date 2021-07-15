@@ -18,7 +18,7 @@ import static io.microconfig.utils.StringUtils.addOffsets;
 import static java.util.regex.Matcher.quoteReplacement;
 
 @RequiredArgsConstructor
-public class TemplateImpl implements Template {
+public class StringTemplate implements Template {
     private final String templateName;
     @Getter
     private final File source;
@@ -29,10 +29,7 @@ public class TemplateImpl implements Template {
     @Getter
     private final String content;
 
-    TemplateImpl(String templateName, File source, File destination, Pattern pattern) {
-        if (!source.exists() || !source.isFile()) {
-            throw new IllegalStateException("Missing template file: " + source);
-        }
+    StringTemplate(String templateName, File source, File destination, Pattern pattern) {
         this.templateName = templateName;
         this.source = source;
         this.destination = destination;
@@ -44,7 +41,7 @@ public class TemplateImpl implements Template {
         return findPlaceholderIn(value).isPresent();
     }
 
-    TemplateImpl resolveBy(Resolver resolver, DeclaringComponent currentComponent) {
+    StringTemplate resolveBy(Resolver resolver, DeclaringComponent currentComponent) {
         String replaced = content.replace("${this@templateName}", templateNameWithoutBrackets());
         Matcher m = pattern.matcher(replaced);
         if (!m.find()) return withContent(replaced);
@@ -62,8 +59,8 @@ public class TemplateImpl implements Template {
         return templateName.replaceFirst("\\[.+]$", "");
     }
 
-    TemplateImpl postProcessContent(TemplateContentPostProcessor postProcessor,
-                                    String templateType, TypedProperties properties) {
+    StringTemplate postProcessContent(TemplateContentPostProcessor postProcessor,
+                                      String templateType, TypedProperties properties) {
         return withContent(
                 postProcessor.process(templateType, source, content, properties)
         );
@@ -109,5 +106,10 @@ public class TemplateImpl implements Template {
     @Override
     public String getFileName() {
         return destination.getName();
+    }
+
+    @Override
+    public byte[] getContentAsBytes() {
+        return content.getBytes();
     }
 }
