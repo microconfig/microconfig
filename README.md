@@ -851,6 +851,17 @@ or the short version
 ``` 
 mc.template.logback: ${logback@configDir}/logback.mustache -> logger.xml
 ```
+## Copy binary files
+If you want to copy files as templates without placeholder resolving logic you can use the `mc.file.` prefix:
+``` 
+mc.file.someBinary: ${this@configDir}/cert.jks -> cert.jks
+``` 
+or
+```
+mc.file.someBinary:
+  fromFile: ${this@configDir}/cert.jks
+  toFile: cert.jks
+```
 
 # Environment descriptor
 As we discussed every service can have default and environment-specific configurations, also we can extract a common configuration to some components. 
