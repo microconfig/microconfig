@@ -1,7 +1,10 @@
 package io.microconfig.core.properties.resolvers.expression.functions;
 
+import java.io.File;
 import java.util.regex.Matcher;
 
+import static io.microconfig.utils.IoUtils.readAllBytes;
+import static io.microconfig.utils.IoUtils.readFully;
 import static java.lang.Math.min;
 import static java.util.Base64.getEncoder;
 import static java.util.regex.Pattern.compile;
@@ -17,7 +20,19 @@ public class CustomStringApi {
     }
 
     public static String base64(String line) {
-        return getEncoder().encodeToString(line.getBytes());
+        return base64(line.getBytes());
+    }
+
+    public static String base64(byte[] bytes) {
+        return getEncoder().encodeToString(bytes);
+    }
+
+    public static byte[] readFileAsBytes(String path) {
+        return readAllBytes(new File(path));
+    }
+
+    public static String readFile(String path) {
+        return readFully(new File(path));
     }
 
     public static String delete(String line, String toDelete) {

@@ -17,6 +17,7 @@ class CustomStringApiTest {
     @Test
     void testBase64() {
         assertEquals("aGVsbG8=", base64("hello"));
+        assertEquals("aGVsbG8=", base64("hello".getBytes()));
     }
 
     @Test
