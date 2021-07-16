@@ -1,10 +1,7 @@
 package io.microconfig.core.properties.resolvers.expression.functions;
 
-import java.io.File;
 import java.util.regex.Matcher;
 
-import static io.microconfig.utils.IoUtils.readAllBytes;
-import static io.microconfig.utils.IoUtils.readFully;
 import static java.lang.Math.min;
 import static java.util.Base64.getEncoder;
 import static java.util.regex.Pattern.compile;
