@@ -17,10 +17,10 @@ public class CustomStringApi {
     }
 
     public static String base64(String line) {
-        return base64(line.getBytes());
+        return bytesBase64(line.getBytes());
     }
 
-    public static String base64(byte[] bytes) {
+    public static String bytesBase64(byte[] bytes) {
         return getEncoder().encodeToString(bytes);
     }
 
