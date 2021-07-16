@@ -12,8 +12,7 @@ public class CustomIoApi {
 
     public static byte[] readBytesOrEmpty(String path) {
         File file = new File(path);
-        if (!file.exists()) return new byte[0];
-        return readAllBytes(file);
+        return file.exists() ? readAllBytes(file) : new byte[0];
     }
 
     public static String readString(String path) {
@@ -22,7 +21,6 @@ public class CustomIoApi {
 
     public static String readStringOrEmpty(String path) {
         File file = new File(path);
-        if (!file.exists()) return "";
-        return readFully(file);
+        return file.exists() ? readFully(file) : "";
     }
 }
