@@ -2,6 +2,8 @@ package io.microconfig.core.properties.resolvers.expression.functions;
 
 import org.junit.jupiter.api.Test;
 
+import static io.microconfig.core.properties.resolvers.expression.functions.CustomIoApi.readBytesOrEmpty;
+import static io.microconfig.core.properties.resolvers.expression.functions.CustomIoApi.readStringOrEmpty;
 import static io.microconfig.core.properties.resolvers.expression.functions.CustomStringApi.*;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;

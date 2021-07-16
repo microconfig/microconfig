@@ -3,6 +3,7 @@ package io.microconfig.core.properties.resolvers.expression;
 import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.ResolveException;
 import io.microconfig.core.properties.resolvers.RecursiveResolver;
+import io.microconfig.core.properties.resolvers.expression.functions.CustomIoApi;
 import io.microconfig.core.properties.resolvers.expression.functions.CustomStringApi;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ import static java.util.regex.Pattern.compile;
 @RequiredArgsConstructor
 public class ExpressionResolver implements RecursiveResolver {
     private final Pattern expressionPattern = compile("#\\{(?<value>[^{]+?)}");
-    private final ExpressionEvaluator evaluator = withFunctionsFrom(CustomStringApi.class, System.class);
+    private final ExpressionEvaluator evaluator = withFunctionsFrom(CustomStringApi.class, CustomIoApi.class, System.class);
 
     @Override
     public Optional<Statement> findStatementIn(CharSequence line) {

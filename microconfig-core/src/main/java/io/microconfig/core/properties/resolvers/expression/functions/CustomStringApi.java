@@ -45,24 +45,4 @@ public class CustomStringApi {
         if (i < 0) return "";
         return line.substring(i + substring.length());
     }
-
-    public static byte[] readBytes(String path) {
-        return readAllBytes(new File(path));
-    }
-
-    public static byte[] readBytesOrEmpty(String path) {
-        File file = new File(path);
-        if (!file.exists()) return new byte[0];
-        return readAllBytes(file);
-    }
-
-    public static String readString(String path) {
-        return readFully(new File(path));
-    }
-
-    public static String readStringOrEmpty(String path) {
-        File file = new File(path);
-        if (!file.exists()) return "";
-        return readFully(file);
-    }
 }
