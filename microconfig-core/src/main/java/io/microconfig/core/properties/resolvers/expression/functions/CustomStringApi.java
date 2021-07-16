@@ -17,7 +17,11 @@ public class CustomStringApi {
     }
 
     public static String base64(String line) {
-        return getEncoder().encodeToString(line.getBytes());
+        return base64(line.getBytes());
+    }
+
+    public static String base64(byte[] bytes) {
+        return getEncoder().encodeToString(bytes);
     }
 
     public static String delete(String line, String toDelete) {
