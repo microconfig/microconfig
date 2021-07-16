@@ -3,6 +3,7 @@ package io.microconfig.core.properties.resolvers.expression.functions;
 import org.junit.jupiter.api.Test;
 
 import static io.microconfig.core.properties.resolvers.expression.functions.CustomStringApi.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CustomStringApiTest {
@@ -29,5 +30,11 @@ class CustomStringApiTest {
     void substring() {
         assertEquals("e.l.l.o", substringAfterFirst("h.e.l.l.o", "."));
         assertEquals("o", substringAfterLast("h.e.l.l.o", "."));
+    }
+
+    @Test
+    void testRead() {
+        assertArrayEquals(new byte[0], readBytesOrEmpty("missing"));
+        assertEquals("", readStringOrEmpty("missing"));
     }
 }
