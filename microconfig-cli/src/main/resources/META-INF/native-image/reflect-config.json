@@ -44,6 +44,10 @@
   "allPublicMethods":true
 },
 {
+  "name":"io.microconfig.core.properties.resolvers.expression.functions.CustomIoApi",
+  "allPublicMethods":true
+},
+{
   "name":"io.microconfig.core.properties.serializers.ConfigResult$FileResult",
   "allDeclaredFields":true
 },
