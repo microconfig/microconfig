@@ -8,8 +8,9 @@ import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
+import static io.microconfig.utils.CollectionUtils.join;
+import static io.microconfig.utils.CollectionUtils.minus;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Stream.concat;
 
 @RequiredArgsConstructor
 public class EnvProfilesComponentGraph implements ComponentGraph {
@@ -20,9 +21,7 @@ public class EnvProfilesComponentGraph implements ComponentGraph {
     public List<ConfigFile> getConfigFilesOf(String component, String environment, ConfigType configType) {
         List<ConfigFile> standard = delegate.getConfigFilesOf(component, environment, configType);
         List<ConfigFile> profiles = getConfigsFromProfiles(component, environment, configType);
-        return concat(standard.stream(), profiles.stream())
-                .distinct()
-                .collect(toList());
+        return join(profiles, minus(standard, profiles));
     }
 
     private List<ConfigFile> getConfigsFromProfiles(String component, String environment, ConfigType configType) {

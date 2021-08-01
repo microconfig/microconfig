@@ -6,6 +6,7 @@ import io.microconfig.core.properties.io.ConfigReader;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import java.io.File;
 import java.util.Collection;
@@ -23,6 +24,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.concat;
 
 @Getter
+@ToString(of = "file")
 @EqualsAndHashCode(of = "file")
 @RequiredArgsConstructor
 public class ConfigFile {
