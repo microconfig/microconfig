@@ -4,6 +4,7 @@ import io.microconfig.core.environments.ComponentFactory;
 import io.microconfig.core.environments.Environment;
 import io.microconfig.core.environments.EnvironmentImpl;
 import io.microconfig.core.properties.PropertiesFactory;
+import io.microconfig.core.properties.repository.Include;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -25,7 +26,7 @@ class EnvironmentDefinition {
     @Getter
     private final String ip;
     private final int portOffset;
-    private final List<String> profiles;
+    private final List<Include> profiles;
     private final EnvInclude envInclude;
     @Getter
     private final List<ComponentGroupDefinition> groups;

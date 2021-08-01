@@ -1,6 +1,7 @@
 package io.microconfig.core.environments.repository;
 
 import com.google.gson.Gson;
+import io.microconfig.core.properties.repository.Include;
 import io.microconfig.io.FsReader;
 import lombok.RequiredArgsConstructor;
 import org.yaml.snakeyaml.Yaml;
@@ -14,14 +15,15 @@ import static io.microconfig.core.environments.repository.ComponentDefinition.wi
 import static io.microconfig.utils.FileUtils.getName;
 import static io.microconfig.utils.StreamUtils.forEach;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 class EnvironmentFile {
+    private static final String INCLUDE = "include";
+    private static final String PROFILES = "profiles";
     private static final String IP = "ip";
     private static final String PORT_OFFSET = "portOffset";
-    private static final String PROFILES = "profiles";
-    private static final String INCLUDE = "include";
     private static final String INCLUDE_ENV = "env";
     private static final String EXCLUDE = "exclude";
     private static final String APPEND = "append";
@@ -47,11 +49,10 @@ class EnvironmentFile {
     }
 
     private EnvironmentDefinition parse(Map<String, Object> keyValue, String name) {
-
         EnvInclude envInclude = parseInclude(keyValue);
+        List<Include> profiles = parseProfiles(keyValue, name);
         int portOffset = parsePortOffset(keyValue);
         String envIp = parseIp(keyValue);
-        List<String> profiles = parseProfiles(keyValue);
         List<ComponentGroupDefinition> componentGroups = parseComponentGroups(keyValue, envIp);
 
         return new EnvironmentDefinition(file, name, envIp, portOffset, profiles, envInclude, componentGroups);
@@ -76,9 +77,16 @@ class EnvironmentFile {
         return (String) keyValue.remove(IP);
     }
 
-    @SuppressWarnings("unchecked")
-    private List<String> parseProfiles(Map<String, Object> keyValue) {
-        return new ArrayList<>((Collection<String>) keyValue.getOrDefault(PROFILES, emptyList()));
+    private List<Include> parseProfiles(Map<String, Object> keyValue, String name) {
+        Object profiles = keyValue.remove(PROFILES);
+        if (profiles == null) return emptyList();
+        if (profiles instanceof Collection) {
+            return ((Collection<?>) profiles)
+                    .stream()
+                    .map(p-> Include.parse(p.toString(), name))
+                    .collect(toList());
+        }
+        return singletonList(Include.parse(profiles.toString(), name));
     }
 
     private List<ComponentGroupDefinition> parseComponentGroups(Map<String, Object> keyValue, String envIp) {

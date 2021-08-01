@@ -2,6 +2,7 @@ package io.microconfig.core.environments;
 
 import io.microconfig.core.properties.PropertiesFactory;
 import io.microconfig.core.properties.repository.ComponentNotFoundException;
+import io.microconfig.core.properties.repository.Include;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +27,7 @@ public class EnvironmentImpl implements Environment {
     private final String name;
     @Getter
     private final int portOffset;
-    private final List<String> profiles;
+    private final List<Include> profiles;
     @Getter
     private final List<ComponentGroup> groups;
 
@@ -36,7 +37,7 @@ public class EnvironmentImpl implements Environment {
     @Override
     public List<Component> getProfiles() {
         return profiles.stream()
-                .map(this::createComponent)
+                .map(p -> componentFactory.createComponent(p.getComponent(), p.getComponent(), p.getEnvironment()))
                 .collect(toList());
     }
 
@@ -86,7 +87,7 @@ public class EnvironmentImpl implements Environment {
     @Override
     public Component findComponentWithName(String componentName) {
         return findFirstResult(groups, g -> g.findComponentWithName(componentName))
-                .orElseGet(() -> createComponent(componentName));
+                .orElseGet(() -> componentFactory.createComponent(componentName, componentName, name));
     }
 
     private List<Component> componentsFrom(List<String> groups) {
@@ -121,10 +122,6 @@ public class EnvironmentImpl implements Environment {
                 .filter(groupPredicate)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Can't find group by filter: '" + description.get() + "' in env '" + name + "'"));
-    }
-
-    private Component createComponent(String componentName) {
-        return componentFactory.createComponent(componentName, componentName, name);
     }
 
     @Override

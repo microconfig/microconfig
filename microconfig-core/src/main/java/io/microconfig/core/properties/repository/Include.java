@@ -18,10 +18,10 @@ public class Include {
     private final String component;
     private final String environment;
 
-    static Include parse(String component, String defaultEnv) {
-        Matcher componentMatcher = componentPattern.matcher(component);
+    public static Include parse(String definition, String defaultEnv) {
+        Matcher componentMatcher = componentPattern.matcher(definition);
         if (!componentMatcher.find()) {
-            throw new IllegalArgumentException("Can't parse include's component: " + component);
+            throw new IllegalArgumentException("Can't parse include's component: " + definition);
         }
 
         String comp = componentMatcher.group("comp");
