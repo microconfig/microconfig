@@ -83,7 +83,7 @@ class EnvironmentFile {
         if (profiles instanceof Collection) {
             return ((Collection<?>) profiles)
                     .stream()
-                    .map(p-> Include.parse(p.toString(), name))
+                    .map(p -> Include.parse(p.toString(), name))
                     .collect(toList());
         }
         return singletonList(Include.parse(profiles.toString(), name));
