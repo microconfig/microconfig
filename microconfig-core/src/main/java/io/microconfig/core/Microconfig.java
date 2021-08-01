@@ -10,7 +10,7 @@ import io.microconfig.core.environments.repository.FileEnvironmentRepository;
 import io.microconfig.core.environments.repository.LazyInitEnvRepository;
 import io.microconfig.core.properties.*;
 import io.microconfig.core.properties.repository.ComponentGraph;
-import io.microconfig.core.properties.repository.EnvProfilesPropertiesRepository;
+import io.microconfig.core.properties.repository.EnvProfilesComponentGraph;
 import io.microconfig.core.properties.repository.FilePropertiesRepository;
 import io.microconfig.core.properties.resolvers.RecursiveResolver;
 import io.microconfig.core.properties.resolvers.expression.ExpressionResolver;
@@ -130,12 +130,8 @@ public class Microconfig {
                     newConfigIo(fsReader)
             );
 
-            PropertiesRepository envProfileRepository = new EnvProfilesPropertiesRepository(
-                    lazyEnvironments
-            );
-
             return cache(new PropertiesFactoryImpl(
-                    cache(compositeOf(additionalPropertiesRepositories, fileRepository, envProfileRepository))
+                    cache(compositeOf(additionalPropertiesRepositories, fileRepository))
             ));
         }
 
@@ -175,7 +171,8 @@ public class Microconfig {
         }
 
         private ComponentGraph initComponentGraph() {
-            return traverseFrom(rootDir);
+            ComponentGraph standard = traverseFrom(rootDir);
+            return new EnvProfilesComponentGraph(standard, lazyEnvironments);
         }
     }
 }

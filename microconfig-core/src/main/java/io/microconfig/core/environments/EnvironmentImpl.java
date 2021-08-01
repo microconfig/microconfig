@@ -2,7 +2,6 @@ package io.microconfig.core.environments;
 
 import io.microconfig.core.properties.PropertiesFactory;
 import io.microconfig.core.properties.repository.ComponentNotFoundException;
-import io.microconfig.core.properties.repository.Include;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -27,19 +26,13 @@ public class EnvironmentImpl implements Environment {
     private final String name;
     @Getter
     private final int portOffset;
-    private final List<Include> profiles;
+    @Getter
+    private final List<String> profiles;
     @Getter
     private final List<ComponentGroup> groups;
 
     private final ComponentFactory componentFactory;
     private final PropertiesFactory propertiesFactory;
-
-    @Override
-    public List<Component> getProfiles() {
-        return profiles.stream()
-                .map(p -> componentFactory.createComponent(p.getComponent(), p.getComponent(), p.getEnvironment()))
-                .collect(toList());
-    }
 
     @Override
     public List<ComponentGroup> findGroupsWithIp(String ip) {

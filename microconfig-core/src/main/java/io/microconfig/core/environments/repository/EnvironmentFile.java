@@ -1,7 +1,6 @@
 package io.microconfig.core.environments.repository;
 
 import com.google.gson.Gson;
-import io.microconfig.core.properties.repository.Include;
 import io.microconfig.io.FsReader;
 import lombok.RequiredArgsConstructor;
 import org.yaml.snakeyaml.Yaml;
@@ -50,7 +49,7 @@ class EnvironmentFile {
 
     private EnvironmentDefinition parse(Map<String, Object> keyValue, String name) {
         EnvInclude envInclude = parseInclude(keyValue);
-        List<Include> profiles = parseProfiles(keyValue, name);
+        List<String> profiles = parseProfiles(keyValue);
         int portOffset = parsePortOffset(keyValue);
         String envIp = parseIp(keyValue);
         List<ComponentGroupDefinition> componentGroups = parseComponentGroups(keyValue, envIp);
@@ -77,16 +76,16 @@ class EnvironmentFile {
         return (String) keyValue.remove(IP);
     }
 
-    private List<Include> parseProfiles(Map<String, Object> keyValue, String name) {
+    private List<String> parseProfiles(Map<String, Object> keyValue) {
         Object profiles = keyValue.remove(PROFILES);
         if (profiles == null) return emptyList();
         if (profiles instanceof Collection) {
             return ((Collection<?>) profiles)
                     .stream()
-                    .map(p -> Include.parse(p.toString(), name))
+                    .map(Object::toString)
                     .collect(toList());
         }
-        return singletonList(Include.parse(profiles.toString(), name));
+        return singletonList(profiles.toString());
     }
 
     private List<ComponentGroupDefinition> parseComponentGroups(Map<String, Object> keyValue, String envIp) {
