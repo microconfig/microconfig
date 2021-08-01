@@ -21,7 +21,7 @@ public class EnvProfilesComponentGraph implements ComponentGraph {
     public List<ConfigFile> getConfigFilesOf(String component, String environment, ConfigType configType) {
         List<ConfigFile> standard = delegate.getConfigFilesOf(component, environment, configType);
         List<ConfigFile> profiles = getConfigsFromProfiles(component, environment, configType);
-        return join(profiles, minus(standard, profiles));
+        return profiles.isEmpty() ? standard : join(profiles, minus(standard, profiles));
     }
 
     private List<ConfigFile> getConfigsFromProfiles(String component, String environment, ConfigType configType) {
