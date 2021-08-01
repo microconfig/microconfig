@@ -11,6 +11,8 @@ public interface Environment {
 
     int getPortOffset();
 
+    List<Component> getProfiles();
+
     List<ComponentGroup> getGroups();
 
     List<ComponentGroup> findGroupsWithIp(String ip);

@@ -26,11 +26,19 @@ public class EnvironmentImpl implements Environment {
     private final String name;
     @Getter
     private final int portOffset;
+    private final List<String> profiles;
     @Getter
     private final List<ComponentGroup> groups;
 
     private final ComponentFactory componentFactory;
     private final PropertiesFactory propertiesFactory;
+
+    @Override
+    public List<Component> getProfiles() {
+        return profiles.stream()
+                .map(this::createComponent)
+                .collect(toList());
+    }
 
     @Override
     public List<ComponentGroup> findGroupsWithIp(String ip) {
@@ -78,7 +86,7 @@ public class EnvironmentImpl implements Environment {
     @Override
     public Component findComponentWithName(String componentName) {
         return findFirstResult(groups, g -> g.findComponentWithName(componentName))
-                .orElseGet(() -> componentFactory.createComponent(componentName, componentName, name));
+                .orElseGet(() -> createComponent(componentName));
     }
 
     private List<Component> componentsFrom(List<String> groups) {
@@ -113,6 +121,10 @@ public class EnvironmentImpl implements Environment {
                 .filter(groupPredicate)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Can't find group by filter: '" + description.get() + "' in env '" + name + "'"));
+    }
+
+    private Component createComponent(String componentName) {
+        return componentFactory.createComponent(componentName, componentName, name);
     }
 
     @Override

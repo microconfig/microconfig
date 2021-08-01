@@ -7,13 +7,10 @@ import io.microconfig.core.environments.ComponentFactoryImpl;
 import io.microconfig.core.environments.Environment;
 import io.microconfig.core.environments.EnvironmentRepository;
 import io.microconfig.core.environments.repository.FileEnvironmentRepository;
-import io.microconfig.core.properties.PlaceholderResolveStrategy;
-import io.microconfig.core.properties.PropertiesFactory;
-import io.microconfig.core.properties.PropertiesFactoryImpl;
-import io.microconfig.core.properties.PropertiesRepository;
-import io.microconfig.core.properties.Resolver;
+import io.microconfig.core.environments.repository.LazyInitEnvRepository;
+import io.microconfig.core.properties.*;
 import io.microconfig.core.properties.repository.ComponentGraph;
-import io.microconfig.core.properties.repository.CompositePropertiesRepository;
+import io.microconfig.core.properties.repository.EnvProfilesPropertiesRepository;
 import io.microconfig.core.properties.repository.FilePropertiesRepository;
 import io.microconfig.core.properties.resolvers.RecursiveResolver;
 import io.microconfig.core.properties.resolvers.expression.ExpressionResolver;
@@ -27,7 +24,6 @@ import io.microconfig.core.properties.resolvers.placeholder.strategies.environme
 import io.microconfig.core.properties.resolvers.placeholder.strategies.standard.StandardResolveStrategy;
 import io.microconfig.io.DumpedFsReader;
 import io.microconfig.io.FsReader;
-import io.microconfig.utils.CollectionUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
@@ -53,7 +49,6 @@ import static io.microconfig.utils.FileUtils.canonical;
 import static io.microconfig.utils.Logger.enableLogger;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static lombok.AccessLevel.PRIVATE;
 
 @Accessors(fluent = true)
@@ -97,6 +92,7 @@ public class Microconfig {
     }
 
     public class Dependencies {
+        private final LazyInitEnvRepository lazyEnvironments = new LazyInitEnvRepository();
         @Getter(lazy = true)
         private final EnvironmentRepository environments = initEnvironments();
         @Getter(lazy = true)
@@ -111,12 +107,14 @@ public class Microconfig {
         private final Resolver resolver = initResolver();
 
         private EnvironmentRepository initEnvironments() {
-            return cache(new FileEnvironmentRepository(
+            EnvironmentRepository repo = cache(new FileEnvironmentRepository(
                     rootDir,
                     fsReader,
                     componentFactory(),
                     propertiesFactory())
             );
+            lazyEnvironments.setDelegate(repo);
+            return repo;
         }
 
         private ComponentFactory initComponentFactory() {
@@ -132,8 +130,12 @@ public class Microconfig {
                     newConfigIo(fsReader)
             );
 
+            PropertiesRepository envProfileRepository = new EnvProfilesPropertiesRepository(
+                    lazyEnvironments
+            );
+
             return cache(new PropertiesFactoryImpl(
-                    cache(compositeOf(additionalPropertiesRepositories, fileRepository))
+                    cache(compositeOf(additionalPropertiesRepositories, fileRepository, envProfileRepository))
             ));
         }
 

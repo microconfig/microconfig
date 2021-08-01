@@ -20,6 +20,7 @@ import static java.util.stream.Collectors.toList;
 class EnvironmentFile {
     private static final String IP = "ip";
     private static final String PORT_OFFSET = "portOffset";
+    private static final String PROFILES = "profiles";
     private static final String INCLUDE = "include";
     private static final String INCLUDE_ENV = "env";
     private static final String EXCLUDE = "exclude";
@@ -50,9 +51,10 @@ class EnvironmentFile {
         EnvInclude envInclude = parseInclude(keyValue);
         int portOffset = parsePortOffset(keyValue);
         String envIp = parseIp(keyValue);
+        List<String> profiles = parseProfiles(keyValue);
         List<ComponentGroupDefinition> componentGroups = parseComponentGroups(keyValue, envIp);
 
-        return new EnvironmentDefinition(file, name, envIp, portOffset, envInclude, componentGroups);
+        return new EnvironmentDefinition(file, name, envIp, portOffset, profiles, envInclude, componentGroups);
     }
 
     @SuppressWarnings("unchecked")
@@ -72,6 +74,11 @@ class EnvironmentFile {
 
     private String parseIp(Map<String, ?> keyValue) {
         return (String) keyValue.remove(IP);
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<String> parseProfiles(Map<String, Object> keyValue) {
+        return new ArrayList<>((Collection<String>) keyValue.getOrDefault(PROFILES, emptyList()));
     }
 
     private List<ComponentGroupDefinition> parseComponentGroups(Map<String, Object> keyValue, String envIp) {

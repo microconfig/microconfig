@@ -30,7 +30,7 @@ class EnvironmentImplTest {
     ComponentFactory factory = mock(ComponentFactory.class);
     PropertiesFactory factory2 = mock(PropertiesFactory.class);
 
-    Environment env = new EnvironmentImpl(null, "dev", 1, groups, factory, factory2);
+    Environment env = new EnvironmentImpl(null, "dev", 1, emptyList(), groups, factory, factory2);
 
     @BeforeEach
     void setUp() {
