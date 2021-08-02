@@ -24,7 +24,6 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.concat;
 
 @Getter
-@ToString(of = "file")
 @EqualsAndHashCode(of = "file")
 @RequiredArgsConstructor
 public class ConfigFile {
@@ -69,5 +68,10 @@ public class ConfigFile {
     private Map<String, Property> joinToMap(List<Property> properties, List<Property> tempProperties) {
         return concat(properties.stream(), tempProperties.stream())
                 .collect(toLinkedMap(Property::getKey, identity()));
+    }
+
+    @Override
+    public String toString() {
+        return file.toString();
     }
 }
