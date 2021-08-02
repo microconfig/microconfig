@@ -12,7 +12,7 @@ import java.util.function.Predicate;
 import static io.microconfig.utils.CollectionUtils.join;
 import static io.microconfig.utils.CollectionUtils.minus;
 import static io.microconfig.utils.StreamUtils.filter;
-import static java.util.stream.Collectors.toList;
+import static io.microconfig.utils.StreamUtils.flatMapEach;
 
 @RequiredArgsConstructor
 public class EnvProfilesComponentGraph implements ComponentGraph {
@@ -22,26 +22,23 @@ public class EnvProfilesComponentGraph implements ComponentGraph {
     @Override
     public List<ConfigFile> getConfigFilesOf(String component, String environment, ConfigType configType) {
         List<ConfigFile> standard = delegate.getConfigFilesOf(component, environment, configType);
-        List<ConfigFile> profiles = getConfigsFromProfiles(component, environment, configType);
-        return joinFiles(standard, profiles, environment);
+        List<ConfigFile> profiles = getConfigFilesWithProfilesOf(environment, component, configType);
+        return joinConfigs(standard, profiles, environment);
     }
 
-    private List<ConfigFile> getConfigsFromProfiles(String component, String environment, ConfigType configType) {
-        return environmentRepository.getOrCreateByName(environment)
-                .getProfiles()
-                .stream()
-                .flatMap(p -> getConfigFilesOf(component, p, configType).stream())
-                .collect(toList());
+    private List<ConfigFile> getConfigFilesWithProfilesOf(String environment, String component, ConfigType configType) {
+        List<String> profiles = environmentRepository.getOrCreateByName(environment).getProfiles();
+        return flatMapEach(profiles, p -> getConfigFilesOf(component, p, configType));
     }
 
-    private List<ConfigFile> joinFiles(List<ConfigFile> standard, List<ConfigFile> profiles, String environment) {
+    private List<ConfigFile> joinConfigs(List<ConfigFile> standard, List<ConfigFile> profiles, String environment) {
         if (profiles.isEmpty()) return standard;
 
-        List<ConfigFile> filteredProfiles = filter(profiles, doesNotContain(environment));
+        List<ConfigFile> filteredProfiles = filter(profiles, thatDoesNotContain(environment));
         return join(filteredProfiles, minus(standard, filteredProfiles));
     }
 
-    private Predicate<ConfigFile> doesNotContain(String environment) {
+    private Predicate<ConfigFile> thatDoesNotContain(String environment) {
         String envSubstring = "." + environment + ".";
         return p -> !p.getFile().getName().contains(envSubstring);
     }
