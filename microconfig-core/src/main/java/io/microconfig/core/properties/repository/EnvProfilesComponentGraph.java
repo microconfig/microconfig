@@ -7,9 +7,11 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import static io.microconfig.utils.CollectionUtils.join;
 import static io.microconfig.utils.CollectionUtils.minus;
+import static io.microconfig.utils.StreamUtils.filter;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
@@ -21,7 +23,7 @@ public class EnvProfilesComponentGraph implements ComponentGraph {
     public List<ConfigFile> getConfigFilesOf(String component, String environment, ConfigType configType) {
         List<ConfigFile> standard = delegate.getConfigFilesOf(component, environment, configType);
         List<ConfigFile> profiles = getConfigsFromProfiles(component, environment, configType);
-        return profiles.isEmpty() ? standard : join(profiles, minus(standard, profiles));
+        return joinFiles(standard, profiles, environment);
     }
 
     private List<ConfigFile> getConfigsFromProfiles(String component, String environment, ConfigType configType) {
@@ -30,6 +32,18 @@ public class EnvProfilesComponentGraph implements ComponentGraph {
                 .stream()
                 .flatMap(p -> getConfigFilesOf(component, p, configType).stream())
                 .collect(toList());
+    }
+
+    private List<ConfigFile> joinFiles(List<ConfigFile> standard, List<ConfigFile> profiles, String environment) {
+        if (profiles.isEmpty()) return standard;
+
+        List<ConfigFile> filteredProfiles = filter(profiles, doesNotContain(environment));
+        return join(filteredProfiles, minus(standard, filteredProfiles));
+    }
+
+    private Predicate<ConfigFile> doesNotContain(String environment) {
+        String envSubstring = "." + environment + ".";
+        return p -> !p.getFile().getName().contains(envSubstring);
     }
 
     @Override
