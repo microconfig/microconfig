@@ -24,8 +24,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class CompositePropertiesRepositoryTest {
-    PropertiesRepository first = Mockito.mock(PropertiesRepository.class);
-    PropertiesRepository second = Mockito.mock(PropertiesRepository.class);
+    PropertiesRepository first = mock(PropertiesRepository.class);
+    PropertiesRepository second = mock(PropertiesRepository.class);
     PropertiesRepository subj = compositeOf(singletonList(first), second);
 
     Property one = property("foo.bar", "value", PROPERTIES, null);
