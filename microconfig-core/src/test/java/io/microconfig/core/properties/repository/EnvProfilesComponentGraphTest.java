@@ -60,6 +60,18 @@ class EnvProfilesComponentGraphTest {
         assertResult("app.yaml", "app.e.e2.e3.yaml", "app.e.p.yaml", "app.e.yaml");
     }
 
+    @Test
+    public void test5() {
+        when(p.getProfiles()).thenReturn(singletonList("z"));
+        Environment z = mock(Environment.class);
+        when(environmentRepository.getOrCreateByName("z")).thenReturn(z);
+
+        mockGraph("e", "app.yaml", "app.e.e2.e3.yaml", "app.e.p.yaml", "app.e.z.yaml", "app.e.yaml");
+        mockGraph("p", "app.yaml", "app.e.p.yaml");
+        mockGraph("z", "app.yaml", "app.e.z.yaml");
+        assertResult("app.yaml", "app.e.e2.e3.yaml", "app.e.p.yaml", "app.e.z.yaml", "app.e.yaml");
+    }
+
     private void mockGraph(String env, String... files) {
         when(delegate.getConfigFilesOf("c", env, APPLICATION))
                 .thenReturn(files(files));
