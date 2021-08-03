@@ -38,6 +38,7 @@ public class EnvProfilesComponentGraph implements ComponentGraph {
         List<ConfigFile> filteredProfiles = profiles.stream()
                 .filter(doesNotContain(environment))
                 .map(c -> isCommonDefaultConfig(c) ? c.withEnvironment(environment) : c)
+                .distinct()
                 .collect(toList());
         return join(filteredProfiles, minus(standard, filteredProfiles));
     }
