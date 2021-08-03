@@ -36,7 +36,7 @@ public class EnvProfilesComponentGraph implements ComponentGraph {
     private List<ConfigFile> joinConfigs(List<ConfigFile> standard, List<ConfigFile> profiles, String environment) {
         if (profiles.isEmpty()) return standard;
 
-        Collection<ConfigFile> original = profiles.size() > 20 ? new HashSet<>(profiles) : profiles;
+        Collection<ConfigFile> original = new HashSet<>(profiles);
         List<ConfigFile> filteredProfiles = profiles.stream()
                 .filter(doesNotContain(environment))
                 .map(c -> original.contains(c) ? c.withEnvironment(environment) : c)
