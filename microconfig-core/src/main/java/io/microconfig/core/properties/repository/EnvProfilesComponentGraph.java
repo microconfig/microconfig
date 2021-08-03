@@ -5,8 +5,6 @@ import io.microconfig.core.environments.EnvironmentRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -14,6 +12,7 @@ import java.util.function.Predicate;
 import static io.microconfig.utils.CollectionUtils.join;
 import static io.microconfig.utils.CollectionUtils.minus;
 import static io.microconfig.utils.StreamUtils.flatMapEach;
+import static io.microconfig.utils.StringUtils.dotCountIn;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
@@ -36,10 +35,9 @@ public class EnvProfilesComponentGraph implements ComponentGraph {
     private List<ConfigFile> joinConfigs(List<ConfigFile> standard, List<ConfigFile> profiles, String environment) {
         if (profiles.isEmpty()) return standard;
 
-        Collection<ConfigFile> original = new HashSet<>(profiles);
         List<ConfigFile> filteredProfiles = profiles.stream()
                 .filter(doesNotContain(environment))
-                .map(c -> original.contains(c) ? c.withEnvironment(environment) : c)
+                .map(c -> isCommonDefaultConfig(c) ? c.withEnvironment(environment) : c)
                 .collect(toList());
         return join(filteredProfiles, minus(standard, filteredProfiles));
     }
@@ -47,6 +45,10 @@ public class EnvProfilesComponentGraph implements ComponentGraph {
     private Predicate<ConfigFile> doesNotContain(String environment) {
         String envSubstring = "." + environment + ".";
         return p -> !p.getFile().getName().contains(envSubstring);
+    }
+
+    private boolean isCommonDefaultConfig(ConfigFile c) {
+        return dotCountIn(c.getFile().getName()) == 1;
     }
 
     @Override
