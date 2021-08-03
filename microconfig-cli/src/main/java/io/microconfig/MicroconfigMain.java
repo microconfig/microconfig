@@ -15,8 +15,9 @@ import static io.microconfig.core.properties.serializers.ConfigResult.toJson;
 import static io.microconfig.core.properties.serializers.PropertySerializers.asConfigResult;
 import static io.microconfig.utils.IoUtils.readClasspathResource;
 import static io.microconfig.utils.Logger.*;
-import static java.lang.System.currentTimeMillis;
 import static java.lang.System.exit;
+import static java.lang.System.nanoTime;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static java.util.stream.Collectors.toCollection;
 
 /**
@@ -71,7 +72,7 @@ public class MicroconfigMain {
 
     private void doBuild() {
         environmentsToBuild().forEach(env -> {
-            long startTime = currentTimeMillis();
+            long startTime = nanoTime();
             String resultDestinationDir = isSingleEnvBuild ? destinationDir : destinationDir + "/" + env;
             MicroconfigRunner runner = new MicroconfigRunner(rootDir, new File(resultDestinationDir));
             Properties properties = runner.buildProperties(env, groups, services);
@@ -81,7 +82,7 @@ public class MicroconfigMain {
             } else {
                 properties.save(runner.toFiles());
             }
-            announce("\nGenerated [" + env + "] configs in " + (currentTimeMillis() - startTime) + "ms");
+            announce("\nGenerated [" + env + "] configs in " + (NANOSECONDS.toMillis(nanoTime() - startTime)) + "ms");
         });
     }
 
@@ -102,6 +103,10 @@ public class MicroconfigMain {
     }
 
     private static void printVersion() {
-        info(readClasspathResource("version.properties").split("\n")[0].split("=")[1].trim());
+        String version = readClasspathResource("version.properties")
+                .split("\n")[0]
+                .split("=")[1]
+                .trim();
+        info(version);
     }
 }
