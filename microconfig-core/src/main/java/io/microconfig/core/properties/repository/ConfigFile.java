@@ -3,10 +3,7 @@ package io.microconfig.core.properties.repository;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.io.ConfigIo;
 import io.microconfig.core.properties.io.ConfigReader;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.File;
 import java.util.Collection;
@@ -29,6 +26,7 @@ import static java.util.stream.Stream.concat;
 public class ConfigFile {
     private final File file;
     private final String configType;
+    @With
     private final String environment;
 
     public RawConfig parseUsing(ConfigIo configIo) {

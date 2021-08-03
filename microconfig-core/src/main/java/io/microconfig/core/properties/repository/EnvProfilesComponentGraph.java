@@ -5,14 +5,16 @@ import io.microconfig.core.environments.EnvironmentRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 import static io.microconfig.utils.CollectionUtils.join;
 import static io.microconfig.utils.CollectionUtils.minus;
-import static io.microconfig.utils.StreamUtils.filter;
 import static io.microconfig.utils.StreamUtils.flatMapEach;
+import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 public class EnvProfilesComponentGraph implements ComponentGraph {
@@ -34,11 +36,15 @@ public class EnvProfilesComponentGraph implements ComponentGraph {
     private List<ConfigFile> joinConfigs(List<ConfigFile> standard, List<ConfigFile> profiles, String environment) {
         if (profiles.isEmpty()) return standard;
 
-        List<ConfigFile> filteredProfiles = filter(profiles, thatDoesNotContain(environment));
+        Collection<ConfigFile> original = profiles.size() > 20 ? new HashSet<>(profiles) : profiles;
+        List<ConfigFile> filteredProfiles = profiles.stream()
+                .filter(doesNotContain(environment))
+                .map(c -> original.contains(c) ? c.withEnvironment(environment) : c)
+                .collect(toList());
         return join(filteredProfiles, minus(standard, filteredProfiles));
     }
 
-    private Predicate<ConfigFile> thatDoesNotContain(String environment) {
+    private Predicate<ConfigFile> doesNotContain(String environment) {
         String envSubstring = "." + environment + ".";
         return p -> !p.getFile().getName().contains(envSubstring);
     }
