@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.List;
 
 import static io.microconfig.core.configtypes.StandardConfigType.APPLICATION;
+import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -70,6 +71,18 @@ class EnvProfilesComponentGraphTest {
         mockGraph("p", "app.yaml", "app.e.p.yaml");
         mockGraph("z", "app.yaml", "app.e.z.yaml");
         assertResult("app.yaml", "app.e.e2.e3.yaml", "app.e.p.yaml", "app.e.z.yaml", "app.e.yaml");
+    }
+
+    @Test
+    public void test6() {
+        when(e.getProfiles()).thenReturn(asList("p", "z"));
+        Environment z = mock(Environment.class);
+        when(environmentRepository.getOrCreateByName("z")).thenReturn(z);
+
+        mockGraph("e", "app.yaml", "app.e.yaml");
+        mockGraph("p", "app.yaml", "app.p.z.yaml", "app.p.yaml");
+        mockGraph("z", "app.yaml", "app.p.z.yaml");
+        assertResult("app.yaml", "app.p.z.yaml", "app.p.yaml", "app.e.yaml");
     }
 
     private void mockGraph(String env, String... files) {
