@@ -961,6 +961,44 @@ payments:
 
 Consider configuring your deployment tool to read the environment descriptor to know which services to deploy.
 
+## Environment profiles
+You can use env profiles if you want to create a new env based on another env[s].
+For example, you have `prod` env and overrides for it and want to create `prod-europe` and `prod-usa` envs that include all properties from `prod` and can have their own overrides.
+The easiest way to do this is to define `prod` profile in `prod-europe` and `prod-usa` env descriptors:
+
+**envs/prod.yaml**
+```yaml
+core:
+  componets:
+   - order-service
+   - payment-service
+  ...
+```
+**envs/prod-europe.yaml**
+```yaml
+include
+ env: prod # include all components from `prod` env
+
+profiles: 
+  - prod #include all configuration from prod envs
+ ```
+
+**envs/prod-usa.yaml**
+```yaml
+include
+  env: prod # include all components from `prod` env
+
+profiles: 
+  - prod #include all configuration from prod envs
+  - usa #include overrides from `usa` profiles (app.usa.yaml)
+ ```
+
+The config override priority for all components from `prod-usa` env:
+* app.yaml `#without env`
+* app.prod.yaml `#overrides for prod env`
+* app.usa.yaml `#overrides for usa profile`
+* app.prod-usa.yaml `#overrides for prod-usa env`
+
 # Running the config build
 As we discussed Microconfig has its own format for configuration sources. 
 During the config build Microconfig inlines all includes, resolves placeholders, evaluates expression language, copies templates, and stores the result values into plain *.yaml or *.properties files to a dedicated folder for each service.
