@@ -89,7 +89,8 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     }
 
     private Function<File, Environment> parse() {
-        return parseDefinition().andThen(def -> def.toEnvironment(componentFactory, propertiesFactory));
+        return parseDefinition()
+                .andThen(def -> def.toEnvironment(componentFactory, propertiesFactory));
     }
 
     private Function<File, EnvironmentDefinition> parseDefinition() {
@@ -121,6 +122,6 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     }
 
     private Supplier<Environment> fakeEnvWith(String name) {
-        return () -> new EnvironmentImpl(null, name, 0, emptyList(), componentFactory, propertiesFactory);
+        return () -> new EnvironmentImpl(null, name, 0, emptyList(), emptyList(), componentFactory, propertiesFactory);
     }
 }

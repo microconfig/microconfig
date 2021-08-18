@@ -27,6 +27,8 @@ public class EnvironmentImpl implements Environment {
     @Getter
     private final int portOffset;
     @Getter
+    private final List<String> profiles;
+    @Getter
     private final List<ComponentGroup> groups;
 
     private final ComponentFactory componentFactory;

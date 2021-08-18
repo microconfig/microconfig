@@ -1,0 +1,5 @@
+profiles: p1
+
+example:
+  componets:
+    - service

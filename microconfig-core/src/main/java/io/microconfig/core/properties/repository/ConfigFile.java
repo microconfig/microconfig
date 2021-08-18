@@ -3,8 +3,7 @@ package io.microconfig.core.properties.repository;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.io.ConfigIo;
 import io.microconfig.core.properties.io.ConfigReader;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.io.File;
 import java.util.Collection;
@@ -22,10 +21,12 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.concat;
 
 @Getter
+@EqualsAndHashCode(of = "file")
 @RequiredArgsConstructor
 public class ConfigFile {
     private final File file;
     private final String configType;
+    @With
     private final String environment;
 
     public RawConfig parseUsing(ConfigIo configIo) {
@@ -65,5 +66,10 @@ public class ConfigFile {
     private Map<String, Property> joinToMap(List<Property> properties, List<Property> tempProperties) {
         return concat(properties.stream(), tempProperties.stream())
                 .collect(toLinkedMap(Property::getKey, identity()));
+    }
+
+    @Override
+    public String toString() {
+        return file.toString();
     }
 }

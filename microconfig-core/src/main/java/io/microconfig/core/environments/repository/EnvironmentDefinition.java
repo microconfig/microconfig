@@ -24,6 +24,7 @@ class EnvironmentDefinition {
     @Getter
     private final String ip;
     private final int portOffset;
+    private final List<String> profiles;
     private final EnvInclude envInclude;
     @Getter
     private final List<ComponentGroupDefinition> groups;
@@ -54,6 +55,7 @@ class EnvironmentDefinition {
                 source,
                 name,
                 portOffset,
+                profiles,
                 forEach(groups, g -> g.toGroup(componentFactory, propertiesFactory, name)),
                 componentFactory,
                 propertiesFactory

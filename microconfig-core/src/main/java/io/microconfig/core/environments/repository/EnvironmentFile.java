@@ -14,13 +14,15 @@ import static io.microconfig.core.environments.repository.ComponentDefinition.wi
 import static io.microconfig.utils.FileUtils.getName;
 import static io.microconfig.utils.StreamUtils.forEach;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 class EnvironmentFile {
+    private static final String INCLUDE = "include";
+    private static final String PROFILES = "profiles";
     private static final String IP = "ip";
     private static final String PORT_OFFSET = "portOffset";
-    private static final String INCLUDE = "include";
     private static final String INCLUDE_ENV = "env";
     private static final String EXCLUDE = "exclude";
     private static final String APPEND = "append";
@@ -46,13 +48,13 @@ class EnvironmentFile {
     }
 
     private EnvironmentDefinition parse(Map<String, Object> keyValue, String name) {
-
         EnvInclude envInclude = parseInclude(keyValue);
+        List<String> profiles = parseProfiles(keyValue);
         int portOffset = parsePortOffset(keyValue);
         String envIp = parseIp(keyValue);
         List<ComponentGroupDefinition> componentGroups = parseComponentGroups(keyValue, envIp);
 
-        return new EnvironmentDefinition(file, name, envIp, portOffset, envInclude, componentGroups);
+        return new EnvironmentDefinition(file, name, envIp, portOffset, profiles, envInclude, componentGroups);
     }
 
     @SuppressWarnings("unchecked")
@@ -72,6 +74,18 @@ class EnvironmentFile {
 
     private String parseIp(Map<String, ?> keyValue) {
         return (String) keyValue.remove(IP);
+    }
+
+    private List<String> parseProfiles(Map<String, Object> keyValue) {
+        Object profiles = keyValue.remove(PROFILES);
+        if (profiles == null) return emptyList();
+        if (profiles instanceof Collection) {
+            return ((Collection<?>) profiles)
+                    .stream()
+                    .map(Object::toString)
+                    .collect(toList());
+        }
+        return singletonList(profiles.toString());
     }
 
     private List<ComponentGroupDefinition> parseComponentGroups(Map<String, Object> keyValue, String envIp) {

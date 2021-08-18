@@ -24,7 +24,8 @@ public class MicroconfigRunner {
     }
 
     public Properties buildProperties(String env, List<String> groups, List<String> services) {
-        return microconfig.inEnvironment(env).findComponentsFrom(groups, services)
+        return microconfig.inEnvironment(env)
+                .findComponentsFrom(groups, services)
                 .getPropertiesFor(eachConfigType())
                 .resolveBy(microconfig.resolver())
                 .forEachComponent(resolveTemplatesBy(microconfig.resolver()));
