@@ -62,17 +62,14 @@ public class MicroconfigTest {
 
     private DynamicTest toTest(File expectation, String component, String env) {
         return dynamicTest(component + "[" + env + "]", () -> {
-            String expected = readExpectation(expectation).trim();
-            String actual = build(component, env).trim();
+            String expected = toUnixPathSeparator(readExpectation(expectation).trim());
+            String actual = toUnixPathSeparator(build(component, env).trim());
 
             if (expectation.getName().startsWith("truncate.")) {
                 actual = actual.substring(0, min(expected.length(), actual.length()));
             }
 
-            assertEquals(
-                    toUnixPathSeparator(expected),
-                    toUnixPathSeparator(actual)
-            );
+            assertEquals(expected, actual);
         });
     }
 
