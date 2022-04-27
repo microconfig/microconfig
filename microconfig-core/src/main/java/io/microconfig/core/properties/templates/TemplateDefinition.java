@@ -19,15 +19,14 @@ public class TemplateDefinition {
 
     private final TemplatePattern templatePattern;
     private final TemplateContentPostProcessor templateContentPostProcessor;
-
-    public TemplateDefinition(String templateType, String templateName, TemplatePattern pattern) {
-        this(templateType, templateName, pattern, new MustacheTemplateProcessor());
-    }
-
     @Getter
     private File fromFile;
     @Getter
     private File toFile;
+
+    public TemplateDefinition(String templateType, String templateName, TemplatePattern pattern) {
+        this(templateType, templateName, pattern, new MustacheTemplateProcessor());
+    }
 
     public Template resolve(Resolver resolver, TypedProperties properties) {
         if (isBinaryTemplate()) return toBinaryTemplate(resolver, properties);

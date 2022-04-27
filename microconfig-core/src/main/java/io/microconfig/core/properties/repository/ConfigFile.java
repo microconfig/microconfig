@@ -3,7 +3,10 @@ package io.microconfig.core.properties.repository;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.io.ConfigIo;
 import io.microconfig.core.properties.io.ConfigReader;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.With;
 
 import java.io.File;
 import java.util.Collection;

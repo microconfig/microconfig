@@ -20,11 +20,11 @@ public enum StandardConfigType implements ConfigType {
     LOG4J("log4j"),
     LOG4J2("log4j2");
 
-    StandardConfigType(String name) {
-        this(name, setOf("." + name), name);
-    }
-
     private final String name;
     private final Set<String> sourceExtensions;
     private final String resultFileName;
+
+    StandardConfigType(String name) {
+        this(name, setOf("." + name), name);
+    }
 }
