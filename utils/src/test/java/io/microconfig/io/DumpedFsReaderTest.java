@@ -27,7 +27,7 @@ class DumpedFsReaderTest {
 
     @Test
     void firstLineOf() {
-        assertEquals(of("  k2: v2"), reader.firstLineOf(resourceFile(), s-> s.contains("k2")));
-        assertEquals(empty(), reader.firstLineOf(resourceFile(), s-> s.contains("eeee")));
+        assertEquals(of("  k2: v2"), reader.firstLineOf(resourceFile(), s -> s.contains("k2")));
+        assertEquals(empty(), reader.firstLineOf(resourceFile(), s -> s.contains("eeee")));
     }
 }
