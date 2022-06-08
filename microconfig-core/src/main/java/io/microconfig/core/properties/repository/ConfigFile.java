@@ -32,7 +32,7 @@ public class ConfigFile {
     @With
     private final String environment;
 
-    public RawConfig parseUsing(ConfigIo configIo) {
+    public RawConfig parseUsing(ConfigIo configIo, String buildEnvironment) {
         ConfigReader reader = configIo.readFrom(file);
 
         Map<Integer, String> commentByLineNumber = reader.commentsByLineNumber();
@@ -41,9 +41,15 @@ public class ConfigFile {
             return new RawConfig(includes, emptyMap());
         }
 
-        List<Property> properties = reader.properties(configType, environment);
+        List<Property> properties = parseNormalProperties(reader, buildEnvironment);
         List<Property> tempProperties = parseTempProperties(commentByLineNumber);
         return new RawConfig(includes, joinToMap(properties, tempProperties));
+    }
+
+    private List<Property> parseNormalProperties(ConfigReader reader, String buildEnvironment) {
+        return reader.properties(configType, environment).stream()
+                .filter(p -> p.matchEnvironment(buildEnvironment))
+                .collect(toList());
     }
 
     private List<Property> parseTempProperties(Map<Integer, String> commentByLineNumber) {

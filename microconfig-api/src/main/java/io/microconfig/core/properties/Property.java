@@ -7,6 +7,8 @@ public interface Property {
 
     boolean isVar();
 
+    boolean matchEnvironment(String env);
+
     ConfigFormat getConfigFormat();
 
     DeclaringComponent getDeclaringComponent();

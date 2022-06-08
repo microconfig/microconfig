@@ -14,7 +14,9 @@ import java.util.List;
 
 import static io.microconfig.core.properties.ConfigFormat.YAML;
 import static io.microconfig.core.properties.FileBasedComponent.fileSource;
+import static io.microconfig.core.properties.PropertyImpl.envProperty;
 import static io.microconfig.core.properties.PropertyImpl.isComment;
+import static io.microconfig.core.properties.PropertyImpl.isEnvProperty;
 import static io.microconfig.core.properties.PropertyImpl.property;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static io.microconfig.utils.StringUtils.isBlank;
@@ -165,8 +167,9 @@ class YamlReader extends AbstractConfigReader {
         int lineNumber = currentProperty.peekLast().lineNumber;
         String key = toProperty(currentProperty);
         currentProperty.pollLast();
-
-        result.add(property(key, value, YAML, fileSource(file, lineNumber, true, configType, env)));
+        FileBasedComponent source = fileSource(file, lineNumber, true, configType, env);
+        Property prop = isEnvProperty(key) ? envProperty(key, value, YAML, source, env) : property(key, value, YAML, source);
+        result.add(prop);
     }
 
     private String toProperty(Deque<KeyOffset> currentProperty) {

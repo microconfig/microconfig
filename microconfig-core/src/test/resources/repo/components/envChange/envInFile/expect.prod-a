@@ -1,0 +1,10 @@
+context: prod
+
+key: value-a
+
+redis:
+  url: 1.1.1.1
+
+spring:
+  datasource:
+    url: "postgres://10.10.10.10:5432"

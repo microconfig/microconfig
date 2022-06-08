@@ -49,7 +49,7 @@ public class FilePropertiesRepository implements PropertiesRepository {
         }
 
         private Map<String, Property> parse(ConfigFile configFile) {
-            return configFile.parseUsing(configIo)
+            return configFile.parseUsing(configIo, environment)
                     .getBaseAndIncludedProperties(this::includeResolver);
         }
 

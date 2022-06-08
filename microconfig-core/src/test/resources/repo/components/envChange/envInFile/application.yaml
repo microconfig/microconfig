@@ -1,0 +1,10 @@
+context: default
+
+redis:
+  url: 0.0.0.0
+
+key: default
+
+spring:
+  datasource:
+    url: "${this@db-url}"

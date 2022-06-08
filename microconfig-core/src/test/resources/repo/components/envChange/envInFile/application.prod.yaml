@@ -1,0 +1,25 @@
+context: prod
+
+@prod-a:
+   redis:
+     url: 1.1.1.1
+   key: value-a
+
+@prod-c:
+   redis:
+     url: 3.3.3.3
+   key: value-c
+
+@prod-b:
+   redis:
+     url: 2.2.2.2
+   key: value-b
+
+@var@prod-a:
+   db-url: postgres://10.10.10.10:5432
+
+@var@prod-b:
+   db-url: postgres://20.20.20.20:5432
+
+@var@prod-c:
+   db-url: postgres://30.30.30.30:5432
