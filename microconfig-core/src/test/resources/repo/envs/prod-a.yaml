@@ -3,3 +3,4 @@ profiles: prod
 example:
   componets:
     - envInFile
+    - envInclude

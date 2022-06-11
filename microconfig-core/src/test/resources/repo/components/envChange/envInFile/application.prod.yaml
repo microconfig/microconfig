@@ -18,10 +18,12 @@ context: prod
 @prod-a@var:
    db-url: postgres://10.10.10.10:5432
    foo: bas
+   included: prod-a-included
 
 @prod-b@var:
    db-url: postgres://20.20.20.20:5432
    foo: bar
+   included: prod-b-included
 
 @var@prod-c:
    db-url: postgres://30.30.30.30:5432

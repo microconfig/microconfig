@@ -1,5 +1,7 @@
 context: prod
 
+envInclude: prod-a-included
+
 fooVar: bas
 
 key: value-a
