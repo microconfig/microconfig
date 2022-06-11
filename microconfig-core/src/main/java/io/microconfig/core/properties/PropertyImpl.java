@@ -13,7 +13,7 @@ import static lombok.AccessLevel.PRIVATE;
 @RequiredArgsConstructor(access = PRIVATE)
 public class PropertyImpl implements Property {
     private static final String TEMP_VALUE = "#var ";
-    private static final String ENV_VAR_VALUE = "@var@";
+    private static final String ENV_VAR_VALUE = "@var.";
 
     private final String key;
     @With(PRIVATE)
@@ -42,12 +42,17 @@ public class PropertyImpl implements Property {
         return new PropertyImpl(key, value, false, configFormat, source, null);
     }
 
-    public static Property envProperty(String key, String value, ConfigFormat configFormat, DeclaringComponent source, String env) {
-        boolean isVar = key.startsWith(ENV_VAR_VALUE);
-        int offset = findFirstIndexIn(key, ".");
-        String envName = key.substring(isVar ? ENV_VAR_VALUE.length() : 1, offset);
+    public static Property atProperty(String key, String value, ConfigFormat configFormat, DeclaringComponent source) {
+        boolean isVar = key.contains(ENV_VAR_VALUE);
+        int offset = key.indexOf('.');
+        String envName = extractEnv(key, offset, isVar);
         String adjustedKey = key.substring(offset + 1);
         return new PropertyImpl(adjustedKey, value, isVar, configFormat, source, envName);
+    }
+
+    private static String extractEnv(String key, int offset, boolean isVar) {
+        if (key.startsWith(ENV_VAR_VALUE)) return null;
+        return key.substring(1, isVar ? key.lastIndexOf('@') : offset);
     }
 
     public static Property varProperty(String key, String value, ConfigFormat configFormat, DeclaringComponent source) {
@@ -62,7 +67,7 @@ public class PropertyImpl implements Property {
         return line.startsWith("#");
     }
 
-    public static boolean isEnvProperty(String line) {
+    public static boolean isAtProperty(String line) {
         return line.startsWith("@");
     }
 

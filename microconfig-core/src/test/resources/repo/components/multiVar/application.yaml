@@ -1,0 +1,3 @@
+key1: ${this@foo.bar}
+key2: ${this@foo.baz}
+key3: ${this@bas.bass}

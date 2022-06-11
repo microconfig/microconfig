@@ -15,11 +15,14 @@ context: prod
      url: 2.2.2.2
    key: value-b
 
-@var@prod-a:
+@prod-a@var:
    db-url: postgres://10.10.10.10:5432
+   foo: bas
 
-@var@prod-b:
+@prod-b@var:
    db-url: postgres://20.20.20.20:5432
+   foo: bar
 
 @var@prod-c:
    db-url: postgres://30.30.30.30:5432
+   foo: baz

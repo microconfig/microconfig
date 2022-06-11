@@ -5,6 +5,8 @@ redis:
 
 key: default
 
+fooVar: ${this@foo}
+
 spring:
   datasource:
     url: "${this@db-url}"

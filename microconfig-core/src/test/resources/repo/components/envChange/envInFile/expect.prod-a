@@ -1,5 +1,7 @@
 context: prod
 
+fooVar: bas
+
 key: value-a
 
 redis:
