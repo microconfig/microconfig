@@ -7,10 +7,6 @@ public interface Property {
 
     boolean isVar();
 
-    default String getEnvironment() {
-        return null;
-    };
-
     ConfigFormat getConfigFormat();
 
     DeclaringComponent getDeclaringComponent();

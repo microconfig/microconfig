@@ -1,5 +1,6 @@
 package io.microconfig.core.properties.repository;
 
+import io.microconfig.core.properties.EnvProperty;
 import io.microconfig.core.properties.Property;
 import lombok.RequiredArgsConstructor;
 
@@ -8,8 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 public class RawConfig {
@@ -26,14 +26,33 @@ public class RawConfig {
 
     private Map<String, Property> filterProperties(List<String> profiles, String buildEnvironment) {
         Map<String, Property> props = new LinkedHashMap<>();
-        // base properties and profiles go first
+        // base properties go first
         declaredProperties.stream()
-                .filter(p -> p.getEnvironment() == null || profiles.contains(p.getEnvironment()))
+                .filter(p -> !(p instanceof EnvProperty))
                 .forEach(p -> props.put(p.getKey(), p));
-        // and then overriden by env specific
-        declaredProperties.stream()
-                .filter(p -> buildEnvironment.equals(p.getEnvironment()))
+
+        List<EnvProperty> envProps = declaredProperties.stream()
+                .filter(p -> p instanceof EnvProperty)
+                .map(p -> (EnvProperty) p)
+                .collect(toList());
+
+        // then multi-line vars
+        envProps.stream()
+                .filter(p -> p.getEnvironment() == null)
                 .forEach(p -> props.put(p.getKey(), p));
+
+        // then profiles
+        envProps.stream()
+                .filter(p -> p.getEnvironment() != null)
+                .filter(p -> profiles.contains(p.getEnvironment()))
+                .forEach(p -> props.put(p.getKey(), p));
+
+        // and then env specific
+        envProps.stream()
+                .filter(p -> p.getEnvironment() != null)
+                .filter(p -> p.getEnvironment().equals(buildEnvironment))
+                .forEach(p -> props.put(p.getKey(), p));
+
         return props;
     }
 

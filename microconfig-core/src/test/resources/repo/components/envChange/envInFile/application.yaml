@@ -5,6 +5,8 @@ context: default
 redis:
   url: 0.0.0.0
 
+profileKey: default
+
 key: default
 
 fooVar: ${this@foo}
