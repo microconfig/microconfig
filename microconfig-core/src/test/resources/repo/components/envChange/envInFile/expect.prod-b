@@ -6,6 +6,8 @@ fooVar: bar
 
 key: value-b
 
+profileKey: profileValue
+
 redis:
   url: 2.2.2.2
 

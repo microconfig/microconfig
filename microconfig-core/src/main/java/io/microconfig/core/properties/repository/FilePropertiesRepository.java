@@ -1,19 +1,26 @@
 package io.microconfig.core.properties.repository;
 
 import io.microconfig.core.configtypes.ConfigType;
+import io.microconfig.core.environments.EnvironmentRepository;
 import io.microconfig.core.properties.PropertiesRepository;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.io.ConfigIo;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static java.util.Collections.emptyMap;
 
 @RequiredArgsConstructor
 public class FilePropertiesRepository implements PropertiesRepository {
     private final ComponentGraph componentGraph;
+
+    private final EnvironmentRepository environments;
     private final ConfigIo configIo;
 
     @Override
@@ -49,8 +56,9 @@ public class FilePropertiesRepository implements PropertiesRepository {
         }
 
         private Map<String, Property> parse(ConfigFile configFile) {
-            return configFile.parseUsing(configIo, environment)
-                    .getBaseAndIncludedProperties(this::includeResolver);
+            List<String> profiles = environments.getOrCreateByName(environment).getProfiles();
+            return configFile.parseUsing(configIo)
+                    .getBaseAndIncludedProperties(this::includeResolver, profiles, environment);
         }
 
         private Map<String, Property> includeResolver(Include include) {

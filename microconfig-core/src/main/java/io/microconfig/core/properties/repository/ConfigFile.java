@@ -18,6 +18,7 @@ import static io.microconfig.core.properties.FileBasedComponent.fileSource;
 import static io.microconfig.core.properties.PropertyImpl.isTempProperty;
 import static io.microconfig.core.properties.PropertyImpl.parse;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
@@ -32,24 +33,22 @@ public class ConfigFile {
     @With
     private final String environment;
 
-    public RawConfig parseUsing(ConfigIo configIo, String buildEnvironment) {
+    public RawConfig parseUsing(ConfigIo configIo) {
         ConfigReader reader = configIo.readFrom(file);
 
         Map<Integer, String> commentByLineNumber = reader.commentsByLineNumber();
         List<Include> includes = parseIncludes(commentByLineNumber.values());
         if (containsIgnoreDirective(commentByLineNumber.values())) {
-            return new RawConfig(includes, emptyMap());
+            return new RawConfig(includes, emptyList());
         }
 
-        List<Property> properties = parseNormalProperties(reader, buildEnvironment);
-        List<Property> tempProperties = parseTempProperties(commentByLineNumber);
-        return new RawConfig(includes, joinToMap(properties, tempProperties));
+        List<Property> properties = parseNormalProperties(reader);
+        properties.addAll(parseTempProperties(commentByLineNumber));
+        return new RawConfig(includes, properties);
     }
 
-    private List<Property> parseNormalProperties(ConfigReader reader, String buildEnvironment) {
-        return reader.properties(configType, environment).stream()
-                .filter(p -> p.matchEnvironment(buildEnvironment))
-                .collect(toList());
+    private List<Property> parseNormalProperties(ConfigReader reader) {
+        return reader.properties(configType, environment);
     }
 
     private List<Property> parseTempProperties(Map<Integer, String> commentByLineNumber) {

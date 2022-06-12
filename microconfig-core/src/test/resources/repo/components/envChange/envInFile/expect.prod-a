@@ -6,6 +6,8 @@ fooVar: bas
 
 key: value-a
 
+profileKey: profileValue
+
 redis:
   url: 1.1.1.1
 

@@ -12,3 +12,9 @@ fooVar: ${this@foo}
 spring:
   datasource:
     url: "${this@db-url}"
+
+@prod:
+   profileKey: profileValue
+
+@prod@var:
+   foo: bar

@@ -127,6 +127,7 @@ public class Microconfig {
         private PropertiesFactory initPropertiesFactory() {
             PropertiesRepository fileRepository = new FilePropertiesRepository(
                     componentGraph(),
+                    lazyEnvironments,
                     newConfigIo(fsReader)
             );
 

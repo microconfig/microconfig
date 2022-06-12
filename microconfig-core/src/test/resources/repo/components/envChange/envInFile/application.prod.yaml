@@ -22,7 +22,6 @@ context: prod
 
 @prod-b@var:
    db-url: postgres://20.20.20.20:5432
-   foo: bar
    included: prod-b-included
 
 @var@prod-c:

@@ -76,11 +76,6 @@ public class PropertyImpl implements Property {
     }
 
     @Override
-    public boolean matchEnvironment(String env) {
-        return environment == null || environment.equals(env);
-    }
-
-    @Override
     public Property resolveBy(Resolver resolver, DeclaringComponent root) {
         try {
             String resolved = resolver.resolve(value, declaringComponent, root);
