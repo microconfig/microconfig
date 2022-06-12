@@ -18,6 +18,7 @@ import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.FileBasedComponent.fileSource;
 import static io.microconfig.core.properties.PropertyImpl.isTempProperty;
 import static io.microconfig.core.properties.PropertyImpl.parse;
+import static io.microconfig.utils.CollectionUtils.join;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
@@ -41,9 +42,9 @@ public class ConfigFile {
         List<Include> includes = parseIncludes(commentByLineNumber.values());
         if (containsIgnoreDirective(commentByLineNumber.values())) return new RawConfig(includes, emptyList());
 
-        List<Property> properties = new ArrayList<>(reader.properties(configType, environment));
-        properties.addAll(parseTempProperties(commentByLineNumber));
-        return new RawConfig(includes, properties);
+        List<Property> properties = reader.properties(configType, environment);
+        List<Property> tempProperties = parseTempProperties(commentByLineNumber);
+        return new RawConfig(includes, join(properties, tempProperties));
     }
 
     private List<Property> parseTempProperties(Map<Integer, String> commentByLineNumber) {
