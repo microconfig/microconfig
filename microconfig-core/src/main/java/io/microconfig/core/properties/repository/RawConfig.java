@@ -14,14 +14,15 @@ import java.util.function.Predicate;
 import static io.microconfig.utils.StreamUtils.filter;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
 import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 public class RawConfig {
     private final List<Include> includes;
     private final List<Property> declaredProperties;
 
-    public Map<String, Property> getBaseAndIncludedProperties(Function<Include, Map<String, Property>> includeResolver, List<String> profiles, String buildEnvironment) {
+    public Map<String, Property> getBaseAndIncludedProperties(Function<Include, Map<String, Property>> includeResolver,
+                                                              List<String> profiles,
+                                                              String buildEnvironment) {
         Map<String, Property> filtered = filterProperties(profiles, buildEnvironment);
         if (includes.isEmpty()) return filtered;
 
