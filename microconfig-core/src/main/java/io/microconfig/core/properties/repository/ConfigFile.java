@@ -43,13 +43,9 @@ public class ConfigFile {
             return new RawConfig(includes, emptyList());
         }
 
-        List<Property> properties = new ArrayList<>(parseNormalProperties(reader));
+        List<Property> properties = new ArrayList<>(reader.properties(configType, environment));
         properties.addAll(parseTempProperties(commentByLineNumber));
         return new RawConfig(includes, properties);
-    }
-
-    private List<Property> parseNormalProperties(ConfigReader reader) {
-        return reader.properties(configType, environment);
     }
 
     private List<Property> parseTempProperties(Map<Integer, String> commentByLineNumber) {
