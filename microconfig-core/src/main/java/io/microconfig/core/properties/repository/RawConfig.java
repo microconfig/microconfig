@@ -38,7 +38,7 @@ public class RawConfig {
 
         // then multi-line vars
         envProps.stream()
-                .filter(p -> p.getEnvironment() == null)
+                .filter(EnvProperty::multiLineVar)
                 .forEach(p -> props.put(p.getKey(), p));
 
         // then profiles

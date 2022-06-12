@@ -48,6 +48,10 @@ public class EnvProperty implements Property {
         return delegate.isVar();
     }
 
+    public boolean multiLineVar() {
+        return isVar() && environment == null;
+    }
+
     @Override
     public ConfigFormat getConfigFormat() {
         return delegate.getConfigFormat();
