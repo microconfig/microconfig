@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.With;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,9 @@ import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.FileBasedComponent.fileSource;
 import static io.microconfig.core.properties.PropertyImpl.isTempProperty;
 import static io.microconfig.core.properties.PropertyImpl.parse;
+import static io.microconfig.utils.CollectionUtils.join;
 import static io.microconfig.utils.StreamUtils.toLinkedMap;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
@@ -37,13 +40,11 @@ public class ConfigFile {
 
         Map<Integer, String> commentByLineNumber = reader.commentsByLineNumber();
         List<Include> includes = parseIncludes(commentByLineNumber.values());
-        if (containsIgnoreDirective(commentByLineNumber.values())) {
-            return new RawConfig(includes, emptyMap());
-        }
+        if (containsIgnoreDirective(commentByLineNumber.values())) return new RawConfig(includes, emptyList());
 
         List<Property> properties = reader.properties(configType, environment);
         List<Property> tempProperties = parseTempProperties(commentByLineNumber);
-        return new RawConfig(includes, joinToMap(properties, tempProperties));
+        return new RawConfig(includes, join(properties, tempProperties));
     }
 
     private List<Property> parseTempProperties(Map<Integer, String> commentByLineNumber) {
@@ -64,11 +65,6 @@ public class ConfigFile {
 
     private boolean containsIgnoreDirective(Collection<String> comments) {
         return comments.stream().anyMatch(s -> s.startsWith("#@Ignore"));
-    }
-
-    private Map<String, Property> joinToMap(List<Property> properties, List<Property> tempProperties) {
-        return concat(properties.stream(), tempProperties.stream())
-                .collect(toLinkedMap(Property::getKey, identity()));
     }
 
     @Override

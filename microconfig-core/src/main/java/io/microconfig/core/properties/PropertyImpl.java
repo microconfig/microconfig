@@ -6,11 +6,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.With;
 
 import static io.microconfig.utils.StringUtils.findFirstIndexIn;
+import static lombok.AccessLevel.PACKAGE;
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @EqualsAndHashCode
-@RequiredArgsConstructor(access = PRIVATE)
+@RequiredArgsConstructor(access = PACKAGE)
 public class PropertyImpl implements Property {
     private static final String TEMP_VALUE = "#var ";
 

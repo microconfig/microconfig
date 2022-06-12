@@ -1,0 +1,22 @@
+#include envInclude
+
+context: default
+
+redis:
+  url: 0.0.0.0
+
+profileKey: default
+
+key: default
+
+fooVar: ${this@foo}
+
+spring:
+  datasource:
+    url: "${this@db-url}"
+
+@prod:
+   profileKey: profileValue
+
+@prod@var:
+   foo: bar

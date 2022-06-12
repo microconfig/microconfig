@@ -1,0 +1,16 @@
+context: prod
+
+envInclude: prod-b-included
+
+fooVar: bar
+
+key: value-b
+
+profileKey: profileValue
+
+redis:
+  url: 2.2.2.2
+
+spring:
+  datasource:
+    url: "postgres://20.20.20.20:5432"
