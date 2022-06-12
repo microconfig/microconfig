@@ -31,7 +31,7 @@ public class RawConfig {
 
     private Map<String, Property> filterProperties(List<String> profiles, String env) {
         // base properties go first
-        Map<String, Property> propsByKey = filter(declaredProperties, p -> !isEnvProperty(p), toLinkedMap(Property::getKey, identity()));
+        Map<String, Property> propsByKey = filter(declaredProperties, p -> !isOverrideProperty(p), toLinkedMap(Property::getKey, identity()));
 
         override(propsByKey, byMultilineVars());
         override(propsByKey, byPropertiesForProfile(profiles));
@@ -54,14 +54,14 @@ public class RawConfig {
 
     private void override(Map<String, Property> propsByKey, Predicate<OverrideProperty> predicate) {
         Map<String, Property> overrides = declaredProperties.stream()
-                .filter(this::isEnvProperty)
+                .filter(this::isOverrideProperty)
                 .map(p -> (OverrideProperty) p)
                 .filter(predicate)
                 .collect(toLinkedMap(Property::getKey, identity()));
         propsByKey.putAll(overrides);
     }
 
-    private boolean isEnvProperty(Property p) {
+    private boolean isOverrideProperty(Property p) {
         return p instanceof OverrideProperty;
     }
 
