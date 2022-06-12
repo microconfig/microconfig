@@ -6,14 +6,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.With;
 
 import static io.microconfig.utils.StringUtils.findFirstIndexIn;
+import static lombok.AccessLevel.PACKAGE;
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @EqualsAndHashCode
-@RequiredArgsConstructor(access = PRIVATE)
+@RequiredArgsConstructor(access = PACKAGE)
 public class PropertyImpl implements Property {
     private static final String TEMP_VALUE = "#var ";
-    private static final String ENV_VAR_VALUE = "@var.";
 
     private final String key;
     @With(PRIVATE)
@@ -22,7 +22,6 @@ public class PropertyImpl implements Property {
     private final ConfigFormat configFormat;
 
     private final DeclaringComponent declaringComponent;
-    private final String environment;
 
     public static Property parse(String keyValue, ConfigFormat configFormat, DeclaringComponent source) {
         boolean temp = isTempProperty(keyValue);
@@ -35,28 +34,15 @@ public class PropertyImpl implements Property {
         String key = keyValue.substring(temp ? TEMP_VALUE.length() : 0, separatorIndex).trim();
         String value = keyValue.substring(separatorIndex + 1).trim();
 
-        return new PropertyImpl(key, value, temp, configFormat, source, null);
+        return new PropertyImpl(key, value, temp, configFormat, source);
     }
 
     public static Property property(String key, String value, ConfigFormat configFormat, DeclaringComponent source) {
-        return new PropertyImpl(key, value, false, configFormat, source, null);
-    }
-
-    public static Property atProperty(String key, String value, ConfigFormat configFormat, DeclaringComponent source) {
-        boolean isVar = key.contains(ENV_VAR_VALUE);
-        int offset = key.indexOf('.');
-        String envName = extractEnv(key, offset, isVar);
-        String adjustedKey = key.substring(offset + 1);
-        return new PropertyImpl(adjustedKey, value, isVar, configFormat, source, envName);
-    }
-
-    private static String extractEnv(String key, int offset, boolean isVar) {
-        if (key.startsWith(ENV_VAR_VALUE)) return null;
-        return key.substring(1, isVar ? key.lastIndexOf('@') : offset);
+        return new PropertyImpl(key, value, false, configFormat, source);
     }
 
     public static Property varProperty(String key, String value, ConfigFormat configFormat, DeclaringComponent source) {
-        return new PropertyImpl(key, value, true, configFormat, source, null);
+        return new PropertyImpl(key, value, true, configFormat, source);
     }
 
     public static int findSeparatorIndexIn(String keyValue) {

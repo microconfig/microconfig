@@ -7,7 +7,9 @@ public interface Property {
 
     boolean isVar();
 
-    String getEnvironment();
+    default String getEnvironment() {
+        return null;
+    };
 
     ConfigFormat getConfigFormat();
 
