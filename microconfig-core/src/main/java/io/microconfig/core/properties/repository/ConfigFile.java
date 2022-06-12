@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.With;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class ConfigFile {
             return new RawConfig(includes, emptyList());
         }
 
-        List<Property> properties = parseNormalProperties(reader);
+        List<Property> properties = new ArrayList<>(parseNormalProperties(reader));
         properties.addAll(parseTempProperties(commentByLineNumber));
         return new RawConfig(includes, properties);
     }
