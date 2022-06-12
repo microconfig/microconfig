@@ -34,11 +34,14 @@ public class RawConfig {
         // base properties go first
         Map<String, Property> propsByKey = filter(declaredProperties, p -> !isEnvProperty(p), toLinkedMap(Property::getKey, identity()));
 
-        Consumer<Predicate<EnvProperty>> overrideProps = predicate -> declaredProperties.stream()
-                .filter(this::isEnvProperty)
-                .map(p -> (EnvProperty) p)
-                .filter(predicate)
-                .forEach(p -> propsByKey.put(p.getKey(), p));
+        Consumer<Predicate<EnvProperty>> overrideProps = predicate -> {
+            Map<String, Property> props = declaredProperties.stream()
+                    .filter(this::isEnvProperty)
+                    .map(p -> (EnvProperty) p)
+                    .filter(predicate)
+                    .collect(toLinkedMap(Property::getKey, identity()));
+            propsByKey.putAll(props);
+        };
 
         overrideProps.accept(p -> p.getEnvironment() == null);
         overrideProps.accept(p -> p.getEnvironment() != null && profiles.contains(p.getEnvironment()));

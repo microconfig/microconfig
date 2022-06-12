@@ -39,9 +39,7 @@ public class ConfigFile {
 
         Map<Integer, String> commentByLineNumber = reader.commentsByLineNumber();
         List<Include> includes = parseIncludes(commentByLineNumber.values());
-        if (containsIgnoreDirective(commentByLineNumber.values())) {
-            return new RawConfig(includes, emptyList());
-        }
+        if (containsIgnoreDirective(commentByLineNumber.values())) return new RawConfig(includes, emptyList());
 
         List<Property> properties = new ArrayList<>(reader.properties(configType, environment));
         properties.addAll(parseTempProperties(commentByLineNumber));
