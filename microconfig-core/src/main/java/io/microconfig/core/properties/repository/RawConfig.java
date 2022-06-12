@@ -7,8 +7,13 @@ import lombok.RequiredArgsConstructor;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
+import static io.microconfig.utils.StreamUtils.filter;
+import static io.microconfig.utils.StreamUtils.toLinkedMap;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
@@ -24,36 +29,25 @@ public class RawConfig {
         return filtered;
     }
 
-    private Map<String, Property> filterProperties(List<String> profiles, String buildEnvironment) {
-        Map<String, Property> props = new LinkedHashMap<>();
+    private Map<String, Property> filterProperties(List<String> profiles, String env) {
         // base properties go first
-        declaredProperties.stream()
-                .filter(p -> !(p instanceof EnvProperty))
-                .forEach(p -> props.put(p.getKey(), p));
+        Map<String, Property> propsByKey = filter(declaredProperties, p -> !isEnvProperty(p), toLinkedMap(Property::getKey, identity()));
 
-        List<EnvProperty> envProps = declaredProperties.stream()
-                .filter(p -> p instanceof EnvProperty)
+        Consumer<Predicate<EnvProperty>> overrideProps = predicate -> declaredProperties.stream()
+                .filter(this::isEnvProperty)
                 .map(p -> (EnvProperty) p)
-                .collect(toList());
+                .filter(predicate)
+                .forEach(p -> propsByKey.put(p.getKey(), p));
 
-        // then multi-line vars
-        envProps.stream()
-                .filter(EnvProperty::multiLineVar)
-                .forEach(p -> props.put(p.getKey(), p));
+        overrideProps.accept(p -> p.getEnvironment() == null);
+        overrideProps.accept(p -> p.getEnvironment() != null && profiles.contains(p.getEnvironment()));
+        overrideProps.accept(p -> p.getEnvironment() != null && env.equals(p.getEnvironment()));
 
-        // then profiles
-        envProps.stream()
-                .filter(p -> p.getEnvironment() != null)
-                .filter(p -> profiles.contains(p.getEnvironment()))
-                .forEach(p -> props.put(p.getKey(), p));
+        return propsByKey;
+    }
 
-        // and then env specific
-        envProps.stream()
-                .filter(p -> p.getEnvironment() != null)
-                .filter(p -> p.getEnvironment().equals(buildEnvironment))
-                .forEach(p -> props.put(p.getKey(), p));
-
-        return props;
+    private boolean isEnvProperty(Property p) {
+        return p instanceof EnvProperty;
     }
 
     private Map<String, Property> getIncludedPropertiesUsing(Function<Include, Map<String, Property>> includeResolver) {
