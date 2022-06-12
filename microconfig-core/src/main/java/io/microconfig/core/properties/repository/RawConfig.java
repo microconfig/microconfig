@@ -33,18 +33,22 @@ public class RawConfig {
         // base properties go first
         Map<String, Property> propsByKey = filter(declaredProperties, p -> !isEnvProperty(p), toLinkedMap(Property::getKey, identity()));
 
-        override(propsByKey, OverrideProperty::multiLineVar);
-        override(propsByKey, propertyForProfile(profiles));
-        override(propsByKey, propertyForEnv(env));
+        override(propsByKey, byMultilineVars());
+        override(propsByKey, byPropertiesForProfile(profiles));
+        override(propsByKey, byPropertiesForEnv(env));
 
         return propsByKey;
     }
 
-    private Predicate<OverrideProperty> propertyForProfile(List<String> profiles) {
+    private Predicate<OverrideProperty> byMultilineVars() {
+        return p -> p.isVar() && p.getEnvironment() == null;
+    }
+
+    private Predicate<OverrideProperty> byPropertiesForProfile(List<String> profiles) {
         return p -> p.getEnvironment() != null && profiles.contains(p.getEnvironment());
     }
 
-    private Predicate<OverrideProperty> propertyForEnv(String env) {
+    private Predicate<OverrideProperty> byPropertiesForEnv(String env) {
         return p -> p.getEnvironment() != null && env.equals(p.getEnvironment());
     }
 

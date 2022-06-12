@@ -48,10 +48,6 @@ public class OverrideProperty implements Property {
         return delegate.isVar();
     }
 
-    public boolean multiLineVar() {
-        return isVar() && environment == null;
-    }
-
     @Override
     public ConfigFormat getConfigFormat() {
         return delegate.getConfigFormat();
