@@ -32,9 +32,11 @@ public class RawConfig {
     private Map<String, Property> filterProperties(List<String> profiles, String env) {
         // base properties go first
         Map<String, Property> propsByKey = filter(declaredProperties, p -> !isEnvProperty(p), toLinkedMap(Property::getKey, identity()));
-
-        override(propsByKey, p -> p.getEnvironment() == null);
+        // then multi line vars
+        override(propsByKey, EnvProperty::multiLineVar);
+        // then profile values
         override(propsByKey, p -> p.getEnvironment() != null && profiles.contains(p.getEnvironment()));
+        // and then env specific overrides
         override(propsByKey, p -> p.getEnvironment() != null && env.equals(p.getEnvironment()));
 
         return propsByKey;
