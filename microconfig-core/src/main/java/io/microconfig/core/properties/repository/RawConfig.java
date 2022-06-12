@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -34,20 +33,20 @@ public class RawConfig {
         // base properties go first
         Map<String, Property> propsByKey = filter(declaredProperties, p -> !isEnvProperty(p), toLinkedMap(Property::getKey, identity()));
 
-        Consumer<Predicate<EnvProperty>> overrideProps = predicate -> {
-            Map<String, Property> props = declaredProperties.stream()
-                    .filter(this::isEnvProperty)
-                    .map(p -> (EnvProperty) p)
-                    .filter(predicate)
-                    .collect(toLinkedMap(Property::getKey, identity()));
-            propsByKey.putAll(props);
-        };
-
-        overrideProps.accept(p -> p.getEnvironment() == null);
-        overrideProps.accept(p -> p.getEnvironment() != null && profiles.contains(p.getEnvironment()));
-        overrideProps.accept(p -> p.getEnvironment() != null && env.equals(p.getEnvironment()));
+        override(propsByKey, p -> p.getEnvironment() == null);
+        override(propsByKey, p -> p.getEnvironment() != null && profiles.contains(p.getEnvironment()));
+        override(propsByKey, p -> p.getEnvironment() != null && env.equals(p.getEnvironment()));
 
         return propsByKey;
+    }
+
+    private void override(Map<String, Property> propsByKey, Predicate<EnvProperty> predicate) {
+        Map<String, Property> props = declaredProperties.stream()
+                .filter(this::isEnvProperty)
+                .map(p -> (EnvProperty) p)
+                .filter(predicate)
+                .collect(toLinkedMap(Property::getKey, identity()));
+        propsByKey.putAll(props);
     }
 
     private boolean isEnvProperty(Property p) {
