@@ -15,6 +15,10 @@ public class EnvProperty implements Property {
     private final String environment;
     private final Property delegate;
 
+    public static boolean isEnvProperty(String line) {
+        return line.startsWith("@");
+    }
+
     public static Property envProperty(String key, String value, ConfigFormat configFormat, DeclaringComponent source) {
         boolean isVar = key.contains(ENV_VAR_VALUE);
         int offset = key.indexOf('.');

@@ -53,10 +53,6 @@ public class PropertyImpl implements Property {
         return line.startsWith("#");
     }
 
-    public static boolean isAtProperty(String line) {
-        return line.startsWith("@");
-    }
-
     public static boolean isTempProperty(String line) {
         return line.startsWith(TEMP_VALUE);
     }
