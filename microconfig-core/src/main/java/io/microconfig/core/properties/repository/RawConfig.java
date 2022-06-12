@@ -22,8 +22,8 @@ public class RawConfig {
 
     public Map<String, Property> getBaseAndIncludedProperties(Function<Include, Map<String, Property>> includeResolver,
                                                               List<String> profiles,
-                                                              String buildEnvironment) {
-        Map<String, Property> filtered = filterProperties(profiles, buildEnvironment);
+                                                              String env) {
+        Map<String, Property> filtered = filterProperties(profiles, env);
         if (includes.isEmpty()) return filtered;
 
         getIncludedPropertiesUsing(includeResolver).forEach(filtered::putIfAbsent);
