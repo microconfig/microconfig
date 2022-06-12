@@ -53,12 +53,12 @@ public class RawConfig {
     }
 
     private void override(Map<String, Property> propsByKey, Predicate<OverrideProperty> predicate) {
-        Map<String, Property> props = declaredProperties.stream()
+        Map<String, Property> overrides = declaredProperties.stream()
                 .filter(this::isEnvProperty)
                 .map(p -> (OverrideProperty) p)
                 .filter(predicate)
                 .collect(toLinkedMap(Property::getKey, identity()));
-        propsByKey.putAll(props);
+        propsByKey.putAll(overrides);
     }
 
     private boolean isEnvProperty(Property p) {
