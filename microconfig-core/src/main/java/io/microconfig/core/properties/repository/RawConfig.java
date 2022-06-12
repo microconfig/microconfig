@@ -1,6 +1,6 @@
 package io.microconfig.core.properties.repository;
 
-import io.microconfig.core.properties.EnvProperty;
+import io.microconfig.core.properties.OverrideProperty;
 import io.microconfig.core.properties.Property;
 import lombok.RequiredArgsConstructor;
 
@@ -33,32 +33,32 @@ public class RawConfig {
         // base properties go first
         Map<String, Property> propsByKey = filter(declaredProperties, p -> !isEnvProperty(p), toLinkedMap(Property::getKey, identity()));
 
-        override(propsByKey, EnvProperty::multiLineVar);
+        override(propsByKey, OverrideProperty::multiLineVar);
         override(propsByKey, propertyForProfile(profiles));
         override(propsByKey, propertyForEnv(env));
 
         return propsByKey;
     }
 
-    private Predicate<EnvProperty> propertyForProfile(List<String> profiles) {
+    private Predicate<OverrideProperty> propertyForProfile(List<String> profiles) {
         return p -> p.getEnvironment() != null && profiles.contains(p.getEnvironment());
     }
 
-    private Predicate<EnvProperty> propertyForEnv(String env) {
+    private Predicate<OverrideProperty> propertyForEnv(String env) {
         return p -> p.getEnvironment() != null && env.equals(p.getEnvironment());
     }
 
-    private void override(Map<String, Property> propsByKey, Predicate<EnvProperty> predicate) {
+    private void override(Map<String, Property> propsByKey, Predicate<OverrideProperty> predicate) {
         Map<String, Property> props = declaredProperties.stream()
                 .filter(this::isEnvProperty)
-                .map(p -> (EnvProperty) p)
+                .map(p -> (OverrideProperty) p)
                 .filter(predicate)
                 .collect(toLinkedMap(Property::getKey, identity()));
         propsByKey.putAll(props);
     }
 
     private boolean isEnvProperty(Property p) {
-        return p instanceof EnvProperty;
+        return p instanceof OverrideProperty;
     }
 
     private Map<String, Property> getIncludedPropertiesUsing(Function<Include, Map<String, Property>> includeResolver) {

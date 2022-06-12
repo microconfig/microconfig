@@ -8,24 +8,24 @@ import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
 @EqualsAndHashCode
-public class EnvProperty implements Property {
+public class OverrideProperty implements Property {
     private static final String ENV_VAR_VALUE = "@var.";
 
     @Getter
     private final String environment;
     private final Property delegate;
 
-    public static boolean isEnvProperty(String line) {
+    public static boolean isOverrideProperty(String line) {
         return line.startsWith("@");
     }
 
-    public static Property envProperty(String key, String value, ConfigFormat configFormat, DeclaringComponent source) {
+    public static Property overrideProperty(String key, String value, ConfigFormat configFormat, DeclaringComponent source) {
         boolean isVar = key.contains(ENV_VAR_VALUE);
         int offset = key.indexOf('.');
         String envName = extractEnv(key, offset, isVar);
         String adjustedKey = key.substring(offset + 1);
         Property delegate = new PropertyImpl(adjustedKey, value, isVar, configFormat, source);
-        return new EnvProperty(envName, delegate);
+        return new OverrideProperty(envName, delegate);
     }
 
     private static String extractEnv(String key, int offset, boolean isVar) {
