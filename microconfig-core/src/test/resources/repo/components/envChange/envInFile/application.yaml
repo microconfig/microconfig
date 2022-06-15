@@ -15,8 +15,8 @@ spring:
   datasource:
     url: "${this@db-url}"
 
-@prod:
-   profileKey: profileValue
++prod:
+  profileKey: profileValue
 
-@prod@var:
+@prod:
    foo: bar

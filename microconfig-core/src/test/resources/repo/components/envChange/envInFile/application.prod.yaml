@@ -1,29 +1,29 @@
 context: prod
 
-@prod-a:
++prod-a:
    redis:
      url: 1.1.1.1
    key: value-a
 
-@prod-c:
++prod-c:
    redis:
      url: 3.3.3.3
    key: value-c
 
-@prod-b:
++prod-b:
    redis:
      url: 2.2.2.2
    key: value-b
 
-@prod-a@var:
+@prod-a:
    db-url: postgres://10.10.10.10:5432
    foo: bas
    included: prod-a-included
 
-@prod-b@var:
+@prod-b:
    db-url: postgres://20.20.20.20:5432
    included: prod-b-included
 
-@var@prod-c:
+@prod-c:
    db-url: postgres://30.30.30.30:5432
    foo: baz
