@@ -9,7 +9,7 @@ import static lombok.AccessLevel.PRIVATE;
 @RequiredArgsConstructor(access = PRIVATE)
 @EqualsAndHashCode
 public class OverrideProperty implements Property {
-    private static final String MULTI_VAR_PREFIX = "@var";
+    private static final String MULTI_VAR_PREFIX = "@var.";
 
     @Getter
     private final String environment;
