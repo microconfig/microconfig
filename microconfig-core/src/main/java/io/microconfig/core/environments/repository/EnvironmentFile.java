@@ -13,6 +13,7 @@ import static io.microconfig.core.environments.repository.ComponentDefinition.wi
 import static io.microconfig.core.environments.repository.ComponentDefinition.withName;
 import static io.microconfig.utils.FileUtils.getName;
 import static io.microconfig.utils.StreamUtils.forEach;
+import static java.lang.Boolean.TRUE;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
@@ -79,8 +80,7 @@ class EnvironmentFile {
     }
 
     private boolean parseAbstract(Map<String, ?> keyValue) {
-        Boolean value = (Boolean) keyValue.remove(ABSTRACT);
-        return value != null && value;
+        return TRUE == keyValue.remove(ABSTRACT);
     }
 
     private List<String> parseProfiles(Map<String, Object> keyValue) {

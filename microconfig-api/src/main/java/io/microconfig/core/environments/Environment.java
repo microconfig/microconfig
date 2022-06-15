@@ -9,7 +9,7 @@ public interface Environment {
 
     File getSource();
 
-    boolean isAbstractEnv();
+    boolean isAbstract();
 
     int getPortOffset();
 

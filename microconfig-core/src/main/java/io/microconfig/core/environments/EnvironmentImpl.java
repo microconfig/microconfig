@@ -85,6 +85,11 @@ public class EnvironmentImpl implements Environment {
                 .orElseGet(() -> componentFactory.createComponent(componentName, componentName, name));
     }
 
+    @Override
+    public boolean isAbstract() {
+        return abstractEnv;
+    }
+
     private List<Component> componentsFrom(List<String> groups) {
         if (groups.isEmpty()) return getAllComponents().asList();
 

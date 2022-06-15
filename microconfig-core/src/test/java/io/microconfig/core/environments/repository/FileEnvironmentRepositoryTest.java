@@ -91,7 +91,7 @@ class FileEnvironmentRepositoryTest {
     }
 
     private void testBase(Environment env) {
-        assertTrue(env.isAbstractEnv());
+        assertTrue(env.isAbstract());
         assertEquals(0, env.getPortOffset());
         testGroup(env, "orders", null,
                 "order-db-patcher",

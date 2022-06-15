@@ -78,7 +78,7 @@ public class Microconfig {
 
     public Environment inEnvironment(String name) {
         Environment env = environments().getByName(name);
-        if (env.isAbstractEnv()) throw new EnvironmentException("Can't build abstract environment " + name);
+        if (env.isAbstract()) throw new EnvironmentException("Can't build abstract environment " + name);
         return env;
     }
 

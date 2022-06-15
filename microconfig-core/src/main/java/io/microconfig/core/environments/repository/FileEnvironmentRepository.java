@@ -54,7 +54,7 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
 
     @Override
     public Set<String> environmentNames() {
-        List<Environment> envs = filter(environments(), e -> !e.isAbstractEnv());
+        List<Environment> envs = filter(environments(), e -> !e.isAbstract());
         return forEach(envs, Environment::getName, toCollection(TreeSet::new));
     }
 
