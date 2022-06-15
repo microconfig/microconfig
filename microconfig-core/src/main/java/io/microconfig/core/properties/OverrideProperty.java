@@ -29,8 +29,7 @@ public class OverrideProperty implements Property {
     }
 
     private static String extractEnv(String key, int offset) {
-        if (key.startsWith(MULTI_VAR_PREFIX)) return null;
-        return key.substring(1, offset);
+        return key.startsWith(MULTI_VAR_PREFIX) ? null : key.substring(1, offset);
     }
 
     @Override
