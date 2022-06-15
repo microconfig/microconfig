@@ -1,0 +1,23 @@
+abstract: true
+
+orders:
+  components:
+    - order-db-patcher
+    - order-service
+    - order-ui
+
+payments:
+  components: [
+    payment-db-patcher,
+    payment-service,
+    payment-ui,
+    payment-provider-mock
+  ]
+
+infra:
+  components:
+    - service-discovery
+    - api-gateway
+
+kafka:
+  components: [zookeeper, kafka]

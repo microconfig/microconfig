@@ -1,25 +1,8 @@
+include:
+  env: base
+
 portOffset: 0
 ip: 10.0.0.1
 
-orders:
-  components:
-    - order-db-patcher
-    - order-service
-    - order-ui
-
-payments:
-  components: [
-    payment-db-patcher,
-    payment-service,
-    payment-ui,
-    payment-provider-mock
-  ]
-
 infra:
   ip: 10.0.10.1
-  components:
-    - service-discovery
-    - api-gateway
-
-kafka:
-  components: [zookeeper, kafka]

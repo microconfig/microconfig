@@ -25,6 +25,8 @@ public class EnvironmentImpl implements Environment {
     @Getter
     private final String name;
     @Getter
+    private final boolean abstractEnv;
+    @Getter
     private final int portOffset;
     @Getter
     private final List<String> profiles;
@@ -81,6 +83,11 @@ public class EnvironmentImpl implements Environment {
     public Component findComponentWithName(String componentName) {
         return findFirstResult(groups, g -> g.findComponentWithName(componentName))
                 .orElseGet(() -> componentFactory.createComponent(componentName, componentName, name));
+    }
+
+    @Override
+    public boolean isAbstract() {
+        return abstractEnv;
     }
 
     private List<Component> componentsFrom(List<String> groups) {

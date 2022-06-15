@@ -6,7 +6,6 @@ import io.microconfig.core.environments.EnvironmentImpl;
 import io.microconfig.core.environments.EnvironmentRepository;
 import io.microconfig.core.properties.PropertiesFactory;
 import io.microconfig.io.FsReader;
-import io.microconfig.utils.FileUtils;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -21,8 +20,7 @@ import java.util.stream.Stream;
 
 import static io.microconfig.utils.FileUtils.getName;
 import static io.microconfig.utils.FileUtils.walk;
-import static io.microconfig.utils.StreamUtils.filter;
-import static io.microconfig.utils.StreamUtils.forEach;
+import static io.microconfig.utils.StreamUtils.*;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -50,12 +48,13 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
 
     @Override
     public List<Environment> environments() {
-        return forEach(environmentFiles(), parse());
+        List<Environment> all = forEach(environmentFiles(), parse());
+        return filter(all, not(Environment::isAbstract));
     }
 
     @Override
     public Set<String> environmentNames() {
-        return forEach(environmentFiles(), FileUtils::getName, toCollection(TreeSet::new));
+        return forEach(environments(), Environment::getName, toCollection(TreeSet::new));
     }
 
     @Override
@@ -122,6 +121,6 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     }
 
     private Supplier<Environment> fakeEnvWith(String name) {
-        return () -> new EnvironmentImpl(null, name, 0, emptyList(), emptyList(), componentFactory, propertiesFactory);
+        return () -> new EnvironmentImpl(null, name, false, 0, emptyList(), emptyList(), componentFactory, propertiesFactory);
     }
 }
