@@ -1,0 +1,5 @@
+abstract: true
+
+group:
+  components:
+    - simple

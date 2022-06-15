@@ -9,6 +9,8 @@ public interface Environment {
 
     File getSource();
 
+    boolean isAbstractEnv();
+
     int getPortOffset();
 
     List<String> getProfiles();

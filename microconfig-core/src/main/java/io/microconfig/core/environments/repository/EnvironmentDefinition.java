@@ -23,6 +23,7 @@ class EnvironmentDefinition {
     private final String name;
     @Getter
     private final String ip;
+    private final boolean abstractEnv;
     private final int portOffset;
     private final List<String> profiles;
     private final EnvInclude envInclude;
@@ -54,6 +55,7 @@ class EnvironmentDefinition {
         return new EnvironmentImpl(
                 source,
                 name,
+                abstractEnv,
                 portOffset,
                 profiles,
                 forEach(groups, g -> g.toGroup(componentFactory, propertiesFactory, name)),

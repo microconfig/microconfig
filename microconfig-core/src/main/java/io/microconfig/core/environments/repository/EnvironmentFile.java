@@ -22,6 +22,7 @@ class EnvironmentFile {
     private static final String INCLUDE = "include";
     private static final String PROFILES = "profiles";
     private static final String IP = "ip";
+    private static final String ABSTRACT = "abstract";
     private static final String PORT_OFFSET = "portOffset";
     private static final String INCLUDE_ENV = "env";
     private static final String EXCLUDE = "exclude";
@@ -52,9 +53,10 @@ class EnvironmentFile {
         List<String> profiles = parseProfiles(keyValue);
         int portOffset = parsePortOffset(keyValue);
         String envIp = parseIp(keyValue);
+        boolean abstractEnv = parseAbstract(keyValue);
         List<ComponentGroupDefinition> componentGroups = parseComponentGroups(keyValue, envIp);
 
-        return new EnvironmentDefinition(file, name, envIp, portOffset, profiles, envInclude, componentGroups);
+        return new EnvironmentDefinition(file, name, envIp, abstractEnv, portOffset, profiles, envInclude, componentGroups);
     }
 
     @SuppressWarnings("unchecked")
@@ -74,6 +76,11 @@ class EnvironmentFile {
 
     private String parseIp(Map<String, ?> keyValue) {
         return (String) keyValue.remove(IP);
+    }
+
+    private boolean parseAbstract(Map<String, ?> keyValue) {
+        Boolean value = (Boolean) keyValue.remove(ABSTRACT);
+        return value != null && value;
     }
 
     private List<String> parseProfiles(Map<String, Object> keyValue) {

@@ -25,6 +25,8 @@ public class EnvironmentImpl implements Environment {
     @Getter
     private final String name;
     @Getter
+    private final boolean abstractEnv;
+    @Getter
     private final int portOffset;
     @Getter
     private final List<String> profiles;

@@ -6,7 +6,6 @@ import io.microconfig.core.environments.EnvironmentImpl;
 import io.microconfig.core.environments.EnvironmentRepository;
 import io.microconfig.core.properties.PropertiesFactory;
 import io.microconfig.io.FsReader;
-import io.microconfig.utils.FileUtils;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -55,7 +54,8 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
 
     @Override
     public Set<String> environmentNames() {
-        return forEach(environmentFiles(), FileUtils::getName, toCollection(TreeSet::new));
+        List<Environment> envs = filter(environments(), e -> !e.isAbstractEnv());
+        return forEach(envs, Environment::getName, toCollection(TreeSet::new));
     }
 
     @Override
@@ -122,6 +122,6 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     }
 
     private Supplier<Environment> fakeEnvWith(String name) {
-        return () -> new EnvironmentImpl(null, name, 0, emptyList(), emptyList(), componentFactory, propertiesFactory);
+        return () -> new EnvironmentImpl(null, name, false, 0, emptyList(), emptyList(), componentFactory, propertiesFactory);
     }
 }

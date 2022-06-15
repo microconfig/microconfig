@@ -6,6 +6,7 @@ import io.microconfig.core.environments.ComponentFactory;
 import io.microconfig.core.environments.ComponentFactoryImpl;
 import io.microconfig.core.environments.Environment;
 import io.microconfig.core.environments.EnvironmentRepository;
+import io.microconfig.core.environments.repository.EnvironmentException;
 import io.microconfig.core.environments.repository.FileEnvironmentRepository;
 import io.microconfig.core.environments.repository.LazyInitEnvRepository;
 import io.microconfig.core.properties.*;
@@ -76,7 +77,9 @@ public class Microconfig {
     }
 
     public Environment inEnvironment(String name) {
-        return environments().getByName(name);
+        Environment env = environments().getByName(name);
+        if (env.isAbstractEnv()) throw new EnvironmentException("Can't build abstract environments");
+        return env;
     }
 
     public EnvironmentRepository environments() {
