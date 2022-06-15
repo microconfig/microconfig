@@ -18,7 +18,6 @@ import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -65,9 +64,8 @@ class FileEnvironmentRepositoryTest {
     @Test
     void parseEnvFiles() {
         List<Environment> environments = repo.environments();
-        assertEquals(6, environments.size());
+        assertEquals(5, environments.size());
 
-        testBase(filter(environments, "base"));
         testDev(filter(environments, "dev"));
         testTest(filter(environments, "test"));
         testStaging(filter(environments, "staging"));
@@ -89,33 +87,6 @@ class FileEnvironmentRepositoryTest {
         Environment fake = repo.getOrCreateByName("fake");
         assertEquals("fake", fake.getName());
         assertEquals(0, fake.getAllComponents().asList().size());
-    }
-
-    private void testBase(Environment env) {
-        assertTrue(env.isAbstract());
-        assertEquals(0, env.getPortOffset());
-        testGroup(env, "orders", null,
-                "order-db-patcher",
-                "order-service",
-                "order-ui"
-        );
-
-        testGroup(env, "payments", null,
-                "payment-db-patcher",
-                "payment-service",
-                "payment-ui",
-                "payment-provider-mock"
-        );
-
-        testGroup(env, "infra", null,
-                "service-discovery",
-                "api-gateway"
-        );
-
-        testGroup(env, "kafka", null,
-                "zookeeper",
-                "kafka"
-        );
     }
 
     private void testDev(Environment env) {
