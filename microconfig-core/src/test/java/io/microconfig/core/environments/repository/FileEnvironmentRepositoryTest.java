@@ -16,6 +16,7 @@ import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -118,6 +119,7 @@ class FileEnvironmentRepositoryTest {
     }
 
     private void testDev(Environment env) {
+        assertFalse(env.isAbstractEnv());
         assertEquals(0, env.getPortOffset());
         testGroup(env, "orders", "10.0.0.1",
                 "order-db-patcher",
@@ -144,6 +146,7 @@ class FileEnvironmentRepositoryTest {
     }
 
     private void testTest(Environment env) {
+        assertFalse(env.isAbstractEnv());
         assertEquals(100, env.getPortOffset());
         testGroup(env, "orders", "10.0.0.1",
                 "order-db-patcher",
@@ -171,6 +174,7 @@ class FileEnvironmentRepositoryTest {
     }
 
     private void testStaging(Environment env) {
+        assertFalse(env.isAbstractEnv());
         assertEquals(0, env.getPortOffset());
 
         testGroup(env, "orders", "10.20.0.1",
@@ -202,6 +206,7 @@ class FileEnvironmentRepositoryTest {
     }
 
     private void testProd(Environment env) {
+        assertFalse(env.isAbstractEnv());
         assertEquals(100, env.getPortOffset());
 
         testGroup(env, "orders", "10.20.0.1",
@@ -228,6 +233,7 @@ class FileEnvironmentRepositoryTest {
     }
 
     private void testAlias(Environment env) {
+        assertFalse(env.isAbstractEnv());
         assertEquals(0, env.getPortOffset());
 
         testGroup(env, "group", null,
