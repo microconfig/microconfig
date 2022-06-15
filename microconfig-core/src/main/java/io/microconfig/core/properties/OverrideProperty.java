@@ -9,7 +9,7 @@ import static lombok.AccessLevel.PRIVATE;
 @RequiredArgsConstructor(access = PRIVATE)
 @EqualsAndHashCode
 public class OverrideProperty implements Property {
-    private static final String ENV_VAR_VALUE = "@var";
+    private static final String MULTI_VAR_PREFIX = "@var";
 
     @Getter
     private final String environment;
@@ -29,7 +29,7 @@ public class OverrideProperty implements Property {
     }
 
     private static String extractEnv(String key, int offset) {
-        if (key.startsWith(ENV_VAR_VALUE)) return null;
+        if (key.startsWith(MULTI_VAR_PREFIX)) return null;
         return key.substring(1, offset);
     }
 
