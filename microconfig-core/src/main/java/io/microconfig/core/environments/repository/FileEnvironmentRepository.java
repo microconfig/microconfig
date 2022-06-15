@@ -20,8 +20,7 @@ import java.util.stream.Stream;
 
 import static io.microconfig.utils.FileUtils.getName;
 import static io.microconfig.utils.FileUtils.walk;
-import static io.microconfig.utils.StreamUtils.filter;
-import static io.microconfig.utils.StreamUtils.forEach;
+import static io.microconfig.utils.StreamUtils.*;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -49,13 +48,13 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
 
     @Override
     public List<Environment> environments() {
-        return forEach(environmentFiles(), parse());
+        List<Environment> all = forEach(environmentFiles(), parse());
+        return filter(all, not(Environment::isAbstract));
     }
 
     @Override
     public Set<String> environmentNames() {
-        List<Environment> envs = filter(environments(), e -> !e.isAbstract());
-        return forEach(envs, Environment::getName, toCollection(TreeSet::new));
+        return forEach(environments(), Environment::getName, toCollection(TreeSet::new));
     }
 
     @Override

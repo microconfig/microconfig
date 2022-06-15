@@ -44,6 +44,10 @@ public class StreamUtils {
         return filter(collection, predicate, toList());
     }
 
+    public static <T> Predicate<T> not(Predicate<T> target) {
+        return target.negate();
+    }
+
     public static <K, T> T filter(Collection<K> collection,
                                   Predicate<? super K> predicate,
                                   Collector<? super K, ?, T> collector) {
