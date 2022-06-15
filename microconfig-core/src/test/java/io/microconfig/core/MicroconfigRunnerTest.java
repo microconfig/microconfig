@@ -30,7 +30,7 @@ class MicroconfigRunnerTest {
     @Test
     void testBuildAbstract() {
         File root = classpathFile("repo");
-        assertThrows(EnvironmentException.class,
-                () -> new MicroconfigRunner(root, destinationDir).build("abstract", emptyList(), emptyList()));
+        MicroconfigRunner runner = new MicroconfigRunner(root, destinationDir);
+        assertThrows(EnvironmentException.class, () -> runner.build("abstract", emptyList(), emptyList()));
     }
 }
