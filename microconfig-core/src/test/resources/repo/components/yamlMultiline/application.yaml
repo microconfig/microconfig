@@ -1,3 +1,15 @@
-someKey: \hello
-         \world
-         \     haha #todo
+key: |
+  value line 1
+    value line 2
+
+@var:
+  multi:
+    line: |
+      value line 1
+        value line 2
+  normal: bar
+
+
+foo: ${this@multi.line}
+
+bar: ${this@normal}

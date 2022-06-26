@@ -67,8 +67,8 @@ public class YamlTreeImpl implements YamlTree {
                 return withOffsets(parts, value);
             }
 
-            if (value.startsWith("\\")) {
-                return withOffsets(parts, value.substring(1));
+            if (value.contains(LINES_SEPARATOR)) {
+                return "|" + withOffsets(parts, value);
             }
 
             return value;
@@ -134,9 +134,8 @@ public class YamlTreeImpl implements YamlTree {
                 dump((Map<String, Object>) value, indent, false);
                 return;
             }
-
             result.append(": ")
-                    .append(value)
+                    .append((String) value)
                     .append(LINES_SEPARATOR);
         }
 
