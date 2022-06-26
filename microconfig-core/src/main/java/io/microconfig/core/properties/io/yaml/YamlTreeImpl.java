@@ -135,7 +135,7 @@ public class YamlTreeImpl implements YamlTree {
                 return;
             }
             result.append(": ")
-                    .append((String) value)
+                    .append(value)
                     .append(LINES_SEPARATOR);
         }
 
