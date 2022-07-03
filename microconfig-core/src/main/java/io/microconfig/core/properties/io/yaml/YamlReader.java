@@ -43,10 +43,9 @@ class YamlReader extends AbstractConfigReader {
             if (skip(line)) continue;
 
             int currentOffset = offsetIndex(line);
-
-            if (isMultiLine(line)) {
-                String key = line.substring(0, line.indexOf(':'));
-                lineNumber = multiLineValue(result, key, lineNumber, currentOffset + 2, configType, environment);
+            String multiLineKey = multiLineKey(line, currentOffset);
+            if (multiLineKey != null) {
+                lineNumber = multiLineValue(result, multiLineKey, lineNumber, currentOffset + 2, configType, environment);
             } else if (isMultiValue(line, currentOffset)) {
                 lineNumber = addMultiValue(result, currentOffset, lineNumber, configType, environment);
             } else {
@@ -57,20 +56,27 @@ class YamlReader extends AbstractConfigReader {
         return result;
     }
 
-    private boolean isMultiLine(String line) {
-        return line.contains(":") && line.endsWith("|");
+    private String multiLineKey(String line, int currentOffset) {
+        int separatorIndex = separatorIndex(line, currentOffset);
+        if (separatorIndex < 0 || separatorIndex == line.length() - 1) return null;
+        String postSeparator = line.substring(separatorIndex + 1).trim();
+        return postSeparator.startsWith("|") ? line.substring(0, separatorIndex) : null;
     }
 
     private int multiLineValue(List<Property> result, String key, int index, int offset, String configType, String env) {
         List<String> valueLines = new ArrayList<>();
         int counter = 1;
         while (true) {
+            if (index + counter >= lines.size()) break;
             String line = lines.get(index + counter);
             int currentOffset = line.isEmpty() ? 0 : offsetIndex(line);
             if (currentOffset < offset) break;
-            valueLines.add(line.substring(offset));
+            String value = line.substring(offset);
+            if (!value.trim().isEmpty()) valueLines.add(line.substring(offset));
             counter++;
         }
+        if (valueLines.isEmpty()) throw new IllegalArgumentException("Missing value in multiline key '" + key + "' in '"
+                + new FileBasedComponent(file, index, true, configType, env) + "'");
         FileBasedComponent source = fileSource(file, index, true, configType, env);
         String k = mergeKey(key);
         String v = join(LINES_SEPARATOR, valueLines);
@@ -130,7 +136,7 @@ class YamlReader extends AbstractConfigReader {
                                      int currentOffset,
                                      int index, String configType, String env) {
         String line = lines.get(index);
-        int separatorIndex = line.indexOf(':', currentOffset);
+        int separatorIndex = separatorIndex(line, currentOffset);
         if (separatorIndex < 0) {
             throw new IllegalArgumentException("Incorrect delimiter in '" + line + "' in '" + new FileBasedComponent(file, index, true, configType, env) +
                     "'\nYaml property must contain ':' as delimiter.");
@@ -152,6 +158,10 @@ class YamlReader extends AbstractConfigReader {
 
         String value = line.substring(separatorIndex + 1).trim();
         addValue(result, currentOffset, index, key, value, configType, env);
+    }
+
+    private int separatorIndex(String line, int offset) {
+        return line.indexOf(':', offset);
     }
 
     private boolean valueEmpty(String line, int separatorIndex) {

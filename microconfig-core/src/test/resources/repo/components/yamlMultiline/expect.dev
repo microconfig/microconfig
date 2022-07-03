@@ -7,3 +7,9 @@ foo: |
 key: |
   value line 1
     value line 2
+
+last: |
+  multi
+  line
+
+test: val:ue|

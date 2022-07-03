@@ -13,3 +13,9 @@ key: |
 foo: ${this@multi.line}
 
 bar: ${this@normal}
+
+test: val:ue|
+
+last: |
+  multi
+  line
