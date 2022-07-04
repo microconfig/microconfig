@@ -80,8 +80,10 @@ class YamlReader extends AbstractConfigReader {
             if (!value.trim().isEmpty()) valueLines.add(line.substring(offset));
             counter++;
         }
-        if (valueLines.isEmpty()) throw new IllegalArgumentException("Missing value in multiline key '" + key + "' in '"
-                + new FileBasedComponent(file, index, true, configType, env) + "'");
+        if (valueLines.isEmpty()) {
+            throw new IllegalArgumentException("Missing value in multiline key '" + key + "' in '"
+                    + new FileBasedComponent(file, index, true, configType, env) + "'");
+        }
         FileBasedComponent source = fileSource(file, index, true, configType, env);
         String k = mergeKey(currentProperty, key);
         String v = join(LINES_SEPARATOR, valueLines);
