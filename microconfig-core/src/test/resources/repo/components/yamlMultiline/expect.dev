@@ -1,0 +1,17 @@
+bar: bar
+
+foo: |
+  value line 1
+    value line 2
+
+key: |
+  value line 1
+    value line 2
+
+last: |
+  multi
+  line
+
+test: |he:lo|
+
+test2: ||||

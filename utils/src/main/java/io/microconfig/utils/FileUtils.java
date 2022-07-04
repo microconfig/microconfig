@@ -19,7 +19,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
 public class FileUtils {
-    public static final String LINES_SEPARATOR = System.getProperty("line.separator");
+    public static final String LINES_SEPARATOR = System.lineSeparator();
 
     public static void copyPermissions(Path from, Path to) {
         if (Os.isWindows()) return;
