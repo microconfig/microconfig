@@ -11,7 +11,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static io.microconfig.core.properties.ConfigFormat.YAML;
 import static io.microconfig.core.properties.FileBasedComponent.fileSource;
@@ -26,6 +25,8 @@ import static java.lang.String.join;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.IntStream.range;
+import static java.util.stream.Stream.concat;
+import static java.util.stream.Stream.of;
 
 class YamlReader extends AbstractConfigReader {
     YamlReader(File file, FsReader fileFsReader) {
@@ -87,14 +88,6 @@ class YamlReader extends AbstractConfigReader {
         Property p = isOverrideProperty(k) ? overrideProperty(k, v, YAML, source) : property(k, v, YAML, source);
         result.add(p);
         return index + counter - 1;
-    }
-
-    private String mergeKey(Deque<KeyOffset> currentProperty, String key) {
-        return Stream.concat(
-                        currentProperty.stream().map(KeyOffset::toString),
-                        Stream.of(key.trim())
-                )
-                .collect(joining("."));
     }
 
     private boolean isComplexValue(String line, int currentOffset) {
@@ -215,14 +208,21 @@ class YamlReader extends AbstractConfigReader {
             currentProperty.add(new KeyOffset(lastKey, currentOffset, line));
         }
         int lineNumber = currentProperty.peekLast().lineNumber;
-        String key = toProperty(currentProperty);
+        String key = toKey(currentProperty);
         currentProperty.pollLast();
         FileBasedComponent source = fileSource(file, lineNumber, true, configType, env);
         Property prop = isOverrideProperty(key) ? overrideProperty(key, value, YAML, source) : property(key, value, YAML, source);
         result.add(prop);
     }
 
-    private String toProperty(Deque<KeyOffset> currentProperty) {
+    private String mergeKey(Deque<KeyOffset> currentProperty, String key) {
+        return concat(
+                currentProperty.stream().map(k -> k.key),
+                of(key.trim())
+        ).collect(joining("."));
+    }
+
+    private String toKey(Deque<KeyOffset> currentProperty) {
         return currentProperty.stream()
                 .map(k -> k.key)
                 .collect(joining("."));
