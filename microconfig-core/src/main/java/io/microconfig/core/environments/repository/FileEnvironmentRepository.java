@@ -6,6 +6,7 @@ import io.microconfig.core.environments.EnvironmentImpl;
 import io.microconfig.core.environments.EnvironmentRepository;
 import io.microconfig.core.properties.PropertiesFactory;
 import io.microconfig.io.FsReader;
+import io.microconfig.utils.FileUtils;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -117,10 +118,15 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     }
 
     private Supplier<EnvironmentException> notFoundException(String name) {
-        return () -> new EnvironmentException("Can't find env '" + name + "'. Available envs: " + environmentNames());
+        return () -> new EnvironmentException("Can't find env '" + name + "'. Available env files: " + envFileNames());
     }
 
     private Supplier<Environment> fakeEnvWith(String name) {
         return () -> new EnvironmentImpl(null, name, false, 0, emptyList(), emptyList(), componentFactory, propertiesFactory);
+    }
+
+    //prints env names, to avoid StackOverflowError if env can't be parsed
+    private Set<String> envFileNames() {
+        return forEach(environmentFiles(), FileUtils::getName, toCollection(TreeSet::new));
     }
 }
