@@ -28,7 +28,6 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.IntStream.range;
 
 class YamlReader extends AbstractConfigReader {
-    private final Deque<KeyOffset> currentProperty = new ArrayDeque<>();
 
     YamlReader(File file, FsReader fileFsReader) {
         super(file, fileFsReader);
@@ -37,6 +36,7 @@ class YamlReader extends AbstractConfigReader {
     @Override
     public List<Property> properties(String configType, String environment) {
         List<Property> result = new ArrayList<>();
+        Deque<KeyOffset> currentProperty = new ArrayDeque<>();
 
         for (int lineNumber = 0; lineNumber < lines.size(); lineNumber++) {
             String line = lines.get(lineNumber);
@@ -45,11 +45,11 @@ class YamlReader extends AbstractConfigReader {
             int currentOffset = offsetIndex(line);
             String multiLineKey = multiLineKey(line, currentOffset);
             if (multiLineKey != null) {
-                lineNumber = multiLineValue(result, multiLineKey, lineNumber, currentOffset + 2, configType, environment);
+                lineNumber = multiLineValue(result, multiLineKey, currentProperty, lineNumber, currentOffset + 2, configType, environment);
             } else if (isMultiValue(line, currentOffset)) {
-                lineNumber = addMultiValue(result, currentOffset, lineNumber, configType, environment);
+                lineNumber = addMultiValue(result, currentProperty, currentOffset, lineNumber, configType, environment);
             } else {
-                parseSimpleProperty(result, currentOffset, lineNumber, configType, environment);
+                parseSimpleProperty(result, currentProperty, currentOffset, lineNumber, configType, environment);
             }
         }
 
@@ -63,12 +63,13 @@ class YamlReader extends AbstractConfigReader {
         return multilinePostfix ? line.substring(0, separatorIndex) : null;
     }
 
-    private int multiLineValue(List<Property> result, String key, int index, int offset, String configType, String env) {
+    private int multiLineValue(List<Property> result, String key, Deque<KeyOffset> currentProperty, int index, int offset, String configType, String env) {
         List<String> valueLines = new ArrayList<>();
         int counter = 1;
         while (true) {
-            if (index + counter >= lines.size()) break;
-            String line = lines.get(index + counter);
+            int pointer = index + counter;
+            if (pointer >= lines.size()) break;
+            String line = lines.get(pointer);
             int currentOffset = line.isEmpty() ? 0 : offsetIndex(line);
             if (currentOffset < offset) break;
             String value = line.substring(offset);
@@ -78,14 +79,14 @@ class YamlReader extends AbstractConfigReader {
         if (valueLines.isEmpty()) throw new IllegalArgumentException("Missing value in multiline key '" + key + "' in '"
                 + new FileBasedComponent(file, index, true, configType, env) + "'");
         FileBasedComponent source = fileSource(file, index, true, configType, env);
-        String k = mergeKey(key);
+        String k = mergeKey(currentProperty, key);
         String v = join(LINES_SEPARATOR, valueLines);
         Property p = isOverrideProperty(k) ? overrideProperty(k, v, YAML, source) : property(k, v, YAML, source);
         result.add(p);
         return index + counter - 1;
     }
 
-    private String mergeKey(String key) {
+    private String mergeKey(Deque<KeyOffset> currentProperty, String key) {
         return Stream.concat(
                         currentProperty.stream().map(KeyOffset::toString),
                         Stream.of(key.trim())
@@ -100,7 +101,7 @@ class YamlReader extends AbstractConfigReader {
     }
 
     private int addMultiValue(List<Property> result,
-                              int currentOffset,
+                              Deque<KeyOffset> currentProperty, int currentOffset,
                               int originalLineNumber, String configType, String env) {
         StringBuilder value = new StringBuilder();
         int index = originalLineNumber;
@@ -120,7 +121,7 @@ class YamlReader extends AbstractConfigReader {
             ++index;
         }
 
-        addValue(result, currentOffset, originalLineNumber, null, value.toString(), configType, env);
+        addValue(result, currentProperty, currentOffset, originalLineNumber, null, value.toString(), configType, env);
         return index;
     }
 
@@ -133,7 +134,7 @@ class YamlReader extends AbstractConfigReader {
     }
 
     private void parseSimpleProperty(List<Property> result,
-                                     int currentOffset,
+                                     Deque<KeyOffset> currentProperty, int currentOffset,
                                      int index, String configType, String env) {
         String line = lines.get(index);
         int separatorIndex = separatorIndex(line, currentOffset);
@@ -142,13 +143,13 @@ class YamlReader extends AbstractConfigReader {
                     "'\nYaml property must contain ':' as delimiter.");
         }
 
-        removePropertiesWithBiggerOffset(currentOffset);
+        removePropertiesWithBiggerOffset(currentProperty, currentOffset);
 
         String key = line.substring(currentOffset, separatorIndex).trim();
 
         if (valueEmpty(line, separatorIndex)) {
             if (itsLastProperty(index, currentOffset)) {
-                addValue(result, currentOffset, index - 1, key, "", configType, env);
+                addValue(result, currentProperty, currentOffset, index - 1, key, "", configType, env);
                 return;
             }
 
@@ -157,7 +158,7 @@ class YamlReader extends AbstractConfigReader {
         }
 
         String value = line.substring(separatorIndex + 1).trim();
-        addValue(result, currentOffset, index, key, value, configType, env);
+        addValue(result, currentProperty, currentOffset, index, key, value, configType, env);
     }
 
     private int separatorIndex(String line, int offset) {
@@ -168,7 +169,7 @@ class YamlReader extends AbstractConfigReader {
         return isBlank(line.substring(separatorIndex + 1));
     }
 
-    private void removePropertiesWithBiggerOffset(int currentOffset) {
+    private void removePropertiesWithBiggerOffset(Deque<KeyOffset> currentProperty, int currentOffset) {
         while (!currentProperty.isEmpty() && currentProperty.peekLast().offset >= currentOffset) {
             currentProperty.pollLast();
         }
@@ -205,20 +206,20 @@ class YamlReader extends AbstractConfigReader {
     }
 
     private void addValue(List<Property> result,
-                          int currentOffset, int line,
+                          Deque<KeyOffset> currentProperty, int currentOffset, int line,
                           String lastKey, String value, String configType, String env) {
         if (lastKey != null) {
             currentProperty.add(new KeyOffset(lastKey, currentOffset, line));
         }
         int lineNumber = currentProperty.peekLast().lineNumber;
-        String key = toProperty();
+        String key = toProperty(currentProperty);
         currentProperty.pollLast();
         FileBasedComponent source = fileSource(file, lineNumber, true, configType, env);
         Property prop = isOverrideProperty(key) ? overrideProperty(key, value, YAML, source) : property(key, value, YAML, source);
         result.add(prop);
     }
 
-    private String toProperty() {
+    private String toProperty(Deque<KeyOffset> currentProperty) {
         return currentProperty.stream()
                 .map(k -> k.key)
                 .collect(joining("."));
