@@ -59,8 +59,8 @@ class YamlReader extends AbstractConfigReader {
     private String multiLineKey(String line, int currentOffset) {
         int separatorIndex = separatorIndex(line, currentOffset);
         if (separatorIndex < 0 || separatorIndex == line.length() - 1) return null;
-        String postSeparator = line.substring(separatorIndex + 1).trim();
-        return postSeparator.startsWith("|") ? line.substring(0, separatorIndex) : null;
+        boolean multilinePostfix = line.chars().skip(separatorIndex + 1).allMatch(c -> isWhitespace(c) || c == '|');
+        return multilinePostfix ? line.substring(0, separatorIndex) : null;
     }
 
     private int multiLineValue(List<Property> result, String key, int index, int offset, String configType, String env) {
