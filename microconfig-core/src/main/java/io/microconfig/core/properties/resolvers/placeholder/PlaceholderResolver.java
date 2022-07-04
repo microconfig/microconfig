@@ -1,5 +1,6 @@
 package io.microconfig.core.properties.resolvers.placeholder;
 
+import io.microconfig.core.environments.EnvironmentRepository;
 import io.microconfig.core.properties.*;
 import io.microconfig.core.properties.resolvers.RecursiveResolver;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +22,16 @@ import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
 public class PlaceholderResolver implements RecursiveResolver {
+    private final EnvironmentRepository environmentRepository;
     private final PlaceholderResolveStrategy strategy;
     private final Set<String> nonOverridableKeys;
     @With(PRIVATE)
     private final Set<Placeholder> visited;
 
-    public PlaceholderResolver(PlaceholderResolveStrategy strategy, Set<String> nonOverridableKeys) {
-        this(strategy, nonOverridableKeys, emptySet());
+    public PlaceholderResolver(EnvironmentRepository environmentRepository,
+                               PlaceholderResolveStrategy strategy,
+                               Set<String> nonOverridableKeys) {
+        this(environmentRepository, strategy, nonOverridableKeys, emptySet());
     }
 
     @Override
@@ -51,14 +55,17 @@ public class PlaceholderResolver implements RecursiveResolver {
 
         @Override
         public String resolveFor(DeclaringComponent sourceOfValue, DeclaringComponent root) {
-            Placeholder placeholder = borders.toPlaceholder(sourceOfValue.getConfigType(), sourceOfValue.getEnvironment());
+            Placeholder p = borders.toPlaceholder(sourceOfValue.getConfigType(), sourceOfValue.getEnvironment());
+            if (hasProfileOfRootEnv(p, root)) {
+                p = p.withEnvironment(root.getEnvironment());
+            }
 
             try {
-                return canBeOverridden(placeholder, sourceOfValue) ?
-                        overrideByParents(placeholder, sourceOfValue, root) :
-                        resolve(placeholder, root);
+                return canBeOverridden(p, sourceOfValue) ?
+                        overrideByParents(p, sourceOfValue, root) :
+                        resolve(p, root);
             } catch (RuntimeException e) {
-                String defaultValue = placeholder.getDefaultValue();
+                String defaultValue = p.getDefaultValue();
                 if (defaultValue != null) return defaultValue;
                 throw new ResolveException(sourceOfValue, root, "Can't resolve " + this, e);
             }
@@ -94,6 +101,15 @@ public class PlaceholderResolver implements RecursiveResolver {
             Property resolved = p.resolveUsing(strategy, root);
             return resolved.resolveBy(currentResolverWithVisited(p), root)
                     .getValue();
+        }
+
+        private boolean hasProfileOfRootEnv(Placeholder p, DeclaringComponent root) {
+            String propEnv = p.getEnvironment();
+            String rootEnv = root.getEnvironment();
+            if (Objects.equals(propEnv, rootEnv)) return false;
+            return environmentRepository.getOrCreateByName(rootEnv)
+                    .getProfiles()
+                    .contains(propEnv);
         }
 
         private PlaceholderResolver currentResolverWithVisited(Placeholder placeholder) {
