@@ -16,6 +16,8 @@ bar: ${this@normal}
 
 test: |he:lo|
 
+test2: ||||
+
 last: |
   multi
   line

@@ -13,3 +13,5 @@ last: |
   line
 
 test: |he:lo|
+
+test2: ||||
