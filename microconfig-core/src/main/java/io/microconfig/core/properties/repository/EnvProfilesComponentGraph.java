@@ -32,24 +32,20 @@ public class EnvProfilesComponentGraph implements ComponentGraph {
         return flatMapEach(profiles, p -> getConfigFilesOf(component, p, configType));
     }
 
-    private List<ConfigFile> joinConfigs(List<ConfigFile> standard, List<ConfigFile> profiles, String environment) {
+    private List<ConfigFile> joinConfigs(List<ConfigFile> standard, List<ConfigFile> profiles, String rootEnvironment) {
         if (profiles.isEmpty()) return standard;
 
-        List<ConfigFile> filteredProfiles = profiles.stream()
-                .filter(doesNotContain(environment))
-                .map(c -> isCommonDefaultConfig(c) ? c.withEnvironment(environment) : c)
+        List<ConfigFile> profilesWithoutStandard = profiles.stream()
+                .filter(doesNotContain(rootEnvironment))
+                .map(c -> c.withEnvironment(rootEnvironment))
                 .distinct()
                 .collect(toList());
-        return join(filteredProfiles, minus(standard, filteredProfiles));
+        return join(profilesWithoutStandard, minus(standard, profilesWithoutStandard));
     }
 
     private Predicate<ConfigFile> doesNotContain(String environment) {
         String envSubstring = "." + environment + ".";
         return p -> !p.getFile().getName().contains(envSubstring);
-    }
-
-    private boolean isCommonDefaultConfig(ConfigFile c) {
-        return dotCountIn(c.getFile().getName()) == 1;
     }
 
     @Override
