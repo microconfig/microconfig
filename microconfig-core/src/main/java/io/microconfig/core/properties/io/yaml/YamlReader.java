@@ -45,8 +45,8 @@ class YamlReader extends AbstractConfigReader {
             String multiLineKey = multiLineKey(line, currentOffset);
             if (multiLineKey != null) {
                 lineNumber = multiLineValue(result, multiLineKey, currentProperty, lineNumber, currentOffset + 2, configType, environment);
-            } else if (isMultiValue(line, currentOffset)) {
-                lineNumber = addMultiValue(result, currentProperty, currentOffset, lineNumber, configType, environment);
+            } else if (isComplexValue(line, currentOffset)) {
+                lineNumber = addComplexValue(result, currentProperty, currentOffset, lineNumber, configType, environment);
             } else {
                 parseSimpleProperty(result, currentProperty, currentOffset, lineNumber, configType, environment);
             }
@@ -97,15 +97,15 @@ class YamlReader extends AbstractConfigReader {
                 .collect(joining("."));
     }
 
-    private boolean isMultiValue(String line, int currentOffset) {
+    private boolean isComplexValue(String line, int currentOffset) {
         char c = line.charAt(currentOffset);
         return asList('-', '[', ']', '{').contains(c) ||
                 (c == '$' && line.length() > currentOffset + 1 && line.charAt(currentOffset + 1) == '{');
     }
 
-    private int addMultiValue(List<Property> result,
-                              Deque<KeyOffset> currentProperty, int currentOffset,
-                              int originalLineNumber, String configType, String env) {
+    private int addComplexValue(List<Property> result,
+                                Deque<KeyOffset> currentProperty, int currentOffset,
+                                int originalLineNumber, String configType, String env) {
         StringBuilder value = new StringBuilder();
         int index = originalLineNumber;
         while (true) {
@@ -116,7 +116,7 @@ class YamlReader extends AbstractConfigReader {
             if (index + 1 >= lines.size()) {
                 break;
             }
-            if (multilineValueEnd(lines.get(index + 1), currentOffset)) {
+            if (complexValueEnd(lines.get(index + 1), currentOffset)) {
                 break;
             }
 
@@ -128,12 +128,12 @@ class YamlReader extends AbstractConfigReader {
         return index;
     }
 
-    private boolean multilineValueEnd(String nextLine, int currentOffset) {
+    private boolean complexValueEnd(String nextLine, int currentOffset) {
         if (skip(nextLine) && !isComment(nextLine)) return false;
 
         int nextOffset = offsetIndex(nextLine);
         if (currentOffset > nextOffset) return true;
-        return currentOffset == nextOffset && !isMultiValue(nextLine, nextOffset);
+        return currentOffset == nextOffset && !isComplexValue(nextLine, nextOffset);
     }
 
     private void parseSimpleProperty(List<Property> result,
@@ -200,7 +200,7 @@ class YamlReader extends AbstractConfigReader {
                 return true;
             }
             if (currentOffset == offsetIndex) {
-                return !isMultiValue(line, offsetIndex);
+                return !isComplexValue(line, offsetIndex);
             }
             return false;
         }
