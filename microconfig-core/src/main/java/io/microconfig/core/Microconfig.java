@@ -164,6 +164,7 @@ public class Microconfig {
             )));
 
             return new PlaceholderResolver(
+                    lazyEnvironments,
                     strategy,
                     joinToSet(componentSpecialProperties.keySet(), envSpecialProperties.keySet())
             );
