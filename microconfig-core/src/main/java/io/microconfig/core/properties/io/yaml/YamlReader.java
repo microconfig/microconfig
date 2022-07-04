@@ -11,7 +11,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static io.microconfig.core.properties.ConfigFormat.YAML;
 import static io.microconfig.core.properties.FileBasedComponent.fileSource;
@@ -26,9 +25,10 @@ import static java.lang.String.join;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.IntStream.range;
+import static java.util.stream.Stream.concat;
+import static java.util.stream.Stream.of;
 
 class YamlReader extends AbstractConfigReader {
-
     YamlReader(File file, FsReader fileFsReader) {
         super(file, fileFsReader);
     }
@@ -46,8 +46,8 @@ class YamlReader extends AbstractConfigReader {
             String multiLineKey = multiLineKey(line, currentOffset);
             if (multiLineKey != null) {
                 lineNumber = multiLineValue(result, multiLineKey, currentProperty, lineNumber, currentOffset + 2, configType, environment);
-            } else if (isMultiValue(line, currentOffset)) {
-                lineNumber = addMultiValue(result, currentProperty, currentOffset, lineNumber, configType, environment);
+            } else if (isComplexValue(line, currentOffset)) {
+                lineNumber = addComplexValue(result, currentProperty, currentOffset, lineNumber, configType, environment);
             } else {
                 parseSimpleProperty(result, currentProperty, currentOffset, lineNumber, configType, environment);
             }
@@ -80,8 +80,10 @@ class YamlReader extends AbstractConfigReader {
             if (!value.trim().isEmpty()) valueLines.add(line.substring(offset));
             counter++;
         }
-        if (valueLines.isEmpty()) throw new IllegalArgumentException("Missing value in multiline key '" + key + "' in '"
-                + new FileBasedComponent(file, index, true, configType, env) + "'");
+        if (valueLines.isEmpty()) {
+            throw new IllegalArgumentException("Missing value in multiline key '" + key + "' in '"
+                    + new FileBasedComponent(file, index, true, configType, env) + "'");
+        }
         FileBasedComponent source = fileSource(file, index, true, configType, env);
         String k = mergeKey(currentProperty, key);
         String v = join(LINES_SEPARATOR, valueLines);
@@ -90,23 +92,15 @@ class YamlReader extends AbstractConfigReader {
         return index + counter - 1;
     }
 
-    private String mergeKey(Deque<KeyOffset> currentProperty, String key) {
-        return Stream.concat(
-                        currentProperty.stream().map(KeyOffset::toString),
-                        Stream.of(key.trim())
-                )
-                .collect(joining("."));
-    }
-
-    private boolean isMultiValue(String line, int currentOffset) {
+    private boolean isComplexValue(String line, int currentOffset) {
         char c = line.charAt(currentOffset);
         return asList('-', '[', ']', '{').contains(c) ||
                 (c == '$' && line.length() > currentOffset + 1 && line.charAt(currentOffset + 1) == '{');
     }
 
-    private int addMultiValue(List<Property> result,
-                              Deque<KeyOffset> currentProperty, int currentOffset,
-                              int originalLineNumber, String configType, String env) {
+    private int addComplexValue(List<Property> result,
+                                Deque<KeyOffset> currentProperty, int currentOffset,
+                                int originalLineNumber, String configType, String env) {
         StringBuilder value = new StringBuilder();
         int index = originalLineNumber;
         while (true) {
@@ -117,7 +111,7 @@ class YamlReader extends AbstractConfigReader {
             if (index + 1 >= lines.size()) {
                 break;
             }
-            if (multilineValueEnd(lines.get(index + 1), currentOffset)) {
+            if (complexValueEnd(lines.get(index + 1), currentOffset)) {
                 break;
             }
 
@@ -129,12 +123,12 @@ class YamlReader extends AbstractConfigReader {
         return index;
     }
 
-    private boolean multilineValueEnd(String nextLine, int currentOffset) {
+    private boolean complexValueEnd(String nextLine, int currentOffset) {
         if (skip(nextLine) && !isComment(nextLine)) return false;
 
         int nextOffset = offsetIndex(nextLine);
         if (currentOffset > nextOffset) return true;
-        return currentOffset == nextOffset && !isMultiValue(nextLine, nextOffset);
+        return currentOffset == nextOffset && !isComplexValue(nextLine, nextOffset);
     }
 
     private void parseSimpleProperty(List<Property> result,
@@ -201,7 +195,7 @@ class YamlReader extends AbstractConfigReader {
                 return true;
             }
             if (currentOffset == offsetIndex) {
-                return !isMultiValue(line, offsetIndex);
+                return !isComplexValue(line, offsetIndex);
             }
             return false;
         }
@@ -216,14 +210,21 @@ class YamlReader extends AbstractConfigReader {
             currentProperty.add(new KeyOffset(lastKey, currentOffset, line));
         }
         int lineNumber = currentProperty.peekLast().lineNumber;
-        String key = toProperty(currentProperty);
+        String key = toKey(currentProperty);
         currentProperty.pollLast();
         FileBasedComponent source = fileSource(file, lineNumber, true, configType, env);
         Property prop = isOverrideProperty(key) ? overrideProperty(key, value, YAML, source) : property(key, value, YAML, source);
         result.add(prop);
     }
 
-    private String toProperty(Deque<KeyOffset> currentProperty) {
+    private String mergeKey(Deque<KeyOffset> currentProperty, String key) {
+        return concat(
+                currentProperty.stream().map(k -> k.key),
+                of(key.trim())
+        ).collect(joining("."));
+    }
+
+    private String toKey(Deque<KeyOffset> currentProperty) {
         return currentProperty.stream()
                 .map(k -> k.key)
                 .collect(joining("."));
