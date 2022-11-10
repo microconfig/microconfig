@@ -33,6 +33,14 @@ public class CustomStringApi {
         return substringAfter(line, i, substring);
     }
 
+    public static String removeLineSeparators(String line) {
+        return replaceLineSeparators(line, "");
+    }
+
+    public static String replaceLineSeparators(String line, String replacer) {
+        return line.replace("\n", replacer);
+    }
+
     public static String substringAfterLast(String line, String substring) {
         int i = line.lastIndexOf(substring);
         return substringAfter(line, i, substring);
