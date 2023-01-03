@@ -71,7 +71,7 @@ jobs:
   windows:
     name: "Build Windows"
     needs: build
-    runs-on: windows-2016
+    runs-on: windows-2019
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -148,6 +148,23 @@ jobs:
           asset_path: microconfig.jar
           asset_name: microconfig.jar
           asset_content_type: application/java-archive
+
+      - name: Download Binary
+        uses: actions/download-artifact@v2
+        with:
+          name: microconfig-alpine
+      - name: Zip
+        shell: bash
+        run: zip -m microconfig-alpine.zip microconfig
+      - name: Upload Release Artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: microconfig-alpine.zip
+          asset_name: microconfig-alpine.zip
+          asset_content_type: application/zip
 
       - name: Download Binary
         uses: actions/download-artifact@v2
