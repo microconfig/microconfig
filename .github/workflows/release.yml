@@ -114,7 +114,7 @@ jobs:
 
   release:
     name: "Create release"
-    needs: [linux, macos, windows]
+    needs: [linux, macos, windows, alpine]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
