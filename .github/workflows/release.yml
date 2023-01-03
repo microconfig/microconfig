@@ -25,7 +25,27 @@ jobs:
         with:
           name: microconfig.jar
           path: microconfig-cli/build/libs/microconfig.jar
-
+  alpine:
+    name: "Build Alpine"
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Download Jar
+        uses: actions/download-artifact@v2
+        with:
+          name: microconfig.jar
+      - name: Install GraalVM Native Image with MUSL
+        shell: bash
+        run: .github/scripts/native/graalvm-alpine.sh
+      - name: Build Binary
+        shell: bash
+        run: .github/scripts/native/native-alpine.sh
+      - uses: actions/upload-artifact@v2
+        with:
+          name: microconfig-alpine
+          path: ./microconfig
   linux:
     name: "Build Linux"
     needs: build
