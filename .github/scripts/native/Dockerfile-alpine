@@ -6,4 +6,4 @@ ADD microconfig.jar /microconfig.jar
 RUN native-image --static --libc=musl -jar /microconfig.jar
 RUN /microconfig -v
 
-ENTRYPOINT /bin/bash
+ENTRYPOINT cp /microconfig /volume/microconfig

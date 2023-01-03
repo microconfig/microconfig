@@ -41,7 +41,7 @@ jobs:
         run: |
           mkdir volume
           docker build -t microconfig:alpine -f .github/scripts/native/Dockerfile-alpine .
-          docker run -v "$PWD/volume":/volume microconfig:alpine cp /microconfig /volume/microconfig
+          docker run -v "$PWD/volume":/volume microconfig:alpine
       - uses: actions/upload-artifact@v2
         with:
           name: microconfig-alpine
