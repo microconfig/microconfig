@@ -36,16 +36,16 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: microconfig.jar
-      - name: Install GraalVM Native Image with MUSL
-        shell: bash
-        run: .github/scripts/native/graalvm-alpine.sh
       - name: Build Binary
         shell: bash
-        run: .github/scripts/native/native-alpine.sh
+        run: |
+          mkdir volume
+          docker build -t microconfig:alpine -f .github/scripts/native/Dockerfile-alpine .
+          docker run -v "$PWD/volume":/volume microconfig:alpine cp /microconfig /volume/microconfig
       - uses: actions/upload-artifact@v2
         with:
           name: microconfig-alpine
-          path: ./microconfig
+          path: volume/microconfig
   linux:
     name: "Build Linux"
     needs: build

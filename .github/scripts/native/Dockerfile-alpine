@@ -1,0 +1,23 @@
+FROM ghcr.io/graalvm/graalvm-ce:21.0.0 AS builder
+RUN gu install native-image
+
+# Install musl clib for alpine
+RUN curl -sL https://musl.libc.org/releases/musl-1.2.1.tar.gz | tar xz
+WORKDIR /musl-1.2.1
+RUN mkdir /musl && ./configure --disable-shared --prefix=/musl
+RUN make && make install
+ENV PATH /musl/bin:$PATH
+ENV CC musl-gcc
+RUN musl-gcc -v
+WORKDIR /
+
+# Install zlib for alpine
+RUN curl -sL https://zlib.net/zlib-1.2.11.tar.gz | tar xz
+WORKDIR /zlib-1.2.11
+RUN ./configure --static --prefix=/musl
+RUN make && make install
+WORKDIR /
+
+ADD microconfig.jar /microconfig.jar
+RUN native-image --static --libc=musl -jar /microconfig.jar
+RUN /microconfig -v
