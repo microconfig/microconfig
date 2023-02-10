@@ -20,7 +20,7 @@ context: prod
    foo: bas
    included: prod-a-included
 
-@prod-b:
+.@prod-b:
    db-url: postgres://20.20.20.20:5432
    included: prod-b-included
 

@@ -16,12 +16,12 @@ public class OverrideProperty implements Property {
     private final Property delegate;
 
     public static boolean isOverrideProperty(String line) {
-        return line.startsWith("@") || line.startsWith("+");
+        return line.startsWith(".@") || line.startsWith("@") || line.startsWith("+");
     }
 
     public static Property overrideProperty(String key, String value, ConfigFormat configFormat, DeclaringComponent source) {
-        boolean isVar = key.startsWith("@");
-        int offset = key.indexOf('.');
+        boolean isVar = key.startsWith("@") || key.startsWith(".@");
+        int offset = key.indexOf('.', 1);
         String envName = extractEnv(key, offset);
         String adjustedKey = key.substring(offset + 1);
         Property delegate = new PropertyImpl(adjustedKey, value, isVar, configFormat, source);
@@ -29,7 +29,9 @@ public class OverrideProperty implements Property {
     }
 
     private static String extractEnv(String key, int offset) {
-        return key.startsWith(MULTI_VAR_PREFIX) ? null : key.substring(1, offset);
+        int atOffset = key.indexOf('@');
+        int start = atOffset < 0 ? 1 : atOffset + 1;
+        return key.startsWith(MULTI_VAR_PREFIX) ? null : key.substring(start, offset);
     }
 
     @Override
