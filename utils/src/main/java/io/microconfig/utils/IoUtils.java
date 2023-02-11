@@ -3,7 +3,10 @@ package io.microconfig.utils;
 import lombok.RequiredArgsConstructor;
 
 import java.io.*;
+import java.nio.charset.MalformedInputException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -59,9 +62,22 @@ public class IoUtils {
         if (!file.exists()) return emptyList();
 
         try {
-            return Files.readAllLines(file.toPath());
+            return readLinesUTF8(file.toPath());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static List<String> readLinesUTF8(Path file) throws IOException {
+        try {
+            return Files.readAllLines(file, StandardCharsets.UTF_8);
+        } catch (MalformedInputException e) {
+            return readLinesISO(file);
+        }
+
+    }
+
+    private static List<String> readLinesISO(Path file) throws IOException {
+        return Files.readAllLines(file, StandardCharsets.ISO_8859_1);
     }
 }
