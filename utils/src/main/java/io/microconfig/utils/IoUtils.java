@@ -70,7 +70,7 @@ public class IoUtils {
 
     private static List<String> readLinesUTF8(Path file) throws IOException {
         try {
-            return Files.readAllLines(file, StandardCharsets.UTF_8);
+            return Files.readAllLines(file);
         } catch (MalformedInputException e) {
             return readLinesISO(file);
         }
