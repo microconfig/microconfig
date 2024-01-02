@@ -45,7 +45,7 @@ class YamlReader extends AbstractConfigReader {
             int currentOffset = offsetIndex(line);
             String multiLineKey = multiLineKey(line, currentOffset);
             if (multiLineKey != null) {
-                lineNumber = multiLineValue(result, multiLineKey, currentProperty, lineNumber, currentOffset + 2, configType, environment);
+                lineNumber = multiLineValue(result, multiLineKey, currentProperty, lineNumber, currentOffset, configType, environment);
             } else if (isComplexValue(line, currentOffset)) {
                 lineNumber = addComplexValue(result, currentProperty, currentOffset, lineNumber, configType, environment);
             } else {
@@ -68,16 +68,18 @@ class YamlReader extends AbstractConfigReader {
     }
 
     private int multiLineValue(List<Property> result, String key, Deque<KeyOffset> currentProperty, int index, int offset, String configType, String env) {
+        removePropertiesWithBiggerOffset(currentProperty, offset);
         List<String> valueLines = new ArrayList<>();
+        int multilineValueOffset = offset + 2;
         int counter = 1;
         while (true) {
             int pointer = index + counter;
             if (pointer >= lines.size()) break;
             String line = lines.get(pointer);
             int currentOffset = line.isEmpty() ? 0 : offsetIndex(line);
-            if (currentOffset < offset) break;
-            String value = line.substring(offset);
-            if (!value.trim().isEmpty()) valueLines.add(line.substring(offset));
+            if (currentOffset < multilineValueOffset) break;
+            String value = line.substring(multilineValueOffset);
+            if (!value.trim().isEmpty()) valueLines.add(line.substring(multilineValueOffset));
             counter++;
         }
         if (valueLines.isEmpty()) {

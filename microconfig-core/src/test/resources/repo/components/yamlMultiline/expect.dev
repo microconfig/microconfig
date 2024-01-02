@@ -15,3 +15,10 @@ last: |
 test: |he:lo|
 
 test2: ||||
+
+last2:
+  multi: |
+    line 1
+    line 2
+  foo:
+    bar: baz

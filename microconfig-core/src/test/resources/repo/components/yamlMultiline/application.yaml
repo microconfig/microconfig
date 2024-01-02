@@ -21,3 +21,10 @@ test2: ||||
 last: |
   multi
   line
+
+last2:
+  foo:
+    bar: baz
+  multi: |
+    line 1
+    line 2
