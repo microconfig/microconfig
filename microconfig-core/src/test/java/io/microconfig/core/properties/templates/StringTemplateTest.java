@@ -81,7 +81,6 @@ class StringTemplateTest {
                 "      - v3\n" +
                 "      - v4\n" +
                 "      - v5\n" +
-                "      \n" +
                 "\n" +
                 "\n" +
                 "key10: mergeLists", toUnixPathSeparator(result));
