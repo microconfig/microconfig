@@ -82,7 +82,6 @@ class YamlConfigIoTest {
                         "  fee: 0" + LINES_SEPARATOR +
                         "  countryCodes: BE" + LINES_SEPARATOR +
                         "  enabled: true" + LINES_SEPARATOR +
-                        LINES_SEPARATOR +
                         "- name: bancontact-mobile" + LINES_SEPARATOR +
                         "  displayName: Bancontact (mobile)" + LINES_SEPARATOR +
                         "  pspName: bcmc_mobile" + LINES_SEPARATOR +

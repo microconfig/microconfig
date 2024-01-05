@@ -46,6 +46,8 @@ class YamlReader extends AbstractConfigReader {
             String multiLineKey = multiLineKey(line, currentOffset);
             if (multiLineKey != null) {
                 lineNumber = multiLineValue(result, multiLineKey, currentProperty, lineNumber, currentOffset, configType, environment);
+            } else if (isListValue(line)) {
+                lineNumber = listValue(result, currentProperty, currentOffset, lineNumber, configType, environment);
             } else if (isComplexValue(line, currentOffset)) {
                 lineNumber = addComplexValue(result, currentProperty, currentOffset, lineNumber, configType, environment);
             } else {
@@ -65,6 +67,39 @@ class YamlReader extends AbstractConfigReader {
                 .mapToLong(c -> c == '|' ? 1 : 2)
                 .sum() == 1;
         return multilinePostfix ? line.substring(0, separatorIndex) : null;
+    }
+
+    private boolean isListValue(String line) {
+        String trim = line.trim();
+        return !trim.isEmpty() && trim.charAt(0) == '-' && !trim.endsWith(":");
+    }
+
+    private int listValue(List<Property> result,
+                          Deque<KeyOffset> currentProperty, int currentOffset,
+                          int originalLineNumber, String configType, String env) {
+        StringBuilder value = new StringBuilder();
+        int index = originalLineNumber;
+        while (true) {
+            String line = lines.get(index);
+            if (!skip(line)) value.append(line.substring(currentOffset));
+
+            if (index + 1 >= lines.size()) break;
+            if (listValueEnd(lines.get(index + 1), currentOffset)) break;
+            if (!skip(line)) value.append(LINES_SEPARATOR);
+
+            ++index;
+        }
+
+        addValue(result, currentProperty, currentOffset, originalLineNumber, null, value.toString().trim(), configType, env);
+        return index;
+    }
+
+    private boolean listValueEnd(String nextLine, int currentOffset) {
+        if (skip(nextLine)) return false;
+
+        int nextOffset = offsetIndex(nextLine);
+        if (currentOffset > nextOffset) return true;
+        return currentOffset == nextOffset && !isComplexValue(nextLine, currentOffset);
     }
 
     private int multiLineValue(List<Property> result, String key, Deque<KeyOffset> currentProperty, int index, int offset, String configType, String env) {
