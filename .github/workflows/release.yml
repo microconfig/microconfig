@@ -33,7 +33,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
       - name: Download Jar
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: microconfig.jar
       - name: Build Binary
@@ -54,7 +54,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
       - name: Download Jar
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: microconfig.jar
       - name: Install GraalVM Native Image
@@ -76,7 +76,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
       - name: Download Jar
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: microconfig.jar
       - name: Install GraalVM Native Image
@@ -98,7 +98,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
       - name: Download Jar
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: microconfig.jar
       - name: Install GraalVM Native Image
@@ -136,7 +136,7 @@ jobs:
           prerelease: false
 
       - name: Download Jar
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: microconfig.jar
       - name: Upload Jar Release
@@ -150,7 +150,7 @@ jobs:
           asset_content_type: application/java-archive
 
       - name: Download Binary
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: microconfig-alpine
       - name: Zip
@@ -167,7 +167,7 @@ jobs:
           asset_content_type: application/zip
 
       - name: Download Binary
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: microconfig-linux
       - name: Zip
@@ -184,7 +184,7 @@ jobs:
           asset_content_type: application/zip
 
       - name: Download Binary
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: microconfig-macos
       - name: Zip
@@ -201,7 +201,7 @@ jobs:
           asset_content_type: application/zip
 
       - name: Download Binary
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: microconfig-windows
       - name: Zip
