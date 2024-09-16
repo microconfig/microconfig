@@ -4,15 +4,16 @@ apply from: 'pomSettings.gradle'
 buildscript {
     repositories {
         mavenCentral()
-        jcenter()
+        maven {
+            url = uri("https://plugins.gradle.org/m2/")
+        }
     }
 
     dependencies {
-        classpath "com.github.jengelman.gradle.plugins:shadow:6.1.0"
-        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.1'
+        classpath "com.github.johnrengelman:shadow:8.1.1"
+        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:5.1.0.4882'
     }
 }
-
 
 allprojects {
     apply plugin: 'java'
@@ -25,8 +26,8 @@ allprojects {
     group = 'io.microconfig'
     version = rootProject.version
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = 17
+    targetCompatibility = 17
 
     repositories {
         mavenCentral()
@@ -81,8 +82,8 @@ allprojects {
 
     jacocoTestReport {
         reports {
-            xml.enabled true
-            html.enabled true
+            xml.required = true
+            html.required = true
         }
     }
 
