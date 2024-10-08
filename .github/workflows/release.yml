@@ -21,7 +21,7 @@ jobs:
       - name: Rename Jar
         shell: bash
         run: mv microconfig-cli/build/libs/microconfig-cli-*-all.jar microconfig-cli/build/libs/microconfig.jar
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: microconfig.jar
           path: microconfig-cli/build/libs/microconfig.jar
@@ -42,7 +42,7 @@ jobs:
           mkdir volume
           docker build -t microconfig:alpine -f .github/scripts/native/Dockerfile-alpine .
           docker run -v "$PWD/volume":/volume microconfig:alpine
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: microconfig-alpine
           path: volume/microconfig
@@ -63,7 +63,7 @@ jobs:
       - name: Build Binary
         shell: bash
         run: .github/scripts/native/native.sh
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: microconfig-linux
           path: ./microconfig
@@ -85,7 +85,7 @@ jobs:
       - name: Build Binary
         shell: bash
         run: .github/scripts/native/native.bat
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: microconfig-windows
           path: microconfig.exe
@@ -107,7 +107,7 @@ jobs:
       - name: Build Binary
         shell: bash
         run: .github/scripts/native/native.sh
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: microconfig-macos
           path: ./microconfig
