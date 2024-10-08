@@ -41,6 +41,10 @@ public class FileUtils {
 
     public static void write(Path file, byte[] content, OpenOption... options) {
         try {
+            File f = file.toFile();
+            if (f.getAbsolutePath().contains("..")) {
+                file = f.getCanonicalFile().toPath();
+            }
             createDirectories(file.getParent());
             Files.write(file, content, options);
         } catch (IOException e) {
