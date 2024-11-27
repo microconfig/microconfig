@@ -3,5 +3,4 @@ unzip -q graalvm.zip -d graalvm
 rm graalvm.zip
 mv graalvm/graalvm-community-openjdk-*/* graalvm/
 rm -rf graalvm/graalvm-community-openjdk-*
-graalvm/bin/gu.cmd install -n native-image
 graalvm/bin/native-image.cmd --version

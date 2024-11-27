@@ -4,6 +4,4 @@ tar -xf graalvm.tar.gz -C .graalvm
 rm graalvm.tar.gz
 mv .graalvm/graalvm-community-openjdk-*/* .graalvm/
 rm -rf .graalvm/graalvm-community-openjdk-*
-chmod +x .graalvm/bin/gu
-.graalvm/bin/gu install -n native-image
 .graalvm/bin/native-image --version
