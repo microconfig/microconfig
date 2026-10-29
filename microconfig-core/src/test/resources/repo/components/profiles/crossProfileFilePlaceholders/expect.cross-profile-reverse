@@ -1,0 +1,13 @@
+authority: https://first.local:8080
+
+chain: https://first.local:8080/api
+
+host: first.local
+
+label: first-first.local
+
+port: 8080
+
+scheme: https
+
+url: https://first.local:8080/api

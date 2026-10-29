@@ -1,0 +1,4 @@
+host: first.local
+scheme: https
+chain: ${this@authority}/api
+label: first-${this@host}

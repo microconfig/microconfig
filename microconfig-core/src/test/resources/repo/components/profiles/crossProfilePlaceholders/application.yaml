@@ -1,0 +1,15 @@
+host: default.local
+port: 80
+scheme: http
+url: ${this@scheme}://${this@host}:${this@port}/api
+
++cross-first:
+  host: first.local
+  scheme: https
+  chain: ${this@authority}/api
+  label: first-${this@host}
+
++cross-second:
+  port: 8080
+  authority: ${this@scheme}://${this@host}:${this@port}
+  label: second-${this@port}

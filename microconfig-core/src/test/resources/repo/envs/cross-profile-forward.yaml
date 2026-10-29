@@ -1,0 +1,6 @@
+profiles: [cross-first, cross-second]
+
+services:
+  components:
+    - crossProfilePlaceholders
+    - crossProfileFilePlaceholders
