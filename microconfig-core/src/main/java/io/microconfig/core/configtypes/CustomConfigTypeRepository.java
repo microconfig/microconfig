@@ -15,6 +15,7 @@ import static io.microconfig.core.configtypes.ConfigTypeImpl.byNameAndExtensions
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.StreamUtils.forEach;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 import static java.util.Collections.singleton;
 
 @RequiredArgsConstructor
@@ -70,11 +71,16 @@ public class CustomConfigTypeRepository implements ConfigTypeRepository {
 
             Map<String, Object> configType = (Map<String, Object>) configTypeObject;
             String type = configType.keySet().iterator().next();
-            Map<String, Object> attributes = (Map<String, Object>) configType.get(type);
+            Map<String, Object> attributes = attributesOf(configType.get(type));
             Set<String> sourceExtensions = attributes.containsKey(SOURCE_EXTENSIONS) ? new LinkedHashSet<>((List<String>) attributes.get(SOURCE_EXTENSIONS)) : singleton("." + type);
             String resultFileName = (String) attributes.getOrDefault(RESULT_FILE_NAME, type);
 
             return byNameAndExtensions(type, sourceExtensions, resultFileName);
+        }
+
+        @SuppressWarnings("unchecked")
+        private Map<String, Object> attributesOf(Object attributes) {
+            return attributes == null ? emptyMap() : (Map<String, Object>) attributes;
         }
     }
 }

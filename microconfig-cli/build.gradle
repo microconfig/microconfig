@@ -6,25 +6,6 @@ application {
     mainClass = 'io.microconfig.MicroconfigMain'
 }
 
-shadow {
-    addShadowVariantIntoJavaComponent = false
-}
-
-publishing {
-    publications {
-        shadow(MavenPublication) { publication ->
-            from components.shadow
-            afterEvaluate {
-                pom.withXml {
-                    def root = asNode()
-                    root.appendNode('description', rootProject.pomDescription)
-                    root.children().last() + rootProject.pomConfig
-                }
-            }
-        }
-    }
-}
-
 def generateVersionProperties = tasks.register('generateVersionProperties') {
     def projectVersion = project.version.toString()
     def versionFile = layout.buildDirectory.file('generated/resources/version/version.properties')
@@ -41,10 +22,6 @@ def generateVersionProperties = tasks.register('generateVersionProperties') {
 
 tasks.named('processResources') {
     from(generateVersionProperties)
-}
-
-signing {
-    sign publishing.publications.shadow
 }
 
 dependencies {

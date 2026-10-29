@@ -25,6 +25,19 @@ class CustomConfigTypeRepositoryTest {
     }
 
     @Test
+    void loadCustomTypeWithoutAttributes() {
+        ConfigTypeRepository customRepo = findDescriptorIn(classpathFile("configTypes/withoutAttributes"), new DumpedFsReader());
+
+        List<ConfigType> types = customRepo.getConfigTypes();
+
+        assertEquals(1, types.size());
+        ConfigType type = types.get(0);
+        assertEquals("custom", type.getName());
+        assertEquals("custom", type.getResultFileName());
+        assertEquals(Set.of(".custom"), type.getSourceExtensions());
+    }
+
+    @Test
     void loadCustomFilesFromFile() {
         ConfigTypeRepository customRepo = findDescriptorIn(classpathFile("configTypes"), new DumpedFsReader());
 
