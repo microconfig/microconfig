@@ -7,12 +7,18 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
+import java.util.Properties;
+import java.util.Set;
 
 import static io.microconfig.utils.FileUtils.getName;
+import static io.microconfig.utils.IoUtils.readClasspathResource;
 import static io.microconfig.utils.IoUtils.readFully;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class MicroconfigMainTest {
     @TempDir
@@ -25,6 +31,15 @@ class MicroconfigMainTest {
     @BeforeEach
     void setup() {
         root = getClass().getClassLoader().getResource("repo").getFile();
+    }
+
+    @Test
+    void should_package_only_project_version_in_version_resource() throws IOException {
+        Properties properties = new Properties();
+        properties.load(new StringReader(readClasspathResource("version.properties")));
+
+        assertEquals(Set.of("version"), properties.stringPropertyNames());
+        assertFalse(properties.getProperty("version").isBlank());
     }
 
     @Test

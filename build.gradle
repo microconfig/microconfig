@@ -10,8 +10,8 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.github.johnrengelman:shadow:8.1.1"
-        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:5.1.0.4882'
+        classpath 'com.gradleup.shadow:shadow-gradle-plugin:9.6.1'
+        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:7.5.0.8588'
     }
 }
 
@@ -26,14 +26,13 @@ allprojects {
     group = 'io.microconfig'
     version = rootProject.version
 
-    sourceCompatibility = 17
-    targetCompatibility = 17
-
     repositories {
         mavenCentral()
     }
 
     java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
         withJavadocJar()
         withSourcesJar()
     }
@@ -43,8 +42,8 @@ allprojects {
             nexus(MavenPublication) {
                 pom.withXml {
                     def root = asNode()
-                    root.appendNode('description', pomDescription)
-                    root.children().last() + pomConfig
+                    root.appendNode('description', rootProject.pomDescription)
+                    root.children().last() + rootProject.pomConfig
                 }
                 from components.java
             }
@@ -53,8 +52,8 @@ allprojects {
             maven {
                 url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
                 credentials {
-                    username ossrhUsername
-                    password ossrhPassword
+                    username = ossrhUsername
+                    password = ossrhPassword
                 }
             }
         }
@@ -65,19 +64,27 @@ allprojects {
     }
 
     dependencies {
-        implementation platform(lib.spring_bom)
+        implementation platform(rootProject.lib.spring_bom)
+        annotationProcessor platform(rootProject.lib.spring_bom)
+        testAnnotationProcessor platform(rootProject.lib.spring_bom)
 
-        compileOnly lib.lombok
-        testCompileOnly lib.lombok
-        annotationProcessor lib.lombok
+        compileOnly rootProject.lib.lombok
+        testCompileOnly rootProject.lib.lombok
+        annotationProcessor rootProject.lib.lombok
+        testAnnotationProcessor rootProject.lib.lombok
 
-        testImplementation lib.junit, lib.mokito
+        testImplementation rootProject.lib.junit, rootProject.lib.mokito
+        testRuntimeOnly rootProject.lib.junit_launcher
     }
 
-    sonarqube {
+    sonar {
         properties {
             property "sonar.projectKey", "microconfig_microconfig"
         }
+    }
+
+    jacoco {
+        toolVersion = '0.8.16'
     }
 
     jacocoTestReport {

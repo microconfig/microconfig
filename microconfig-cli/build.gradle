@@ -1,33 +1,47 @@
 apply plugin: 'application'
 apply plugin: 'maven-publish'
-apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'com.gradleup.shadow'
 
-mainClassName = 'io.microconfig.MicroconfigMain'
+application {
+    mainClass = 'io.microconfig.MicroconfigMain'
+}
+
+shadow {
+    addShadowVariantIntoJavaComponent = false
+}
 
 publishing {
     publications {
         shadow(MavenPublication) { publication ->
-            project.shadow.component(publication)
+            from components.shadow
             afterEvaluate {
                 pom.withXml {
                     def root = asNode()
-                    root.appendNode('description', pomDescription)
-                    root.children().last() + pomConfig
+                    root.appendNode('description', rootProject.pomDescription)
+                    root.children().last() + rootProject.pomConfig
                 }
             }
         }
     }
 }
 
-task copyVersion {
+def generateVersionProperties = tasks.register('generateVersionProperties') {
+    def projectVersion = project.version.toString()
+    def versionFile = layout.buildDirectory.file('generated/resources/version/version.properties')
+
+    inputs.property('version', projectVersion)
+    outputs.file(versionFile)
+
     doLast {
-        ant.copy file: "${rootDir}/gradle.properties",
-                tofile: "${buildDir}/resources/main/version.properties"
+        def resource = versionFile.get().asFile
+        resource.parentFile.mkdirs()
+        resource.setText("version=${projectVersion}\n", 'UTF-8')
     }
 }
 
-compileJava.finalizedBy(copyVersion)
-
+tasks.named('processResources') {
+    from(generateVersionProperties)
+}
 
 signing {
     sign publishing.publications.shadow
