@@ -46,6 +46,23 @@ class StringTemplateTest {
         resolve("aaa${env}bbb\\${xxx}ccc${missing_param:---}ddd", "aaauatbbb${xxx}ccc---ddd");
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"${this@missing:${this@ip}}", "${this@ip:${this@missing}}"})
+    void resolveNestedDefaultValue(String placeholder) {
+        resolve(placeholder, "172.30.162.3");
+    }
+
+    @Test
+    void resolveExpressionInDefaultValue() {
+        resolve("${this@missing:#{1+1}}", "2");
+    }
+
+    @Test
+    void resolveLongDefaultValue() {
+        String defaultValue = "x".repeat(100_000);
+        resolve("${this@missing:" + defaultValue + "}", defaultValue);
+    }
+
     @Test
     void templateNameWithoutBrackets() {
         StringTemplate template = new StringTemplate("name[12]", source, destination, TemplatePattern.DEFAULT_PLACEHOLDER_PATTERN, "content");

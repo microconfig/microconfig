@@ -17,7 +17,7 @@ public class TemplatePattern {
     public static final Pattern DEFAULT_PLACEHOLDER_PATTERN =
             compile("(?<escaped>\\\\)?" +
                     "(?<placeholder>\\$\\{(?<name>.+?)" +
-                    "(?::(?<defuvalue>.*?))??})"
+                    "(?::(?<defuvalue>[^$#}\\n]*(?:(?:[$#]\\{[^}\\n]*}|[$#])[^$#}\\n]*)*))??})"
             );
 
     private final List<String> templatePrefixes;
