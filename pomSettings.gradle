@@ -1,35 +1,36 @@
 ext {
-    pomConfig = {
-        name 'MicroConfig'
-        url 'https://microconfig.io/'
-        licenses {
+    // configures the given MavenPom only through its parameter, so one closure is safe to share between parallel projects
+    pomConfig = { pom ->
+        pom.name = 'MicroConfig'
+        pom.description = 'Powerful tool for microservice configuration management'
+        pom.url = 'https://microconfig.io/'
+        pom.licenses {
             license {
-                name 'The Apache License, Version 2.0'
-                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                name = 'The Apache License, Version 2.0'
+                url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
             }
         }
-        scm {
-            connection 'scm:git:https://github.com/microconfig/microconfig.git'
-            developerConnection 'scm:git:https://github.com/microconfig/microconfig.git'
-            url 'https://microconfig.io'
+        pom.scm {
+            connection = 'scm:git:https://github.com/microconfig/microconfig.git'
+            developerConnection = 'scm:git:https://github.com/microconfig/microconfig.git'
+            url = 'https://microconfig.io'
         }
-        developers {
+        pom.developers {
             developer {
-                id 'amatorin'
-                name 'Alexander Matorin'
-                email 'alx.matorin@gmail.com'
+                id = 'amatorin'
+                name = 'Alexander Matorin'
+                email = 'alx.matorin@gmail.com'
             }
             developer {
-                id 'esladkovski'
-                name 'Evgeni Sladkowski'
-                email 'kapodes@gmail.com'
+                id = 'esladkovski'
+                name = 'Evgeni Sladkowski'
+                email = 'kapodes@gmail.com'
             }
             developer {
-                id 'apavlov'
-                name 'Artem Pavlov'
-                email 'admpavlov@yandex.ru'
+                id = 'apavlov'
+                name = 'Artem Pavlov'
+                email = 'admpavlov@yandex.ru'
             }
         }
     }
-    pomDescription = 'Powerful tool for microservice configuration management'
 }

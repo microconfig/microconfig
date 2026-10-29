@@ -40,11 +40,7 @@ allprojects {
     publishing {
         publications {
             nexus(MavenPublication) {
-                pom.withXml {
-                    def root = asNode()
-                    root.appendNode('description', rootProject.pomDescription)
-                    root.children().last() + rootProject.pomConfig
-                }
+                pom { rootProject.pomConfig(it) }
                 from components.java
             }
         }
