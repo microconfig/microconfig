@@ -18,9 +18,9 @@ build/
 .graalvm/
 classes/
 out/
+.DS_Store
 .claude
 .codex
 
 microconfig.jar
 microconfig.exe
-.DS_Store
