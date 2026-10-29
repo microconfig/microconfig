@@ -10,13 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
+          distribution: temurin
           java-version: 17
-          server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-          settings-path: ${{ github.workspace }} # location for the settings.xml file
 
       - name: Build with Gradle
         run: ./gradlew build
@@ -36,8 +35,5 @@ jobs:
 
       - name: Publish to Maven Central
         run: |
-          ./gradlew :microconfig-core:publishNexusPublicationToMavenRepository
-          ./gradlew :microconfig-api:publishNexusPublicationToMavenRepository
-          ./gradlew :microconfig-cli:publishNexusPublicationToMavenRepository
-          ./gradlew :utils:publishNexusPublicationToMavenRepository
+          ./gradlew :microconfig-api:publishNexusPublicationToMavenRepository :microconfig-core:publishNexusPublicationToMavenRepository :microconfig-cli:publishNexusPublicationToMavenRepository :utils:publishNexusPublicationToMavenRepository
           ./gradlew transferToCentralPortal

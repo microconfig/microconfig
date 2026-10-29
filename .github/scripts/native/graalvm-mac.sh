@@ -1,4 +1,4 @@
-curl -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-21.0.2/graalvm-community-jdk-21.0.2_macos-x64_bin.tar.gz -o graalvm.tar.gz
+curl -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-21.0.2/graalvm-community-jdk-21.0.2_macos-aarch64_bin.tar.gz -o graalvm.tar.gz
 mkdir .graalvm
 tar -xf graalvm.tar.gz -C .graalvm
 rm graalvm.tar.gz

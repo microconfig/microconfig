@@ -11,10 +11,11 @@ jobs:
     name: "Build Jar"
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
+          distribution: temurin
           java-version: 17
       - name: Build Jar
         run: ./gradlew shadowJar
@@ -31,9 +32,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Download Jar
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4
         with:
           name: microconfig.jar
       - name: Build Binary
@@ -52,9 +53,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Download Jar
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4
         with:
           name: microconfig.jar
       - name: Install GraalVM Native Image
@@ -74,9 +75,9 @@ jobs:
     runs-on: windows-2022
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Download Jar
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4
         with:
           name: microconfig.jar
       - name: Install GraalVM Native Image
@@ -96,9 +97,9 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Download Jar
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4
         with:
           name: microconfig.jar
       - name: Install GraalVM Native Image
@@ -116,104 +117,26 @@ jobs:
     name: "Create release"
     needs: [linux, macos, windows, alpine]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Grab Version
-        env:
-          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Zip binaries
         shell: bash
-        run: version=$(head -1 gradle.properties); echo "::set-env name=version::${version/*=}"
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: v${{ env.version }}
-          release_name: ${{ env.version }}
-          draft: true
-          prerelease: false
-
-      - name: Download Jar
-        uses: actions/download-artifact@v4.1.7
-        with:
-          name: microconfig.jar
-      - name: Upload Jar Release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: microconfig.jar
-          asset_name: microconfig.jar
-          asset_content_type: application/java-archive
-
-      - name: Download Binary
-        uses: actions/download-artifact@v4.1.7
-        with:
-          name: microconfig-alpine
-      - name: Zip
+        run: |
+          for os in alpine linux macos; do
+            chmod +x artifacts/microconfig-$os/microconfig
+            zip -j microconfig-$os.zip artifacts/microconfig-$os/microconfig
+          done
+          zip -j microconfig-windows.zip artifacts/microconfig-windows/microconfig.exe
+      - name: Create draft release
         shell: bash
-        run: zip -m microconfig-alpine.zip microconfig
-      - name: Upload Release Artifact
-        uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: microconfig-alpine.zip
-          asset_name: microconfig-alpine.zip
-          asset_content_type: application/zip
-
-      - name: Download Binary
-        uses: actions/download-artifact@v4.1.7
-        with:
-          name: microconfig-linux
-      - name: Zip
-        shell: bash
-        run: zip -m microconfig-linux.zip microconfig
-      - name: Upload Release Artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: microconfig-linux.zip
-          asset_name: microconfig-linux.zip
-          asset_content_type: application/zip
-
-      - name: Download Binary
-        uses: actions/download-artifact@v4.1.7
-        with:
-          name: microconfig-macos
-      - name: Zip
-        shell: bash
-        run: zip -m microconfig-macos.zip microconfig
-      - name: Upload Release Artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: microconfig-macos.zip
-          asset_name: microconfig-macos.zip
-          asset_content_type: application/zip
-
-      - name: Download Binary
-        uses: actions/download-artifact@v4.1.7
-        with:
-          name: microconfig-windows
-      - name: Zip
-        shell: bash
-        run: zip -m microconfig-windows.zip microconfig.exe
-      - name: Upload Release Artifact
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: microconfig-windows.zip
-          asset_name: microconfig-windows.zip
-          asset_content_type: application/zip
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --verify-tag --draft \
+            --title "${GITHUB_REF_NAME#v}" \
+            artifacts/microconfig.jar/microconfig.jar microconfig-*.zip
