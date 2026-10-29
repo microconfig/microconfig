@@ -8,12 +8,13 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static java.nio.file.Files.list;
+import static java.nio.file.Files.walk;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
@@ -43,10 +44,11 @@ public class ArrowNotationParser implements TemplateDefinitionParser {
     }
 
     private List<TemplateDefinition> processWithAsterisk(String key, String from, String to) {
-        String fromDir = from.substring(0, from.length() - 2);
-        try (Stream<Path> templates = list(new File(fromDir).toPath())) {
+        Path fromDir = new File(from.substring(0, from.length() - 2)).toPath();
+        try (Stream<Path> templates = walk(fromDir)) {
             return templates
-                    .map(path -> createTemplate(key, path.toString(), to + "/" + path.getFileName()))
+                    .filter(Files::isRegularFile)
+                    .map(path -> createTemplate(key, path.toString(), to + "/" + fromDir.relativize(path)))
                     .collect(toList());
         } catch (IOException e) {
             throw new RuntimeException("Can't get templates from dir " + from, e);

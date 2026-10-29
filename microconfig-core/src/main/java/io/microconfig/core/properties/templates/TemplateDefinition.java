@@ -42,18 +42,26 @@ public class TemplateDefinition {
                     .resolveBy(resolver, currentComponent)
                     .postProcessContent(templateContentPostProcessor, templateType, properties);
         } catch (RuntimeException e) {
-            throw new IllegalStateException(
-                    "Template error: " + this +
-                            "\nComponent: " + currentComponent +
-                            "\n" + getExceptionMessage(e), e
-            );
+            throw templateError(currentComponent, e);
         }
     }
 
     private Template toBinaryTemplate(Resolver resolver, TypedProperties properties) {
         DeclaringComponent currentComponent = properties.getDeclaringComponent();
-        File destinationFile = destinationFileFor(currentComponent, resolver);
-        return new BinaryTemplate(templateName, getTemplateFile(), destinationFile);
+        try {
+            File destinationFile = destinationFileFor(currentComponent, resolver);
+            return toBinaryTemplate(destinationFile);
+        } catch (RuntimeException e) {
+            throw templateError(currentComponent, e);
+        }
+    }
+
+    private IllegalStateException templateError(DeclaringComponent currentComponent, RuntimeException e) {
+        return new IllegalStateException(
+                "Template error: " + this +
+                        "\nComponent: " + currentComponent +
+                        "\n" + getExceptionMessage(e), e
+        );
     }
 
     private boolean isBinaryTemplate() {
@@ -61,14 +69,19 @@ public class TemplateDefinition {
     }
 
     private StringTemplate toStringTemplate(File destination) {
-        if (!isCorrect()) {
-            throw new IllegalStateException("Incomplete template def: " + this);
-        }
+        checkIsComplete();
         return new StringTemplate(templateName, getTemplateFile(), destination, templatePattern.getPlaceholderPattern());
     }
 
-    private boolean isCorrect() {
-        return fromFile != null && toFile != null;
+    private BinaryTemplate toBinaryTemplate(File destination) {
+        checkIsComplete();
+        return new BinaryTemplate(templateName, getTemplateFile(), destination);
+    }
+
+    private void checkIsComplete() {
+        if (fromFile == null || toFile == null) {
+            throw new IllegalStateException("Incomplete template def: " + this);
+        }
     }
 
     private File getTemplateFile() {

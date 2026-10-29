@@ -42,6 +42,20 @@ class ArrowNotationParserTest {
     }
 
     @Test
+    void nestedFolders() throws IOException {
+        createFile("first.yaml");
+        new File(tempDir, "sub/deeper").mkdirs();
+        createFile("sub/second.yaml");
+        createFile("sub/deeper/third.yaml");
+
+        List<TemplateDefinition> templateDefinitions = parseArrowProperty("mc.template.name", "*", "dir");
+        assertEquals(3, templateDefinitions.size());
+        assertTemplateDefinition("first.yaml", "dir/first.yaml", templateDefinitions);
+        assertTemplateDefinition("sub/second.yaml", "dir/sub/second.yaml", templateDefinitions);
+        assertTemplateDefinition("sub/deeper/third.yaml", "dir/sub/deeper/third.yaml", templateDefinitions);
+    }
+
+    @Test
     void ifKeyContainsSquareBrackets_Ignore() {
         Collection<TemplateDefinition> templateDefinitions = parseArrowProperty("mc.template.[name]", "a.yaml", "b.yaml");
         assertEquals(0, templateDefinitions.size());

@@ -7,6 +7,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import static java.lang.reflect.Modifier.isStatic;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Stream.of;
 
 @RequiredArgsConstructor
@@ -26,6 +27,6 @@ class ExpressionEvaluator {
     }
 
     public String evaluate(String value) {
-        return parser.parseExpression(value).getValue(context, String.class);
+        return requireNonNull(parser.parseExpression(value).getValue(context, String.class), "Expression evaluated to null");
     }
 }

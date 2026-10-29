@@ -2,6 +2,8 @@ package io.microconfig.core.configtypes;
 
 import io.microconfig.io.DumpedFsReader;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
 import java.util.Set;
@@ -35,6 +37,14 @@ class CustomConfigTypeRepositoryTest {
         assertEquals("custom", type.getName());
         assertEquals("custom", type.getResultFileName());
         assertEquals(Set.of(".custom"), type.getSourceExtensions());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"configTypes/empty", "configTypes/withoutTypes"})
+    void descriptorWithoutTypesProvidesNoCustomTypes(String dir) {
+        ConfigTypeRepository customRepo = findDescriptorIn(classpathFile(dir), new DumpedFsReader());
+
+        assertEquals(List.of(), customRepo.getConfigTypes());
     }
 
     @Test

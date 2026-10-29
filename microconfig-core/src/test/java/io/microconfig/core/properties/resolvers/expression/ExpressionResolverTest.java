@@ -1,9 +1,12 @@
 package io.microconfig.core.properties.resolvers.expression;
 
+import io.microconfig.core.properties.ResolveException;
 import io.microconfig.core.properties.resolvers.RecursiveResolver;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ExpressionResolverTest {
     ExpressionResolver resolver = new ExpressionResolver();
@@ -32,6 +35,13 @@ class ExpressionResolverTest {
         assertEquals(13, statement.getEndIndex());
         assertEquals("#{ 1 + 2}", statement.toString());
         assertEquals("3", statement.resolveFor(null, null));
+    }
+
+    @Test
+    void nullResultIsReportedAsResolveError() {
+        ResolveException e = assertThrows(ResolveException.class, () -> resolve("#{null}"));
+        assertTrue(e.getMessage().contains("Can't evaluate #{null}"));
+        assertTrue(e.getMessage().contains("Expression evaluated to null"));
     }
 
     private String resolve(String value) {

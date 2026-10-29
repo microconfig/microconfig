@@ -59,8 +59,9 @@ public class CustomConfigTypeRepository implements ConfigTypeRepository {
         @SuppressWarnings("unchecked")
         private List<ConfigType> getConfigTypes() {
             Map<String, Object> types = new Yaml().load(content);
-            List<Object> configTypes = (List<Object>) types.getOrDefault(CONFIG_TYPES, emptyList());
-            return forEach(configTypes, this::parse);
+            if (types == null || types.get(CONFIG_TYPES) == null) return emptyList();
+
+            return forEach((List<Object>) types.get(CONFIG_TYPES), this::parse);
         }
 
         @SuppressWarnings("unchecked")
