@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 import static io.microconfig.utils.Logger.error;
 import static io.microconfig.utils.Logger.warn;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.createDirectories;
 import static java.nio.file.Files.setPosixFilePermissions;
 import static java.util.Arrays.stream;
@@ -36,7 +37,7 @@ public class FileUtils {
     }
 
     public static void write(Path file, String content, OpenOption... options) {
-        write(file, content.getBytes(), options);
+        write(file, content.getBytes(UTF_8), options);
     }
 
     public static void write(Path file, byte[] content, OpenOption... options) {

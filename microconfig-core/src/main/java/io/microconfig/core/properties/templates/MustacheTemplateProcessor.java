@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.util.Map;
 
 import static io.microconfig.utils.Logger.info;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class MustacheTemplateProcessor implements TemplateContentPostProcessor {
     private static final String MUSTACHE = "mustache";
@@ -39,7 +40,7 @@ public class MustacheTemplateProcessor implements TemplateContentPostProcessor {
         return fileName -> {
             File newTemplate = new File(fileName);
             File fullPath = newTemplate.isAbsolute() ? newTemplate : new File(currentTemplate.getParent(), fileName);
-            return new FileReader(fullPath);
+            return new FileReader(fullPath, UTF_8);
         };
     }
 

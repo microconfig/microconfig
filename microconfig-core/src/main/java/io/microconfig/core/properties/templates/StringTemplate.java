@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import static io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders.findPlaceholderIn;
 import static io.microconfig.utils.IoUtils.readFully;
 import static io.microconfig.utils.StringUtils.addOffsets;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.regex.Matcher.quoteReplacement;
 
 @RequiredArgsConstructor
@@ -110,6 +111,6 @@ public class StringTemplate implements Template {
 
     @Override
     public byte[] getContentAsBytes() {
-        return content.getBytes();
+        return content.getBytes(UTF_8);
     }
 }

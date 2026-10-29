@@ -6,6 +6,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.util.List;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.emptyList;
 import static lombok.AccessLevel.PRIVATE;
 
@@ -32,7 +33,7 @@ public class IoUtils {
     }
 
     public static String readFully(InputStream is) {
-        return doRead(is).toString();
+        return doRead(is).toString(UTF_8);
     }
 
     public static byte[] readAllBytes(InputStream is) {

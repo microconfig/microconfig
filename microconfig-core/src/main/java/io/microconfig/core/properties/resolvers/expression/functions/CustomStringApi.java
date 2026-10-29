@@ -3,6 +3,7 @@ package io.microconfig.core.properties.resolvers.expression.functions;
 import java.util.regex.Matcher;
 
 import static java.lang.Math.min;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getEncoder;
 import static java.util.regex.Pattern.compile;
 
@@ -17,7 +18,7 @@ public class CustomStringApi {
     }
 
     public static String base64(String line) {
-        return bytesBase64(line.getBytes());
+        return bytesBase64(line.getBytes(UTF_8));
     }
 
     public static String bytesBase64(byte[] bytes) {

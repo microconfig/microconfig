@@ -18,6 +18,8 @@ build/
 .graalvm/
 classes/
 out/
+.claude
+.codex
 
 microconfig.jar
 microconfig.exe

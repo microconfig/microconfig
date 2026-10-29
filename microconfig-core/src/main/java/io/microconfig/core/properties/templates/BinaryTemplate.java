@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 
 import static io.microconfig.utils.IoUtils.readAllBytes;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Getter
 @RequiredArgsConstructor
@@ -30,6 +31,6 @@ public class BinaryTemplate implements Template {
 
     @Override
     public String getContent() {
-        return new String(contentAsBytes);
+        return new String(contentAsBytes, UTF_8);
     }
 }
