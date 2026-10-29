@@ -71,7 +71,7 @@ public class CustomConfigTypeRepository implements ConfigTypeRepository {
             Map<String, Object> configType = (Map<String, Object>) configTypeObject;
             String type = configType.keySet().iterator().next();
             Map<String, Object> attributes = (Map<String, Object>) configType.get(type);
-            Set<String> sourceExtensions = attributes.containsKey(SOURCE_EXTENSIONS) ? new LinkedHashSet<>((List<String>) attributes.get(SOURCE_EXTENSIONS)) : singleton(type);
+            Set<String> sourceExtensions = attributes.containsKey(SOURCE_EXTENSIONS) ? new LinkedHashSet<>((List<String>) attributes.get(SOURCE_EXTENSIONS)) : singleton("." + type);
             String resultFileName = (String) attributes.getOrDefault(RESULT_FILE_NAME, type);
 
             return byNameAndExtensions(type, sourceExtensions, resultFileName);

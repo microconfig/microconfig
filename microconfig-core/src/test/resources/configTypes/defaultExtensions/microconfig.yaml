@@ -1,0 +1,3 @@
+configTypes:
+  - custom:
+      resultFileName: result

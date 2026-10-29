@@ -114,7 +114,7 @@ public class TypedPropertiesImpl implements TypedProperties {
         if (!originalKey.endsWith(".*")) return empty();
 
         String key = originalKey.substring(0, originalKey.length() - 2);
-        Collection<Property> withPrefix = withPrefix(key).getProperties();
+        Collection<Property> withPrefix = withPrefix(key + ".").getProperties();
         if (withPrefix.isEmpty()) return empty();
 
         return of(property(key, toYaml(withPrefix, key), YAML, getDeclaringComponent()));

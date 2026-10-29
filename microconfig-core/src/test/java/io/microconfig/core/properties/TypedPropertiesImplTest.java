@@ -100,6 +100,35 @@ class TypedPropertiesImplTest {
     }
 
     @Test
+    void getMultiplePropertiesExcludesSimilarPrefixes() {
+        TypedProperties tp = withProperties(asList(property("foo.port"), property("foobar")));
+
+        assertEquals("port: foo.portValue", tp.getPropertyWithKey("foo.*").orElseThrow().getValue());
+    }
+
+    @Test
+    void getMultiplePropertiesIgnoresParentKey() {
+        TypedProperties tp = withProperties(asList(property("foo"), property("foo.port")));
+
+        assertEquals("port: foo.portValue", tp.getPropertyWithKey("foo.*").orElseThrow().getValue());
+    }
+
+    @Test
+    void getMultiplePropertiesReturnsEmptyWithoutChildKeys() {
+        TypedProperties tp = withProperties(asList(property("foo"), property("foobar")));
+
+        assertEquals(Optional.empty(), tp.getPropertyWithKey("foo.*"));
+    }
+
+    @Test
+    void withPrefixMatchesTextPrefixes() {
+        List<Property> properties = asList(property("foo"), property("foo.port"), property("foobar"));
+        TypedProperties tp = withProperties(properties);
+
+        assertEquals(properties, new ArrayList<>(tp.withPrefix("foo").getProperties()));
+    }
+
+    @Test
     void serialize() {
         PropertySerializer<String> serializer = (p, t, ct, c, e) -> c;
         assertEquals("comp", subj.save(serializer));

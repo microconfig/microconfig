@@ -45,7 +45,10 @@ public class FileUtils {
             if (f.getAbsolutePath().contains("..")) {
                 file = f.getCanonicalFile().toPath();
             }
-            createDirectories(file.getParent());
+            Path parent = file.getParent();
+            if (parent != null) {
+                createDirectories(parent);
+            }
             Files.write(file, content, options);
         } catch (IOException e) {
             throw new RuntimeException(e);
