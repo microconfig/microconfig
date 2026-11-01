@@ -1,111 +1,172 @@
 # Quick start
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.microconfig/microconfig-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.microconfig/microconfig-core)
+[![Maven Central](https://img.shields.io/maven-central/v/io.microconfig/microconfig-core)](https://central.sonatype.com/artifact/io.microconfig/microconfig-core)
+[![Latest release](https://img.shields.io/github/v/release/microconfig/microconfig)](https://github.com/microconfig/microconfig/releases/latest)
 [![Slack badge](https://img.shields.io/badge/Join-Slack-brightgreen.svg)](https://join.slack.com/t/microconfig/shared_invite/zt-dflf2m0n-wOPVfAmk5eiHPn_9Omff7Q)
 
-We recommend to start with [Microconfig Features guide](https://microconfig.io/features.html#/) and then continue reading this documentation.
+**Change config once. Every service, every environment gets it right.**
+
+Write shared settings once in Git, and Microconfig builds plain config files for every microservice in every environment:
+`application.yaml`, Helm values, `logback.xml`, anything. No server, no runtime, no lock-in.
+
+* **Shared parts, written once.** `#include monitoring, postgres` instead of copy-paste between services.
+* **Values that stay in sync.** `${payment-backend@server.context}` instead of copying a value from another service.
+* **A new environment in one small file.** Override only what differs, inherit the rest.
+* **A diff on every build.** See what changes for each service before you deploy.
+* **Broken references fail the build.** A typo in `${service@key}` stops CI, not production.
+* **No new language.** Plain YAML or properties plus a few directives.
+
+Try it in 2 minutes:
+
+```bash
+brew tap microconfig/microconfig && brew install microconfig
+git clone https://github.com/microconfig/microconfig-quickstart.git && cd microconfig-quickstart
+microconfig -e dev
+```
+
+Then follow the [quickstart](https://microconfig.io/quickstart.html): change one line and see every service update.
+Other install options (native binaries, jar) are on the [download page](https://microconfig.io/download.html).
+Real-life examples of every feature are in the [features guide](https://microconfig.io/features.html).
+
+
+# Cheat sheet
+
+## Key terms
+* **Component**: a folder under `components/` with configuration files. It can be a service (`orders`) or a shared part that services include (`postgres`, `monitoring`). Includes and placeholders refer to components by name, not by path, so keep names unique.
+* **Config type**: the kind of configuration, detected by the file extension: application (`*.yaml`, `*.properties`), deploy, process, Helm values, Kubernetes, secret, env. Each type of a service is built into its own result file.
+* **Environment**: a file in `envs/`, for example `envs/prod.yaml`, that lists the services to build. Files like `application.prod.yaml` hold overrides for that environment.
+* **Group**: a named list of components inside an environment file. Build a single group with `-g`.
+* **Profile**: a set of overrides applied on demand, like `application.long.yaml` used as `#include timeout-settings[long]`. Profiles work the same way as environment overrides.
+* **Placeholder**: a reference like `${component@key}`, resolved during the build. A placeholder that can't be resolved fails the build.
+
+## Syntax
+
+| What | Syntax | Example |
+|---|---|---|
+| Include other components | `#include name1, name2` | `#include monitoring, postgres` |
+| Include with a profile | `#include name[profile]` | `#include timeout-settings[long]` |
+| Reference a value | `${component@key}` | `${payment-backend@server.context}` |
+| Reference the current component | `${this@key}` | `${this@name}` |
+| Default value | `${component@key:default}` | `${this@dbHost:postgres.local}` |
+| Value from another config type | `${type::component@key}` | `${app::orders@server.port}` |
+| Environment variable, system property | `${env@NAME}`, `${system@name}` | `${env@BUILD_NUMBER}` |
+| Expression | `#{...}` | `#{3 * 60 * 1000}` |
+| Property for placeholders only | `#var key: value` | `#var dbHost: 10.10.10.10` |
+| Remove an included property | `#var key:` | `#var datasource.minimum-pool-size:` |
+| Override for an environment | `application.<env>.yaml` | `application.prod.yaml` |
+| Template file | `mc.template.<name>: <from> -> <to>` | `mc.template.logback: ${logback-template@configDir}/logback.xml -> logback.xml` |
+| Build an environment | `microconfig -e <env>` | `microconfig -e prod` |
+| Build only some groups or services | `-g <groups>`, `-s <services>` | `microconfig -e dev -s orders` |
 
 
 # Microconfig overview and features
 
-Microconfig is intended to make it easy and convenient to manage configuration for microservices (or just for a big amount of services) and reuse the common part.
+Microconfig is intended to make it easy and convenient to manage configuration for microservices (or just for a large number of services) and to reuse common parts.
 
-If your project consists of tens or hundreds of services you have to:
+If your project consists of tens or hundreds of services:
 
-* Keep the configuration for each service ideally separate from the code.
+* The configuration for each service should ideally be kept separate from the code.
 * The configuration for different services can have common and specific parts. Also, the configuration for the same service in different environments can have common and specific parts.
 * A common part for different services (or for one service in different environments) should not be copied and pasted and must be easy to reuse.
 * It must be easy to understand how the resulting configuration is generated and based on which values the config placeholders are resolved.
 * Some configuration properties must be dynamic, calculated using an expression language.
 
-Microconfig is written in Java, but it's designed to be used with systems written in any language. Microconfig just describes a format of configuration sources, syntax for placeholders, includes, excludes, overrides, an expression language for dynamic properties and an engine that can transform the config sources into simple *.yaml or *.properties files. Also it can resolve placeholders in arbitrary template files and show differences between config releases.
+Microconfig is written in Java, but it's designed to be used with systems written in any language. Microconfig defines a format for configuration sources, a syntax for placeholders, includes, excludes and overrides, an expression language for dynamic properties, and an engine that transforms the config sources into plain *.yaml or *.properties files. It can also resolve placeholders in arbitrary template files and show differences between config releases.
 
 ## The difference between Microconfig and popular DevOps tools
 **Compared to config servers** (like Consul, Zookeeper, Spring Cloud Config):
 
-Config servers solve the problem of dynamic distribution of configuration in runtime (can use http endpoints), but to distribute configuration you have to store it, ideally with changes in history and without duplication of common parts.
+Config servers solve the problem of distributing configuration dynamically at runtime (for example, over HTTP endpoints), but to distribute configuration you have to store it somewhere, ideally with a history of changes and without duplication of common parts.
 
 **Compared to Ansible**:
 
-Ansible is a powerful, but much too general, engine for deployment management and doesn't provide a common and clean way to store configuration for microservices, and a lot of teams have to invent their own solutions based on Ansible.
+Ansible is a powerful but very general engine for deployment management. It doesn't provide a common and clean way to store configuration for microservices, so many teams have to invent their own solutions on top of it.
 
-Microconfig does one thing and does it well. It provides an approach, best practices for how to keep configuration for a big amount of services, and an engine to build config sources into result files.
+Microconfig does one thing and does it well. It provides an approach and best practices for keeping configuration for a large number of services, and an engine that builds config sources into result files.
 
-You can use Microconfig together with any config servers and deployment frameworks. Configuration can be built during the deployment phase and the resulting plain config files can be copied to the filesystem, where your services can access them directly (for instance, Spring Boot can read configuration from *.yaml or *.properties), or you can distribute the resulting configuration using any config servers. Also, you can store not only application configuration but configuration used to run your services, and your deployment framework can read that configuration from Microconfig to start your services with the right parameters and settings.
+You can use Microconfig together with any config server and deployment framework. Configuration can be built during the deployment phase and the resulting plain config files can be copied to the filesystem, where your services can access them directly (for instance, Spring Boot can read configuration from *.yaml or *.properties), or you can distribute the resulting configuration using any config server. You can also store not only application configuration but also the configuration used to run your services, and your deployment framework can read that configuration from Microconfig to start your services with the right parameters and settings.
 
 ## Where to store the configuration
-It’s a good practice to keep service configuration separate from code. It doesn't require you to rebuild services every time the configuration is changed and allows you to use the same service artefacts (for instance, *.jar) for all environments because it doesn’t contain any environment specific configuration. The configuration can be updated even in runtime without service source code changes.
+It's a good practice to keep service configuration separate from code. It doesn't require you to rebuild services every time the configuration is changed and allows you to use the same service artifacts (for instance, *.jar) for all environments, because they don't contain any environment-specific configuration. The configuration can even be updated at runtime without changes to the service source code.
 
-The best way to follow this principle is to have a dedicated repository for configuration in your favorite version control system.  You can store configuration for all microservices in the same repository to make it easy to reuse a common part and be sure the common part is consistent for all your services.
+The best way to follow this principle is to have a dedicated repository for configuration in your favorite version control system. You can store configuration for all microservices in the same repository to make it easy to reuse a common part and be sure the common part is consistent for all your services.
 
 ## Service configuration types
 
 It's convenient to have different kinds of configuration and keep it in different files:
 * Deploy configuration (the configuration used by deployment tools that describes where/how to deploy your service, like artifact repository settings, container params).
-* Process configuration (the configuration used by deployment tools to start your service with right params, like memory limits, VM params, etc.).
-* Application configuration (the configuration that your service reads after start-up and uses in runtime).
+* Process configuration (the configuration used by deployment tools to start your service with the right params, like memory limits, VM params, etc.).
+* Application configuration (the configuration that your service reads after start-up and uses at runtime).
 * Environment variables.
-* Secret configuration (note, you should not store in a VCS any sensitive information, like passwords. In a VCS you can store references(keys) to passwords, and keep passwords in special secured stores(like Vault) or at least in encrypted files on environment machines).
-* Library specific templates (for instance, Dockerfile, kafka.conf, cassandra.yaml, some scripts to run before/after your service start-up, etc.)
+* Secret configuration (note: you should not store sensitive information, like passwords, in a VCS. In a VCS you can store references (keys) to passwords and keep the passwords themselves in secure stores (like Vault) or at least in encrypted files on environment machines).
+* Library-specific templates (for instance, Dockerfile, kafka.conf, cassandra.yaml, some scripts to run before/after your service start-up, etc.).
 
 Microconfig detects the configuration type by the config file extension. The default configuration for config types:
 * `*.yaml` or `*.properties` for application configuration.
 * `*.deploy` for deployment configuration.
-* `*.k8s` for k8s configuration.
+* `*.k8s` for Kubernetes configuration (see 'Kubernetes and Helm').
 * `*.proc` or `*.process` for process configuration. 
-* `*.helm` for helm values.
+* `*.helm` for Helm values (see 'Kubernetes and Helm').
 * `*.env` for environment variables.
 * `*.secret` for secret configuration.
-* For static files - see the 'Templates files' section.
+* For static files, see the 'Template files' section.
 
-You can use all the configuration types or only some of them. Also you can override the default extensions or define your own config types.
+You can use all the configuration types or only some of them. You can also override the default extensions or define your own config types.
 
 # Basic folder layout
-Let’s take a look at a basic folder layout that you can keep in a dedicated repository.
+Let's take a look at a basic folder layout that you can keep in a dedicated repository.
 
-For every service, you have to create a folder with a unique name(the name of the service). In the service directory, we will keep common and environment specific configurations.
+The config root must contain two folders:
+* `components/` for the configuration of services and of the shared parts they include. Inside it, you can nest folders any way you like.
+* `envs/` for environment descriptors that list which services each environment runs (see 'Environment descriptor').
 
-So, let’s imagine we have 4 microservices: 'orders', 'payments', 'service-discovery', and 'api-gateway'. For convenience, we can group services by layers: 'infra' for infrastructure services and 'core' for our business domain services. The resulting layout will look like:
+Without `components/` the build stops with `Root directory must contain 'components' dir`.
+
+For every service, you have to create a folder with a unique name (the name of the service). In the service directory, we will keep common and environment-specific configurations.
+
+So, let's imagine we have 4 microservices: 'orders', 'payments', 'service-discovery', and 'api-gateway'. For convenience, we can group services by layers: 'infra' for infrastructure services and 'core' for our business domain services. The resulting layout will look like this:
 
 ```
 repo
-└───core  
-│   └───orders
-│   └───payments
-│	
-└───infra
-    └───service-discovery
-    └───api-gateway
+└───components
+    └───core  
+    │   └───orders
+    │   └───payments
+    │	
+    └───infra
+        └───service-discovery
+        └───api-gateway
 ```
 
 ## Configuration sources
 
-Inside the service folder, you can create a configuration in `key=value` format. For the following examples, we will prefer using *.yaml, but Microconfig also supports *.properties. 
+Inside the service folder, you can create a configuration in `key=value` format. In the following examples we will use *.yaml, but Microconfig also supports *.properties. 
 
-Let’s create the basic application and process configuration files for each service.
+Let's create the basic application and process configuration files for each service.
 You can split configuration among several files, but for simplicity, we will create `application.yaml` and `process.proc` for each service. No matter how many base files are used, after the configuration build for each service and each config type, a single result file will be generated.
 
 ```
 repo
-└───core  
-│    └───orders
-│    │   └───application.yaml
-│    │   └───process.proc
-│    └───payments
-│        └───application.yaml
-│        └───process.proc
-│	
-└───infra
-    └───service-discovery
-    │   └───application.yaml
-    │   └───process.proc
-    └───api-gateway
-        └───application.yaml
-        └───process.proc
+└───components
+    └───core  
+    │    └───orders
+    │    │   └───application.yaml
+    │    │   └───process.proc
+    │    └───payments
+    │        └───application.yaml
+    │        └───process.proc
+    │	
+    └───infra
+        └───service-discovery
+        │   └───application.yaml
+        │   └───process.proc
+        └───api-gateway
+            └───application.yaml
+            └───process.proc
 ```
 
-Inside process.proc we will store configuration that describes what your service is, and how to run it (your config files can have other properties, so don't pay attention to concrete values).
+In process.proc we will store the configuration that describes what your service is and how to run it (your config files can have other properties, so don't pay attention to the concrete values).
 
 **orders/process.proc**
 ```properties
@@ -127,7 +188,7 @@ java.main=org.example.discovery.EurekaStarter
 java.opts.mem=-Xms1024M -Xmx2048M # partial duplication 
 ```
 
-As you can see we already have some small duplication (all services have '19.4.2' version, and two of them have the same java.ops params).  Configuration duplication is as bad as code duplication. We will see later how to do this in a better way.
+As you can see, we already have some duplication (all services have version '19.4.2', and two of them have the same java.opts.mem params). Configuration duplication is as bad as code duplication. We will see later how to do it better.
 
 Let's see what application properties look like. In the comments we note what can be improved.
 
@@ -172,37 +233,38 @@ eureka:
     enable-self-preservation: false    
 ```
 
-The first bad thing - application files contain duplication. 
-Also, you have to spend some time to understand the application’s dependencies or its structure. 
-For instance, payment-service contains settings for:
+The first problem is that the application files contain duplication. 
+Also, it takes time to understand the application's dependencies and structure. 
+For instance, the payments service contains settings for:
 * service-discovery client
 * oracle db 
-* application specific 
+* application-specific settings 
 
-Of course, you can separate a group of settings by an empty line. But we can make it more readable and understandable.
+Of course, you can separate groups of settings with empty lines. But we can make it more readable and understandable.
 
 # Better config structure using #include
-Our services have a common configuration for service-discovery and database. To make it easy to understand the service's dependencies, let’s create folders for service-discovery-client and oracle-client and specify links to these dependencies from the core services.
+Our services have a common configuration for service-discovery and database. To make it easy to understand the service's dependencies, let's create folders for service-discovery-client and oracle-client and specify links to these dependencies from the core services.
 
 ```
 repo
-└───common
-|   └───service-discovery-client 
-|   |   └───application.yaml
-|   └───oracle-client
-|       └───application.yaml
-|	
-└───core  
-│   └───orders
-│   │   ***
-│   └───payments
-│       ***
-│	
-└───infra
-    └───service-discovery
-    │   ***
-    └───api-gateway
-        ***
+└───components
+    └───common
+    |   └───service-discovery-client 
+    |   |   └───application.yaml
+    |   └───oracle-client
+    |       └───application.yaml
+    |	
+    └───core  
+    │   └───orders
+    │   │   ***
+    │   └───payments
+    │       ***
+    │	
+    └───infra
+        └───service-discovery
+        │   ***
+        └───api-gateway
+            ***
 ```
 **service-discovery-client/application.yaml**
 ```yaml
@@ -219,11 +281,11 @@ datasource:
 jpa.properties.hibernate.id.optimizer.pooled.prefer_lo: true
 ```
 
-And replace explicit configs with includes
+Then replace the explicit configs with includes:
 
 **orders/application.yaml**
 ```yaml
-#include service-discovery-client, oracle-db-client
+#include service-discovery-client, oracle-client
 
 server.port: 9000
 application.name: orders # better to get name from folder
@@ -233,7 +295,7 @@ statistics.enableExtendedStatistics: true
 
 **payments/application.yaml**
 ```yaml
-#include service-discovery-client, oracle-db-client
+#include service-discovery-client, oracle-client
 
 server.port: 8080
 application.name: payments # better to get name from folder
@@ -242,43 +304,44 @@ payments:
   bookTimeoutInMs: 900000 # how long in minutes?
   system.retries: 3
 ```
-To include a component's configuration you need to specify only the component name, you don't need to specify its path. This makes the config layout refactoring easier. Microconfig will find a folder with the component's name and include the configuration from its files (if the folder name is not unique, Microconfig includes configs from each folder, but it's a good idea to keep a component name unique).
+To include a component's configuration, you only need to specify the component name, not its path. This makes refactoring the config layout easier. Microconfig will find a folder with the component's name and include the configuration from its files (if the folder name is not unique, Microconfig includes configs from each folder, but it's a good idea to keep component names unique).
 
-Some problems still here, but we removed the duplication and made it easier to understand the service's dependencies.
+Some problems remain, but we removed the duplication and made it easier to understand the service's dependencies.
 
-You can override any properties from your dependencies.
-Let's override the order's connection pool size.
+You can override any property from your dependencies.
+Let's override the connection pool size for orders.
 
 **orders/application.yaml**
 ```yaml    
-#include oracle-db-client
+#include oracle-client
 
 datasource.maximum-pool-size: 10
 ***
 ```
 
-Nice. But order-service has a small part of its db configuration(pool-size), it's not that bad, but we can make the config semantically better.
-Also you can see that order and payment services have a different ip for oracle.
+Nice. But the orders service now contains a small part of its db configuration (pool-size). It's not that bad, but we can make the config semantically better.
+You can also see that the orders and payments services use different Oracle IPs:
 
-order: datasource.url: jdbc:oracle:thin:@172.30.162.<b>31</b>:1521:ARMSDEV  
-payment: datasource.url: jdbc:oracle:thin:@172.30.162.<b>127</b>:1521:ARMSDEV  
+orders: datasource.url: jdbc:oracle:thin:@172.30.162.<b>31</b>:1521:ARMSDEV  
+payments: datasource.url: jdbc:oracle:thin:@172.30.162.<b>127</b>:1521:ARMSDEV  
 And oracle-client contains settings for .31.
 
-Of course, you can override datasource.url in the payment/application.yaml. But this overridden property will contain a copy of another part of jdbc url and you will get all the standard 'copy-and-paste' problems. We would like to override only a part of the property. 
+Of course, you can override datasource.url in payments/application.yaml. But this overridden property will contain a copy of the rest of the JDBC URL, and you will get all the standard copy-and-paste problems. We would like to override only a part of the property. 
 
-Also it's better to create a dedicated configuration for order db and payment db. Both db configuration will include common-db config and override the 'ip' part of url. After that, we will migrate 'datasource.maximum-pool-size' from order-service to order-db, so order-service will contain only links to its dependencies and service-specific configs.
+It's also better to create dedicated configurations for the orders db and the payments db. Both will include the common db config and override the 'ip' part of the URL. After that, we will move 'datasource.maximum-pool-size' from the orders service to order-db, so the orders service will contain only links to its dependencies and service-specific configs.
 
-Let’s refactor.
+Let's refactor.
 ```
 repo
-└───common
-|   └───oracle
-|       └───oracle-common
-|       |   └───application.yaml
-|       └───order-db
-|       |   └───application.yaml
-|       └───payment-db
-|           └───application.yaml
+└───components
+    └───common
+    |   └───oracle
+    |       └───oracle-common
+    |       |   └───application.yaml
+    |       └───order-db
+    |       |   └───application.yaml
+    |       └───payment-db
+    |           └───application.yaml
 ```
 
 **oracle-common/application.yaml**
@@ -289,7 +352,7 @@ datasource:
 connection.timeoutInMs: 300000
 jpa.properties.hibernate.id.optimizer.pooled.prefer_lo: true
 ```
-**orders-db/application.yaml**
+**order-db/application.yaml**
 ```yaml
 #include oracle-common
     
@@ -315,16 +378,16 @@ datasource.url: jdbc:oracle:thin:@172.30.162.127:1521:ARMSDEV #partial duplicati
 #include payment-db
 ```
 
-Includes can be in one line or on different lines:
+Includes can be on one line or on separate lines:
 
 ```yaml
 #include service-discovery-client
-#include oracle-db-client, monitoring    
+#include oracle-client, monitoring    
 ```
 
 # Placeholders
 
-Instead of duplicating the value of some properties, Microconfig allows you to have a link (placeholder) to this value. 
+Instead of duplicating the value of a property, Microconfig lets you link to it with a placeholder. 
 
 Let's refactor the service-discovery-client config.
 
@@ -336,7 +399,7 @@ service-discovery.url: http://10.12.172.11:6781 # are you sure host and port are
 ```
 **service-discovery/application.yaml**
 ```yaml
-server.port: 6761 
+server.port: 6781 
 ```
 
 Refactored:
@@ -347,17 +410,17 @@ service-discovery.url: http://${service-discovery@ip}:${service-discovery@server
 ```
 **service-discovery/application.yaml**
 ```yaml
-server.port: 6761
+server.port: 6781
 ip: 10.12.172.11 
 ```
 So if you change the service-discovery port, all dependent services will get this update.
 
-Microconfig has another approach to store service's ip. We will discuss it later. For now, it's better to set the 'ip' property in the service-discovery config file. 
+Microconfig has another way to store a service's IP. We will discuss it later. For now, it's better to set the 'ip' property in the service-discovery config file. 
 
 The Microconfig syntax for placeholders: `${componentName@propertyName}`. Microconfig forces you to specify the component name. This syntax is better than just a property name
-(like `${connectionSize}`), because it makes it obvious where to find the original placeholder value.
+(like `${connectionSize}`) because it makes it obvious where to find the original placeholder value.
 
-Let's refactor oracle db config using placeholders and environment specific overrides.
+Let's refactor the Oracle db config using placeholders and environment-specific overrides.
 
 Initial:
 
@@ -391,13 +454,13 @@ oracle:
   sid: ARMSPROD
 ```
 
-As you can see using placeholders we can override not only the whole property but also part of it.
+As you can see, with placeholders we can override not only a whole property but also a part of it.
 
 A placeholder can link to another placeholder. Microconfig can resolve them recursively and detect cyclic dependencies.
 
 ## Temp properties
 
-If you want to declare temp properties that will be used by placeholders only and you don't want them to be included in the result config file, you can declare them with `#var` keyword.
+If you want to declare temp properties that will be used by placeholders only and you don't want them to be included in the result config file, you can declare them with the `#var` keyword.
 
 **oracle-common/application.yaml**
 ```yaml
@@ -412,19 +475,19 @@ datasource.url: jdbc:oracle:thin:@${this@oracle.host}:1521:${this@oracle.sid}
 
 This approach works with includes as well. You can #include oracle-common and then override 'oracle.host', and 'datasource.url' will be resolved based on the overridden value.
 
-In the example below after the build process: datasource.url: jdbc:oracle:thin:@**100.30.162.80**:1521:ARMSDEV
+In the example below, after the build, datasource.url will be: jdbc:oracle:thin:@**100.30.162.80**:1521:ARMSDEV
 
  
-**orders-db/application.dev.yaml** 
+**order-db/application.dev.yaml** 
 ```yaml   
 #include oracle-common
  
 #var oracle.host: 100.30.162.80         
 ```
 ## Removing base properties
-Using `#var` you can remove properties from the result config file. You can include some config and override any property with #var to exclude it from the result config file.
+With `#var` you can also remove properties from the result config file: include a config and redeclare any of its properties with `#var` to exclude it from the result.
 
-Let's remove 'payments.system.retries' property for 'dev' environment:
+Let's remove the 'datasource.minimum-pool-size' property from the payments config:
 
 **db-client/application.yaml**
 ```yaml
@@ -435,13 +498,14 @@ datasource:
 **payments/application.yaml**
 ```yaml
 #include db-client
-#var datasource.minimum-pool-size:  // will not be included into result config       
+# the empty #var below removes the property from the result config
+#var datasource.minimum-pool-size:
 ```
 
 ## Placeholder's default value
 You can specify a default value for a placeholder using the following syntax: ${component@property:**defaultValue**}
 
-Let's set a default value for 'oracle host'
+Let's set a default value for the Oracle host:
 
 **oracle-common/application.yaml**
 ```yaml
@@ -450,33 +514,33 @@ datasource:
   url: jdbc:oracle:thin:@${this@oracle.host:172.30.162.20}:1521:${this@oracle.sid}
 #var oracle.sid: ARMSDEV
 ```
-Note, a default value can be a placeholder:
+Note that a default value can itself be a placeholder:
  `${component@property:${component2@property7:Missing value}}`
  
-In the example Microconfig will try to:
+In this example, Microconfig will try to:
 * resolve `${component@property}`
 * if the above is missing - resolve `${component2@property7}`
 * if the above is missing - return 'Missing value'
 
-If a placeholder doesn't have a default value and that placeholder can't be resolved, Microconfig throws an exception with the detailed problem description.
+If a placeholder doesn't have a default value and that placeholder can't be resolved, Microconfig throws an exception with a detailed description of the problem.
 
-## Specials placeholders
-As we discussed the syntax for placeholders looks like `${component@property}`.
-Microconfig has several special useful placeholders:
+## Special placeholders
+As we discussed, the syntax for placeholders looks like `${component@property}`.
+Microconfig has several useful special placeholders:
 
 * `${this@env}` - returns the current environment name.
 * `${...@name}` - returns the component's name.
 * `${...@configDir}` - returns the full path of the component's config dir.
 * `${...@resultDir}` - returns the full path of the component's destination dir (the resulting files will be put into this dir).
-* `${this@configRoot}` - returns the full path of the config repository root dir (see `root` build param ).
+* `${this@configRoot}` - returns the full path of the config repository root dir (see the `-r` build param).
 
-There are some other environment descriptor related properties, we will discuss them later:
+There are some other properties related to the environment descriptor; we will discuss them later:
 * `${...@ip}`
 * `${...@portOffset}`
 * `${...@group}`
 * `${...@order}`
 
-Note, if you use a special placeholder with `${this@...}` then the value will be context dependent. Let's apply `${this@name}` to see why it's useful.
+Note that if you use a special placeholder with `${this@...}`, the value will be context-dependent. Let's apply `${this@name}` to see why it's useful.
 
 Initial:
 
@@ -509,7 +573,7 @@ application.name: ${this@name}
 ``` 
 
 ## Environment variables and system properties 
-To resolve environment variables use the following syntax: `${env@variableName}`
+To resolve environment variables, use the following syntax: `${env@variableName}`
 
 For example:
 ```
@@ -518,9 +582,9 @@ For example:
  ${env@NUMBER_OF_PROCESSORS}
 ```
 
-To resolve Java system variables (System::getProperty) use the following syntax: `${system@variableName}`
+To resolve Java system properties (System::getProperty), use the following syntax: `${system@variableName}`
 
-Some useful standard system variables:
+Some useful standard system properties:
 
 ```
  ${system@user.home}
@@ -528,21 +592,21 @@ Some useful standard system variables:
  ${system@os.name}
 ```
 
-You can pass your own system properties during Microconfig start with `-D` prefix (See 'Running config build' section)
+You can pass your own system properties when starting Microconfig with the `-D` prefix (see the 'Running the config build' section).
 
 Example:
 ```
  -DtaskId=3456 -DsomeParam3=value
 ```
-Then you can access it: `${system@taskId}` or `${system@someParam3}`
+Then you can access them: `${system@taskId}` or `${system@someParam3}`
 
 ## Placeholders to another config type
 
-As we discussed Microconfig supports different config types and detects the type by file extensions. Microconfig resolves placeholders based on properties of the **same config type** only.
+As we discussed, Microconfig supports different config types and detects the type by file extension. Microconfig resolves placeholders based on properties of the **same config type** only.
 
-Let’s see the example how it works:
+Let's see how it works:
 
-‘orders’ has ‘service.port’ property in application.**yaml**, so you can declare a placeholder to this property from application config types only (*.yaml or *.properties). If you declare that placeholder in, for example, *.process files, Microconfig will not resolve it and throw an exception.
+'orders' has the 'server.port' property in application.**yaml**, so you can declare a placeholder to this property only from application config types (*.yaml or *.properties). If you declare that placeholder in, for example, a *.process file, Microconfig will fail to resolve it and throw an exception.
 
 **someComponent/application.yaml**
 ```yaml
@@ -553,9 +617,9 @@ orderPort: ${orders@server.port} # works
 orderPort: ${orders@server.port} # doesn’t work
 ```
 
-If you need to declare a placeholder to a property from another config type you have to specify the config type using the following syntax: ${**configType**::component@property}.
+If you need to declare a placeholder to a property from another config type, you have to specify the config type using the following syntax: ${**configType**::component@property}.
 
-For our example the correct syntax:
+For our example, the correct syntax is:
 
 **someComponent/application.process**
 ```yaml
@@ -570,7 +634,7 @@ Microconfig default config types:
 * `env` – for *.env
 
 # Expression language
-Microconfig supports math expressions, conditions and Java [String API](https://docs.oracle.com/javase/8/docs/api/java/lang/String.html).
+Microconfig supports math expressions, conditions and the Java [String API](https://docs.oracle.com/javase/8/docs/api/java/lang/String.html).
 
 Let's see some examples:
 
@@ -592,10 +656,10 @@ releaseType: #{'${this@version}'.endsWith('-SNAPSHOT') ? 'snapshot' : 'release'}
 ```
 
 # Environment specific properties
-Microconfig allows specifying environment specific properties (add/remove/override). For instance, you want to increase the connection-pool-size for dbs and increase the amount of memory for prod env.
-To add/remove/override properties for the environment, you can create application.**${ENVNAME}**.yaml file in the config folder. 
+Microconfig allows specifying environment-specific properties (add/remove/override). For instance, you may want to increase the connection pool size for databases and the amount of memory in the prod environment.
+To add/remove/override properties for an environment, create an application.**${ENVNAME}**.yaml file in the config folder. 
 
-Let's override connection pool size for 'dev' and 'prod' and add one new param for 'dev'. 
+Let's override the connection pool size for 'dev' and 'prod' and add one new param for 'dev'. 
 
 ```
 order-db
@@ -604,18 +668,18 @@ order-db
 └───application.prod.yaml
 ```
 
-**orders-db/application.dev.yaml**
+**order-db/application.dev.yaml**
 ```yaml   
 datasource.maximum-pool-size: 15   
 hibernate.show-sql: true
 ```
 
-**orders-db/application.prod.yaml**
+**order-db/application.prod.yaml**
 ```yaml   
 datasource.maximum-pool-size: 50
 ```
 
-Also, you can declare common properties for several environments in a single file. You can use the following filename pattern: application.**${ENV1.ENV2.ENV3...}**.yaml
+You can also declare common properties for several environments in a single file. You can use the following filename pattern: application.**${ENV1.ENV2.ENV3...}**.yaml
 
 Let's create common properties for dev, dev2 and test environments.
 
@@ -627,18 +691,18 @@ order-db
 └───application.prod.yaml
 ```
 
-**orders-db/application.dev.dev2.test.yaml**
+**order-db/application.dev.dev2.test.yaml**
 ```yaml   
 hibernate.show-sql: true
 ```
 
-When you build config for a specific environment (for example 'dev') Microconfig will collect properties from:
+When you build configs for a specific environment (for example, 'dev'), Microconfig will collect properties from:
 * application.yaml 
 * then add/override properties from application.dev.{anotherEnv}.yaml.
 * then add/override properties from application.dev.yaml.
  
 ## Profiles and explicit environment names for includes and placeholders
-As we discussed you can create environment specific properties using the filename pattern: application.${ENV}.yaml. You can use the same approach for creating profile specific properties.
+As we discussed, you can create environment-specific properties using the filename pattern application.${ENV}.yaml. You can use the same approach to create profile-specific properties.
 
 For example, you can create a folder for http client timeout settings:
 
@@ -659,7 +723,7 @@ And some services can include this configuration:
 #include timeout-settings
 ```
 
-But what if you want some services to be configured with a long timeout? Instead of the environment you can use the profile name in the filename:
+But what if you want some services to be configured with a long timeout? Instead of an environment name, you can use a profile name in the filename:
 ```
 timeout-settings
 └───application.yaml
@@ -675,7 +739,7 @@ timeouts.readTimeoutMs: 30000
 timeouts.readTimeoutMs: 600000
 ```
 
-And specify the profile name with include:
+Then specify the profile name in the include:
 
 **payments/application.yaml**
 ```yaml
@@ -689,18 +753,19 @@ ${timeout-settings[long]@readTimeoutMs}
 ${kafka[test]@bootstrap-servers}
 ```
 
-The difference between environment specific files and profiles is only logic. Microconfig handles it in the same way.
+The difference between environment-specific files and profiles is purely logical: Microconfig handles them the same way.
 
 # Template files
 Microconfig allows you to keep configuration files for any libraries in their specific format and resolve placeholders inside them.
-For example, you want to keep logback.xml (or some other descriptor for your log library) and reuse this file with resolved placeholders for all your services. 
+For example, you may want to keep logback.xml (or some other descriptor for your logging library) and reuse this file, with placeholders resolved, for all your services. 
 
 Let's create this file:
 ```
 repo
-└───common
-|    └───logback-template 
-|         └───logback.xml
+└───components
+    └───common
+    |    └───logback-template 
+    |         └───logback.xml
 ```
 **logback-template/logback.xml**
 ```xml
@@ -713,35 +778,36 @@ repo
     </appender>    
 </configuration>
 ```
-So we want every service to have its own logback.xml with resolved `${application.name}`. 
-Let's configure the order and payment services to use this template.
+So we want every service to have its own logback.xml with `${this@application.name}` resolved. 
+Let's configure the orders and payments services to use this template.
 
 **orders/application.yaml**
 ```yaml
 #include service-discovery-client
 
-mc.template.logback.fromFile: ${logback@configDir}/logback.xml # full path to logback.xml, @configDir - special placeholder property
+mc.template.logback.fromFile: ${logback-template@configDir}/logback.xml # full path to logback.xml, @configDir - special placeholder property
 ```
 
 **payments/application.yaml**
 ```yaml
 #include service-discovery-client
 
-mc.template.logback.fromFile: ${logback@configDir}/logback.xml
+mc.template.logback.fromFile: ${logback-template@configDir}/logback.xml
 ```  
    
 It's better to extract the common property `mc.template.logback.fromFile` to logback-template/application.yaml and then use #include.
 
 ```
 repo
-└───common
-|   └───logback-template 
-|   └───logback.xml
-|   └───application.yaml
+└───components
+    └───common
+    |   └───logback-template 
+    |       └───logback.xml
+    |       └───application.yaml
 ```    
 **logback-template/application.yaml**
 ```yaml   
-mc.template.logback.fromFile: ${logback@configDir}/logback.xml
+mc.template.logback.fromFile: ${logback-template@configDir}/logback.xml
 ```
 **orders/application.yaml**
 ```yaml
@@ -752,21 +818,21 @@ mc.template.logback.fromFile: ${logback@configDir}/logback.xml
 #include service-discovery-client, logback-template
 ```  
 
-As we saw in the above text the order and payment services include the `application.name` property from service-discovery-client.
-During the config build Microconfig will replace `${application.name}` inside logback.xml with the service's property value and copy the resulting file 'logback.xml' to the relevant folder for each service.
+As we saw above, the orders and payments services include the `application.name` property from service-discovery-client.
+During the config build Microconfig will replace `${this@application.name}` inside logback.xml with the service's property value and copy the resulting file 'logback.xml' to the relevant folder for each service.
 
-If you want to declare a property for a template only and don't want this property to be included into the result config file you can use `#var` keyword. 
+If you want to declare a property for a template only and don't want this property to be included in the result config file, you can use the `#var` keyword. 
 
-If you want to override the template destination filename you can use `mc.template.${templateName}.toFile=${someFile}` property. For example:  
+If you want to override the template destination filename, you can use the `mc.template.${templateName}.toFile=${someFile}` property. For example:  
  
  **logback-template/application.yaml**
  ```yaml   
  mc.template.logback:
-   fromFile: ${logback@configDir}/logback.xml
+   fromFile: ${logback-template@configDir}/logback.xml
    toFile: logs/logback-descriptor.xml
  ``` 
  
-You can use the absolute or the relative path for `toFile` property. The relative path starts from the resulting service config dir (see 'Running config build' section).
+You can use an absolute or a relative path for the `toFile` property. A relative path starts from the service's result config dir (see the 'Running the config build' section).
 
 So the template dependency declaration syntax looks like:   
 ```
@@ -774,40 +840,41 @@ mc.template.${templateName}:
   fromFile: ${sourceTemplateFile}
   toFile: ${resolvedTemplateDestinationFile}
 ```
-`${templateName}` - is used only for mapping `fromFile` and `toFile` properties.
+`${templateName}` is used only for mapping the `fromFile` and `toFile` properties.
 
-Also, you can use a short one line syntax using ->
+You can also use a short one-line syntax with `->`:
  ```
  mc.template.${templateName}: ${sourceTemplateFile} -> ${resolvedTemplateDestinationFile}
  ```
-Using arrow notation you can also resolve directories with templates. This will resolve all files inside `${sourceTemplateDir}`. Source filename is used as target filename.
+With the arrow notation, you can also resolve whole directories of templates. This resolves all files inside `${sourceTemplateDir}`, and each source filename is used as the target filename.
  ```
  mc.template.${templateName}: ${sourceTemplateDir}/* -> ${resolvedTemplateDestinationDir}
  ```
 Or create multiple templates with different `${templateName}` from a single template file. 
-Note the usage of `${templateName}` placeholder inside target filename to create different files based on template name.
+Note the `${templateName}` placeholder inside the target filename: it creates a separate file for each template name.
  ```
  mc.template.[${templateName1},${templateName2}]: ${sourceTemplateFile} -> ${resolvedTemplateDestinationDir}/targetName-${templateName}.xml
  ```
 
-Let's override the file that will be copied on the prod environment:
+Let's override the file that will be copied for the prod environment:
 ```
 repo
-└───common
-|   └───logback-template 
-|       └───logback.xml
-|       └───logback-prod.xml
-|       └───application.yaml
-|       └───application.prod.yaml
+└───components
+    └───common
+    |   └───logback-template 
+    |       └───logback.xml
+    |       └───logback-prod.xml
+    |       └───application.yaml
+    |       └───application.prod.yaml
 ```
 **logback-template/application.prod.yaml**
 ```yaml   
-mc.template.logback.fromFile: ${logback@configDir}/logback-prod.xml
+mc.template.logback.fromFile: ${logback-template@configDir}/logback-prod.xml
 ``` 
 ## Mustache template engine support
 If resolving placeholders inside templates is not enough for you, you can use [Mustache template engine](https://mustache.github.io/mustache.5.html). With Mustache you can use loops, conditions and includes.
 
-Let's imagine we want to configure different Logback appenders on different environments. We can use condition 'appender.rolling' and override this value on different environments.
+Let's imagine we want to configure different Logback appenders in different environments. We can use the condition 'appender.rolling' and override its value per environment.
 
 ```
 {{#appender.rolling}}
@@ -830,7 +897,7 @@ Let's imagine we want to configure different Logback appenders on different envi
 
  **logback-template/application.yaml**
  ```yaml   
-mc.mustache.logback.fromFile: ${logback@configDir}/logback.xml
+mc.mustache.logback.fromFile: ${logback-template@configDir}/logback.xml
 #var appender.rolling: true
  ``` 
 
@@ -839,22 +906,22 @@ mc.mustache.logback.fromFile: ${logback@configDir}/logback.xml
 #var appender.rolling: false
  ``` 
 
-Microconfig uses Mustache if the template declaration starts with `mc.mustache` prefix:
+Microconfig uses Mustache if the template declaration starts with the `mc.mustache` prefix:
 ```
-mc.mustache.logback.fromFile: ${logback@configDir}/logback.xml
+mc.mustache.logback.fromFile: ${logback-template@configDir}/logback.xml
 ```
-or the template file has  `*.mustache` extension:  
+or the template file has the `*.mustache` extension:  
 ``` 
 mc.template.logback:
-  fromFile: ${logback@configDir}/logback.mustache
+  fromFile: ${logback-template@configDir}/logback.mustache
   toFile: logger.xml
 ```
 or the short version
 ``` 
-mc.template.logback: ${logback@configDir}/logback.mustache -> logger.xml
+mc.template.logback: ${logback-template@configDir}/logback.mustache -> logger.xml
 ```
 ## Copy binary files
-If you want to copy files as templates without placeholder resolving logic you can use the `mc.file.` prefix:
+To copy files as they are, without resolving placeholders, use the `mc.file.` prefix:
 ``` 
 mc.file.someBinary: ${this@configDir}/cert.jks -> cert.jks
 ``` 
@@ -865,14 +932,65 @@ mc.file.someBinary:
   toFile: cert.jks
 ```
 
+# Kubernetes and Helm
+Microconfig doesn't replace Helm or kubectl. It builds the values and configs they consume, with the same includes, placeholders and environment overrides as application configs.
+
+Keep Helm values in `*.helm` files and Kubernetes settings in `*.k8s` files next to the service's application config:
+```
+repo
+└───components
+    └───orders
+        └───application.yaml
+        └───values.helm
+        └───values.prod.helm
+        └───deployment.k8s
+```
+**orders/values.helm**
+```yaml
+replicaCount: 2
+image:
+  repository: example/${this@name}
+  tag: "1.5"
+service:
+  port: ${app::this@server.port}
+```
+**orders/values.prod.helm**
+```yaml
+replicaCount: 3
+```
+`${app::this@server.port}` reads the port from the service's application config, so the chart and the application can't disagree on it (see 'Placeholders to another config type').
+
+`microconfig -e prod` builds:
+```
+build
+└───orders
+    └───application.yaml
+    └───values.yaml
+    └───k8s.yaml
+```
+**build/orders/values.yaml**
+```yaml
+replicaCount: 3
+
+image:
+  repository: example/orders
+  tag: "1.5"
+
+service:
+  port: 9000
+```
+The result files are named after the config type: all `*.helm` files of a service are merged into `values.yaml`, and all `*.k8s` files into `k8s.yaml`. Pass them to your tools as usual, for example `helm upgrade --install orders ./chart -f build/orders/values.yaml`.
+
+Don't put secret values into these files: everything in them ends up in the build output. Keep only references, such as the name of a Kubernetes Secret, and let the cluster inject the values.
+
 # Environment descriptor
-As we discussed every service can have default and environment-specific configurations, also we can extract a common configuration to some components. 
-During the build phase we want to build configs for a subset of our components, only for real services on a concrete environment.
+As we discussed, every service can have default and environment-specific configurations, and common configuration can be extracted into separate components. 
+During the build phase we want to build configs for a subset of our components: only for real services in a specific environment.
 Of course, you can pass the environment name and the list of service names as parameters to build the configuration. But this is not very convenient if you want to build configuration for a large number of services.
 
-So Microconfig allows specifying a list of service names on a special environment descriptor and then use only the environment name to build configs for all services listed on that descriptor.
+So Microconfig lets you list service names in a special environment descriptor and then use only the environment name to build configs for all services listed in it.
 
-Environments descriptors must be in `${configRoot}/envs` folder.
+Environment descriptors must be in the `${configRoot}/envs` folder.
 ``` 
 repo
 └───components
@@ -941,7 +1059,7 @@ tests_dashboard: # added new component group 'tests_dashboard'
     - test-statistic-collector
 ``` 
 
-You can use the optional param `ip` for the environment or component groups and then use it via `${componentName@ip}`.
+You can set the optional `ip` param for an environment or for component groups and then use it via `${componentName@ip}`.
 
 For instance, `${orders@ip}` will be resolved to 12.53.12.67, `${payment-ui@ip}` will be resolved to 170.53.12.80.   
 ```yaml
@@ -964,22 +1082,22 @@ payments:
 Consider configuring your deployment tool to read the environment descriptor to know which services to deploy.
 
 ## Environment profiles
-You can use env profiles if you want to create a new env based on another env[s].
-For example, you have `prod` env and overrides for it and want to create `prod-europe` and `prod-usa` envs that include all properties from `prod` and can have their own overrides.
-The easiest way to do this is to define `prod` profile in `prod-europe` and `prod-usa` env descriptors:
+You can use env profiles if you want to create a new env based on one or more other envs.
+For example, you have the `prod` env with its overrides and want to create `prod-europe` and `prod-usa` envs that include all properties from `prod` and can have their own overrides.
+The easiest way to do this is to define the `prod` profile in `prod-europe` and `prod-usa` env descriptors:
 
 **envs/prod.yaml**
 ```yaml
 core:
-  componets:
+  components:
    - order-service
    - payment-service
   ...
 ```
 **envs/prod-europe.yaml**
 ```yaml
-include
- env: prod # include all components from `prod` env
+include:
+  env: prod # include all components from `prod` env
 
 profiles: 
   - prod #include all configuration from prod envs
@@ -987,7 +1105,7 @@ profiles:
 
 **envs/prod-usa.yaml**
 ```yaml
-include
+include:
   env: prod # include all components from `prod` env
 
 profiles: 
@@ -1002,39 +1120,39 @@ The config override priority for all components from `prod-usa` env:
 * app.prod-usa.yaml `#overrides for prod-usa env`
 
 # Running the config build
-As we discussed Microconfig has its own format for configuration sources. 
-During the config build Microconfig inlines all includes, resolves placeholders, evaluates expression language, copies templates, and stores the result values into plain *.yaml or *.properties files to a dedicated folder for each service.
+As we discussed, Microconfig has its own format for configuration sources. 
+During the config build, Microconfig inlines all includes, resolves placeholders, evaluates expressions, copies templates, and writes the results to plain *.yaml or *.properties files in a dedicated folder for each service.
 
-To run the build you can download Microconfig release from https://github.com/microconfig/microconfig/releases.
+To run the build, you can download a Microconfig release from https://github.com/microconfig/microconfig/releases.
 
 The required build params:
 * `-r` - full or relative config root dir. 
 * either `-e` or `-envs`.
     * `-e` - environment name (environment is used as a config profile, also as a group of services to build configs).
-    * `-envs` - a comma separated list of environment names **without spaces**. Use `*` for all environments, and `!` to exclude an environment. E.g. `-envs *,!base`.  
+    * `-envs` - a comma-separated list of environment names **without spaces**. Use `*` for all environments, and `!` to exclude an environment. E.g. `-envs *,!base`.  
 `Tip: If you use zsh, be sure to escape the ! in your exclusions -> e.g. -envs *,\!base`
 
 Optional build params:
 * `-d` - full or relative build destination dir. Default = ${currentFolder}/build
 * `-stacktrace` - Show full stacktrace in case of exceptions. Values: true/false. Default: false  
 
-To build configs not for the whole environment but only for specific services you can use the following optional params:
+To build configs not for the whole environment but only for specific services, use the following optional params:
 * `-g` - a comma-separated list of component groups to build configs. 
 * `-s` - a comma-separated list of services to build configs. 
 
-Command line params example (Java 8+ required):
+Command line params example (Java 17+ required):
 ```
 java -jar microconfig.jar -r repo -e prod
 ```
 
-To add system properties use `-D`
+To add system properties, use `-D`:
 ```
 java -DtaskId=3456 -DsomeParam=value -jar microconfig.jar -r repo -d configs -e prod
 ```
 
-To speed up the build up to 3 times you can add `-XX:TieredStopAtLevel=1` Java VM param. 
-For binary compiled distribution of MC(Mac, Linux, Win) you don't need XX:TieredStopAtLevel, it works ~5 times faster than jar version(cause we don't spend time in runtime to compile the code, but the peak performance is the same)
-Although the build time for even big projects with hundreds of services is about 1-3 seconds.
+To speed up the build by up to 3 times, add the `-XX:TieredStopAtLevel=1` JVM param. 
+The native binaries (macOS, Linux, Windows) don't need `-XX:TieredStopAtLevel`: they work about 5 times faster than the jar, because no time is spent compiling code at runtime. Peak performance is the same.
+Either way, even big projects with hundreds of services build in about 1-3 seconds.
 ```
 java -XX:TieredStopAtLevel=1 -jar microconfig.jar -r repo -e prod
 ```
@@ -1044,26 +1162,27 @@ Let's see examples of initial and destination folder layouts:
 Initial source layout:
 ```
 repo
-└───common
-|   └───logback-template 
-|       └───logback.xml
-└───core  
-│   └───orders
-│   │   └───application.yaml
-│   │   └───process.proc
-│   └───payments
-│       └───application.yaml
-│       └───process.proc
-│	
-└───infra
-    └───service-discovery
-    │   └───application.yaml
-    │   └───process.proc
-    └───api-gateway
-        └───application.yaml
-        └───process.proc
+└───components
+    └───common
+    |   └───logback-template 
+    |       └───logback.xml
+    └───core  
+    │   └───orders
+    │   │   └───application.yaml
+    │   │   └───process.proc
+    │   └───payments
+    │       └───application.yaml
+    │       └───process.proc
+    │	
+    └───infra
+        └───service-discovery
+        │   └───application.yaml
+        │   └───process.proc
+        └───api-gateway
+            └───application.yaml
+            └───process.proc
 ```
-After build:
+After the build:
 ```
 configs
 └───orders
@@ -1084,10 +1203,10 @@ configs
     └───logback.xml
 ```
 
-You can try to build configs from the dedicated example repo: https://github.com/microconfig/microconfig-quickstart 
+You can try building configs with the example repo: https://github.com/microconfig/microconfig-quickstart 
 
 ## Viewing differences between config versions 
-During the config build, Microconfig compares newly generated files to files generated during the previous build for each service for each config type.
+During the config build, Microconfig compares newly generated files with the files generated during the previous build, for each service and config type.
 Microconfig can detect added/removed/changed properties. 
 
 Diff for application.yaml is stored in diff-application.yaml, diff for process.yaml is stored in diff-process.yaml, etc.
@@ -1101,7 +1220,7 @@ configs
 │   └───logback.xml
 ```
 
-The Diff format:
+The diff format:
 
 **diff-application.yaml**
 ```yaml     
@@ -1111,21 +1230,22 @@ The Diff format:
 ```
 
 # YAML and Properties format support
-Microconfig supports *.yaml and *.properties format for source and result configs.
-You can keep a part of configuration in *.yaml files and another part in *.properties.
+Microconfig supports the *.yaml and *.properties formats for source and result configs.
+You can keep part of the configuration in *.yaml files and another part in *.properties.
 
 ```
 repo
-└───core  
-│   └───orders
-│   │   └───application.yaml
-│   │   └───process.proc
-│   └───payments
-│       └───application.properties
-│       └───process.proc
+└───components
+    └───core  
+    │   └───orders
+    │   │   └───application.yaml
+    │   │   └───process.proc
+    │   └───payments
+    │       └───application.properties
+    │       └───process.proc
 ```
 
-Yaml configs can have nested properties:
+YAML configs can have nested properties:
 ```yaml
 datasource:  
   minimum-pool-size: 2  
@@ -1143,16 +1263,16 @@ cluster.gateway:
     
 ```
 
-Yaml format configs will be built into *.yaml, property configs will be built into *.properties. If *.properties configs include *.yaml configs, the resulting file will be *.yaml.
-Microconfig can detect the format based on separators (if a config file has extension neither *.yaml nor *.properties). If you use `:` key-value separator, Microconfig will handle it like *.yaml (`=` for *.properties).
+YAML configs are built into *.yaml, and properties configs into *.properties. If *.properties configs include *.yaml configs, the resulting file will be *.yaml.
+If a config file has neither the *.yaml nor the *.properties extension, Microconfig detects the format by the key-value separator: with `:` the file is treated as *.yaml, with `=` as *.properties.
 
-# Intellij IDEA plugin
-To make configuration management a little bit easier you can use Microconfig Intellij IDEA plugin. The plugin can navigate to #include and placeholders' sources, show hints with resolved placeholders, and build configs from IDE.
+# IntelliJ IDEA plugin
+To make configuration management a little easier, you can use the Microconfig IntelliJ IDEA plugin. The plugin can navigate to the sources of #include and placeholders, show hints with resolved placeholders, and build configs from the IDE.
 
 See the documentation here: https://github.com/microconfig/microconfig-idea-plugin
 
 # Contributing
-If you want to contribute to the project and make it better, your help is very welcome. You can request a feature or submit a bug via issues. Or submit a pull request.
+If you want to contribute to the project and make it better, your help is very welcome. You can request a feature or report a bug via issues, or submit a pull request.
 
 Contributing to the documentation is very welcome too.
 
