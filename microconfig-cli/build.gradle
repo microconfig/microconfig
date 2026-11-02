@@ -24,6 +24,18 @@ tasks.named('processResources') {
     from(generateVersionProperties)
 }
 
+// the CLI ships only as a fat jar: it takes the main artifact name and the thin jar is neither built nor published
+['jar', 'startScripts', 'distZip', 'distTar', 'installDist'].each {
+    tasks.named(it) { enabled = false }
+}
+
+tasks.named('shadowJar') {
+    archiveClassifier = ''
+}
+
+components.java.withVariantsFromConfiguration(configurations.apiElements) { skip() }
+components.java.withVariantsFromConfiguration(configurations.runtimeElements) { skip() }
+
 dependencies {
 
     implementation project(':microconfig-core'),

@@ -21,7 +21,7 @@ jobs:
         run: ./gradlew shadowJar
       - name: Rename Jar
         shell: bash
-        run: mv microconfig-cli/build/libs/microconfig-cli-*-all.jar microconfig-cli/build/libs/microconfig.jar
+        run: mv microconfig-cli/build/libs/microconfig-cli-*.jar microconfig-cli/build/libs/microconfig.jar
       - uses: actions/upload-artifact@v7
         with:
           name: microconfig.jar
