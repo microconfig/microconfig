@@ -26,11 +26,6 @@ ext {
                 name = 'Evgeni Sladkowski'
                 email = 'kapodes@gmail.com'
             }
-            developer {
-                id = 'apavlov'
-                name = 'Artem Pavlov'
-                email = 'admpavlov@yandex.ru'
-            }
         }
     }
 }
