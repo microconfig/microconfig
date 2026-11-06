@@ -1,0 +1,23 @@
+key: default
+shared: default
+fooVar: ${this@foo:none}
+
++prod-a, prod-b:
+  shared: prod-ab
+  key: prod-ab
+
++prod-b:
+  key: value-b
+
++prod-a, prod-b:
+  #var foo: ab-var
+
++prod,dev:
+  fromProfile: prod-or-dev
+
++prod-a,prod-b.flat: flat-ab
+
++dev, prod-b:
+  list:
+    - one
+    - two

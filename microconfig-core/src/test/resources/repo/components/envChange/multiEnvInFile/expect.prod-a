@@ -1,0 +1,9 @@
+flat: flat-ab
+
+fooVar: ab-var
+
+fromProfile: prod-or-dev
+
+key: prod-ab
+
+shared: prod-ab

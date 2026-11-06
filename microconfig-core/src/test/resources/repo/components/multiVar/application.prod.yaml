@@ -1,4 +1,4 @@
-@var:
+.var:
    foo:
      bar: bar
      baz: baz

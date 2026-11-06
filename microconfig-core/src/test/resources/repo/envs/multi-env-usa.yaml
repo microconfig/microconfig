@@ -1,0 +1,6 @@
+include:
+  env: prod-a
+
+profiles:
+  - prod
+  - usa

@@ -35,19 +35,21 @@ public class RawConfig {
 
         override(propsByKey, byMultilineVars());
         for (String profile : profiles) {
-            override(propsByKey, byPropertiesForEnv(profile));
+            overrideFor(propsByKey, profile);
         }
-        override(propsByKey, byPropertiesForEnv(env));
+        overrideFor(propsByKey, env);
 
         return propsByKey;
     }
 
     private Predicate<OverrideProperty> byMultilineVars() {
-        return p -> p.isVar() && p.getEnvironment() == null;
+        return p -> p.isVar() && p.isForAllEnvs();
     }
 
-    private Predicate<OverrideProperty> byPropertiesForEnv(String env) {
-        return p -> p.getEnvironment() != null && env.equals(p.getEnvironment());
+    // a block for a single env (+prod-a:) wins over a block shared between envs (+prod-a,prod-b:)
+    private void overrideFor(Map<String, Property> propsByKey, String env) {
+        override(propsByKey, p -> p.isSharedWith(env));
+        override(propsByKey, p -> p.isOnlyFor(env));
     }
 
     private void override(Map<String, Property> propsByKey, Predicate<OverrideProperty> predicate) {

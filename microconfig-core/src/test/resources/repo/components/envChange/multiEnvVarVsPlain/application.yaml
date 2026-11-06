@@ -1,0 +1,7 @@
+x: base
+
++dev:
+  x: plain-single
+
++dev, prod-a:
+  #var x: var-shared

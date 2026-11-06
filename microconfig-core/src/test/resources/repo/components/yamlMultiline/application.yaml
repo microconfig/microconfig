@@ -2,7 +2,7 @@ key: |
   value line 1
     value line 2
 
-@var:
+.var:
   multi:
     line: |
       value line 1

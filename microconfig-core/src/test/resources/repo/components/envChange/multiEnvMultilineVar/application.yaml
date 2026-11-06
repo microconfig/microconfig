@@ -1,0 +1,20 @@
+url: jdbc:oracle:thin:@${this@oracle.host}:1521:${this@oracle.sid}
+
+.var:
+  oracle:
+    host: 172.30.162.20
+    sid: BASE
+
++prod-a:
+  pool: 50
+  .var:
+    oracle:
+      host: 100.30.162.80
+      sid: PROD
+
++dev, prod-b:
+  .var:
+    oracle.host: 172.30.162.21
+
++multi-env-usa:
+  .var:

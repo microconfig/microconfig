@@ -1,0 +1,13 @@
+flat: flat-ab
+
+fooVar: ab-var
+
+fromProfile: prod-or-dev
+
+key: value-b
+
+list:${space}
+  - one
+  - two
+
+shared: prod-ab

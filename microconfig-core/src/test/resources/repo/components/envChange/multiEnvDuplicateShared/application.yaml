@@ -1,0 +1,7 @@
+x: base
+
++dev, prod-a:
+  x: 1
+
++dev, prod-b:
+  x: 2

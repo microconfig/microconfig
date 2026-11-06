@@ -1,0 +1,11 @@
+fooVar: none
+
+fromProfile: prod-or-dev
+
+key: default
+
+list:${space}
+  - one
+  - two
+
+shared: default

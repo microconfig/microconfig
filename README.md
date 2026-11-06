@@ -55,6 +55,8 @@ Real-life examples of every feature are in the [features guide](https://microcon
 | Property for placeholders only | `#var key: value` | `#var dbHost: 10.10.10.10` |
 | Remove an included property | `#var key:` | `#var datasource.minimum-pool-size:` |
 | Override for an environment | `application.<env>.yaml` | `application.prod.yaml` |
+| Override for an environment inside a file | `+<env>:` | `+prod:` |
+| Override for several environments inside a file | `+<env1>, <env2>:` | `+dev, test:` |
 | Template file | `mc.template.<name>: <from> -> <to>` | `mc.template.logback: ${logback-template@configDir}/logback.xml -> logback.xml` |
 | Build an environment | `microconfig -e <env>` | `microconfig -e prod` |
 | Build only some groups or services | `-g <groups>`, `-s <services>` | `microconfig -e dev -s orders` |
@@ -473,6 +475,18 @@ datasource.url: jdbc:oracle:thin:@${this@oracle.host}:1521:${this@oracle.sid}
 #var oracle.host: 172.30.162.80
 ``` 
 
+To declare several temp properties as a YAML block, put them under the `.var:` key. The example below is the same as the `#var` lines above:
+
+**oracle-common/application.yaml**
+```yaml
+datasource.url: jdbc:oracle:thin:@${this@oracle.host}:1521:${this@oracle.sid}
+
+.var:
+  oracle:
+    host: 172.30.162.20
+    sid: ARMSDEV
+```
+
 This approach works with includes as well. You can #include oracle-common and then override 'oracle.host', and 'datasource.url' will be resolved based on the overridden value.
 
 In the example below, after the build, datasource.url will be: jdbc:oracle:thin:@**100.30.162.80**:1521:ARMSDEV
@@ -700,6 +714,62 @@ When you build configs for a specific environment (for example, 'dev'), Microcon
 * application.yaml 
 * then add/override properties from application.dev.{anotherEnv}.yaml.
 * then add/override properties from application.dev.yaml.
+
+## Environment overrides inside a file
+Instead of creating a separate file, you can declare environment-specific properties in the same file, under the `+env:` key.
+
+**order-db/application.yaml**
+```yaml
+datasource:
+  maximum-pool-size: 10
+
++prod:
+  datasource.maximum-pool-size: 50
+```
+
+To declare common properties for several environments, list them separated by commas. The `+` goes once, before the first environment:
+
+```yaml
++dev, dev2, test:
+  hibernate.show-sql: true
+```
+
+`#var` lines inside a block declare temp properties for the environments of that block:
+
+**oracle-common/application.yaml**
+```yaml
+datasource.url: jdbc:oracle:thin:@${this@oracle.host}:1521:ARMSDEV
+#var oracle.host: 172.30.162.20
+
++prod:
+  #var oracle.host: 100.30.162.80
+
++dev, test:
+  #var oracle.host: 172.30.162.21
+```
+
+A `.var:` block inside works the same way:
+
+```yaml
++prod:
+  .var:
+    oracle:
+      host: 100.30.162.80
+      sid: PROD
+```
+
+Priority inside a file:
+* properties without a prefix
+* then add/override properties from blocks for several environments (`+dev, test:`).
+* then add/override properties from a block for a single environment (`+dev:`).
+
+Profiles work the same way: `+long:` is applied when the component is included as `#include timeout-settings[long]` or the environment has the `long` profile.
+Properties from application.dev.yaml still override a `+dev:` block in application.yaml.
+
+Notes:
+* A repeated `+` like `+dev, +test:` is an error.
+* If two blocks for several environments set the same property for the same environment, the build fails.
+* Environment overrides inside a file are supported in YAML files only.
  
 ## Profiles and explicit environment names for includes and placeholders
 As we discussed, you can create environment-specific properties using the filename pattern application.${ENV}.yaml. You can use the same approach to create profile-specific properties.

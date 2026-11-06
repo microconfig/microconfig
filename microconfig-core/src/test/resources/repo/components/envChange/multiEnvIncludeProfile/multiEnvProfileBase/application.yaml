@@ -1,0 +1,7 @@
+b: base
+
++usa, eu:
+  b: usa-or-eu
+
++dev, prod-a:
+  b: dev-or-pa

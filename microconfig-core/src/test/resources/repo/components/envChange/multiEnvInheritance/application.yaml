@@ -1,0 +1,17 @@
+a: base
+
++prod, dev:
+  a: prod-or-dev
+  p: prod-or-dev
+
++usa, eu:
+  a: usa-or-eu
+
++multi-env-usa, prod-b:
+  pu: pu
+
++usa:
+  only: usa-single
+
++prod, usa:
+  only: shared

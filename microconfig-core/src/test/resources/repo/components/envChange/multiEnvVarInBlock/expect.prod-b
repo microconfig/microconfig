@@ -1,0 +1,8 @@
+n: global
+
+sid: SHARED
+
+url: shared-host
+
+datasource:
+  pool: 5

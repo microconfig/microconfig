@@ -17,6 +17,4 @@ spring:
 
 +prod:
   profileKey: profileValue
-
-@prod:
-   foo: bar
+  #var foo: bar

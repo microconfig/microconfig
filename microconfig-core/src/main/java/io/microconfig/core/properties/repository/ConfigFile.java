@@ -1,5 +1,6 @@
 package io.microconfig.core.properties.repository;
 
+import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.io.ConfigIo;
 import io.microconfig.core.properties.io.ConfigReader;
@@ -16,6 +17,8 @@ import java.util.Map;
 
 import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.FileBasedComponent.fileSource;
+import static io.microconfig.core.properties.OverrideProperty.isOverrideProperty;
+import static io.microconfig.core.properties.OverrideProperty.overrideVarProperty;
 import static io.microconfig.core.properties.PropertyImpl.isTempProperty;
 import static io.microconfig.core.properties.PropertyImpl.parse;
 import static io.microconfig.utils.CollectionUtils.join;
@@ -51,8 +54,14 @@ public class ConfigFile {
         return commentByLineNumber.entrySet()
                 .stream()
                 .filter(e -> isTempProperty(e.getValue()))
-                .map(e -> parse(e.getValue(), PROPERTIES, fileSource(file, e.getKey(), false, configType, environment)))
+                .map(e -> tempProperty(e.getValue(), fileSource(file, e.getKey(), false, configType, environment)))
                 .collect(toList());
+    }
+
+    // '#var +env.key: value' is a temp property for the env, like '#var key: value' inside a '+env:' block
+    private Property tempProperty(String line, DeclaringComponent source) {
+        Property p = parse(line, PROPERTIES, source);
+        return isOverrideProperty(p.getKey()) ? overrideVarProperty(p.getKey(), p.getValue(), PROPERTIES, source) : p;
     }
 
     private List<Include> parseIncludes(Collection<String> comments) {

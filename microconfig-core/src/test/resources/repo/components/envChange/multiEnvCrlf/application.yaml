@@ -1,0 +1,8 @@
+a: base
+use: ${this@v:nv}
+
++dev,	prod-a:
+  a: shared
+
++prod-a, dev:
+  #var v: va

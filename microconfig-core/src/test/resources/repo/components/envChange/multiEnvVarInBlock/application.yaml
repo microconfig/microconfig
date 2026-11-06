@@ -1,0 +1,17 @@
+url: ${this@host:none}
+sid: ${this@dbSid}
+#var dbSid: BASE
+
++prod-a:
+  pool: 50
+  #var host: pa-host
+
++dev, prod-b:
+  #var host: shared-host
+  #var dbSid: SHARED
+
+datasource:
+  pool: 5
+  #var nested: global
+
+n: ${this@nested}

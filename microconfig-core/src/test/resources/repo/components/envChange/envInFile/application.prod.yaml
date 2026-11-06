@@ -4,26 +4,20 @@ context: prod
    redis:
      url: 1.1.1.1
    key: value-a
+   #var db-url: postgres://10.10.10.10:5432
+   #var foo: bas
+   #var included: prod-a-included
 
 +prod-c:
    redis:
      url: 3.3.3.3
    key: value-c
+   #var db-url: postgres://30.30.30.30:5432
+   #var foo: baz
 
 +prod-b:
    redis:
      url: 2.2.2.2
    key: value-b
-
-@prod-a:
-   db-url: postgres://10.10.10.10:5432
-   foo: bas
-   included: prod-a-included
-
-.@prod-b:
-   db-url: postgres://20.20.20.20:5432
-   included: prod-b-included
-
-@prod-c:
-   db-url: postgres://30.30.30.30:5432
-   foo: baz
+   #var db-url: postgres://20.20.20.20:5432
+   #var included: prod-b-included

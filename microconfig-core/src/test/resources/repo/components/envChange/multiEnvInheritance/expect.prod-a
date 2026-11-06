@@ -1,0 +1,5 @@
+a: prod-or-dev
+
+only: shared
+
+p: prod-or-dev

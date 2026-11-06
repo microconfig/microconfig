@@ -1,0 +1,10 @@
+n: global
+
+pool: 50
+
+sid: BASE
+
+url: pa-host
+
+datasource:
+  pool: 5

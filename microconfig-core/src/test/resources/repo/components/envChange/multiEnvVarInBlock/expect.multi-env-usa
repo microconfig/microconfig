@@ -1,0 +1,8 @@
+n: global
+
+sid: BASE
+
+url: none
+
+datasource:
+  pool: 5
