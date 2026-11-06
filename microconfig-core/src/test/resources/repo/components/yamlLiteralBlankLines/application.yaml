@@ -1,0 +1,20 @@
+t: |
+
+  a
+
+
+  b
+   
+  c
+
+
+items:
+  - name: item
+    template: |
+
+      a
+
+      b
+
+  - name: second
+x: 1

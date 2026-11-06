@@ -1,0 +1,17 @@
+items:${space}
+  - name: item
+    template: |
+      a
+
+      b
+  - name: second
+
+t: |
+  a
+
+
+  b
+
+  c
+
+x: 1

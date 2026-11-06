@@ -1,0 +1,9 @@
+result: ${this@host:none}
+items:
+  - name: item
+    template: |
+
+      .var host: literal
+      .var without-delimiter
+      #var legacy: literal
+      echo done

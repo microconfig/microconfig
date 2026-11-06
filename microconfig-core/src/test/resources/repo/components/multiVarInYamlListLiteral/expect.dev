@@ -1,0 +1,9 @@
+items:${space}
+  - name: item
+    template: |
+      .var host: literal
+      .var without-delimiter
+      #var legacy: literal
+      echo done
+
+result: none

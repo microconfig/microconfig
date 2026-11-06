@@ -5,14 +5,24 @@ import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.io.AbstractConfigReader;
 import io.microconfig.io.FsReader;
 import lombok.RequiredArgsConstructor;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.error.YAMLException;
+import org.yaml.snakeyaml.events.CollectionEndEvent;
+import org.yaml.snakeyaml.events.CollectionStartEvent;
+import org.yaml.snakeyaml.events.Event;
 
+import java.io.CharArrayReader;
 import java.io.File;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.IntStream;
 
 import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.ConfigFormat.YAML;
@@ -31,15 +41,32 @@ import static io.microconfig.utils.StringUtils.isBlank;
 import static java.lang.Character.isWhitespace;
 import static java.lang.String.join;
 import static java.util.Arrays.asList;
+import static java.util.Arrays.binarySearch;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
+import static java.util.stream.IntStream.rangeClosed;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.of;
 
 class YamlReader extends AbstractConfigReader {
+    private final char[] source;
+    private final int[] lineOffsets;
+    private final Map<Integer, BlockScalar> blockScalars;
+    private final Set<Integer> literalValueLines;
+
     YamlReader(File file, FsReader fileFsReader) {
         super(file, fileFsReader);
+        source = join("\n", lines).toCharArray();
+        lineOffsets = lineOffsets();
+        blockScalars = readBlockScalars();
+        literalValueLines = findLiteralValueLines();
+    }
+
+    private int[] lineOffsets() {
+        int[] offsets = new int[lines.size()];
+        for (int i = 1; i < lines.size(); i++) offsets[i] = offsets[i - 1] + lines.get(i - 1).length() + 1;
+        return offsets;
     }
 
     @Override
@@ -57,6 +84,142 @@ class YamlReader extends AbstractConfigReader {
         return comments;
     }
 
+    @Override
+    protected Set<Integer> literalValueLines() {
+        return literalValueLines;
+    }
+
+    private Map<Integer, BlockScalar> readBlockScalars() {
+        Map<Integer, BlockScalar> result = new LinkedHashMap<>();
+        for (int i = 0; i < lines.size(); i++) {
+            BlockScalar scalar = readBlockScalar(i);
+            if (scalar == null) continue;
+            result.put(i, scalar);
+            i = scalar.endLine();
+        }
+        return result;
+    }
+
+    private BlockScalar readBlockScalar(int index) {
+        String line = lines.get(index);
+        if (skip(line)) return null;
+
+        int offset = offsetIndex(line);
+        int keyOffset = sequenceValueStart(line, offset);
+        if (keyOffset == line.length()) return null;
+        boolean sequence = keyOffset != offset;
+        int nodeOffset = skipNodeProperties(line, keyOffset);
+        if (nodeOffset == line.length()) return null;
+        char first = line.charAt(nodeOffset);
+        boolean valueOnly = sequence && (first == '|' || first == '>');
+        int separator = valueOnly ? -1 : mappingSeparatorIndex(line, nodeOffset);
+        if (separator < 0 && !valueOnly) return null;
+
+        int valueOffset = separator < 0 ? keyOffset : skipWhitespace(line, separator + 1);
+        int marker = skipNodeProperties(line, valueOffset);
+        int indentation = scalarIndentation(line, marker);
+        if (indentation < 0) return null;
+
+        int baseOffset = separator < 0 ? line.lastIndexOf('-', keyOffset - 1) : keyOffset;
+        int contentOffset = blockScalarContentOffset(index, baseOffset, indentation);
+        int endLine = multiLineValueEnd(index, contentOffset);
+        String key = separator < 0 ? null : line.substring(offset, separator).trim();
+        return new BlockScalar(key, sequence, index, contentOffset, endLine, line.charAt(marker), line.substring(valueOffset, marker).trim());
+    }
+
+    private int sequenceValueStart(String line, int offset) {
+        int valueOffset = offset;
+        while (valueOffset + 1 < line.length() && line.charAt(valueOffset) == '-' && isWhitespace(line.charAt(valueOffset + 1))) {
+            valueOffset = skipWhitespace(line, valueOffset + 1);
+        }
+        return valueOffset;
+    }
+
+    private int skipWhitespace(String line, int offset) {
+        while (offset < line.length() && isWhitespace(line.charAt(offset))) offset++;
+        return offset;
+    }
+
+    private int mappingSeparatorIndex(String line, int keyOffset) {
+        char quote = line.charAt(keyOffset);
+        if (quote == '\'' || quote == '"') {
+            int keyEnd = quotedKeyEnd(line, keyOffset, quote);
+            if (keyEnd < 0) return -1;
+            int separator = skipWhitespace(line, keyEnd + 1);
+            return separator < line.length() && line.charAt(separator) == ':' ? separator : -1;
+        }
+
+        return separatorIndex(line, keyOffset);
+    }
+
+    private int quotedKeyEnd(String line, int offset, char quote) {
+        for (int i = offset + 1; i < line.length(); i++) {
+            char c = line.charAt(i);
+            if (quote == '"' && c == '\\') {
+                i++;
+            } else if (c == quote) {
+                if (quote == '\'' && i + 1 < line.length() && line.charAt(i + 1) == quote) i++;
+                else return i;
+            }
+        }
+        return -1;
+    }
+
+    private int skipNodeProperties(String line, int offset) {
+        while (offset < line.length() && (line.charAt(offset) == '&' || line.charAt(offset) == '!')) {
+            while (offset < line.length() && !isWhitespace(line.charAt(offset))) offset++;
+            offset = skipWhitespace(line, offset);
+        }
+        return offset;
+    }
+
+    private int scalarIndentation(String line, int marker) {
+        if (marker == line.length() || (line.charAt(marker) != '|' && line.charAt(marker) != '>')) return -1;
+        int indentation = 0;
+        boolean chomping = false;
+        int i = marker + 1;
+        for (; i < line.length() && !isWhitespace(line.charAt(i)); i++) {
+            char c = line.charAt(i);
+            if (c >= '1' && c <= '9' && indentation == 0) indentation = c - '0';
+            else if ((c == '+' || c == '-') && !chomping) chomping = true;
+            else return -1;
+        }
+        int tail = skipWhitespace(line, i);
+        return tail == line.length() || line.charAt(tail) == '#' ? indentation : -1;
+    }
+
+    private int blockScalarContentOffset(int index, int baseOffset, int indentation) {
+        if (indentation > 0) return baseOffset + indentation;
+        for (int i = index + 1; i < lines.size(); i++) {
+            String line = lines.get(i);
+            if (!isBlank(line)) return Math.max(baseOffset + 1, offsetIndex(line));
+        }
+        return baseOffset + 1;
+    }
+
+    private int multiLineValueEnd(int index, int contentOffset) {
+        for (int i = index + 1; i < lines.size(); i++) {
+            String line = lines.get(i);
+            if (!isBlank(line) && offsetIndex(line) < contentOffset) return i - 1;
+        }
+        return lines.size() - 1;
+    }
+
+    private Set<Integer> findLiteralValueLines() {
+        Set<Integer> valueLines = new HashSet<>();
+        blockScalars.values().forEach(scalar -> literalContentLines(scalar.lineNumber() + 1, scalar.endLine()).forEach(valueLines::add));
+        return valueLines;
+    }
+
+    // lines of a literal value: blank lines between text lines are kept, leading and trailing ones are not
+    private IntStream literalContentLines(int from, int to) {
+        int first = from;
+        while (first <= to && isBlank(lines.get(first))) first++;
+        int last = to;
+        while (last >= first && isBlank(lines.get(last))) last--;
+        return rangeClosed(first, last);
+    }
+
     private List<Property> parseProperties(String configType, String environment) {
         List<Property> result = new ArrayList<>();
         Deque<KeyOffset> currentProperty = new ArrayDeque<>();
@@ -66,9 +229,9 @@ class YamlReader extends AbstractConfigReader {
             if (skip(line)) continue;
 
             int currentOffset = offsetIndex(line);
-            String multiLineKey = multiLineKey(line, currentOffset);
-            if (multiLineKey != null) {
-                lineNumber = multiLineValue(result, multiLineKey, currentProperty, lineNumber, currentOffset, configType, environment);
+            BlockScalar scalar = blockScalars.get(lineNumber);
+            if (scalar != null && !scalar.sequence()) {
+                lineNumber = blockScalarValue(result, currentProperty, scalar, currentOffset, configType, environment);
             } else if (isListValue(line)) {
                 lineNumber = listValue(result, currentProperty, currentOffset, lineNumber, configType, environment);
             } else if (isComplexValue(line, currentOffset)) {
@@ -79,17 +242,6 @@ class YamlReader extends AbstractConfigReader {
         }
 
         return result;
-    }
-
-    private String multiLineKey(String line, int currentOffset) {
-        int separatorIndex = separatorIndex(line, currentOffset);
-        if (separatorIndex < 0 || separatorIndex == line.length() - 1) return null;
-        boolean multilinePostfix = line.chars()
-                .skip(separatorIndex + 1)
-                .filter(c -> !isWhitespace(c))
-                .mapToLong(c -> c == '|' ? 1 : 2)
-                .sum() == 1;
-        return multilinePostfix ? line.substring(0, separatorIndex) : null;
     }
 
     private boolean isListValue(String line) {
@@ -104,11 +256,12 @@ class YamlReader extends AbstractConfigReader {
         int index = originalLineNumber;
         while (true) {
             String line = lines.get(index);
-            if (!skip(line)) value.append(line.substring(currentOffset));
+            boolean includeLine = !skip(line) || literalValueLines.contains(index);
+            if (includeLine) value.append(isBlank(line) ? "" : line.substring(currentOffset));
 
             if (index + 1 >= lines.size()) break;
             if (listValueEnd(lines.get(index + 1), currentOffset)) break;
-            if (!skip(line)) value.append(LINES_SEPARATOR);
+            if (includeLine) value.append(LINES_SEPARATOR);
 
             ++index;
         }
@@ -125,30 +278,30 @@ class YamlReader extends AbstractConfigReader {
         return currentOffset == nextOffset && !isComplexValue(nextLine, currentOffset);
     }
 
-    private int multiLineValue(List<Property> result, String key, Deque<KeyOffset> currentProperty, int index, int offset, String configType, String env) {
+    private int blockScalarValue(List<Property> result, Deque<KeyOffset> currentProperty, BlockScalar scalar, int offset, String configType, String env) {
         removePropertiesWithBiggerOffset(currentProperty, offset);
-        List<String> valueLines = new ArrayList<>();
-        int multilineValueOffset = offset + 2;
-        int counter = 1;
-        while (true) {
-            int pointer = index + counter;
-            if (pointer >= lines.size()) break;
-            String line = lines.get(pointer);
-            int currentOffset = line.isEmpty() ? 0 : offsetIndex(line);
-            if (currentOffset < multilineValueOffset) break;
-            String value = line.substring(multilineValueOffset);
-            if (!value.trim().isEmpty()) valueLines.add(line.substring(multilineValueOffset));
-            counter++;
+        FileBasedComponent source = fileSource(file, scalar.lineNumber(), true, configType, env);
+        if (!scalar.nodeProperties().isEmpty()) {
+            throw new IllegalArgumentException("YAML anchors and tags on standalone scalar properties are not supported in " + source);
         }
+        List<String> valueLines = literalContentLines(scalar.lineNumber() + 1, scalar.endLine())
+                .mapToObj(lines::get)
+                .map(line -> isBlank(line) ? "" : line.substring(scalar.contentOffset()))
+                .collect(toList());
         if (valueLines.isEmpty()) {
-            throw new IllegalArgumentException("Missing value in multiline key '" + key + "' in '"
-                    + new FileBasedComponent(file, index, true, configType, env) + "'");
+            throw new IllegalArgumentException("Missing value in multiline key '" + scalar.key() + "' in '"
+                    + new FileBasedComponent(file, scalar.lineNumber(), true, configType, env) + "'");
         }
-        FileBasedComponent source = fileSource(file, index, true, configType, env);
-        String k = mergeKey(currentProperty, key);
-        String v = join(LINES_SEPARATOR, valueLines);
-        result.add(toProperty(k, v, source));
-        return index + counter - 1;
+        String k = mergeKey(currentProperty, scalar.key());
+        String v = scalar.style() == '>' ? foldedValue(valueLines) : join(LINES_SEPARATOR, valueLines);
+        addProperty(result, k, v, source);
+        return scalar.endLine();
+    }
+
+    private String foldedValue(List<String> valueLines) {
+        String content = valueLines.stream().map(line -> " " + line).collect(joining("\n"));
+        String value = new Yaml().load(">-\n" + content + "\n");
+        return value.replace("\n", LINES_SEPARATOR);
     }
 
     private boolean isComplexValue(String line, int currentOffset) {
@@ -160,26 +313,42 @@ class YamlReader extends AbstractConfigReader {
     private int addComplexValue(List<Property> result,
                                 Deque<KeyOffset> currentProperty, int currentOffset,
                                 int originalLineNumber, String configType, String env) {
-        StringBuilder value = new StringBuilder();
-        int index = originalLineNumber;
-        while (true) {
-            String line = lines.get(index);
-            if (!line.isEmpty()) {
-                value.append(line.substring(currentOffset));
-            }
-            if (index + 1 >= lines.size()) {
-                break;
-            }
-            if (complexValueEnd(lines.get(index + 1), currentOffset)) {
-                break;
-            }
+        int end = flowValueEnd(originalLineNumber, currentOffset);
+        if (end < 0) end = complexValueLastLine(originalLineNumber, currentOffset);
+        String value = rangeClosed(originalLineNumber, end)
+                .mapToObj(lines::get)
+                .map(line -> isBlank(line) ? "" : line.substring(Math.min(currentOffset, offsetIndex(line))))
+                .collect(joining(LINES_SEPARATOR));
 
-            value.append(LINES_SEPARATOR);
-            ++index;
+        addValue(result, currentProperty, currentOffset, originalLineNumber, null, value, configType, env);
+        return end;
+    }
+
+    private int flowValueEnd(int startLine, int offset) {
+        char first = lines.get(startLine).charAt(offset);
+        if (first != '[' && first != '{') return -1;
+
+        int start = lineOffsets[startLine];
+        int depth = 0;
+        try {
+            for (Event event : new Yaml().parse(new CharArrayReader(source, start, source.length - start))) {
+                if (event instanceof CollectionStartEvent) depth++;
+                if (event instanceof CollectionEndEvent && --depth == 0) {
+                    int end = Character.offsetByCodePoints(source, 0, source.length, start, event.getEndMark().getIndex());
+                    int line = binarySearch(lineOffsets, end - 1);
+                    return line >= 0 ? line : -line - 2;
+                }
+            }
+        } catch (YAMLException ignored) {
+            // Some Microconfig expressions become valid YAML only after placeholder resolution.
         }
+        return -1;
+    }
 
-        addValue(result, currentProperty, currentOffset, originalLineNumber, null, value.toString(), configType, env);
-        return index;
+    private int complexValueLastLine(int start, int offset) {
+        int end = start;
+        while (end + 1 < lines.size() && !complexValueEnd(lines.get(end + 1), offset)) end++;
+        return end;
     }
 
     private boolean complexValueEnd(String nextLine, int currentOffset) {
@@ -272,14 +441,14 @@ class YamlReader extends AbstractConfigReader {
         String key = toKey(currentProperty);
         currentProperty.pollLast();
         FileBasedComponent source = fileSource(file, lineNumber, true, configType, env);
-        if (isOverrideProperty(key) && isEmptyBlock(key, value, source)) return;
-
-        result.add(toProperty(key, value, source));
+        addProperty(result, key, value, source);
     }
 
-    private Property toProperty(String key, String value, FileBasedComponent source) {
+    private void addProperty(List<Property> result, String key, String value, FileBasedComponent source) {
         checkMultilineVarPosition(key, source);
-        return isOverrideProperty(key) ? overrideProperty(key, value, YAML, source) : property(key, value, YAML, source);
+        if (isOverrideProperty(key) && isEmptyBlock(key, value, source)) return;
+
+        result.add(isOverrideProperty(key) ? overrideProperty(key, value, YAML, source) : property(key, value, YAML, source));
     }
 
     private String mergeKey(Deque<KeyOffset> currentProperty, String key) {
@@ -305,9 +474,12 @@ class YamlReader extends AbstractConfigReader {
     // '#var' lines inside '+env:' blocks (at any depth) with the header of their block, in one pass
     private Map<Integer, String> envBlockHeaderByVarLine() {
         Map<Integer, String> headerByLine = new TreeMap<>();
+        Set<Integer> valueLines = literalValueLines();
         int rootOffset = rootOffset();
         String envBlockHeader = null;
         for (int lineNumber = 0; lineNumber < lines.size(); lineNumber++) {
+            if (valueLines.contains(lineNumber)) continue;
+
             String line = lines.get(lineNumber);
             String trimmed = line.trim();
             if (trimmed.isEmpty()) continue;
@@ -348,5 +520,8 @@ class YamlReader extends AbstractConfigReader {
         public String toString() {
             return key;
         }
+    }
+
+    private record BlockScalar(String key, boolean sequence, int lineNumber, int contentOffset, int endLine, char style, String nodeProperties) {
     }
 }

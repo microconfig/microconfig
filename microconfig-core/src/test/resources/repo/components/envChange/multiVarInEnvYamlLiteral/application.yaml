@@ -1,0 +1,13 @@
+result: ${this@host:none}
+actual: ${this@declared:none}
+.var declared: base
+
++dev:
+  .var declared: scoped
+  template: |
+    first line
+
+    .var host: literal
+    .var without-delimiter
+    #var legacy: literal
+    last line

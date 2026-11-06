@@ -1,0 +1,11 @@
+result: ${this@host:none}
+actual: ${this@declared:none}
+.var declared: outside
+
+template: |
+  .var host: literal
+  .var without-delimiter
+  #var legacy: literal
+  #include missing-literal-component
+  #@Ignore
+  echo done

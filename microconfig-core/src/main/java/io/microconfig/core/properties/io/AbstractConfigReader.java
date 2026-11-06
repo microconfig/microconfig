@@ -7,10 +7,12 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import static io.microconfig.core.properties.PropertyImpl.isDirective;
 import static io.microconfig.utils.StreamUtils.toSortedMap;
+import static java.util.Collections.emptySet;
 
 @RequiredArgsConstructor
 public abstract class AbstractConfigReader implements ConfigReader {
@@ -29,13 +31,23 @@ public abstract class AbstractConfigReader implements ConfigReader {
 
     @Override
     public Map<Integer, String> commentsByLineNumber() {
+        return directivesOutside(literalValueLines());
+    }
+
+    private Map<Integer, String> directivesOutside(Set<Integer> valueLines) {
         Map<Integer, String> result = new TreeMap<>();
         for (int i = 0; i < lines.size(); i++) {
+            if (valueLines.contains(i)) continue;
+
             String line = lines.get(i).trim();
             if (!isDirective(line)) continue;
 
             result.put(i, line);
         }
         return result;
+    }
+
+    protected Set<Integer> literalValueLines() {
+        return emptySet();
     }
 }

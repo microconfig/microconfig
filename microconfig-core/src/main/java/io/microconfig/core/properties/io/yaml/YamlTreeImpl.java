@@ -1,16 +1,21 @@
 package io.microconfig.core.properties.io.yaml;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.stream.Stream;
 
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static io.microconfig.utils.StringUtils.addOffsets;
 import static java.lang.Math.max;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
+import static java.util.regex.Pattern.quote;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 public class YamlTreeImpl implements YamlTree {
@@ -32,6 +37,8 @@ public class YamlTreeImpl implements YamlTree {
     }
 
     static class TreeCreator {
+        private static final Gson STRING_ESCAPER = new Gson();
+
         Map<String, Object> toTree(Map<String, String> flatProperties) {
             if (!(flatProperties instanceof TreeMap) || ((TreeMap<?, ?>) flatProperties).comparator() != null) {
                 flatProperties = new TreeMap<>(flatProperties);
@@ -71,12 +78,21 @@ public class YamlTreeImpl implements YamlTree {
                 return "|" + withOffsets(parts, value);
             }
 
-            return value;
+            return quoteAmbiguousScalar(value);
         }
 
+        private String quoteAmbiguousScalar(String value) {
+            if (value.startsWith("[") || value.startsWith("{") || value.startsWith("\"") || value.startsWith("'")) return value;
+            return value.contains(": ") || value.contains(" #") || value.startsWith("#") || value.endsWith(":")
+                    ? STRING_ESCAPER.toJson(value) : value;
+        }
+
+        // empty lines of the value stay empty, without trailing spaces of the offset
         private String withOffsets(int parts, String value) {
-            return (LINES_SEPARATOR + value) //todo test on win
-                    .replace(LINES_SEPARATOR, addOffsets(LINES_SEPARATOR, parts * OFFSET));
+            String offset = addOffsets("", parts * OFFSET);
+            return Stream.of(value.split(quote(LINES_SEPARATOR), -1)) //todo test on win
+                    .map(line -> line.isEmpty() ? line : offset + line)
+                    .collect(joining(LINES_SEPARATOR, LINES_SEPARATOR, ""));
         }
 
         //split on '.' that are not inside of [] or ""

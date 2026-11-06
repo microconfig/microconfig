@@ -1,0 +1,12 @@
+text=first\
+.var host=literal\
+.var without-delimiter\
+#var legacy=literal\
+#include missing-literal-component\
+#@Ignore\
+last
+ending=prefix\
+.var tail=literal
+result=none
+tail=none
+actual=outside

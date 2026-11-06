@@ -2,6 +2,7 @@ package io.microconfig.core.properties.io.yaml;
 
 import io.microconfig.io.DumpedFsReader;
 import org.junit.jupiter.api.Test;
+import org.yaml.snakeyaml.Yaml;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -71,6 +72,28 @@ class YamlTreeImplTest {
 
         Map<String, Object> actual = new YamlTreeImpl.TreeCreator().toTree(initial);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void quoteScalarPunctuationWithoutChangingFlowCollections() {
+        Map<String, String> values = Map.of(
+                "text", "host: literal # text",
+                "hash", "#fragment",
+                "colon", "trailing:",
+                "object", "{a: 1}",
+                "list", "[one, two]",
+                "quoted", "'literal: text'",
+                "number", "123"
+        );
+
+        Map<?, ?> actual = new Yaml().load(new YamlTreeImpl().toYaml(values));
+        assertEquals("host: literal # text", actual.get("text"));
+        assertEquals("#fragment", actual.get("hash"));
+        assertEquals("trailing:", actual.get("colon"));
+        assertEquals(Map.of("a", 1), actual.get("object"));
+        assertEquals(java.util.List.of("one", "two"), actual.get("list"));
+        assertEquals("literal: text", actual.get("quoted"));
+        assertEquals(123, actual.get("number"));
     }
 
     private String toYaml(String file) {

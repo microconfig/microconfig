@@ -1,0 +1,11 @@
+actual: outside
+
+result: none
+
+template: |
+  .var host: literal
+  .var without-delimiter
+  #var legacy: literal
+  #include missing-literal-component
+  #@Ignore
+  echo done
