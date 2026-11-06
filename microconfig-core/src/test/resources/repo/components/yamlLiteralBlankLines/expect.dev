@@ -1,17 +1,12 @@
-items:${space}
+items:
   - name: item
-    template: |
+    template: |2
+
       a
 
       b
   - name: second
 
-t: |
-  a
-
-
-  b
-
-  c
+t: "\na\n\n\nb\n \nc\n"
 
 x: 1

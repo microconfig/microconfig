@@ -10,9 +10,7 @@ plain: |
   a
     b
 
-reference: |2
-    a
-  b
+reference: "  a\nb\n"
 
 nested:
   deeper:

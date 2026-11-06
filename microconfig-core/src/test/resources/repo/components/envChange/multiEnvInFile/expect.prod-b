@@ -6,7 +6,7 @@ fromProfile: prod-or-dev
 
 key: value-b
 
-list:${space}
+list:
   - one
   - two
 

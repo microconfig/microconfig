@@ -1,0 +1,42 @@
+---
+zSection: # a mapping header may have a comment
+  child: nested
+inlineList: [
+  one,
+  two
+]
+separateMap:
+  {
+    one: 1,
+    two: 2
+  }
+"quoted.key": 'a: b # text'
+zAnchor: &shared {label: '123', enabled: true}
+aAlias: *shared
+defaults: &defaults
+  host: localhost
+  port: 8080
+service:
+  <<: *defaults
+  port: 9090
+taggedNumber: !!int '12'
+taggedFlag: !!bool 'true'
+taggedFloat: !!float '2.5'
+taggedString: !!str 123
+folded: >-
+  first
+  second
+
+  third
+plain: first
+  second
+
+  third
+literal: |+
+
+  first
+
+  last
+
+
+...

@@ -1,0 +1,41 @@
+aAlias: &shared {label: '123', enabled: true}
+
+folded: |-
+  first second
+  third
+
+inlineList: [one, two]
+
+literal: |2+
+
+  first
+
+  last
+
+
+plain: "first second\nthird"
+
+"quoted.key": "a: b # text"
+
+separateMap: {one: 1, two: 2}
+
+taggedFlag: !!bool 'true'
+
+taggedFloat: !!float '2.5'
+
+taggedNumber: !!int '12'
+
+taggedString: "123"
+
+zAnchor: &shared {label: '123', enabled: true}
+
+defaults:
+  host: localhost
+  port: 8080
+
+service:
+  host: localhost
+  port: 9090
+
+zSection:
+  child: nested

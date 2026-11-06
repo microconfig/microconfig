@@ -1,6 +1,7 @@
-items:${space}
+items:
   - name: item
-    template: |
+    template: |2
+
       .var host: literal
       .var without-delimiter
       #var legacy: literal

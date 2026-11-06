@@ -72,7 +72,7 @@ If your project consists of tens or hundreds of services:
 * It must be easy to understand how the resulting configuration is generated and based on which values the config placeholders are resolved.
 * Some configuration properties must be dynamic, calculated using an expression language.
 
-Microconfig is written in Java, but it's designed to be used with systems written in any language. Microconfig defines a format for configuration sources, a syntax for placeholders, includes, excludes and overrides, an expression language for dynamic properties, and an engine that transforms the config sources into plain *.yaml or *.properties files. It can also resolve placeholders in arbitrary template files and show differences between config releases.
+Microconfig is written in Kotlin, but it's designed to be used with systems written in any language. Microconfig defines a format for configuration sources, a syntax for placeholders, includes, excludes and overrides, an expression language for dynamic properties, and an engine that transforms the config sources into plain *.yaml or *.properties files. It can also resolve placeholders in arbitrary template files and show differences between config releases.
 
 ## The difference between Microconfig and popular DevOps tools
 **Compared to config servers** (like Consul, Zookeeper, Spring Cloud Config):

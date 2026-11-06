@@ -4,7 +4,7 @@ fromProfile: prod-or-dev
 
 key: default
 
-list:${space}
+list:
   - one
   - two
 

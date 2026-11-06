@@ -1,109 +1,204 @@
 [
-{
-  "name":"com.oracle.truffle.api.TruffleLanguage"
-},
-{
-  "name":"com.oracle.truffle.api.debug.impl.DebuggerInstrumentProvider",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"com.oracle.truffle.api.instrumentation.TruffleInstrument"
-},
-{
-  "name":"com.oracle.truffle.api.interop.DefaultBooleanExportsGen"
-},
-{
-  "name":"com.oracle.truffle.api.interop.DefaultByteExportsGen"
-},
-{
-  "name":"com.oracle.truffle.api.interop.DefaultCharacterExportsGen"
-},
-{
-  "name":"com.oracle.truffle.api.interop.DefaultDoubleExportsGen"
-},
-{
-  "name":"com.oracle.truffle.api.interop.DefaultFloatExportsGen"
-},
-{
-  "name":"com.oracle.truffle.api.interop.DefaultIntegerExportsGen"
-},
-{
-  "name":"com.oracle.truffle.api.interop.DefaultLongExportsGen"
-},
-{
-  "name":"com.oracle.truffle.api.interop.DefaultShortExportsGen"
-},
-{
-  "name":"com.oracle.truffle.api.interop.DefaultStringExportsGen"
-},
-{
-  "name":"com.oracle.truffle.api.interop.InteropLibraryGen"
-},
-{
-  "name":"io.microconfig.core.properties.resolvers.expression.functions.CustomStringApi",
-  "allPublicMethods":true
-},
-{
-  "name":"io.microconfig.core.properties.resolvers.expression.functions.CustomSystemApi",
-  "allPublicMethods":true
-},
-{
-  "name":"io.microconfig.core.properties.serializers.ConfigResult$FileResult",
-  "allDeclaredFields":true
-},
-{
-  "name":"io.microconfig.core.properties.serializers.ConfigResult$ServiceConfigs",
-  "allDeclaredFields":true
-},
-{
-  "name":"java.io.ObjectInputStream",
-  "allPublicMethods":true
-},
-{
-  "name":"java.io.Serializable",
-  "allPublicMethods":true
-},
-{
-  "name":"java.lang.CharSequence",
-  "allPublicMethods":true
-},
-{
-  "name":"java.lang.Comparable",
-  "allPublicMethods":true
-},
-{
-  "name":"java.lang.Object",
-  "allDeclaredMethods":true
-},
-{
-  "name":"java.lang.String",
-  "allDeclaredMethods":true,
-  "allPublicMethods":true
-},
-{
-  "name":"java.lang.reflect.AccessibleObject",
-  "fields":[{"name":"override"}]
-},
-{
-  "name":"java.sql.Date"
-},
-{
-  "name":"java.sql.Timestamp"
-},
-{
-  "name":"java.util.ArrayList",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"org.springframework.util.ConcurrentReferenceHashMap$Segment[]"
-},
-{
-  "name":"sun.misc.Unsafe",
-  "fields":[{"name":"theUnsafe"}],
-  "methods":[
-    {"name":"allocateInstance","parameterTypes":["java.lang.Class"] }, 
-    {"name":"objectFieldOffset","parameterTypes":["java.lang.reflect.Field"] }, 
-    {"name":"putBoolean","parameterTypes":["java.lang.Object","long","boolean"] }
-  ]
-}
+  {
+    "name": "io.microconfig.core.properties.resolvers.expression.functions.CustomStringApiKt",
+    "allPublicMethods": true
+  },
+  {
+    "name": "io.microconfig.core.properties.resolvers.expression.functions.CustomSystemApiKt",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.io.ObjectInputStream",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.io.Serializable",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.lang.CharSequence",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.lang.Comparable",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.lang.Object",
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.lang.String",
+    "allDeclaredMethods": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.lang.reflect.AccessibleObject",
+    "fields": [
+      {
+        "name": "override"
+      }
+    ]
+  },
+  {
+    "name": "java.sql.Date"
+  },
+  {
+    "name": "java.sql.Timestamp"
+  },
+  {
+    "name": "java.util.ArrayList",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ],
+    "allPublicMethods": true
+  },
+  {
+    "name": "org.springframework.util.ConcurrentReferenceHashMap$Segment[]"
+  },
+  {
+    "name": "sun.misc.Unsafe",
+    "fields": [
+      {
+        "name": "theUnsafe"
+      }
+    ],
+    "methods": [
+      {
+        "name": "allocateInstance",
+        "parameterTypes": [
+          "java.lang.Class"
+        ]
+      },
+      {
+        "name": "objectFieldOffset",
+        "parameterTypes": [
+          "java.lang.reflect.Field"
+        ]
+      },
+      {
+        "name": "putBoolean",
+        "parameterTypes": [
+          "java.lang.Object",
+          "long",
+          "boolean"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "java.util.Collection",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.List",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.Set",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.Map",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.Iterator",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.Map$Entry",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.Collections$UnmodifiableCollection",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.Collections$UnmodifiableList",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.Collections$UnmodifiableRandomAccessList",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.Collections$UnmodifiableSet",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.Collections$UnmodifiableMap",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.lang.Integer",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.lang.Long",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.lang.Double",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.lang.Boolean",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.Collections$UnmodifiableCollection$1",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.ListIterator",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.lang.Byte",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.lang.Short",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.lang.Float",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.lang.Character",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.Optional",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.stream.Stream",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.stream.IntStream",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.stream.IntPipeline$Head",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.stream.LongPipeline$Head",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.stream.DoublePipeline$Head",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.stream.ReferencePipeline$Head",
+    "allPublicMethods": true
+  }
 ]

@@ -4,7 +4,7 @@ own: a\b
 
 path: C:\tools\
 
-s: "docker run \\\n  --rm img"
+s: "docker run \\\n  --rm img\n"
 
 script: |
   docker run \

@@ -14,9 +14,9 @@ foo: ${this@multi.line}
 
 bar: ${this@normal}
 
-test: |he:lo|
+test: '|he:lo|'
 
-test2: ||||
+test2: '||||'
 
 last: |
   multi
