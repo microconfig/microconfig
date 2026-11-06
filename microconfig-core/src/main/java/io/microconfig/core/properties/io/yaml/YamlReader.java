@@ -5,7 +5,9 @@ import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.io.AbstractConfigReader;
 import io.microconfig.io.FsReader;
 import lombok.RequiredArgsConstructor;
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.LoaderOptions;
+import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.reader.StreamReader;
 import org.yaml.snakeyaml.scanner.Scanner;
@@ -59,6 +61,7 @@ class YamlReader extends AbstractConfigReader {
     private final int[] lineOffsets;
     private final int[] codePointLineOffsets;
     private final Map<Integer, Integer> flowValueEnds = new LinkedHashMap<>();
+    private final Map<Integer, QuotedScalar> quotedScalars = new LinkedHashMap<>();
     private final Map<Integer, BlockScalar> blockScalars;
     private final Set<Integer> literalValueLines;
 
@@ -167,6 +170,9 @@ class YamlReader extends AbstractConfigReader {
                     if (scalar.getStyle() == DOUBLE_QUOTED || scalar.getStyle() == SINGLE_QUOTED) {
                         int firstLine = sourceLine(codePointStart + scalar.getStartMark().getIndex());
                         rangeClosed(firstLine + 1, lastLine).forEach(valueLines::add);
+                        if (depth == 0 && lastLine > startLine) {
+                            quotedScalars.put(startLine, new QuotedScalar(lastLine, offset, scalar.getValue()));
+                        }
                     }
                     if (depth == 0) return lastLine;
                 }
@@ -341,7 +347,7 @@ class YamlReader extends AbstractConfigReader {
             } else if (isComplexValue(line, currentOffset)) {
                 lineNumber = addComplexValue(result, currentProperty, currentOffset, lineNumber, configType, environment);
             } else {
-                parseSimpleProperty(result, currentProperty, currentOffset, lineNumber, configType, environment);
+                lineNumber = parseSimpleProperty(result, currentProperty, currentOffset, lineNumber, configType, environment);
             }
         }
 
@@ -361,10 +367,10 @@ class YamlReader extends AbstractConfigReader {
         while (true) {
             String line = lines.get(index);
             boolean includeLine = !skip(line) || literalValueLines.contains(index);
-            if (includeLine) value.append(isBlank(line) ? "" : line.substring(currentOffset));
+            if (includeLine) value.append(isBlank(line) ? "" : line.substring(Math.min(currentOffset, offsetIndex(line))));
 
             if (index + 1 >= lines.size()) break;
-            if (listValueEnd(lines.get(index + 1), currentOffset)) break;
+            if (listValueEnd(index + 1, currentOffset)) break;
             if (includeLine) value.append(LINES_SEPARATOR);
 
             ++index;
@@ -374,7 +380,10 @@ class YamlReader extends AbstractConfigReader {
         return index;
     }
 
-    private boolean listValueEnd(String nextLine, int currentOffset) {
+    private boolean listValueEnd(int nextLineNumber, int currentOffset) {
+        if (literalValueLines.contains(nextLineNumber)) return false;
+
+        String nextLine = lines.get(nextLineNumber);
         if (skip(nextLine)) return false;
 
         int nextOffset = offsetIndex(nextLine);
@@ -436,11 +445,11 @@ class YamlReader extends AbstractConfigReader {
         return currentOffset == nextOffset && !isComplexValue(nextLine, nextOffset);
     }
 
-    private void parseSimpleProperty(List<Property> result,
+    private int parseSimpleProperty(List<Property> result,
                                      Deque<KeyOffset> currentProperty, int currentOffset,
                                      int index, String configType, String env) {
         String line = lines.get(index);
-        int separatorIndex = separatorIndex(line, currentOffset);
+        int separatorIndex = mappingSeparatorIndex(line, currentOffset);
         if (separatorIndex < 0) {
             throw new IllegalArgumentException("Incorrect delimiter in '" + line + "' in '" + new FileBasedComponent(file, index, true, configType, env) +
                     "'\nYaml property must contain ':' as delimiter.");
@@ -453,15 +462,26 @@ class YamlReader extends AbstractConfigReader {
         if (valueEmpty(line, separatorIndex)) {
             if (itsLastProperty(index, currentOffset)) {
                 addValue(result, currentProperty, currentOffset, index, key, "", configType, env);
-                return;
+                return index;
             }
 
             currentProperty.add(new KeyOffset(key, currentOffset, index));
-            return;
+            return index;
         }
 
-        String value = line.substring(separatorIndex + 1).trim();
+        QuotedScalar scalar = quotedScalars.get(index);
+        String value = scalar == null ? line.substring(separatorIndex + 1).trim() : quotedPropertyValue(line, separatorIndex, scalar);
         addValue(result, currentProperty, currentOffset, index, key, value, configType, env);
+        return scalar == null ? index : scalar.endLine();
+    }
+
+    private String quotedPropertyValue(String line, int separator, QuotedScalar scalar) {
+        String nodeProperties = line.substring(separator + 1, scalar.valueOffset()).trim();
+        DumperOptions options = new DumperOptions();
+        options.setDefaultScalarStyle(DOUBLE_QUOTED);
+        options.setSplitLines(false);
+        String value = new Yaml(options).dump(scalar.value()).trim();
+        return nodeProperties.isEmpty() ? value : nodeProperties + " " + value;
     }
 
     private int separatorIndex(String line, int offset) {
@@ -597,6 +617,9 @@ class YamlReader extends AbstractConfigReader {
         public String toString() {
             return key;
         }
+    }
+
+    private record QuotedScalar(int endLine, int valueOffset, String value) {
     }
 
     private record BlockScalar(String key, boolean sequence, int lineNumber, int contentOffset, int endLine, char style, String chomping, String nodeProperties) {

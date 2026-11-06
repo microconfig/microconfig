@@ -218,6 +218,50 @@ class DirectiveValueBoundariesTest {
         }
     }
 
+    @ParameterizedTest(name = "quote={0}, indent={1}, text={2}, env block={3}")
+    @MethodSource("dedentedQuotedLines")
+    void preserveDedentedLinesInsideQuotedListValues(String quote, int indentation, String text, boolean envBlock) throws IOException {
+        String indent = " ".repeat(indentation);
+        String block = "text:\n  - " + quote + "first\n"
+                + indent + text + "\n" + indent + "last" + quote + "\n"
+                + ".var outside: real\n";
+        String content = "result: ${this@host:none}\nactual: ${this@outside:none}\n"
+                + (envBlock ? "+dev:\n" + block.lines().map(line -> "  " + line + "\n")
+                .collect(java.util.stream.Collectors.joining()) : block);
+        Map<?, ?> input = new Yaml().load(block);
+
+        TypedProperties properties = build(content, YAML);
+        Map<?, ?> output = new Yaml().load(properties.save(asString()));
+        assertEquals(input.get("text"), output.get("text"));
+        assertEquals("none", properties.getPropertiesAsKeyValue().get("result"));
+        assertEquals("real", properties.getPropertiesAsKeyValue().get("actual"));
+    }
+
+    @ParameterizedTest(name = "quote={0}, env block={1}, text={2}")
+    @MethodSource("multilineQuotedProperties")
+    void readMultilineQuotedPropertiesCompletely(String quote, boolean envBlock, String text) throws IOException {
+        String block = "text: " + quote + text + quote + "\n.var outside: real\n";
+        String content = "result: ${this@host:none}\nactual: ${this@outside:none}\n"
+                + (envBlock ? "+dev:\n" + block.lines().map(line -> "  " + line + "\n")
+                .collect(java.util.stream.Collectors.joining()) : block);
+        Map<?, ?> input = new Yaml().load(block.replace("${this@missing:tail}", "tail"));
+
+        TypedProperties properties = build(content, YAML);
+        Map<?, ?> output = new Yaml().load(properties.save(asString()));
+        assertEquals(input.get("text"), assertInstanceOf(String.class, output.get("text")));
+        assertEquals("none", properties.getPropertiesAsKeyValue().get("result"));
+        assertEquals("real", properties.getPropertiesAsKeyValue().get("actual"));
+    }
+
+    @Test
+    void preserveQuotedPropertyKeysAndAnchorsWithMultilineStrings() throws IOException {
+        String content = "\"message:key\": &message \"first\n  second\"\nsame: *message\n";
+        Map<?, ?> input = new Yaml().load(content);
+
+        Map<?, ?> output = new Yaml().load(build(content, YAML).save(asString()));
+        assertEquals(input, output);
+    }
+
     @Test
     void keepQuotesInsideBlockScalarsSeparateFromQuotedScalars() throws IOException {
         String content = "items:\n"
@@ -380,6 +424,23 @@ class DirectiveValueBoundariesTest {
         return Stream.of("flow sequence", "block sequence", "mapping in sequence", "flow mapping")
                 .flatMap(layout -> Stream.of("\"", "'").flatMap(quote -> Stream.of(false, true)
                         .map(envBlock -> Arguments.of(layout, quote, envBlock))));
+    }
+
+    private static Stream<Arguments> dedentedQuotedLines() {
+        return Stream.of("\"", "'")
+                .flatMap(quote -> Stream.of(0, 1, 2)
+                        .flatMap(indentation -> Stream.of("#", ".var host: literal", "tail: literal")
+                                .flatMap(text -> Stream.of(false, true)
+                                        .map(envBlock -> Arguments.of(quote, indentation, text, envBlock)))));
+    }
+
+    private static Stream<Arguments> multilineQuotedProperties() {
+        return Stream.of("\"", "'").flatMap(quote -> Stream.of(false, true)
+                .flatMap(envBlock -> Stream.of("first\n  .var host: literal",
+                                "first\n  #include missing-quoted-component\n  #@Ignore\n  last",
+                                "first\n\n  last: value", "first\n  ${this@missing:tail}\n  last",
+                                "😀first\u2028continued\n  " + (quote.equals("\"") ? "escaped \\\"quote\\\"" : "it''s quoted"))
+                        .map(text -> Arguments.of(quote, envBlock, text))));
     }
 
     private static Stream<Arguments> yamlScalarHeaders() {
