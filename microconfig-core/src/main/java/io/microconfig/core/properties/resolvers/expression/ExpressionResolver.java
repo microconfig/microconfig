@@ -12,6 +12,8 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static io.microconfig.core.properties.io.properties.PropertiesText.escape;
+import static io.microconfig.core.properties.io.properties.PropertiesText.isPropertiesText;
 import static io.microconfig.core.properties.resolvers.expression.ExpressionEvaluator.withFunctionsFrom;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -43,7 +45,8 @@ public class ExpressionResolver implements RecursiveResolver {
         @Override
         public String resolveFor(DeclaringComponent component, DeclaringComponent root) {
             try {
-                return evaluator.evaluate(value);
+                String result = evaluator.evaluate(value);
+                return isPropertiesText(component) ? escape(result) : result;
             } catch (RuntimeException e) {
                 throw new ResolveException(component, root, "Can't evaluate " + this, e);
             }

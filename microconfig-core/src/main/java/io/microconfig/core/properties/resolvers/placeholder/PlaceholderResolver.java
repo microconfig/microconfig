@@ -12,8 +12,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
-import static io.microconfig.core.properties.ConfigFormat.YAML;
-import static io.microconfig.core.properties.io.properties.PropertiesSyntax.escapeInsertedText;
+import static io.microconfig.core.properties.io.properties.PropertiesText.escape;
+import static io.microconfig.core.properties.io.properties.PropertiesText.isPropertiesText;
+import static io.microconfig.core.properties.io.properties.PropertiesText.unescape;
 import static io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders.findPlaceholderIn;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
@@ -41,7 +42,7 @@ public class PlaceholderResolver implements RecursiveResolver {
         return findPlaceholderIn(line).map(b -> new PlaceholderStatement(b, isInsideExpression(line, b.getStartIndex())));
     }
 
-    // an unclosed '#{' before the placeholder: its value becomes a part of the expression text, so it isn't escaped
+    // an unclosed '#{' before the placeholder: its value becomes a part of the expression, which works with plain text
     private boolean isInsideExpression(CharSequence line, int placeholderStart) {
         int closedBraces = 0;
         for (int i = placeholderStart - 1; i >= 0; i--) {
@@ -122,18 +123,15 @@ public class PlaceholderResolver implements RecursiveResolver {
             Property resolved = p.resolveUsing(strategy, root);
             String value = resolved.resolveBy(currentResolverWithVisited(p), root)
                     .getValue();
-            return isYamlTextInPropertiesValue(resolved, sourceOfValue) ? escapeInsertedText(value) : value;
+            return convertForTarget(value, resolved.getDeclaringComponent(), sourceOfValue);
         }
 
-        // .properties values are kept as written, with escapes, so plain YAML text inserted into them must be escaped
-        private boolean isYamlTextInPropertiesValue(Property inserted, DeclaringComponent sourceOfValue) {
-            return !insideExpression
-                    && declaredInFile(sourceOfValue, false)
-                    && (inserted.getConfigFormat() == YAML || declaredInFile(inserted.getDeclaringComponent(), true));
-        }
-
-        private boolean declaredInFile(DeclaringComponent component, boolean yaml) {
-            return component instanceof FileBasedComponent && ((FileBasedComponent) component).isYaml() == yaml;
+        // .properties values are kept with their escapes, other values are plain text: text crossing between them is converted
+        private String convertForTarget(String value, DeclaringComponent declaredIn, DeclaringComponent target) {
+            boolean fromProperties = isPropertiesText(declaredIn);
+            boolean toProperties = !insideExpression && isPropertiesText(target);
+            if (fromProperties == toProperties) return value;
+            return toProperties ? escape(value) : unescape(value);
         }
 
         private boolean hasProfileOfRootEnv(Placeholder p, DeclaringComponent root) {

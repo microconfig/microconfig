@@ -1,0 +1,13 @@
+dir: C:\tools\
+
+own: a\b
+
+path: C:\tools\
+
+s: |
+  docker run \
+    --rm img
+
+script: |
+  docker run \
+    --rm img

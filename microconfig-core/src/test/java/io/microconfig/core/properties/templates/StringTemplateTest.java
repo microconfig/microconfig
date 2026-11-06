@@ -83,6 +83,15 @@ class StringTemplateTest {
         resolve("${system@user.name}", System.getProperty("user.name"));
     }
 
+    // a template gets plain text: escapes of .properties values aren't a part of it
+    @Test
+    void insertPlainTextOfPropertiesValues() {
+        String result = new StringTemplate("name", classpathFile("templates/templateWithPropertiesValues.txt"), destination, templatePattern)
+                .resolveBy(resolver(), new DeclaringComponentImpl("app", "propertiesYamlTarget", "dev"))
+                .getContent();
+        assertEquals("win=C:\\temp\\new\nraw=x\\y", toUnixPathSeparator(result).trim());
+    }
+
     @Test
     void testMultiLinePlaceholderInTemplate() {
         String result = new StringTemplate("name", classpathFile("templates/templateWithMultiLines.yaml"), destination, templatePattern)

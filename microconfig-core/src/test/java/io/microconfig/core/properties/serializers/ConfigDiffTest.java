@@ -14,7 +14,7 @@ import java.util.List;
 import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.ConfigFormat.YAML;
 import static io.microconfig.core.properties.PropertyImpl.property;
-import static io.microconfig.core.properties.io.properties.PropertiesSyntax.escapeInsertedText;
+import static io.microconfig.core.properties.io.properties.PropertiesText.escape;
 import static io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -43,7 +43,7 @@ class ConfigDiffTest {
         File file = build("application.properties", List.of(
                 prop("multiline", "first" + LINES_SEPARATOR + "second", PROPERTIES),
                 prop("indented", "  a", PROPERTIES),
-                prop("insertedFromYaml", escapeInsertedText("C:\\temp\\new" + LINES_SEPARATOR + "docker run \\"), PROPERTIES),
+                prop("insertedFromYaml", escape("C:\\temp\\new" + LINES_SEPARATOR + "docker run \\"), PROPERTIES),
                 prop("escapedInSource", "a\\\\b", PROPERTIES),
                 prop("continuation", "1\\" + LINES_SEPARATOR + "2", PROPERTIES),
                 prop("simple", "x", PROPERTIES)

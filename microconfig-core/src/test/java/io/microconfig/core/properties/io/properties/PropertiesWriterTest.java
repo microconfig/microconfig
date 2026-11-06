@@ -14,7 +14,7 @@ import java.util.Properties;
 import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.ConfigFormat.YAML;
 import static io.microconfig.core.properties.PropertyImpl.property;
-import static io.microconfig.core.properties.io.properties.PropertiesSyntax.escapeInsertedText;
+import static io.microconfig.core.properties.io.properties.PropertiesText.escape;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -47,7 +47,7 @@ class PropertiesWriterTest {
     @ParameterizedTest
     @ValueSource(strings = {"C:\\temp\\new", "docker run \\\n  --rm img", "\\d+", "  a\nb", "\fform feed", "a\\", "\\\\server\\share"})
     void javaReadsBackTextEscapedByTheResolver(String value) throws IOException {
-        Property inserted = prop("key", escapeInsertedText(value.replace("\n", LINES_SEPARATOR)));
+        Property inserted = prop("key", escape(value.replace("\n", LINES_SEPARATOR)));
 
         assertEquals(value, load(writer.serialize(List.of(inserted))).getProperty("key"));
     }

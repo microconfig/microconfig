@@ -1,0 +1,3 @@
+b: ${boundaryPropertiesSource@a}
+continued: ${boundaryPropertiesSource@continued}
+unicode: ${boundaryPropertiesSource@unicode}

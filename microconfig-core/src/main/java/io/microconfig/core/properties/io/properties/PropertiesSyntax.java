@@ -1,9 +1,9 @@
 package io.microconfig.core.properties.io.properties;
 
 /**
- * .properties rules shared by the reader and the writer, so that they can't disagree.
+ * .properties rules shared by the reader, the writer and PropertiesText, so that they can't disagree.
  */
-public final class PropertiesSyntax {
+final class PropertiesSyntax {
     private PropertiesSyntax() {
     }
 
@@ -16,25 +16,15 @@ public final class PropertiesSyntax {
         return backslashes % 2 == 1;
     }
 
-    // whitespace that Properties.load skips before a value
+    // whitespace that Properties.load skips before a value and after a continuation
     static boolean isSkippedBeforeValue(char c) {
         return c == ' ' || c == '\t' || c == '\f';
     }
 
-    // plain text, e.g. a YAML value, inserted into a .properties value: its backslashes and line breaks would be read as escapes and continuations
-    public static String escapeInsertedText(String text) {
-        StringBuilder result = new StringBuilder(text.length());
-        for (int i = 0; i < text.length(); i++) {
-            char c = text.charAt(i);
-            if (c == '\\') {
-                result.append("\\\\");
-            } else if (c == '\r' || c == '\n') {
-                result.append("\\n");
-                if (c == '\r' && i + 1 < text.length() && text.charAt(i + 1) == '\n') i++;
-            } else {
-                result.append(c);
-            }
-        }
-        return result.toString();
+    // the last index of a line break starting at i ('\r\n', '\n' or '\r'), or -1
+    static int lineBreakEnd(CharSequence text, int i) {
+        char c = text.charAt(i);
+        if (c == '\r') return i + 1 < text.length() && text.charAt(i + 1) == '\n' ? i + 1 : i;
+        return c == '\n' ? i : -1;
     }
 }

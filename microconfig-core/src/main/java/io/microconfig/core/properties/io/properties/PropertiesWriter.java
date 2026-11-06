@@ -12,12 +12,13 @@ import java.util.Map;
 
 import static io.microconfig.core.properties.io.properties.PropertiesSyntax.endsWithContinuation;
 import static io.microconfig.core.properties.io.properties.PropertiesSyntax.isSkippedBeforeValue;
+import static io.microconfig.core.properties.io.properties.PropertiesSyntax.lineBreakEnd;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static java.util.stream.Collectors.joining;
 
 /**
  * Values are kept the way they are written in .properties sources, with their escapes and continuations
- * (YAML text inserted by placeholders is already escaped by the resolver).
+ * (plain text inserted into them is escaped on insertion, see PropertiesText).
  * Only line breaks and leading whitespace that .properties would lose are escaped.
  */
 @RequiredArgsConstructor
@@ -63,17 +64,15 @@ class PropertiesWriter implements ConfigWriter {
                 result.append(value.charAt(i));
                 continue;
             }
-            result.append(endsWithContinuation(result) ? value.substring(i, lineBreakEnd + 1) : "\\n");
+            result.append(endsWithContinuation(result) ? value.substring(i, lineBreakEnd + 1) : escapedLineBreak(value, i, lineBreakEnd));
             i = lineBreakEnd;
         }
         return escapeLeadingWhitespace(result.toString());
     }
 
-    // the last index of a line break starting at i ('\r\n', '\n' or '\r'), or -1
-    private int lineBreakEnd(String value, int i) {
-        char c = value.charAt(i);
-        if (c == '\r') return i + 1 < value.length() && value.charAt(i + 1) == '\n' ? i + 1 : i;
-        return c == '\n' ? i : -1;
+    // a lone '\r' stays a carriage return, '\n' and '\r\n' are a line break
+    private String escapedLineBreak(String value, int start, int end) {
+        return start == end && value.charAt(start) == '\r' ? "\\r" : "\\n";
     }
 
     private String escapeLeadingWhitespace(String escaped) {

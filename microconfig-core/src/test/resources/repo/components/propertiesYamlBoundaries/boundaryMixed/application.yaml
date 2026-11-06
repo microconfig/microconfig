@@ -1,0 +1,4 @@
+path: C:\tools\
+script: |
+  docker run \
+    --rm img

@@ -1,0 +1,2 @@
+win=${propertiesYamlTarget@win}
+raw=${boundaryPropertiesSource@a}
