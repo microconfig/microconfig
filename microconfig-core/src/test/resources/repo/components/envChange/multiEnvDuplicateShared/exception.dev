@@ -1,0 +1,1 @@
+Property 'x' is declared twice for env 'dev': ../components/envChange/multiEnvDuplicateShared/application.yaml:4 and ../components/envChange/multiEnvDuplicateShared/application.yaml:7

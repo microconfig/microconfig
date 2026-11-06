@@ -1,0 +1,6 @@
+byX: ${this@x:not-found}
+byDatasourceX: ${this@datasource.x:not-found}
+
++dev.datasource:
+  pool: 5
+  #var x: 1

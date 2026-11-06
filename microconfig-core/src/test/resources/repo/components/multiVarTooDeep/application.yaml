@@ -1,0 +1,5 @@
+a: ${this@x:not-found}
+datasource:
+  pool: 5
+  .var:
+    x: 1

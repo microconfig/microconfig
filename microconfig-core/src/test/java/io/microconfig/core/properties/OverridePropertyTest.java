@@ -5,10 +5,11 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static io.microconfig.core.properties.ConfigFormat.YAML;
+import static io.microconfig.core.properties.OverrideProperty.checkVarBlockPosition;
 import static io.microconfig.core.properties.OverrideProperty.isEmptyBlock;
 import static io.microconfig.core.properties.OverrideProperty.isOverrideProperty;
 import static io.microconfig.core.properties.OverrideProperty.overrideProperty;
-import static io.microconfig.core.properties.OverrideProperty.overrideVarProperty;
+import static io.microconfig.core.properties.OverrideProperty.envVarProperty;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,13 +44,20 @@ class OverridePropertyTest {
     }
 
     @ParameterizedTest
-    @CsvSource(delimiter = '|', value = {"+prod.key | prod", "+a, b.key | a,b"})
-    void varInsideEnvBlockIsVarForBlockEnvs(String key, String envs) {
-        OverrideProperty p = (OverrideProperty) overrideVarProperty(key, "v", YAML, null);
+    @CsvSource(delimiter = '|', value = {"+prod | prod", "+a, b | a,b", "+prod.datasource | prod"})
+    void varLineInsideEnvBlockIsVarForBlockEnvs(String header, String envs) {
+        OverrideProperty p = (OverrideProperty) envVarProperty(header, "#var key: v", YAML, null);
 
         assertEquals(asList(envs.split(",")), p.getEnvironments());
         assertEquals("key", p.getKey());
+        assertEquals("v", p.getValue());
         assertTrue(p.isVar());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"+a, +b", "+a,,b"})
+    void rejectVarLineInsideMalformedEnvBlock(String header) {
+        assertThrows(IllegalArgumentException.class, () -> envVarProperty(header, "#var key: v", YAML, null));
     }
 
     @ParameterizedTest
@@ -92,7 +100,7 @@ class OverridePropertyTest {
 
     @ParameterizedTest
     @CsvSource(delimiter = '|', value = {
-            "+prod.x | true", ".var.x | true",
+            "+prod.x | true", ".var.x | true", ".var | true",
             "@prod.x | false", ".@prod.x | false", "@var.x | false", ".@var.x | false",
             "var.x | false", ".variable.x | false", ".vars.x | false", "prod.x | false"
     })
@@ -106,7 +114,34 @@ class OverridePropertyTest {
             "+prod | v | false", "+prod.x | '' | false", "+prod..var | v | false", "+prod..variable | '' | false"
     })
     void detectEmptyBlock(String key, String value, boolean isEmpty) {
-        assertEquals(isEmpty, isEmptyBlock(key, value));
+        assertEquals(isEmpty, isEmptyBlock(key, value, null));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"+dev, +test", "+dev,,test", "+dev, +test..var"})
+    void rejectEmptyBlockWithMalformedEnvList(String key) {
+        assertThrows(IllegalArgumentException.class, () -> isEmptyBlock(key, "", null));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            ".var.x", ".var", "+dev..var.x", "+dev..var", "+dev, test..var.x",
+            "x", "a.var.b", "a.variable", "+dev.x", "+dev..variable.x", ".var.a.var"
+    })
+    void acceptVarBlockAtTopLevelOrDirectlyInsideEnvBlock(String key) {
+        checkVarBlockPosition(key, null);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"datasource..var.x", "datasource..var", "+dev.datasource..var.x", ".var..var.x", "+dev..var..var.x"})
+    void rejectVarBlockDeeperThanAllowed(String key) {
+        assertThrows(IllegalArgumentException.class, () -> checkVarBlockPosition(key, null));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {".var", "+prod"})
+    void rejectScalarInsteadOfBlock(String key) {
+        assertThrows(IllegalArgumentException.class, () -> overrideProperty(key, "5", YAML, null));
     }
 
     @ParameterizedTest

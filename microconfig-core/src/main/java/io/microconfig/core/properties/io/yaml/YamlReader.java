@@ -12,10 +12,15 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
+import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.ConfigFormat.YAML;
 import static io.microconfig.core.properties.FileBasedComponent.fileSource;
+import static io.microconfig.core.properties.OverrideProperty.checkVarBlockPosition;
+import static io.microconfig.core.properties.OverrideProperty.envVarProperty;
 import static io.microconfig.core.properties.OverrideProperty.isEmptyBlock;
+import static io.microconfig.core.properties.OverrideProperty.isEnvBlock;
 import static io.microconfig.core.properties.OverrideProperty.isOverrideProperty;
 import static io.microconfig.core.properties.OverrideProperty.overrideProperty;
 import static io.microconfig.core.properties.PropertyImpl.isComment;
@@ -27,19 +32,32 @@ import static java.lang.Character.isWhitespace;
 import static java.lang.String.join;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.of;
 
 class YamlReader extends AbstractConfigReader {
-    private static final String VAR_DIRECTIVE = "#var ";
-
     YamlReader(File file, FsReader fileFsReader) {
         super(file, fileFsReader);
     }
 
     @Override
     public List<Property> properties(String configType, String environment) {
+        List<Property> properties = parseProperties(configType, environment);
+        properties.addAll(envVarProperties(configType, environment));
+        return properties;
+    }
+
+    // '#var' lines inside '+env:' blocks are temp properties of the block envs, see envVarProperties
+    @Override
+    public Map<Integer, String> commentsByLineNumber() {
+        Map<Integer, String> comments = super.commentsByLineNumber();
+        envBlockHeaderByVarLine().keySet().forEach(comments::remove);
+        return comments;
+    }
+
+    private List<Property> parseProperties(String configType, String environment) {
         List<Property> result = new ArrayList<>();
         Deque<KeyOffset> currentProperty = new ArrayDeque<>();
 
@@ -61,35 +79,6 @@ class YamlReader extends AbstractConfigReader {
         }
 
         return result;
-    }
-
-    // '#var key: value' inside a '+env:' block becomes '#var +env.key: value': a temp property for the block envs
-    @Override
-    public Map<Integer, String> commentsByLineNumber() {
-        Map<Integer, String> comments = super.commentsByLineNumber();
-        comments.replaceAll(this::scopeToEnvBlock);
-        return comments;
-    }
-
-    private String scopeToEnvBlock(int lineNumber, String comment) {
-        if (!isTempProperty(comment) || offsetIndex(lines.get(lineNumber)) == 0) return comment;
-
-        String envBlock = envBlockOf(lineNumber);
-        if (envBlock == null) return comment;
-        return VAR_DIRECTIVE + envBlock + "." + comment.substring(VAR_DIRECTIVE.length()).trim();
-    }
-
-    private String envBlockOf(int lineNumber) {
-        for (int i = lineNumber - 1; i >= 0; i--) {
-            String line = lines.get(i);
-            if (skip(line) || offsetIndex(line) > 0) continue;
-
-            int separatorIndex = separatorIndex(line, 0);
-            if (separatorIndex < 0 || !valueEmpty(line, separatorIndex)) return null;
-            String key = line.substring(0, separatorIndex).trim();
-            return isOverrideProperty(key) ? key : null;
-        }
-        return null;
     }
 
     private String multiLineKey(String line, int currentOffset) {
@@ -158,8 +147,7 @@ class YamlReader extends AbstractConfigReader {
         FileBasedComponent source = fileSource(file, index, true, configType, env);
         String k = mergeKey(currentProperty, key);
         String v = join(LINES_SEPARATOR, valueLines);
-        Property p = isOverrideProperty(k) ? overrideProperty(k, v, YAML, source) : property(k, v, YAML, source);
-        result.add(p);
+        result.add(toProperty(k, v, source));
         return index + counter - 1;
     }
 
@@ -283,11 +271,15 @@ class YamlReader extends AbstractConfigReader {
         int lineNumber = currentProperty.peekLast().lineNumber;
         String key = toKey(currentProperty);
         currentProperty.pollLast();
-        if (isOverrideProperty(key) && isEmptyBlock(key, value)) return;
-
         FileBasedComponent source = fileSource(file, lineNumber, true, configType, env);
-        Property prop = isOverrideProperty(key) ? overrideProperty(key, value, YAML, source) : property(key, value, YAML, source);
-        result.add(prop);
+        if (isOverrideProperty(key) && isEmptyBlock(key, value, source)) return;
+
+        result.add(toProperty(key, value, source));
+    }
+
+    private Property toProperty(String key, String value, FileBasedComponent source) {
+        checkVarBlockPosition(key, source);
+        return isOverrideProperty(key) ? overrideProperty(key, value, YAML, source) : property(key, value, YAML, source);
     }
 
     private String mergeKey(Deque<KeyOffset> currentProperty, String key) {
@@ -301,6 +293,38 @@ class YamlReader extends AbstractConfigReader {
         return currentProperty.stream()
                 .map(k -> k.key)
                 .collect(joining("."));
+    }
+
+    private List<Property> envVarProperties(String configType, String environment) {
+        return envBlockHeaderByVarLine().entrySet().stream()
+                .map(e -> envVarProperty(e.getValue(), lines.get(e.getKey()).trim(), PROPERTIES,
+                        fileSource(file, e.getKey(), false, configType, environment)))
+                .collect(toList());
+    }
+
+    // '#var' lines inside '+env:' blocks (at any depth) with the header of their block, in one pass
+    private Map<Integer, String> envBlockHeaderByVarLine() {
+        Map<Integer, String> headerByLine = new TreeMap<>();
+        String envBlockHeader = null;
+        for (int lineNumber = 0; lineNumber < lines.size(); lineNumber++) {
+            String line = lines.get(lineNumber);
+            if (line.trim().isEmpty()) continue;
+
+            if (offsetIndex(line) > 0) {
+                if (envBlockHeader != null && isTempProperty(line.trim())) headerByLine.put(lineNumber, envBlockHeader);
+            } else if (!isComment(line)) {
+                envBlockHeader = envBlockHeader(line);
+            }
+        }
+        return headerByLine;
+    }
+
+    private String envBlockHeader(String topLevelLine) {
+        int separatorIndex = separatorIndex(topLevelLine, 0);
+        if (separatorIndex < 0 || !valueEmpty(topLevelLine, separatorIndex)) return null;
+
+        String key = topLevelLine.substring(0, separatorIndex).trim();
+        return isEnvBlock(key) ? key : null;
     }
 
     @RequiredArgsConstructor

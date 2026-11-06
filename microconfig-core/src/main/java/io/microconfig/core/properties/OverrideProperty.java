@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import static io.microconfig.core.properties.PropertyImpl.parse;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
@@ -14,59 +15,91 @@ import static lombok.AccessLevel.PRIVATE;
 /**
  * '+env:' block overrides properties for the env, '+env1, env2:' for several envs.
  * '#var' lines or a '.var:' block inside the block declare temp properties for the same envs.
- * '.var:' block declares temp properties for all envs, like several '#var' lines.
+ * '.var:' block at the top level declares temp properties for all envs, like several '#var' lines.
  */
 @RequiredArgsConstructor(access = PRIVATE)
 @EqualsAndHashCode
 public class OverrideProperty implements Property {
     private static final String ENV_PREFIX = "+";
     private static final String VAR_BLOCK = ".var";
-    private static final String MULTI_VAR_PREFIX = VAR_BLOCK + ".";
+    private static final String VAR_BLOCK_PREFIX = VAR_BLOCK + ".";
     private static final String ENV_SEPARATOR = ",";
 
     @Getter
     private final List<String> environments;
     private final Property delegate;
 
-    public static boolean isOverrideProperty(String line) {
-        return line.startsWith(ENV_PREFIX) || isMultilineVar(line);
+    public static boolean isOverrideProperty(String key) {
+        return isEnvBlock(key) || isVarBlock(key) || key.equals(VAR_BLOCK);
+    }
+
+    public static boolean isEnvBlock(String key) {
+        return key.startsWith(ENV_PREFIX);
     }
 
     public static Property overrideProperty(String key, String value, ConfigFormat configFormat, DeclaringComponent source) {
-        return override(key, value, isMultilineVar(key), configFormat, source);
-    }
+        int envsEnd = envsEnd(key);
+        if (envsEnd == key.length()) throw invalidOverride(propertyMissing(key), key, source);
 
-    // '#var' line inside a '+env:' block
-    public static Property overrideVarProperty(String key, String value, ConfigFormat configFormat, DeclaringComponent source) {
-        return override(key, value, true, configFormat, source);
-    }
-
-    // '+env:' block without properties, e.g. with '#var' lines only, or an empty '.var:' block
-    public static boolean isEmptyBlock(String key, String value) {
-        if (!value.isEmpty()) return false;
-
-        int envsEnd = key.indexOf('.', 1);
-        return envsEnd < 0 || key.substring(envsEnd + 1).equals(VAR_BLOCK);
-    }
-
-    private static boolean isMultilineVar(String key) {
-        return key.startsWith(MULTI_VAR_PREFIX);
-    }
-
-    private static Property override(String key, String value, boolean isVar, ConfigFormat configFormat, DeclaringComponent source) {
-        int envsEnd = key.indexOf('.', 1);
         List<String> environments = extractEnvs(key, envsEnd, source);
         String propertyKey = key.substring(envsEnd + 1);
-        boolean isVarBlock = isMultilineVar(propertyKey); // '.var:' block inside '+env:' block
-        String adjustedKey = isVarBlock ? propertyKey.substring(MULTI_VAR_PREFIX.length()) : propertyKey;
-        Property delegate = new PropertyImpl(adjustedKey, value, isVar || isVarBlock, configFormat, source);
+        boolean isNestedVarBlock = isVarBlock(propertyKey);
+        String adjustedKey = isNestedVarBlock ? propertyKey.substring(VAR_BLOCK_PREFIX.length()) : propertyKey;
+        Property delegate = new PropertyImpl(adjustedKey, value, isVarBlock(key) || isNestedVarBlock, configFormat, source);
         return new OverrideProperty(environments, delegate);
+    }
+
+    // '#var key: value' line inside the '+env:' block with the given header
+    public static Property envVarProperty(String envBlockHeader, String varLine, ConfigFormat configFormat, DeclaringComponent source) {
+        List<String> environments = extractEnvs(envBlockHeader, envsEnd(envBlockHeader), source);
+        return new OverrideProperty(environments, parse(varLine, configFormat, source));
+    }
+
+    // a block without properties: '+env:' with '#var' lines only, an empty '.var:'. A malformed env list still fails
+    public static boolean isEmptyBlock(String key, String value, DeclaringComponent source) {
+        if (!value.isEmpty()) return false;
+
+        int envsEnd = envsEnd(key);
+        boolean isEmpty = envsEnd == key.length() || key.substring(envsEnd + 1).equals(VAR_BLOCK);
+        if (isEmpty) extractEnvs(key, envsEnd, source);
+        return isEmpty;
+    }
+
+    // '.var:' block goes at the top level or directly inside '+env:', deeper it isn't a var block
+    public static void checkVarBlockPosition(String key, DeclaringComponent source) {
+        String rest = withoutAllowedVarBlock(key) + ".";
+        if (rest.contains("." + VAR_BLOCK_PREFIX) || rest.startsWith(VAR_BLOCK_PREFIX)) {
+            throw new IllegalArgumentException("'.var:' block must be at the top level or directly inside a '+env:' block, but key '"
+                    + key + "' has it deeper in " + source);
+        }
+    }
+
+    private static String withoutAllowedVarBlock(String key) {
+        String propertyKey = key;
+        if (isEnvBlock(key)) {
+            int envsEnd = envsEnd(key);
+            propertyKey = envsEnd == key.length() ? "" : key.substring(envsEnd + 1);
+        }
+        if (propertyKey.equals(VAR_BLOCK)) return "";
+        return isVarBlock(propertyKey) ? propertyKey.substring(VAR_BLOCK_PREFIX.length()) : propertyKey;
+    }
+
+    private static int envsEnd(String key) {
+        int dotIndex = key.indexOf('.', 1);
+        return dotIndex < 0 ? key.length() : dotIndex;
+    }
+
+    private static String propertyMissing(String key) {
+        return key.equals(VAR_BLOCK) ? "must be a block of temp properties" : "must contain a property, like '+env.key'";
+    }
+
+    private static boolean isVarBlock(String key) {
+        return key.startsWith(VAR_BLOCK_PREFIX);
     }
 
     // '+' goes once, before the first env: '+prod-a, prod-b'
     private static List<String> extractEnvs(String key, int envsEnd, DeclaringComponent source) {
-        if (isMultilineVar(key)) return emptyList();
-        if (envsEnd < 0) throw invalidOverride("must contain a property, like '+env.key'", key, source);
+        if (!isEnvBlock(key)) return emptyList();
 
         List<String> envs = stream(key.substring(ENV_PREFIX.length(), envsEnd).split(ENV_SEPARATOR, -1))
                 .map(String::trim)
@@ -77,7 +110,7 @@ public class OverrideProperty implements Property {
 
     // a single empty env ('+.key') is kept as it was before env lists appeared: it just never matches
     private static void checkEnvNames(List<String> envs, String key, DeclaringComponent source) {
-        if (envs.stream().anyMatch(env -> env.startsWith(ENV_PREFIX))) {
+        if (envs.stream().anyMatch(OverrideProperty::isEnvBlock)) {
             throw invalidOverride("must have '+' only once, before the first env, like '+prod-a, prod-b'", key, source);
         }
         if (envs.size() > 1 && envs.contains("")) {

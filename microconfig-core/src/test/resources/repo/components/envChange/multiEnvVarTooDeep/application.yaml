@@ -1,0 +1,6 @@
+a: ${this@x:not-found}
++dev:
+  datasource:
+    pool: 5
+    .var:
+      x: 1

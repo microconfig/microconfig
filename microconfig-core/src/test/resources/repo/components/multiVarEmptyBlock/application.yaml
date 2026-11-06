@@ -1,0 +1,9 @@
+a: ${this@x}
+b: ${this@y:none}
+
+.var:
+  #var x: 1
+
+c: 3
+
+.var:

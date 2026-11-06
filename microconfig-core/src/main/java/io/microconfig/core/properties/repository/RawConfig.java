@@ -9,10 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
 
-import static io.microconfig.utils.StreamUtils.filter;
-import static io.microconfig.utils.StreamUtils.toLinkedMap;
+import static java.lang.String.format;
 import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 
 @RequiredArgsConstructor
 public class RawConfig {
@@ -31,9 +32,11 @@ public class RawConfig {
 
     private Map<String, Property> filterProperties(List<String> profiles, String env) {
         // base properties go first
-        Map<String, Property> propsByKey = filter(declaredProperties, p -> !isOverrideProperty(p), toLinkedMap(Property::getKey, identity()));
+        Map<String, Property> propsByKey = declaredProperties.stream()
+                .filter(p -> !isOverrideProperty(p))
+                .collect(rejectingDuplicates(""));
 
-        override(propsByKey, byMultilineVars());
+        override(propsByKey, byMultilineVars(), " for all envs");
         for (String profile : profiles) {
             overrideFor(propsByKey, profile);
         }
@@ -42,27 +45,35 @@ public class RawConfig {
         return propsByKey;
     }
 
+    private boolean isOverrideProperty(Property p) {
+        return p instanceof OverrideProperty;
+    }
+
+    private Collector<Property, ?, Map<String, Property>> rejectingDuplicates(String scope) {
+        return toMap(Property::getKey, identity(), (p1, p2) -> {
+            throw new IllegalStateException(format("Property '%s' is declared twice%s: %s and %s",
+                    p1.getKey(), scope, p1.getDeclaringComponent(), p2.getDeclaringComponent()));
+        }, LinkedHashMap::new);
+    }
+
     private Predicate<OverrideProperty> byMultilineVars() {
         return p -> p.isVar() && p.isForAllEnvs();
     }
 
     // a block for a single env (+prod-a:) wins over a block shared between envs (+prod-a,prod-b:)
     private void overrideFor(Map<String, Property> propsByKey, String env) {
-        override(propsByKey, p -> p.isSharedWith(env));
-        override(propsByKey, p -> p.isOnlyFor(env));
+        String scope = " for env '" + env + "'";
+        override(propsByKey, p -> p.isSharedWith(env), scope);
+        override(propsByKey, p -> p.isOnlyFor(env), scope);
     }
 
-    private void override(Map<String, Property> propsByKey, Predicate<OverrideProperty> predicate) {
+    private void override(Map<String, Property> propsByKey, Predicate<OverrideProperty> predicate, String scope) {
         Map<String, Property> overrides = declaredProperties.stream()
                 .filter(this::isOverrideProperty)
                 .map(p -> (OverrideProperty) p)
                 .filter(predicate)
-                .collect(toLinkedMap(Property::getKey, identity()));
+                .collect(rejectingDuplicates(scope));
         propsByKey.putAll(overrides);
-    }
-
-    private boolean isOverrideProperty(Property p) {
-        return p instanceof OverrideProperty;
     }
 
     private Map<String, Property> getIncludedPropertiesUsing(Function<Include, Map<String, Property>> includeResolver) {

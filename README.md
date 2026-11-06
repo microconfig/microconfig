@@ -57,6 +57,8 @@ Real-life examples of every feature are in the [features guide](https://microcon
 | Override for an environment | `application.<env>.yaml` | `application.prod.yaml` |
 | Override for an environment inside a file | `+<env>:` | `+prod:` |
 | Override for several environments inside a file | `+<env1>, <env2>:` | `+dev, test:` |
+| Properties for placeholders only, as a block | `.var:` | `.var:`<br>`  dbHost: 10.10.10.10` |
+| Properties for placeholders only, for an environment | `#var` or `.var:` inside `+<env>:` | `+prod:`<br>`  #var dbHost: 10.10.10.20` |
 | Template file | `mc.template.<name>: <from> -> <to>` | `mc.template.logback: ${logback-template@configDir}/logback.xml -> logback.xml` |
 | Build an environment | `microconfig -e <env>` | `microconfig -e prod` |
 | Build only some groups or services | `-g <groups>`, `-s <services>` | `microconfig -e dev -s orders` |
@@ -767,7 +769,8 @@ Profiles work the same way: `+long:` is applied when the component is included a
 Properties from application.dev.yaml still override a `+dev:` block in application.yaml.
 
 Notes:
-* A repeated `+` like `+dev, +test:` is an error.
+* A repeated `+` like `+dev, +test:` or an empty environment name like `+dev,,test:` is an error.
+* A `.var:` block goes at the top level or directly inside `+env:`, deeper it is an error; `#var` lines work at any depth inside the block.
 * If two blocks for several environments set the same property for the same environment, the build fails.
 * Environment overrides inside a file are supported in YAML files only.
  

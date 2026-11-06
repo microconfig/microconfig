@@ -1,0 +1,1 @@
+'.var:' block must be at the top level or directly inside a '+env:' block, but key 'datasource..var.x' has it deeper in ../components/multiVarTooDeep/application.yaml:5
