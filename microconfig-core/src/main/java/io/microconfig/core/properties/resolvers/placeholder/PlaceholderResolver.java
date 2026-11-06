@@ -3,6 +3,7 @@ package io.microconfig.core.properties.resolvers.placeholder;
 import io.microconfig.core.environments.EnvironmentRepository;
 import io.microconfig.core.properties.*;
 import io.microconfig.core.properties.resolvers.RecursiveResolver;
+import io.microconfig.core.properties.resolvers.expression.ExpressionResolver;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
@@ -15,6 +16,7 @@ import java.util.function.Function;
 import static io.microconfig.core.properties.io.properties.PropertiesText.escape;
 import static io.microconfig.core.properties.io.properties.PropertiesText.isPropertiesText;
 import static io.microconfig.core.properties.io.properties.PropertiesText.unescape;
+import static io.microconfig.core.properties.resolvers.ChainedResolver.chainOf;
 import static io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders.findPlaceholderIn;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
@@ -28,13 +30,14 @@ public class PlaceholderResolver implements RecursiveResolver {
     private final EnvironmentRepository environmentRepository;
     private final PlaceholderResolveStrategy strategy;
     private final Set<String> nonOverridableKeys;
+    private final RecursiveResolver expressionResolver;
     @With(PRIVATE)
     private final Set<Placeholder> visited;
 
     public PlaceholderResolver(EnvironmentRepository environmentRepository,
                                PlaceholderResolveStrategy strategy,
                                Set<String> nonOverridableKeys) {
-        this(environmentRepository, strategy, nonOverridableKeys, emptySet());
+        this(environmentRepository, strategy, nonOverridableKeys, new ExpressionResolver(), emptySet());
     }
 
     @Override
@@ -121,8 +124,8 @@ public class PlaceholderResolver implements RecursiveResolver {
 
         private String resolve(Placeholder p, DeclaringComponent sourceOfValue, DeclaringComponent root) {
             Property resolved = p.resolveUsing(strategy, root);
-            String value = resolved.resolveBy(currentResolverWithVisited(p), root)
-                    .getValue();
+            Resolver resolver = chainOf(currentResolverWithVisited(p), expressionResolver);
+            String value = resolved.resolveBy(resolver, root).getValue();
             return convertForTarget(value, resolved.getDeclaringComponent(), sourceOfValue);
         }
 

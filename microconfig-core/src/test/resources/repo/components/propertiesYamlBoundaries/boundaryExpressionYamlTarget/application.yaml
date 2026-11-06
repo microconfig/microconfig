@@ -1,0 +1,4 @@
+regex: ${boundaryExpressionSource@regex}
+path: ${boundaryExpressionSource@path}
+alias: ${boundaryExpressionSource@alias}
+length: #{'${boundaryExpressionSource@path}'.length()}

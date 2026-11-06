@@ -11,7 +11,6 @@ import java.util.function.UnaryOperator;
 
 import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.PropertyImpl.property;
-import static io.microconfig.utils.StringUtils.escape;
 import static io.microconfig.utils.StringUtils.unixLikePath;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
@@ -37,12 +36,11 @@ public class SystemResolveStrategy implements PlaceholderResolveStrategy {
         if (!type.equals(component)) return empty();
 
         return ofNullable(resolver.apply(key))
-                .map(v -> escapeOnWindows(v, key))
+                .map(v -> normalizeUserHome(v, key))
                 .map(v -> property(key, v, PROPERTIES, new DeclaringComponentImpl(configType, component, environment)));
     }
 
-    private String escapeOnWindows(String value, String key) {
-        if (!Os.isWindows()) return value;
-        return ("user.home".equals(key)) ? unixLikePath(value) : escape(value);
+    private String normalizeUserHome(String value, String key) {
+        return Os.isWindows() && "user.home".equals(key) ? unixLikePath(value) : value;
     }
 }
