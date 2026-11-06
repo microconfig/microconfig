@@ -1,0 +1,11 @@
+ownVar: C:\v
+
+path: C:\tools\
+
+regex: \d+
+
+script: |
+  docker run \
+    --rm img
+
+win: C:\temp\new

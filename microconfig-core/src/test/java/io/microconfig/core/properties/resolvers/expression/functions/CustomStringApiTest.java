@@ -2,11 +2,10 @@ package io.microconfig.core.properties.resolvers.expression.functions;
 
 import org.junit.jupiter.api.Test;
 
-import static io.microconfig.core.properties.resolvers.expression.functions.CustomIoApi.readBytesOrEmpty;
-import static io.microconfig.core.properties.resolvers.expression.functions.CustomIoApi.readStringOrEmpty;
 import static io.microconfig.core.properties.resolvers.expression.functions.CustomStringApi.*;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CustomStringApiTest {
     @Test
@@ -24,6 +23,12 @@ class CustomStringApiTest {
     }
 
     @Test
+    void testUuid4() {
+        assertTrue(uuid4().matches("[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"));
+        assertNotEquals(uuid4(), uuid4());
+    }
+
+    @Test
     void testDelete() {
         assertEquals("hello", delete("h.e.l.l.o", "."));
     }
@@ -32,11 +37,5 @@ class CustomStringApiTest {
     void substring() {
         assertEquals("e.l.l.o", substringAfterFirst("h.e.l.l.o", "."));
         assertEquals("o", substringAfterLast("h.e.l.l.o", "."));
-    }
-
-    @Test
-    void testRead() {
-        assertArrayEquals(new byte[0], readBytesOrEmpty("missing"));
-        assertEquals("", readStringOrEmpty("missing"));
     }
 }

@@ -1,0 +1,15 @@
+explicit2: |2
+    a
+  b
+explicit8: |8
+          a
+        b
+nested:
+  deeper:
+    value: |2
+        a
+      b
+reference: ${this@explicit2}
+plain: |
+  a
+    b

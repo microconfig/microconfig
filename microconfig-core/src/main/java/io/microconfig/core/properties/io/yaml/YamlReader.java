@@ -1,5 +1,6 @@
 package io.microconfig.core.properties.io.yaml;
 
+import io.microconfig.core.properties.ConfigFormat;
 import io.microconfig.core.properties.FileBasedComponent;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.io.AbstractConfigReader;
@@ -95,6 +96,11 @@ class YamlReader extends AbstractConfigReader {
         List<Property> properties = parseProperties(configType, environment);
         properties.addAll(envVarProperties(configType, environment));
         return properties;
+    }
+
+    @Override
+    public ConfigFormat format() {
+        return YAML;
     }
 
     // '#var' lines inside '+env:' blocks are temp properties of the block envs, see envVarProperties
@@ -564,7 +570,7 @@ class YamlReader extends AbstractConfigReader {
     private List<Property> envVarProperties(String configType, String environment) {
         return envBlockHeaderByVarLine().entrySet().stream()
                 .map(e -> envVarProperty(e.getValue(), lines.get(e.getKey()).trim(), PROPERTIES,
-                        fileSource(file, e.getKey(), false, configType, environment)))
+                        fileSource(file, e.getKey(), true, configType, environment)))
                 .collect(toList());
     }
 

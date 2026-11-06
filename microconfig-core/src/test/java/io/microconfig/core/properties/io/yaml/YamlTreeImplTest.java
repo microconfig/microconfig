@@ -2,6 +2,7 @@ package io.microconfig.core.properties.io.yaml;
 
 import io.microconfig.io.DumpedFsReader;
 import org.junit.jupiter.api.Test;
+import org.yaml.snakeyaml.Yaml;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,8 +10,10 @@ import java.util.TreeMap;
 
 import static io.microconfig.core.ClasspathReader.classpathFile;
 import static io.microconfig.core.ClasspathReader.read;
+import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static io.microconfig.utils.StringUtils.toUnixPathSeparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class YamlTreeImplTest {
     @Test
@@ -71,6 +74,47 @@ class YamlTreeImplTest {
 
         Map<String, Object> actual = new YamlTreeImpl.TreeCreator().toTree(initial);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void writeIndentationIndicatorWhenMultilineValueStartsWithSpaces() {
+        Map<String, String> values = Map.of(
+                "indented", "  a" + LINES_SEPARATOR + "b",
+                "afterEmptyLine", LINES_SEPARATOR + "  a" + LINES_SEPARATOR + "b",
+                "nested.indented", "  a" + LINES_SEPARATOR + "b",
+                "plain", "a" + LINES_SEPARATOR + "  b"
+        );
+
+        String yaml = new YamlTreeImpl().toYaml(values);
+        Map<?, ?> actual = new Yaml().load(yaml);
+        assertEquals("  a\nb\n", actual.get("indented"));
+        assertEquals("\n  a\nb\n", actual.get("afterEmptyLine"));
+        assertEquals("  a\nb\n", ((Map<?, ?>) actual.get("nested")).get("indented"));
+        assertEquals("a\n  b\n", actual.get("plain"));
+        assertTrue(yaml.contains("indented: |2"));
+        assertTrue(yaml.contains("plain: |" + LINES_SEPARATOR));
+    }
+
+    @Test
+    void indentMultilineValuesOfConflictingKeysByTheirDepthInTheTree() {
+        Map<String, String> values = Map.of(
+                "section", "value",
+                "section.child", "  a" + LINES_SEPARATOR + "b",
+                "section.list", "- x" + LINES_SEPARATOR + "- y",
+                "outer.inner", "value",
+                "outer.inner.child", "  c" + LINES_SEPARATOR + "d"
+        );
+
+        Map<?, ?> actual = new Yaml().load(new YamlTreeImpl().toYaml(values));
+        assertEquals("  a\nb\n", actual.get("section.child"));
+        assertEquals(java.util.List.of("x", "y"), actual.get("section.list"));
+        assertEquals("  c\nd\n", ((Map<?, ?>) actual.get("outer")).get("inner.child"));
+    }
+
+    @Test
+    void splitValuesByBothLineBreaksOnWindowsAndKeepUnixAsIs() {
+        assertEquals(java.util.List.of("a", "b", "c"), java.util.List.of(YamlTreeImpl.lineBreakFor("\r\n").split("a\r\nb\nc")));
+        assertEquals(java.util.List.of("a\r", "b"), java.util.List.of(YamlTreeImpl.lineBreakFor("\n").split("a\r\nb")));
     }
 
     private String toYaml(String file) {

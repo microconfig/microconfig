@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
+import static io.microconfig.core.properties.ConfigFormat.YAML;
 import static io.microconfig.core.properties.FileBasedComponent.fileSource;
 import static io.microconfig.core.properties.PropertyImpl.isTempProperty;
 import static io.microconfig.core.properties.PropertyImpl.parse;
@@ -43,15 +44,15 @@ public class ConfigFile {
         if (containsIgnoreDirective(commentByLineNumber.values())) return new RawConfig(includes, emptyList());
 
         List<Property> properties = reader.properties(configType, environment);
-        List<Property> tempProperties = parseTempProperties(commentByLineNumber);
+        List<Property> tempProperties = parseTempProperties(commentByLineNumber, reader.format() == YAML);
         return new RawConfig(includes, join(properties, tempProperties));
     }
 
-    private List<Property> parseTempProperties(Map<Integer, String> commentByLineNumber) {
+    private List<Property> parseTempProperties(Map<Integer, String> commentByLineNumber, boolean yamlFile) {
         return commentByLineNumber.entrySet()
                 .stream()
                 .filter(e -> isTempProperty(e.getValue()))
-                .map(e -> parse(e.getValue(), PROPERTIES, fileSource(file, e.getKey(), false, configType, environment)))
+                .map(e -> parse(e.getValue(), PROPERTIES, fileSource(file, e.getKey(), yamlFile, configType, environment)))
                 .collect(toList());
     }
 

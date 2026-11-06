@@ -1,0 +1,8 @@
+path: C:\tools\
+win: C:\temp\new
+regex: \d+
+script: |
+  docker run \
+    --rm img
+#var fromVar: C:\v
+ownVar: ${this@fromVar}

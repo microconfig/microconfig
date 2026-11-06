@@ -1,0 +1,21 @@
+explicit2: |2
+    a
+  b
+
+explicit8: |2
+    a
+  b
+
+plain: |
+  a
+    b
+
+reference: |2
+    a
+  b
+
+nested:
+  deeper:
+    value: |2
+        a
+      b

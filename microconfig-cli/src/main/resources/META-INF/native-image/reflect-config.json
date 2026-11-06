@@ -44,7 +44,7 @@
   "allPublicMethods":true
 },
 {
-  "name":"io.microconfig.core.properties.resolvers.expression.functions.CustomIoApi",
+  "name":"io.microconfig.core.properties.resolvers.expression.functions.CustomSystemApi",
   "allPublicMethods":true
 },
 {
@@ -78,10 +78,6 @@
 {
   "name":"java.lang.String",
   "allDeclaredMethods":true,
-  "allPublicMethods":true
-},
-{
-  "name":"java.lang.System",
   "allPublicMethods":true
 },
 {

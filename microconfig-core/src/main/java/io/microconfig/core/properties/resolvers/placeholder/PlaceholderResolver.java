@@ -12,6 +12,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
+import static io.microconfig.core.properties.ConfigFormat.YAML;
+import static io.microconfig.core.properties.io.properties.PropertiesSyntax.escapeInsertedText;
 import static io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders.findPlaceholderIn;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
@@ -36,12 +38,31 @@ public class PlaceholderResolver implements RecursiveResolver {
 
     @Override
     public Optional<Statement> findStatementIn(CharSequence line) {
-        return findPlaceholderIn(line).map(PlaceholderStatement::new);
+        return findPlaceholderIn(line).map(b -> new PlaceholderStatement(b, isInsideExpression(line, b.getStartIndex())));
+    }
+
+    // an unclosed '#{' before the placeholder: its value becomes a part of the expression text, so it isn't escaped
+    private boolean isInsideExpression(CharSequence line, int placeholderStart) {
+        int closedBraces = 0;
+        for (int i = placeholderStart - 1; i >= 0; i--) {
+            char c = line.charAt(i);
+            if (c == '}') {
+                ++closedBraces;
+            } else if (c == '{') {
+                if (closedBraces > 0) {
+                    --closedBraces;
+                } else if (i > 0 && line.charAt(i - 1) == '#') {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @RequiredArgsConstructor
     private class PlaceholderStatement implements Statement {
         private final PlaceholderBorders borders;
+        private final boolean insideExpression;
 
         @Override
         public int getStartIndex() {
@@ -63,7 +84,7 @@ public class PlaceholderResolver implements RecursiveResolver {
             try {
                 return canBeOverridden(p, sourceOfValue) ?
                         overrideByParents(p, sourceOfValue, root) :
-                        resolve(p, root);
+                        resolve(p, sourceOfValue, root);
             } catch (RuntimeException e) {
                 String defaultValue = p.getDefaultValue();
                 if (defaultValue != null) return defaultValue;
@@ -79,7 +100,7 @@ public class PlaceholderResolver implements RecursiveResolver {
         private String overrideByParents(Placeholder p, DeclaringComponent sourceOfValue, DeclaringComponent root) {
             Function<DeclaringComponent, String> tryResolveFor = override -> {
                 try {
-                    return resolve(p.overrideBy(override), root);
+                    return resolve(p.overrideBy(override), sourceOfValue, root);
                 } catch (RuntimeException e) {
                     return null;
                 }
@@ -97,10 +118,22 @@ public class PlaceholderResolver implements RecursiveResolver {
                     .orElseThrow(() -> new ResolveException(sourceOfValue, root, "Can't resolve placeholder " + this));
         }
 
-        private String resolve(Placeholder p, DeclaringComponent root) {
+        private String resolve(Placeholder p, DeclaringComponent sourceOfValue, DeclaringComponent root) {
             Property resolved = p.resolveUsing(strategy, root);
-            return resolved.resolveBy(currentResolverWithVisited(p), root)
+            String value = resolved.resolveBy(currentResolverWithVisited(p), root)
                     .getValue();
+            return isYamlTextInPropertiesValue(resolved, sourceOfValue) ? escapeInsertedText(value) : value;
+        }
+
+        // .properties values are kept as written, with escapes, so plain YAML text inserted into them must be escaped
+        private boolean isYamlTextInPropertiesValue(Property inserted, DeclaringComponent sourceOfValue) {
+            return !insideExpression
+                    && declaredInFile(sourceOfValue, false)
+                    && (inserted.getConfigFormat() == YAML || declaredInFile(inserted.getDeclaringComponent(), true));
+        }
+
+        private boolean declaredInFile(DeclaringComponent component, boolean yaml) {
+            return component instanceof FileBasedComponent && ((FileBasedComponent) component).isYaml() == yaml;
         }
 
         private boolean hasProfileOfRootEnv(Placeholder p, DeclaringComponent root) {

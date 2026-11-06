@@ -1,0 +1,8 @@
+dir=C:\\tools\\
+next=1
+win=C:\\temp\\new
+regex=\\d+
+script=docker run \\\n  --rm img
+fromVar=C:\\v
+insideExpression=11
+own=a\\b

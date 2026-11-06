@@ -1,0 +1,5 @@
+indented=\  a\nb
+plain=first\nsecond
+middle=head first\nsecond tail
+continued=first\
+second

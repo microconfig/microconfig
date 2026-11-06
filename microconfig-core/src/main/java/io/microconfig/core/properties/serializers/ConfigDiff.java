@@ -1,6 +1,7 @@
 package io.microconfig.core.properties.serializers;
 
 import io.microconfig.core.properties.Property;
+import io.microconfig.core.properties.io.ConfigWriter;
 
 import java.io.File;
 import java.util.Collection;
@@ -19,7 +20,7 @@ public class ConfigDiff {
 
     public void storeDiffFor(File previousConfigFile, Collection<Property> newProperties) {
         Map<String, String> oldProperties = readOldConfig(previousConfigFile);
-        Map<String, String> diff = compare(new HashMap<>(oldProperties), newProperties);
+        Map<String, String> diff = compare(new HashMap<>(oldProperties), newProperties, previousConfigFile);
 
         File diffFile = diffFileFor(previousConfigFile);
         if (diff.isEmpty()) {
@@ -43,18 +44,21 @@ public class ConfigDiff {
         }
     }
 
-    private Map<String, String> compare(Map<String, String> old, Collection<Property> current) {
+    // the old values are read back from the file, so the new ones are compared in the form they are written there
+    private Map<String, String> compare(Map<String, String> old, Collection<Property> current, File file) {
         if (old.isEmpty()) return emptyMap();
 
+        ConfigWriter writer = configIo().writeTo(file);
         Map<String, String> result = new TreeMap<>();
         for (Property p : current) {
             if (p.isVar()) continue;
 
             String oldValue = old.remove(p.getKey());
+            String newValue = writer.serializedValue(p);
             if (oldValue == null) {
-                markAdded(p.getKey(), p.getValue(), result);
-            } else if (!linesEquals(p.getValue(), oldValue)) {
-                markChanged(p.getKey(), oldValue, p.getValue(), result);
+                markAdded(p.getKey(), newValue, result);
+            } else if (!linesEquals(newValue, oldValue)) {
+                markChanged(p.getKey(), oldValue, newValue, result);
             }
         }
 

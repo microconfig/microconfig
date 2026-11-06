@@ -1,5 +1,6 @@
 package io.microconfig.core.properties.resolvers.expression.functions;
 
+import java.util.UUID;
 import java.util.regex.Matcher;
 
 import static java.lang.Math.min;
@@ -23,6 +24,10 @@ public class CustomStringApi {
 
     public static String bytesBase64(byte[] bytes) {
         return getEncoder().encodeToString(bytes);
+    }
+
+    public static String uuid4() {
+        return UUID.randomUUID().toString();
     }
 
     public static String delete(String line, String toDelete) {

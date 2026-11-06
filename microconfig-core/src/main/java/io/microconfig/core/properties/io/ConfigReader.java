@@ -1,5 +1,6 @@
 package io.microconfig.core.properties.io;
 
+import io.microconfig.core.properties.ConfigFormat;
 import io.microconfig.core.properties.Property;
 
 import java.util.List;
@@ -11,4 +12,6 @@ public interface ConfigReader {
     Map<String, String> propertiesAsMap();
 
     Map<Integer, String> commentsByLineNumber();
+
+    ConfigFormat format();
 }

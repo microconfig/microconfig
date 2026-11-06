@@ -1,0 +1,25 @@
+[versions]
+spring-boot = "4.1.2"
+shadow = "9.6.1"
+sonarqube = "7.5.0.8588"
+jacoco = "0.8.16"
+
+# versions of the libraries without one come from the Spring Boot BOM
+[libraries]
+spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
+lombok = { module = "org.projectlombok:lombok" }
+jmustache = { module = "com.samskivert:jmustache" }
+spring-expression = { module = "org.springframework:spring-expression" }
+snakeyaml = { module = "org.yaml:snakeyaml" }
+gson = { module = "com.google.code.gson:gson" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
+junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter" }
+
+[bundles]
+junit = ["junit-jupiter-engine", "junit-jupiter-params"]
+
+[plugins]
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }

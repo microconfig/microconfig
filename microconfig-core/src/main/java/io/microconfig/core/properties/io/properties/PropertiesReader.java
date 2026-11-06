@@ -1,5 +1,6 @@
 package io.microconfig.core.properties.io.properties;
 
+import io.microconfig.core.properties.ConfigFormat;
 import io.microconfig.core.properties.DeclaringComponent;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.io.AbstractConfigReader;
@@ -14,6 +15,7 @@ import java.util.TreeMap;
 import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.FileBasedComponent.fileSource;
 import static io.microconfig.core.properties.PropertyImpl.findSeparatorIndexIn;
+import static io.microconfig.core.properties.io.properties.PropertiesSyntax.endsWithContinuation;
 import static io.microconfig.core.properties.PropertyImpl.isDirective;
 import static io.microconfig.core.properties.PropertyImpl.property;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
@@ -33,6 +35,11 @@ class PropertiesReader extends AbstractConfigReader {
                 .filter(line -> !line.directive())
                 .map(line -> toProperty(line, configType, environment))
                 .collect(toList());
+    }
+
+    @Override
+    public ConfigFormat format() {
+        return PROPERTIES;
     }
 
     @Override
@@ -59,7 +66,7 @@ class PropertiesReader extends AbstractConfigReader {
                 continue;
             }
 
-            boolean continued = isMultilineValue(line);
+            boolean continued = endsWithContinuation(line);
             String segment = line.stripLeading();
             boolean atEnd = i == lines.size() - 1;
             current.append(continued && atEnd ? segment.substring(0, segment.length() - 1) : segment);
@@ -71,12 +78,6 @@ class PropertiesReader extends AbstractConfigReader {
             }
         }
         return result;
-    }
-
-    private boolean isMultilineValue(String line) {
-        int end = line.length();
-        while (end > 0 && line.charAt(end - 1) == '\\') end--;
-        return (line.length() - end) % 2 == 1;
     }
 
     private Property toProperty(LogicalLine line, String configType, String environment) {

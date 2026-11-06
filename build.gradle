@@ -1,19 +1,9 @@
-apply from: 'lib.gradle'
-apply from: 'pomSettings.gradle'
-
-buildscript {
-    repositories {
-        mavenCentral()
-        maven {
-            url = uri("https://plugins.gradle.org/m2/")
-        }
-    }
-
-    dependencies {
-        classpath 'com.gradleup.shadow:shadow-gradle-plugin:9.6.1'
-        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:7.5.0.8588'
-    }
+plugins {
+    alias(libs.plugins.shadow) apply false
+    alias(libs.plugins.sonarqube) apply false
 }
+
+apply from: 'pomSettings.gradle'
 
 allprojects {
     apply plugin: 'java'
@@ -60,17 +50,17 @@ allprojects {
     }
 
     dependencies {
-        implementation platform(rootProject.lib.spring_bom)
-        annotationProcessor platform(rootProject.lib.spring_bom)
-        testAnnotationProcessor platform(rootProject.lib.spring_bom)
+        implementation platform(libs.spring.boot.dependencies)
+        annotationProcessor platform(libs.spring.boot.dependencies)
+        testAnnotationProcessor platform(libs.spring.boot.dependencies)
 
-        compileOnly rootProject.lib.lombok
-        testCompileOnly rootProject.lib.lombok
-        annotationProcessor rootProject.lib.lombok
-        testAnnotationProcessor rootProject.lib.lombok
+        compileOnly libs.lombok
+        testCompileOnly libs.lombok
+        annotationProcessor libs.lombok
+        testAnnotationProcessor libs.lombok
 
-        testImplementation rootProject.lib.junit, rootProject.lib.mokito
-        testRuntimeOnly rootProject.lib.junit_launcher
+        testImplementation libs.bundles.junit, libs.mockito.junit.jupiter
+        testRuntimeOnly libs.junit.platform.launcher
     }
 
     sonar {
@@ -80,7 +70,7 @@ allprojects {
     }
 
     jacoco {
-        toolVersion = '0.8.16'
+        toolVersion = libs.versions.jacoco.get()
     }
 
     jacocoTestReport {
