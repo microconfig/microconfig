@@ -28,5 +28,10 @@ public interface RecursiveResolver extends Resolver {
         int getEndIndex();
 
         String resolveFor(DeclaringComponent sourceOfValue, DeclaringComponent root);
+
+        // Computed text is serialized as a scalar; a YAML fragment keeps its structure.
+        default boolean isPlainText() {
+            return true;
+        }
     }
 }

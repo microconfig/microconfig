@@ -1,9 +1,12 @@
 package io.microconfig.core.properties;
 
+import io.microconfig.core.properties.impl.GroupedProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
+
+import java.util.Collection;
 
 import static io.microconfig.utils.StringUtils.findFirstIndexIn;
 import static lombok.AccessLevel.PACKAGE;
@@ -23,6 +26,11 @@ public class PropertyImpl implements Property {
     private final ConfigFormat configFormat;
 
     private final DeclaringComponent declaringComponent;
+    private final boolean literalText;
+
+    PropertyImpl(String key, String value, boolean var, ConfigFormat configFormat, DeclaringComponent declaringComponent) {
+        this(key, value, var, configFormat, declaringComponent, false);
+    }
 
     public static Property parse(String keyValue, ConfigFormat configFormat, DeclaringComponent source) {
         boolean temp = isTempProperty(keyValue);
@@ -44,6 +52,14 @@ public class PropertyImpl implements Property {
 
     public static Property varProperty(String key, String value, ConfigFormat configFormat, DeclaringComponent source) {
         return new PropertyImpl(key, value, true, configFormat, source);
+    }
+
+    public static Property literalProperty(String key, String value, ConfigFormat configFormat, DeclaringComponent source) {
+        return new PropertyImpl(key, value, false, configFormat, source, true);
+    }
+
+    public static Property groupProperty(String key, Collection<Property> children, DeclaringComponent source) {
+        return new GroupedProperty(key, children, source);
     }
 
     public static int findSeparatorIndexIn(String keyValue) {
@@ -71,7 +87,7 @@ public class PropertyImpl implements Property {
     @Override
     public Property resolveBy(Resolver resolver, DeclaringComponent root) {
         try {
-            String resolved = resolver.resolve(value, declaringComponent, root);
+            String resolved = resolver.resolve(this, root);
             return withValue(resolved);
         } catch (ResolveException e) {
             e.setProperty(this);

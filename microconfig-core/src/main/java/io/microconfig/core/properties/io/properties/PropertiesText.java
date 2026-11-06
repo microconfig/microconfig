@@ -29,7 +29,9 @@ public final class PropertiesText {
             } else if (c == '\n') {
                 result.append("\\n");
             } else if (c == '\r') {
-                result.append("\\r");
+                boolean lineBreak = i + 1 < plain.length() && plain.charAt(i + 1) == '\n';
+                result.append(lineBreak ? "\\n" : "\\r");
+                if (lineBreak) i++;
             } else {
                 result.append(c);
             }

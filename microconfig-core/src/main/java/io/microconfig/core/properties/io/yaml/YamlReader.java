@@ -40,6 +40,7 @@ import static io.microconfig.core.properties.OverrideProperty.isOverrideProperty
 import static io.microconfig.core.properties.OverrideProperty.overrideProperty;
 import static io.microconfig.core.properties.PropertyImpl.isDirective;
 import static io.microconfig.core.properties.PropertyImpl.isTempProperty;
+import static io.microconfig.core.properties.PropertyImpl.literalProperty;
 import static io.microconfig.core.properties.PropertyImpl.property;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 import static io.microconfig.utils.StringUtils.isBlank;
@@ -413,7 +414,7 @@ class YamlReader extends AbstractConfigReader {
         }
         String k = mergeKey(currentProperty, scalar.key());
         String v = scalar.style() == '>' ? FoldedScalar.toYamlValue(scalar.chomping(), valueLines) : join(LINES_SEPARATOR, valueLines);
-        addProperty(result, k, v, source);
+        addProperty(result, k, v, source, scalar.style() == '|');
         return scalar.endLine();
     }
 
@@ -548,10 +549,15 @@ class YamlReader extends AbstractConfigReader {
     }
 
     private void addProperty(List<Property> result, String key, String value, FileBasedComponent source) {
+        addProperty(result, key, value, source, false);
+    }
+
+    private void addProperty(List<Property> result, String key, String value, FileBasedComponent source, boolean literalText) {
         checkMultilineVarPosition(key, source);
         if (isOverrideProperty(key) && isEmptyBlock(key, value, source)) return;
 
-        result.add(isOverrideProperty(key) ? overrideProperty(key, value, YAML, source) : property(key, value, YAML, source));
+        result.add(isOverrideProperty(key) ? overrideProperty(key, value, YAML, source, literalText)
+                : literalText ? literalProperty(key, value, YAML, source) : property(key, value, YAML, source));
     }
 
     private String mergeKey(Deque<KeyOffset> currentProperty, String key) {

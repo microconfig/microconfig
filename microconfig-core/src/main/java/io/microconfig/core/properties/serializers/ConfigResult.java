@@ -29,11 +29,15 @@ public class ConfigResult {
 
     public static List<ServiceConfigs> groupsByService(List<ConfigResult> configResults) {
         return configResults.stream()
-                .filter(c -> !isEmpty(c.getContent()))
+                .filter(ConfigResult::hasOutput)
                 .collect(groupingBy(ConfigResult::getComponent))
                 .entrySet().stream()
                 .map(e -> new ServiceConfigs(e.getKey(), e.getValue()))
                 .collect(toList());
+    }
+
+    private static boolean hasOutput(ConfigResult result) {
+        return !isEmpty(result.getContent()) || !result.getTemplates().isEmpty();
     }
 
     @Getter
@@ -43,8 +47,19 @@ public class ConfigResult {
 
         ServiceConfigs(String service, List<ConfigResult> configResults) {
             this.service = service;
-            this.files = forEach(configResults, FileResult::new);
-            files.addAll(forEach(flatMapEach(configResults, ConfigResult::getTemplates), FileResult::new));
+            this.files = configFiles(configResults);
+            files.addAll(templateFiles(configResults));
+        }
+
+        private List<FileResult> configFiles(List<ConfigResult> configResults) {
+            return configResults.stream()
+                    .filter(c -> !isEmpty(c.getContent()))
+                    .map(FileResult::new)
+                    .collect(toList());
+        }
+
+        private List<FileResult> templateFiles(List<ConfigResult> configResults) {
+            return forEach(flatMapEach(configResults, ConfigResult::getTemplates), FileResult::new);
         }
     }
 

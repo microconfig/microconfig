@@ -7,6 +7,11 @@ public interface Property {
 
     boolean isVar();
 
+    /** Whether the value contains literal YAML block content rather than a YAML fragment. */
+    default boolean isLiteralText() {
+        return false;
+    }
+
     ConfigFormat getConfigFormat();
 
     DeclaringComponent getDeclaringComponent();

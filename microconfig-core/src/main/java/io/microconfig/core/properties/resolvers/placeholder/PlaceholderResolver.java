@@ -16,7 +16,11 @@ import java.util.function.Function;
 import static io.microconfig.core.properties.io.properties.PropertiesText.escape;
 import static io.microconfig.core.properties.io.properties.PropertiesText.isPropertiesText;
 import static io.microconfig.core.properties.io.properties.PropertiesText.unescape;
-import static io.microconfig.core.properties.resolvers.ChainedResolver.chainOf;
+import static io.microconfig.core.properties.ConfigFormat.YAML;
+import static io.microconfig.core.properties.io.yaml.YamlResolvers.forValues;
+import static io.microconfig.core.properties.io.yaml.YamlScalars.isQuoted;
+import static io.microconfig.core.properties.io.yaml.YamlScalars.literalValue;
+import static io.microconfig.core.properties.io.yaml.YamlScalars.unquote;
 import static io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders.findPlaceholderIn;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
@@ -42,31 +46,13 @@ public class PlaceholderResolver implements RecursiveResolver {
 
     @Override
     public Optional<Statement> findStatementIn(CharSequence line) {
-        return findPlaceholderIn(line).map(b -> new PlaceholderStatement(b, isInsideExpression(line, b.getStartIndex())));
-    }
-
-    // an unclosed '#{' before the placeholder: its value becomes a part of the expression, which works with plain text
-    private boolean isInsideExpression(CharSequence line, int placeholderStart) {
-        int closedBraces = 0;
-        for (int i = placeholderStart - 1; i >= 0; i--) {
-            char c = line.charAt(i);
-            if (c == '}') {
-                ++closedBraces;
-            } else if (c == '{') {
-                if (closedBraces > 0) {
-                    --closedBraces;
-                } else if (i > 0 && line.charAt(i - 1) == '#') {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return findPlaceholderIn(line).map(PlaceholderStatement::new);
     }
 
     @RequiredArgsConstructor
     private class PlaceholderStatement implements Statement {
         private final PlaceholderBorders borders;
-        private final boolean insideExpression;
+        private boolean plainText;
 
         @Override
         public int getStartIndex() {
@@ -91,7 +77,10 @@ public class PlaceholderResolver implements RecursiveResolver {
                         resolve(p, sourceOfValue, root);
             } catch (RuntimeException e) {
                 String defaultValue = p.getDefaultValue();
-                if (defaultValue != null) return defaultValue;
+                if (defaultValue != null) {
+                    plainText = defaultValue.isEmpty();
+                    return defaultValue;
+                }
                 throw new ResolveException(sourceOfValue, root, "Can't resolve " + this, e);
             }
         }
@@ -124,17 +113,31 @@ public class PlaceholderResolver implements RecursiveResolver {
 
         private String resolve(Placeholder p, DeclaringComponent sourceOfValue, DeclaringComponent root) {
             Property resolved = p.resolveUsing(strategy, root);
-            Resolver resolver = chainOf(currentResolverWithVisited(p), expressionResolver);
+            Resolver resolver = forValues(currentResolverWithVisited(p), expressionResolver);
             String value = resolved.resolveBy(resolver, root).getValue();
-            return convertForTarget(value, resolved.getDeclaringComponent(), sourceOfValue);
+            plainText = resolved.getConfigFormat() != YAML;
+            return convertForTarget(value, resolved, sourceOfValue);
         }
 
         // .properties values are kept with their escapes, other values are plain text: text crossing between them is converted
-        private String convertForTarget(String value, DeclaringComponent declaredIn, DeclaringComponent target) {
-            boolean fromProperties = isPropertiesText(declaredIn);
-            boolean toProperties = !insideExpression && isPropertiesText(target);
-            if (fromProperties == toProperties) return value;
-            return toProperties ? escape(value) : unescape(value);
+        private String convertForTarget(String value, Property inserted, DeclaringComponent target) {
+            boolean fromProperties = isPropertiesText(inserted.getDeclaringComponent());
+            boolean toProperties = isPropertiesText(target);
+            if (fromProperties && toProperties) return value;
+
+            boolean yamlTarget = target instanceof FileBasedComponent && ((FileBasedComponent) target).isYaml();
+            if (inserted.isLiteralText()) {
+                if (yamlTarget) return literalValue(value);
+                return toProperties ? escape(value) : value;
+            }
+            String plain = fromProperties ? unescape(value)
+                    : !yamlTarget && inserted.getConfigFormat() == YAML && isQuoted(value) ? unquote(value) : value;
+            return toProperties ? escape(plain) : plain;
+        }
+
+        @Override
+        public boolean isPlainText() {
+            return plainText;
         }
 
         private boolean hasProfileOfRootEnv(Placeholder p, DeclaringComponent root) {

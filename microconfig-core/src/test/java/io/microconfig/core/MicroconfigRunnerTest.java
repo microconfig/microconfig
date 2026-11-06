@@ -22,7 +22,7 @@ class MicroconfigRunnerTest {
         File root = classpathFile("repo");
         new MicroconfigRunner(root, destinationDir).build("var", emptyList(), emptyList());
 
-        File resultFile = new File(destinationDir, "var/service.properties");
+        File resultFile = new File(destinationDir, "var/application.properties");
         assertTrue(resultFile.exists());
         assertEquals("c=3", readFully(resultFile));
     }

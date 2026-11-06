@@ -44,11 +44,7 @@ public class StringUtils {
     }
 
     public static String addOffsets(String value, int spacesCount) {
-        StringBuilder result = new StringBuilder(value);
-        for (int i = 0; i < spacesCount; i++) {
-            result.append(' ');
-        }
-        return result.toString();
+        return value + " ".repeat(Math.max(0, spacesCount));
     }
 
     public static long dotCountIn(String line) {

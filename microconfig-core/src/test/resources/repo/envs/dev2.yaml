@@ -1,0 +1,6 @@
+portOffset: 2
+cg:
+  ip: 4.4.4.4
+  components:
+    - ic4
+    - portOffsetTest

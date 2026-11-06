@@ -2,7 +2,9 @@ package io.microconfig.core.properties.templates;
 
 import com.samskivert.mustache.Mustache;
 import com.samskivert.mustache.Template;
+import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.TypedProperties;
+import io.microconfig.core.properties.io.yaml.YamlScalars;
 import io.microconfig.core.properties.io.yaml.YamlTreeImpl;
 import org.yaml.snakeyaml.Yaml;
 
@@ -11,6 +13,7 @@ import java.io.FileReader;
 import java.util.Map;
 
 import static io.microconfig.utils.Logger.info;
+import static io.microconfig.utils.StreamUtils.toSortedMap;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class MustacheTemplateProcessor implements TemplateContentPostProcessor {
@@ -23,7 +26,7 @@ public class MustacheTemplateProcessor implements TemplateContentPostProcessor {
         if (!isMustacheTemplate(source, templateType)) return templateContent;
 
         info("Using mustache template for " + properties.getDeclaringComponent().getComponent() + "/" + source.getName());
-        return compile(source, templateContent).execute(toYaml(properties));
+        return compile(source, templateContent).execute(templateModel(properties));
     }
 
     private boolean isMustacheTemplate(File source, String templateType) {
@@ -44,8 +47,10 @@ public class MustacheTemplateProcessor implements TemplateContentPostProcessor {
         };
     }
 
-    private Map<String, Object> toYaml(TypedProperties properties) {
-        String text = new YamlTreeImpl().toYaml(properties.getPropertiesAsKeyValue());
+    private Map<String, Object> templateModel(TypedProperties properties) {
+        Map<String, String> values = properties.getProperties().stream()
+                .collect(toSortedMap(Property::getKey, YamlScalars::serializedValue));
+        String text = new YamlTreeImpl().toYaml(values);
         return new Yaml().load(text);
     }
 }

@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PropertiesTextTest {
     @ParameterizedTest
-    @ValueSource(strings = {"C:\\temp\\new", "docker run \\\n  --rm img", "\\d+", "a\nb", "a\rb", "a\r\nb", "tab\there", "a\\", "plain"})
+    @ValueSource(strings = {"C:\\temp\\new", "docker run \\\n  --rm img", "\\d+", "a\nb", "a\rb", "tab\there", "a\\", "plain"})
     void javaReadsEscapedTextBack(String plain) throws IOException {
         assertEquals(plain, load("key=" + escape(plain)));
     }
@@ -29,6 +29,12 @@ class PropertiesTextTest {
     @ValueSource(strings = {"x\\\\y", "first\\\n  second", "\\u0041", "a\\tb", "a\\nb", "a\\=b", "\\  leading", "C:\\\\temp", "trailing\\"})
     void unescapeLikePropertiesLoad(String propertiesText) throws IOException {
         assertEquals(load("key=" + propertiesText), unescape(propertiesText));
+    }
+
+    // a Windows line break (e.g. of a YAML block on Windows) is a line break, as YAML reads it
+    @Test
+    void writeWindowsLineBreakAsLineBreak() throws IOException {
+        assertEquals("a\nb", load("key=" + escape("a\r\nb")));
     }
 
     // Properties.load fails on it, the build keeps the text instead

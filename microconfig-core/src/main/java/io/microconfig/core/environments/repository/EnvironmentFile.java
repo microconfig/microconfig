@@ -1,6 +1,5 @@
 package io.microconfig.core.environments.repository;
 
-import com.google.gson.Gson;
 import io.microconfig.io.FsReader;
 import lombok.RequiredArgsConstructor;
 import org.yaml.snakeyaml.Yaml;
@@ -41,12 +40,8 @@ class EnvironmentFile {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private Map<String, Object> parseToMap(FsReader reader) {
-        String content = reader.readFully(file);
-        return file.getName().endsWith(".json") ?
-                new Gson().fromJson(content, Map.class) :
-                new Yaml().load(content);
+        return new Yaml().load(reader.readFully(file));
     }
 
     private EnvironmentDefinition parse(Map<String, Object> keyValue, String name) {

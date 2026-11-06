@@ -5,6 +5,7 @@
   ["io.microconfig.core.properties.PlaceholderResolveStrategy"],
   ["io.microconfig.core.properties.PropertiesFactory"],
   ["io.microconfig.core.properties.PropertiesRepository"],
+  ["io.microconfig.core.properties.Resolver"],
   ["io.microconfig.core.properties.io.selector.ConfigFormatDetector"],
   ["io.microconfig.core.properties.resolvers.RecursiveResolver"]
 ]

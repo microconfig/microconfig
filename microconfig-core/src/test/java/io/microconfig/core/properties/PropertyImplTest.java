@@ -78,7 +78,7 @@ class PropertyImplTest {
     void resolve() {
         String resolved = "resolved";
         Resolver resolver = mock(Resolver.class);
-        when(resolver.resolve("value", yamlSource, propSource)).thenReturn(resolved);
+        when(resolver.resolve(yaml, propSource)).thenReturn(resolved);
         assertEquals(
                 property("key", resolved, PROPERTIES, yamlSource),
                 yaml.resolveBy(resolver, propSource)

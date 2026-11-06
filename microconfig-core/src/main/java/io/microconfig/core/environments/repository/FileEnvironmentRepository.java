@@ -107,10 +107,7 @@ public class FileEnvironmentRepository implements EnvironmentRepository {
     }
 
     private Predicate<File> hasSupportedExtension() {
-        return f -> {
-            String name = f.getName();
-            return name.endsWith(".yaml") || name.endsWith(".json");
-        };
+        return f -> f.getName().endsWith(".yaml");
     }
 
     private Predicate<File> withFileName(String envName) {

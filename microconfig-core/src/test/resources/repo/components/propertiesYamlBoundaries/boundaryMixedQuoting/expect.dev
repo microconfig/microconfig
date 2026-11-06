@@ -1,0 +1,11 @@
+color: "#ff0000"
+
+flag: true
+
+kv: "b: c"
+
+other: 1
+
+port: 8080
+
+text: hello world

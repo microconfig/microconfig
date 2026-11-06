@@ -9,29 +9,32 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
-import java.util.regex.Matcher;
+import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static io.microconfig.core.properties.io.properties.PropertiesText.escape;
 import static io.microconfig.core.properties.io.properties.PropertiesText.isPropertiesText;
+import static io.microconfig.core.properties.io.properties.PropertiesText.unescape;
 import static io.microconfig.core.properties.resolvers.expression.ExpressionEvaluator.withFunctionsFrom;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static java.util.regex.Pattern.compile;
 
 @RequiredArgsConstructor
 public class ExpressionResolver implements RecursiveResolver {
-    private final Pattern expressionPattern = compile("#\\{(?<value>[^{]+?)}");
+    private static final Pattern EXPRESSION_PATTERN = compile("#\\{(?<value>[^{]+?)}");
     private final ExpressionEvaluator evaluator = withFunctionsFrom(CustomStringApi.class, CustomSystemApi.class);
+
+    public static Stream<MatchResult> expressionsIn(CharSequence line) {
+        return EXPRESSION_PATTERN.matcher(line).results();
+    }
 
     @Override
     public Optional<Statement> findStatementIn(CharSequence line) {
-        Matcher expressionMatcher = expressionPattern.matcher(line);
-        return expressionMatcher.find() ? of(toExpression(expressionMatcher)) : empty();
+        return expressionsIn(line).findFirst().map(this::toExpression);
     }
 
-    private Expression toExpression(Matcher matcher) {
-        return new Expression(matcher.group("value"), matcher.start(), matcher.end());
+    private Expression toExpression(MatchResult matcher) {
+        return new Expression(matcher.group(1), matcher.start(), matcher.end());
     }
 
     @RequiredArgsConstructor
@@ -45,7 +48,8 @@ public class ExpressionResolver implements RecursiveResolver {
         @Override
         public String resolveFor(DeclaringComponent component, DeclaringComponent root) {
             try {
-                String result = evaluator.evaluate(value);
+                String expression = isPropertiesText(component) ? unescape(value) : value;
+                String result = evaluator.evaluate(expression);
                 return isPropertiesText(component) ? escape(result) : result;
             } catch (RuntimeException e) {
                 throw new ResolveException(component, root, "Can't evaluate " + this, e);

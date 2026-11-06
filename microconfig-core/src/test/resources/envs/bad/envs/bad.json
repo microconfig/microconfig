@@ -1,8 +1,0 @@
-{
-  group: {
-    components: [
-      component1,
-      component2
-    ]
-  }
-}

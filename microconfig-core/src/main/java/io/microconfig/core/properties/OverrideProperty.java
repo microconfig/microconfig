@@ -38,6 +38,10 @@ public class OverrideProperty implements Property {
     }
 
     public static Property overrideProperty(String key, String value, ConfigFormat configFormat, DeclaringComponent source) {
+        return overrideProperty(key, value, configFormat, source, false);
+    }
+
+    public static Property overrideProperty(String key, String value, ConfigFormat configFormat, DeclaringComponent source, boolean literalText) {
         int envsEnd = envsEnd(key);
         if (envsEnd == key.length()) throw invalidOverride(propertyMissing(key), key, source);
 
@@ -47,7 +51,7 @@ public class OverrideProperty implements Property {
 
         boolean isNestedMultilineVar = isMultilineVar(propertyKey);
         String adjustedKey = isNestedMultilineVar ? propertyKey.substring(MULTILINE_VAR_PREFIX.length()) : propertyKey;
-        Property delegate = new PropertyImpl(adjustedKey, value, isMultilineVar(key) || isNestedMultilineVar, configFormat, source);
+        Property delegate = new PropertyImpl(adjustedKey, value, isMultilineVar(key) || isNestedMultilineVar, configFormat, source, literalText);
         return new OverrideProperty(environments, delegate);
     }
 
@@ -149,6 +153,11 @@ public class OverrideProperty implements Property {
     @Override
     public boolean isVar() {
         return delegate.isVar();
+    }
+
+    @Override
+    public boolean isLiteralText() {
+        return delegate.isLiteralText();
     }
 
     @Override

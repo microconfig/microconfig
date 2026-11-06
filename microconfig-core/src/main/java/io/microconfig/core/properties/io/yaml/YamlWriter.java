@@ -10,8 +10,6 @@ import java.nio.file.OpenOption;
 import java.util.Collection;
 import java.util.Map;
 
-import static io.microconfig.core.properties.io.properties.PropertiesText.isPropertiesText;
-import static io.microconfig.core.properties.io.properties.PropertiesText.unescape;
 import static io.microconfig.utils.StreamUtils.toSortedMap;
 
 @RequiredArgsConstructor
@@ -42,10 +40,10 @@ public class YamlWriter implements ConfigWriter {
         );
     }
 
-    // a component with both .properties and YAML files is written as YAML, so its .properties values are converted to plain text
+    // Text values are serialized as YAML scalars; existing YAML fragments keep their syntax.
     @Override
     public String serializedValue(Property property) {
-        return isPropertiesText(property.getDeclaringComponent()) ? unescape(property.getValue()) : property.getValue();
+        return YamlScalars.serializedValue(property);
     }
 
     private String serializeMap(Map<String, String> properties) {

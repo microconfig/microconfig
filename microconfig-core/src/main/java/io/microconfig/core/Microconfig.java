@@ -37,9 +37,9 @@ import java.util.Map;
 import static io.microconfig.core.configtypes.CompositeConfigTypeRepository.composite;
 import static io.microconfig.core.configtypes.CustomConfigTypeRepository.findDescriptorIn;
 import static io.microconfig.core.properties.io.selector.ConfigIoFactory.newConfigIo;
+import static io.microconfig.core.properties.io.yaml.YamlResolvers.forValues;
 import static io.microconfig.core.properties.repository.ComponentGraphImpl.traverseFrom;
 import static io.microconfig.core.properties.repository.CompositePropertiesRepository.compositeOf;
-import static io.microconfig.core.properties.resolvers.ChainedResolver.chainOf;
 import static io.microconfig.core.properties.resolvers.placeholder.strategies.composite.CompositeResolveStrategy.composite;
 import static io.microconfig.core.properties.resolvers.placeholder.strategies.system.SystemResolveStrategy.envVariablesResolveStrategy;
 import static io.microconfig.core.properties.resolvers.placeholder.strategies.system.SystemResolveStrategy.systemPropertiesResolveStrategy;
@@ -142,7 +142,7 @@ public class Microconfig {
         }
 
         public Resolver initResolver() {
-            return cache(chainOf(
+            return cache(forValues(
                     initPlaceholderResolver(),
                     new ExpressionResolver()
             ));

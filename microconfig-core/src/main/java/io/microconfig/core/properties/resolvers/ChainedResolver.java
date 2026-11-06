@@ -1,6 +1,5 @@
 package io.microconfig.core.properties.resolvers;
 
-import io.microconfig.core.properties.Resolver;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -14,7 +13,7 @@ import static lombok.AccessLevel.PRIVATE;
 public class ChainedResolver implements RecursiveResolver {
     public final List<RecursiveResolver> resolvers;
 
-    public static Resolver chainOf(RecursiveResolver... resolvers) {
+    public static RecursiveResolver recursiveChainOf(RecursiveResolver... resolvers) {
         return new ChainedResolver(asList(resolvers));
     }
 

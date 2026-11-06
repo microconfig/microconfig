@@ -1,7 +1,5 @@
 package io.microconfig.core.properties.serializers;
 
-import io.microconfig.core.configtypes.ConfigTypeImpl;
-import io.microconfig.core.environments.EnvironmentRepository;
 import io.microconfig.core.properties.ConfigFormat;
 import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.PropertySerializer;
@@ -13,7 +11,6 @@ import java.util.Collection;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static io.microconfig.core.configtypes.StandardConfigType.APPLICATION;
 import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.ConfigFormat.YAML;
 import static io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo;
@@ -73,19 +70,5 @@ public class PropertySerializers {
     private static ConfigFormat extensionByConfigFormat(Collection<Property> properties) {
         return properties.isEmpty() || properties.stream().anyMatch(p -> p.getConfigFormat() == YAML) ?
                 YAML : PROPERTIES;
-    }
-
-    public static PropertySerializer<File> withLegacySupport(PropertySerializer<File> serializer,
-                                                             EnvironmentRepository environmentRepository) {
-        return (properties, templates, configType, componentName, environment) -> {
-            if (configType.getName().equals(APPLICATION.getName())) {
-                File envSource = environmentRepository.getByName(environment).getSource();
-                if (envSource != null && envSource.toString().endsWith(".json")) {
-                    configType = new ConfigTypeImpl(configType.getName(), configType.getSourceExtensions(), "service");
-                }
-            }
-
-            return serializer.serialize(properties, templates, configType, componentName, environment);
-        };
     }
 }
