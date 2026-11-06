@@ -139,7 +139,7 @@ class OverridePropertyTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {".var", "+prod"})
+    @ValueSource(strings = {".var", "+prod", "+prod..var", "+a, b..var"})
     void rejectScalarInsteadOfBlock(String key) {
         assertThrows(IllegalArgumentException.class, () -> overrideProperty(key, "5", YAML, null));
     }

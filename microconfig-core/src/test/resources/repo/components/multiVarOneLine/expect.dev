@@ -1,0 +1,7 @@
+byColon: 2
+
+byEq: 1
+
+byHost: dev-host
+
+byUrl: jdbc:oracle:thin:@h:1521

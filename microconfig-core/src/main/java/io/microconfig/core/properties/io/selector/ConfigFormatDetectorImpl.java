@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.ConfigFormat.YAML;
 import static io.microconfig.core.properties.PropertyImpl.findSeparatorIndexIn;
-import static io.microconfig.core.properties.PropertyImpl.isComment;
+import static io.microconfig.core.properties.PropertyImpl.isDirective;
 
 
 @RequiredArgsConstructor
@@ -41,7 +41,7 @@ public class ConfigFormatDetectorImpl implements ConfigFormatDetector {
     private Predicate<String> withValue() {
         return line -> {
             String trimmed = line.trim();
-            return !trimmed.isEmpty() && !isComment(trimmed);
+            return !trimmed.isEmpty() && !isDirective(trimmed);
         };
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static io.microconfig.core.properties.PropertyImpl.isComment;
+import static io.microconfig.core.properties.PropertyImpl.isDirective;
 import static io.microconfig.utils.StreamUtils.toSortedMap;
 
 @RequiredArgsConstructor
@@ -32,7 +32,7 @@ public abstract class AbstractConfigReader implements ConfigReader {
         Map<Integer, String> result = new TreeMap<>();
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i).trim();
-            if (!isComment(line)) continue;
+            if (!isDirective(line)) continue;
 
             result.put(i, line);
         }

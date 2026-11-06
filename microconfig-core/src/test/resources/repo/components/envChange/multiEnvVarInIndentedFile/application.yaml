@@ -1,0 +1,7 @@
+  value: ${this@host:none}
+  sid: ${this@dbSid:none}
+  #var dbSid: global-sid
+  +dev:
+  # a comment at the root level
+    #var host: dev-host
+  other: x

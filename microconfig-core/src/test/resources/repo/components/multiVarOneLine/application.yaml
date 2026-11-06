@@ -1,0 +1,11 @@
+byEq: ${this@eq:not-found}
+byColon: ${this@colon:not-found}
+byUrl: ${this@url:not-found}
+byHost: ${this@host:base-host}
+
+.var eq=1
+.var colon: 2
+.var url=jdbc:oracle:thin:@h:1521
+
++dev:
+  .var host=dev-host

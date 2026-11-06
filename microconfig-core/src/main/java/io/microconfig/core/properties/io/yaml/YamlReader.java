@@ -23,7 +23,7 @@ import static io.microconfig.core.properties.OverrideProperty.isEmptyBlock;
 import static io.microconfig.core.properties.OverrideProperty.isEnvBlock;
 import static io.microconfig.core.properties.OverrideProperty.isOverrideProperty;
 import static io.microconfig.core.properties.OverrideProperty.overrideProperty;
-import static io.microconfig.core.properties.PropertyImpl.isComment;
+import static io.microconfig.core.properties.PropertyImpl.isDirective;
 import static io.microconfig.core.properties.PropertyImpl.isTempProperty;
 import static io.microconfig.core.properties.PropertyImpl.property;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
@@ -183,7 +183,7 @@ class YamlReader extends AbstractConfigReader {
     }
 
     private boolean complexValueEnd(String nextLine, int currentOffset) {
-        if (skip(nextLine) && !isComment(nextLine)) return false;
+        if (skip(nextLine) && !isDirective(nextLine)) return false;
 
         int nextOffset = offsetIndex(nextLine);
         if (currentOffset > nextOffset) return true;
@@ -234,7 +234,7 @@ class YamlReader extends AbstractConfigReader {
 
     private boolean skip(String line) {
         String trim = line.trim();
-        return trim.isEmpty() || isComment(trim);
+        return trim.isEmpty() || isDirective(trim);
     }
 
     private int offsetIndex(String line) {
@@ -305,18 +305,29 @@ class YamlReader extends AbstractConfigReader {
     // '#var' lines inside '+env:' blocks (at any depth) with the header of their block, in one pass
     private Map<Integer, String> envBlockHeaderByVarLine() {
         Map<Integer, String> headerByLine = new TreeMap<>();
+        int rootOffset = rootOffset();
         String envBlockHeader = null;
         for (int lineNumber = 0; lineNumber < lines.size(); lineNumber++) {
             String line = lines.get(lineNumber);
-            if (line.trim().isEmpty()) continue;
+            String trimmed = line.trim();
+            if (trimmed.isEmpty()) continue;
 
-            if (offsetIndex(line) > 0) {
-                if (envBlockHeader != null && isTempProperty(line.trim())) headerByLine.put(lineNumber, envBlockHeader);
-            } else if (!isComment(line)) {
+            if (offsetIndex(line) > rootOffset) {
+                if (envBlockHeader != null && isTempProperty(trimmed)) headerByLine.put(lineNumber, envBlockHeader);
+            } else if (!isDirective(trimmed)) {
                 envBlockHeader = envBlockHeader(line);
             }
         }
         return headerByLine;
+    }
+
+    // a YAML file can be indented as a whole: the root level is the offset of its first property
+    private int rootOffset() {
+        return lines.stream()
+                .filter(line -> !skip(line))
+                .mapToInt(this::offsetIndex)
+                .findFirst()
+                .orElse(0);
     }
 
     private String envBlockHeader(String topLevelLine) {

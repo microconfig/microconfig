@@ -11,13 +11,11 @@ import static lombok.AccessLevel.PRIVATE;
 @RequiredArgsConstructor(access = PRIVATE)
 public class Includes {
     private static final String PREFIX = "#include ";
-    private static final String PREFIX2 = "#@include ";
 
     private final String line;
 
     public static boolean isInclude(String line) {
-        String lower = line.toLowerCase();
-        return lower.startsWith(PREFIX) || lower.startsWith(PREFIX2);
+        return line.startsWith(PREFIX);
     }
 
     public static Includes from(String line) {
@@ -33,26 +31,10 @@ public class Includes {
     }
 
     private List<Include> parseIncludes(String defaultEnv) {
-        List<String> components = split(line.substring(componentStartIndex()), ",");
+        List<String> components = split(line.substring(PREFIX.length()), ",");
         if (components.isEmpty()) {
             throw new IllegalArgumentException("Include must contain component names.");
         }
         return forEach(components, component -> Include.parse(component, defaultEnv));
-    }
-
-    private int componentStartIndex() {
-        String lower = line.toLowerCase();
-        int index = tryPrefix(lower, PREFIX);
-        if (index >= 0) return index;
-
-        int index2 = tryPrefix(lower, PREFIX2);
-        if (index2 >= 0) return index2;
-
-        throw new IllegalArgumentException("Include must start with " + PREFIX + " or " + PREFIX2);
-    }
-
-    private int tryPrefix(String value, String prefix) {
-        int start = value.indexOf(prefix);
-        return start >= 0 ? start + prefix.length() : -1;
     }
 }

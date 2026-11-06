@@ -10,7 +10,7 @@ import java.util.List;
 
 import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.FileBasedComponent.fileSource;
-import static io.microconfig.core.properties.PropertyImpl.isComment;
+import static io.microconfig.core.properties.PropertyImpl.isDirective;
 import static io.microconfig.core.properties.PropertyImpl.parse;
 import static io.microconfig.utils.FileUtils.LINES_SEPARATOR;
 
@@ -27,7 +27,7 @@ class PropertiesReader extends AbstractConfigReader {
         for (int lineNumber = 0; lineNumber < lines.size(); lineNumber++) {
             String line = lines.get(lineNumber);
             String trimmed = line.trim();
-            if (trimmed.isEmpty() || isComment(trimmed)) continue;
+            if (trimmed.isEmpty() || isDirective(trimmed)) continue;
 
             currentLine.append(trimmed);
             if (isMultilineValue(trimmed)) {

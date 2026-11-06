@@ -14,6 +14,7 @@ import static lombok.AccessLevel.PRIVATE;
 @RequiredArgsConstructor(access = PACKAGE)
 public class PropertyImpl implements Property {
     private static final String TEMP_VALUE = "#var ";
+    private static final String ONE_LINE_VAR = ".var ";
 
     private final String key;
     @With(PRIVATE)
@@ -31,7 +32,7 @@ public class PropertyImpl implements Property {
                     "'\nProperty must contain ':' or '=' as delimiter.");
         }
 
-        String key = keyValue.substring(temp ? TEMP_VALUE.length() : 0, separatorIndex).trim();
+        String key = keyValue.substring(temp ? tempPrefixLength(keyValue) : 0, separatorIndex).trim();
         String value = keyValue.substring(separatorIndex + 1).trim();
 
         return new PropertyImpl(key, value, temp, configFormat, source);
@@ -53,8 +54,18 @@ public class PropertyImpl implements Property {
         return line.startsWith("#");
     }
 
+    // '#var key: value' or '.var key: value'
     public static boolean isTempProperty(String line) {
-        return line.startsWith(TEMP_VALUE);
+        return line.startsWith(TEMP_VALUE) || line.startsWith(ONE_LINE_VAR);
+    }
+
+    // a line that isn't a property of the config: a comment or a temp property line
+    public static boolean isDirective(String line) {
+        return isComment(line) || isTempProperty(line);
+    }
+
+    private static int tempPrefixLength(String line) {
+        return (line.startsWith(TEMP_VALUE) ? TEMP_VALUE : ONE_LINE_VAR).length();
     }
 
     @Override

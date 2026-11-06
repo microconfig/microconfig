@@ -43,6 +43,8 @@ public class OverrideProperty implements Property {
 
         List<String> environments = extractEnvs(key, envsEnd, source);
         String propertyKey = key.substring(envsEnd + 1);
+        if (propertyKey.equals(MULTILINE_VAR)) throw invalidOverride(propertyMissing(propertyKey), key, source);
+
         boolean isNestedMultilineVar = isMultilineVar(propertyKey);
         String adjustedKey = isNestedMultilineVar ? propertyKey.substring(MULTILINE_VAR_PREFIX.length()) : propertyKey;
         Property delegate = new PropertyImpl(adjustedKey, value, isMultilineVar(key) || isNestedMultilineVar, configFormat, source);
