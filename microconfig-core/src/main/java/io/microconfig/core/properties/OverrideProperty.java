@@ -21,8 +21,8 @@ import static lombok.AccessLevel.PRIVATE;
 @EqualsAndHashCode
 public class OverrideProperty implements Property {
     private static final String ENV_PREFIX = "+";
-    private static final String VAR_BLOCK = ".var";
-    private static final String VAR_BLOCK_PREFIX = VAR_BLOCK + ".";
+    private static final String MULTILINE_VAR = ".var";
+    private static final String MULTILINE_VAR_PREFIX = MULTILINE_VAR + ".";
     private static final String ENV_SEPARATOR = ",";
 
     @Getter
@@ -30,7 +30,7 @@ public class OverrideProperty implements Property {
     private final Property delegate;
 
     public static boolean isOverrideProperty(String key) {
-        return isEnvBlock(key) || isVarBlock(key) || key.equals(VAR_BLOCK);
+        return isEnvBlock(key) || isMultilineVar(key) || key.equals(MULTILINE_VAR);
     }
 
     public static boolean isEnvBlock(String key) {
@@ -43,9 +43,9 @@ public class OverrideProperty implements Property {
 
         List<String> environments = extractEnvs(key, envsEnd, source);
         String propertyKey = key.substring(envsEnd + 1);
-        boolean isNestedVarBlock = isVarBlock(propertyKey);
-        String adjustedKey = isNestedVarBlock ? propertyKey.substring(VAR_BLOCK_PREFIX.length()) : propertyKey;
-        Property delegate = new PropertyImpl(adjustedKey, value, isVarBlock(key) || isNestedVarBlock, configFormat, source);
+        boolean isNestedMultilineVar = isMultilineVar(propertyKey);
+        String adjustedKey = isNestedMultilineVar ? propertyKey.substring(MULTILINE_VAR_PREFIX.length()) : propertyKey;
+        Property delegate = new PropertyImpl(adjustedKey, value, isMultilineVar(key) || isNestedMultilineVar, configFormat, source);
         return new OverrideProperty(environments, delegate);
     }
 
@@ -60,28 +60,28 @@ public class OverrideProperty implements Property {
         if (!value.isEmpty()) return false;
 
         int envsEnd = envsEnd(key);
-        boolean isEmpty = envsEnd == key.length() || key.substring(envsEnd + 1).equals(VAR_BLOCK);
+        boolean isEmpty = envsEnd == key.length() || key.substring(envsEnd + 1).equals(MULTILINE_VAR);
         if (isEmpty) extractEnvs(key, envsEnd, source);
         return isEmpty;
     }
 
     // '.var:' block goes at the top level or directly inside '+env:', deeper it isn't a var block
-    public static void checkVarBlockPosition(String key, DeclaringComponent source) {
-        String rest = withoutAllowedVarBlock(key) + ".";
-        if (rest.contains("." + VAR_BLOCK_PREFIX) || rest.startsWith(VAR_BLOCK_PREFIX)) {
+    public static void checkMultilineVarPosition(String key, DeclaringComponent source) {
+        String rest = withoutAllowedMultilineVar(key) + ".";
+        if (rest.contains("." + MULTILINE_VAR_PREFIX) || rest.startsWith(MULTILINE_VAR_PREFIX)) {
             throw new IllegalArgumentException("'.var:' block must be at the top level or directly inside a '+env:' block, but key '"
                     + key + "' has it deeper in " + source);
         }
     }
 
-    private static String withoutAllowedVarBlock(String key) {
+    private static String withoutAllowedMultilineVar(String key) {
         String propertyKey = key;
         if (isEnvBlock(key)) {
             int envsEnd = envsEnd(key);
             propertyKey = envsEnd == key.length() ? "" : key.substring(envsEnd + 1);
         }
-        if (propertyKey.equals(VAR_BLOCK)) return "";
-        return isVarBlock(propertyKey) ? propertyKey.substring(VAR_BLOCK_PREFIX.length()) : propertyKey;
+        if (propertyKey.equals(MULTILINE_VAR)) return "";
+        return isMultilineVar(propertyKey) ? propertyKey.substring(MULTILINE_VAR_PREFIX.length()) : propertyKey;
     }
 
     private static int envsEnd(String key) {
@@ -90,11 +90,11 @@ public class OverrideProperty implements Property {
     }
 
     private static String propertyMissing(String key) {
-        return key.equals(VAR_BLOCK) ? "must be a block of temp properties" : "must contain a property, like '+env.key'";
+        return key.equals(MULTILINE_VAR) ? "must be a block of temp properties" : "must contain a property, like '+env.key'";
     }
 
-    private static boolean isVarBlock(String key) {
-        return key.startsWith(VAR_BLOCK_PREFIX);
+    private static boolean isMultilineVar(String key) {
+        return key.startsWith(MULTILINE_VAR_PREFIX);
     }
 
     // '+' goes once, before the first env: '+prod-a, prod-b'

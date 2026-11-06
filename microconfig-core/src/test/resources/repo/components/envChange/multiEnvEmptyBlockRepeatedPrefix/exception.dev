@@ -1,0 +1,1 @@
+Override '+dev, +test' must have '+' only once, before the first env, like '+prod-a, prod-b' in ../components/envChange/multiEnvEmptyBlockRepeatedPrefix/application.yaml:2

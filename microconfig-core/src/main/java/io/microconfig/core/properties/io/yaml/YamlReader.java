@@ -17,7 +17,7 @@ import java.util.TreeMap;
 import static io.microconfig.core.properties.ConfigFormat.PROPERTIES;
 import static io.microconfig.core.properties.ConfigFormat.YAML;
 import static io.microconfig.core.properties.FileBasedComponent.fileSource;
-import static io.microconfig.core.properties.OverrideProperty.checkVarBlockPosition;
+import static io.microconfig.core.properties.OverrideProperty.checkMultilineVarPosition;
 import static io.microconfig.core.properties.OverrideProperty.envVarProperty;
 import static io.microconfig.core.properties.OverrideProperty.isEmptyBlock;
 import static io.microconfig.core.properties.OverrideProperty.isEnvBlock;
@@ -206,7 +206,7 @@ class YamlReader extends AbstractConfigReader {
 
         if (valueEmpty(line, separatorIndex)) {
             if (itsLastProperty(index, currentOffset)) {
-                addValue(result, currentProperty, currentOffset, index - 1, key, "", configType, env);
+                addValue(result, currentProperty, currentOffset, index, key, "", configType, env);
                 return;
             }
 
@@ -278,7 +278,7 @@ class YamlReader extends AbstractConfigReader {
     }
 
     private Property toProperty(String key, String value, FileBasedComponent source) {
-        checkVarBlockPosition(key, source);
+        checkMultilineVarPosition(key, source);
         return isOverrideProperty(key) ? overrideProperty(key, value, YAML, source) : property(key, value, YAML, source);
     }
 

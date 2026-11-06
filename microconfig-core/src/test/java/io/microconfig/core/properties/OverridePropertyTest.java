@@ -5,7 +5,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static io.microconfig.core.properties.ConfigFormat.YAML;
-import static io.microconfig.core.properties.OverrideProperty.checkVarBlockPosition;
+import static io.microconfig.core.properties.OverrideProperty.checkMultilineVarPosition;
 import static io.microconfig.core.properties.OverrideProperty.isEmptyBlock;
 import static io.microconfig.core.properties.OverrideProperty.isOverrideProperty;
 import static io.microconfig.core.properties.OverrideProperty.overrideProperty;
@@ -75,7 +75,7 @@ class OverridePropertyTest {
 
     @ParameterizedTest
     @CsvSource(delimiter = '|', value = {"+prod..variable.x | .variable.x", "+prod.var.x | var.x"})
-    void onlyDotVarIsVarBlockInsideEnvBlock(String key, String expectedKey) {
+    void onlyDotVarIsMultilineVarInsideEnvBlock(String key, String expectedKey) {
         OverrideProperty p = parse(key);
 
         assertEquals(expectedKey, p.getKey());
@@ -128,14 +128,14 @@ class OverridePropertyTest {
             ".var.x", ".var", "+dev..var.x", "+dev..var", "+dev, test..var.x",
             "x", "a.var.b", "a.variable", "+dev.x", "+dev..variable.x", ".var.a.var"
     })
-    void acceptVarBlockAtTopLevelOrDirectlyInsideEnvBlock(String key) {
-        checkVarBlockPosition(key, null);
+    void acceptMultilineVarAtTopLevelOrDirectlyInsideEnvBlock(String key) {
+        checkMultilineVarPosition(key, null);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"datasource..var.x", "datasource..var", "+dev.datasource..var.x", ".var..var.x", "+dev..var..var.x"})
-    void rejectVarBlockDeeperThanAllowed(String key) {
-        assertThrows(IllegalArgumentException.class, () -> checkVarBlockPosition(key, null));
+    void rejectMultilineVarDeeperThanAllowed(String key) {
+        assertThrows(IllegalArgumentException.class, () -> checkMultilineVarPosition(key, null));
     }
 
     @ParameterizedTest
