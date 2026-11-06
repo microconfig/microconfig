@@ -175,6 +175,95 @@ class DirectiveValueBoundariesTest {
         if (envBlock) assertEquals("none", build(content, YAML, "prod").getPropertiesAsKeyValue().get("answer"));
     }
 
+    @ParameterizedTest(name = "{0}, quote={1}, env block={2}")
+    @MethodSource("quotedValueLayouts")
+    void keepDirectivesInsideMultilineQuotedValues(String layout, String quote, boolean envBlock) throws IOException {
+        String escaped = quote.equals("\"") ? "escaped \\\"quote\\\"" : "it''s quoted";
+        String scalar = quote + "😀first\u2028continued\n" + escaped + "\n"
+                + ".var host: literal\n.var without-delimiter\n#var legacy: literal\n"
+                + "#include missing-quoted-component\n#@Ignore\n.var tail: closing" + quote;
+        String node = switch (layout) {
+            case "flow sequence" -> "[" + scalar.replace("\n", "\n  ") + "]";
+            case "block sequence" -> "- " + scalar.replace("\n", "\n  ");
+            case "mapping in sequence" -> "- message: " + scalar.replace("\n", "\n    ");
+            default -> "{message: " + scalar.replace("\n", "\n  ") + "}";
+        };
+        String block = "text:\n" + node.lines().map(line -> "  " + line + "\n")
+                .collect(java.util.stream.Collectors.joining()) + ".var outside: real\n";
+        String content = "result: ${this@host:none}\ntail: ${this@tail:none}\nlegacy: ${this@legacy:none}\nactual: ${this@outside:none}\n"
+                + (envBlock ? ".var outside: base\n+dev:\n" + block.lines().map(line -> "  " + line + "\n")
+                .collect(java.util.stream.Collectors.joining()) : block);
+
+        TypedProperties properties = build(content, YAML);
+        assertEquals("none", properties.getPropertiesAsKeyValue().get("result"));
+        assertEquals("none", properties.getPropertiesAsKeyValue().get("tail"));
+        assertEquals("none", properties.getPropertiesAsKeyValue().get("legacy"));
+        assertEquals("real", properties.getPropertiesAsKeyValue().get("actual"));
+        Object parsed = new Yaml().load(properties.getPropertiesAsKeyValue().get("text"));
+        String text;
+        if (parsed instanceof Map<?, ?> map) text = (String) map.get("message");
+        else {
+            Object first = assertInstanceOf(List.class, parsed).get(0);
+            text = first instanceof Map<?, ?> map ? (String) map.get("message") : (String) first;
+        }
+        assertTrue(text.contains(".var host: literal"));
+        assertTrue(text.contains(".var without-delimiter"));
+        assertTrue(text.contains("#include missing-quoted-component"));
+        assertTrue(text.contains("#@Ignore"));
+        assertTrue(text.contains(".var tail: closing"));
+        if (envBlock) {
+            Map<String, String> production = build(content, YAML, "prod").getPropertiesAsKeyValue();
+            assertEquals("none", production.get("result"));
+            assertEquals("base", production.get("actual"));
+        }
+    }
+
+    @Test
+    void keepQuotesInsideBlockScalarsSeparateFromQuotedScalars() throws IOException {
+        String content = "items:\n"
+                + "  - |\n    \"unclosed literal quote\n    .var host: literal\n"
+                + "  - \"next\n    fake: |\n      literal text\n    .var quoted: literal\n    last\"\n"
+                + ".var outside: real\n"
+                + "result: ${this@host:none}\nquoted: ${this@quoted:none}\nactual: ${this@outside:none}\n";
+
+        TypedProperties properties = build(content, YAML);
+        assertEquals("none", properties.getPropertiesAsKeyValue().get("result"));
+        assertEquals("none", properties.getPropertiesAsKeyValue().get("quoted"));
+        assertEquals("real", properties.getPropertiesAsKeyValue().get("actual"));
+        Map<?, ?> output = new Yaml().load(properties.save(asString()));
+        List<?> items = assertInstanceOf(List.class, output.get("items"));
+        assertTrue(((String) items.get(0)).contains("\"unclosed literal quote\n.var host: literal"));
+        assertTrue(((String) items.get(1)).contains(".var quoted: literal"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", "- "})
+    void keepScalarHeaderLookalikesInsideFlowQuotes(String sequence) throws IOException {
+        String content = "text:\n  " + sequence + "[\"first: |\n"
+                + "      .var host: literal\n      last\"]\n"
+                + ".var outside: real\nresult: ${this@host:none}\nactual: ${this@outside:none}\n";
+
+        TypedProperties properties = build(content, YAML);
+        assertEquals("none", properties.getPropertiesAsKeyValue().get("result"));
+        assertEquals("real", properties.getPropertiesAsKeyValue().get("actual"));
+        List<?> parsed = new Yaml().load(properties.getPropertiesAsKeyValue().get("text"));
+        Object scalar = sequence.isEmpty() ? parsed.get(0) : ((List<?>) parsed.get(0)).get(0);
+        assertEquals("first: | .var host: literal last", scalar);
+    }
+
+    @Test
+    void keepQuotedDirectivesAfterUnresolvedFlowPlaceholders() throws IOException {
+        String content = "text:\n  [${this@missing:${this@alsoMissing:first}}, \"next\n"
+                + "    .var host: literal\n    #include missing-quoted-component\n    last\"]\n"
+                + ".var outside: real\nresult: ${this@host:none}\nactual: ${this@outside:none}\n";
+
+        TypedProperties properties = build(content, YAML);
+        assertEquals("none", properties.getPropertiesAsKeyValue().get("result"));
+        assertEquals("real", properties.getPropertiesAsKeyValue().get("actual"));
+        assertEquals(List.of("first", "next .var host: literal #include missing-quoted-component last"),
+                new Yaml().load(properties.getPropertiesAsKeyValue().get("text")));
+    }
+
     @Test
     void keepOneLineFlowCollectionsAsCollectionsAfterDirectives() throws IOException {
         String content = "section:\n  values:\n    [one, two]\n  .var host: local\nanswer: ${this@host:none}\n";
@@ -285,6 +374,12 @@ class DirectiveValueBoundariesTest {
                 .flatMap(pair -> Stream.of(".var", "#var")
                         .flatMap(directive -> Stream.of(false, true)
                                 .map(envBlock -> Arguments.of(pair[0], pair[1], directive, envBlock))));
+    }
+
+    private static Stream<Arguments> quotedValueLayouts() {
+        return Stream.of("flow sequence", "block sequence", "mapping in sequence", "flow mapping")
+                .flatMap(layout -> Stream.of("\"", "'").flatMap(quote -> Stream.of(false, true)
+                        .map(envBlock -> Arguments.of(layout, quote, envBlock))));
     }
 
     private static Stream<Arguments> yamlScalarHeaders() {

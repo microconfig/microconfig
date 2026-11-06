@@ -1,7 +1,5 @@
 package io.microconfig.core.properties.io.yaml;
 
-import com.google.gson.Gson;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +35,6 @@ public class YamlTreeImpl implements YamlTree {
     }
 
     static class TreeCreator {
-        private static final Gson STRING_ESCAPER = new Gson();
-
         Map<String, Object> toTree(Map<String, String> flatProperties) {
             if (!(flatProperties instanceof TreeMap) || ((TreeMap<?, ?>) flatProperties).comparator() != null) {
                 flatProperties = new TreeMap<>(flatProperties);
@@ -78,13 +74,7 @@ public class YamlTreeImpl implements YamlTree {
                 return "|" + withOffsets(parts, value);
             }
 
-            return quoteAmbiguousScalar(value);
-        }
-
-        private String quoteAmbiguousScalar(String value) {
-            if (value.startsWith("[") || value.startsWith("{") || value.startsWith("\"") || value.startsWith("'")) return value;
-            return value.contains(": ") || value.contains(" #") || value.startsWith("#") || value.endsWith(":")
-                    ? STRING_ESCAPER.toJson(value) : value;
+            return value;
         }
 
         // empty lines of the value stay empty, without trailing spaces of the offset

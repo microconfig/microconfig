@@ -5,11 +5,13 @@ import io.microconfig.core.properties.Property;
 import io.microconfig.core.properties.io.AbstractConfigReader;
 import io.microconfig.io.FsReader;
 import lombok.RequiredArgsConstructor;
-import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.error.YAMLException;
-import org.yaml.snakeyaml.events.CollectionEndEvent;
-import org.yaml.snakeyaml.events.CollectionStartEvent;
-import org.yaml.snakeyaml.events.Event;
+import org.yaml.snakeyaml.reader.StreamReader;
+import org.yaml.snakeyaml.scanner.Scanner;
+import org.yaml.snakeyaml.scanner.ScannerImpl;
+import org.yaml.snakeyaml.tokens.ScalarToken;
+import org.yaml.snakeyaml.tokens.Token;
 
 import java.io.CharArrayReader;
 import java.io.File;
@@ -48,10 +50,15 @@ import static java.util.stream.IntStream.range;
 import static java.util.stream.IntStream.rangeClosed;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.of;
+import static org.yaml.snakeyaml.DumperOptions.ScalarStyle.DOUBLE_QUOTED;
+import static org.yaml.snakeyaml.DumperOptions.ScalarStyle.SINGLE_QUOTED;
+import static org.yaml.snakeyaml.tokens.Token.ID.StreamEnd;
 
 class YamlReader extends AbstractConfigReader {
     private final char[] source;
     private final int[] lineOffsets;
+    private final int[] codePointLineOffsets;
+    private final Map<Integer, Integer> flowValueEnds = new LinkedHashMap<>();
     private final Map<Integer, BlockScalar> blockScalars;
     private final Set<Integer> literalValueLines;
 
@@ -59,13 +66,24 @@ class YamlReader extends AbstractConfigReader {
         super(file, fileFsReader);
         source = join("\n", lines).toCharArray();
         lineOffsets = lineOffsets();
-        blockScalars = readBlockScalars();
-        literalValueLines = findLiteralValueLines();
+        codePointLineOffsets = codePointLineOffsets();
+        Set<Integer> quotedLines = findQuotedValueLines();
+        blockScalars = readBlockScalars(quotedLines);
+        literalValueLines = findLiteralValueLines(quotedLines);
     }
 
     private int[] lineOffsets() {
         int[] offsets = new int[lines.size()];
         for (int i = 1; i < lines.size(); i++) offsets[i] = offsets[i - 1] + lines.get(i - 1).length() + 1;
+        return offsets;
+    }
+
+    private int[] codePointLineOffsets() {
+        int[] offsets = new int[lines.size()];
+        for (int i = 1; i < lines.size(); i++) {
+            String previous = lines.get(i - 1);
+            offsets[i] = offsets[i - 1] + previous.codePointCount(0, previous.length()) + 1;
+        }
         return offsets;
     }
 
@@ -89,9 +107,85 @@ class YamlReader extends AbstractConfigReader {
         return literalValueLines;
     }
 
-    private Map<Integer, BlockScalar> readBlockScalars() {
+    private Set<Integer> findQuotedValueLines() {
+        Set<Integer> result = new HashSet<>();
+        for (int i = 0; i < lines.size(); i++) {
+            if (skip(lines.get(i))) continue;
+            BlockScalar scalar = readBlockScalar(i);
+            if (scalar != null) {
+                i = scalar.endLine();
+                continue;
+            }
+            int offset = quotedValueStart(lines.get(i));
+            if (offset >= 0) i = Math.max(i, collectQuotedValueLines(i, offset, result));
+        }
+        return result;
+    }
+
+    private int quotedValueStart(String line) {
+        int offset = offsetIndex(line);
+        char first = line.charAt(offset);
+        if (sequenceValueStart(line, offset) != offset || first == '[' || first == '{') return 0;
+
+        int separator = mappingSeparatorIndex(line, offset);
+        int value = skipNodeProperties(line, separator < 0 ? offset : skipWhitespace(line, separator + 1));
+        if (value == line.length()) return -1;
+        char marker = line.charAt(value);
+        return marker == '\'' || marker == '"' || marker == '[' || marker == '{' ? value : -1;
+    }
+
+    private int collectQuotedValueLines(int startLine, int offset, Set<Integer> valueLines) {
+        int start = lineOffsets[startLine] + offset;
+        int codePointStart = codePointLineOffsets[startLine] + lines.get(startLine).codePointCount(0, offset);
+        int lastLine = startLine;
+        int depth = 0;
+        boolean flow = false;
+        try {
+            Scanner scanner = new ScannerImpl(new StreamReader(new CharArrayReader(source, start, source.length - start)), new LoaderOptions());
+            while (!scanner.checkToken(StreamEnd)) {
+                Token token = scanner.getToken();
+                switch (token.getTokenId()) {
+                    case FlowSequenceStart, FlowMappingStart, BlockSequenceStart, BlockMappingStart -> {
+                        if (depth == 0) flow = token.getTokenId() == Token.ID.FlowSequenceStart || token.getTokenId() == Token.ID.FlowMappingStart;
+                        depth++;
+                    }
+                    case FlowSequenceEnd, FlowMappingEnd, BlockEnd -> {
+                        if (--depth == 0) {
+                            if (flow) {
+                                int endLine = sourceLine(codePointStart + token.getEndMark().getIndex() - 1);
+                                flowValueEnds.put(startLine, endLine);
+                                return endLine;
+                            }
+                            return lastLine;
+                        }
+                        continue;
+                    }
+                    default -> { }
+                }
+                lastLine = Math.max(lastLine, sourceLine(codePointStart + token.getEndMark().getIndex() - 1));
+                if (token instanceof ScalarToken scalar) {
+                    if (scalar.getStyle() == DOUBLE_QUOTED || scalar.getStyle() == SINGLE_QUOTED) {
+                        int firstLine = sourceLine(codePointStart + scalar.getStartMark().getIndex());
+                        rangeClosed(firstLine + 1, lastLine).forEach(valueLines::add);
+                    }
+                    if (depth == 0) return lastLine;
+                }
+            }
+        } catch (YAMLException ignored) {
+            // Unresolved Microconfig expressions may prevent parsing the rest of the collection.
+        }
+        return lastLine;
+    }
+
+    private int sourceLine(int codePointIndex) {
+        int line = binarySearch(codePointLineOffsets, codePointIndex);
+        return line >= 0 ? line : -line - 2;
+    }
+
+    private Map<Integer, BlockScalar> readBlockScalars(Set<Integer> quotedLines) {
         Map<Integer, BlockScalar> result = new LinkedHashMap<>();
         for (int i = 0; i < lines.size(); i++) {
+            if (quotedLines.contains(i)) continue;
             BlockScalar scalar = readBlockScalar(i);
             if (scalar == null) continue;
             result.put(i, scalar);
@@ -111,6 +205,7 @@ class YamlReader extends AbstractConfigReader {
         int nodeOffset = skipNodeProperties(line, keyOffset);
         if (nodeOffset == line.length()) return null;
         char first = line.charAt(nodeOffset);
+        if (first == '[' || first == '{') return null;
         boolean valueOnly = sequence && (first == '|' || first == '>');
         int separator = valueOnly ? -1 : mappingSeparatorIndex(line, nodeOffset);
         if (separator < 0 && !valueOnly) return null;
@@ -124,7 +219,7 @@ class YamlReader extends AbstractConfigReader {
         int contentOffset = blockScalarContentOffset(index, baseOffset, indentation);
         int endLine = multiLineValueEnd(index, contentOffset);
         String key = separator < 0 ? null : line.substring(offset, separator).trim();
-        return new BlockScalar(key, sequence, index, contentOffset, endLine, line.charAt(marker), line.substring(valueOffset, marker).trim());
+        return new BlockScalar(key, sequence, index, contentOffset, endLine, line.charAt(marker), chompingIndicator(line, marker), line.substring(valueOffset, marker).trim());
     }
 
     private int sequenceValueStart(String line, int offset) {
@@ -188,6 +283,15 @@ class YamlReader extends AbstractConfigReader {
         return tail == line.length() || line.charAt(tail) == '#' ? indentation : -1;
     }
 
+    // '-' strips the final line break, '+' keeps the trailing ones, none keeps one
+    private String chompingIndicator(String line, int marker) {
+        for (int i = marker + 1; i < line.length() && !isWhitespace(line.charAt(i)); i++) {
+            char c = line.charAt(i);
+            if (c == '+' || c == '-') return String.valueOf(c);
+        }
+        return "";
+    }
+
     private int blockScalarContentOffset(int index, int baseOffset, int indentation) {
         if (indentation > 0) return baseOffset + indentation;
         for (int i = index + 1; i < lines.size(); i++) {
@@ -205,8 +309,8 @@ class YamlReader extends AbstractConfigReader {
         return lines.size() - 1;
     }
 
-    private Set<Integer> findLiteralValueLines() {
-        Set<Integer> valueLines = new HashSet<>();
+    private Set<Integer> findLiteralValueLines(Set<Integer> quotedLines) {
+        Set<Integer> valueLines = new HashSet<>(quotedLines);
         blockScalars.values().forEach(scalar -> literalContentLines(scalar.lineNumber() + 1, scalar.endLine()).forEach(valueLines::add));
         return valueLines;
     }
@@ -293,15 +397,9 @@ class YamlReader extends AbstractConfigReader {
                     + new FileBasedComponent(file, scalar.lineNumber(), true, configType, env) + "'");
         }
         String k = mergeKey(currentProperty, scalar.key());
-        String v = scalar.style() == '>' ? foldedValue(valueLines) : join(LINES_SEPARATOR, valueLines);
+        String v = scalar.style() == '>' ? FoldedScalar.toYamlValue(scalar.chomping(), valueLines) : join(LINES_SEPARATOR, valueLines);
         addProperty(result, k, v, source);
         return scalar.endLine();
-    }
-
-    private String foldedValue(List<String> valueLines) {
-        String content = valueLines.stream().map(line -> " " + line).collect(joining("\n"));
-        String value = new Yaml().load(">-\n" + content + "\n");
-        return value.replace("\n", LINES_SEPARATOR);
     }
 
     private boolean isComplexValue(String line, int currentOffset) {
@@ -313,7 +411,7 @@ class YamlReader extends AbstractConfigReader {
     private int addComplexValue(List<Property> result,
                                 Deque<KeyOffset> currentProperty, int currentOffset,
                                 int originalLineNumber, String configType, String env) {
-        int end = flowValueEnd(originalLineNumber, currentOffset);
+        int end = flowValueEnds.getOrDefault(originalLineNumber, -1);
         if (end < 0) end = complexValueLastLine(originalLineNumber, currentOffset);
         String value = rangeClosed(originalLineNumber, end)
                 .mapToObj(lines::get)
@@ -322,27 +420,6 @@ class YamlReader extends AbstractConfigReader {
 
         addValue(result, currentProperty, currentOffset, originalLineNumber, null, value, configType, env);
         return end;
-    }
-
-    private int flowValueEnd(int startLine, int offset) {
-        char first = lines.get(startLine).charAt(offset);
-        if (first != '[' && first != '{') return -1;
-
-        int start = lineOffsets[startLine];
-        int depth = 0;
-        try {
-            for (Event event : new Yaml().parse(new CharArrayReader(source, start, source.length - start))) {
-                if (event instanceof CollectionStartEvent) depth++;
-                if (event instanceof CollectionEndEvent && --depth == 0) {
-                    int end = Character.offsetByCodePoints(source, 0, source.length, start, event.getEndMark().getIndex());
-                    int line = binarySearch(lineOffsets, end - 1);
-                    return line >= 0 ? line : -line - 2;
-                }
-            }
-        } catch (YAMLException ignored) {
-            // Some Microconfig expressions become valid YAML only after placeholder resolution.
-        }
-        return -1;
     }
 
     private int complexValueLastLine(int start, int offset) {
@@ -522,6 +599,6 @@ class YamlReader extends AbstractConfigReader {
         }
     }
 
-    private record BlockScalar(String key, boolean sequence, int lineNumber, int contentOffset, int endLine, char style, String nodeProperties) {
+    private record BlockScalar(String key, boolean sequence, int lineNumber, int contentOffset, int endLine, char style, String chomping, String nodeProperties) {
     }
 }
