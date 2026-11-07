@@ -1057,6 +1057,22 @@ tests_dashboard: # added new component group 'tests_dashboard'
 
 Consider configuring your deployment tool to read the environment descriptor to know which services to deploy.
 
+## Abstract environments
+
+To use an environment as a shared base, add `abstract: true` at the top level of its descriptor:
+
+**envs/base.yaml**
+```yaml
+abstract: true
+
+infra:
+  components:
+    - service-discovery
+    - api-gateway
+```
+
+Abstract environments are skipped when building with `-envs '*'`. They can still be included by other environments or built explicitly with `-e base`.
+
 ## Environment profiles
 You can use env profiles if you want to create a new env based on one or more other envs.
 For example, you have the `prod` env with its overrides and want to create `prod-europe` and `prod-usa` envs that include all properties from `prod` and can have their own overrides.
@@ -1101,21 +1117,28 @@ During the config build, Microconfig inlines all includes, resolves placeholders
 
 To run the build, you can download a Microconfig release from https://github.com/microconfig/microconfig/releases.
 
-The required build params:
-* `-r` - full or relative config root dir. 
-* either `-e` or `-envs`.
-    * `-e` - environment name (environment is used as a config profile, also as a group of services to build configs).
-    * `-envs` - a comma-separated list of environment names **without spaces**. Use `*` for all environments, and `!` to exclude an environment. E.g. `-envs *,!base`.  
-`Tip: If you use zsh, be sure to escape the ! in your exclusions -> e.g. -envs *,\!base`
+For a config build, specify either:
+
+* `-e` - environment name (environment is used as a config profile, also as a group of services to build configs).
+* `-envs` - a comma-separated list of environment names **without spaces**. Use `*` for all non-abstract environments, and prefix a name with `!` to exclude it.
+
+In shells such as Bash and zsh, use single quotes around lists containing `*` or `!`, for example `microconfig -envs '*,!base'`.
 
 Optional build params:
+
+* `-r` - full or relative config root dir. Default: the current directory.
 * `-d` - full or relative build destination dir. Default = ${currentFolder}/build
 * `-stacktrace` - Show full stacktrace in case of exceptions. Values: true/false. Default: false  
 * `-color` - Enable colored console output. Values: true/false. Default: true. Use `-color false` to disable colors.
 
 To build configs not for the whole environment but only for specific services, use the following optional params:
+
 * `-g` - a comma-separated list of component groups to build configs. 
 * `-s` - a comma-separated list of services to build configs. 
+
+Each supplied filter requires at least one name. Passing `-g` or `-s` without a value or with an empty list is an error. Omit both filters to build the whole environment.
+
+To print the version without building configs, run `microconfig -v` or `java -jar microconfig.jar -v`. The `-v` flag takes no value and does not require `-e` or `-envs`.
 
 Command line params example (Java 17+ required):
 ```
@@ -1135,7 +1158,7 @@ java -DtaskId=3456 -DsomeParam=value -jar microconfig.jar -r repo -d configs -e 
 
 To speed up the build by up to 3 times, add the `-XX:TieredStopAtLevel=1` JVM param. 
 The native binaries (macOS, Linux, Windows) don't need `-XX:TieredStopAtLevel`: they work about 5 times faster than the jar, because no time is spent compiling code at runtime. Peak performance is the same.
-Either way, even big projects with hundreds of services build in about 1-3 seconds.
+Either way, even big projects with hundreds of services build in about 0.2-2 seconds.
 ```
 java -XX:TieredStopAtLevel=1 -jar microconfig.jar -r repo -e prod
 ```

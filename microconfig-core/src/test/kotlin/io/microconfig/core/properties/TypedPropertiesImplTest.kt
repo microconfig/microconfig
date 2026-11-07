@@ -7,7 +7,6 @@ import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.impl.TypedPropertiesImpl
 import io.microconfig.core.properties.io.properties.PropertiesText
 import io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo
-import io.microconfig.utils.FileUtils.LINES_SEPARATOR
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -190,7 +189,7 @@ class TypedPropertiesImplTest {
         val tp: TypedProperties =
             withProperties(listOf(property("k1.k2"), property("k1.k3"), property("k4")))
         assertEquals(
-            "k2: k1.k2Value" + LINES_SEPARATOR + "k3: k1.k3Value",
+            "k2: k1.k2Value\nk3: k1.k3Value",
             tp.getPropertyWithKey("k1.*").get().value,
         )
         assertEquals(Optional.empty<Any>(), tp.getPropertyWithKey("missing.*"))
