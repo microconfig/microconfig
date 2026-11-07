@@ -47,8 +47,9 @@ data class PropertiesImpl(private val typedProperties: List<TypedProperties>) : 
         typedProperties.asSequence().map { it.getPropertyWithKey(key) }.firstOrNull { it.isPresent }
             ?: Optional.empty()
 
-    override fun <T> save(serializer: PropertySerializer<T>): List<T> = typedProperties.map {
-        it.save(serializer)
+    override fun <T> save(serializer: PropertySerializer<T>): List<T> {
+        val prepared = serializer.prepare(typedProperties)
+        return typedProperties.map { it.save(prepared) }
     }
 
     override fun asTypedProperties(): List<TypedProperties> = typedProperties

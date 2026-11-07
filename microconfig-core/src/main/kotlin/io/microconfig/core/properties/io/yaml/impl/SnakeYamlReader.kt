@@ -100,7 +100,7 @@ class SnakeYamlReader(private val file: File, reader: FsReader) : ConfigReader {
                 OverrideProperty.isOverrideProperty(name)
         )
             return name
-        if (key.tag != Tag.STR) return source.fragment(key)
+        if (key.tag != Tag.STR) return source.restore(YamlScalars.canonicalKey(key))
         val protected =
             key.scalarStyle != DumperOptions.ScalarStyle.PLAIN &&
                 ('.' in name ||

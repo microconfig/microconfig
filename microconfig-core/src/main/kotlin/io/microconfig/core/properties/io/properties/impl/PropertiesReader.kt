@@ -21,17 +21,20 @@ class PropertiesReader(file: File, reader: FsReader) : AbstractConfigReader(file
     private fun readLogicalLines(): List<LogicalLine> {
         val result = mutableListOf<LogicalLine>()
         var current: StringBuilder? = null
+        var firstLine = 0
         lines.forEachIndexed { index, line ->
             if (current == null) {
                 if (line.all { PropertiesSyntax.isSkippedBeforeValue(it) }) return@forEachIndexed
-                if (isDirective(line.trimStart { PropertiesSyntax.isSkippedBeforeValue(it) })) {
+                val trimmed = line.trimStart { PropertiesSyntax.isSkippedBeforeValue(it) }
+                if (isDirective(trimmed) || trimmed.startsWith('!')) {
                     result.add(LogicalLine(index, line.trim { it <= ' ' }, true))
                     return@forEachIndexed
                 }
                 current = StringBuilder()
+                firstLine = index
             } else if (line.all { PropertiesSyntax.isSkippedBeforeValue(it) }) {
                 current.setLength(current.length - LINES_SEPARATOR.length - 1)
-                result.add(LogicalLine(index, current.toString(), false))
+                result.add(LogicalLine(firstLine, current.toString(), false))
                 current = null
                 return@forEachIndexed
             }
@@ -41,7 +44,7 @@ class PropertiesReader(file: File, reader: FsReader) : AbstractConfigReader(file
             current.append(if (continued && atEnd) segment.dropLast(1) else segment)
             if (continued && !atEnd) current.append(LINES_SEPARATOR)
             else {
-                result.add(LogicalLine(index, current.toString(), false))
+                result.add(LogicalLine(firstLine, current.toString(), false))
                 current = null
             }
         }

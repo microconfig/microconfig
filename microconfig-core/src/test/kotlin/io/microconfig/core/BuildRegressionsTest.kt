@@ -338,7 +338,7 @@ class BuildRegressionsTest {
         write("envs/dev.yaml", "profiles: [first, second]\ngroup:\n  components: [app]\n")
         write("envs/first.yaml", "profiles: [shared]\n")
         write("envs/second.yaml", "profiles: [shared]\n")
-        write("envs/shared.yaml", "portOffset: 1\n")
+        write("envs/shared.yaml", "{}\n")
         build()
         assertEquals(mapOf("value" to "base", "shared" to "present"), yaml())
     }

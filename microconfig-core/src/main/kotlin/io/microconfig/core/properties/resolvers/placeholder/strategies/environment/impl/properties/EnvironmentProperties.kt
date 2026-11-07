@@ -9,7 +9,6 @@ class EnvironmentProperties {
                 IpProperty(),
                 GroupNameProperty(),
                 ComponentOrderProperty(),
-                PortOffsetProperty(),
             )
             .associateBy { it.key() }
 }

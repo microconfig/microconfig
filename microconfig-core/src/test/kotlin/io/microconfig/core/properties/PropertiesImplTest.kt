@@ -76,6 +76,7 @@ class PropertiesImplTest {
     fun save() {
         @Suppress("UNCHECKED_CAST")
         val serializer = mock(PropertySerializer::class.java) as PropertySerializer<Int>
+        `when`(serializer.prepare(listOf(tp1, tp2))).thenReturn(serializer)
         `when`(tp1.save(serializer)).thenReturn(1)
         `when`(tp2.save(serializer)).thenReturn(2)
         assertEquals(listOf(1, 2), subj.save(serializer))

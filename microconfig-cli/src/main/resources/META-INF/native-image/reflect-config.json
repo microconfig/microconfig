@@ -200,5 +200,21 @@
   {
     "name": "java.util.stream.ReferencePipeline$Head",
     "allPublicMethods": true
+  },
+  {
+    "name": "java.util.Collections$UnmodifiableList$1",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.Spliterators$1Adapter",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.Collections$UnmodifiableMap$UnmodifiableEntrySet$1",
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.util.Collections$UnmodifiableMap$UnmodifiableEntrySet$UnmodifiableEntry",
+    "allPublicMethods": true
   }
 ]

@@ -1,5 +1,4 @@
 ip: 172.30.162.3
-portOffset: 100
 fnd1:
   ip: 172.30.162.3
   components:
@@ -23,7 +22,6 @@ c3:
   ip: 1.1.1.1
   components:
     - ip3
-    - portOffsetTest
 override1:
   ip: 2.2.2.2
   components:

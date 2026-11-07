@@ -13,6 +13,7 @@ import io.microconfig.core.properties.io.yaml.YamlResolvers
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.resolvers.RecursiveResolver
 import io.microconfig.core.properties.resolvers.expression.impl.ExpressionResolver
+import io.microconfig.core.properties.resolvers.impl.MemoizingResolver
 import io.microconfig.core.properties.resolvers.impl.PropertyResolutionCache
 import io.microconfig.core.properties.resolvers.placeholder.Placeholder
 import io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders
@@ -138,8 +139,13 @@ private constructor(
             root: DeclaringComponent,
         ): String {
             val property = placeholder.resolveUsing(strategy, root)
-            val resolver = YamlResolvers.forValues(resolverWithVisited(placeholder), expressions)
-            val value = cache.resolve(property, root, resolver, visited.toList() + placeholder)
+            val resolver =
+                MemoizingResolver(
+                    YamlResolvers.forValues(resolverWithVisited(placeholder), expressions),
+                    cache,
+                    visited.toList() + placeholder,
+                )
+            val value = property.resolveBy(resolver, root).value
             plainText = property.configFormat != YAML
             return convertForTarget(value, property, source)
         }

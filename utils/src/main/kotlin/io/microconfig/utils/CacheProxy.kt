@@ -17,6 +17,7 @@ object CacheProxy {
 }
 
 internal class CachingInvocationHandler(private val delegate: Any) : InvocationHandler {
+    // A null mapping result skips insertion. The nullable type allows that return value.
     private val values = ConcurrentHashMap<Key, Any?>()
 
     override fun invoke(proxy: Any, method: Method, arguments: Array<out Any?>?): Any? {

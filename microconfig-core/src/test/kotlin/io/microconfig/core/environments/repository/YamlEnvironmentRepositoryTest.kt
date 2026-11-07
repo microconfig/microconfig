@@ -32,7 +32,7 @@ class YamlEnvironmentRepositoryTest {
 
     @Test
     fun ignoresJsonWhenListingEnvironments() {
-        writeEnvironment("dev.yaml", "portOffset: 7\n")
+        writeEnvironment("dev.yaml", "{}\n")
         writeEnvironment("legacy.json", "invalid JSON and YAML: [")
         assertEquals(setOf("dev"), repository.environmentNames())
         assertEquals(
@@ -43,29 +43,28 @@ class YamlEnvironmentRepositoryTest {
 
     @Test
     fun treatsJsonOnlyEnvironmentAsMissing() {
-        writeEnvironment("legacy.json", "{\"portOffset\": 99}")
+        writeEnvironment("legacy.json", "{\"profiles\": [\"json\"]}")
         assertThrows(EnvironmentException::class.java, { repository.getByName("legacy") })
         val environment: Environment = repository.getOrCreateByName("legacy")
         assertEquals("legacy", environment.name)
         assertNull(environment.source)
-        assertEquals(0, environment.portOffset)
         assertTrue(environment.allComponents.asList().isEmpty())
     }
 
     @Test
     fun selectsYamlWhenJsonHasTheSameName() {
-        val yaml: Path = writeEnvironment("dev.yaml", "portOffset: 7\n")
-        writeEnvironment("dev.json", "{\"portOffset\": 99}")
+        val yaml: Path = writeEnvironment("dev.yaml", "profiles: [yaml]\n")
+        writeEnvironment("dev.json", "{\"profiles\": [\"json\"]}")
         val environment: Environment = repository.getByName("dev")
         assertEquals(yaml.toFile(), environment.source)
-        assertEquals(7, environment.portOffset)
+        assertEquals(listOf("yaml"), environment.profiles)
         assertEquals(setOf("dev"), repository.environmentNames())
     }
 
     @Test
     fun cannotIncludeJsonEnvironment() {
         writeEnvironment("dev.yaml", "include:\n  env: legacy\n")
-        writeEnvironment("legacy.json", "{\"portOffset\": 99}")
+        writeEnvironment("legacy.json", "{\"profiles\": [\"json\"]}")
         val exception: EnvironmentException =
             assertThrows(EnvironmentException::class.java, { repository.getByName("dev") })
         assertTrue(exception.message.orEmpty().contains("Can\'t find env \'legacy\'"))

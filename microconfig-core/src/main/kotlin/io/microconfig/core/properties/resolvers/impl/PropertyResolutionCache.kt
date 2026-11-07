@@ -19,7 +19,7 @@ internal class PropertyResolutionCache {
         referenceChain: List<Placeholder> = emptyList(),
     ): String =
         values.getOrPut(keyFor(property, root, referenceChain)) {
-            property.resolveBy(resolver, root).value
+            resolver.resolve(property, root)
         }
 
     private fun keyFor(

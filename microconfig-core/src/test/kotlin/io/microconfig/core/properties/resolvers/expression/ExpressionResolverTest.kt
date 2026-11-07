@@ -74,6 +74,9 @@ class ExpressionResolverTest {
                 "#{'a}b'} | a}b",
                 "#{#{1 + 2} * 3} | 9",
                 "#{ {1, 2}.size() } | 2",
+                "#{ {'a', 'b'}.listIterator().next() } | a",
+                "#{'a'.lines().iterator().next()} | a",
+                "#{ {'a': 1}.entrySet().iterator().next().getValue() } | 1",
             ],
     )
     fun evaluateValueExpressions(expression: String, expected: String) {

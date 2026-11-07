@@ -6,8 +6,13 @@ import java.util.IdentityHashMap
 import org.yaml.snakeyaml.DumperOptions.ScalarStyle
 import org.yaml.snakeyaml.error.Mark
 import org.yaml.snakeyaml.error.MarkedYAMLException
+import org.yaml.snakeyaml.events.AliasEvent
 import org.yaml.snakeyaml.events.CommentEvent
+import org.yaml.snakeyaml.events.MappingEndEvent
+import org.yaml.snakeyaml.events.MappingStartEvent
 import org.yaml.snakeyaml.events.ScalarEvent
+import org.yaml.snakeyaml.events.SequenceEndEvent
+import org.yaml.snakeyaml.events.SequenceStartEvent
 import org.yaml.snakeyaml.nodes.MappingNode
 import org.yaml.snakeyaml.nodes.Node
 import org.yaml.snakeyaml.nodes.NodeTuple
@@ -19,10 +24,12 @@ import org.yaml.snakeyaml.nodes.Tag
 internal class YamlSource(val original: String) {
     private val prepared = StringBuilder(original)
     private val offsets = (0..original.length).toMutableList()
-    private val statements = linkedMapOf<Char, String>()
+    private val statements = linkedMapOf<String, MaskedStatement>()
+    private val markersByStatement = mutableMapOf<String, String>()
     private val splices = mutableSetOf<Int>()
-    private val varMarker =
-        (0xF8FF downTo 0xE000).asSequence().map(Int::toChar).first { it !in original }
+    private val possibleContinuations = linkedMapOf<Int, Int>()
+    private var markerIndex = 0
+    private val varMarker = nextMarker()
     private val events by lazy {
         SnakeYaml.parser(true).parse(StringReader(prepared.toString())).toList()
     }
@@ -89,34 +96,149 @@ internal class YamlSource(val original: String) {
 
     private fun mask(start: Int, end: Int) {
         val statement = original.substring(start, end)
-        val marker = statements.entries.find { it.value == statement }?.key ?: nextMarker()
-        statements[marker] = statement
+        val marker =
+            markersByStatement.getOrPut(statement) {
+                nextMarker().also {
+                    statements[it] = MaskedStatement(statement, statementPattern(it, statement))
+                }
+            }
+        prepared.setCharAt(start, marker[0])
+        prepared.setCharAt(start + 1, marker[1])
         var indentation = false
-        for (index in start until end) {
+        for (index in start + 2 until end) {
             val character = prepared[index]
             if (character in "\n\r\u0085\u2028\u2029") indentation = true
             else if (!indentation || character != ' ' && character != '\t') {
-                prepared.setCharAt(index, marker)
+                prepared.setCharAt(index, 'x')
                 indentation = false
             }
         }
     }
 
-    private fun nextMarker(): Char =
-        (0xE000..0xF8FF).asSequence().map(Int::toChar).first {
-            it !in original && it !in statements && it != varMarker
+    private fun statementPattern(marker: String, statement: String): Regex =
+        Regex(
+            statement
+                .split(lineBreak)
+                .mapIndexed { index, line ->
+                    Regex.escape(
+                        if (index == 0) marker + "x".repeat(line.length - 2)
+                        else "x".repeat(line.trimStart(' ', '\t').length)
+                    )
+                }
+                .joinToString("\\s+")
+        )
+
+    private fun nextMarker(): String {
+        val alphabetSize = 0xF8FF - 0xE000 + 1
+        while (markerIndex < alphabetSize * alphabetSize) {
+            val index = markerIndex++
+            val marker =
+                "${(0xE000 + index / alphabetSize).toChar()}${(0xE000 + index % alphabetSize).toChar()}"
+            if (marker !in original) return marker
         }
+        error("Too many Microconfig statements")
+    }
 
     private fun adaptOneLineVars() {
-        Regex("(?m)^[\\t ]*\\.var ").findAll(original).forEach { match ->
+        val declarations = oneLineVar.findAll(original).toList()
+        if (declarations.isEmpty()) return
+        val continuations = scalarContinuationLines()
+        val lineEnds = lineBreak.findAll(original).map { it.range.last }.toList()
+        var line = 0
+        declarations.forEach { match ->
+            while (line < lineEnds.size && lineEnds[line] < match.range.first) line++
+            if (line in continuations) return@forEach
             val start = match.range.last - 4
+            if (prepared.substring(start, start + 5) != ".var ") return@forEach
+            val lineEnd =
+                prepared.indexOfAny(lineBreakCharacters, start).let {
+                    if (it < 0) prepared.length else it
+                }
+            if (
+                start > match.range.first &&
+                    !mappingSeparator.containsMatchIn(prepared.substring(start, lineEnd))
+            )
+                possibleContinuations[start] = line
             prepared.setCharAt(start, '#')
-            prepared.setCharAt(start + 1, varMarker)
+            prepared.setCharAt(start + 1, varMarker[0])
+            prepared.setCharAt(start + 2, varMarker[1])
         }
+    }
+
+    private fun scalarContinuationLines(text: CharSequence = prepared): Set<Int> {
+        val protected = mutableSetOf<Int>()
+        val preparedLines = text.split(lineBreak)
+        val scopes = mutableListOf<MappingPosition?>()
+        try {
+            SnakeYaml.parser().parse(StringReader(text.toString())).forEach { event ->
+                when (event) {
+                    is MappingStartEvent -> {
+                        consumePosition(scopes.lastOrNull())
+                        scopes.add(MappingPosition())
+                    }
+                    is SequenceStartEvent -> {
+                        consumePosition(scopes.lastOrNull())
+                        scopes.add(null)
+                    }
+                    is MappingEndEvent,
+                    is SequenceEndEvent -> scopes.removeAt(scopes.lastIndex)
+                    is AliasEvent -> consumePosition(scopes.lastOrNull())
+                    is ScalarEvent -> {
+                        val position = scopes.lastOrNull()
+                        if (position?.expectsKey == true) {
+                            position.key = event
+                            position.expectsKey = false
+                        } else {
+                            if (scopes.isNotEmpty() && !isVariableScope(scopes))
+                                protectScalarLines(event, preparedLines, protected)
+                            consumePosition(position)
+                        }
+                    }
+                }
+            }
+        } catch (_: MarkedYAMLException) {
+            // List insertions are adapted during composition, after this initial event scan.
+        }
+        return protected
+    }
+
+    private fun consumePosition(position: MappingPosition?) {
+        if (position == null) return
+        if (position.expectsKey) position.key = null
+        position.expectsKey = !position.expectsKey
+    }
+
+    private fun isVariableScope(scopes: List<MappingPosition?>): Boolean {
+        val key = scopes.lastOrNull()?.key ?: return false
+        if (key.scalarStyle != ScalarStyle.PLAIN) return false
+        if (scopes.size == 1) return key.value == ".var" || key.value.startsWith('+')
+        return scopes.size == 2 &&
+            key.value == ".var" &&
+            scopes.first()?.key?.let {
+                it.scalarStyle == ScalarStyle.PLAIN && it.value.startsWith('+')
+            } == true
+    }
+
+    private fun protectScalarLines(
+        event: ScalarEvent,
+        lines: List<String>,
+        protected: MutableSet<Int>,
+    ) {
+        if (event.scalarStyle != ScalarStyle.PLAIN) return
+        val firstLine = lines[event.startMark.line]
+        val startsOnOwnLine =
+            event.startMark.column == firstLine.takeWhile { it == ' ' || it == '\t' }.length
+        val first = event.startMark.line + if (startsOnOwnLine) 0 else 1
+        val endLine = lines[event.endMark.line]
+        val endColumn = endLine.offsetByCodePoints(0, event.endMark.column)
+        val trailing = endLine.substring(endColumn).trimStart()
+        val last = event.endMark.line - if (trailing.isEmpty() || trailing.startsWith('#')) 0 else 1
+        protected.addAll(first..last)
     }
 
     fun compose(): Node? {
         while (true) {
+            restorePlainContinuations()
             try {
                 val node = SnakeYaml.parser().compose(StringReader(prepared.toString()))
                 if (
@@ -137,6 +259,17 @@ internal class YamlSource(val original: String) {
                         !adaptPreviousSplice(error.problemMark)
                 )
                     throw error
+            }
+        }
+    }
+
+    private fun restorePlainContinuations() {
+        possibleContinuations.toMap().forEach { (originalStart, line) ->
+            val start = offsets.indexOf(originalStart)
+            val candidate = StringBuilder(prepared).replace(start, start + 3, ".va")
+            if (line in scalarContinuationLines(candidate)) {
+                prepared.replace(start, start + 3, ".va")
+                possibleContinuations.remove(originalStart)
             }
         }
     }
@@ -188,7 +321,7 @@ internal class YamlSource(val original: String) {
                     node.tag == Tag.STR &&
                         node.scalarStyle == ScalarStyle.PLAIN &&
                         hasExplicitTag(node) &&
-                        node.value.any { it in statements }
+                        node.value.windowedSequence(2).any(statements::containsKey)
                 ) {
                     val quoted =
                         ScalarNode(
@@ -240,10 +373,10 @@ internal class YamlSource(val original: String) {
         return true
     }
 
-    private fun standaloneMarker(line: String): Char? {
+    private fun standaloneMarker(line: String): String? {
         val value = line.trim()
-        val marker = value.firstOrNull()?.takeIf { it in statements } ?: return null
-        val tail = value.dropWhile { it == marker }.trimStart()
+        val marker = value.take(2).takeIf { it in statements } ?: return null
+        val tail = value.drop(2).dropWhile { it == 'x' }.trimStart()
         return marker.takeIf { tail.isEmpty() || tail.startsWith("#") }
     }
 
@@ -266,24 +399,19 @@ internal class YamlSource(val original: String) {
         return adaptSpliceAt(start)
     }
 
-    fun restore(value: String): String =
-        statements.entries.fold(value.replace("#$varMarker", ".v")) { text, (marker, statement) ->
-            val pattern =
-                statement
-                    .split(lineBreak)
-                    .mapIndexed { index, line ->
-                        Regex.escape(
-                            marker
-                                .toString()
-                                .repeat(
-                                    if (index == 0) line.length
-                                    else line.trimStart(' ', '\t').length
-                                )
-                        )
-                    }
-                    .joinToString("\\s+")
-            text.replace(Regex(pattern)) { statement }
+    fun restore(value: String): String {
+        val text = value.replace("#$varMarker", ".va")
+        val output = StringBuilder()
+        var copied = 0
+        markerPattern.findAll(text).forEach { token ->
+            val statement = statements[token.groupValues[1]] ?: return@forEach
+            val match = statement.pattern.matchAt(text, token.range.first) ?: return@forEach
+            output.append(text, copied, match.range.first)
+            output.append(statement.text)
+            copied = match.range.last + 1
         }
+        return output.append(text, copied, text.length).toString()
+    }
 
     fun isSplice(node: Node): Boolean = node.tag == spliceTag
 
@@ -308,5 +436,12 @@ internal class YamlSource(val original: String) {
         private val spliceTag = Tag("!microconfig-splice")
         private val lineBreak = Regex("\\r\\n|[\\n\\r\u0085\u2028\u2029]")
         private val lineBreakCharacters = charArrayOf('\n', '\r', '\u0085', '\u2028', '\u2029')
+        private val markerPattern = Regex("(?=([\\uE000-\\uF8FF]{2}))")
+        private val oneLineVar = Regex("(?m)^[\\t ]*\\.var ")
+        private val mappingSeparator = Regex(":(?:\\s|$)")
     }
+
+    private data class MaskedStatement(val text: String, val pattern: Regex)
+
+    private class MappingPosition(var expectsKey: Boolean = true, var key: ScalarEvent? = null)
 }

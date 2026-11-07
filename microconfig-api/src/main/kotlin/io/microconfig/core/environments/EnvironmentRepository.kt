@@ -7,15 +7,29 @@ interface EnvironmentRepository {
 
     fun environmentNames(excluded: Set<String>): Set<String> = environmentNames() - excluded
 
-    fun profilesOf(name: String): List<String> = collectProfiles(name, emptyList()).distinct()
+    fun profilesOf(name: String): List<String> {
+        val profiles = linkedSetOf<String>()
+        collectProfiles(name, linkedSetOf(), profiles)
+        return profiles.toList()
+    }
 
-    private fun collectProfiles(name: String, visiting: List<String>): List<String> {
-        check(name !in visiting) {
-            "Cyclic environment profiles: ${(visiting + name).joinToString(" -> ")}"
+    private fun collectProfiles(
+        name: String,
+        visiting: MutableSet<String>,
+        profiles: MutableSet<String>,
+    ) {
+        check(visiting.add(name)) {
+            "Cyclic environment profiles: ${(visiting.toList() + name).joinToString(" -> ")}"
         }
-        return getOrCreateByName(name).profiles.flatMap {
-            collectProfiles(it, visiting + name) + it
-        }
+        getOrCreateByName(name)
+            .profiles
+            .asSequence()
+            .filterNot { it in profiles }
+            .forEach { profile ->
+                collectProfiles(profile, visiting, profiles)
+                profiles.add(profile)
+            }
+        visiting.remove(name)
     }
 
     fun getByName(name: String): Environment

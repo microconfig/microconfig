@@ -2,7 +2,6 @@ include:
   env: dev
 
 ip: 10.20.0.1
-portOffset: 0
 
 payments:
   exclude:

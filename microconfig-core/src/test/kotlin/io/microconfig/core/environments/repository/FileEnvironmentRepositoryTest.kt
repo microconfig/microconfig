@@ -105,7 +105,6 @@ class FileEnvironmentRepositoryTest {
 
     private fun testDev(env: Environment) {
         assertFalse(env.isAbstract)
-        assertEquals(0, env.portOffset)
         testGroup(env, "orders", "10.0.0.1", "order-db-patcher", "order-service", "order-ui")
         testGroup(
             env,
@@ -122,7 +121,6 @@ class FileEnvironmentRepositoryTest {
 
     private fun testTest(env: Environment) {
         assertFalse(env.isAbstract)
-        assertEquals(100, env.portOffset)
         testGroup(env, "orders", "10.0.0.1", "order-db-patcher", "order-service", "order-ui")
         testGroup(
             env,
@@ -139,7 +137,6 @@ class FileEnvironmentRepositoryTest {
 
     private fun testStaging(env: Environment) {
         assertFalse(env.isAbstract)
-        assertEquals(0, env.portOffset)
         testGroup(env, "orders", "10.20.0.1", "order-db-patcher", "order-service", "order-ui")
         testGroup(
             env,
@@ -156,7 +153,6 @@ class FileEnvironmentRepositoryTest {
 
     private fun testProd(env: Environment) {
         assertFalse(env.isAbstract)
-        assertEquals(100, env.portOffset)
         testGroup(env, "orders", "10.20.0.1", "order-db-patcher", "order-service", "order-ui")
         testGroup(
             env,
@@ -172,7 +168,6 @@ class FileEnvironmentRepositoryTest {
 
     private fun testAlias(env: Environment) {
         assertFalse(env.isAbstract)
-        assertEquals(0, env.portOffset)
         testGroup(env, "group", null, "componentAlias1", "componentAlias2")
     }
 

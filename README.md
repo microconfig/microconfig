@@ -536,7 +536,6 @@ Microconfig has several useful special placeholders:
 
 There are some other properties related to the environment descriptor; we will discuss them later:
 * `${...@ip}`
-* `${...@portOffset}`
 * `${...@group}`
 * `${...@order}`
 
@@ -1210,6 +1209,8 @@ During the config build, Microconfig compares newly generated files with the fil
 Microconfig can detect added/removed/changed properties. 
 
 Diff for application.yaml is stored in diff-application.yaml, diff for process.yaml is stored in diff-process.yaml, etc.
+
+Output filenames matching `diff-*.yaml` or `diff-*.properties` are reserved for generated diffs.
 ```
 configs
 └───orders

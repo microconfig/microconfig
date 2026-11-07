@@ -6,6 +6,7 @@ import java.util.concurrent.Callable
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.BiFunction
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
@@ -22,6 +23,20 @@ class CacheProxyTest {
         assertEquals(3, cached.apply(2, "3"))
         assertEquals(2, cached.apply(2, "2"))
         assertEquals(1, cached.apply(1, "2"))
+    }
+
+    @Test
+    fun returnNullWithoutCaching() {
+        val executionCount = AtomicInteger()
+        val task =
+            Callable<String?> {
+                executionCount.incrementAndGet()
+                null
+            }
+        val cached = cache(task)
+        assertNull(cached.call())
+        assertNull(cached.call())
+        assertEquals(2, executionCount.get())
     }
 
     @Test

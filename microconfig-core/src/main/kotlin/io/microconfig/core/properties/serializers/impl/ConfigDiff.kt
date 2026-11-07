@@ -6,25 +6,33 @@ import io.microconfig.core.properties.io.ConfigReader
 import io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo
 import io.microconfig.core.properties.io.selector.ConfigIoFactory.newConfigIo
 import io.microconfig.core.properties.io.yaml.YamlScalars
+import io.microconfig.core.properties.serializers.ConfigChangeListener
 import io.microconfig.io.FsReader
-import io.microconfig.utils.FileUtils.delete
 import io.microconfig.utils.Logger.error
 import io.microconfig.utils.Logger.warn
 import java.io.File
+import java.io.IOException
+import java.nio.file.Files
 import java.util.Optional
 import java.util.function.Predicate
 
-class ConfigDiff {
-    fun storeDiffFor(previousConfigFile: File, newProperties: Collection<Property>) {
-        val previous = readOldConfig(previousConfigFile)
+class ConfigDiff : ConfigChangeListener {
+    fun storeDiffFor(previousConfigFile: File, newProperties: Collection<Property>) =
+        accept(previousConfigFile, newProperties)
+
+    override fun prepare(
+        file: File,
+        properties: Collection<Property>,
+    ): () -> Unit {
+        val previous = readOldConfig(file)
         val changes =
             compare(
                 previous.toMutableMap(),
-                newProperties,
-                previousConfigFile,
-                previousConfigFile.isFile,
+                properties,
+                file,
+                file.isFile,
             )
-        storeDiff(previousConfigFile, changes)
+        return { storeDiff(file, changes) }
     }
 
     private fun readOldConfig(file: File): Map<String, String> =
@@ -79,10 +87,18 @@ class ConfigDiff {
 
     private fun storeDiff(file: File, changes: Map<String, String>) {
         val diff = File(file.parentFile, "diff-${file.name}")
-        if (changes.isEmpty()) delete(diff)
+        if (changes.isEmpty()) deleteDiff(diff)
         else {
             warn("Stored ${changes.size} property changes to ${diff.parentFile.name}/${diff.name}")
             configIo().writeTo(diff).write(changes)
+        }
+    }
+
+    private fun deleteDiff(file: File) {
+        try {
+            Files.deleteIfExists(file.toPath())
+        } catch (error: IOException) {
+            throw IllegalStateException("Can't remove stale diff '$file'", error)
         }
     }
 }

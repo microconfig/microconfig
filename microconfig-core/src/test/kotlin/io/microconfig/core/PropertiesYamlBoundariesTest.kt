@@ -23,7 +23,7 @@ class PropertiesYamlBoundariesTest {
     @BeforeEach
     fun createEnvironment() {
         Files.createDirectories(root.resolve("envs"))
-        Files.writeString(root.resolve("envs/dev.yaml"), "portOffset: 1\n")
+        Files.writeString(root.resolve("envs/dev.yaml"), "{}\n")
     }
 
     @Test
@@ -630,7 +630,7 @@ class PropertiesYamlBoundariesTest {
     private fun build(component: String): String {
         Files.writeString(
             root.resolve("envs/dev.yaml"),
-            "portOffset: 1\ngroup:\n  components: [" + component + "]\n",
+            "group:\n  components: [" + component + "]\n",
         )
         val destination = root.resolve("build")
         MicroconfigRunner(root.toFile(), destination.toFile()).build("dev", listOf(), listOf())

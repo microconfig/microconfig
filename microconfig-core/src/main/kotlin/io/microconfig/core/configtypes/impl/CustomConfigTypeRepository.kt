@@ -20,8 +20,8 @@ class CustomConfigTypeRepository(private val fsReader: FsReader, private val des
     private fun parseConfigTypes(): List<ConfigType> =
         try {
             val descriptor = Yaml().load<Map<String, Any?>>(fsReader.readFully(descriptorFile))
-            val types = descriptor?.get("configTypes") as? List<*> ?: emptyList<Any>()
-            types.map(::parseType)
+            val types = descriptor?.get("configTypes") as List<*>? ?: emptyList<Any>()
+            types.map(::parseType).distinct()
         } catch (error: RuntimeException) {
             throw IllegalStateException("Can't parse descriptor: $descriptorFile", error)
         }
@@ -29,12 +29,13 @@ class CustomConfigTypeRepository(private val fsReader: FsReader, private val des
     private fun parseType(value: Any?): ConfigType {
         if (value is String) return ConfigTypeImpl.byName(value)
         val definition = value as Map<*, *>
+        require(definition.size == 1) { "A config type entry must contain exactly one name" }
         val name = definition.keys.first() as String
-        val attributes = definition[name] as? Map<*, *> ?: emptyMap<Any, Any>()
+        val attributes = definition[name] as Map<*, *>? ?: emptyMap<Any, Any>()
         val extensions =
-            (attributes["sourceExtensions"] as? List<*>)?.map { it as String }?.toSet()
+            (attributes["sourceExtensions"] as List<*>?)?.map { it as String }?.toSet()
                 ?: setOf(".$name")
-        val resultFile = attributes["resultFileName"] as? String ?: name
+        val resultFile = attributes["resultFileName"] as String? ?: name
         return ConfigTypeImpl.byNameAndExtensions(name, extensions, resultFile)
     }
 

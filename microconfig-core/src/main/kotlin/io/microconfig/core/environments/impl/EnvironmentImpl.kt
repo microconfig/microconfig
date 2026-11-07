@@ -15,7 +15,6 @@ class EnvironmentImpl(
     override val source: File?,
     override val name: String,
     override val isAbstract: Boolean,
-    override val portOffset: Int,
     override val profiles: List<String>,
     override val groups: List<ComponentGroup>,
     private val componentFactory: ComponentFactory,

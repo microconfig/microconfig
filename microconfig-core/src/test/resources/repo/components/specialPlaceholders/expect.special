@@ -6,5 +6,4 @@ env.order=1
 env.env=special
 env.group=specialGroup
 env.ip=1.2.3.40
-env.portOffset=17
 system.userHome=${userHome}

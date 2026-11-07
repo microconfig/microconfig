@@ -24,9 +24,8 @@ internal class EnvironmentFile(private val file: File) {
     private fun parseDescriptor(descriptor: Map<String, Any?>): EnvironmentDefinition {
         val include = parseInclude(descriptor["include"])
         val profiles = parseProfiles(descriptor["profiles"])
-        val offset = (descriptor["portOffset"] as? Number)?.toInt() ?: 0
         val ip = descriptor["ip"] as String?
-        val abstract = descriptor["abstract"] == true
+        val abstract = descriptor["abstract"] as Boolean? ?: false
         val groups =
             descriptor
                 .filterKeys { it !in descriptorKeys }
@@ -36,7 +35,6 @@ internal class EnvironmentFile(private val file: File) {
             file.nameWithoutExtension,
             ip,
             abstract,
-            offset,
             profiles,
             include,
             groups,
@@ -44,10 +42,10 @@ internal class EnvironmentFile(private val file: File) {
     }
 
     private fun parseInclude(value: Any?): EnvInclude {
-        val include = value as? Map<*, *> ?: return EnvInclude.empty()
+        val include = value as Map<*, *>? ?: return EnvInclude.empty()
         val name = include["env"] as String
         val excludes =
-            (include["exclude"] as? Collection<*>)?.map { it as String }?.toSet() ?: emptySet()
+            (include["exclude"] as Collection<*>?)?.map { it as String }?.toSet() ?: emptySet()
         return EnvInclude(name, excludes)
     }
 
@@ -90,6 +88,6 @@ internal class EnvironmentFile(private val file: File) {
     }
 
     companion object {
-        private val descriptorKeys = setOf("include", "profiles", "portOffset", "ip", "abstract")
+        private val descriptorKeys = setOf("include", "profiles", "ip", "abstract")
     }
 }

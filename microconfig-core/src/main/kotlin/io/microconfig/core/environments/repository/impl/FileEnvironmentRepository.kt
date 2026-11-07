@@ -87,7 +87,6 @@ class FileEnvironmentRepository(
             null,
             name,
             false,
-            0,
             emptyList(),
             emptyList(),
             componentFactory,

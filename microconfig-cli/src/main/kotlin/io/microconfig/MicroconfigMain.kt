@@ -36,9 +36,10 @@ class MicroconfigMain(
     }
 
     private fun environmentsToBuild(): Set<String> {
-        if ("*" !in environments) return environments.filterNot { it.startsWith("!") }.toSet()
         val excluded =
             environments.filter { it.startsWith("!") }.map { it.removePrefix("!") }.toSet()
+        if ("*" !in environments)
+            return environments.filterNot { it.startsWith("!") || it in excluded }.toSet()
         return MicroconfigRunner(rootDir, File(destinationDir))
             .microconfig
             .environments()

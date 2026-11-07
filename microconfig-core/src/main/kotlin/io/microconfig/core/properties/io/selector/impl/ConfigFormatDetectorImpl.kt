@@ -20,8 +20,13 @@ class ConfigFormatDetectorImpl(private val reader: FsReader) : ConfigFormatDetec
     private fun detectContent(file: File): ConfigFormat {
         if (!file.exists()) return PROPERTIES
         val first =
-            reader.firstLineOf(file) { it.isNotBlank() && !isDirective(it.trim()) }.orElse(null)
-                ?: return PROPERTIES
+            reader
+                .firstLineOf(file) {
+                    it.isNotBlank() &&
+                        !isDirective(it.trim()) &&
+                        (!it.trimStart().startsWith('!') || separatorIn(it) >= 0)
+                }
+                .orElse(null) ?: return PROPERTIES
         if (
             first.trim() == "---" ||
                 first.trim().startsWith("%YAML ") ||

@@ -113,6 +113,18 @@ class MicroconfigMainTest {
         assertEquals("key: value\n", File(output, "dev/app/application.yaml").readText())
     }
 
+    @Test
+    fun excludeExplicitlySelectedEnvironment() {
+        val repository = File(destinationDir, "input")
+        val output = File(destinationDir, "output")
+        File(repository, "envs").mkdirs()
+        File(repository, "components/app").mkdirs()
+        File(repository, "envs/dev.yaml").writeText("group:\n  components: [app]\n")
+        File(repository, "components/app/application.yaml").writeText("value: present\n")
+        MicroconfigMain.main("-envs", "dev,!dev", "-r", repository.path, "-d", output.path)
+        assertFalse(output.exists())
+    }
+
     private fun escape(name: String): String {
         return "\"" + name + "\""
     }

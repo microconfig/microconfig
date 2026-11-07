@@ -32,7 +32,7 @@ class NativeProxyConfigurationTest {
     private fun createRepository() {
         Files.createDirectories(root.resolve("components"))
         Files.createDirectories(root.resolve("envs"))
-        Files.writeString(root.resolve("envs/dev.yaml"), "portOffset: 1\n")
+        Files.writeString(root.resolve("envs/dev.yaml"), "{}\n")
     }
 
     private fun interfacesOf(proxy: Any): String {

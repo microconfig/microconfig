@@ -17,18 +17,23 @@ class EnvProfilesComponentGraph(
         component: String,
         environment: String,
         configType: ConfigType,
-    ): List<ConfigFile> = configFiles(component, environment, configType, emptyList())
+    ): List<ConfigFile> =
+        configFiles(component, environment, configType, emptyList(), mutableMapOf())
 
     private fun configFiles(
         component: String,
         environment: String,
         type: ConfigType,
         visiting: List<String>,
+        completed: MutableMap<String, List<ConfigFile>>,
     ): List<ConfigFile> {
         checkProfileCycle(environment, visiting)
-        val standard = delegate.getConfigFilesOf(component, environment, type)
-        val profiles = profileFiles(component, environment, type, visiting + environment)
-        return joinConfigs(standard, profiles, environment)
+        return completed.getOrPut(environment) {
+            val standard = delegate.getConfigFilesOf(component, environment, type)
+            val profiles =
+                profileFiles(component, environment, type, visiting + environment, completed)
+            joinConfigs(standard, profiles, environment)
+        }
     }
 
     private fun checkProfileCycle(environment: String, visiting: List<String>) {
@@ -43,9 +48,10 @@ class EnvProfilesComponentGraph(
         environment: String,
         type: ConfigType,
         visiting: List<String>,
+        completed: MutableMap<String, List<ConfigFile>>,
     ): List<ConfigFile> =
         environments.getOrCreateByName(environment).profiles.flatMap {
-            configFiles(component, it, type, visiting)
+            configFiles(component, it, type, visiting, completed)
         }
 
     private fun joinConfigs(

@@ -35,7 +35,7 @@ class EnvironmentImplTest {
     val factory2: PropertiesFactory = mock(PropertiesFactory::class.java)
 
     val env: Environment =
-        EnvironmentImpl(null, "dev", false, 1, emptyList(), groups, factory, factory2)
+        EnvironmentImpl(null, "dev", false, emptyList(), groups, factory, factory2)
 
     @BeforeEach
     fun setUp() {

@@ -11,6 +11,8 @@ interface TypedProperties {
     val propertiesAsMap: Map<String, Property>
     val propertiesAsKeyValue: Map<String, String>
     val properties: Collection<Property>
+    val templates: List<Template>
+        get() = emptyList()
 
     fun resolveBy(resolver: Resolver): TypedProperties
 

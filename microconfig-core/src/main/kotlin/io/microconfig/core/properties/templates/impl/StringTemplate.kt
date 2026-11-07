@@ -95,7 +95,9 @@ constructor(
     companion object {
         private val lineBreak = Regex("\\r\\n|[\\n\\r]")
 
-        fun isValidPlaceholder(value: String): Boolean =
-            PlaceholderBorders.findPlaceholderIn(value).isPresent
+        fun isValidPlaceholder(value: String): Boolean {
+            val placeholder = PlaceholderBorders.findPlaceholderIn(value).orElse(null)
+            return placeholder?.startIndex == 0 && placeholder.endIndex == value.length
+        }
     }
 }

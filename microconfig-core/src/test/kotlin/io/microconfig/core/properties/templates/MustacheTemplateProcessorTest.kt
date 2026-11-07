@@ -21,7 +21,7 @@ class MustacheTemplateProcessorTest {
     @BeforeEach
     fun createEnvironment() {
         Files.createDirectories(root.resolve("envs"))
-        Files.writeString(root.resolve("envs/dev.yaml"), "portOffset: 1\n")
+        Files.writeString(root.resolve("envs/dev.yaml"), "{}\n")
     }
 
     @Test

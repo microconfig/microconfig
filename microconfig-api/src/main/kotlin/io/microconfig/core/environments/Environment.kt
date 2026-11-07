@@ -7,7 +7,6 @@ interface Environment {
     val name: String
     val source: File?
     val isAbstract: Boolean
-    val portOffset: Int
     val profiles: List<String>
     val groups: List<ComponentGroup>
     val allComponents: Components

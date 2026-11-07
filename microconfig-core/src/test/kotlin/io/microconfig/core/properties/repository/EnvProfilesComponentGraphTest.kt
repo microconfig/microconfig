@@ -5,12 +5,12 @@ import io.microconfig.core.environments.Environment
 import io.microconfig.core.environments.EnvironmentRepository
 import io.microconfig.core.properties.repository.impl.EnvProfilesComponentGraph
 import java.io.File
-import java.util.Arrays.stream
-import java.util.stream.Collectors.toList
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 
 class EnvProfilesComponentGraphTest {
@@ -92,11 +92,26 @@ class EnvProfilesComponentGraphTest {
         `when`(delegate.getConfigFilesOf("c", env, APPLICATION)).thenReturn(files(*files))
     }
 
+    @Test
+    fun visitSharedProfileFilesOnce() {
+        val shared = mock(Environment::class.java)
+        val sibling = mock(Environment::class.java)
+        `when`(e.profiles).thenReturn(listOf("p", "sibling"))
+        `when`(p.profiles).thenReturn(listOf("shared"))
+        `when`(sibling.profiles).thenReturn(listOf("shared"))
+        `when`(shared.profiles).thenReturn(emptyList())
+        `when`(environmentRepository.getOrCreateByName("sibling")).thenReturn(sibling)
+        `when`(environmentRepository.getOrCreateByName("shared")).thenReturn(shared)
+        listOf("e", "p", "sibling", "shared").forEach { mockGraph(it, "app.yaml") }
+        assertResult("app.yaml")
+        verify(delegate, times(1)).getConfigFilesOf("c", "shared", APPLICATION)
+    }
+
     private fun assertResult(vararg names: String) {
         assertEquals(files(*names), componentGraph.getConfigFilesOf("c", "e", APPLICATION))
     }
 
     private fun files(vararg names: String): List<ConfigFile> {
-        return stream(names).map({ n -> ConfigFile(File(n), "ct1", "e") }).collect(toList())
+        return names.map { ConfigFile(File(it), "ct1", "e") }
     }
 }

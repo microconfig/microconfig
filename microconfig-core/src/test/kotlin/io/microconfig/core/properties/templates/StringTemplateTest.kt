@@ -47,9 +47,23 @@ class StringTemplateTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["\${this@missing:\${this@ip}}", "\${this@ip:\${this@missing}}"])
+    @ValueSource(
+        strings =
+            [
+                "\${missing:\${this@ip}}",
+                "\${ip:\${this@missing}}",
+                "\${this@missing:\${this@ip}}",
+                "\${this@ip:\${this@missing}}",
+            ]
+    )
     fun resolveNestedDefaultValue(placeholder: String) {
         resolve(placeholder, "172.30.162.3")
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["\${missing:{this@ip}}", "\${this@missing:{this@ip}}"])
+    fun preserveBracesInLiteralDefaultValue(placeholder: String) {
+        resolve(placeholder, "{this@ip}")
     }
 
     @Test
