@@ -301,6 +301,21 @@ class MixedExpressionCacheTest {
     }
 
     @Test
+    fun keepGeneratedExpressionArgumentsContextualAndEvaluateNestedExpressionsOnce() {
+        property("shared", "stamp", "#{#{'$' + '{this@amount}'} + #{next}}-\${this@name}")
+        property("app", "name", "app")
+        property("first", "value", "\${shared@stamp}")
+        property("second", "value", "\${shared@stamp}")
+        property("first", "amount", "10")
+        property("second", "amount", "20")
+
+        assertEquals("11-app", reference("first", "value"))
+        assertEquals("21-app", reference("second", "value"))
+        assertEquals("11-app", reference("first", "value"))
+        assertEquals(1, evaluations.get())
+    }
+
+    @Test
     fun keepIdenticalExpressionsInDifferentCollectionElementsDistinct() {
         val stamp = property("app", "stamp", "[#{next}, \${this@label}, #{next}]", ValueFormat.YAML)
         property("app", "label", "app")

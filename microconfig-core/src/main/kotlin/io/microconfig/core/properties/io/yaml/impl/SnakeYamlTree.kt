@@ -7,6 +7,7 @@ import org.yaml.snakeyaml.comments.CommentType
 import org.yaml.snakeyaml.nodes.*
 import java.io.StringReader
 import java.util.*
+import java.util.Collections.newSetFromMap
 
 class SnakeYamlTree(private val sectionBreaks: Boolean) : YamlTree {
     override fun toYaml(flatProperties: Map<String, String>): String {
@@ -20,8 +21,7 @@ class SnakeYamlTree(private val sectionBreaks: Boolean) : YamlTree {
 
     private class PropertyTree {
         private val parser by lazy { SnakeYaml.parser() }
-        private val sections =
-            java.util.Collections.newSetFromMap(IdentityHashMap<MappingNode, Boolean>())
+        private val sections = newSetFromMap(IdentityHashMap<MappingNode, Boolean>())
 
         fun build(properties: Map<String, String>): MappingNode {
             val root = section()

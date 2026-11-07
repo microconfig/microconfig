@@ -40,7 +40,7 @@ internal class EnvironmentFile(private val file: File) {
     }
 
     private fun parseInclude(value: Any?): EnvInclude {
-        val include = value as Map<*, *>? ?: return EnvInclude.empty()
+        val include = value as? Map<*, *>? ?: return EnvInclude.empty()
         val name = include["env"] as String
         val excludes =
             (include["exclude"] as Collection<*>?)?.map { it as String }?.toSet() ?: emptySet()

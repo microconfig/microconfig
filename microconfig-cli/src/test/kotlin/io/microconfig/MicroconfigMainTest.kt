@@ -26,7 +26,7 @@ class MicroconfigMainTest {
 
     @Test
     fun should_package_only_project_version_in_version_resource() {
-        val properties: Properties = Properties()
+        val properties = Properties()
         properties.load(StringReader(readClasspathResource("version.properties")))
         assertEquals(setOf("version"), properties.stringPropertyNames())
         assertFalse(properties.getProperty("version").isBlank())
@@ -84,7 +84,7 @@ class MicroconfigMainTest {
 
     @Test
     fun should_not_generate_config_for_excluded_envs() {
-        val envs: String = "env1, !env2, env3"
+        val envs = "env1, !env2, env3"
         MicroconfigMain.main(
             "-envs",
             envs,
@@ -163,7 +163,7 @@ class MicroconfigMainTest {
     }
 
     private fun checkFileExist(filePath: String, shouldFileExist: Boolean) {
-        val resultFile: File = File(destinationDir, filePath)
+        val resultFile = File(destinationDir, filePath)
         assertEquals(shouldFileExist, resultFile.exists())
         if ((shouldFileExist)) {
             assertEquals("key: " + resultFile.nameWithoutExtension, readFully(resultFile).trim())

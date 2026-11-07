@@ -19,6 +19,7 @@ import java.io.Reader
 import java.io.StringReader
 import java.io.StringWriter
 import java.util.*
+import java.util.Collections.newSetFromMap
 
 internal object SnakeYaml {
     private val scalarResolver = Resolver()
@@ -39,7 +40,7 @@ internal object SnakeYaml {
         }
         val parser = recordingParser(text, options, events)
         val node = Composer(parser, scalarResolver, options).singleNode ?: return null
-        flattenMerges(node, Collections.newSetFromMap(IdentityHashMap()))
+        flattenMerges(node, newSetFromMap(IdentityHashMap()))
         return node
     }
 
@@ -68,7 +69,7 @@ internal object SnakeYaml {
             ) {
             override fun compose(reader: Reader): Node? {
                 val node = super.compose(reader) ?: return null
-                flattenMerges(node, Collections.newSetFromMap(IdentityHashMap()))
+                flattenMerges(node, newSetFromMap(IdentityHashMap()))
                 return node
             }
         }
@@ -88,7 +89,7 @@ internal object SnakeYaml {
     }
 
     private fun flattenMapping(node: MappingNode) {
-        checkMergeCycles(node, Collections.newSetFromMap(IdentityHashMap()))
+        checkMergeCycles(node, newSetFromMap(IdentityHashMap()))
         node.value = merges.flatten(node)
         node.isMerged = false
     }
@@ -176,8 +177,7 @@ internal object SnakeYaml {
 
     private fun lastScalar(
         node: Node,
-        visited: MutableSet<Node> =
-            java.util.Collections.newSetFromMap(java.util.IdentityHashMap()),
+        visited: MutableSet<Node> = newSetFromMap(IdentityHashMap()),
     ): ScalarNode? {
         if (!visited.add(node)) return null
         return when (node) {

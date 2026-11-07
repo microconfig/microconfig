@@ -15,6 +15,7 @@ import org.yaml.snakeyaml.nodes.ScalarNode
 import org.yaml.snakeyaml.nodes.Tag
 import java.io.File
 import java.util.*
+import java.util.Collections.newSetFromMap
 
 class SnakeYamlReader(private val file: File, reader: FsReader) : ConfigReader {
     private val source = YamlSource(if (file.exists()) reader.readFully(file) else "")
@@ -57,7 +58,7 @@ class SnakeYamlReader(private val file: File, reader: FsReader) : ConfigReader {
             "",
             configType,
             environment,
-            java.util.Collections.newSetFromMap(IdentityHashMap()),
+            newSetFromMap(IdentityHashMap()),
         )
     }
 

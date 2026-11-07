@@ -24,7 +24,7 @@ class ComponentDefinitionTest {
 
     @Test
     fun toComponent() {
-        val env: String = "dev"
+        val env = "dev"
         val factory: ComponentFactory = mock(ComponentFactory::class.java)
         val expected: Component = mock(Component::class.java)
         `when`(factory.createComponent(alias, name, env)).thenReturn(expected)

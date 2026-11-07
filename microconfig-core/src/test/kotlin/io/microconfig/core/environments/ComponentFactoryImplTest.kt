@@ -17,9 +17,9 @@ class ComponentFactoryImplTest {
 
     @Test
     fun createComponent() {
-        val name: String = "name"
-        val originalName: String = "originalName"
-        val env: String = "env"
+        val name = "name"
+        val originalName = "originalName"
+        val env = "env"
         assertEquals(
             ComponentImpl(configTypeRepository, propertiesFactory, name, originalName, env),
             subj.createComponent(name, originalName, env),

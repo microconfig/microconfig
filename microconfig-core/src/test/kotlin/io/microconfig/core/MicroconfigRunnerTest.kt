@@ -16,7 +16,7 @@ class MicroconfigRunnerTest {
     fun testBuild() {
         val root: File = classpathFile("repo")
         MicroconfigRunner(root, destinationDir).build("var", emptyList(), emptyList())
-        val resultFile: File = File(destinationDir, "var/application.properties")
+        val resultFile = File(destinationDir, "var/application.properties")
         assertTrue(resultFile.exists())
         assertEquals("c=3", readFully(resultFile))
     }
@@ -24,7 +24,7 @@ class MicroconfigRunnerTest {
     @Test
     fun testBuildAbstract() {
         val root: File = classpathFile("repo")
-        val runner: MicroconfigRunner = MicroconfigRunner(root, destinationDir)
+        val runner = MicroconfigRunner(root, destinationDir)
         assertThrows(
             EnvironmentException::class.java,
             { runner.build("abstract", emptyList(), emptyList()) },

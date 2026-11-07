@@ -15,7 +15,7 @@ import org.mockito.Mockito.`when`
 class TemplateDefinitionTest {
     @Test
     fun binaryTemplateWithoutSourceIsReportedAsIncomplete() {
-        val definition: TemplateDefinition = TemplateDefinition("file", "bin", defaultPattern())
+        val definition = TemplateDefinition("file", "bin", defaultPattern())
         definition.setToFile("out.bin")
         val e: IllegalStateException =
             assertThrows(

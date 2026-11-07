@@ -34,10 +34,9 @@ internal class ScalarExpressions(
         val prefix = markerPrefix(original)
         ranges.forEach { range ->
             val raw = original.substring(range.first, range.last + 1)
-            val independent = PlaceholderBorders.findPlaceholderOrNull(raw) == null
             val children = outermost(ranges.filter { it != range && it.first >= range.first && it.last <= range.last })
-            val prepared = if (independent) raw else replaceExpressions(raw, children, prefix, range.first)
-            expressions["$prefix${range.first}}"] = MarkedExpression(range.first, prepared, independent)
+            val prepared = replaceExpressions(raw, children, prefix, range.first)
+            expressions["$prefix${range.first}}"] = MarkedExpression(range.first, prepared)
         }
         return replaceExpressions(original, outermost(ranges), prefix, 0)
     }
@@ -92,11 +91,11 @@ internal class ScalarExpressions(
             override val startIndex = marker.start()
             override val endIndex = marker.end()
 
+            // Resolve dependencies before caching the final SpEL evaluation.
             override fun resolveFor(sourceOfValue: DeclaringComponent?, root: DeclaringComponent?): String =
-                if (expression.independent) cacheResult(expression.value) { evaluate(expression.value, null) }
-                else evaluate(expression.value, cacheResult)
+                evaluate(expression.value, cacheResult)
         }
     }
 
-    private data class MarkedExpression(val position: Int, val value: String, val independent: Boolean)
+    private data class MarkedExpression(val position: Int, val value: String)
 }

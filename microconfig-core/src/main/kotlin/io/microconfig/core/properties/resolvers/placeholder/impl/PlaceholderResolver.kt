@@ -113,7 +113,7 @@ private constructor(
             try {
                 if (canBeOverridden(placeholder, source))
                     overrideByParents(placeholder, source, root)
-                else resolve(placeholder, source, root)
+                else resolve(placeholder, root)
             } catch (error: RuntimeException) {
                 val default = placeholder.defaultValue
                 if (default != null && error.isUnresolvedValue()) {
@@ -142,24 +142,22 @@ private constructor(
                     }
                     .distinct()
             return candidates.firstNotNullOfOrNull {
-                tryResolve(placeholder.overrideBy(it), source, root)
+                tryResolve(placeholder.overrideBy(it), root)
             } ?: throw ResolveException.unresolved(source, root, "Can't resolve placeholder $this")
         }
 
         private fun tryResolve(
             placeholder: Placeholder,
-            source: DeclaringComponent,
             root: DeclaringComponent,
         ): String? =
             try {
-                resolve(placeholder, source, root)
+                resolve(placeholder, root)
             } catch (error: RuntimeException) {
                 if (error.isUnresolvedValue()) null else throw error
             }
 
         private fun resolve(
             placeholder: Placeholder,
-            source: DeclaringComponent,
             root: DeclaringComponent,
         ): String {
             val property = placeholder.resolveUsing(strategy, root)

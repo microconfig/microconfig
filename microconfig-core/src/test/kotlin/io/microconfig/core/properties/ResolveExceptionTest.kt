@@ -14,22 +14,22 @@ class ResolveExceptionTest {
 
     @Test
     fun withoutCause() {
-        val exception: ResolveException =
+        val exception =
             ResolveException(current, root, "Can\'t resolve placeholder")
         assertEquals(
             "Can\'t build configs for root component \'root[e]\'.\nException in\n\tcurrent[e1]\'\nCan\'t resolve placeholder",
-            exception.message.orEmpty().trim(),
+            exception.message.trim(),
         )
         exception.property = p
         assertEquals(
             "Can\'t build configs for root component \'root[e]\'.\nException in\n\tcurrent[e1]\'\n\tkey=value\nCan\'t resolve placeholder",
-            exception.message.orEmpty().trim(),
+            exception.message.trim(),
         )
     }
 
     @Test
     fun withCauseMessage() {
-        val exception: ResolveException =
+        val exception =
             ResolveException(
                 current,
                 root,
@@ -38,12 +38,12 @@ class ResolveExceptionTest {
             )
         assertEquals(
             "Can\'t build configs for root component \'root[e]\'.\nException in\n\tcurrent[e1]\'\nCan\'t resolve placeholder\nCause: NPE",
-            exception.message.orEmpty(),
+            exception.message,
         )
         exception.property = p
         assertEquals(
             "Can\'t build configs for root component \'root[e]\'.\nException in\n\tcurrent[e1]\'\n\tkey=value\nCan\'t resolve placeholder\nCause: NPE",
-            exception.message.orEmpty(),
+            exception.message,
         )
     }
 }

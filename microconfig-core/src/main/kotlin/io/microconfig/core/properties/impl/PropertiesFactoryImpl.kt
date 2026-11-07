@@ -4,8 +4,11 @@ import io.microconfig.core.configtypes.ConfigType
 import io.microconfig.core.properties.*
 import java.util.concurrent.ConcurrentHashMap
 
+/** Concurrent cache misses may read in parallel; callers share the published repository snapshot. */
 class PropertiesFactoryImpl(private val repository: PropertiesRepository) : PropertiesFactory {
     private val properties = ConcurrentHashMap<Query, Map<String, Property>>()
+    private val activeQueries = ThreadLocal.withInitial { linkedSetOf<Query>() }
+
     override fun getPropertiesOf(
         componentName: String,
         componentOriginalName: String,
@@ -18,6 +21,8 @@ class PropertiesFactoryImpl(private val repository: PropertiesRepository) : Prop
             }
         )
 
+    override fun flat(properties: List<Properties>): Properties = PropertiesImpl.flat(properties)
+
     private fun readProperties(
         name: String,
         originalName: String,
@@ -28,13 +33,30 @@ class PropertiesFactoryImpl(private val repository: PropertiesRepository) : Prop
             type,
             name,
             environment,
-            properties.computeIfAbsent(Query(originalName, environment, type)) {
-                repository.getPropertiesOf(it.component, it.environment, it.type)
-            },
+            originalProperties(originalName, environment, type),
             emptyList(),
         )
 
-    override fun flat(properties: List<Properties>): Properties = PropertiesImpl.flat(properties)
+    private fun originalProperties(component: String, environment: String, type: ConfigType): Map<String, Property> {
+        val query = Query(component, environment, type)
+        // Repository callbacks may request other keys from this factory.
+        return properties.getOrPut(query) { readRepository(query) }
+    }
 
-    private data class Query(val component: String, val environment: String, val type: ConfigType)
+    private fun readRepository(query: Query): Map<String, Property> {
+        val active = activeQueries.get()
+        check(active.add(query)) {
+            "Cyclic repository dependencies: ${(active.toList() + query).joinToString(" -> ")}"
+        }
+        try {
+            return repository.getPropertiesOf(query.component, query.environment, query.type)
+        } finally {
+            active.remove(query)
+            if (active.isEmpty()) activeQueries.remove()
+        }
+    }
+
+    private data class Query(val component: String, val environment: String, val type: ConfigType) {
+        override fun toString(): String = "$component[$environment]/${type.typeName}"
+    }
 }

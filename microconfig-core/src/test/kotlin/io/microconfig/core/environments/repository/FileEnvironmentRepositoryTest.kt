@@ -53,24 +53,21 @@ class FileEnvironmentRepositoryTest {
         val badReader: FsReader = mock(FsReader::class.java)
         `when`(badReader.readFully(any(File::class.java) ?: File("unused")))
             .thenThrow(IllegalArgumentException())
-        val repo: FileEnvironmentRepository =
-            FileEnvironmentRepository(dir, badReader, componentFactory, propertiesFactory)
+        val repo = FileEnvironmentRepository(dir, badReader, componentFactory, propertiesFactory)
         assertThrows(EnvironmentException::class.java, repo::environments)
     }
 
     @Test
     fun envExceptionWrappingOnGroupParse() {
         val badDir: File = classpathFile("envs/bad")
-        val repo: FileEnvironmentRepository =
-            FileEnvironmentRepository(badDir, fsReader, componentFactory, propertiesFactory)
+        val repo = FileEnvironmentRepository(badDir, fsReader, componentFactory, propertiesFactory)
         assertThrows(EnvironmentException::class.java, { repo.getByName("badGroup") })
     }
 
     @Test
     fun sameEnvNamesException() {
         val badDir: File = classpathFile("envs/bad")
-        val repo: FileEnvironmentRepository =
-            FileEnvironmentRepository(badDir, fsReader, componentFactory, propertiesFactory)
+        val repo = FileEnvironmentRepository(badDir, fsReader, componentFactory, propertiesFactory)
         assertThrows(EnvironmentException::class.java, { repo.getByName("bad") })
         assertThrows(EnvironmentException::class.java, { repo.getByName("bad2") })
         assertThrows(IllegalStateException::class.java, { repo.getByName("copy") })

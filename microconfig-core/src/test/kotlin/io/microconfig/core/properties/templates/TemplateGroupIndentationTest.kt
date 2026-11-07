@@ -36,7 +36,7 @@ class TemplateGroupIndentationTest {
             TemplatePattern.defaultPattern().placeholderPattern, content
         )
             .resolveBy(
-                Resolver { _, _, _ -> "host: localhost\nauth:\n  user: reader" },
+                { _, _, _ -> "host: localhost\nauth:\n  user: reader" },
                 DeclaringComponentImpl("app", "component", "dev")
             )
             .content
