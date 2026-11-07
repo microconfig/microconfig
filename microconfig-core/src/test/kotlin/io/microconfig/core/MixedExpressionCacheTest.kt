@@ -316,6 +316,37 @@ class MixedExpressionCacheTest {
     }
 
     @Test
+    fun keepWholeGeneratedPlaceholdersContextualWhileCachingTheirNestedExpressions() {
+        property("shared", "stamp", "#{\${this@code}}-\${this@name}")
+        property("shared", "code", "'$' + '{this@operand'}")
+        property("shared", "operand", "#{next}-\${this@label}")
+        property("app", "name", "app")
+        property("first", "value", "\${shared@stamp}")
+        property("second", "value", "\${shared@stamp}")
+        property("first", "label", "A")
+        property("second", "label", "B")
+
+        assertEquals("1-A-app", reference("first", "value"))
+        assertEquals("1-B-app", reference("second", "value"))
+        assertEquals("1-A-app", reference("first", "value"))
+        assertEquals(1, evaluations.get())
+    }
+
+    @Test
+    fun cacheWholeExpressionsGeneratedByExpressionSourceInterpolation() {
+        val stamp = property("app", "stamp", "#{\${this@code}}-\${this@name}")
+        property("app", "code", "'#' + '{next'}")
+        property("app", "name", "app")
+        property("first", "value", "\${app@stamp}")
+        property("second", "value", "\${first@value}")
+
+        assertEquals("1-app", stamp.resolveBy(resolver, context).value)
+        assertEquals("1-app", reference("second", "value"))
+        assertEquals("1-app", reference("app", "stamp"))
+        assertEquals(1, evaluations.get())
+    }
+
+    @Test
     fun keepIdenticalExpressionsInDifferentCollectionElementsDistinct() {
         val stamp = property("app", "stamp", "[#{next}, \${this@label}, #{next}]", ValueFormat.YAML)
         property("app", "label", "app")

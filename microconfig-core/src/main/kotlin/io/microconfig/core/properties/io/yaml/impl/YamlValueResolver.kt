@@ -275,7 +275,10 @@ class YamlValueResolver internal constructor(
                     ?: return result.toString()
             if (current.startIndex == 0 && current.endIndex == result.length) {
                 val evaluate = { current.resolveFor(property.declaringComponent, root, ValueFormat.YAML) }
-                return cacheResult?.invoke(result.toString(), evaluate) ?: evaluate()
+                val text = result.toString()
+                return if (cacheResult != null && isCacheableExpression(text, expressions))
+                    cacheResult(text, evaluate)
+                else evaluate()
             }
             val resolved = current.resolveFor(property.declaringComponent, root, ValueFormat.YAML)
             val value = resolveCachedExpressionsInArgument(resolved, property, root, expressions)
@@ -287,6 +290,11 @@ class YamlValueResolver internal constructor(
             )
         }
     }
+
+    private fun isCacheableExpression(value: String, expressions: ScalarExpressions?): Boolean =
+        value.startsWith("#{") && expressionEnd(value, 0) == value.length &&
+            PlaceholderBorders.findPlaceholderOrNull(value) == null &&
+            expressions?.containsMarkedExpression(value) != true
 
     private fun resolveCachedExpressionsInArgument(
         value: String,

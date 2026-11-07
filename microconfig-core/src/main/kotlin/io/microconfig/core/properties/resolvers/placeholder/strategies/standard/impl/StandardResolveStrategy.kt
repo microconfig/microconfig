@@ -19,8 +19,8 @@ class StandardResolveStrategy(private val environments: EnvironmentRepository) :
         configType: String,
         root: String?,
     ): Optional<Property> =
-        properties.computeIfAbsent(Triple(component, environment, configType)) {
-            readProperties(it.first, it.second, it.third)
+        properties.getOrPut(Triple(component, environment, configType)) {
+            readProperties(component, environment, configType)
         }.getPropertyWithKey(key)
 
     private fun readProperties(component: String, environment: String, configType: String): Properties =
