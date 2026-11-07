@@ -15,6 +15,11 @@ import org.yaml.snakeyaml.nodes.ScalarNode
 import org.yaml.snakeyaml.nodes.Tag
 
 object YamlScalars {
+    // A conservative subset that stays one plain scalar in block and flow YAML.
+    internal fun isPlainScalar(text: String): Boolean =
+        text.isNotEmpty() && text != "-" && text != "---" && text != "..." &&
+            text.all { it.isLetterOrDigit() || it in "_./-" }
+
     internal fun canonicalKeyText(text: String): String {
         val node = runCatching { SnakeYaml.parse(text) as? ScalarNode }.getOrNull() ?: return text
         return if (node.tag == Tag.STR) text else canonicalKey(node)
@@ -97,8 +102,11 @@ object YamlScalars {
 
     private fun readBack(text: String): Any? {
         if (text.isEmpty() || text.contains('\n') || text != text.trim()) return notScalar
+        val scalar = SnakeYaml.plainScalar(text)
+        if (scalar?.tag == Tag.STR) return text
         return runCatching {
                 val yaml = SnakeYaml.parser()
+                if (scalar != null) return@runCatching yaml.load<Any?>(text)
                 val mapping = yaml.load<Map<String, Any?>>("value: $text")
                 val value = mapping["value"]
                 val flow = yaml.load<List<Any?>>("[$text]")
@@ -129,6 +137,14 @@ object YamlScalars {
         properties: Collection<Property>,
         overwrite: Boolean = true,
     ): Map<String, Property> {
+        if (properties.isEmpty()) return emptyMap()
+        if (properties.all { it.keyFormat == ConfigFormat.YAML }) {
+            val indexed = linkedMapOf<String, Property>()
+            properties.forEach {
+                if (overwrite) indexed[it.key] = it else indexed.putIfAbsent(it.key, it)
+            }
+            return indexed
+        }
         val propertiesOnly = properties.all { it.keyFormat == ConfigFormat.PROPERTIES }
         fun keyOf(property: Property): String =
             if (propertiesOnly) PropertiesText.unescape(property.key) else serializedKey(property)

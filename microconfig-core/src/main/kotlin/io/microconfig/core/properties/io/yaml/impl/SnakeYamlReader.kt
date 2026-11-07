@@ -102,6 +102,8 @@ class SnakeYamlReader(private val file: File, reader: FsReader) : ConfigReader {
         )
             return name
         if (key.tag != Tag.STR) return source.restore(YamlScalars.canonicalKey(key))
+        if (key.scalarStyle == DumperOptions.ScalarStyle.PLAIN &&
+            simpleKey.matches(name) && !source.hasExplicitTag(key)) return name
         val protected =
             key.scalarStyle != DumperOptions.ScalarStyle.PLAIN &&
                 ('.' in name ||
@@ -264,5 +266,9 @@ class SnakeYamlReader(private val file: File, reader: FsReader) : ConfigReader {
         val declarations = directives()
         environmentHeaders().keys.forEach(declarations::remove)
         return declarations
+    }
+
+    private companion object {
+        val simpleKey = Regex("[A-Za-z_][A-Za-z0-9_.-]*")
     }
 }

@@ -1,8 +1,16 @@
 # Microconfig 4.9.7 versus the current working version
 
 This fixture and runner compare complete, real CLI builds in **fresh JVM processes**.
-There are no JVM warm-up runs or wrapper entry points. Production sources were not
-changed for this benchmark.
+There are no JVM warm-up runs or wrapper entry points.
+
+**Latest comparison with parallel component resolution and existing-output builds:**
+see [parallel-optimization.md](parallel-optimization.md),
+[parallel-results.json](parallel-results.json), and
+[parallel-existing-results.json](parallel-existing-results.json).
+The preceding optimization stage is preserved in [optimization.md](optimization.md)
+and [optimized-results.json](optimized-results.json).
+The initial measurements below are preserved as historical results; their timings
+must not be compared directly with the updated results because the power mode changed.
 
 ## Fixture
 
@@ -103,3 +111,8 @@ python3 benchmarks/cache-comparison/run.py \
 The runner uses `wait4` and supports macOS and Linux. Use the same Java executable
 for both versions. It stops on a CLI error, unexpected output count, or differing
 output bytes. Each repeat creates a new owned subdirectory under `work/`.
+
+To measure rebuilding an existing output tree, add `--existing-output /path/to/previous/output`.
+The runner copies that tree into each separate destination outside the timer; it
+does not launch an extra seed JVM. Reports distinguish full process wall time
+from the CLI's own `Generated [dev] configs in ...ms` message.

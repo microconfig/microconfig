@@ -19,41 +19,36 @@ import java.util.Optional
 import java.util.function.Predicate
 
 class ConfigDiff(private val configIo: ConfigIo = defaultConfigIo()) : ConfigChangeListener {
+    private var sourceReader: FsReader? = null
+
     fun storeDiffFor(previousConfigFile: File, newProperties: Collection<Property>) =
         accept(previousConfigFile, newProperties)
+
+    override fun prepareAll(outputs: Map<File, Collection<Property>>): Map<File, () -> Unit> {
+        val prepared = outputs.entries.parallelStream().map { (file, properties) ->
+            runCatching { file to prepare(file, properties) }
+        }.toList()
+        return prepared.map { it.getOrThrow() }.toMap()
+    }
 
     override fun prepare(
         file: File,
         properties: Collection<Property>,
     ): () -> Unit {
-        val previous = readOldConfig(file)
         val changes =
-            compare(
-                previous.toMutableMap(),
-                properties,
-                file,
-                file.isFile,
-            )
+            if (file.isFile) compare(properties, file)
+            else emptyMap()
         return { storeDiff(file, changes) }
     }
 
-    private fun readOldConfig(file: File): Map<String, String> =
-        try {
-            configIo.readFrom(file).propertiesAsMap()
-        } catch (failure: RuntimeException) {
-            error("Can't read previous config '$file' for comparison: ${failure.message}")
-            emptyMap()
-        }
-
     // Compare the serialized forms because the old values have been read back from disk.
     private fun compare(
-        previous: MutableMap<String, String>,
         current: Collection<Property>,
         file: File,
-        hadPrevious: Boolean,
     ): Map<String, String> {
-        if (!hadPrevious) return emptyMap()
-        val reader = readSerializedConfig(file, current)
+        val text = configIo.writeTo(file).serialize(current)
+        val previous = readChangedPreviousConfig(file, text)?.toMutableMap() ?: return emptyMap()
+        val reader = readSerializedConfig(file, text)
         val yaml = reader.format() == YAML
         val changes = sortedMapOf<String, String>()
         reader.propertiesAsMap().forEach { (key, newValue) ->
@@ -65,15 +60,20 @@ class ConfigDiff(private val configIo: ConfigIo = defaultConfigIo()) : ConfigCha
         return changes
     }
 
-    private fun changedKey(key: String, sign: Char?, yaml: Boolean): String {
-        if (yaml) return YamlScalars.diffKeyPath(key, sign)
-        if (sign != null) return "$sign$key"
-        val first = PropertiesText.unescape(key).firstOrNull()
-        return if (first == '+' || first == '-' || first == '\\') "\\\\$key" else key
-    }
+    // null means the complete serialized content is already identical.
+    private fun readChangedPreviousConfig(file: File, current: String): Map<String, String>? =
+        try {
+            val source = sourceReader
+            if (source != null && file.extension in setOf("yaml", "yml")) {
+                val text = source.readFully(file)
+                if (text == current) null else readSerializedConfig(file, text).propertiesAsMap()
+            } else configIo.readFrom(file).propertiesAsMap()
+        } catch (failure: RuntimeException) {
+            error("Can't read previous config '$file' for comparison: ${failure.message}")
+            emptyMap()
+        }
 
-    private fun readSerializedConfig(file: File, properties: Collection<Property>): ConfigReader {
-        val text = configIo.writeTo(file).serialize(properties)
+    private fun readSerializedConfig(file: File, text: String): ConfigReader {
         val contentReader =
             object : FsReader {
                 override fun readFully(file: File): String = text
@@ -87,6 +87,13 @@ class ConfigDiff(private val configIo: ConfigIo = defaultConfigIo()) : ConfigCha
                     Optional.ofNullable(readLines(file).firstOrNull { predicate.test(it) })
             }
         return newConfigIo(contentReader).readFrom(file)
+    }
+
+    private fun changedKey(key: String, sign: Char?, yaml: Boolean): String {
+        if (yaml) return YamlScalars.diffKeyPath(key, sign)
+        if (sign != null) return "$sign$key"
+        val first = PropertiesText.unescape(key).firstOrNull()
+        return if (first == '+' || first == '-' || first == '\\') "\\\\$key" else key
     }
 
     private fun changedValue(previous: String, current: String, yaml: Boolean): String {
@@ -109,5 +116,10 @@ class ConfigDiff(private val configIo: ConfigIo = defaultConfigIo()) : ConfigCha
         } catch (error: IOException) {
             throw IllegalStateException("Can't remove stale diff '$file'", error)
         }
+    }
+
+    companion object {
+        internal fun forReader(reader: FsReader, configIo: ConfigIo = newConfigIo(reader)): ConfigDiff =
+            ConfigDiff(configIo).also { it.sourceReader = reader }
     }
 }

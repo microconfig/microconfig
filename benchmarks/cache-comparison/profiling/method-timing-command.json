@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/Users/amatorin/.sdkman/candidates/java/25.0.2-open/bin/java",
+    "-XX:StartFlightRecording=settings=/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/profiling/method-timing.jfc,filename=/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/profiles-lw5iweg5/method-timing.jfr,dumponexit=true",
+    "-jar",
+    "/tmp/microconfig-cache-benchmark/new.jar",
+    "-r",
+    "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+    "-e",
+    "dev",
+    "-d",
+    "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/profiles-lw5iweg5/method-output"
+  ],
+  "recording": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/profiles-lw5iweg5/method-timing.jfr",
+  "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/profiles-lw5iweg5/method-timing.log"
+}

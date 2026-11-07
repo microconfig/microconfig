@@ -49,7 +49,9 @@ private constructor(
             startsPlaceholderAt(text.toString(), startIndex)
 
         private fun find(text: String, start: Int): PlaceholderBorders? {
-            headerPattern.findAll(text, start.coerceAtLeast(0)).forEach { header ->
+            val first = text.indexOf("\${", start.coerceAtLeast(0))
+            if (first < 0) return null
+            headerPattern.findAll(text, first).forEach { header ->
                 val separator = header.groups["separator"]!!.value
                 if (separator == "}" && header.groups["key"]!!.value.isEmpty()) return@forEach
                 val end =

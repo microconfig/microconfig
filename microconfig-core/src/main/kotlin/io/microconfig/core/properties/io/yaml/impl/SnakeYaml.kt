@@ -1,5 +1,6 @@
 package io.microconfig.core.properties.io.yaml.impl
 
+import io.microconfig.core.properties.io.yaml.YamlScalars
 import java.io.Reader
 import java.io.StringReader
 import java.io.StringWriter
@@ -8,19 +9,64 @@ import java.util.IdentityHashMap
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.composer.Composer
+import org.yaml.snakeyaml.emitter.Emitter
+import org.yaml.snakeyaml.events.CommentEvent
+import org.yaml.snakeyaml.events.Event
 import org.yaml.snakeyaml.nodes.MappingNode
 import org.yaml.snakeyaml.nodes.Node
+import org.yaml.snakeyaml.nodes.NodeId
 import org.yaml.snakeyaml.nodes.ScalarNode
 import org.yaml.snakeyaml.nodes.SequenceNode
 import org.yaml.snakeyaml.nodes.Tag
+import org.yaml.snakeyaml.parser.Parser
+import org.yaml.snakeyaml.parser.ParserImpl
+import org.yaml.snakeyaml.reader.StreamReader
+import org.yaml.snakeyaml.resolver.Resolver
+import org.yaml.snakeyaml.serializer.Serializer
 import org.yaml.snakeyaml.util.MergeUtils
 
 internal object SnakeYaml {
-    fun parser(comments: Boolean = false): Yaml =
+    private val scalarResolver = Resolver()
+    private val plainFragment = Regex("(?:[A-Za-z_1-9][A-Za-z0-9_./-]*|0)")
+
+    fun plainScalar(text: String): ScalarNode? =
+        if (YamlScalars.isPlainScalar(text))
+            ScalarNode(scalarResolver.resolve(NodeId.scalar, text, true), text,
+                null, null, DumperOptions.ScalarStyle.PLAIN)
+        else null
+
+    fun compose(text: String, events: MutableList<Event>): Node? {
+        val options = LoaderOptions().apply {
+            isProcessComments = true
+            isMergeOnCompose = false
+        }
+        val parser = recordingParser(text, options, events)
+        val node = Composer(parser, scalarResolver, options).singleNode ?: return null
+        flattenMerges(node, Collections.newSetFromMap(IdentityHashMap()))
+        return node
+    }
+
+    private fun recordingParser(text: String, options: LoaderOptions, events: MutableList<Event>): Parser {
+        val parser = ParserImpl(StreamReader(StringReader(text)), options)
+        // Retain metadata while composing, so callers do not need a second parse.
+        return object : Parser {
+            override fun checkEvent(choice: Event.ID): Boolean = peekEvent()?.eventId == choice
+
+            override fun peekEvent(): Event? {
+                while (parser.peekEvent() is CommentEvent) events.add(parser.event)
+                return parser.peekEvent()
+            }
+
+            override fun getEvent(): Event? =
+                peekEvent()?.let { parser.event.also(events::add) }
+        }
+    }
+
+    fun parser(): Yaml =
         object :
             Yaml(
                 LoaderOptions().apply {
-                    isProcessComments = comments
                     isMergeOnCompose = false
                 }
             ) {
@@ -75,7 +121,8 @@ internal object SnakeYaml {
             }
         }
 
-    fun parse(text: String): Node = parser().compose(StringReader(text)) ?: emptyValue()
+    fun parse(text: String): Node =
+        plainScalar(text) ?: parser().compose(StringReader(text)) ?: emptyValue()
 
     fun emptyValue(): ScalarNode =
         ScalarNode(Tag.NULL, "", null, null, DumperOptions.ScalarStyle.PLAIN)
@@ -87,32 +134,42 @@ internal object SnakeYaml {
 
     fun serialize(node: Node, sectionBreaks: Boolean = false): String {
         val output = StringWriter()
-        emitter(sectionBreaks, node is SequenceNode).serialize(node, output)
+        val options = dumperOptions(sectionBreaks, node is SequenceNode)
+        val serializer = Serializer(Emitter(output, options), scalarResolver, options, null)
+        serializer.open()
+        serializer.serialize(node)
+        serializer.close()
         return output.toString()
     }
 
-    private fun emitter(sectionBreaks: Boolean, rootSequence: Boolean): Yaml =
-        Yaml(
-            DumperOptions().apply {
-                // Regenerate parsed anchors too, avoiding collisions with newly shared nodes.
-                var anchorId = 0
-                setAnchorGenerator { "id${++anchorId}" }
-                defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
-                indent = 2
-                indicatorIndent = if (rootSequence) 0 else 2
-                indentWithIndicator = !rootSequence
-                setSplitLines(false)
-                isProcessComments = sectionBreaks
-                lineBreak = DumperOptions.LineBreak.UNIX
-            }
-        )
+    private fun dumperOptions(sectionBreaks: Boolean, rootSequence: Boolean): DumperOptions =
+        DumperOptions().apply {
+            // Regenerate parsed anchors too, avoiding collisions with newly shared nodes.
+            var anchorId = 0
+            setAnchorGenerator { "id${++anchorId}" }
+            defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
+            indent = 2
+            indicatorIndent = if (rootSequence) 0 else 2
+            indentWithIndicator = !rootSequence
+            setSplitLines(false)
+            isProcessComments = sectionBreaks
+            lineBreak = DumperOptions.LineBreak.UNIX
+        }
 
     fun scalar(node: ScalarNode): String = serialize(node).removeSuffix("\n")
 
-    fun fragment(node: Node): String =
-        serialize(node).let {
+    fun fragment(node: Node): String {
+        plainFragmentOrNull(node)?.let { return it }
+        return serialize(node).let {
             if (lastBlockScalar(node) != null) it else it.removeSuffix("\n")
         }
+    }
+
+    fun plainFragmentOrNull(node: Node): String? =
+        if (node is ScalarNode && node.scalarStyle == DumperOptions.ScalarStyle.PLAIN &&
+            node.anchor == null && plainFragment.matches(node.value) &&
+            scalarResolver.resolve(NodeId.scalar, node.value, true) == node.tag) node.value
+        else null
 
     private fun lastBlockScalar(node: Node): ScalarNode? =
         lastScalar(node)?.takeIf {

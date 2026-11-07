@@ -62,7 +62,9 @@ constructor(
         fun resolveTemplatesBy(resolver: Resolver): UnaryOperator<TypedProperties> {
             val service = TemplatesService()
             return UnaryOperator { properties ->
-                properties.withTemplates(service.resolveTemplates(properties, resolver)).without {
+                if (properties.templates.isEmpty() &&
+                    properties.properties.none { service.templatePattern.startsWithTemplatePrefix(it.key) }) properties
+                else properties.withTemplates(service.resolveTemplates(properties, resolver)).without {
                     service.templatePattern.startsWithTemplatePrefix(it.key)
                 }
             }

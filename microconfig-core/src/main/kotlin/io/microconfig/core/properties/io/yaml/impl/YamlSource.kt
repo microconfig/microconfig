@@ -9,6 +9,7 @@ import org.yaml.snakeyaml.error.Mark
 import org.yaml.snakeyaml.error.MarkedYAMLException
 import org.yaml.snakeyaml.events.AliasEvent
 import org.yaml.snakeyaml.events.CommentEvent
+import org.yaml.snakeyaml.events.Event
 import org.yaml.snakeyaml.events.MappingEndEvent
 import org.yaml.snakeyaml.events.MappingStartEvent
 import org.yaml.snakeyaml.events.ScalarEvent
@@ -24,18 +25,17 @@ import org.yaml.snakeyaml.nodes.Tag
 /** Adapts Microconfig statements to YAML while retaining offsets in the original file. */
 internal class YamlSource(val original: String) {
     private val prepared = StringBuilder(original)
-    private val offsets = (0..original.length).toMutableList()
+    private val offsets by lazy { (0..original.length).toMutableList() }
     private val statements = linkedMapOf<String, MaskedStatement>()
     private val markersByStatement = mutableMapOf<String, String>()
     private val splices = mutableSetOf<Int>()
     private val possibleContinuations = linkedMapOf<Int, Int>()
     private var markerIndex = 0
     private val varMarker = nextMarker()
-    private val events by lazy {
-        SnakeYaml.parser(true).parse(StringReader(prepared.toString())).toList()
-    }
+    private var events: List<Event> = emptyList()
     private val explicitTags by lazy {
-        events
+        if (prepared.indexOf("!") < 0) emptySet()
+        else events
             .filterIsInstance<ScalarEvent>()
             .filter { it.tag != null }
             .map { it.startMark.index }
@@ -76,7 +76,7 @@ internal class YamlSource(val original: String) {
         val marker =
             markersByStatement.getOrPut(statement) {
                 nextMarker().also {
-                    statements[it] = MaskedStatement(statement, statementPattern(it, statement))
+                    statements[it] = MaskedStatement(statement, it)
                 }
             }
         prepared.setCharAt(start, marker[0])
@@ -219,7 +219,8 @@ internal class YamlSource(val original: String) {
         while (true) {
             restorePlainContinuations()
             try {
-                val node = SnakeYaml.parser().compose(StringReader(prepared.toString()))
+                val parsedEvents = mutableListOf<Event>()
+                val node = SnakeYaml.compose(prepared.toString(), parsedEvents)
                 if (
                     node != null &&
                         adaptFoldedSplice(
@@ -228,6 +229,7 @@ internal class YamlSource(val original: String) {
                         )
                 )
                     continue
+                events = parsedEvents
                 return if (node != null && (splices.isNotEmpty() || explicitTags.isNotEmpty()))
                     prepareStatements(node, IdentityHashMap())
                 else node
@@ -404,15 +406,16 @@ internal class YamlSource(val original: String) {
     }
 
     fun restore(value: String): String {
+        if (value.none { it in '\uE000'..'\uF8FF' }) return value
         val text = value.replace("#$varMarker", ".va")
         val output = StringBuilder()
         var copied = 0
         markerPattern.findAll(text).forEach { token ->
             val statement = statements[token.groupValues[1]] ?: return@forEach
-            val match = statement.pattern.matchAt(text, token.range.first) ?: return@forEach
-            output.append(text, copied, match.range.first)
+            val end = statement.endIn(text, token.range.first) ?: return@forEach
+            output.append(text, copied, token.range.first)
             output.append(statement.text)
-            copied = match.range.last + 1
+            copied = end
         }
         return output.append(text, copied, text.length).toString()
     }
@@ -429,7 +432,8 @@ internal class YamlSource(val original: String) {
         return restore(SnakeYaml.fragment(value))
     }
 
-    fun comments(): List<CommentEvent> = events.filterIsInstance<CommentEvent>()
+    fun comments(): List<CommentEvent> =
+        if (prepared.indexOf("#") < 0) emptyList() else events.filterIsInstance<CommentEvent>()
 
     fun line(number: Int): String = lines[number].trim { it <= ' ' }
 
@@ -445,7 +449,15 @@ internal class YamlSource(val original: String) {
         private val mappingSeparator = Regex(":(?:\\s|$)")
     }
 
-    private data class MaskedStatement(val text: String, val pattern: Regex)
+    private inner class MaskedStatement(val text: String, marker: String) {
+        private val singleLine = text.none { it in lineBreakCharacters }
+        private val mask = if (singleLine) marker + "x".repeat(text.length - 2) else ""
+        private val pattern = if (singleLine) null else statementPattern(marker, text)
+
+        fun endIn(value: String, start: Int): Int? =
+            if (singleLine) (start + mask.length).takeIf { value.startsWith(mask, start) }
+            else pattern?.matchAt(value, start)?.range?.last?.plus(1)
+    }
 
     private class MappingPosition(var expectsKey: Boolean = true, var key: ScalarEvent? = null)
 }

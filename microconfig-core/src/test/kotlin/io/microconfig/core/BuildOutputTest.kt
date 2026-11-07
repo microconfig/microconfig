@@ -1,6 +1,10 @@
 package io.microconfig.core
 
 import io.microconfig.core.configtypes.impl.ConfigTypeImpl
+import io.microconfig.core.configtypes.StandardConfigType.APPLICATION
+import io.microconfig.core.properties.ConfigFormat.YAML
+import io.microconfig.core.properties.PropertyImpl
+import io.microconfig.core.properties.impl.TypedPropertiesImpl
 import io.microconfig.core.properties.serializers.PropertySerializers
 import io.microconfig.utils.Os
 import java.nio.file.Files
@@ -16,6 +20,30 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 
 class BuildOutputTest {
+    @Test
+    fun refreshResolvedPrefixesForEachPreparationAfterAnAncestorSymlinkChanges() {
+        assumeFalse(Os.isWindows())
+        val first = directory.resolve("first/nested")
+        val second = directory.resolve("second/nested")
+        Files.createDirectories(first)
+        Files.createDirectories(second)
+        Files.createDirectories(destination)
+        Files.createSymbolicLink(destination.resolve("one"), first.parent)
+        Files.createSymbolicLink(destination.resolve("two"), second.parent)
+        val units = listOf("one/nested" to "first", "two/nested" to "second").map { (name, value) ->
+            val property = PropertyImpl.property("value", value, YAML, null)
+            TypedPropertiesImpl(APPLICATION, name, "dev", mapOf("value" to property), emptyList())
+        }
+        val serializer = PropertySerializers.toFileIn(destination.toFile(), BiConsumer { _, _ -> })
+        serializer.prepare(units)
+        Files.delete(destination.resolve("two"))
+        Files.createSymbolicLink(destination.resolve("two"), first.parent)
+
+        assertThrows(IllegalArgumentException::class.java) { serializer.prepare(units) }
+        assertFalse(Files.exists(first.resolve("application.yaml")))
+        assertFalse(Files.exists(second.resolve("application.yaml")))
+    }
+
     @TempDir lateinit var directory: Path
     private val root
         get() = directory.resolve("repo")

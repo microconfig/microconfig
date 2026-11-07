@@ -2,12 +2,14 @@ package io.microconfig.core
 
 import io.microconfig.core.properties.ConfigFormat
 import io.microconfig.core.properties.DeclaringComponent
+import io.microconfig.core.properties.DeclaringComponentImpl
 import io.microconfig.core.properties.PlaceholderResolveStrategy
 import io.microconfig.core.properties.PropertyImpl
 import io.microconfig.core.properties.TypedProperties
 import io.microconfig.core.properties.impl.PropertiesImpl
 import io.microconfig.core.properties.resolvers.RecursiveResolver
 import io.microconfig.core.properties.resolvers.impl.ChainedResolver
+import io.microconfig.core.properties.io.yaml.YamlResolvers
 import io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders
 import io.microconfig.core.properties.resolvers.placeholder.strategies.composite.impl.CompositeResolveStrategy
 import java.util.Optional
@@ -91,5 +93,13 @@ class OptionalInteropTest {
         assertNull(chain.findStatementIn("plain").getOrNull())
         assertEquals("before resolved after", chain.resolve("before token after", null, null))
         assertSame(failure, assertThrows(IllegalStateException::class.java) { chain.findStatementIn("broken") })
+
+        val root = DeclaringComponentImpl("app", "component", "dev")
+        val yaml = YamlResolvers.forValues(custom)
+        assertEquals("resolved", yaml.resolve(
+            PropertyImpl.property("key", "token", ConfigFormat.YAML, root), root))
+        assertSame(failure, assertThrows(IllegalStateException::class.java) {
+            yaml.resolve(PropertyImpl.property("key", "broken", ConfigFormat.YAML, root), root)
+        })
     }
 }

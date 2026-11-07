@@ -16,7 +16,9 @@ import java.io.File
 import java.io.IOException
 import java.io.UncheckedIOException
 import java.nio.file.Files
+import java.nio.file.LinkOption.NOFOLLOW_LINKS
 import java.nio.file.Path
+import java.util.concurrent.ConcurrentHashMap
 import java.util.function.BiConsumer
 
 internal class FilePropertySerializer(
@@ -25,18 +27,14 @@ internal class FilePropertySerializer(
     private val configIo: ConfigIo,
 ) : PropertySerializer<File> {
     override fun prepare(properties: List<TypedProperties>): PropertySerializer<File> {
-        val outputs = properties.map { unit ->
-            output(
-                unit.properties,
-                unit.templates,
-                unit.configType,
-                unit.declaringComponent.component,
-                unit.declaringComponent.environment,
-            )
-        }
+        // No writes occur here; later cleanup still resolves the current filesystem paths.
+        val prefixes = ConcurrentHashMap<Path, Path>()
+        val outputs = properties.parallelStream().map { unit -> runCatching { output(unit, prefixes) } }
+            .toList().map { it.getOrThrow() }
         return prepareOutputs(outputs)
     }
 
+    @Synchronized
     override fun serialize(
         properties: Collection<Property>,
         templates: List<Template>,
@@ -49,16 +47,21 @@ internal class FilePropertySerializer(
         return prepared.serialize(properties, templates, configType, componentName, environment)
     }
 
+    private fun output(unit: TypedProperties, prefixes: MutableMap<Path, Path>): Output =
+        output(unit.properties, unit.templates, unit.configType,
+            unit.declaringComponent.component, unit.declaringComponent.environment, prefixes)
+
     private fun output(
         properties: Collection<Property>,
         templates: List<Template>,
         type: ConfigType,
         component: String,
         environment: String,
+        prefixes: MutableMap<Path, Path>? = null,
     ): Output {
         val values = properties.toList()
         val file = resultFile(component, type, values, values.none { !it.isVar })
-        return Output(file, outputPath(file), values, templates.toList(), component, environment, type)
+        return Output(file, outputPath(file, prefixes), values, templates.toList(), component, environment, type)
     }
 
     private fun resultFile(
@@ -83,12 +86,29 @@ internal class FilePropertySerializer(
             "${file.nameWithoutExtension}.${if (file.extension == "yaml") "properties" else "yaml"}",
         )
 
-    private fun outputPath(file: File): Path =
+    private fun outputPath(file: File, prefixes: MutableMap<Path, Path>? = null): Path =
         try {
-            resolveLinks(file.toPath().toAbsolutePath(), mutableSetOf())
+            val path = file.toPath().toAbsolutePath()
+            if (path.any { it.toString() == "." || it.toString() == ".." })
+                resolveLinks(path, mutableSetOf())
+            else resolveExistingPrefix(path, prefixes)
         } catch (error: IOException) {
             throw UncheckedIOException("Can't resolve output '$file'", error)
         }
+
+    private fun resolveExistingPrefix(path: Path, prefixes: MutableMap<Path, Path>?): Path {
+        var existing = path
+        val suffix = ArrayDeque<Path>()
+        while (existing.parent != null && !Files.exists(existing, NOFOLLOW_LINKS)) {
+            suffix.addFirst(existing.fileName)
+            existing = existing.parent
+        }
+        // A dangling or cyclic final symlink still needs the segment-wise checks.
+        if (Files.isSymbolicLink(existing)) return resolveLinks(path, mutableSetOf())
+        var resolved = prefixes?.computeIfAbsent(existing) { it.toRealPath() } ?: existing.toRealPath()
+        for (part in suffix) resolved = resolved.resolve(part)
+        return resolved
+    }
 
     private fun resolveLinks(path: Path, visiting: MutableSet<Path>): Path {
         var result = path.root
@@ -164,17 +184,16 @@ internal class FilePropertySerializer(
 
     private fun prepareNotifications(outputs: List<Output>, protected: Set<Path>): Map<Path, () -> Unit> {
         if (listener !is ConfigChangeListener) return emptyMap()
-        val notifications = linkedMapOf<Path, () -> Unit>()
-        outputs.filter { it.visible.isNotEmpty() || !isProtected(it.file, protected) }.forEach { output ->
-            notifications.getOrPut(output.path) { listener.prepare(output.file, output.properties) }
-        }
-        return notifications
+        val selected = outputs.filter { it.visible.isNotEmpty() || !isProtected(it.file, protected, it.path) }
+            .distinctBy { it.path }
+        val notifications = listener.prepareAll(selected.associate { it.file to it.properties })
+        return selected.associate { it.path to notifications.getValue(it.file) }
     }
 
-    private fun isProtected(file: File, protected: Set<Path>): Boolean =
+    private fun isProtected(file: File, protected: Set<Path>, resolved: Path? = null): Boolean =
         if (Files.isSymbolicLink(file.toPath()))
             file.toPath().toAbsolutePath().normalize() in protected
-        else outputPath(file) in protected
+        else (resolved ?: outputPath(file)) in protected
 
     private fun preparedSerializer(
         outputs: List<Output>,
@@ -183,13 +202,16 @@ internal class FilePropertySerializer(
     ): PropertySerializer<File> {
         val byScope = outputs.groupBy { Triple(it.component, it.environment, it.type.typeName) }
         val generated = outputs.filter { it.visible.isNotEmpty() }.map { it.path }.toSet()
-        val templateConfigs = outputs.flatMap { listOf(it.file, oppositeConfig(it.file)) }
-            .groupBy(::outputPath).filterKeys { it !in generated }
+        val templateConfigs =
+            if (outputs.none { it.templates.isNotEmpty() }) emptyMap()
+            else outputs.flatMap { listOf(it.file, oppositeConfig(it.file)) }
+                .groupBy(::outputPath).filterKeys { it !in generated }
         val completed = mutableSetOf<Path>()
         return object : PropertySerializer<File> {
             override fun prepare(properties: List<TypedProperties>): PropertySerializer<File> =
                 this@FilePropertySerializer.prepare(properties)
 
+            @Synchronized
             override fun serialize(
                 properties: Collection<Property>,
                 templates: List<Template>,
@@ -263,11 +285,15 @@ internal class FilePropertySerializer(
     }
 
     private fun deleteObsoleteConfigs(result: File, empty: Boolean, protected: Set<Path>) {
-        if (empty && !isProtected(result, protected)) deleteConfig(result)
+        if (empty && !Files.notExists(result.toPath(), NOFOLLOW_LINKS) &&
+            !isProtected(result, protected)) deleteConfig(result)
         val obsolete = oppositeConfig(result)
+        val diff = File(result.parentFile, "diff-${obsolete.name}")
+        if (Files.notExists(obsolete.toPath(), NOFOLLOW_LINKS) &&
+            Files.notExists(diff.toPath(), NOFOLLOW_LINKS)) return
         if (isProtected(obsolete, protected)) return
         deleteConfig(obsolete)
-        deleteConfig(File(result.parentFile, "diff-${obsolete.name}"))
+        deleteConfig(diff)
     }
 
     private fun deleteStaleTemplateDiffs(templates: List<Template>, configs: Map<Path, List<File>>) {

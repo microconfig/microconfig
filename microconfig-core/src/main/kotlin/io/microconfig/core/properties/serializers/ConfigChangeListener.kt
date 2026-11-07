@@ -7,5 +7,8 @@ import java.util.function.BiConsumer
 interface ConfigChangeListener : BiConsumer<File, Collection<Property>> {
     fun prepare(file: File, properties: Collection<Property>): () -> Unit
 
+    fun prepareAll(outputs: Map<File, Collection<Property>>): Map<File, () -> Unit> =
+        outputs.mapValues { (file, properties) -> prepare(file, properties) }
+
     override fun accept(file: File, properties: Collection<Property>) = prepare(file, properties)()
 }

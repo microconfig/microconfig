@@ -10,12 +10,17 @@ import io.microconfig.core.properties.repository.ComponentGraph
 import io.microconfig.core.properties.repository.ComponentNotFoundException
 import io.microconfig.core.properties.repository.ConfigFile
 import io.microconfig.core.properties.repository.Include
+import io.microconfig.core.properties.repository.RawConfig
+import java.io.File
+import java.util.concurrent.ConcurrentHashMap
 
 class FilePropertiesRepository(
     private val componentGraph: ComponentGraph,
     private val environments: EnvironmentRepository,
     private val configIo: ConfigIo,
 ) : PropertiesRepository {
+    private val parsed = ConcurrentHashMap<Triple<File, String, String>, RawConfig>()
+
     override fun getPropertiesOf(
         originalComponentName: String,
         environment: String,
@@ -30,15 +35,16 @@ class FilePropertiesRepository(
         private val configType: ConfigType,
         private val processedIncludes: MutableSet<Include>,
     ) {
-        fun properties(): Map<String, Property> =
-            YamlScalars.indexProperties(
-                componentGraph.getConfigFilesOf(component, environment, configType)
-                    .flatMap { parse(it).values }
-            )
+        fun properties(): Map<String, Property> {
+            val files = componentGraph.getConfigFilesOf(component, environment, configType)
+            if (files.size == 1) return parse(files.single())
+            return YamlScalars.indexProperties(files.flatMap { parse(it).values })
+        }
 
         private fun parse(file: ConfigFile): Map<String, Property> =
-            file
-                .parseUsing(configIo)
+            parsed.computeIfAbsent(Triple(file.file, file.configType, file.environment)) {
+                file.parseUsing(configIo)
+            }
                 .getBaseAndIncludedProperties(
                     ::resolveInclude,
                     environments.profilesOf(environment),

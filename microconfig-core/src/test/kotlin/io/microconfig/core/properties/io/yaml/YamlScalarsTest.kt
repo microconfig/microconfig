@@ -94,6 +94,17 @@ class YamlScalarsTest {
                 "123",
                 "true",
                 "null",
+                "NULL",
+                "YES",
+                "off",
+                "010",
+                "1_000",
+                ".inf",
+                "-.Inf",
+                ".NaN",
+                "2001-12-15",
+                "---",
+                "...",
             ]
     )
     fun stringValueStaysOneStringInBlockAndFlow(text: String) {

@@ -6,6 +6,7 @@ import io.microconfig.core.properties.Property
 import io.microconfig.core.properties.PropertyImpl
 import io.microconfig.core.properties.ValueFormat
 import io.microconfig.core.properties.io.yaml.YamlResolvers
+import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.resolvers.RecursiveResolver
 import io.microconfig.core.properties.resolvers.placeholder.Placeholder
 import io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders
@@ -25,6 +26,10 @@ internal class PropertyResolutionCache {
         referenceChain: List<Placeholder> = emptyList(),
         explicitEnvironment: String? = null,
     ): String {
+        val value = property.value
+        if ((property.valueFormat != ValueFormat.YAML || YamlScalars.isPlainScalar(value)) &&
+            placeholders.findStatementIn(value).isEmpty && expressions.findStatementIn(value).isEmpty)
+            return value
         val key = keyFor(property, root, referenceChain, explicitEnvironment)
         return values.getOrPut(key) {
             val cachedExpressions = expressionsFor(key, expressions)
@@ -73,7 +78,7 @@ internal class PropertyResolutionCache {
                             targetFormat: ValueFormat,
                         ): String {
                             if (!independent) return statement.resolveFor(sourceOfValue, root, targetFormat)
-                            val value = expressionValues.getOrPut(expressionKey to index++) {
+                            val value = expressionValues.computeIfAbsent(expressionKey to index++) {
                                 statement.resolveFor(sourceOfValue, root, targetFormat)
                             }
                             // Later expressions may depend on the generated placeholder's context.

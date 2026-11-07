@@ -67,6 +67,13 @@ class ExpressionResolverTest {
         value =
             [
                 "#{3 * 60 * 1000} | 180000",
+                "#{true} | true",
+                "#{1.25} | 1.25",
+                "#{1L} | 1",
+                "#{'text'} | text",
+                "#{'abc'.charAt(1)} | b",
+                "#{ {'a', 'b'} } | a,b",
+                "#{'a,b'.split(',')} | a,b",
                 "#{'2026-11-06'.split('-')[1]} | 11",
                 "#{'1.0-SNAPSHOT'.endsWith('-SNAPSHOT') ? 'snapshot' : 'release'} | snapshot",
                 "#{'tcp://' + 'host' + ':' + 8080} | tcp://host:8080",
@@ -99,6 +106,11 @@ class ExpressionResolverTest {
     )
     fun evaluateValueExpressions(expression: String, expected: String) {
         assertEquals(expected, resolve(expression))
+    }
+
+    @Test
+    fun keepEmptyCollectionResultAsEmptyText() {
+        assertEquals("", resolve("#{ {} }"))
     }
 
     @Test

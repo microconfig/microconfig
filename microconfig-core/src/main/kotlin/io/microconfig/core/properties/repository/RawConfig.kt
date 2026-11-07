@@ -9,6 +9,11 @@ class RawConfig(
     private val includes: List<Include>,
     private val declaredProperties: List<Property>,
 ) {
+    private val overrides = declaredProperties.filterIsInstance<OverrideProperty>()
+    private val baseProperties by lazy {
+        uniqueProperties(declaredProperties.filterNot { it is OverrideProperty }, "")
+    }
+
     fun getBaseAndIncludedProperties(
         includeResolver: Function<Include, Map<String, Property>>,
         profiles: List<String>,
@@ -22,7 +27,8 @@ class RawConfig(
         profiles: List<String>,
         environment: String,
     ): Map<String, Property> {
-        var result = uniqueProperties(declaredProperties.filterNot { it is OverrideProperty }, "")
+        if (overrides.isEmpty()) return baseProperties
+        var result = baseProperties
         result = applyOverrides(result, " for all envs") { it.isVar && it.isForAllEnvs() }
         for (activeEnvironment in profiles + environment) result = overrideFor(result, activeEnvironment)
         return result
@@ -48,7 +54,7 @@ class RawConfig(
         predicate: (OverrideProperty) -> Boolean,
     ): Map<String, Property> {
         val overrides = uniqueProperties(
-            declaredProperties.filterIsInstance<OverrideProperty>().filter(predicate),
+            overrides.filter(predicate),
             scope,
         )
         if (overrides.isEmpty()) return properties
@@ -65,7 +71,7 @@ class RawConfig(
         properties: Map<String, Property>,
         resolver: Function<Include, Map<String, Property>>,
     ): Map<String, Property> {
-        if (includes.isEmpty()) return properties
+        if (includes.isEmpty()) return LinkedHashMap(properties)
         val included = YamlScalars.indexProperties(includes.flatMap { resolver.apply(it).values })
         return YamlScalars.indexProperties(properties.values + included.values, overwrite = false)
     }

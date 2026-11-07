@@ -7,6 +7,7 @@ import io.microconfig.core.properties.io.ConfigIo
 import io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo as defaultConfigIo
 import io.microconfig.core.properties.serializers.impl.ConfigDiff
 import io.microconfig.core.properties.serializers.impl.FilePropertySerializer
+import io.microconfig.io.FsReader
 import java.io.File
 import java.util.function.BiConsumer
 
@@ -15,6 +16,9 @@ object PropertySerializers {
     fun withConfigDiff(
         configIo: ConfigIo = defaultConfigIo()
     ): BiConsumer<File, Collection<Property>> = ConfigDiff(configIo)
+
+    internal fun withConfigDiffFor(configIo: ConfigIo, reader: FsReader): BiConsumer<File, Collection<Property>> =
+        ConfigDiff.forReader(reader, configIo)
 
     @JvmOverloads
     fun toFileIn(

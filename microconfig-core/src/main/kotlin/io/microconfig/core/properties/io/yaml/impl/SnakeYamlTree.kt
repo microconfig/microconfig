@@ -1,6 +1,7 @@
 package io.microconfig.core.properties.io.yaml.impl
 
 import io.microconfig.core.properties.io.yaml.YamlTree
+import java.io.StringReader
 import java.util.IdentityHashMap
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.comments.CommentLine
@@ -14,26 +15,37 @@ import org.yaml.snakeyaml.nodes.Tag
 class SnakeYamlTree(private val sectionBreaks: Boolean) : YamlTree {
     override fun toYaml(flatProperties: Map<String, String>): String {
         if (flatProperties.isEmpty()) return ""
-        val tree = PropertyTree().build(flatProperties)
+        val builder = PropertyTree()
+        val tree = builder.build(flatProperties)
         addSectionBreaks(tree)
+        builder.plainYaml(tree)?.let { return if (sectionBreaks) it else it.removeSuffix("\n") }
         return if (sectionBreaks) SnakeYaml.serialize(tree, true) else SnakeYaml.fragment(tree)
     }
 
     private class PropertyTree {
+        private val parser by lazy { SnakeYaml.parser() }
         private val sections =
             java.util.Collections.newSetFromMap(IdentityHashMap<MappingNode, Boolean>())
 
         fun build(properties: Map<String, String>): MappingNode {
             val root = section()
             properties.toSortedMap().forEach { (key, value) ->
-                insert(root, YamlPropertyPaths.parts(key), SnakeYaml.parse(value))
+                insert(root, YamlPropertyPaths.parts(key), parse(value))
             }
             sort(root)
             return root
         }
 
+        fun plainYaml(root: MappingNode): String? {
+            val output = StringBuilder()
+            return if (appendPlain(root, "", output)) output.toString() else null
+        }
+
         private fun section(): MappingNode =
             MappingNode(Tag.MAP, mutableListOf(), DumperOptions.FlowStyle.BLOCK).also(sections::add)
+
+        private fun parse(text: String): Node =
+            SnakeYaml.plainScalar(text) ?: parser.compose(StringReader(text)) ?: SnakeYaml.emptyValue()
 
         private fun insert(parent: MappingNode, parts: List<String>, value: Node) {
             if (parts.size == 1) {
@@ -56,7 +68,7 @@ class SnakeYamlTree(private val sectionBreaks: Boolean) : YamlTree {
             SnakeYaml.scalar(SnakeYaml.text(keyNode(first).value + "." + keyNode(second).value))
 
         private fun keyNode(name: String): ScalarNode =
-            SnakeYaml.parse(name) as? ScalarNode ?: SnakeYaml.text(name)
+            parse(name) as? ScalarNode ?: SnakeYaml.text(name)
 
         private fun put(parent: MappingNode, name: String, value: Node) {
             val key = keyNode(name)
@@ -82,6 +94,23 @@ class SnakeYamlTree(private val sectionBreaks: Boolean) : YamlTree {
             node.value
                 .filter { it.valueNode in sections }
                 .forEach { sort(it.valueNode as MappingNode) }
+        }
+
+        private fun appendPlain(node: MappingNode, indent: String, output: StringBuilder): Boolean {
+            for (entry in node.value) {
+                val key = SnakeYaml.plainFragmentOrNull(entry.keyNode) ?: return false
+                if (!entry.keyNode.blockComments.isNullOrEmpty()) output.append('\n')
+                output.append(indent).append(key).append(':')
+                val value = entry.valueNode
+                if (value in sections) {
+                    output.append('\n')
+                    if (!appendPlain(value as MappingNode, "$indent  ", output)) return false
+                } else {
+                    val text = SnakeYaml.plainFragmentOrNull(value) ?: return false
+                    output.append(' ').append(text).append('\n')
+                }
+            }
+            return true
         }
     }
 

@@ -11,7 +11,9 @@ import io.microconfig.core.properties.ValueFormat
 import io.microconfig.core.properties.io.properties.PropertiesText
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.resolvers.RecursiveResolver
+import io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders
 import io.microconfig.core.properties.resolvers.expression.impl.ExpressionResolver.Companion.expressionsIn
+import io.microconfig.core.properties.resolvers.expression.impl.ExpressionResolver.Companion.expressionEnd
 import io.microconfig.core.properties.resolvers.expression.impl.ExpressionResolver.Companion.expressionQuoteAt
 import java.util.IdentityHashMap
 import java.util.regex.MatchResult
@@ -54,6 +56,9 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
     }
 
     private fun resolveYamlProperty(property: Property, root: DeclaringComponent): String {
+        if (YamlScalars.isPlainScalar(property.value) && delegate.findStatementIn(property.value).getOrNull() == null)
+            return property.value
+        if (isWholeStatement(property.value)) return resolveScalar(property, root, null)
         val source = YamlSource(property.value)
         val node = source.compose() ?: return property.value
         return when {
@@ -64,6 +69,10 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
             else -> resolveScalar(property, root)
         }
     }
+
+    private fun isWholeStatement(value: String): Boolean =
+        value.startsWith("\${") && PlaceholderBorders.endOfPlaceholder(value, 0) == value.length ||
+            value.startsWith("#{") && expressionEnd(value, 0) == value.length
 
     private fun resolveCollection(
         node: Node,
@@ -131,9 +140,13 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
         return result
     }
 
-    private fun resolveScalar(property: Property, root: DeclaringComponent): String {
+    private fun resolveScalar(
+        property: Property,
+        root: DeclaringComponent,
+        quotedValue: String? = if (property.valueFormat == ValueFormat.YAML)
+            YamlScalars.quotedTextOrNull(property.value) else null,
+    ): String {
         val yamlSyntax = property.valueFormat == ValueFormat.YAML
-        val quotedValue = if (yamlSyntax) YamlScalars.quotedTextOrNull(property.value) else null
         val quoted = quotedValue != null
         val result = StringBuilder(quotedValue ?: property.value)
         var plainText = false
@@ -257,6 +270,7 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
         property: Property,
         root: DeclaringComponent,
     ): String? {
+        if (YamlScalars.isPlainScalar(value)) return null
         val source = YamlSource(value)
         val node = source.compose()
         if (node !is MappingNode && node !is SequenceNode) return null

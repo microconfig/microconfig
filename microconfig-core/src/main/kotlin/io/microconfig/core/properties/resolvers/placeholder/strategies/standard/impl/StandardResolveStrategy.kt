@@ -3,11 +3,15 @@ package io.microconfig.core.properties.resolvers.placeholder.strategies.standard
 import io.microconfig.core.configtypes.ConfigTypeFilters.configTypeWithName
 import io.microconfig.core.environments.EnvironmentRepository
 import io.microconfig.core.properties.PlaceholderResolveStrategy
+import io.microconfig.core.properties.Properties
 import io.microconfig.core.properties.Property
 import java.util.Optional
+import java.util.concurrent.ConcurrentHashMap
 
 class StandardResolveStrategy(private val environments: EnvironmentRepository) :
     PlaceholderResolveStrategy {
+    private val properties = ConcurrentHashMap<Triple<String, String, String>, Properties>()
+
     override fun resolve(
         component: String,
         key: String,
@@ -15,9 +19,12 @@ class StandardResolveStrategy(private val environments: EnvironmentRepository) :
         configType: String,
         root: String?,
     ): Optional<Property> =
-        environments
-            .getOrCreateByName(environment)
+        properties.computeIfAbsent(Triple(component, environment, configType)) {
+            readProperties(it.first, it.second, it.third)
+        }.getPropertyWithKey(key)
+
+    private fun readProperties(component: String, environment: String, configType: String): Properties =
+        environments.getOrCreateByName(environment)
             .findComponentWithName(component)
             .getPropertiesFor(configTypeWithName(configType))
-            .getPropertyWithKey(key)
 }

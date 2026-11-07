@@ -38,14 +38,13 @@ private constructor(private val foldersByComponent: Map<String, List<File>>) : C
             .flatMap(::filesIn)
             .filter { file ->
                 val extension = file.extension.takeIf(String::isNotEmpty)?.let { ".$it" }.orEmpty()
-                file.isFile &&
-                    extension in type.sourceExtensions &&
+                extension in type.sourceExtensions &&
                     isForEnvironment(file, environment)
             }
             .sortedWith(compareBy<File>(::environmentPriority).thenBy { it.name })
 
     private fun filesIn(folder: File): List<File> =
-        filesByFolder.computeIfAbsent(folder) { it.listFiles()?.toList().orEmpty() }
+        filesByFolder.computeIfAbsent(folder) { it.listFiles()?.filter(File::isFile).orEmpty() }
 
     private fun isForEnvironment(file: File, environment: String): Boolean =
         file.name.count { it == '.' } == 1 || environment.isEmpty() || ".$environment." in file.name

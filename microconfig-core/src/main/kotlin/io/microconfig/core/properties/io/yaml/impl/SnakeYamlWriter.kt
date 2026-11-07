@@ -15,13 +15,11 @@ class SnakeYamlWriter(private val file: File) : ConfigWriter {
 
     override fun write(properties: Collection<Property>) = writeText(serialize(properties))
 
-    override fun serialize(properties: Collection<Property>): String =
-        YamlTree.standard()
-            .toYaml(
-                properties
-                    .filterNot(Property::isVar)
-                    .associate { YamlScalars.serializedKey(it) to serializedValue(it) }
-            )
+    override fun serialize(properties: Collection<Property>): String {
+        val values = properties.filterNot(Property::isVar)
+            .associate { YamlScalars.serializedKey(it) to YamlScalars.serializedValue(it) }
+        return YamlTree.standard().toYaml(values)
+    }
 
     override fun serializedValue(property: Property): String =
         SnakeYaml.fragment(SnakeYaml.parse(YamlScalars.serializedValue(property)))

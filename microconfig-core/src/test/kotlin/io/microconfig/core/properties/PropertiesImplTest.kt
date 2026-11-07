@@ -3,14 +3,60 @@ package io.microconfig.core.properties
 import io.microconfig.core.properties.impl.PropertiesImpl
 import io.microconfig.core.properties.impl.PropertiesImpl.Companion.flat
 import java.util.Optional
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Function
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertSame
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
 class PropertiesImplTest {
+    @Test
+    fun resolveCustomComponentsOnTheCallingThreadInEncounterOrder() {
+        val units = (1..32).map { mock(TypedProperties::class.java) }
+        val resolver = mock(Resolver::class.java)
+        val caller = Thread.currentThread()
+        val visited = mutableListOf<TypedProperties>()
+        units.forEach { unit ->
+            `when`(unit.resolveBy(resolver)).thenAnswer {
+                assertSame(caller, Thread.currentThread())
+                visited.add(unit)
+                unit
+            }
+        }
+        val resolved = PropertiesImpl(units).resolveBy(resolver)
+        assertEquals(units, resolved.asTypedProperties())
+        assertEquals(units, visited)
+    }
+
+    @Test
+    fun stopAtTheFirstCustomResolutionFailureWithoutWrapping() {
+        val units = (1..32).map { mock(TypedProperties::class.java) }
+        val resolver = mock(Resolver::class.java)
+        val visited = AtomicInteger()
+        val first = IllegalArgumentException("first component")
+        val last = IllegalArgumentException("last component")
+        units.forEachIndexed { index, unit ->
+            `when`(unit.resolveBy(resolver)).thenAnswer {
+                visited.incrementAndGet()
+                when (index) {
+                    0 -> throw first
+                    units.lastIndex -> throw last
+                    else -> unit
+                }
+            }
+        }
+
+        val failure = assertThrows(IllegalArgumentException::class.java) {
+            PropertiesImpl(units).resolveBy(resolver)
+        }
+
+        assertSame(first, failure)
+        assertEquals(1, visited.get())
+    }
+
     @Test
     fun invokeCallbacksInOrderOnTheCallingThread() {
         val units = (1..32).map { mock(TypedProperties::class.java) }

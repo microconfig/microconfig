@@ -20,6 +20,20 @@ import org.junit.jupiter.params.provider.CsvSource
 
 class RawConfigTest {
     @Test
+    fun keepCachedBasePropertiesIndependentOfReturnedMapMutationsAndOverrides() {
+        val base = property("value", "base", YAML, null)
+        val config = RawConfig(emptyList(), listOf(base,
+            overrideProperty("+prod.value", "production", YAML, null)))
+        val first = config.getBaseAndIncludedProperties({ emptyMap() }, emptyList(), "dev")
+
+        (first as MutableMap).clear()
+
+        assertSame(base, config.getBaseAndIncludedProperties({ emptyMap() }, emptyList(), "dev")["value"])
+        assertEquals("production", config.getBaseAndIncludedProperties({ emptyMap() }, emptyList(), "prod")["value"]!!.value)
+        assertSame(base, config.getBaseAndIncludedProperties({ emptyMap() }, emptyList(), "dev")["value"])
+    }
+
+    @Test
     fun retainMixedKeyIdentitiesAndOriginalWinnersWhenMergingIncludes() {
         val yamlSource = fileSource(File("components/local/application.yaml"), 0, true, "app", "dev")
         val localPropertiesSource = fileSource(File("components/local/application.properties"), 1, false, "app", "dev")

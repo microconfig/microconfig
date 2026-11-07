@@ -13,6 +13,11 @@ import io.microconfig.core.properties.resolvers.placeholder.impl.PlaceholderReso
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.Optional
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CyclicBarrier
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit.SECONDS
+import java.util.concurrent.atomic.AtomicInteger
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -24,6 +29,43 @@ import org.yaml.snakeyaml.Yaml
 
 class DynamicReferenceCacheTest {
     @TempDir lateinit var root: Path
+
+    @Test
+    fun evaluateAnExpressionOnceWhenConcurrentResolutionsMissTheSameCacheEntry() {
+        val pool = Executors.newFixedThreadPool(2)
+        try {
+            repeat(16) {
+                val evaluations = AtomicInteger()
+                val scanned = ConcurrentHashMap.newKeySet<Thread>()
+                val ready = CyclicBarrier(2)
+                val expressions = object : RecursiveResolver {
+                    override fun findStatementIn(line: CharSequence): Optional<RecursiveResolver.Statement> {
+                        if (line.toString() != "#{next}") return Optional.empty()
+                        if (scanned.add(Thread.currentThread())) ready.await(5, SECONDS)
+                        return Optional.of(object : RecursiveResolver.Statement {
+                            override val startIndex = 0
+                            override val endIndex = line.length
+                            override fun resolveFor(sourceOfValue: DeclaringComponent?, root: DeclaringComponent?): String =
+                                evaluations.incrementAndGet().toString()
+                        })
+                    }
+                }
+                val cache = PropertyResolutionCache()
+                val placeholders = PlaceholderResolver(mock(EnvironmentRepository::class.java),
+                    PlaceholderResolveStrategy { _, _, _, _, _ -> Optional.empty() }, emptySet(), expressions, cache)
+                val resolver = MemoizingResolver(placeholders, cache, expressions)
+                val context = DeclaringComponentImpl("app", "component", "dev")
+                val property = PropertyImpl.property("stamp", "#{next}", ConfigFormat.YAML, context)
+
+                val tasks = (1..2).map { pool.submit<String> { property.resolveBy(resolver, context).value } }
+
+                assertEquals(listOf("1", "1"), tasks.map { it.get(10, SECONDS) })
+                assertEquals(1, evaluations.get())
+            }
+        } finally {
+            pool.shutdownNow()
+        }
+    }
 
     @BeforeEach
     fun createEnvironment() {

@@ -7,6 +7,8 @@ import json
 import os
 from pathlib import Path
 import platform
+import re
+import shutil
 import statistics
 import subprocess
 import sys
@@ -22,8 +24,11 @@ def digest_tree(directory):
     }
 
 
-def run_cli(java, jar, fixture, destination, log_path):
-    destination.mkdir()
+def run_cli(java, jar, fixture, destination, log_path, existing_output=None):
+    if existing_output is None:
+        destination.mkdir()
+    else:
+        shutil.copytree(existing_output, destination)
     command = [str(java), "-jar", str(jar), "-r", str(fixture), "-e", "dev", "-d", str(destination)]
     with log_path.open("w") as log:
         started = time.perf_counter_ns()
@@ -34,8 +39,11 @@ def run_cli(java, jar, fixture, destination, log_path):
     if process.returncode:
         raise RuntimeError(f"CLI exited {process.returncode}; see {log_path}")
     rss_bytes = usage.ru_maxrss if sys.platform == "darwin" else usage.ru_maxrss * 1024
+    log_text = re.sub(r"\x1b\[[0-9;]*m", "", log_path.read_text())
+    reported = re.search(r"Generated \[dev\] configs in (\d+)ms", log_text)
     return {
         "wall_ms": elapsed_ms,
+        "cli_reported_ms": int(reported.group(1)) if reported else None,
         "user_ms": usage.ru_utime * 1000,
         "system_ms": usage.ru_stime * 1000,
         "peak_rss_bytes": rss_bytes,
@@ -48,7 +56,7 @@ def run_cli(java, jar, fixture, destination, log_path):
 def summarize(rows):
     wall = [row["wall_ms"] for row in rows]
     rss = [row["peak_rss_bytes"] for row in rows]
-    return {
+    summary = {
         "runs": len(rows),
         "median_wall_ms": statistics.median(wall),
         "min_wall_ms": min(wall),
@@ -56,6 +64,11 @@ def summarize(rows):
         "median_peak_rss_bytes": statistics.median(rss),
         "max_peak_rss_bytes": max(rss),
     }
+    reported = [row["cli_reported_ms"] for row in rows if row["cli_reported_ms"] is not None]
+    if len(reported) == len(rows):
+        summary.update({"median_cli_reported_ms": statistics.median(reported),
+                        "min_cli_reported_ms": min(reported), "max_cli_reported_ms": max(reported)})
+    return summary
 
 
 def main():
@@ -64,6 +77,8 @@ def main():
     parser.add_argument("--new-jar", type=Path, required=True)
     parser.add_argument("--java", type=Path, required=True)
     parser.add_argument("--fixture", type=Path, default=Path(__file__).parent / "fixture")
+    parser.add_argument("--existing-output", type=Path,
+                        help="Copy these previous output files before each measured JVM; no warm-up run")
     parser.add_argument("--runs", type=int, default=7)
     parser.add_argument("--work", type=Path, default=Path(__file__).parent / "work")
     parser.add_argument("--results", type=Path, default=Path(__file__).parent / "results.json")
@@ -73,11 +88,17 @@ def main():
     java = args.java.resolve()
     jars = {"old": args.old_jar.resolve(), "new": args.new_jar.resolve()}
     fixture = args.fixture.resolve()
+    existing_output = args.existing_output.resolve() if args.existing_output else None
+    if existing_output is not None and not existing_output.is_dir():
+        parser.error("--existing-output must be a directory")
     args.work.mkdir(parents=True, exist_ok=True)
     work = Path(tempfile.mkdtemp(prefix="cold-", dir=args.work.resolve()))
     version = subprocess.run([str(java), "-version"], capture_output=True, text=True, check=True)
     report = {
-        "method": "Fresh JVM for each actual java -jar invocation; no warm-up, no JVM flags, default logging; fresh empty destination; alternating order",
+        "method": "Fresh JVM for each actual java -jar invocation; no warm-up, no JVM flags, default logging; separate destination; alternating order",
+        "output_mode": "empty" if existing_output is None else "existing",
+        "existing_output": str(existing_output) if existing_output else None,
+        "existing_output_sha256": digest_tree(existing_output) if existing_output else None,
         "filesystem_cache": "OS page cache is not flushed",
         "machine": platform.platform(),
         "java": str(java),
@@ -99,7 +120,8 @@ def main():
         outputs = {}
         for label in order:
             destination = work / f"{round_index:02d}-{label}"
-            result = run_cli(java, jars[label], fixture, destination, work / f"{round_index:02d}-{label}.log")
+            result = run_cli(java, jars[label], fixture, destination, work / f"{round_index:02d}-{label}.log",
+                             existing_output)
             result.update({"round": round_index + 1, "order": order.index(label) + 1})
             report["samples"][label].append(result)
             save()

@@ -4,13 +4,37 @@ import io.microconfig.core.ClasspathReader.Companion.classpathFile
 import io.microconfig.core.ClasspathReader.Companion.read
 import io.microconfig.core.properties.io.selector.ConfigIoFactory
 import io.microconfig.io.impl.DumpedFsReader
+import io.microconfig.core.properties.io.yaml.impl.SnakeYaml
+import java.io.StringReader
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.LoaderOptions
 
 class YamlTreeTest {
     private val tree = YamlTree.standard()
+
+    @ParameterizedTest
+    @ValueSource(booleans = [false, true])
+    fun keepPlainMappingFormattingEquivalentToTheFullYamlEmitter(sectionBreaks: Boolean) {
+        val writer = if (sectionBreaks) YamlTree.standard() else YamlTree.compact()
+        val values = listOf("text", "0", "10", "true", "YES", "null", "1_000", "1.25",
+            "010", ".inf", "-1", "'true'", "!!str true", "[one, two]", "{port: 80}",
+            "&value text", "!custom value", "Привет")
+        for (first in values.indices) for (second in values.indices) {
+            val text = writer.toYaml(linkedMapOf("root" to values[first],
+                "root.child" to "overlap", "section.first" to values[second],
+                "section.nested.second" to "true", "z.child" to "0"))
+            val node = Yaml(LoaderOptions().apply { isProcessComments = true }).compose(StringReader(text))
+            val expected = if (sectionBreaks) SnakeYaml.serialize(node, true) else SnakeYaml.fragment(node)
+            assertEquals(expected, text, "values=$first,$second, sections=$sectionBreaks")
+        }
+    }
 
     @Test
     fun preserveDotsInsideQuotedKeysAndBrackets() {
@@ -110,6 +134,43 @@ class YamlTreeTest {
             Yaml().load<Any>(original.readText()),
             parse(tree.toYaml(io.readFrom(original).propertiesAsMap())),
         )
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["text", "Привет", "a/b-c_d.txt", "true", "YES", "off", "null", "NULL",
+        "0", "-10", "010", "0xA", "1_000", "1.25", ".5", ".inf", "-.Inf", ".NaN",
+        "2001-12-15", "-", "---", "--- 'text'", "'true'", "!!str true",
+        "[one, two]", "{key: value}"])
+    fun preserveYamlTypesForPlainValuesAndSyntaxBoundaries(value: String) {
+        assertEquals(mapOf("value" to Yaml().load<Any?>(value)),
+            parse(tree.toYaml(mapOf("value" to value))))
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["...", "*missing", "[unterminated"])
+    fun rejectInvalidYamlFragments(value: String) {
+        assertThrows(RuntimeException::class.java) { Yaml().load<Any?>(value) }
+        assertThrows(RuntimeException::class.java) { tree.toYaml(mapOf("value" to value)) }
+    }
+
+    @Test
+    fun keepRepeatedTypedAndStringKeysIndependentWithoutArtificialAliases() {
+        val text = tree.toYaml(mapOf("first.true" to "true", "second.true" to "false",
+            "first.'true'" to "text", "second.'true'" to "other"))
+
+        assertEquals(mapOf("first" to mapOf(true to true, "true" to "text"),
+            "second" to mapOf(true to false, "true" to "other")), parse(text))
+        assertFalse(text.contains("&id"), text)
+        assertFalse(text.contains("*id"), text)
+    }
+
+    @Test
+    fun scopeYamlAnchorsToEachPropertyValue() {
+        assertEquals(mapOf("first" to listOf("one"), "second" to listOf("two")),
+            parse(tree.toYaml(mapOf("first" to "&item [one]", "second" to "&item [two]"))))
+        assertThrows(RuntimeException::class.java) {
+            tree.toYaml(mapOf("first" to "&item [one]", "second" to "*item"))
+        }
     }
 
     private fun parse(text: String): Map<String, Any?> = Yaml().load(text)

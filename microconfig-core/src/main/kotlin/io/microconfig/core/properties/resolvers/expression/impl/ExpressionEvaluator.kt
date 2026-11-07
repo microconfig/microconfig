@@ -2,12 +2,15 @@ package io.microconfig.core.properties.resolvers.expression.impl
 
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
+import org.springframework.core.convert.TypeDescriptor
 import org.springframework.expression.EvaluationContext
 import org.springframework.expression.ExpressionParser
+import org.springframework.expression.TypeConverter
 import org.springframework.expression.spel.SpelEvaluationException
 import org.springframework.expression.spel.SpelMessage
 import org.springframework.expression.spel.standard.SpelExpressionParser
 import org.springframework.expression.spel.support.SimpleEvaluationContext
+import org.springframework.expression.spel.support.StandardTypeConverter
 
 internal class ExpressionEvaluator(
     private val parser: ExpressionParser,
@@ -62,9 +65,22 @@ internal class ExpressionEvaluator(
             val context =
                 SimpleEvaluationContext.forReadOnlyDataBinding()
                     .withMethodResolvers(ValueMethodResolver())
+                    .withTypeConverter(stringConverter())
                     .build()
             functions.forEach { context.setVariable(it.name, it) }
             return context
+        }
+
+        private fun stringConverter(): TypeConverter = object : TypeConverter {
+            private val delegate = StandardTypeConverter()
+
+            override fun canConvert(sourceType: TypeDescriptor?, targetType: TypeDescriptor): Boolean =
+                delegate.canConvert(sourceType, targetType)
+
+            override fun convertValue(value: Any?, sourceType: TypeDescriptor?, targetType: TypeDescriptor): Any? =
+                if (targetType.type == String::class.java &&
+                    (value is String || value is Number || value is Boolean || value is Char)) value.toString()
+                else delegate.convertValue(value, sourceType, targetType)
         }
     }
 }

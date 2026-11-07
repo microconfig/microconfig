@@ -6,14 +6,22 @@ import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.Property
 import io.microconfig.core.properties.PropertyImpl.Companion.property
 import io.microconfig.core.properties.io.properties.PropertiesText.escape
+import io.microconfig.core.properties.io.ConfigIo
+import io.microconfig.core.properties.io.ConfigReader
 import io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.serializers.impl.ConfigDiff
+import io.microconfig.io.FsReader
+import io.microconfig.io.impl.DumpedFsReader
 import io.microconfig.utils.FileUtils.LINES_SEPARATOR
 import java.io.File
 import java.io.StringReader
 import java.nio.file.Path
 import java.util.Properties
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.ForkJoinPool
+import java.util.concurrent.TimeUnit.SECONDS
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -26,6 +34,135 @@ import org.yaml.snakeyaml.Yaml
 
 class ConfigDiffTest {
     @TempDir lateinit var dir: Path
+
+    @Test
+    fun compareChangedYamlAgainstOneSnapshotFromTheSuppliedReader() {
+        val file = dir.resolve("application.yaml").toFile()
+        file.writeText("value: disk-old\n")
+        var reads = 0
+        val reader = object : FsReader by DumpedFsReader() {
+            override fun readFully(file: File): String =
+                if (++reads == 1) "value: virtual-old\n" else "value: inconsistent-second-read\n"
+        }
+
+        ConfigDiff.forReader(reader).prepare(file, listOf(prop("value", "current", YAML)))()
+
+        assertEquals(1, reads)
+        assertEquals(mapOf("value" to "virtual-old -> current"),
+            Yaml().load<Map<String, String>>(diffFile(file).readText()))
+    }
+
+    @Test
+    fun honorCustomConfigIoEvenWhenDiskContentAlreadyMatchesTheNewSerialization() {
+        val file = dir.resolve("application.yaml").toFile()
+        file.writeText("value: current\n")
+        val fallback = configIo()
+        val io = object : ConfigIo by fallback {
+            override fun readFrom(file: File): ConfigReader = object : ConfigReader by fallback.readFrom(file) {
+                override fun propertiesAsMap(): Map<String, String> = mapOf("value" to "virtual-old")
+            }
+        }
+
+        ConfigDiff(io).prepare(file, listOf(prop("value", "current", YAML)))()
+
+        assertEquals(mapOf("value" to "virtual-old -> current"),
+            Yaml().load<Map<String, String>>(diffFile(file).readText()))
+    }
+
+    @Test
+    fun keepThePropertiesReadLinesContractForTheNativeReaderFastPath() {
+        val file = dir.resolve("application.properties").toFile()
+        file.writeText("value=current\n")
+        var reads = 0
+        val reader = object : FsReader by DumpedFsReader() {
+            override fun readFully(file: File): String = throw AssertionError("Properties use readLines")
+            override fun readLines(file: File): List<String> = listOf("value=virtual-old").also { reads++ }
+        }
+
+        ConfigDiff.forReader(reader).prepare(file, listOf(prop("value", "current", PROPERTIES)))()
+
+        assertEquals(1, reads)
+        val changes = Properties().apply { load(StringReader(diffFile(file).readText())) }
+        assertEquals("virtual-old -> current", changes.getProperty("value"))
+    }
+
+    @Test
+    fun prepareDiffsConcurrentlyAndKeepPreviousValuesUntilNotificationsAreApplied() {
+        val outputs = (0..7).associate { index ->
+            val file = dir.resolve("application$index.yaml").toFile()
+            configIo().writeTo(file).write(listOf(prop("value", "old$index", YAML)))
+            file to listOf(prop("value", "new$index", YAML))
+        }
+        val fallback = configIo()
+        val arrived = CountDownLatch(2)
+        val threads = ConcurrentHashMap.newKeySet<Thread>()
+        val fs = DumpedFsReader()
+        val reader = object : FsReader by fs {
+            override fun readFully(file: File): String {
+                threads.add(Thread.currentThread())
+                arrived.countDown()
+                assertTrue(arrived.await(5, SECONDS), "Diffs must prepare concurrently")
+                return fs.readFully(file)
+            }
+        }
+        val pool = ForkJoinPool(4)
+        try {
+            val notifications = pool.submit<Map<File, () -> Unit>> { ConfigDiff.forReader(reader).prepareAll(outputs) }
+                .get(10, SECONDS)
+
+            assertEquals(outputs.keys.toList(), notifications.keys.toList())
+            assertTrue(threads.size > 1)
+            outputs.keys.forEach { assertFalse(diffFile(it).exists()) }
+            outputs.entries.forEachIndexed { index, (file, properties) ->
+                fallback.writeTo(file).write(properties)
+                notifications.getValue(file)()
+                assertEquals(mapOf("value" to "old$index -> new$index"),
+                    Yaml().load<Map<String, String>>(diffFile(file).readText()))
+            }
+        } finally {
+            pool.shutdownNow()
+        }
+    }
+
+    @Test
+    fun keepLegacyChangeListenersOnTheCallingThreadInEncounterOrder() {
+        assertTrue(ConfigChangeListener::class.java.getMethod("prepareAll", Map::class.java).isDefault)
+        val caller = Thread.currentThread()
+        val prepared = mutableListOf<File>()
+        val notified = mutableListOf<File>()
+        val listener = object : ConfigChangeListener {
+            override fun prepare(file: File, properties: Collection<Property>): () -> Unit {
+                assertSame(caller, Thread.currentThread())
+                prepared.add(file)
+                return { assertSame(caller, Thread.currentThread()); notified.add(file); Unit }
+            }
+        }
+        val outputs = (0..7).associate { index -> dir.resolve("$index.yaml").toFile() to emptyList<Property>() }
+
+        val notifications = listener.prepareAll(outputs)
+
+        assertEquals(outputs.keys.toList(), prepared)
+        assertTrue(notified.isEmpty())
+        notifications.values.forEach { it() }
+        assertEquals(outputs.keys.toList(), notified)
+    }
+
+    @Test
+    fun deferStaleDiffCleanupWithoutReadingANonexistentPreviousConfig() {
+        val file = dir.resolve("application.yaml").toFile()
+        val diff = diffFile(file)
+        diff.writeText("stale")
+        val io = object : ConfigIo by configIo() {
+            override fun readFrom(file: File): ConfigReader =
+                throw AssertionError("No previous config exists: $file")
+        }
+
+        val notify = ConfigDiff(io).prepare(file, listOf(prop("value", "new", YAML)))
+
+        assertTrue(diff.exists())
+        notify()
+        assertFalse(diff.exists())
+    }
 
     @Test
     fun noDiffAfterRebuildWithTheSameYamlValues() {

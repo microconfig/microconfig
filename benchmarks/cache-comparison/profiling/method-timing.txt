@@ -1,0 +1,12 @@
+
+                                                                                             Method Timing
+
+Timed Method                                                                                                                                      Invocations  Minimum Time  Average Time  Maximum Time
+------------------------------------------------------------------------------------------------------------------------------------------------- ----------- ------------- ------------- -------------
+io.microconfig.core.MicroconfigRunner.buildProperties(String, List, List)                                                                                   1 855,000000 ms 855,000000 ms 855,000000 ms
+io.microconfig.core.properties.impl.PropertiesImpl.save(PropertySerializer)                                                                                 1 780,000000 ms 780,000000 ms 780,000000 ms
+io.microconfig.core.properties.repository.ConfigFile.parseUsing(ConfigIo)                                                                               2 050   0,067500 ms   0,184000 ms  33,400000 ms
+io.microconfig.core.properties.serializers.impl.FilePropertySerializer.outputPath(File)                                                                 2 850   0,125000 ms   0,151000 ms   0,602000 ms
+io.microconfig.core.properties.serializers.impl.FilePropertySerializer.resolveLinks(Path, Set)                                                          2 850   0,124000 ms   0,151000 ms   0,595000 ms
+io.microconfig.core.properties.io.yaml.impl.SnakeYamlReader.<init>(File, FsReader)                                                                      2 400   0,004750 ms   0,078000 ms  15,100000 ms
+io.microconfig.core.properties.impl.TypedPropertiesImpl.<init>(ConfigType, String, String, Map, List)                                                   4 300   0,000041 ms   0,003690 ms   0,045500 ms
