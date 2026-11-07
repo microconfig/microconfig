@@ -1,4 +1,4 @@
-FROM ghcr.io/graalvm/native-image:muslib-22 AS builder
+FROM ghcr.io/graalvm/native-image-community:25i5-25.0.5.0.3-muslib AS builder
 
 WORKDIR /
 
