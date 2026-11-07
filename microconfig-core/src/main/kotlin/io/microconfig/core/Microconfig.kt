@@ -1,7 +1,7 @@
 package io.microconfig.core
 
 import io.microconfig.core.configtypes.ConfigTypeRepository
-import io.microconfig.core.configtypes.impl.CompositeConfigTypeRepository
+import io.microconfig.core.configtypes.impl.FirstNonEmptyConfigTypeRepository
 import io.microconfig.core.configtypes.impl.CustomConfigTypeRepository
 import io.microconfig.core.configtypes.impl.StandardConfigTypeRepository
 import io.microconfig.core.environments.ComponentFactory
@@ -16,6 +16,7 @@ import io.microconfig.core.properties.PropertiesFactory
 import io.microconfig.core.properties.PropertiesRepository
 import io.microconfig.core.properties.Resolver
 import io.microconfig.core.properties.impl.PropertiesFactoryImpl
+import io.microconfig.core.properties.io.ConfigIo
 import io.microconfig.core.properties.io.selector.ConfigIoFactory.newConfigIo
 import io.microconfig.core.properties.io.yaml.YamlResolvers.forValues
 import io.microconfig.core.properties.repository.ComponentGraph
@@ -111,6 +112,7 @@ private constructor(
         val environments: EnvironmentRepository by lazy(::initEnvironments)
         val componentFactory: ComponentFactory by lazy(::initComponentFactory)
         val configTypeRepository: ConfigTypeRepository by lazy(::initConfigTypeRepository)
+        val configIo: ConfigIo by lazy { newConfigIo(fsReader) }
         val propertiesFactory: PropertiesFactory by lazy(::initPropertiesFactory)
         val componentGraph: ComponentGraph by lazy(::initComponentGraph)
         val resolver: Resolver by lazy(::initResolver)
@@ -134,15 +136,14 @@ private constructor(
 
         private fun initConfigTypeRepository(): ConfigTypeRepository =
             cache(
-                CompositeConfigTypeRepository.composite(
+                FirstNonEmptyConfigTypeRepository.composite(
                     CustomConfigTypeRepository.findDescriptorIn(rootDir, fsReader),
                     StandardConfigTypeRepository(),
                 )
             )
 
         private fun initPropertiesFactory(): PropertiesFactory {
-            val files =
-                FilePropertiesRepository(componentGraph, lazyEnvironments, newConfigIo(fsReader))
+            val files = FilePropertiesRepository(componentGraph, lazyEnvironments, configIo)
             val repository =
                 cache(
                     CompositePropertiesRepository.compositeOf(

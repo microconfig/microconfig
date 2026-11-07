@@ -1,14 +1,14 @@
 package io.microconfig.core.configtypes
 
 import io.microconfig.core.configtypes.StandardConfigType.*
-import io.microconfig.core.configtypes.impl.CompositeConfigTypeRepository.Companion.composite
+import io.microconfig.core.configtypes.impl.FirstNonEmptyConfigTypeRepository.Companion.composite
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
-class CompositeConfigTypeRepositoryTest {
+class FirstNonEmptyConfigTypeRepositoryTest {
     val r1: ConfigTypeRepository = mock(ConfigTypeRepository::class.java)
 
     val r2: ConfigTypeRepository = mock(ConfigTypeRepository::class.java)

@@ -10,9 +10,7 @@ import io.microconfig.io.impl.DumpedFsReader
 import io.microconfig.utils.CacheProxy.cache
 
 object ConfigIoFactory {
-    private val instance = newConfigIo(DumpedFsReader())
-
-    fun configIo(): ConfigIo = instance
+    fun configIo(): ConfigIo = newConfigIo(DumpedFsReader())
 
     fun newConfigIo(reader: FsReader): ConfigIo =
         ConfigIoSelector(

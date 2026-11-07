@@ -12,8 +12,7 @@ class SquareBracketsNotationParser(private val pattern: TemplatePattern) :
 
     private fun processProperty(property: Property): List<TemplateDefinition> {
         if (!correctNotation(property)) return emptyList()
-        val parts = property.value.trim { it <= ' ' }.split(" -> ").dropLastWhile { it.isEmpty() }
-        if (parts.size != 2) return emptyList()
+        val (from, to) = ArrowNotation.pathsIn(property) ?: return emptyList()
         val names =
             Regex(".*\\.\\[(.*)]").matchEntire(property.key)?.groupValues?.get(1)
                 ?: return emptyList()
@@ -21,13 +20,14 @@ class SquareBracketsNotationParser(private val pattern: TemplatePattern) :
         return names
             .split(',')
             .dropLastWhile { it.isEmpty() }
-            .map { name -> createDefinition(type, name, parts[0], parts[1]) }
+            .map { name -> createDefinition(type, name, from, to) }
     }
 
-    private fun correctNotation(property: Property): Boolean =
-        '[' in property.key &&
-            property.key.endsWith(pattern.extractTemplateName(property.key)) &&
-            '*' !in property.value
+    private fun correctNotation(property: Property): Boolean {
+        val prefix = pattern.templatePrefixes.firstOrNull(property.key::startsWith) ?: return false
+        val name = property.key.removePrefix(prefix)
+        return name.startsWith('[') && name.endsWith(']') && '.' !in name && '*' !in property.value
+    }
 
     private fun createDefinition(
         type: String,

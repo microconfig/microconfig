@@ -6,7 +6,7 @@ import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.Property
 import io.microconfig.core.properties.PropertySerializer
 import io.microconfig.core.properties.TypedProperties
-import io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo
+import io.microconfig.core.properties.io.ConfigIo
 import io.microconfig.core.properties.serializers.ConfigChangeListener
 import io.microconfig.core.templates.Template
 import io.microconfig.utils.FileUtils.copyPermissions
@@ -22,11 +22,12 @@ import java.util.function.BiConsumer
 internal class FilePropertySerializer(
     private val directory: File,
     private val listener: BiConsumer<File, Collection<Property>>,
+    private val configIo: ConfigIo,
     private val protectedOutputs: Set<Path> = emptySet(),
 ) : PropertySerializer<File> {
     override fun prepare(properties: List<TypedProperties>): PropertySerializer<File> {
         val outputs = collectOutputs(properties)
-        return FilePropertySerializer(directory, listener, outputs)
+        return FilePropertySerializer(directory, listener, configIo, outputs)
     }
 
     private fun collectOutputs(properties: List<TypedProperties>): Set<Path> {
@@ -72,7 +73,7 @@ internal class FilePropertySerializer(
         name.startsWith("diff-") && (name.endsWith(".yaml") || name.endsWith(".properties"))
 
     private fun configContent(file: File, properties: Collection<Property>): ByteArray =
-        configIo()
+        configIo
             .writeTo(file)
             .serialize(properties.filterNot { it.isVar })
             .toByteArray(Charsets.UTF_8)
@@ -189,7 +190,7 @@ internal class FilePropertySerializer(
 
     private fun writeConfig(file: File, component: String, properties: Collection<Property>) {
         if (properties.isEmpty()) return
-        configIo().writeTo(file).write(properties)
+        configIo.writeTo(file).write(properties)
         info("Generated $component/${file.name}")
     }
 

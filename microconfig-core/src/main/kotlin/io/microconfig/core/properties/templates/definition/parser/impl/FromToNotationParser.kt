@@ -15,12 +15,19 @@ class FromToNotationParser(private val pattern: TemplatePattern) : TemplateDefin
         val definitions = linkedMapOf<Pair<String, String>, TemplateDefinition>()
         properties.forEach { property ->
             val key = property.key
-            if (key.endsWith(".fromFile"))
-                getOrCreate(key, definitions).setFromFile(property.value.trim { it <= ' ' })
-            else if (key.endsWith(".toFile"))
-                getOrCreate(key, definitions).setToFile(property.value.trim { it <= ' ' })
+            when (fieldOf(key)) {
+                "fromFile" ->
+                    getOrCreate(key, definitions).setFromFile(property.value.trim { it <= ' ' })
+                "toFile" ->
+                    getOrCreate(key, definitions).setToFile(property.value.trim { it <= ' ' })
+            }
         }
         return definitions
+    }
+
+    private fun fieldOf(key: String): String? {
+        val prefix = pattern.templatePrefixes.firstOrNull(key::startsWith) ?: return null
+        return key.removePrefix(prefix).substringAfterLast('.', "")
     }
 
     private fun getOrCreate(

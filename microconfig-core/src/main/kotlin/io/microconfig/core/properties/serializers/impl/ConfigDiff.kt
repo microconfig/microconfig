@@ -2,8 +2,9 @@ package io.microconfig.core.properties.serializers.impl
 
 import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.Property
+import io.microconfig.core.properties.io.ConfigIo
 import io.microconfig.core.properties.io.ConfigReader
-import io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo
+import io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo as defaultConfigIo
 import io.microconfig.core.properties.io.selector.ConfigIoFactory.newConfigIo
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.serializers.ConfigChangeListener
@@ -16,7 +17,7 @@ import java.nio.file.Files
 import java.util.Optional
 import java.util.function.Predicate
 
-class ConfigDiff : ConfigChangeListener {
+class ConfigDiff(private val configIo: ConfigIo = defaultConfigIo()) : ConfigChangeListener {
     fun storeDiffFor(previousConfigFile: File, newProperties: Collection<Property>) =
         accept(previousConfigFile, newProperties)
 
@@ -37,7 +38,7 @@ class ConfigDiff : ConfigChangeListener {
 
     private fun readOldConfig(file: File): Map<String, String> =
         try {
-            configIo().readFrom(file).propertiesAsMap()
+            configIo.readFrom(file).propertiesAsMap()
         } catch (failure: RuntimeException) {
             error("Can't read previous config '$file' for comparison: ${failure.message}")
             emptyMap()
@@ -64,7 +65,7 @@ class ConfigDiff : ConfigChangeListener {
     }
 
     private fun readSerializedConfig(file: File, properties: Collection<Property>): ConfigReader {
-        val text = configIo().writeTo(file).serialize(properties)
+        val text = configIo.writeTo(file).serialize(properties)
         val contentReader =
             object : FsReader {
                 override fun readFully(file: File): String = text
@@ -90,7 +91,7 @@ class ConfigDiff : ConfigChangeListener {
         if (changes.isEmpty()) deleteDiff(diff)
         else {
             warn("Stored ${changes.size} property changes to ${diff.parentFile.name}/${diff.name}")
-            configIo().writeTo(diff).write(changes)
+            configIo.writeTo(diff).write(changes)
         }
     }
 

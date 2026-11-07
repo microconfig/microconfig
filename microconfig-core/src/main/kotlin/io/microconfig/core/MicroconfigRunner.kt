@@ -26,5 +26,8 @@ class MicroconfigRunner(val microconfig: Microconfig) {
         buildProperties(env, groups, services).save(toFiles())
     }
 
-    fun toFiles(): PropertySerializer<File> = toFileIn(microconfig.destinationDir, withConfigDiff())
+    fun toFiles(): PropertySerializer<File> {
+        val configIo = microconfig.dependencies.configIo
+        return toFileIn(microconfig.destinationDir, withConfigDiff(configIo), configIo)
+    }
 }

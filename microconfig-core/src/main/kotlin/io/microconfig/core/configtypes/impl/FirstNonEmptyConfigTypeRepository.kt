@@ -3,7 +3,7 @@ package io.microconfig.core.configtypes.impl
 import io.microconfig.core.configtypes.ConfigType
 import io.microconfig.core.configtypes.ConfigTypeRepository
 
-class CompositeConfigTypeRepository(private val repositories: List<ConfigTypeRepository>) :
+class FirstNonEmptyConfigTypeRepository(private val repositories: List<ConfigTypeRepository>) :
     ConfigTypeRepository {
     override val configTypes: List<ConfigType>
         get() =
@@ -12,6 +12,6 @@ class CompositeConfigTypeRepository(private val repositories: List<ConfigTypeRep
 
     companion object {
         fun composite(vararg repositories: ConfigTypeRepository): ConfigTypeRepository =
-            CompositeConfigTypeRepository(repositories.toList())
+            FirstNonEmptyConfigTypeRepository(repositories.toList())
     }
 }

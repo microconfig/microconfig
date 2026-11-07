@@ -5,9 +5,9 @@ import java.io.File
 object ConfigTypeFilters {
     fun eachConfigType(): ConfigTypeFilter = ConfigTypeFilter { it }
 
-    fun configType(vararg types: ConfigType): ConfigTypeFilter = ConfigTypeFilter {
+    fun configType(vararg types: ConfigType): ConfigTypeFilter {
         require(types.isNotEmpty()) { "No config types provided" }
-        types.toList()
+        return ConfigTypeFilter { types.toList() }
     }
 
     fun configTypeWithName(vararg name: String): ConfigTypeFilter {

@@ -81,12 +81,6 @@ allprojects {
         sign(extensions.getByType<PublishingExtension>().publications["nexus"])
     }
 
-    dependencies {
-        add("implementation", platform(rootProject.libs.spring.boot.dependencies))
-        add("testImplementation", rootProject.libs.bundles.junit)
-        add("testImplementation", rootProject.libs.mockito.junit.jupiter)
-        add("testRuntimeOnly", rootProject.libs.junit.platform.launcher)
-    }
     extensions.configure<JacocoPluginExtension> {
         toolVersion = rootProject.libs.versions.jacoco.get()
     }
@@ -101,6 +95,15 @@ allprojects {
         exclude("**/*IT.class")
     }
     tasks.register("sourceJar") { dependsOn(tasks.named<Jar>("sourcesJar")) }
+}
+
+subprojects {
+    dependencies {
+        add("testImplementation", platform(rootProject.libs.spring.boot.dependencies))
+        add("testImplementation", rootProject.libs.junit.jupiter.api)
+        add("testRuntimeOnly", rootProject.libs.junit.jupiter.engine)
+        add("testRuntimeOnly", rootProject.libs.junit.platform.launcher)
+    }
 }
 
 fun MavenPom.configureMetadata() {

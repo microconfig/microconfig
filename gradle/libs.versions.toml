@@ -11,13 +11,11 @@ spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-depe
 jmustache = { module = "com.samskivert:jmustache" }
 spring-expression = { module = "org.springframework:spring-expression" }
 snakeyaml = { module = "org.yaml:snakeyaml" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
-mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter" }
-
-[bundles]
-junit = ["junit-jupiter-engine", "junit-jupiter-params"]
+mockito-core = { module = "org.mockito:mockito-core" }
 
 [plugins]
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }

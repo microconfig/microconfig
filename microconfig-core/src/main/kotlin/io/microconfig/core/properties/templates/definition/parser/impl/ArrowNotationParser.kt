@@ -14,14 +14,16 @@ class ArrowNotationParser(private val pattern: TemplatePattern) : TemplateDefini
 
     private fun processProperty(property: Property): List<TemplateDefinition> {
         if (!correctNotation(property.key)) return emptyList()
-        val parts = property.value.trim { it <= ' ' }.split(" -> ").dropLastWhile { it.isEmpty() }
-        if (parts.size != 2) return emptyList()
-        return if (parts[0].endsWith("/*")) processDirectory(property.key, parts[0], parts[1])
-        else listOf(createTemplate(property.key, parts[0], parts[1]))
+        val (from, to) = ArrowNotation.pathsIn(property) ?: return emptyList()
+        return if (from.endsWith("/*")) processDirectory(property.key, from, to)
+        else listOf(createTemplate(property.key, from, to))
     }
 
-    private fun correctNotation(key: String): Boolean =
-        key.endsWith(pattern.extractTemplateName(key)) && '[' !in key
+    private fun correctNotation(key: String): Boolean {
+        val prefix = pattern.templatePrefixes.firstOrNull(key::startsWith) ?: return false
+        val name = key.removePrefix(prefix)
+        return '.' !in name && '[' !in name
+    }
 
     private fun processDirectory(key: String, from: String, to: String): List<TemplateDefinition> {
         val root = File(from.removeSuffix("/*")).toPath()

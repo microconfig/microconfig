@@ -43,4 +43,5 @@ javaComponent.withVariantsFromConfiguration(configurations["runtimeElements"]) {
 dependencies {
     implementation(project(":microconfig-core"))
     implementation(project(":utils"))
+    testImplementation(libs.junit.jupiter.params)
 }
