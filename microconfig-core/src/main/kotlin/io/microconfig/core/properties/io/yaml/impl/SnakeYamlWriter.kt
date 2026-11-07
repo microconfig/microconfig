@@ -21,7 +21,6 @@ class SnakeYamlWriter(private val file: File) : ConfigWriter {
                 properties
                     .filterNot(Property::isVar)
                     .associate { YamlScalars.serializedKey(it) to serializedValue(it) }
-                    .toSortedMap()
             )
 
     override fun serializedValue(property: Property): String =

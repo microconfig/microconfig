@@ -42,13 +42,14 @@ constructor(
             val end = placeholderEnd(start, matcher.end())
             val placeholder = content.substring(start, end)
             output.append(content, copied, matcher.start())
-            val replacement =
-                if (matcher.group("escaped") != null) placeholder
-                else resolve(placeholder, component, resolver)
-            output.append(
-                if (replacement == null) content.substring(matcher.start(), end)
-                else indentMultilineValue(replacement, output)
-            )
+            if (matcher.group("escaped") != null) output.append(placeholder)
+            else {
+                val replacement = resolve(placeholder, component, resolver)
+                output.append(
+                    if (replacement == null) content.substring(matcher.start(), end)
+                    else indentMultilineValue(replacement, output)
+                )
+            }
             copied = end
             if (end > matcher.end()) matcher.region(end, content.length)
         }
@@ -93,6 +94,7 @@ constructor(
     }
 
     private fun indentMultilineValue(value: String, output: StringBuilder): String {
+        if ('\n' !in value && '\r' !in value) return value
         val lineStart = output.lastIndexOfAny(charArrayOf('\n', '\r')) + 1
         val indentation = " ".repeat(output.length - lineStart)
         return lineBreak.replace(value) { it.value + indentation }

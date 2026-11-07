@@ -1,10 +1,14 @@
 package io.microconfig.core.properties.io.yaml
 
 import io.microconfig.core.ClasspathReader.Companion.classpathFile
+import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.FileBasedComponent
+import io.microconfig.core.properties.PropertyImpl
 import io.microconfig.core.properties.io.selector.ConfigIoFactory
 import io.microconfig.io.impl.DumpedFsReader
+import java.io.File
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Test
 import org.yaml.snakeyaml.Yaml
 
@@ -94,5 +98,36 @@ class YamlConfigIoTest {
         )
         assertEquals(listOf(0, 0), entries.map { it["fee"] })
         assertEquals(listOf(true, true), entries.map { it["enabled"] })
+    }
+
+    @Test
+    fun serializeOverlappingTypedAndAnchoredValuesIndependentlyOfInputOrder() {
+        val properties = listOf(
+            "z.child" to "tail",
+            "a.child" to "descendant",
+            "a" to "{}",
+            "'a.b'" to "literal dot",
+            "1" to "typed",
+            "'1'" to "string",
+            "multiline" to "|+\n  first\n\n",
+            "aliases" to "[{base: &id001 {name: first, keep: original}, merged: {<<: *id001, name: second}, alias: *id001}]",
+        ).map { (key, value) -> PropertyImpl.property(key, value, YAML, null) }
+        val writer = io.writeTo(File("result.yaml"))
+        val serialized = writer.serialize(properties)
+
+        assertEquals(serialized, writer.serialize(properties.reversed()))
+        assertEquals(serialized, writer.serialize(properties.drop(3) + properties.take(3)))
+        val actual = Yaml().load<Map<Any, Any>>(serialized)
+        assertEquals(emptyMap<Any, Any>(), actual["a"])
+        assertEquals("descendant", actual["a.child"])
+        assertEquals("literal dot", actual["a.b"])
+        assertEquals("typed", actual[1])
+        assertEquals("string", actual["1"])
+        assertEquals(mapOf("child" to "tail"), actual["z"])
+        assertEquals("first\n\n", actual["multiline"])
+        val aliases = (actual["aliases"] as List<*>).single() as Map<*, *>
+        assertEquals(mapOf("name" to "first", "keep" to "original"), aliases["base"])
+        assertSame(aliases["base"], aliases["alias"])
+        assertEquals(mapOf("name" to "second", "keep" to "original"), aliases["merged"])
     }
 }

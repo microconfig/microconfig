@@ -234,6 +234,90 @@ class BuildOutputTest {
         assertEquals("value: config\n", Files.readString(output("application.yaml")))
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = ["yaml", "properties"])
+    fun removePreviousDiffWhenATemplateTakesOverTheConfig(extension: String) {
+        Files.deleteIfExists(root.resolve("components/app/application.yaml"))
+        val source = "components/app/application.$extension"
+        val separator = if (extension == "yaml") ": " else "="
+        write(source, "value${separator}old\n")
+        build()
+        write(source, "value${separator}changed\n")
+        build()
+        assertTrue(Files.exists(output("diff-application.$extension")))
+        write(source, "mc.template.config${separator}\${this@configDir}/template.txt -> application.$extension\n")
+        write("components/app/template.txt", "value${separator}from-template\n")
+
+        build()
+
+        assertEquals("value${separator}from-template\n", Files.readString(output("application.$extension")))
+        assertFalse(Files.exists(output("diff-application.$extension")))
+        build()
+        assertFalse(Files.exists(output("diff-application.$extension")))
+    }
+
+    @Test
+    fun removeStaleDiffsWhenTemplatesOwnBothConfigFormats() {
+        Files.createDirectories(output("application.yaml").parent)
+        for (extension in listOf("yaml", "properties")) {
+            Files.writeString(output("application.$extension"), "old")
+            Files.writeString(output("diff-application.$extension"), "stale")
+        }
+        write("components/app/application.yaml", """
+            mc.file.yaml: ${'$'}{this@configDir}/yaml.txt -> application.yaml
+            mc.file.properties: ${'$'}{this@configDir}/properties.txt -> application.properties
+            """.trimIndent())
+        write("components/app/yaml.txt", "value: template\n")
+        write("components/app/properties.txt", "value=template\n")
+
+        build()
+
+        assertEquals("value: template\n", Files.readString(output("application.yaml")))
+        assertEquals("value=template\n", Files.readString(output("application.properties")))
+        assertFalse(Files.exists(output("diff-application.yaml")))
+        assertFalse(Files.exists(output("diff-application.properties")))
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [false, true])
+    fun preserveCurrentDiffWhenATemplateAndAnotherTypeShareTheConfig(reverse: Boolean) {
+        val types = listOf("first", "second").let { if (reverse) it.reversed() else it }
+        write("microconfig.yaml", "configTypes:\n" + types.joinToString("") { type ->
+            "  - $type:\n      sourceExtensions: [.$type]\n      resultFileName: settings\n"
+        })
+        write("components/app/config.second", "mc.file.t: \${this@configDir}/template.txt -> settings.yaml\n")
+        write("components/app/config.first", "value: old\n")
+        write("components/app/template.txt", "value: old\n")
+        build()
+        write("components/app/config.first", "value: new\n")
+        write("components/app/template.txt", "value: new\n")
+
+        build()
+
+        assertEquals("value: old -> new\n", Files.readString(output("diff-settings.yaml")))
+    }
+
+    @Test
+    fun keepPreviousDiffUntilTheTemplateOwnerWritesSuccessfully() {
+        write("components/app/application.yaml", "{}\n")
+        write("components/app/config.proc", "mc.file.t: \${this@configDir}/source.txt -> application.yaml\n")
+        write("components/app/source.txt", "value: template\n")
+        previousConfig()
+        Files.writeString(output("diff-application.yaml"), "previous diff")
+        val units = runner().buildProperties("dev", emptyList(), emptyList()).asTypedProperties()
+        val prepared = runner().toFiles().prepare(units)
+        Files.delete(output("application.yaml"))
+        Files.createDirectory(output("application.yaml"))
+
+        units.first { it.configType.typeName == "app" }.save(prepared)
+
+        assertEquals("previous diff", Files.readString(output("diff-application.yaml")))
+        assertThrows(RuntimeException::class.java) {
+            units.first { it.configType.typeName == "process" }.save(prepared)
+        }
+        assertEquals("previous diff", Files.readString(output("diff-application.yaml")))
+    }
+
     @Test
     fun writePreparedOutputsInReverseOrderUsingTheOriginalDiffSnapshots() {
         write("envs/dev.yaml", "group:\n  components: [app, worker]\n")

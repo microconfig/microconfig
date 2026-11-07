@@ -5,6 +5,7 @@ import io.microconfig.core.properties.ConfigFormat.PROPERTIES
 import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.PropertyImpl.Companion.isDirective
 import io.microconfig.core.properties.io.selector.ConfigFormatDetector
+import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.io.FsReader
 import java.io.File
 import kotlin.jvm.optionals.getOrNull
@@ -36,7 +37,14 @@ class ConfigFormatDetectorImpl(private val reader: FsReader) : ConfigFormatDetec
             return YAML
         val separator = separatorIn(first)
         require(separator >= 0) { "Incorrect property $first in $file" }
-        return if (first[separator] == ':') YAML else PROPERTIES
+        if (first[separator] != ':') return PROPERTIES
+        // A YAML tag can also be an ordinary Properties comment.
+        if (
+            first.trimStart().startsWith('!') &&
+                !YamlScalars.isMappingSource(reader.readFully(file))
+        )
+            return PROPERTIES
+        return YAML
     }
 
     private fun separatorIn(text: String): Int {

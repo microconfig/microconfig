@@ -1,0 +1,5 @@
+runtime.service=svc42
+runtime.heap=256m
+runtime.port=9042
+runtime.enabled=true
+runtime.label=benchmark-svc42

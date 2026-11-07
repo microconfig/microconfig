@@ -49,8 +49,8 @@ class PropertiesWriter(private val file: File) : ConfigWriter {
         escape(
             when (property.valueFormat) {
                 ValueFormat.PROPERTIES -> property.value
-                ValueFormat.TEXT -> PropertiesText.escape(property.value)
-                ValueFormat.YAML -> PropertiesText.escape(YamlScalars.unquote(property.value))
+                ValueFormat.TEXT -> PropertiesText.escapeValue(property.value)
+                ValueFormat.YAML -> PropertiesText.escapeValue(YamlScalars.unquote(property.value))
             }
         )
 

@@ -13,6 +13,8 @@ import java.util.regex.Pattern
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.junit.jupiter.params.provider.ValueSource
 
 class StringTemplateTest {
@@ -99,10 +101,64 @@ class StringTemplateTest {
         )
     }
 
+    @ParameterizedTest
+    @MethodSource("escapedMultilinePlaceholders")
+    fun preserveEscapedMultilineTextAndResolveTheNextPlaceholder(placeholder: String, customPattern: Boolean) {
+        val pattern = if (customPattern)
+            Pattern.compile("(?<escaped>\\\\)?(?<placeholder>\\$\\{.*?})", Pattern.DOTALL)
+        else templatePattern
+        val template = StringTemplate("name", source, destination, pattern,
+            "prefix \\$placeholder|\${this@next}")
+        val resolver = Resolver { value, _, _ ->
+            assertEquals("\${this@next}", value)
+            "resolved"
+        }
+
+        val result = template.resolveBy(resolver, root).content
+
+        assertEquals("prefix $placeholder|resolved", result)
+    }
+
     @Test
     fun resolveDefaultContainingManyDollarAndHashCharacters() {
         val defaultValue = "x$#".repeat(10000)
         resolve("\${this@missing:$defaultValue}", defaultValue)
+    }
+
+    @Test
+    fun preserveManySingleLineSubstitutionsOnTheSameLine() {
+        val count = 5000
+        val template = StringTemplate(
+            "name", source, destination, templatePattern,
+            "prefix" + "|\${this@value}".repeat(count),
+        )
+
+        val result = template.resolveBy(Resolver { _, _, _ -> "x\\y" }, root).content
+
+        assertEquals("prefix" + "|x\\y".repeat(count), result)
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["\n", "\r", "\r\n"])
+    fun preserveMultilineIndentationAfterSingleLineAndEmptySubstitutions(newline: String) {
+        val prefix = "prefix one  "
+        val template = StringTemplate(
+            "name", source, destination, templatePattern,
+            "prefix \${this@single} \${this@empty} \${this@multi}|tail\${this@single}",
+        )
+        val resolver = Resolver { value, _, _ ->
+            when (value) {
+                "\${this@single}" -> "one"
+                "\${this@empty}" -> ""
+                "\${this@multi}" -> "first${newline}second$newline"
+                else -> error("Unexpected placeholder: $value")
+            }
+        }
+
+        val result = template.resolveBy(resolver, root).content
+
+        val indentation = " ".repeat(prefix.length)
+        assertEquals("${prefix}first$newline${indentation}second$newline${indentation}|tailone", result)
     }
 
     @Test
@@ -232,5 +288,19 @@ class StringTemplateTest {
             StringTemplate("name", source, destination, templatePattern, placeholder)
         val result: String = template.resolveBy(resolver(), root).content
         assertEquals(expected, result)
+    }
+
+    companion object {
+        @JvmStatic
+        fun escapedMultilinePlaceholders(): List<Arguments> =
+            listOf("\n", "\r", "\r\n").flatMap { newline ->
+                listOf(
+                    "\${missing:first${newline}  second}",
+                    "\${this@missing:\${this@alsoMissing:first${newline}  second}}",
+                    "\${this@\${this@missingKey:name}:first${newline}  second}",
+                ).flatMap { placeholder ->
+                    listOf(false, true).map { customPattern -> Arguments.of(placeholder, customPattern) }
+                }
+            }
     }
 }

@@ -18,7 +18,7 @@ interface RecursiveResolver : Resolver {
         val encoded = PropertiesText.isPropertiesText(sourceOfValue)
         val result = StringBuilder(if (encoded) PropertiesText.unescape(value) else value)
         resolveStatements(result, sourceOfValue, root)
-        return if (encoded) PropertiesText.escape(result.toString()) else result.toString()
+        return if (encoded) PropertiesText.escapeValue(result.toString()) else result.toString()
     }
 
     private fun resolveStatements(

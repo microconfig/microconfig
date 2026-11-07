@@ -1214,6 +1214,10 @@ The diff format:
  server.max-threads: 10 -> 35 # value has been changed from '10' to '35'
 ```
 
+Changed property names that begin with `+`, `-`, or `\` are prefixed with a backslash in the diff.
+For example, changing `+x` is labelled `\+x`, while adding `x` is labelled `+x`.
+Properties files apply their usual backslash escaping to these labels.
+
 # YAML and Properties format support
 Microconfig supports the *.yaml and *.properties formats for source and result configs.
 You can keep part of the configuration in *.yaml files and another part in *.properties.

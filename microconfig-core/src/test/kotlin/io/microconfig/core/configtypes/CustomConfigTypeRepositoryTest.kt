@@ -17,7 +17,7 @@ class CustomConfigTypeRepositoryTest {
         val types: List<ConfigType> = customRepo.configTypes
         assertEquals(1, types.size)
         val type: ConfigType = types.get(0)
-        assertEquals("custom", type.name)
+        assertEquals("custom", type.typeName)
         assertEquals("result", type.resultFileName)
         assertEquals(setOf(".custom"), type.sourceExtensions)
     }
@@ -29,7 +29,7 @@ class CustomConfigTypeRepositoryTest {
         val types: List<ConfigType> = customRepo.configTypes
         assertEquals(1, types.size)
         val type: ConfigType = types.get(0)
-        assertEquals("custom", type.name)
+        assertEquals("custom", type.typeName)
         assertEquals("custom", type.resultFileName)
         assertEquals(setOf(".custom"), type.sourceExtensions)
     }
@@ -50,7 +50,7 @@ class CustomConfigTypeRepositoryTest {
         val actual: List<ConfigType> = customRepo.configTypes
         assertEquals(expected.size, actual.size)
         expected.zip(actual).forEach { (expectedType, actualType) ->
-            assertEquals(expectedType.name, actualType.name)
+            assertEquals(expectedType.typeName, actualType.typeName)
             assertEquals(expectedType.resultFileName, actualType.resultFileName)
             assertEquals(expectedType.sourceExtensions, actualType.sourceExtensions)
         }

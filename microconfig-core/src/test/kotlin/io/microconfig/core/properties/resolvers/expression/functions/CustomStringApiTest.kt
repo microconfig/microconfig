@@ -3,6 +3,10 @@ package io.microconfig.core.properties.resolvers.expression.functions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
+import org.junit.jupiter.params.provider.ValueSource
 
 class CustomStringApiTest {
     @Test
@@ -39,5 +43,34 @@ class CustomStringApiTest {
     fun substring() {
         assertEquals("e.l.l.o", substringAfterFirst("h.e.l.l.o", "."))
         assertEquals("o", substringAfterLast("h.e.l.l.o", "."))
+    }
+
+    @ParameterizedTest
+    @MethodSource("lineSeparatorCases")
+    fun removeAndReplaceEveryLogicalLineSeparator(text: String, removed: String, replaced: String) {
+        assertEquals(removed, removeLineSeparators(text))
+        assertEquals(replaced, replaceLineSeparators(text, "|"))
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["\$1\\tail", "\\", "\${literal}", "\r\n"])
+    fun insertReplacementLiterallyWithoutRescanningIt(replacement: String) {
+        assertEquals("first${replacement}second${replacement}",
+            replaceLineSeparators("first\r\nsecond\r", replacement))
+    }
+
+    companion object {
+        @JvmStatic
+        fun lineSeparatorCases(): List<Arguments> = listOf(
+            Arguments.of("first\nsecond", "firstsecond", "first|second"),
+            Arguments.of("first\r\nsecond", "firstsecond", "first|second"),
+            Arguments.of("first\rsecond", "firstsecond", "first|second"),
+            Arguments.of("\r\n", "", "|"),
+            Arguments.of("\n\r\n\r", "", "|||"),
+            Arguments.of("a\r\n\r\nb\rc\n", "abc", "a||b|c|"),
+            Arguments.of("\r\nstart\nend\r", "startend", "|start|end|"),
+            Arguments.of("", "", ""),
+            Arguments.of(" \t😀 Привет\\n\$\\r ", " \t😀 Привет\\n\$\\r ", " \t😀 Привет\\n\$\\r "),
+        )
     }
 }

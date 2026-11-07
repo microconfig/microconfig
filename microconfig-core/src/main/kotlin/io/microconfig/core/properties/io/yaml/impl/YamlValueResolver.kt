@@ -50,7 +50,7 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
             ValueFormat.TEXT,
             property.keyFormat,
         )
-        return PropertiesText.escape(resolveScalar(decoded, root))
+        return PropertiesText.escapeValue(resolveScalar(decoded, root))
     }
 
     private fun resolveYamlProperty(property: Property, root: DeclaringComponent): String {
@@ -133,9 +133,9 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
 
     private fun resolveScalar(property: Property, root: DeclaringComponent): String {
         val yamlSyntax = property.valueFormat == ValueFormat.YAML
-        val quoted = yamlSyntax && YamlScalars.isQuoted(property.value)
-        val result =
-            StringBuilder(if (quoted) YamlScalars.unquote(property.value) else property.value)
+        val quotedValue = if (yamlSyntax) YamlScalars.quotedTextOrNull(property.value) else null
+        val quoted = quotedValue != null
+        val result = StringBuilder(quotedValue ?: property.value)
         var plainText = false
         var stringValue = quoted
         while (true) {
@@ -170,11 +170,12 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
             if (
                 yamlSyntax &&
                     !current.isPlainText &&
-                    (quoted || !wholeValue) &&
-                    YamlScalars.isQuoted(value)
+                    (quoted || !wholeValue)
             ) {
-                value = YamlScalars.unquote(value)
-                stringValue = true
+                YamlScalars.quotedTextOrNull(value)?.let {
+                    value = it
+                    stringValue = true
+                }
             }
             plainText = plainText || current.isPlainText
             result.replace(current.startIndex, current.endIndex, value)
@@ -241,8 +242,8 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
 
     private fun expressionScalarValue(value: String, scalar: ScalarNode?): String =
         when (scalar?.tag) {
-            Tag.BOOL, Tag.NULL, Tag.INT -> canonicalScalarValue(scalar)
-            Tag.FLOAT -> when (val number = canonicalScalarValue(scalar)) {
+            Tag.BOOL, Tag.NULL, Tag.INT -> YamlScalars.canonicalScalarValue(scalar)
+            Tag.FLOAT -> when (val number = YamlScalars.canonicalScalarValue(scalar)) {
                 ".inf" -> "(1.0 / 0.0)"
                 "-.inf" -> "(-1.0 / 0.0)"
                 ".NaN" -> "(0.0 / 0.0)"
@@ -250,9 +251,6 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
             }
             else -> value
         }
-
-    private fun canonicalScalarValue(scalar: ScalarNode): String =
-        (SnakeYaml.parse(YamlScalars.canonicalKey(scalar)) as ScalarNode).value
 
     private fun resolveCollectionValue(
         value: String,
@@ -315,6 +313,6 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
         node.tag to when {
             node !is ScalarNode -> SnakeYaml.fragment(node)
             node.tag == Tag.STR -> node.value
-            else -> canonicalScalarValue(node)
+            else -> YamlScalars.canonicalScalarValue(node)
         }
 }

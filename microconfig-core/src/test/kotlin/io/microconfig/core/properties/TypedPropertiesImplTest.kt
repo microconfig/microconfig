@@ -50,7 +50,7 @@ class TypedPropertiesImplTest {
         val resolved1: Property = property("resolved1")
         val resolved2: Property = property("resolved2")
         val resolver: Resolver = mock(Resolver::class.java)
-        val root: DeclaringComponent = DeclaringComponentImpl(APPLICATION.getName(), "comp", "env")
+        val root: DeclaringComponent = DeclaringComponentImpl(APPLICATION.typeName, "comp", "env")
         `when`(p1.resolveBy(resolver, root)).thenReturn(resolved1)
         `when`(p2.resolveBy(resolver, root)).thenReturn(resolved2)
         assertEquals(withProperties(listOf(resolved1, resolved2)), subj.resolveBy(resolver))
@@ -111,11 +111,36 @@ class TypedPropertiesImplTest {
     }
 
     @Test
+    fun useLastLogicalPropertiesKeyInDirectConstructorAndCopies() {
+        val exact = PropertyImpl.property("a.b", "base", PROPERTIES, null)
+        val winner = PropertyImpl.property("a\\u002eb", "override", PROPERTIES, null)
+        val properties = withProperties(listOf(exact, winner))
+
+        assertEquals(of(winner), properties.getPropertyWithKey("a.b"))
+        assertEquals(mapOf(winner.key to winner), properties.propertiesAsMap)
+        assertEquals(emptyList<Property>(), properties.without { it === winner }.properties.toList())
+        assertEquals(listOf(winner), properties.withPrefix("a").properties.toList())
+        assertEquals(listOf(winner), properties.withPrefix("a.b").properties.toList())
+    }
+
+    @Test
     fun decodePropertiesLookupKeysOnlyOnce() {
         val property = PropertyImpl.property("literal\\\\u0041", "payload", PROPERTIES, null)
         val properties = withProperties(listOf(property))
         assertEquals(of(property), properties.getPropertyWithKey("literal\\u0041"))
         assertEquals(empty<Property>(), properties.getPropertyWithKey("literalA"))
+    }
+
+    @Test
+    fun preferLiteralBackslashLogicalQueriesAndKeepYamlQueriesUndecoded() {
+        val literal = PropertyImpl.property("literal\\\\u0041", "literal", PROPERTIES, null)
+        val decoded = PropertyImpl.property("literalA", "decoded", PROPERTIES, null)
+        val yaml = PropertyImpl.property("1.child", "yaml", YAML, null)
+        val properties = withProperties(listOf(literal, decoded, yaml))
+
+        assertEquals(of(literal), properties.getPropertyWithKey("literal\\u0041"))
+        assertEquals(empty<Property>(), properties.getPropertyWithKey("\\u0031.child"))
+        assertEquals(empty<Property>(), properties.getPropertyWithKey("\\u0031.*"))
     }
 
     @Test

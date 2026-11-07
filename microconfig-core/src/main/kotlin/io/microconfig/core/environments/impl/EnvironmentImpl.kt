@@ -40,7 +40,7 @@ class EnvironmentImpl(
         componentWithName(componentName) ?: throw ComponentNotFoundException(componentName)
 
     private fun componentWithName(componentName: String): Component? =
-        groupWithComponent(componentName)?.findComponentWithName(componentName)?.getOrNull()
+        groups.firstNotNullOfOrNull { it.findComponentWithName(componentName).getOrNull() }
 
     override fun findComponentsFrom(groups: List<String>, components: List<String>): Components {
         val available = componentsFrom(groups)

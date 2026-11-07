@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 
 class BuildLifecycleTest {
     @TempDir lateinit var root: Path
@@ -66,6 +68,34 @@ class BuildLifecycleTest {
         }
         val result = MicroconfigRunner(microconfig()).buildProperties("dev", emptyList(), emptyList())
         assertEquals("fixed", result.propertiesAsKeyValue["value"])
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [false, true])
+    fun freshBuildReadsChangedProfilesAndNewComponentFiles(copyInstance: Boolean) {
+        Files.writeString(root.resolve("envs/dev.yaml"), "profiles: [base]\ngroup:\n  components: [app]\n")
+        Files.writeString(root.resolve("envs/base.yaml"), "abstract: true\n")
+        Files.writeString(root.resolve("components/app/application.base.yaml"), "fromBase: original\n")
+        val initial = microconfig()
+        val first = MicroconfigRunner(initial).buildProperties("dev", emptyList(), emptyList())
+        assertEquals(listOf("base"), initial.environments().profilesOf("dev"))
+        assertEquals(mapOf("value" to "first", "fromBase" to "original"), first.propertiesAsKeyValue)
+
+        Files.writeString(root.resolve("envs/base.yaml"), "abstract: true\nprofiles: [common]\n")
+        Files.writeString(root.resolve("envs/common.yaml"), "abstract: true\n")
+        Files.writeString(root.resolve("components/app/application.common.yaml"), "fromCommon: added\n")
+        Files.writeString(root.resolve("components/app/config.process"), "heap=512m\n")
+        val next = if (copyInstance) initial.withDestinationDir(root.resolve("next-output").toFile())
+            else microconfig()
+
+        val second = MicroconfigRunner(next).buildProperties("dev", emptyList(), emptyList())
+
+        assertEquals(listOf("common", "base"), next.environments().profilesOf("dev"))
+        assertEquals(
+            mapOf("value" to "first", "fromBase" to "original", "fromCommon" to "added", "heap" to "512m"),
+            second.propertiesAsKeyValue,
+        )
+        assertEquals(listOf("base"), initial.environments().profilesOf("dev"))
     }
 
     @Test

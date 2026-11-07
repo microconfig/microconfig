@@ -17,11 +17,11 @@ object ConfigTypeFilters {
     }
 
     private fun selectNamedTypes(names: Set<String>, types: List<ConfigType>): List<ConfigType> {
-        val unsupported = names - types.map { it.name }.toSet()
+        val unsupported = names - types.map { it.typeName }.toSet()
         require(unsupported.isEmpty()) {
             "Unsupported config types: $unsupported Configured types: $types"
         }
-        return types.filter { it.name in names }
+        return types.filter { it.typeName in names }
     }
 
     fun configTypeWithExtensionOf(file: File): ConfigTypeFilter {

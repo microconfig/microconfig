@@ -11,7 +11,7 @@ class PropertiesFactoryImplTest {
     fun shareRawReadsBetweenAliasesAndKeepEnvironmentAndTypeSeparate() {
         val reads = mutableListOf<String>()
         val factory = PropertiesFactoryImpl { component, environment, type ->
-            reads.add("$component/$environment/${type.getName()}")
+            reads.add("$component/$environment/${type.typeName}")
             mapOf("value" to PropertyImpl.property("value", environment, ConfigFormat.YAML, null))
         }
 

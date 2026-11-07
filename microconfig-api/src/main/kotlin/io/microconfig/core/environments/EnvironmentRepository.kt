@@ -13,6 +13,10 @@ interface EnvironmentRepository {
         return profiles.toList()
     }
 
+    fun getByName(name: String): Environment
+
+    fun getOrCreateByName(name: String): Environment
+
     private fun collectProfiles(
         name: String,
         visiting: MutableSet<String>,
@@ -31,8 +35,4 @@ interface EnvironmentRepository {
             }
         visiting.remove(name)
     }
-
-    fun getByName(name: String): Environment
-
-    fun getOrCreateByName(name: String): Environment
 }

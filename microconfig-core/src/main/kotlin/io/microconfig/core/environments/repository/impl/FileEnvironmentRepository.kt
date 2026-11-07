@@ -19,6 +19,7 @@ class FileEnvironmentRepository(
 ) : EnvironmentRepository {
     private val envDir = File(rootDir, ENV_DIR)
     private val parsed = ConcurrentHashMap<File, Environment>()
+    private val profilesByName = ConcurrentHashMap<String, List<String>>()
     private val files by lazy(::readEnvironmentFiles)
 
     init {
@@ -77,6 +78,9 @@ class FileEnvironmentRepository(
             .filterNot { it.isAbstract }
             .map { it.name }
             .toSortedSet()
+
+    override fun profilesOf(name: String): List<String> =
+        profilesByName.computeIfAbsent(name) { super<EnvironmentRepository>.profilesOf(it) }.toList()
 
     override fun getByName(name: String): Environment =
         findEnvWith(name) ?: throw notFoundException(name)

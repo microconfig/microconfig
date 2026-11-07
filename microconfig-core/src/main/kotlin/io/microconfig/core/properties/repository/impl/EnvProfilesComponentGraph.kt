@@ -1,7 +1,6 @@
 package io.microconfig.core.properties.repository.impl
 
 import io.microconfig.core.configtypes.ConfigType
-import io.microconfig.core.configtypes.name
 import io.microconfig.core.environments.EnvironmentRepository
 import io.microconfig.core.environments.repository.EnvironmentException
 import io.microconfig.core.properties.repository.ComponentGraph

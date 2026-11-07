@@ -8,7 +8,9 @@ class StandardConfigTypeTest {
     @Test
     fun shouldImplementConfigType() {
         val app: ConfigType = APPLICATION
-        assertEquals("app", app.name)
+        assertEquals("app", app.typeName)
+        assertEquals("app", APPLICATION.typeName)
+        assertEquals("APPLICATION", APPLICATION.name)
         assertEquals(setOf(".yml", ".yaml", ".properties"), app.sourceExtensions)
         assertEquals("application", app.resultFileName)
     }

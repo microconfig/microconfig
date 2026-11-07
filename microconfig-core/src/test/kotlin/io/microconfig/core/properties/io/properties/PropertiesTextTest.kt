@@ -58,6 +58,12 @@ class PropertiesTextTest {
         assertEquals("a\nb", load("key=" + escape("a\r\nb")))
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = ["a\r\nb", "a\r\n\nb\r", "\r\n", "\r", "\n", "literal\\r\\n\r\nnext"])
+    fun encodeValueWithoutChangingLineBreaks(value: String) {
+        assertEquals(value, load("key=" + PropertiesText.escapeValue(value)))
+    }
+
     @Test
     fun keepMalformedUnicodeEscape() {
         assertEquals("uZZZZ", unescape("\\uZZZZ"))

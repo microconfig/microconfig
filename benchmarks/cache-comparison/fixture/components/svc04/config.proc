@@ -1,0 +1,5 @@
+runtime.service=svc04
+runtime.heap=256m
+runtime.port=9004
+runtime.enabled=true
+runtime.label=benchmark-svc04

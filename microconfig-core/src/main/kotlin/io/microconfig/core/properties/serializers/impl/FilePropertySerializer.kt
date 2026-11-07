@@ -1,7 +1,6 @@
 package io.microconfig.core.properties.serializers.impl
 
 import io.microconfig.core.configtypes.ConfigType
-import io.microconfig.core.configtypes.name
 import io.microconfig.core.properties.ConfigFormat.PROPERTIES
 import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.Property
@@ -182,7 +181,10 @@ internal class FilePropertySerializer(
         protected: Set<Path>,
         notifications: Map<Path, () -> Unit>,
     ): PropertySerializer<File> {
-        val byScope = outputs.groupBy { Triple(it.component, it.environment, it.type.name) }
+        val byScope = outputs.groupBy { Triple(it.component, it.environment, it.type.typeName) }
+        val generated = outputs.filter { it.visible.isNotEmpty() }.map { it.path }.toSet()
+        val templateConfigs = outputs.flatMap { listOf(it.file, oppositeConfig(it.file)) }
+            .groupBy(::outputPath).filterKeys { it !in generated }
         val completed = mutableSetOf<Path>()
         return object : PropertySerializer<File> {
             override fun prepare(properties: List<TypedProperties>): PropertySerializer<File> =
@@ -195,13 +197,15 @@ internal class FilePropertySerializer(
                 componentName: String,
                 environment: String,
             ): File {
-                val output = byScope[Triple(componentName, environment, configType.name)]?.firstOrNull {
-                    it.type.resultFileName == configType.resultFileName &&
-                        sameProperties(it, properties) && sameTemplates(it.templates, templates)
-                }
+                val output =
+                    byScope[Triple(componentName, environment, configType.typeName)]?.firstOrNull {
+                        it.type.resultFileName == configType.resultFileName &&
+                            sameProperties(it, properties) && sameTemplates(it.templates, templates)
+                    }
                 requireNotNull(output) { "Output was not prepared for $componentName[$environment]" }
                 val notify = notificationFor(output, protected, notifications, completed)
                 writeOutput(output, protected)
+                deleteStaleTemplateDiffs(output.templates, templateConfigs)
                 notify()
                 return output.file
             }
@@ -264,6 +268,14 @@ internal class FilePropertySerializer(
         if (isProtected(obsolete, protected)) return
         deleteConfig(obsolete)
         deleteConfig(File(result.parentFile, "diff-${obsolete.name}"))
+    }
+
+    private fun deleteStaleTemplateDiffs(templates: List<Template>, configs: Map<Path, List<File>>) {
+        templates.forEach { template ->
+            configs[outputPath(template.destination)].orEmpty().forEach { file ->
+                deleteConfig(File(file.parentFile, "diff-${file.name}"))
+            }
+        }
     }
 
     private fun deleteConfig(file: File) {

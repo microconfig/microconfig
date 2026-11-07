@@ -9,20 +9,24 @@ object PropertiesText {
     fun isPropertiesText(component: DeclaringComponent?): Boolean =
         component is FileBasedComponent && !component.isYaml
 
-    fun escape(plain: String): String {
+    fun escape(plain: String): String = escape(plain, normalizeLineBreaks = true)
+
+    internal fun escapeValue(plain: String): String = escape(plain, normalizeLineBreaks = false)
+
+    private fun escape(plain: String, normalizeLineBreaks: Boolean): String {
         val output = StringBuilder(plain.length)
-        appendEscaped(plain, output)
+        appendEscaped(plain, output, normalizeLineBreaks)
         return output.toString()
     }
 
-    private fun appendEscaped(plain: String, output: StringBuilder) {
+    private fun appendEscaped(plain: String, output: StringBuilder, normalizeLineBreaks: Boolean) {
         var index = 0
         while (index < plain.length) {
             when (val character = plain[index]) {
                 '\\' -> output.append("\\\\")
                 '\n' -> output.append("\\n")
                 '\r' -> {
-                    val lineBreak = index + 1 < plain.length && plain[index + 1] == '\n'
+                    val lineBreak = normalizeLineBreaks && index + 1 < plain.length && plain[index + 1] == '\n'
                     output.append(if (lineBreak) "\\n" else "\\r")
                     if (lineBreak) index++
                 }

@@ -5,6 +5,7 @@ import io.microconfig.core.environments.EnvironmentRepository
 import io.microconfig.core.properties.PropertiesRepository
 import io.microconfig.core.properties.Property
 import io.microconfig.core.properties.io.ConfigIo
+import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.repository.ComponentGraph
 import io.microconfig.core.properties.repository.ComponentNotFoundException
 import io.microconfig.core.properties.repository.ConfigFile
@@ -30,11 +31,10 @@ class FilePropertiesRepository(
         private val processedIncludes: MutableSet<Include>,
     ) {
         fun properties(): Map<String, Property> =
-            componentGraph.getConfigFilesOf(component, environment, configType).fold(
-                linkedMapOf()
-            ) { result, file ->
-                result.apply { putAll(parse(file)) }
-            }
+            YamlScalars.indexProperties(
+                componentGraph.getConfigFilesOf(component, environment, configType)
+                    .flatMap { parse(it).values }
+            )
 
         private fun parse(file: ConfigFile): Map<String, Property> =
             file

@@ -1,7 +1,6 @@
 package io.microconfig.core.properties.impl
 
 import io.microconfig.core.configtypes.ConfigType
-import io.microconfig.core.configtypes.name
 import io.microconfig.core.properties.Properties
 import io.microconfig.core.properties.PropertiesFactory
 import io.microconfig.core.properties.PropertiesRepository

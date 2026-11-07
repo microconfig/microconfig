@@ -14,7 +14,7 @@ internal object YamlPropertyPaths {
         val node = SnakeYaml.parse(text)
         require(node is ScalarNode) { "YAML property key must be a scalar: $text" }
         return if (node.tag == Tag.STR) node.value
-        else (SnakeYaml.parse(YamlScalars.canonicalKey(node)) as ScalarNode).value
+        else YamlScalars.canonicalScalarValue(node)
     }
 
     private fun escapePropertiesKey(key: String): String = buildString {

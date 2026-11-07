@@ -4,6 +4,7 @@ import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.Property
 import io.microconfig.core.properties.io.ConfigIo
 import io.microconfig.core.properties.io.ConfigReader
+import io.microconfig.core.properties.io.properties.PropertiesText
 import io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo as defaultConfigIo
 import io.microconfig.core.properties.io.selector.ConfigIoFactory.newConfigIo
 import io.microconfig.core.properties.io.yaml.YamlScalars
@@ -58,14 +59,18 @@ class ConfigDiff(private val configIo: ConfigIo = defaultConfigIo()) : ConfigCha
         reader.propertiesAsMap().forEach { (key, newValue) ->
             val oldValue = previous.remove(key)
             if (oldValue == null) changes[changedKey(key, '+', yaml)] = newValue
-            else if (newValue != oldValue) changes[key] = changedValue(oldValue, newValue, yaml)
+            else if (newValue != oldValue) changes[changedKey(key, null, yaml)] = changedValue(oldValue, newValue, yaml)
         }
         previous.forEach { (key, value) -> changes[changedKey(key, '-', yaml)] = value }
         return changes
     }
 
-    private fun changedKey(key: String, sign: Char, yaml: Boolean): String =
-        if (yaml) YamlScalars.prefixedKeyPath(key, sign) else "$sign$key"
+    private fun changedKey(key: String, sign: Char?, yaml: Boolean): String {
+        if (yaml) return YamlScalars.diffKeyPath(key, sign)
+        if (sign != null) return "$sign$key"
+        val first = PropertiesText.unescape(key).firstOrNull()
+        return if (first == '+' || first == '-' || first == '\\') "\\\\$key" else key
+    }
 
     private fun readSerializedConfig(file: File, properties: Collection<Property>): ConfigReader {
         val text = configIo.writeTo(file).serialize(properties)

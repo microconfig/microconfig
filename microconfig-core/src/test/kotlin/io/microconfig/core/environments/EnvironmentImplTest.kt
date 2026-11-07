@@ -7,6 +7,7 @@ import io.microconfig.core.properties.repository.ComponentNotFoundException
 import java.util.Optional.empty
 import java.util.Optional.of
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -85,6 +86,17 @@ class EnvironmentImplTest {
         val four: Component = mock(Component::class.java)
         `when`(factory.createComponent("four", "four", env.name)).thenReturn(four)
         assertEquals(four, env.findComponentWithName("four"))
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [false, true])
+    fun useTheFirstSuccessfulComponentLookup(createMissing: Boolean) {
+        `when`(group2.findComponentWithName("three")).thenReturn(of(three), empty())
+
+        val component = if (createMissing) env.findComponentWithName("three")
+            else env.getComponentWithName("three")
+
+        assertSame(three, component)
     }
 
     @Test

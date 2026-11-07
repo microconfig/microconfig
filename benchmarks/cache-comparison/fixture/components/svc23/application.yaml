@@ -1,0 +1,56 @@
+#include common-l1-0, common-l1-1, common-l1-2
+service.name: svc23
+service.ordinal: 23
+resolved.ref00: ${this@shared.l3.branch001.number}
+resolved.ref01: ${this@shared.l3.branch001.enabled}
+resolved.ref02: ${this@shared.l3.branch002.text}
+resolved.ref03: ${this@shared.l3.branch002.number}
+resolved.ref04: ${this@shared.l3.branch002.enabled}
+resolved.ref05: ${this@shared.l3.branch010.text}
+resolved.ref06: ${this@shared.l3.branch010.number}
+resolved.ref07: ${this@shared.l3.branch010.enabled}
+resolved.ref08: ${this@shared.l3.branch011.text}
+resolved.ref09: ${this@shared.l3.branch011.number}
+resolved.ref10: ${this@shared.l3.branch011.enabled}
+resolved.ref11: ${this@shared.l3.branch012.text}
+resolved.ref12: ${this@shared.l3.branch012.number}
+resolved.ref13: ${this@shared.l3.branch012.enabled}
+resolved.ref14: ${this@shared.l3.branch020.text}
+resolved.ref15: ${this@shared.l3.branch020.number}
+resolved.ref16: ${this@shared.l3.branch020.enabled}
+resolved.ref17: ${this@shared.l3.branch021.text}
+resolved.ref18: ${this@shared.l3.branch021.number}
+resolved.ref19: ${this@shared.l3.branch021.enabled}
+resolved.ref20: ${this@shared.l3.branch022.text}
+resolved.ref21: ${this@shared.l3.branch022.number}
+resolved.ref22: ${this@shared.l3.branch022.enabled}
+resolved.ref23: ${this@shared.l3.branch100.text}
+resolved.ref24: ${this@shared.l3.branch100.number}
+resolved.ref25: ${this@shared.l3.branch100.enabled}
+resolved.ref26: ${this@shared.l3.branch101.text}
+resolved.ref27: ${this@shared.l3.branch101.number}
+resolved.ref28: ${this@shared.l3.branch101.enabled}
+resolved.ref29: ${this@shared.l3.branch102.text}
+resolved.ref30: ${this@shared.l3.branch102.number}
+resolved.ref31: ${this@shared.l3.branch102.enabled}
+resolved.ref32: ${this@shared.l3.branch110.text}
+resolved.ref33: ${this@shared.l3.branch110.number}
+resolved.ref34: ${this@shared.l3.branch110.enabled}
+resolved.ref35: ${this@shared.l3.branch111.text}
+resolved.ref36: ${this@shared.l3.branch111.number}
+resolved.ref37: ${this@shared.l3.branch111.enabled}
+resolved.ref38: ${this@shared.l3.branch112.text}
+resolved.ref39: ${this@shared.l3.branch112.number}
+resolved.ref40: ${this@shared.l3.branch112.enabled}
+resolved.ref41: ${this@shared.l3.branch120.text}
+resolved.ref42: ${this@shared.l3.branch120.number}
+resolved.ref43: ${this@shared.l3.branch120.enabled}
+resolved.ref44: ${this@shared.l3.branch121.text}
+resolved.ref45: ${this@shared.l3.branch121.number}
+resolved.ref46: ${this@shared.l3.branch121.enabled}
+resolved.ref47: ${this@shared.l3.branch122.text}
+resolved.ref48: ${this@shared.l3.branch122.number}
+resolved.ref49: ${this@shared.l3.branch122.enabled}
+calculated.answer: #{6 * 7}
+calculated.product: #{7 * 8}
+calculated.offset: #{100 + 23}

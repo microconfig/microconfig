@@ -15,7 +15,7 @@ import kotlin.jvm.optionals.getOrNull
 
 internal class PropertyResolutionCache {
     private val values = ConcurrentHashMap<Key, String>()
-    private val expressionValues = ConcurrentHashMap<Key, List<String>>()
+    private val expressionValues = ConcurrentHashMap<Pair<Key, Int>, String>()
 
     fun resolve(
         property: Property,
@@ -61,11 +61,8 @@ internal class PropertyResolutionCache {
                 expressions.findStatementIn(key.property.value).getOrNull() == null
         ) return expressions
         val expressionKey = key.copy(referenceChain = emptyList(), explicitEnvironment = null)
-        val prefix = expressionValues.getOrPut(expressionKey) {
-            expressionPrefix(key.property, key.root, expressions)
-        }
-        // Replay values through the normal resolver to preserve the original YAML quoting and types.
         var index = 0
+        var independent = true
         return object : RecursiveResolver {
             override fun findStatementIn(line: CharSequence): Optional<RecursiveResolver.Statement> =
                 Optional.ofNullable(expressions.findStatementIn(line).getOrNull()?.let { statement ->
@@ -74,39 +71,18 @@ internal class PropertyResolutionCache {
                             sourceOfValue: DeclaringComponent?,
                             root: DeclaringComponent?,
                             targetFormat: ValueFormat,
-                        ): String =
-                            if (index < prefix.size) prefix[index++]
-                            else statement.resolveFor(sourceOfValue, root, targetFormat)
+                        ): String {
+                            if (!independent) return statement.resolveFor(sourceOfValue, root, targetFormat)
+                            val value = expressionValues.getOrPut(expressionKey to index++) {
+                                statement.resolveFor(sourceOfValue, root, targetFormat)
+                            }
+                            // Later expressions may depend on the generated placeholder's context.
+                            if (PlaceholderBorders.findPlaceholderOrNull(value) != null) independent = false
+                            return value
+                        }
                     }
                 })
         }
-    }
-
-    private fun expressionPrefix(
-        property: Property,
-        root: DeclaringComponent,
-        expressions: RecursiveResolver,
-    ): List<String> {
-        val values = mutableListOf<String>()
-        var stopped = false
-        val recording = object : RecursiveResolver {
-            override fun findStatementIn(line: CharSequence): Optional<RecursiveResolver.Statement> {
-                // Later expressions can depend on a placeholder created by an earlier expression.
-                if (PlaceholderBorders.findPlaceholderOrNull(line) != null) stopped = true
-                if (stopped) return Optional.empty()
-                return Optional.ofNullable(expressions.findStatementIn(line).getOrNull()?.let { statement ->
-                    object : RecursiveResolver.Statement by statement {
-                        override fun resolveFor(
-                            sourceOfValue: DeclaringComponent?,
-                            root: DeclaringComponent?,
-                            targetFormat: ValueFormat,
-                        ): String = statement.resolveFor(sourceOfValue, root, targetFormat).also(values::add)
-                    }
-                })
-            }
-        }
-        YamlResolvers.forValues(recording).resolve(property, root)
-        return values.toList()
     }
 
     private data class Key(

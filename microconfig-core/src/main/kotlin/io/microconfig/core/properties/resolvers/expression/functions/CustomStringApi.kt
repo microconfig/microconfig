@@ -27,4 +27,6 @@ fun substringAfterLast(line: String, substring: String): String =
 
 fun removeLineSeparators(line: String): String = replaceLineSeparators(line, "")
 
-fun replaceLineSeparators(line: String, replacer: String): String = line.replace("\n", replacer)
+fun replaceLineSeparators(line: String, replacer: String): String = lineSeparators.replace(line) { replacer }
+
+private val lineSeparators = Regex("\\r\\n|[\\r\\n]")

@@ -9,6 +9,8 @@ import io.microconfig.core.properties.io.yaml.impl.YamlPropertyPaths
 import io.microconfig.core.properties.io.yaml.impl.YamlSource
 import java.util.Objects
 import org.yaml.snakeyaml.DumperOptions.ScalarStyle
+import org.yaml.snakeyaml.error.YAMLException
+import org.yaml.snakeyaml.nodes.MappingNode
 import org.yaml.snakeyaml.nodes.ScalarNode
 import org.yaml.snakeyaml.nodes.Tag
 
@@ -19,17 +21,7 @@ object YamlScalars {
     }
 
     internal fun canonicalKey(node: ScalarNode): String {
-        val key =
-            if (node.tag in canonicalKeyTags) {
-                try {
-                    val yaml = SnakeYaml.parser()
-                    (yaml.represent(yaml.load<Any?>(SnakeYaml.scalar(node))) as ScalarNode).takeIf {
-                        it.tag == node.tag
-                    } ?: node
-                } catch (_: RuntimeException) {
-                    node
-                }
-            } else node
+        val key = canonicalScalar(node)
         return SnakeYaml.fragment(
             ScalarNode(
                 key.tag,
@@ -41,16 +33,36 @@ object YamlScalars {
         )
     }
 
+    internal fun canonicalScalarValue(node: ScalarNode): String = canonicalScalar(node).value
+
+    private fun canonicalScalar(node: ScalarNode): ScalarNode {
+        if (node.tag !in canonicalKeyTags) return node
+        return try {
+            val yaml = SnakeYaml.parser()
+            (yaml.represent(yaml.load<Any?>(SnakeYaml.scalar(node))) as ScalarNode).takeIf {
+                it.tag == node.tag
+            } ?: node
+        } catch (_: RuntimeException) {
+            node
+        }
+    }
+
     private val canonicalKeyTags = setOf(Tag.INT, Tag.FLOAT, Tag.BOOL, Tag.NULL)
 
     internal fun canonicalPathText(text: String): String =
         YamlPropertyPaths.parts(text).joinToString(".", transform = ::canonicalKeyText)
 
-    internal fun prefixedKeyPath(key: String, prefix: Char): String {
+    internal fun diffKeyPath(key: String, prefix: Char?): String {
         val parts = YamlPropertyPaths.parts(key)
         val node = SnakeYaml.parse(parts.first()) as ScalarNode
-        val scalar = ScalarNode(node.tag, node.value, node.startMark, node.endMark, ScalarStyle.PLAIN)
-        val first = "$prefix${SnakeYaml.scalar(scalar)}"
+        val first = if (prefix == null) {
+            val initial = node.value.firstOrNull()
+            if (node.tag != Tag.STR || initial != '+' && initial != '-' && initial != '\\') return key
+            "\\${node.value}"
+        } else {
+            val scalar = ScalarNode(node.tag, node.value, node.startMark, node.endMark, ScalarStyle.PLAIN)
+            "$prefix${SnakeYaml.scalar(scalar)}"
+        }
         val prefixed = if ('.' in first) doubleQuoted(first) else stringValue(first)
         return (listOf(prefixed) + parts.drop(1)).joinToString(".")
     }
@@ -113,6 +125,28 @@ object YamlScalars {
             YamlPropertyPaths.fromProperties(key)
         else key
 
+    internal fun indexProperties(
+        properties: Collection<Property>,
+        overwrite: Boolean = true,
+    ): Map<String, Property> {
+        val propertiesOnly = properties.all { it.keyFormat == ConfigFormat.PROPERTIES }
+        fun keyOf(property: Property): String =
+            if (propertiesOnly) PropertiesText.unescape(property.key) else serializedKey(property)
+
+        val indexed = linkedMapOf<String, Property>()
+        val rawKeyByIdentity = mutableMapOf<String, String>()
+        properties.forEach { property ->
+            val key = keyOf(property)
+            val previousKey = rawKeyByIdentity[key]
+            if (!overwrite && (previousKey != null || property.key in indexed)) return@forEach
+            if (previousKey != null && previousKey != property.key) indexed.remove(previousKey)
+            val previous = indexed.put(property.key, property)
+            if (previous != null) rawKeyByIdentity.remove(keyOf(previous))
+            rawKeyByIdentity[key] = property.key
+        }
+        return indexed
+    }
+
     /** Encodes the logical key for Java Properties without changing already encoded keys. */
     fun propertiesKey(property: Property): String =
         if (property.keyFormat == ConfigFormat.PROPERTIES) property.key
@@ -135,22 +169,21 @@ object YamlScalars {
             )
         )
 
-    fun isCollection(value: String): Boolean = runCatching {
-        val node = YamlSource(value).compose()
-        node is org.yaml.snakeyaml.nodes.MappingNode ||
-            node is org.yaml.snakeyaml.nodes.SequenceNode
-    }
-        .getOrDefault(false)
+    internal fun isMappingSource(value: String): Boolean =
+        try {
+            YamlSource(value).compose() is MappingNode
+        } catch (_: YAMLException) {
+            false
+        }
 
-    fun isQuoted(value: String): Boolean = runCatching {
+    fun unquote(value: String): String = quotedTextOrNull(value) ?: value
+
+    internal fun quotedTextOrNull(value: String): String? = runCatching {
         val scalar = SnakeYaml.parse(value) as? ScalarNode
-        scalar?.scalarStyle == ScalarStyle.DOUBLE_QUOTED ||
-            scalar?.scalarStyle == ScalarStyle.SINGLE_QUOTED
-    }
-        .getOrDefault(false)
-
-    fun unquote(value: String): String =
-        if (isQuoted(value)) (SnakeYaml.parse(value) as ScalarNode).value else value
+        scalar?.takeIf {
+            it.scalarStyle == ScalarStyle.DOUBLE_QUOTED || it.scalarStyle == ScalarStyle.SINGLE_QUOTED
+        }?.value
+    }.getOrNull()
 
     fun doubleQuoted(text: String): String =
         SnakeYaml.scalar(SnakeYaml.text(text, ScalarStyle.DOUBLE_QUOTED))

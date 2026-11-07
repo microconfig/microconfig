@@ -48,6 +48,20 @@ class CompositePropertiesRepositoryTest {
     }
 
     @Test
+    fun captureFirstRepositoryValuesBeforeReadingTheNextProvider() {
+        val properties = linkedMapOf(one.key to one)
+        `when`(first.getPropertiesOf("component", "dev", APPLICATION)).thenReturn(properties)
+        `when`(second.getPropertiesOf("component", "dev", APPLICATION)).thenAnswer {
+            properties[one.key] = two
+            emptyMap<String, Property>()
+        }
+
+        val result = subj.getPropertiesOf("component", "dev", APPLICATION)
+
+        assertSame(one, result.getValue(one.key))
+    }
+
+    @Test
     fun should_return_same_repository_if_only_one_supplied() {
         val repo: PropertiesRepository = mock(PropertiesRepository::class.java)
         assertSame(repo, compositeOf(listOf(repo)))

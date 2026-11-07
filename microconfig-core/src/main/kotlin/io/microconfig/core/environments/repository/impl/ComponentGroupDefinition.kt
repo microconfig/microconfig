@@ -12,10 +12,8 @@ internal data class ComponentGroupDefinition(
     private val excludedComponents: List<ComponentDefinition>,
     private val appendedComponents: List<ComponentDefinition>,
 ) {
+    // EnvironmentDefinition applies pending append/exclude after group inheritance is complete.
     fun overrideBy(override: ComponentGroupDefinition): ComponentGroupDefinition =
-        withOverrides(override).applyComponentChanges()
-
-    private fun withOverrides(override: ComponentGroupDefinition): ComponentGroupDefinition =
         copy(
             components = override.components.ifEmpty { components },
             excludedComponents = override.excludedComponents,

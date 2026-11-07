@@ -28,6 +28,19 @@ class ExpressionResolverTest {
         assertEquals("100m", resolve("#{#findGroup('Xmx(?<xmx>.+)', 'Xmx100m')}"))
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = ["\n", "\r\n", "\r"])
+    fun normalizeEveryLineSeparatorThroughRegisteredFunctions(separator: String) {
+        assertEquals("ab", resolve("#{#removeLineSeparators('a${separator}b${separator}')}"))
+        assertEquals("a|b|", resolve("#{#replaceLineSeparators('a${separator}b${separator}', '|')}"))
+    }
+
+    @Test
+    fun preserveLiteralReplacementCharactersThroughSpel() {
+        val replacement = "\$1\\tail"
+        assertEquals("a${replacement}b", resolve("#{#replaceLineSeparators('a\r\nb', '$replacement')}"))
+    }
+
     @Test
     fun api() {
         val statement =

@@ -8,8 +8,8 @@ dokka = "2.2.0"
 # versions of the libraries without one come from the Spring Boot BOM
 [libraries]
 spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
-jmustache = { module = "com.samskivert:jmustache" }
 spring-expression = { module = "org.springframework:spring-expression" }
+jmustache = { module = "com.samskivert:jmustache" }
 snakeyaml = { module = "org.yaml:snakeyaml" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }

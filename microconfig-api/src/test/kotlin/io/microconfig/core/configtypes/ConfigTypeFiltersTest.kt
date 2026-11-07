@@ -78,7 +78,7 @@ class ConfigTypeFiltersTest {
 
     private fun type(name: String): ConfigType {
         val ct: ConfigType = mock(ConfigType::class.java)
-        `when`(ct.name).thenReturn(name)
+        `when`(ct.typeName).thenReturn(name)
         `when`(ct.resultFileName).thenReturn("file-" + name)
         `when`(ct.sourceExtensions).thenReturn(setOf("." + name))
         return ct

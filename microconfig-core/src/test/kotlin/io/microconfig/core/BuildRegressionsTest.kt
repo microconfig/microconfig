@@ -652,6 +652,71 @@ class BuildRegressionsTest {
     }
 
     @Test
+    fun applyReplacementExclusionAndAppendOnceAcrossAliasedEnvironmentGroups() {
+        write("components/app/application.yaml", "name: \${this@name}\n")
+        write("envs/base.yaml", """
+            abstract: true
+            group:
+              components: [old:app, kept:app]
+              append: [base:app]
+            """.trimIndent())
+        write("envs/middle.yaml", """
+            abstract: true
+            include:
+              env: base
+            group:
+              components: [replacement:app, drop:app]
+              exclude: [drop]
+              append: [mid:app]
+            """.trimIndent())
+        write("envs/dev.yaml", """
+            include:
+              env: middle
+            group:
+              exclude: [replacement]
+              append: [final:app, drop:app]
+            """.trimIndent())
+
+        val components = Microconfig.searchConfigsIn(root.toFile())
+            .inEnvironment("dev").allComponents.asList()
+        assertEquals(listOf("mid", "final", "drop"), components.map { it.name })
+        assertTrue(components.all { it.originalName == "app" && it.environment == "dev" })
+        build()
+
+        listOf("mid", "final", "drop").forEach { alias ->
+            val output = Files.readString(destination.resolve("$alias/application.yaml"))
+            assertEquals(mapOf("name" to alias), Yaml().load<Map<String, String>>(output))
+        }
+        listOf("old", "kept", "base", "replacement").forEach {
+            assertFalse(Files.exists(destination.resolve(it)))
+        }
+    }
+
+    @Test
+    fun keepOnlyTheLastDuplicateYamlGroupBeforeApplyingEnvironmentChanges() {
+        write("components/app/application.yaml", "name: \${this@name}\n")
+        write("envs/base.yaml", "abstract: true\ngroup:\n  components: [base:app]\n")
+        write("envs/dev.yaml", """
+            include:
+              env: base
+            group:
+              exclude: [base]
+              append: [discarded:app]
+            "group":
+              append: [kept:app]
+            """.trimIndent())
+
+        val environment = Microconfig.searchConfigsIn(root.toFile()).inEnvironment("dev")
+        assertEquals(listOf("group"), environment.groups.map { it.name })
+        assertEquals(listOf("base", "kept"), environment.allComponents.asList().map { it.name })
+        build()
+
+        assertTrue(Files.exists(destination.resolve("base/application.yaml")))
+        assertTrue(Files.exists(destination.resolve("kept/application.yaml")))
+        assertFalse(Files.exists(destination.resolve("discarded")))
+    }
+
+    @Test
     fun applyStandaloneComponentChangesByAlias() {
         write(
             "envs/dev.yaml",

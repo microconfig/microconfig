@@ -1,7 +1,6 @@
 package io.microconfig.core.properties.impl
 
 import io.microconfig.core.configtypes.ConfigType
-import io.microconfig.core.configtypes.name
 import io.microconfig.core.properties.ConfigFormat.PROPERTIES
 import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.DeclaringComponent
@@ -24,17 +23,19 @@ data class TypedPropertiesImpl(
     private val propertyByKey: Map<String, Property>,
     override val templates: List<Template>,
 ) : TypedProperties {
+    private val uniquePropertiesByKey = YamlScalars.indexProperties(propertyByKey.values)
+
     override val declaringComponent: DeclaringComponent
-        get() = DeclaringComponentImpl(configType.name, component, environment)
+        get() = DeclaringComponentImpl(configType.typeName, component, environment)
 
     override val propertiesAsMap: Map<String, Property>
-        get() = propertyByKey
+        get() = uniquePropertiesByKey
 
     override val propertiesAsKeyValue: Map<String, String>
-        get() = propertyByKey.mapValues { it.value.value }
+        get() = uniquePropertiesByKey.mapValues { it.value.value }
 
     override val properties: Collection<Property>
-        get() = propertyByKey.values
+        get() = uniquePropertiesByKey.values
 
     override fun resolveBy(resolver: Resolver): TypedProperties {
         val resolved = properties.map { it.resolveBy(resolver, declaringComponent) }
@@ -42,7 +43,7 @@ data class TypedPropertiesImpl(
     }
 
     private fun indexResolvedProperties(properties: List<Property>): Map<String, Property> {
-        val indexed = properties.associateBy { it.key }
+        val indexed = YamlScalars.indexProperties(properties)
         check(indexed.size == properties.size) { "Duplicate resolved property keys" }
         return indexed
     }
@@ -50,18 +51,22 @@ data class TypedPropertiesImpl(
     override fun withoutVars(): TypedProperties = without { it.isVar }
 
     override fun without(excluded: Predicate<Property>): TypedProperties =
-        copy(propertyByKey = propertyByKey.filterValues { !excluded.test(it) })
+        copy(propertyByKey = uniquePropertiesByKey.filterValues { !excluded.test(it) })
 
     override fun withPrefix(prefix: String): TypedProperties =
-        copy(propertyByKey = propertyByKey.filterKeys { it.startsWith(prefix) })
+        copy(propertyByKey = uniquePropertiesByKey.filterValues { keyStartsWith(it, prefix) })
+
+    private fun keyStartsWith(property: Property, prefix: String): Boolean =
+        property.key.startsWith(prefix) ||
+            property.keyFormat == PROPERTIES && PropertiesText.unescape(property.key).startsWith(prefix)
 
     override fun withTemplates(templates: List<Template>): TypedProperties =
         copy(templates = templates)
 
     override fun getPropertyWithKey(key: String): Optional<Property> =
         Optional.ofNullable(
-            propertyByKey[key] ?: findByPrefix(key) ?: findByCanonicalKey(key)
-                ?: findByPropertiesKey(key)
+            uniquePropertiesByKey[key] ?: findByPrefix(key) ?: findByCanonicalKey(key)
+                ?: findByPropertiesKey(key) ?: findByEncodedPropertiesKey(key)
         )
 
     private fun findByCanonicalKey(key: String): Property? {
@@ -72,7 +77,7 @@ data class TypedPropertiesImpl(
         yamlPropertyWithKey(YamlScalars.canonicalPathText(key))?.let {
             return it
         }
-        return propertyByKey.entries
+        return uniquePropertiesByKey.entries
             .firstOrNull {
                 hasYamlKey(it.value) &&
                     "!!float " in it.key &&
@@ -82,36 +87,43 @@ data class TypedPropertiesImpl(
     }
 
     private fun yamlPropertyWithKey(key: String): Property? =
-        propertyByKey[key]?.takeIf(::hasYamlKey)
+        uniquePropertiesByKey[key]?.takeIf(::hasYamlKey)
 
     private fun hasYamlKey(property: Property): Boolean =
         property.keyFormat == YAML
 
-    private fun findByPrefix(originalKey: String): Property? {
+    private fun findByPrefix(
+        originalKey: String,
+        candidates: Collection<Property> = properties,
+    ): Property? {
         if (!originalKey.endsWith(".*")) return null
         val reference = originalKey.removeSuffix(".*")
         val prefixes =
             sequenceOf(reference, YamlScalars.canonicalPathText(reference))
                 .plus(
-                    propertyByKey.keys
-                        .asSequence()
+                    candidates.asSequence()
+                        .map { it.key }
                         .filter { "!!float " in it }
                         .mapNotNull { YamlScalars.matchingKeyPrefix(it, reference) }
                 )
         return prefixes.firstNotNullOfOrNull { prefix ->
-            properties
-                .filter { hasPrefix(it, prefix) && (prefix == reference || hasYamlKey(it)) }
+            candidates
+                .filter { keyStartsWith(it, "$prefix.") && (prefix == reference || hasYamlKey(it)) }
                 .takeIf { it.isNotEmpty() }
                 ?.let { PropertyImpl.groupProperty(prefix, it, declaringComponent) }
         }
     }
 
-    private fun hasPrefix(property: Property, prefix: String): Boolean =
-        property.key.startsWith("$prefix.") ||
-            property.keyFormat == PROPERTIES && PropertiesText.unescape(property.key).startsWith("$prefix.")
-
     private fun findByPropertiesKey(key: String): Property? =
         properties.firstOrNull { it.keyFormat == PROPERTIES && PropertiesText.unescape(it.key) == key }
+
+    private fun findByEncodedPropertiesKey(key: String): Property? {
+        val decoded = PropertiesText.unescape(key)
+        if (decoded == key) return null
+        val candidates = properties.filter { it.keyFormat == PROPERTIES }
+        return candidates.firstOrNull { PropertiesText.unescape(it.key) == decoded }
+            ?: findByPrefix(decoded, candidates)
+    }
 
     override fun <T> save(serializer: PropertySerializer<T>): T =
         serializer.serialize(properties, templates, configType, component, environment)

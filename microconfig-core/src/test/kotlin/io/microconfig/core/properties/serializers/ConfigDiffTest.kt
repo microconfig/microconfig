@@ -11,7 +11,9 @@ import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.serializers.impl.ConfigDiff
 import io.microconfig.utils.FileUtils.LINES_SEPARATOR
 import java.io.File
+import java.io.StringReader
 import java.nio.file.Path
+import java.util.Properties
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -115,6 +117,43 @@ class ConfigDiffTest {
         val file = build("application.properties", baseline)
         ConfigDiff().storeDiffFor(file, baseline + added)
         assertEquals("+a\\u002eb=payload", diffFile(file).readText())
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["yaml", "properties"])
+    fun keepRealMarkerKeysDistinctFromAddedAndRemovedLabels(extension: String) {
+        val format = if (extension == "yaml") YAML else PROPERTIES
+        fun keyed(name: String, value: String) = prop(
+            if (format == YAML) YamlScalars.doubleQuoted(name) else name.replace("\\", "\\\\"),
+            value, format,
+        )
+        val before = listOf(keyed("+x", "oldPlus"), keyed("-y", "oldMinus"),
+            keyed("\\+x", "oldSlash"), keyed("y", "removed"))
+        val after = listOf(keyed("+x", "newPlus"), keyed("-y", "newMinus"),
+            keyed("\\+x", "newSlash"), keyed("x", "added"))
+        val file = build("application.$extension", before)
+
+        ConfigDiff().storeDiffFor(file, after)
+
+        val expected = mapOf("\\+x" to "oldPlus -> newPlus", "\\-y" to "oldMinus -> newMinus",
+            "\\\\+x" to "oldSlash -> newSlash", "+x" to "added", "-y" to "removed")
+        val diff = diffFile(file).readText()
+        val actual = if (format == YAML) Yaml().load<Map<String, String>>(diff)
+            else Properties().apply { load(StringReader(diff)) }
+        assertEquals(expected, actual, diff)
+        configIo().writeTo(file).write(after)
+        ConfigDiff().storeDiffFor(file, after)
+        assertFalse(diffFile(file).exists())
+    }
+
+    @Test
+    fun escapeChangedPropertiesMarkerKeysAfterDecodingTheirSpelling() {
+        val file = build("application.properties", listOf(prop("\\u002bx", "old", PROPERTIES)))
+
+        ConfigDiff().storeDiffFor(file, listOf(prop("\\u002bx", "new", PROPERTIES), prop("x", "added", PROPERTIES)))
+
+        val actual = Properties().apply { load(StringReader(diffFile(file).readText())) }
+        assertEquals(mapOf("\\+x" to "old -> new", "+x" to "added"), actual)
     }
 
     @ParameterizedTest

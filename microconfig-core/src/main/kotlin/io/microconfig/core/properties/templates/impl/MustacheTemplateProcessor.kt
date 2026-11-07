@@ -7,15 +7,13 @@ import io.microconfig.core.properties.io.yaml.YamlTree
 import io.microconfig.core.properties.templates.TemplateContentPostProcessor
 import io.microconfig.utils.IoUtils.readFully
 import io.microconfig.utils.Logger
+import org.yaml.snakeyaml.Yaml
 import java.io.File
 import java.io.Reader
 import java.util.function.UnaryOperator
-import org.yaml.snakeyaml.Yaml
 
 /** A supplied [partialProcessor] owns partial processing and replaces contextual resolution. */
-class MustacheTemplateProcessor
-@JvmOverloads
-constructor(private val partialProcessor: UnaryOperator<String>? = null) :
+class MustacheTemplateProcessor(private val partialProcessor: UnaryOperator<String>? = null) :
     TemplateContentPostProcessor {
     override fun process(
         templateType: String,

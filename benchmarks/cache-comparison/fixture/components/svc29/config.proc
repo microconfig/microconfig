@@ -1,0 +1,5 @@
+runtime.service=svc29
+runtime.heap=256m
+runtime.port=9029
+runtime.enabled=true
+runtime.label=benchmark-svc29

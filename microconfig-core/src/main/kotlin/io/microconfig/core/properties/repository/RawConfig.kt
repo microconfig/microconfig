@@ -2,6 +2,7 @@ package io.microconfig.core.properties.repository
 
 import io.microconfig.core.properties.OverrideProperty
 import io.microconfig.core.properties.Property
+import io.microconfig.core.properties.io.yaml.YamlScalars
 import java.util.function.Function
 
 class RawConfig(
@@ -14,24 +15,23 @@ class RawConfig(
         env: String,
     ): Map<String, Property> {
         val properties = filteredProperties(profiles, env)
-        mergeIncludes(properties, includeResolver)
-        return properties
+        return mergeIncludes(properties, includeResolver)
     }
 
     private fun filteredProperties(
         profiles: List<String>,
         environment: String,
-    ): MutableMap<String, Property> {
-        val result = uniqueProperties(declaredProperties.filterNot { it is OverrideProperty }, "")
-        applyOverrides(result, " for all envs") { it.isVar && it.isForAllEnvs() }
-        (profiles + environment).forEach { overrideFor(result, it) }
+    ): Map<String, Property> {
+        var result = uniqueProperties(declaredProperties.filterNot { it is OverrideProperty }, "")
+        result = applyOverrides(result, " for all envs") { it.isVar && it.isForAllEnvs() }
+        for (activeEnvironment in profiles + environment) result = overrideFor(result, activeEnvironment)
         return result
     }
 
     private fun uniqueProperties(
         properties: List<Property>,
         scope: String,
-    ): MutableMap<String, Property> {
+    ): Map<String, Property> {
         val result = linkedMapOf<String, Property>()
         properties.forEach { property ->
             val previous = result.putIfAbsent(property.key, property)
@@ -39,34 +39,34 @@ class RawConfig(
                 "Property '${property.key}' is declared twice$scope: ${previous?.declaringComponent} and ${property.declaringComponent}"
             }
         }
-        return result
+        return YamlScalars.indexProperties(result.values)
     }
 
     private fun applyOverrides(
-        properties: MutableMap<String, Property>,
+        properties: Map<String, Property>,
         scope: String,
         predicate: (OverrideProperty) -> Boolean,
-    ) {
-        properties.putAll(
-            uniqueProperties(
-                declaredProperties.filterIsInstance<OverrideProperty>().filter(predicate),
-                scope,
-            )
+    ): Map<String, Property> {
+        val overrides = uniqueProperties(
+            declaredProperties.filterIsInstance<OverrideProperty>().filter(predicate),
+            scope,
         )
+        if (overrides.isEmpty()) return properties
+        return YamlScalars.indexProperties(properties.values + overrides.values)
     }
 
-    private fun overrideFor(properties: MutableMap<String, Property>, environment: String) {
+    private fun overrideFor(properties: Map<String, Property>, environment: String): Map<String, Property> {
         val scope = " for env '$environment'"
-        applyOverrides(properties, scope) { it.isSharedWith(environment) }
-        applyOverrides(properties, scope) { it.isOnlyFor(environment) }
+        val shared = applyOverrides(properties, scope) { it.isSharedWith(environment) }
+        return applyOverrides(shared, scope) { it.isOnlyFor(environment) }
     }
 
     private fun mergeIncludes(
-        properties: MutableMap<String, Property>,
+        properties: Map<String, Property>,
         resolver: Function<Include, Map<String, Property>>,
-    ) {
-        val included = linkedMapOf<String, Property>()
-        includes.forEach { included.putAll(resolver.apply(it)) }
-        included.forEach { (key, property) -> properties.putIfAbsent(key, property) }
+    ): Map<String, Property> {
+        if (includes.isEmpty()) return properties
+        val included = YamlScalars.indexProperties(includes.flatMap { resolver.apply(it).values })
+        return YamlScalars.indexProperties(properties.values + included.values, overwrite = false)
     }
 }

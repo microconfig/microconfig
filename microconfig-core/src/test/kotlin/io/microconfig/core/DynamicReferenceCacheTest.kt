@@ -138,16 +138,49 @@ class DynamicReferenceCacheTest {
     }
 
     @Test
+    fun spliceListsAfterGeneratedPlaceholders() {
+        write("components/source/application.yaml", "items: [one, two]\n")
+        write("components/app/application.yaml", """
+            items:
+              #{'$' + '{source@items}'}
+              - after
+            """.trimIndent())
+
+        assertEquals(mapOf("items" to listOf("one", "two", "after")), build())
+    }
+
+    @Test
+    fun spliceGeneratedListsThroughReferencesAndTemplates() {
+        write("components/base/application.yaml", "items: [one, two]\n")
+        write("components/source/application.yaml", """
+            items:
+              #{'$' + '{base@items}'}
+              - after
+            """.trimIndent())
+        write("components/app/application.yaml", """
+            copy: ${'$'}{source@items}
+            mc.template.list: ${'$'}{this@configDir}/list.txt -> rendered.yaml
+            """.trimIndent())
+        write("components/app/list.txt", "\${source@items}")
+
+        assertEquals(mapOf("copy" to listOf("one", "two", "after")), build())
+        assertEquals(listOf("one", "two", "after"),
+            Yaml().load<List<String>>(Files.readString(root.resolve("output/app/rendered.yaml"))))
+    }
+
+    @Test
     fun evaluateExpressionOnlyPropertiesOnceAcrossDirectAndNestedReferences() {
         var evaluations = 0
+        var generatedReferences = 0
         val expressions = object : RecursiveResolver {
             override fun findStatementIn(line: CharSequence): Optional<RecursiveResolver.Statement> {
-                val start = line.indexOf("#{next}")
-                return Optional.ofNullable(if (start < 0) null else object : RecursiveResolver.Statement {
-                    override val startIndex = start
-                    override val endIndex = start + "#{next}".length
+                val match = Regex("#\\{(next|generated)}").find(line)
+                return Optional.ofNullable(if (match == null) null else object : RecursiveResolver.Statement {
+                    override val startIndex = match.range.first
+                    override val endIndex = match.range.last + 1
                     override fun resolveFor(sourceOfValue: DeclaringComponent?, root: DeclaringComponent?) =
-                        (++evaluations).toString()
+                        if (match.groupValues[1] == "next") (++evaluations).toString()
+                        else "\${this@label}".also { generatedReferences++ }
                 })
             }
         }
@@ -157,11 +190,19 @@ class DynamicReferenceCacheTest {
             )
         val stamp = property("app", "stamp", "#{next}")
         val independent = property("app", "other", "#{next}-#{next}")
+        val collection = property("app", "collection", "[#{next}, #{next}]")
+        val contextual = property("shared", "contextual", "#{next}-#{generated}-#{next}")
         val properties = mapOf(
             ("app" to "stamp") to stamp,
             ("app" to "other") to independent,
+            ("app" to "collection") to collection,
             ("first" to "value") to property("first", "value", "\${app@stamp}"),
             ("second" to "value") to property("second", "value", "\${first@value}"),
+            ("shared" to "contextual") to contextual,
+            ("branchA" to "value") to property("branchA", "value", "\${shared@contextual}"),
+            ("branchB" to "value") to property("branchB", "value", "\${shared@contextual}"),
+            ("branchA" to "label") to property("branchA", "label", "A"),
+            ("branchB" to "label") to property("branchB", "label", "B"),
         )
         val strategy = PlaceholderResolveStrategy { component, key, _, _, _ ->
             Optional.ofNullable(properties[component to key])
@@ -181,6 +222,13 @@ class DynamicReferenceCacheTest {
         assertEquals("2-3", independent.resolveBy(resolver, context).value)
         assertEquals("2-3", resolver.resolve("\${app@other}", context, context))
         assertEquals(3, evaluations)
+        assertEquals("4-A-5", resolver.resolve("\${branchA@value}", context, context))
+        assertEquals("4-B-6", resolver.resolve("\${branchB@value}", context, context))
+        assertEquals(6, evaluations)
+        assertEquals(1, generatedReferences)
+        assertEquals(listOf(7, 8), Yaml().load<List<Int>>(collection.resolveBy(resolver, context).value))
+        assertEquals(listOf(7, 8), Yaml().load<List<Int>>(resolver.resolve("\${app@collection}", context, context)))
+        assertEquals(8, evaluations)
     }
 
     private fun write(path: String, content: String) {

@@ -10,7 +10,7 @@ class ConfigTypeImplTest {
     @Test
     fun createByNameAndExtension() {
         val app: ConfigType = byNameAndExtensions("app", setOf(".yaml"), "application")
-        assertEquals("app", app.name)
+        assertEquals("app", app.typeName)
         assertEquals("application", app.resultFileName)
         assertEquals(setOf(".yaml"), app.sourceExtensions)
     }
@@ -18,7 +18,7 @@ class ConfigTypeImplTest {
     @Test
     fun createByName() {
         val app: ConfigType = byName("app")
-        assertEquals("app", app.name)
+        assertEquals("app", app.typeName)
         assertEquals("app", app.resultFileName)
         assertEquals(setOf(".app"), app.sourceExtensions)
     }
