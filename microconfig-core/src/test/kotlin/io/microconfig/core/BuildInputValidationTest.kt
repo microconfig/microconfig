@@ -377,11 +377,12 @@ class BuildInputValidationTest {
         assertTrue(error.message.contains("application.properties:1"), error.message)
     }
 
-    @Test
-    fun retainEnvironmentDescriptorDefaults() {
+    @ParameterizedTest
+    @ValueSource(strings = ["", "include: null", "include: {env: ''}"])
+    fun retainEnvironmentDescriptorDefaults(include: String) {
         write(
             "envs/dev.yaml",
-            "include: {env: ''}\nabstract: null\ngroup:\n  components: [app]\n",
+            "$include\nabstract: null\ngroup:\n  components: [app]\n",
         )
         build()
         assertEquals(mapOf("value" to "present"), yaml())
@@ -403,7 +404,16 @@ class BuildInputValidationTest {
 
     @ParameterizedTest
     @ValueSource(
-        strings = ["include: ignored", "abstract: 'true'", "include: {env: base, exclude: group}"]
+        strings =
+            [
+                "include: ignored",
+                "include: false",
+                "include: 42",
+                "include: []",
+                "include: [base]",
+                "abstract: 'true'",
+                "include: {env: base, exclude: group}",
+            ]
     )
     fun rejectEnvironmentFieldsThatWouldOtherwiseBeIgnored(fields: String) {
         write("envs/base.yaml", "{}\n")
