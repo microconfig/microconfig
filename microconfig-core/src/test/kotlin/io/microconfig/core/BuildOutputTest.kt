@@ -235,6 +235,41 @@ class BuildOutputTest {
     }
 
     @Test
+    fun writePreparedOutputsInReverseOrderUsingTheOriginalDiffSnapshots() {
+        write("envs/dev.yaml", "group:\n  components: [app, worker]\n")
+        write("components/worker/application.yaml", "value: old\n")
+        write("components/app/application.yaml", "value: old\n")
+        build()
+        write("components/app/application.yaml", "value: new\n")
+        write("components/worker/application.yaml", "value: new\n")
+        val units = runner().buildProperties("dev", emptyList(), emptyList()).asTypedProperties()
+        val serializer = runner().toFiles().prepare(units)
+
+        units.reversed().forEach { it.save(serializer) }
+
+        listOf("app", "worker").forEach { component ->
+            assertEquals("value: new\n", Files.readString(destination.resolve("$component/application.yaml")))
+            assertEquals("value: old -> new\n", Files.readString(destination.resolve("$component/diff-application.yaml")))
+        }
+    }
+
+    @Test
+    fun keepPreparedRemovalDestinationWhenThePreviousFileDisappears() {
+        write("components/app/application.yaml", "{}\n")
+        Files.createDirectories(output("application.properties").parent)
+        Files.writeString(output("application.properties"), "value=old")
+        val units = runner().buildProperties("dev", emptyList(), emptyList()).asTypedProperties()
+        val serializer = runner().toFiles().prepare(units)
+        Files.delete(output("application.properties"))
+
+        val files = units.map { it.save(serializer) }
+
+        assertTrue(files.any { it.toPath() == output("application.properties") })
+        assertEquals("-value=old", Files.readString(output("diff-application.properties")).trim())
+        assertFalse(Files.exists(output("application.yaml")))
+    }
+
+    @Test
     fun preserveOppositeFormatsOwnedByDifferentConfigTypes() {
         write(
             "microconfig.yaml",

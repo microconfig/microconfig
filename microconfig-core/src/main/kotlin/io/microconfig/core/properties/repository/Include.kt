@@ -4,7 +4,7 @@ data class Include(val component: String, val environment: String) {
     override fun toString(): String = "#include $component[$environment]"
 
     companion object {
-        private val pattern = Regex("^(?<comp>[\\w-_.]+)(\\[(?<env>.+)])?$")
+        private val pattern = Regex("^(?<comp>[\\p{L}\\p{Nd}._-]+)(\\[(?<env>.+)])?$")
 
         fun parse(definition: String, defaultEnv: String): Include {
             val match =

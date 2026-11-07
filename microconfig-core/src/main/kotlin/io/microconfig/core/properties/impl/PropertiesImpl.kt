@@ -8,6 +8,7 @@ import io.microconfig.core.properties.TypedProperties
 import java.util.Optional
 import java.util.function.Predicate
 import java.util.function.UnaryOperator
+import kotlin.jvm.optionals.getOrNull
 
 data class PropertiesImpl(private val typedProperties: List<TypedProperties>) : Properties {
     override val propertiesAsMap: Map<String, Property>
@@ -31,7 +32,7 @@ data class PropertiesImpl(private val typedProperties: List<TypedProperties>) : 
     }
 
     private fun withEachComponent(callback: (TypedProperties) -> TypedProperties): Properties =
-        PropertiesImpl(typedProperties.parallelStream().map(callback).toList())
+        PropertiesImpl(typedProperties.map(callback))
 
     override fun withoutVars(): Properties = withEachComponent { it.withoutVars() }
 
@@ -44,8 +45,7 @@ data class PropertiesImpl(private val typedProperties: List<TypedProperties>) : 
     }
 
     override fun getPropertyWithKey(key: String): Optional<Property> =
-        typedProperties.asSequence().map { it.getPropertyWithKey(key) }.firstOrNull { it.isPresent }
-            ?: Optional.empty()
+        Optional.ofNullable(typedProperties.firstNotNullOfOrNull { it.getPropertyWithKey(key).getOrNull() })
 
     override fun <T> save(serializer: PropertySerializer<T>): List<T> {
         val prepared = serializer.prepare(typedProperties)

@@ -4,6 +4,7 @@ import io.microconfig.core.properties.ConfigFormat
 import io.microconfig.core.properties.FileBasedComponent.Companion.fileSource
 import io.microconfig.core.properties.OverrideProperty
 import io.microconfig.core.properties.Property
+import io.microconfig.core.properties.ValueFormat
 import io.microconfig.core.properties.PropertyImpl
 import io.microconfig.core.properties.io.ConfigReader
 import io.microconfig.core.properties.io.yaml.YamlScalars
@@ -154,10 +155,11 @@ class SnakeYamlReader(private val file: File, reader: FsReader) : ConfigReader {
                 ConfigFormat.YAML,
                 declaredIn,
                 literal,
+                if (literal) ValueFormat.TEXT else ValueFormat.YAML,
             )
         }
-        return if (literal) PropertyImpl.literalProperty(name, value, ConfigFormat.YAML, declaredIn)
-        else PropertyImpl.property(name, value, ConfigFormat.YAML, declaredIn)
+        return if (literal) PropertyImpl.literalProperty(name, value, ConfigFormat.YAML, declaredIn, ValueFormat.TEXT)
+        else PropertyImpl.property(name, value, ConfigFormat.YAML, declaredIn, ValueFormat.YAML)
     }
 
     private fun valueOf(node: Node): String {
@@ -187,7 +189,7 @@ class SnakeYamlReader(private val file: File, reader: FsReader) : ConfigReader {
     }
 
     private fun isWholeStatement(value: String): Boolean {
-        val placeholder = PlaceholderBorders.findPlaceholderIn(value).orElse(null)
+        val placeholder = PlaceholderBorders.findPlaceholderOrNull(value)
         if (placeholder?.startIndex == 0 && placeholder.endIndex == value.length) return true
         return ExpressionResolver.expressionsIn(value).anyMatch {
             it.start() == 0 && it.end() == value.length

@@ -10,6 +10,7 @@ import io.microconfig.core.properties.repository.ComponentNotFoundException
 import io.microconfig.utils.Logger.info
 import java.io.File
 import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 
 class EnvironmentImpl(
     override val source: File?,
@@ -23,10 +24,6 @@ class EnvironmentImpl(
     override val allComponents: Components
         get() = ComponentsImpl(groups.flatMap { it.components.asList() }, propertiesFactory)
 
-    override fun findGroupsWithIp(ip: String): List<ComponentGroup> = groups.filter {
-        it.ip.orElse(null) == ip
-    }
-
     override fun getGroupWithName(groupName: String): ComponentGroup =
         groups.firstOrNull { it.name == groupName }
             ?: throw IllegalArgumentException(
@@ -34,14 +31,16 @@ class EnvironmentImpl(
             )
 
     override fun findGroupWithComponent(componentName: String): Optional<ComponentGroup> =
-        Optional.ofNullable(
-            groups.firstOrNull { it.findComponentWithName(componentName).isPresent }
-        )
+        Optional.ofNullable(groupWithComponent(componentName))
+
+    private fun groupWithComponent(componentName: String): ComponentGroup? =
+        groups.firstOrNull { it.findComponentWithName(componentName).getOrNull() != null }
 
     override fun getComponentWithName(componentName: String): Component =
-        findGroupWithComponent(componentName)
-            .flatMap { it.findComponentWithName(componentName) }
-            .orElseThrow { ComponentNotFoundException(componentName) }
+        componentWithName(componentName) ?: throw ComponentNotFoundException(componentName)
+
+    private fun componentWithName(componentName: String): Component? =
+        groupWithComponent(componentName)?.findComponentWithName(componentName)?.getOrNull()
 
     override fun findComponentsFrom(groups: List<String>, components: List<String>): Components {
         val available = componentsFrom(groups)
@@ -52,19 +51,22 @@ class EnvironmentImpl(
 
     private fun componentsFrom(groups: List<String>): List<Component> =
         if (groups.isEmpty()) allComponents.asList()
-        else groups.flatMap { getGroupWithName(it).components.asList() }
+        else groups.distinct().flatMap { getGroupWithName(it).components.asList() }
 
     private fun selectComponents(names: List<String>, available: List<Component>): List<Component> {
+        val byName = available.associateBy { it.name }
+        check(byName.size == available.size) {
+            val duplicates =
+                available.groupingBy { it.name }.eachCount().filterValues { it > 1 }.keys
+            "Duplicate component declarations in '$name' env: $duplicates"
+        }
         if (names.isEmpty()) return available
-        val components = available.associateBy { it.name }
-        check(components.size == available.size) { "Duplicate component declarations" }
-        return names.map { components[it] ?: throw ComponentNotFoundException(it) }
+        return names.map { byName[it] ?: throw ComponentNotFoundException(it) }
     }
 
     override fun findComponentWithName(componentName: String): Component =
-        findGroupWithComponent(componentName)
-            .flatMap { it.findComponentWithName(componentName) }
-            .orElseGet { componentFactory.createComponent(componentName, componentName, name) }
+        componentWithName(componentName)
+            ?: componentFactory.createComponent(componentName, componentName, name)
 
     override fun toString(): String = "$name: $groups"
 }

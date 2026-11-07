@@ -58,6 +58,13 @@ class MicroconfigParamsTest {
     }
 
     @Test
+    fun color() {
+        assertTrue(empty.color())
+        assertTrue(parse("-color", "true").color())
+        assertFalse(parse("-color", "false").color())
+    }
+
+    @Test
     fun testVersion() {
         assertTrue(parse("-v").version())
     }

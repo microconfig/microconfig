@@ -14,6 +14,8 @@ class MicroconfigParams(private val parser: CommandLineParamParser) {
 
     fun stacktrace(): Boolean = parser.booleanValue("stacktrace")
 
+    fun color(): Boolean = parser.valueOr("color", "true") == "true"
+
     fun version(): Boolean = parser.contains("v")
 
     fun environments(): Set<String> {
@@ -39,5 +41,11 @@ class MicroconfigParams(private val parser: CommandLineParamParser) {
     companion object {
         fun parse(vararg args: String): MicroconfigParams =
             MicroconfigParams(CommandLineParamParser.parse(*args))
+
+        internal fun parse(
+            args: Array<out String>,
+            beforeValidation: (MicroconfigParams) -> Unit,
+        ): MicroconfigParams =
+            MicroconfigParams(CommandLineParamParser.parse(args) { beforeValidation(MicroconfigParams(it)) })
     }
 }

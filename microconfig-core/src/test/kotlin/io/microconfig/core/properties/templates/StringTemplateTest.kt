@@ -25,9 +25,9 @@ class StringTemplateTest {
     val destination: File = File("destination")
 
     @ParameterizedTest
-    @ValueSource(strings = ["\${ip:default}", "\${this@ip}"])
-    fun resolveIp(placeholder: String) {
-        resolve(placeholder, "172.30.162.3")
+    @ValueSource(strings = ["\${name:default}", "\${this@name}"])
+    fun resolveComponentName(placeholder: String) {
+        resolve(placeholder, "th-server")
     }
 
     @ParameterizedTest
@@ -50,20 +50,20 @@ class StringTemplateTest {
     @ValueSource(
         strings =
             [
-                "\${missing:\${this@ip}}",
-                "\${ip:\${this@missing}}",
-                "\${this@missing:\${this@ip}}",
-                "\${this@ip:\${this@missing}}",
+                "\${missing:\${this@name}}",
+                "\${name:\${this@missing}}",
+                "\${this@missing:\${this@name}}",
+                "\${this@name:\${this@missing}}",
             ]
     )
     fun resolveNestedDefaultValue(placeholder: String) {
-        resolve(placeholder, "172.30.162.3")
+        resolve(placeholder, "th-server")
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["\${missing:{this@ip}}", "\${this@missing:{this@ip}}"])
+    @ValueSource(strings = ["\${missing:{this@name}}", "\${this@missing:{this@name}}"])
     fun preserveBracesInLiteralDefaultValue(placeholder: String) {
-        resolve(placeholder, "{this@ip}")
+        resolve(placeholder, "{this@name}")
     }
 
     @Test
@@ -75,6 +75,85 @@ class StringTemplateTest {
     fun resolveLongDefaultValue() {
         val defaultValue: String = "x".repeat(100000)
         resolve("\${this@missing:" + defaultValue + "}", defaultValue)
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["missing", "this@missing"])
+    fun resolveMultilineDefaultValue(name: String) {
+        resolve("\${$name:first\nsecond}", "first\nsecond")
+    }
+
+    @Test
+    fun resolveDeeplyNestedDefaultsAndAdjacentPlaceholders() {
+        resolve(
+            "\${this@missing:\${this@alsoMissing:\${this@thirdMissing:\${this@name}}}}|\${this@name}",
+            "th-server|th-server",
+        )
+    }
+
+    @Test
+    fun preserveEscapedNestedDefaultsAndResolveTheNextPlaceholder() {
+        resolve(
+            "\\\${this@missing:\${this@alsoMissing:\${this@name}}}|\${this@name}",
+            "\${this@missing:\${this@alsoMissing:\${this@name}}}|th-server",
+        )
+    }
+
+    @Test
+    fun resolveDefaultContainingManyDollarAndHashCharacters() {
+        val defaultValue = "x$#".repeat(10000)
+        resolve("\${this@missing:$defaultValue}", defaultValue)
+    }
+
+    @Test
+    fun respectSpelQuotesInDefaultValue() {
+        resolve("\${this@missing:#{\"abc\\\".length()}}|\${this@name}", "4|th-server")
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["missing", "this@missing"])
+    fun keepQuotedClosingBracesInsideDefaultValue(name: String) {
+        resolve("\${$name:#{'a}b'}}|\${this@name}", "a}b|th-server")
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["name", "this@name"])
+    fun skipWholeDefaultWhenPropertyExists(name: String) {
+        resolve(
+            "\${$name:#{'a}b'}}|\${this@name}",
+            "th-server|th-server",
+        )
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = [
+        "\${this@\${this@missingKey:name}:fallback}",
+        "\${\${this@missingComponent:this}@name:fallback}",
+        "\${this@\${this@missingKey:\${this@anotherMissingKey:name}}:#{'a}b'}}",
+        "\${\${this@missingKey:name}:fallback}",
+    ])
+    fun resolvePlaceholdersInsidePlaceholderHeaders(placeholder: String) {
+        resolve("$placeholder|\${this@name}", "th-server|th-server")
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = [
+        "\${this@missing:#{'\${this@alsoMissing:'a}b'}'.length()}}",
+        "\${this@missing:#{\"\${this@alsoMissing:\"a}b\"}\".length()}}",
+    ])
+    fun resolveQuotedPlaceholderDefaultsInsideSpel(placeholder: String) {
+        resolve("$placeholder|\${this@name}", "3|th-server")
+    }
+
+    @Test
+    fun preserveEscapedDynamicPlaceholderAsAWhole() {
+        val placeholder = "\${this@\${this@missingKey:name}:#{'a}b'}}"
+        resolve("\\$placeholder|\${this@name}", "$placeholder|th-server")
+    }
+
+    @Test
+    fun skipInvalidDefaultAfterResolvingDynamicHeader() {
+        resolve("\${this@\${this@missingKey:name}:#{1 / 0}}", "th-server")
     }
 
     @Test

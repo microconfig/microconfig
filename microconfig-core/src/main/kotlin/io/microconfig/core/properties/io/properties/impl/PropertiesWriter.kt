@@ -1,7 +1,11 @@
 package io.microconfig.core.properties.io.properties.impl
 
+import io.microconfig.core.properties.ConfigFormat
 import io.microconfig.core.properties.Property
+import io.microconfig.core.properties.ValueFormat
 import io.microconfig.core.properties.io.ConfigWriter
+import io.microconfig.core.properties.io.properties.PropertiesText
+import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.utils.FileUtils
 import java.io.File
 
@@ -17,12 +21,38 @@ class PropertiesWriter(private val file: File) : ConfigWriter {
     override fun write(properties: Collection<Property>) =
         FileUtils.write(file, serialize(properties))
 
-    override fun serialize(properties: Collection<Property>): String =
-        properties
+    override fun serialize(properties: Collection<Property>): String {
+        val keys = mutableMapOf<String, Property>()
+        return properties
             .filterNot { it.isVar }
-            .joinToString(FileUtils.LINES_SEPARATOR) { "${it.key}=${serializedValue(it)}" }
+            .joinToString(FileUtils.LINES_SEPARATOR) { serializeProperty(it, keys) }
+    }
 
-    override fun serializedValue(property: Property): String = escape(property.value)
+    private fun serializeProperty(property: Property, keys: MutableMap<String, Property>): String {
+        val key = YamlScalars.propertiesKey(property)
+        checkKeyCollision(key, property, keys)
+        return "$key=${serializedValue(property)}"
+    }
+
+    private fun checkKeyCollision(key: String, property: Property, keys: MutableMap<String, Property>) {
+        val logicalKey = PropertiesText.unescape(key)
+        val previous = keys.putIfAbsent(logicalKey, property)
+        require(
+            previous == null ||
+                previous.keyFormat == ConfigFormat.PROPERTIES && property.keyFormat == ConfigFormat.PROPERTIES
+        ) {
+            "Several properties produce the same Properties key '$logicalKey': '${previous?.key}' and '${property.key}'"
+        }
+    }
+
+    override fun serializedValue(property: Property): String =
+        escape(
+            when (property.valueFormat) {
+                ValueFormat.PROPERTIES -> property.value
+                ValueFormat.TEXT -> PropertiesText.escape(property.value)
+                ValueFormat.YAML -> PropertiesText.escape(YamlScalars.unquote(property.value))
+            }
+        )
 
     private fun escape(value: String): String {
         val output = escapeLineBreaks(value)

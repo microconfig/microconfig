@@ -14,20 +14,23 @@ class MicroconfigRunner(val microconfig: Microconfig) {
         destinationDir: File,
     ) : this(Microconfig.searchConfigsIn(rootDir).withDestinationDir(destinationDir))
 
-    fun buildProperties(env: String, groups: List<String>, services: List<String>): Properties =
-        microconfig
+    /** Starts the instance's only build attempt, even if resolution later fails. */
+    fun buildProperties(env: String, groups: List<String>, services: List<String>): Properties {
+        microconfig.startBuild()
+        return microconfig
             .inEnvironment(env)
             .findComponentsFrom(groups, services)
             .getPropertiesFor(eachConfigType())
             .resolveBy(microconfig.resolver())
             .forEachComponent(resolveTemplatesBy(microconfig.resolver()))
+    }
 
     fun build(env: String, groups: List<String>, services: List<String>) {
         buildProperties(env, groups, services).save(toFiles())
     }
 
     fun toFiles(): PropertySerializer<File> {
-        val configIo = microconfig.dependencies.configIo
-        return toFileIn(microconfig.destinationDir, withConfigDiff(configIo), configIo)
+        val configIo = microconfig.dependencies().configIo
+        return toFileIn(microconfig.destinationDir(), withConfigDiff(configIo), configIo)
     }
 }

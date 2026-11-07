@@ -87,6 +87,16 @@ class BuildRegressionsTest {
         )
     }
 
+    @Test
+    fun resolveQuotedNestedPlaceholderInsideExpressionDefault() {
+        write(
+            "components/app/application.yaml",
+            "result: \${this@missing:#{'\${this@alsoMissing:'a}b'}'}}\nnext: value\n",
+        )
+        build()
+        assertEquals(mapOf("result" to "a}b", "next" to "value"), yaml())
+    }
+
     @ParameterizedTest
     @ValueSource(strings = ["yaml", "properties"])
     fun removeObsoleteOutputAfterChangingFormat(firstFormat: String) {

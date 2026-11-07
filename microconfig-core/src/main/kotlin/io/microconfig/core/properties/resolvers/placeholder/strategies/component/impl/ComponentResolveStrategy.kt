@@ -7,6 +7,7 @@ import io.microconfig.core.properties.Property
 import io.microconfig.core.properties.PropertyImpl
 import io.microconfig.core.properties.resolvers.placeholder.strategies.component.ComponentProperty
 import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 
 class ComponentResolveStrategy(private val properties: Map<String, ComponentProperty>) :
     PlaceholderResolveStrategy {
@@ -17,12 +18,12 @@ class ComponentResolveStrategy(private val properties: Map<String, ComponentProp
         configType: String,
         root: String?,
     ): Optional<Property> =
-        properties[key]?.resolveFor(component, environment)?.map { value ->
+        Optional.ofNullable(properties[key]?.resolveFor(component, environment)?.getOrNull()?.let { value ->
             PropertyImpl.property(
                 component,
                 value,
                 PROPERTIES,
                 DeclaringComponentImpl(configType, component, environment),
             )
-        } ?: Optional.empty()
+        })
 }

@@ -24,16 +24,14 @@ internal class EnvironmentFile(private val file: File) {
     private fun parseDescriptor(descriptor: Map<String, Any?>): EnvironmentDefinition {
         val include = parseInclude(descriptor["include"])
         val profiles = parseProfiles(descriptor["profiles"])
-        val ip = descriptor["ip"] as String?
         val abstract = descriptor["abstract"] as Boolean? ?: false
         val groups =
             descriptor
                 .filterKeys { it !in descriptorKeys }
-                .map { (name, value) -> parseGroup(name, value, ip) }
+                .map { (name, value) -> parseGroup(name, value) }
         return EnvironmentDefinition(
             file,
             file.nameWithoutExtension,
-            ip,
             abstract,
             profiles,
             include,
@@ -59,15 +57,11 @@ internal class EnvironmentFile(private val file: File) {
     private fun parseGroup(
         name: String,
         value: Any?,
-        environmentIp: String?,
     ): ComponentGroupDefinition =
         try {
             val properties = value as Map<*, *>
-            val ip =
-                if (properties.containsKey("ip")) properties["ip"] as String? else environmentIp
             ComponentGroupDefinition(
                 name,
-                ip,
                 parseComponents(properties["components"]),
                 parseComponents(properties["exclude"]),
                 parseComponents(properties["append"]),
@@ -88,6 +82,6 @@ internal class EnvironmentFile(private val file: File) {
     }
 
     companion object {
-        private val descriptorKeys = setOf("include", "profiles", "ip", "abstract")
+        private val descriptorKeys = setOf("include", "profiles", "abstract")
     }
 }

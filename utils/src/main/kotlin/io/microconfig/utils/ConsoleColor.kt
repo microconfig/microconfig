@@ -8,5 +8,5 @@ object ConsoleColor {
     fun yellow(message: String): String = applyColor(message, "\u001B[33m")
 
     private fun applyColor(message: String, color: String): String =
-        if (Os.isWindows() || message.isEmpty()) message else "$color$message\u001B[0m"
+        if (message.isEmpty()) message else "$color$message\u001B[0m"
 }

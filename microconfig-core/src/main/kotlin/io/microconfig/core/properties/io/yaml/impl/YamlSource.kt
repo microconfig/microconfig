@@ -1,6 +1,7 @@
 package io.microconfig.core.properties.io.yaml.impl
 
 import io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders
+import io.microconfig.core.properties.resolvers.expression.impl.ExpressionResolver.Companion.expressionEnd
 import java.io.StringReader
 import java.util.IdentityHashMap
 import org.yaml.snakeyaml.DumperOptions.ScalarStyle
@@ -66,31 +67,8 @@ internal class YamlSource(val original: String) {
     }
 
     private fun statementEnd(start: Int): Int {
-        if (original[start] == '$') {
-            val placeholder = PlaceholderBorders.findPlaceholderIn(original, start).orElse(null)
-            if (placeholder?.startIndex == start) return placeholder.endIndex
-        }
-        var depth = 1
-        var quote: Char? = null
-        var position = start + 2
-        while (position < original.length) {
-            val character = original[position]
-            if (quote != null) {
-                if (character == quote) {
-                    if (position + 1 < original.length && original[position + 1] == quote)
-                        position++
-                    else quote = null
-                }
-            } else
-                when (character) {
-                    '\'',
-                    '"' -> if (original[start] == '#') quote = character
-                    '{' -> depth++
-                    '}' -> if (--depth == 0) return position + 1
-                }
-            position++
-        }
-        return -1
+        if (original[start] == '#') return expressionEnd(original, start)
+        return PlaceholderBorders.endOfPlaceholder(original, start)
     }
 
     private fun mask(start: Int, end: Int) {
@@ -188,8 +166,11 @@ internal class YamlSource(val original: String) {
                             position.key = event
                             position.expectsKey = false
                         } else {
-                            if (scopes.isNotEmpty() && !isVariableScope(scopes))
-                                protectScalarLines(event, preparedLines, protected)
+                            if (
+                                scopes.isNotEmpty() && !isVariableScope(scopes) &&
+                                    event.scalarStyle == ScalarStyle.PLAIN
+                            )
+                                protected.addAll(scalarLines(event, preparedLines))
                             consumePosition(position)
                         }
                     }
@@ -218,12 +199,10 @@ internal class YamlSource(val original: String) {
             } == true
     }
 
-    private fun protectScalarLines(
+    private fun scalarLines(
         event: ScalarEvent,
         lines: List<String>,
-        protected: MutableSet<Int>,
-    ) {
-        if (event.scalarStyle != ScalarStyle.PLAIN) return
+    ): IntRange {
         val firstLine = lines[event.startMark.line]
         val startsOnOwnLine =
             event.startMark.column == firstLine.takeWhile { it == ' ' || it == '\t' }.length
@@ -231,8 +210,9 @@ internal class YamlSource(val original: String) {
         val endLine = lines[event.endMark.line]
         val endColumn = endLine.offsetByCodePoints(0, event.endMark.column)
         val trailing = endLine.substring(endColumn).trimStart()
+        // The end mark can already point into the indentation before the next YAML token.
         val last = event.endMark.line - if (trailing.isEmpty() || trailing.startsWith('#')) 0 else 1
-        protected.addAll(first..last)
+        return first..last
     }
 
     fun compose(): Node? {
@@ -252,12 +232,7 @@ internal class YamlSource(val original: String) {
                     prepareStatements(node, IdentityHashMap())
                 else node
             } catch (error: MarkedYAMLException) {
-                if (
-                    !adaptListSplice(error.problemMark) &&
-                        !adaptListSplice(error.contextMark) &&
-                        !adaptPreviousSplice(error.problemMark)
-                )
-                    throw error
+                if (!adaptStandaloneSplice()) throw error
             }
         }
     }
@@ -365,7 +340,7 @@ internal class YamlSource(val original: String) {
         val line = prepared.substring(lineStart, lineEnd)
         val marker = standaloneMarker(line) ?: return false
         val start = lineStart + line.indexOf(marker)
-        splices.add(offsets[start])
+        check(splices.add(offsets[start])) { "List splice was already adapted" }
         prepared.insert(start, "- ")
         offsets.add(start, offsets[start])
         offsets.add(start, offsets[start])
@@ -379,23 +354,53 @@ internal class YamlSource(val original: String) {
         return marker.takeIf { tail.isEmpty() || tail.startsWith("#") }
     }
 
-    private fun adaptPreviousSplice(mark: Mark?): Boolean {
-        if (mark == null || mark.line == 0) return false
+    private fun adaptStandaloneSplice(): Boolean {
         val currentLines = prepared.split(lineBreak)
-        val previous =
-            (mark.line - 1 downTo 0).firstOrNull {
-                currentLines[it].isNotBlank() && !currentLines[it].trimStart().startsWith("#")
-            } ?: return false
-        if (
-            currentLines[previous].takeWhile(Char::isWhitespace) !=
-                currentLines[mark.line].takeWhile(Char::isWhitespace)
-        )
-            return false
-        if (standaloneMarker(currentLines[previous]) == null) return false
-        val start =
-            if (previous == 0) 0
-            else lineBreak.findAll(prepared).elementAt(previous - 1).range.last + 1
-        return adaptSpliceAt(start)
+        val protected = protectedSpliceLines()
+        val starts = listOf(0) + lineBreak.findAll(prepared).map { it.range.last + 1 }.toList()
+        currentLines.forEachIndexed { index, line ->
+            if (index !in protected && standaloneMarker(line) != null &&
+                hasSequenceNeighbor(currentLines, index)) return adaptSpliceAt(starts[index])
+        }
+        return false
+    }
+
+    private fun protectedSpliceLines(): Set<Int> {
+        val protected = mutableSetOf<Int>()
+        val lines = prepared.split(lineBreak)
+        var flowDepth = 0
+        try {
+            SnakeYaml.parser().parse(StringReader(prepared.toString())).forEach { event ->
+                when (event) {
+                    is MappingStartEvent -> if (event.flowStyle == org.yaml.snakeyaml.DumperOptions.FlowStyle.FLOW) flowDepth++
+                    is SequenceStartEvent -> if (event.flowStyle == org.yaml.snakeyaml.DumperOptions.FlowStyle.FLOW) flowDepth++
+                    is MappingEndEvent, is SequenceEndEvent -> if (flowDepth > 0) flowDepth--
+                    is ScalarEvent ->
+                        if (
+                            flowDepth > 0 || event.scalarStyle != ScalarStyle.PLAIN ||
+                                standaloneMarker(lines[event.startMark.line]) == null
+                        )
+                            protected.addAll(scalarLines(event, lines))
+                }
+            }
+        } catch (_: MarkedYAMLException) {
+            // Completed events describe scalar and flow boundaries; error locations are irrelevant.
+        }
+        return protected
+    }
+
+    private fun hasSequenceNeighbor(lines: List<String>, index: Int): Boolean {
+        val indent = lines[index].takeWhile(Char::isWhitespace).length
+        return listOf(index - 1 downTo 0, index + 1 until lines.size).any { direction ->
+            val neighbor = direction.firstOrNull {
+                val line = lines[it]
+                line.isNotBlank() && !line.trimStart().startsWith('#') &&
+                    line.takeWhile(Char::isWhitespace).length <= indent
+            } ?: return@any false
+            val line = lines[neighbor]
+            line.takeWhile(Char::isWhitespace).length == indent &&
+                (line.trimStart().let { it == "-" || it.startsWith("- ") } || standaloneMarker(line) != null)
+        }
     }
 
     fun restore(value: String): String {

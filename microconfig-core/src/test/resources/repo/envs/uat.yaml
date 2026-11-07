@@ -1,6 +1,4 @@
-ip: 172.30.162.3
 fnd1:
-  ip: 172.30.162.3
   components:
     - th-server
     - th-cache-node1
@@ -19,14 +17,11 @@ c:
     - ip1
     - ip2
 c3:
-  ip: 1.1.1.1
   components:
     - ip3
 override1:
-  ip: 2.2.2.2
   components:
     - tov1
 override2:
-  ip: 3.3.3.3
   components:
     - tov2

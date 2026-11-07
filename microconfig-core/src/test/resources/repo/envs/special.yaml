@@ -1,4 +1,3 @@
-ip: 1.2.3.40
 
 specialGroup:
   components:
@@ -6,6 +5,5 @@ specialGroup:
     - specialPlaceholders
 
 specialGroup2:
-  ip: 2.3.4.40
   components:
     - specialPlaceholders2:specialPlaceholders

@@ -57,12 +57,15 @@ class ConfigDiff(private val configIo: ConfigIo = defaultConfigIo()) : ConfigCha
         val changes = sortedMapOf<String, String>()
         reader.propertiesAsMap().forEach { (key, newValue) ->
             val oldValue = previous.remove(key)
-            if (oldValue == null) changes["+$key"] = newValue
+            if (oldValue == null) changes[changedKey(key, '+', yaml)] = newValue
             else if (newValue != oldValue) changes[key] = changedValue(oldValue, newValue, yaml)
         }
-        previous.forEach { (key, value) -> changes["-$key"] = value }
+        previous.forEach { (key, value) -> changes[changedKey(key, '-', yaml)] = value }
         return changes
     }
+
+    private fun changedKey(key: String, sign: Char, yaml: Boolean): String =
+        if (yaml) YamlScalars.prefixedKeyPath(key, sign) else "$sign$key"
 
     private fun readSerializedConfig(file: File, properties: Collection<Property>): ConfigReader {
         val text = configIo.writeTo(file).serialize(properties)

@@ -3,6 +3,7 @@ package io.microconfig.core.properties.resolvers.placeholder.strategies.composit
 import io.microconfig.core.properties.PlaceholderResolveStrategy
 import io.microconfig.core.properties.Property
 import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 
 class CompositeResolveStrategy(private val strategies: List<PlaceholderResolveStrategy>) :
     PlaceholderResolveStrategy {
@@ -13,10 +14,9 @@ class CompositeResolveStrategy(private val strategies: List<PlaceholderResolveSt
         configType: String,
         root: String?,
     ): Optional<Property> =
-        strategies
-            .asSequence()
-            .map { it.resolve(component, key, environment, configType, root) }
-            .firstOrNull { it.isPresent } ?: Optional.empty()
+        Optional.ofNullable(strategies.firstNotNullOfOrNull {
+            it.resolve(component, key, environment, configType, root).getOrNull()
+        })
 
     companion object {
         fun composite(strategies: List<PlaceholderResolveStrategy>): PlaceholderResolveStrategy =

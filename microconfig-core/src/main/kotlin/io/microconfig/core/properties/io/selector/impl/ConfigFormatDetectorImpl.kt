@@ -7,6 +7,7 @@ import io.microconfig.core.properties.PropertyImpl.Companion.isDirective
 import io.microconfig.core.properties.io.selector.ConfigFormatDetector
 import io.microconfig.io.FsReader
 import java.io.File
+import kotlin.jvm.optionals.getOrNull
 
 class ConfigFormatDetectorImpl(private val reader: FsReader) : ConfigFormatDetector {
     override fun detectConfigFormat(file: File): ConfigFormat =
@@ -26,7 +27,7 @@ class ConfigFormatDetectorImpl(private val reader: FsReader) : ConfigFormatDetec
                         !isDirective(it.trim()) &&
                         (!it.trimStart().startsWith('!') || separatorIn(it) >= 0)
                 }
-                .orElse(null) ?: return PROPERTIES
+                .getOrNull() ?: return PROPERTIES
         if (
             first.trim() == "---" ||
                 first.trim().startsWith("%YAML ") ||

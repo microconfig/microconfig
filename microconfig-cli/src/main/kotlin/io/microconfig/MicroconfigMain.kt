@@ -1,8 +1,10 @@
 package io.microconfig
 
+import io.microconfig.CommandLineParamParser.Companion.printErrorAndExit
 import io.microconfig.core.MicroconfigRunner
 import io.microconfig.utils.IoUtils.readClasspathResource
 import io.microconfig.utils.Logger.announce
+import io.microconfig.utils.Logger.enableColors
 import io.microconfig.utils.Logger.error
 import io.microconfig.utils.Logger.info
 import java.io.File
@@ -57,13 +59,20 @@ class MicroconfigMain(
 
     companion object {
         fun main(vararg args: String) {
-            val params = MicroconfigParams.parse(*args)
+            val params = parseParams(args)
             if (params.version()) {
                 printVersion()
                 return
             }
             buildFrom(params)
         }
+
+        private fun parseParams(args: Array<out String>): MicroconfigParams =
+            try {
+                MicroconfigParams.parse(args) { enableColors(it.color()) }
+            } catch (error: IllegalArgumentException) {
+                printErrorAndExit(error.message ?: "Incorrect command line arguments")
+            }
 
         private fun printVersion() {
             val version =

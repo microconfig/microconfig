@@ -5,6 +5,7 @@ import java.io.StringWriter
 
 object Logger {
     @Volatile private var enabled = true
+    @Volatile private var colorsEnabled = true
     @Volatile private var errorOccurred = false
 
     fun error(error: Throwable?) {
@@ -20,9 +21,9 @@ object Logger {
         error(output.toString())
     }
 
-    fun warn(message: String) = info(ConsoleColor.yellow(message))
+    fun warn(message: String) = info(color(message, ConsoleColor::yellow))
 
-    fun announce(message: String) = info(ConsoleColor.green(message))
+    fun announce(message: String) = info(color(message, ConsoleColor::green))
 
     fun info(message: String) {
         if (enabled) println(message)
@@ -30,7 +31,7 @@ object Logger {
 
     fun error(message: String) {
         errorOccurred = true
-        println(ConsoleColor.red(message))
+        println(color(message, ConsoleColor::red))
     }
 
     fun isErrorOccurred(): Boolean = errorOccurred
@@ -38,4 +39,11 @@ object Logger {
     fun enableLogger(enabled: Boolean) {
         this.enabled = enabled
     }
+
+    fun enableColors(enabled: Boolean) {
+        colorsEnabled = enabled
+    }
+
+    private fun color(message: String, formatter: (String) -> String): String =
+        if (colorsEnabled) formatter(message) else message
 }

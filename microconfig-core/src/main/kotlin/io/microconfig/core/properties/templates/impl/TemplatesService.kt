@@ -1,10 +1,10 @@
 package io.microconfig.core.properties.templates.impl
 
-import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.Property
 import io.microconfig.core.properties.PropertyImpl
 import io.microconfig.core.properties.Resolver
 import io.microconfig.core.properties.TypedProperties
+import io.microconfig.core.properties.ValueFormat
 import io.microconfig.core.properties.io.properties.PropertiesText
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.templates.TemplateDefinition
@@ -39,18 +39,21 @@ constructor(
     }
 
     private fun plainTextProperty(property: Property): Property =
-        PropertyImpl.property(
+        PropertyImpl(
             property.key,
             plainTextValue(property),
+            property.isVar,
             property.configFormat,
             property.declaringComponent,
+            valueFormat = ValueFormat.TEXT,
+            keyFormat = property.keyFormat,
         )
 
     private fun plainTextValue(property: Property): String =
         when {
-            PropertiesText.isPropertiesText(property.declaringComponent) ->
+            property.valueFormat == ValueFormat.PROPERTIES ->
                 PropertiesText.unescape(property.value)
-            property.configFormat == YAML && !property.isLiteralText ->
+            property.valueFormat == ValueFormat.YAML ->
                 YamlScalars.unquote(property.value)
             else -> property.value
         }

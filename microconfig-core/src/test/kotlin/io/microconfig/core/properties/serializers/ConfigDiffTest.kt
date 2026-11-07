@@ -17,6 +17,9 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
+import java.util.stream.Stream
 import org.yaml.snakeyaml.Yaml
 
 class ConfigDiffTest {
@@ -87,6 +90,63 @@ class ConfigDiffTest {
         assertEquals("$old -> $current", diff["value"])
     }
 
+    @ParameterizedTest
+    @MethodSource("yamlDiffKeys")
+    fun preserveYamlKeyStructureForAddedAndRemovedValues(key: String, expectedFirstKey: String,
+        expectedRest: Map<String, Any>?) {
+        val baseline = listOf(prop("retained", "baseline", YAML))
+        val added = prop(key, "payload", YAML)
+        val file = build("application.yaml", baseline)
+        ConfigDiff().storeDiffFor(file, baseline + added)
+        val expectedValue: Any = expectedRest ?: "payload"
+        assertEquals(mapOf("+$expectedFirstKey" to expectedValue),
+            Yaml().load<Map<String, Any>>(diffFile(file).readText()))
+
+        configIo().writeTo(file).write(baseline + added)
+        ConfigDiff().storeDiffFor(file, baseline)
+        assertEquals(mapOf("-$expectedFirstKey" to expectedValue),
+            Yaml().load<Map<String, Any>>(diffFile(file).readText()))
+    }
+
+    @Test
+    fun keepEncodedPropertiesKeysInDiffs() {
+        val baseline = listOf(prop("retained", "baseline", PROPERTIES))
+        val added = prop("a\\u002eb", "payload", PROPERTIES)
+        val file = build("application.properties", baseline)
+        ConfigDiff().storeDiffFor(file, baseline + added)
+        assertEquals("+a\\u002eb=payload", diffFile(file).readText())
+    }
+
+    @ParameterizedTest
+    @MethodSource("typedAndStringKeys")
+    fun retainChangesForTypedAndStringYamlKeys(typedKey: String, stringKey: String,
+        typedLabel: String, stringLabel: String) {
+        val baseline = listOf(prop("retained", "baseline", YAML))
+        val changes = listOf(prop(typedKey, "typed", YAML), prop(stringKey, "string", YAML))
+        val file = build("application.yaml", baseline)
+
+        ConfigDiff().storeDiffFor(file, baseline + changes)
+        assertEquals(mapOf("+$typedLabel" to "typed", "+$stringLabel" to "string"),
+            Yaml().load<Map<String, String>>(diffFile(file).readText()))
+
+        configIo().writeTo(file).write(baseline + changes)
+        ConfigDiff().storeDiffFor(file, baseline)
+        assertEquals(mapOf("-$typedLabel" to "typed", "-$stringLabel" to "string"),
+            Yaml().load<Map<String, String>>(diffFile(file).readText()))
+    }
+
+    @Test
+    fun retainTypedAndStringFirstSegmentsOfNestedYamlKeys() {
+        val baseline = listOf(prop("retained", "baseline", YAML))
+        val changes = listOf(prop("1.child", "typed", YAML), prop("'1'.child", "string", YAML))
+        val file = build("application.yaml", baseline)
+
+        ConfigDiff().storeDiffFor(file, baseline + changes)
+
+        assertEquals(mapOf("+1" to mapOf("child" to "typed"), "+'1'" to mapOf("child" to "string")),
+            Yaml().load<Map<String, Any>>(diffFile(file).readText()))
+    }
+
     private fun build(fileName: String, properties: List<Property>): File {
         val file = dir.resolve(fileName).toFile()
         configIo().writeTo(file).write(properties)
@@ -98,4 +158,28 @@ class ConfigDiffTest {
 
     private fun prop(key: String, value: String, format: ConfigFormat): Property =
         property(key, value, format, null)
+
+    companion object {
+        @JvmStatic
+        fun typedAndStringKeys(): Stream<Arguments> = Stream.of(
+            Arguments.of("1", "'1'", "1", "'1'"),
+            Arguments.of("true", "'true'", "true", "'true'"),
+            Arguments.of("null", "'null'", "null", "'null'"),
+            Arguments.of("!!float \"1.5\"", "'1.5'", "1.5", "'1.5'"),
+            Arguments.of("'1'", "'''1'''", "'1'", "'''1'''"),
+        )
+
+        @JvmStatic
+        fun yamlDiffKeys(): Stream<Arguments> = Stream.of(
+            Arguments.of("\"a.b\"", "a.b", null),
+            Arguments.of("'a.b'", "a.b", null),
+            Arguments.of("\"a\\\".b\"", "a\".b", null),
+            Arguments.of("\"a.b\".child", "a.b", mapOf("child" to "payload")),
+            Arguments.of("section.\"a.b\"", "section", mapOf("a.b" to "payload")),
+            Arguments.of("section.child", "section", mapOf("child" to "payload")),
+            Arguments.of("!!float \"1.5\"", "1.5", null),
+            Arguments.of("'true'", "'true'", null),
+            Arguments.of("'\\u0041'", "\\u0041", null),
+        )
+    }
 }

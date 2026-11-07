@@ -33,6 +33,8 @@ private constructor(
             format: ConfigFormat,
             source: DeclaringComponent?,
             literalText: Boolean = false,
+            valueFormat: ValueFormat = PropertyImpl.sourceValueFormat(format, source, literalText),
+            keyFormat: ConfigFormat = PropertyImpl.sourceKeyFormat(format, source),
         ): Property {
             val end = envsEnd(key)
             require(end != key.length) { invalidOverride(propertyMissing(key), key, source) }
@@ -53,6 +55,8 @@ private constructor(
                     format,
                     source,
                     literalText,
+                    valueFormat,
+                    keyFormat,
                 ),
             )
         }

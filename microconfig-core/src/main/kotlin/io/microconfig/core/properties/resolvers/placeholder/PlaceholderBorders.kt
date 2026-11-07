@@ -36,7 +36,17 @@ private constructor(
         fun findPlaceholderIn(
             line: CharSequence,
             startIndex: Int = 0,
-        ): Optional<PlaceholderBorders> = Optional.ofNullable(find(line.toString(), startIndex))
+        ): Optional<PlaceholderBorders> = Optional.ofNullable(findPlaceholderOrNull(line, startIndex))
+
+        internal fun findPlaceholderOrNull(line: CharSequence, startIndex: Int = 0): PlaceholderBorders? =
+            find(line.toString(), startIndex)
+
+        internal fun endOfPlaceholder(text: CharSequence, startIndex: Int): Int =
+            if (text.getOrNull(startIndex) != '$' || text.getOrNull(startIndex + 1) != '{') -1
+            else defaultValueEnd(text.toString(), startIndex + 2, allowIncomplete = false)
+
+        internal fun hasPlaceholderHeaderAt(text: CharSequence, startIndex: Int): Boolean =
+            startsPlaceholderAt(text.toString(), startIndex)
 
         private fun find(text: String, start: Int): PlaceholderBorders? {
             headerPattern.findAll(text, start.coerceAtLeast(0)).forEach { header ->
@@ -50,36 +60,67 @@ private constructor(
             return null
         }
 
-        private fun defaultValueEnd(text: String, start: Int): Int {
-            var depth = 1
-            var quote: Char? = null
+        private fun defaultValueEnd(text: String, start: Int, allowIncomplete: Boolean = true): Int {
+            val scopes = mutableListOf(DefaultScope(expression = false))
             var lastClosing = -1
             var index = start
             while (index < text.length) {
                 val character = text[index]
-                if (quote != null) {
-                    if (character == '\\' && quote == '"') index++
-                    else if (character == quote) {
-                        if (index + 1 < text.length && text[index + 1] == quote) index++
-                        else quote = null
+                val scope = scopes.last()
+                if (scope.quote != null) {
+                    if (character == '$' && startsPlaceholderAt(text, index)) {
+                        scopes.add(DefaultScope(expression = false))
+                        index++
+                    } else if (character == '\\' && scope.quote == '"' && !scope.expression) {
+                        index++
+                    } else if (character == scope.quote) {
+                        if (index + 1 < text.length && text[index + 1] == scope.quote) index++
+                        else scope.quote = null
                     }
                 } else
                     when (character) {
                         '\'',
-                        '"' -> if (startsQuotedValue(text, index, start)) quote = character
-                        '{' -> depth++
+                        '"' ->
+                            if (scope.expression || startsQuotedValue(text, index, start))
+                                scope.quote = character
+                        '{' ->
+                            scopes.add(
+                                DefaultScope(
+                                    expression = when (text.getOrNull(index - 1)) {
+                                        '#' -> true
+                                        '$' -> false
+                                        else -> scope.expression
+                                    }
+                                )
+                            )
                         '}' -> {
                             lastClosing = index
-                            if (--depth == 0) return index + 1
+                            scopes.removeAt(scopes.lastIndex)
+                            if (scopes.isEmpty()) return index + 1
                         }
                     }
                 index++
             }
-            return if (lastClosing < 0) -1 else lastClosing + 1
+            return if (allowIncomplete && lastClosing >= 0) lastClosing + 1 else -1
         }
+
+        private fun startsPlaceholderAt(text: String, start: Int): Boolean {
+            var position = start
+            while (text.startsWith("\${", position)) {
+                if (headerPattern.matchAt(text, position) != null) return true
+                position += 2
+                while (position < text.length && isHeaderCharacter(text[position])) position++
+            }
+            return false
+        }
+
+        private fun isHeaderCharacter(character: Char): Boolean =
+            character.isLetterOrDigit() || character in "._-:@[]*/\\"
 
         private fun startsQuotedValue(text: String, index: Int, start: Int): Boolean =
             (index == start || !text[index - 1].isLetterOrDigit()) &&
                 text.indexOf(text[index], index + 1) >= 0
+
+        private class DefaultScope(val expression: Boolean, var quote: Char? = null)
     }
 }

@@ -1,14 +1,19 @@
 package io.microconfig.core.properties.templates.impl
 
 import io.microconfig.core.properties.DeclaringComponent
+import io.microconfig.core.properties.ConfigFormat.YAML
+import io.microconfig.core.properties.PropertyImpl.Companion.literalProperty
 import io.microconfig.core.properties.Resolver
 import io.microconfig.core.properties.TypedProperties
+import io.microconfig.core.properties.ValueFormat
+import io.microconfig.core.properties.isUnresolvedValue
 import io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders
 import io.microconfig.core.properties.templates.TemplateContentPostProcessor
 import io.microconfig.core.templates.Template
 import io.microconfig.utils.IoUtils.readFully
 import java.io.File
 import java.util.regex.Pattern
+import java.util.function.UnaryOperator
 
 class StringTemplate
 @JvmOverloads
@@ -50,13 +55,8 @@ constructor(
         return output.append(content, copied, content.length).toString()
     }
 
-    private fun placeholderEnd(start: Int, fallback: Int): Int {
-        val full = PlaceholderBorders.findPlaceholderIn(content, start).orElse(null)
-        if (full?.startIndex == start) return full.endIndex
-        val qualified = "\${this@" + content.substring(start + 2)
-        val short = PlaceholderBorders.findPlaceholderIn(qualified).orElse(null)
-        return if (short?.startIndex == 0) start + short.endIndex - "this@".length else fallback
-    }
+    private fun placeholderEnd(start: Int, fallback: Int): Int =
+        PlaceholderBorders.endOfPlaceholder(content, start).takeIf { it >= 0 } ?: fallback
 
     private fun resolve(
         placeholder: String,
@@ -65,14 +65,31 @@ constructor(
     ): String? {
         if (placeholder == "\${this@templateName}") return templateNameWithoutBrackets()
         if (isValidPlaceholder(placeholder))
-            return resolver.resolve(placeholder, component, component)
+            return resolveValue(placeholder, component, resolver)
         val qualified = "\${this@" + placeholder.substring(2)
-        if (!isValidPlaceholder(qualified)) return null
+        if (!isValidPlaceholder(qualified)) return resolveNestedHeader(placeholder, component, resolver)
         return try {
-            resolver.resolve(qualified, component, component)
-        } catch (_: RuntimeException) {
-            null
+            resolveValue(qualified, component, resolver)
+        } catch (error: RuntimeException) {
+            if (error.isUnresolvedValue()) null else throw error
         }
+    }
+
+    private fun resolveValue(value: String, component: DeclaringComponent, resolver: Resolver): String =
+        resolver.resolve(literalProperty(templateName, value, YAML, component, ValueFormat.TEXT), component)
+
+    private fun resolveNestedHeader(
+        placeholder: String,
+        component: DeclaringComponent,
+        resolver: Resolver,
+    ): String? {
+        if (PlaceholderBorders.endOfPlaceholder(placeholder, 0) != placeholder.length) return null
+        if (PlaceholderBorders.findPlaceholderOrNull(placeholder) == null) return null
+        val resolved = resolveValue(placeholder, component, resolver)
+        if (resolved == placeholder) return null
+        return if (PlaceholderBorders.endOfPlaceholder(resolved, 0) == resolved.length)
+            resolve(resolved, component, resolver) ?: resolved
+        else resolved
     }
 
     private fun indentMultilineValue(value: String, output: StringBuilder): String {
@@ -84,19 +101,22 @@ constructor(
     fun withContent(content: String): StringTemplate =
         StringTemplate(templateName, source, destination, pattern, content)
 
-    fun templateNameWithoutBrackets(): String = templateName.replaceFirst(Regex("\\[.+]$"), "")
+    fun templateNameWithoutBrackets(): String = templateName.replaceFirst(bracketsSuffix, "")
 
+    @JvmOverloads
     fun postProcessContent(
         processor: TemplateContentPostProcessor,
         type: String,
         properties: TypedProperties,
-    ): StringTemplate = withContent(processor.process(type, source, content, properties))
+        resolvePlaceholders: UnaryOperator<String> = UnaryOperator.identity(),
+    ): StringTemplate = withContent(processor.process(type, source, content, properties, resolvePlaceholders))
 
     companion object {
         private val lineBreak = Regex("\\r\\n|[\\n\\r]")
+        private val bracketsSuffix = Regex("\\[.+]$")
 
         fun isValidPlaceholder(value: String): Boolean {
-            val placeholder = PlaceholderBorders.findPlaceholderIn(value).orElse(null)
+            val placeholder = PlaceholderBorders.findPlaceholderOrNull(value)
             return placeholder?.startIndex == 0 && placeholder.endIndex == value.length
         }
     }

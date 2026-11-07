@@ -34,7 +34,8 @@ data class TemplatePattern(val templatePrefixes: List<String>, val placeholderPa
         val DEFAULT_PLACEHOLDER_PATTERN: Pattern =
             Pattern.compile(
                 "(?<escaped>\\\\)?" +
-                    "(?<placeholder>\\$\\{(?<name>.+?)(?::(?<defuvalue>[^$#}\\n]*(?:(?:[$#]\\{[^}\\n]*}|[$#])[^$#}\\n]*)*))??})"
+                    // Nested defaults are extended to their closing brace by StringTemplate.
+                    "(?<placeholder>\\$\\{(?<name>.+?)(?::(?<defuvalue>[^}]*))??})"
             )
 
         fun defaultPattern(): TemplatePattern =

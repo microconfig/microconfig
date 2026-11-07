@@ -9,7 +9,6 @@ import java.io.File
 internal data class EnvironmentDefinition(
     private val source: File,
     private val name: String,
-    val ip: String?,
     private val abstractEnv: Boolean,
     private val profiles: List<String>,
     private val envInclude: EnvInclude,

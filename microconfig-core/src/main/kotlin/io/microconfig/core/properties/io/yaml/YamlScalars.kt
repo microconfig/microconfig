@@ -1,7 +1,8 @@
 package io.microconfig.core.properties.io.yaml
 
-import io.microconfig.core.properties.ConfigFormat
 import io.microconfig.core.properties.Property
+import io.microconfig.core.properties.ConfigFormat
+import io.microconfig.core.properties.ValueFormat
 import io.microconfig.core.properties.io.properties.PropertiesText
 import io.microconfig.core.properties.io.yaml.impl.SnakeYaml
 import io.microconfig.core.properties.io.yaml.impl.YamlPropertyPaths
@@ -44,6 +45,15 @@ object YamlScalars {
 
     internal fun canonicalPathText(text: String): String =
         YamlPropertyPaths.parts(text).joinToString(".", transform = ::canonicalKeyText)
+
+    internal fun prefixedKeyPath(key: String, prefix: Char): String {
+        val parts = YamlPropertyPaths.parts(key)
+        val node = SnakeYaml.parse(parts.first()) as ScalarNode
+        val scalar = ScalarNode(node.tag, node.value, node.startMark, node.endMark, ScalarStyle.PLAIN)
+        val first = "$prefix${SnakeYaml.scalar(scalar)}"
+        val prefixed = if ('.' in first) doubleQuoted(first) else stringValue(first)
+        return (listOf(prefixed) + parts.drop(1)).joinToString(".")
+    }
 
     internal fun matchingKeyPrefix(key: String, reference: String): String? {
         val referenceParts = YamlPropertyPaths.parts(reference)
@@ -99,16 +109,21 @@ object YamlScalars {
     fun literalValue(text: String): String = stringValue(text)
 
     fun serializedKey(property: Property, key: String = property.key): String =
-        if (PropertiesText.isPropertiesText(property.declaringComponent))
+        if (property.keyFormat == ConfigFormat.PROPERTIES)
             YamlPropertyPaths.fromProperties(key)
         else key
 
+    /** Encodes the logical key for Java Properties without changing already encoded keys. */
+    fun propertiesKey(property: Property): String =
+        if (property.keyFormat == ConfigFormat.PROPERTIES) property.key
+        else YamlPropertyPaths.toProperties(property.key)
+
     fun serializedValue(property: Property): String =
         when {
-            PropertiesText.isPropertiesText(property.declaringComponent) ->
+            property.valueFormat == ValueFormat.PROPERTIES ->
                 fromPropertiesText(property.value)
             property.isLiteralText -> literalFragment(property.value)
-            property.configFormat == ConfigFormat.PROPERTIES -> fromPlainText(property.value)
+            property.valueFormat == ValueFormat.TEXT -> fromPlainText(property.value)
             else -> property.value
         }
 

@@ -1,15 +1,15 @@
 package io.microconfig.core.properties.resolvers.placeholder.impl
 
 import io.microconfig.core.environments.EnvironmentRepository
-import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.DeclaringComponent
 import io.microconfig.core.properties.DeclaringComponentImpl
-import io.microconfig.core.properties.FileBasedComponent
 import io.microconfig.core.properties.PlaceholderResolveStrategy
 import io.microconfig.core.properties.Property
 import io.microconfig.core.properties.ResolveException
+import io.microconfig.core.properties.ValueFormat
+import io.microconfig.core.properties.UnresolvedValueException
+import io.microconfig.core.properties.isUnresolvedValue
 import io.microconfig.core.properties.io.properties.PropertiesText
-import io.microconfig.core.properties.io.yaml.YamlResolvers
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.resolvers.RecursiveResolver
 import io.microconfig.core.properties.resolvers.expression.impl.ExpressionResolver
@@ -52,11 +52,13 @@ private constructor(
     ) : this(environments, strategy, nonOverridableKeys, expressions, cache, emptySet(), null)
 
     override fun findStatementIn(line: CharSequence): Optional<RecursiveResolver.Statement> =
-        PlaceholderBorders.findPlaceholderIn(line).map(::PlaceholderStatement)
+        Optional.ofNullable(PlaceholderBorders.findPlaceholderOrNull(line)?.let(::PlaceholderStatement))
 
     private inner class PlaceholderStatement(private val borders: PlaceholderBorders) :
         RecursiveResolver.Statement {
         private var plainText = false
+        private var literalText = false
+        private var valueFormat = ValueFormat.TEXT
         override val startIndex: Int
             get() = borders.startIndex
 
@@ -69,11 +71,22 @@ private constructor(
         override fun resolveFor(
             sourceOfValue: DeclaringComponent?,
             root: DeclaringComponent?,
+        ): String = resolveFor(sourceOfValue, root, ValueFormat.TEXT)
+
+        override fun resolveFor(
+            sourceOfValue: DeclaringComponent?,
+            root: DeclaringComponent?,
+            targetFormat: ValueFormat,
         ): String {
             val source = requireNotNull(sourceOfValue)
             val context = requireNotNull(root)
             val placeholder = contextualPlaceholder(source, context)
-            return resolveOrDefault(placeholder, source, rootFor(placeholder, context))
+            val value = resolveOrDefault(placeholder, source, rootFor(placeholder, context))
+            return when {
+                targetFormat == ValueFormat.YAML && literalText -> YamlScalars.literalValue(value)
+                targetFormat == ValueFormat.TEXT && valueFormat == ValueFormat.YAML -> YamlScalars.unquote(value)
+                else -> value
+            }
         }
 
         private fun contextualPlaceholder(
@@ -110,8 +123,10 @@ private constructor(
                 else resolve(placeholder, source, root)
             } catch (error: RuntimeException) {
                 val default = placeholder.defaultValue
-                if (default != null) {
+                if (default != null && error.isUnresolvedValue()) {
                     plainText = default.isEmpty()
+                    literalText = false
+                    valueFormat = ValueFormat.TEXT
                     default
                 } else throw ResolveException(source, root, "Can't resolve $this", error)
             }
@@ -135,7 +150,7 @@ private constructor(
                     .distinct()
             return candidates.firstNotNullOfOrNull {
                 tryResolve(placeholder.overrideBy(it), source, root)
-            } ?: throw ResolveException(source, root, "Can't resolve placeholder $this")
+            } ?: throw ResolveException.unresolved(source, root, "Can't resolve placeholder $this")
         }
 
         private fun tryResolve(
@@ -145,8 +160,8 @@ private constructor(
         ): String? =
             try {
                 resolve(placeholder, source, root)
-            } catch (_: RuntimeException) {
-                null
+            } catch (error: RuntimeException) {
+                if (error.isUnresolvedValue()) null else throw error
             }
 
         private fun resolve(
@@ -157,20 +172,24 @@ private constructor(
             val property = placeholder.resolveUsing(strategy, root)
             val resolver =
                 MemoizingResolver(
-                    YamlResolvers.forValues(resolverWithVisited(placeholder), expressions),
+                    resolverWithVisited(placeholder),
                     cache,
+                    expressions,
                     visited.toList() + placeholder,
                     explicitEnvironmentFor(placeholder),
                 )
             val value = property.resolveBy(resolver, root).value
-            plainText = property.configFormat != YAML
-            return convertForTarget(value, property, source)
+            plainText = property.valueFormat != ValueFormat.YAML && !property.isLiteralText
+            literalText = property.isLiteralText
+            valueFormat = property.valueFormat
+            return decodedValue(value, property)
         }
 
         private fun resolverWithVisited(placeholder: Placeholder): PlaceholderResolver {
-            check(placeholder !in visited) {
-                "Found cyclic dependencies:\n${visited.joinToString(" -> ")}"
-            }
+            if (placeholder in visited)
+                throw UnresolvedValueException(
+                    "Found cyclic dependencies:\n${visited.joinToString(" -> ")}"
+                )
             return PlaceholderResolver(
                 environments,
                 strategy,
@@ -182,30 +201,9 @@ private constructor(
             )
         }
 
-        private fun convertForTarget(
-            value: String,
-            inserted: Property,
-            target: DeclaringComponent,
-        ): String {
-            val fromProperties = PropertiesText.isPropertiesText(inserted.declaringComponent)
-            val toProperties = PropertiesText.isPropertiesText(target)
-            if (fromProperties && toProperties) return value
-            val yamlTarget = target is FileBasedComponent && target.isYaml
-            if (inserted.isLiteralText) return literalForTarget(value, yamlTarget, toProperties)
-            val plain =
-                when {
-                    fromProperties -> PropertiesText.unescape(value)
-                    !yamlTarget && inserted.configFormat == YAML && YamlScalars.isQuoted(value) ->
-                        YamlScalars.unquote(value)
-                    else -> value
-                }
-            return if (toProperties) PropertiesText.escape(plain) else plain
-        }
-
-        private fun literalForTarget(value: String, yaml: Boolean, properties: Boolean): String =
-            when {
-                yaml -> YamlScalars.literalValue(value)
-                properties -> PropertiesText.escape(value)
+        private fun decodedValue(value: String, property: Property): String =
+            when (property.valueFormat) {
+                ValueFormat.PROPERTIES -> PropertiesText.unescape(value)
                 else -> value
             }
 

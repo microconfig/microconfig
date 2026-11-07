@@ -4,6 +4,7 @@ import io.microconfig.core.environments.EnvironmentRepository
 import io.microconfig.core.properties.repository.ComponentGraph
 import io.microconfig.core.properties.resolvers.placeholder.strategies.component.ComponentProperty
 import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 
 class ConfigDirProperty(
     private val graph: ComponentGraph,
@@ -17,6 +18,6 @@ class ConfigDirProperty(
                 .getOrCreateByName(environment)
                 .findComponentWithName(component)
                 .originalName
-        return graph.getFolderOf(original).map { it.absolutePath.replace('\\', '/') }
+        return Optional.ofNullable(graph.getFolderOf(original).getOrNull()?.absolutePath?.replace('\\', '/'))
     }
 }

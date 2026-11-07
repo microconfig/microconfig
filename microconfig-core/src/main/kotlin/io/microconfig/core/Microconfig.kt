@@ -18,7 +18,6 @@ import io.microconfig.core.properties.Resolver
 import io.microconfig.core.properties.impl.PropertiesFactoryImpl
 import io.microconfig.core.properties.io.ConfigIo
 import io.microconfig.core.properties.io.selector.ConfigIoFactory.newConfigIo
-import io.microconfig.core.properties.io.yaml.YamlResolvers.forValues
 import io.microconfig.core.properties.repository.ComponentGraph
 import io.microconfig.core.properties.repository.impl.ComponentGraphImpl
 import io.microconfig.core.properties.repository.impl.CompositePropertiesRepository
@@ -38,19 +37,27 @@ import io.microconfig.core.properties.resolvers.placeholder.strategies.standard.
 import io.microconfig.core.properties.resolvers.placeholder.strategies.system.impl.SystemResolveStrategy
 import io.microconfig.io.FsReader
 import io.microconfig.io.impl.DumpedFsReader
-import io.microconfig.utils.CacheProxy.cache
 import io.microconfig.utils.Logger
 import java.io.File
+import java.util.concurrent.atomic.AtomicBoolean
 
+/** Holds the configuration snapshot and caches for a single build attempt. */
 class Microconfig
 private constructor(
-    val rootDir: File,
-    val destinationDir: File,
-    val fsReader: FsReader,
-    val additionalPlaceholderResolvers: List<PlaceholderResolveStrategy>,
-    val additionalPropertiesRepositories: List<PropertiesRepository>,
+    private val rootDir: File,
+    private val destinationDir: File,
+    private val fsReader: FsReader,
+    private val additionalPlaceholderResolvers: List<PlaceholderResolveStrategy>,
+    private val additionalPropertiesRepositories: List<PropertiesRepository>,
 ) {
-    val dependencies = Dependencies()
+    private val buildStarted = AtomicBoolean()
+    private val dependencies = Dependencies()
+
+    internal fun startBuild() {
+        check(buildStarted.compareAndSet(false, true)) {
+            "This Microconfig instance has already started a build. Create a new Microconfig instance for each build."
+        }
+    }
 
     fun withDestinationDir(destination: File): Microconfig =
         Microconfig(
@@ -101,57 +108,38 @@ private constructor(
         return environment
     }
 
-    fun environments(): EnvironmentRepository = dependencies.environments
+    fun environments(): EnvironmentRepository = dependencies.environments()
 
-    fun resolver(): Resolver = dependencies.resolver
+    fun resolver(): Resolver = dependencies.resolver()
 
     fun logger(enabled: Boolean) = Logger.enableLogger(enabled)
 
     inner class Dependencies {
         private val lazyEnvironments = LazyInitEnvRepository { environments }
-        val environments: EnvironmentRepository by lazy(::initEnvironments)
-        val componentFactory: ComponentFactory by lazy(::initComponentFactory)
-        val configTypeRepository: ConfigTypeRepository by lazy(::initConfigTypeRepository)
+        private val environments: EnvironmentRepository by lazy(::initEnvironments)
+        private val componentFactory: ComponentFactory by lazy(::initComponentFactory)
+        private val configTypeRepository: ConfigTypeRepository by lazy(::initConfigTypeRepository)
         val configIo: ConfigIo by lazy { newConfigIo(fsReader) }
-        val propertiesFactory: PropertiesFactory by lazy(::initPropertiesFactory)
-        val componentGraph: ComponentGraph by lazy(::initComponentGraph)
-        val resolver: Resolver by lazy(::initResolver)
+        private val propertiesFactory: PropertiesFactory by lazy(::initPropertiesFactory)
+        private val componentGraph: ComponentGraph by lazy(::initComponentGraph)
+        private val resolver: Resolver by lazy(::initResolver)
 
-        private fun initEnvironments(): EnvironmentRepository {
-            val repository =
-                cache<EnvironmentRepository>(
-                    FileEnvironmentRepository(
-                        rootDir,
-                        fsReader,
-                        componentFactory,
-                        propertiesFactory,
-                    )
-                )
-            lazyEnvironments.delegate = repository
-            return repository
-        }
+        private fun initEnvironments(): EnvironmentRepository =
+            FileEnvironmentRepository(rootDir, fsReader, componentFactory, propertiesFactory)
 
         private fun initComponentFactory(): ComponentFactory =
-            cache<ComponentFactory>(ComponentFactoryImpl(configTypeRepository, propertiesFactory))
+            ComponentFactoryImpl(configTypeRepository, propertiesFactory)
 
         private fun initConfigTypeRepository(): ConfigTypeRepository =
-            cache(
-                FirstNonEmptyConfigTypeRepository.composite(
-                    CustomConfigTypeRepository.findDescriptorIn(rootDir, fsReader),
-                    StandardConfigTypeRepository(),
-                )
+            FirstNonEmptyConfigTypeRepository.composite(
+                CustomConfigTypeRepository.findDescriptorIn(rootDir, fsReader),
+                StandardConfigTypeRepository(),
             )
 
         private fun initPropertiesFactory(): PropertiesFactory {
             val files = FilePropertiesRepository(componentGraph, lazyEnvironments, configIo)
-            val repository =
-                cache(
-                    CompositePropertiesRepository.compositeOf(
-                        additionalPropertiesRepositories,
-                        files,
-                    )
-                )
-            return cache<PropertiesFactory>(PropertiesFactoryImpl(repository))
+            val repository = CompositePropertiesRepository.compositeOf(additionalPropertiesRepositories, files)
+            return PropertiesFactoryImpl(repository)
         }
 
         private fun initComponentGraph(): ComponentGraph =
@@ -161,7 +149,7 @@ private constructor(
             val memo = PropertyResolutionCache()
             val expressions = ExpressionResolver()
             val placeholders = initPlaceholderResolver(expressions, memo)
-            return cache<Resolver>(MemoizingResolver(forValues(placeholders, expressions), memo))
+            return MemoizingResolver(placeholders, memo, expressions)
         }
 
         private fun initPlaceholderResolver(
@@ -180,7 +168,7 @@ private constructor(
                         EnvironmentResolveStrategy(environments, environmentProperties),
                         StandardResolveStrategy(environments),
                     )
-            val strategy = cache(CompositeResolveStrategy.composite(strategies))
+            val strategy = CompositeResolveStrategy.composite(strategies)
             return PlaceholderResolver(
                 lazyEnvironments,
                 strategy,

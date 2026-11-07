@@ -8,19 +8,17 @@ internal class EnvInclude(
         destination: EnvironmentDefinition,
         repository: (String) -> EnvironmentDefinition,
     ): EnvironmentDefinition {
-        val groups = inheritedGroups(destination, repository)
+        val groups = inheritedGroups(repository)
         overrideGroups(groups, destination.groups)
         return destination.copy(groups = groups.values.toList(), envInclude = empty())
     }
 
     private fun inheritedGroups(
-        destination: EnvironmentDefinition,
         repository: (String) -> EnvironmentDefinition,
     ): MutableMap<String, ComponentGroupDefinition> =
         repository(baseEnvironment)
             .groups
             .filterNot { it.name in excludedGroups }
-            .map { if (destination.ip == null) it else it.copy(ip = destination.ip) }
             .associateBy { it.name }
             .toMutableMap()
 

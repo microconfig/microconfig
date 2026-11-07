@@ -8,9 +8,17 @@ import java.util.function.BiFunction
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class CacheProxyTest {
+    @Test
+    fun preserveReflexiveIdentityForCachedObjects() {
+        val cached = cache(Callable { "value" })
+        assertTrue(cached == cached)
+        assertEquals(cached.hashCode(), cached.hashCode())
+    }
+
     @Test
     fun testCache() {
         val executionCount: AtomicInteger = AtomicInteger()

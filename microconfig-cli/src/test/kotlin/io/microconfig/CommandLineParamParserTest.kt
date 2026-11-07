@@ -1,11 +1,46 @@
 package io.microconfig
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.junit.jupiter.params.provider.ValueSource
 
 class CommandLineParamParserTest {
+    @ParameterizedTest
+    @MethodSource("versionArguments")
+    fun parseVersionFlagWithoutConsumingTheFollowingOption(arguments: Array<String>) {
+        val params = CommandLineParamParser.parse(*arguments)
+
+        assertTrue(params.contains("v"))
+        assertNull(params.value("v"))
+        assertEquals("false", params.value("color"))
+        assertEquals("repo", params.value("r"))
+    }
+
+    @Test
+    fun keepFlagLikeValuesOfOtherOptions() {
+        val params = CommandLineParamParser.parse("-r", "-v", "-d", "-output", "-e", "dev")
+
+        assertEquals("-v", params.value("r"))
+        assertEquals("-output", params.value("d"))
+        assertEquals("dev", params.value("e"))
+        assertTrue(!params.contains("v"))
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["unexpected", ""])
+    fun reportMalformedKeysToTheCaller(key: String) {
+        val error = assertThrows(IllegalArgumentException::class.java) {
+            CommandLineParamParser.parse("-color", "false", key)
+        }
+        assertEquals("key '$key' must start with -", error.message)
+    }
+
     @ParameterizedTest
     @ValueSource(strings = ["", " , , ", "\t\r\n"])
     fun omitEmptyListValues(value: String) {
@@ -41,5 +76,15 @@ class CommandLineParamParserTest {
         assertEquals(listOf("dev7", "dev8"), params.listValue("envs"))
         assertEquals(listOf("s1", "s2"), params.listValue("s"))
         assertEquals(emptyList<Any>(), params.listValue("empty"))
+    }
+
+    companion object {
+        @JvmStatic
+        fun versionArguments(): List<Arguments> = listOf(
+            arrayOf("-v", "-color", "false", "-r", "repo"),
+            arrayOf("-color", "false", "-v", "-r", "repo"),
+            arrayOf("-color", "false", "-r", "repo", "-v"),
+            arrayOf("-v", "-v", "-color", "false", "-r", "repo", "-v"),
+        ).map { Arguments.of(it) }
     }
 }

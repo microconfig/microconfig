@@ -6,6 +6,9 @@ import java.util.ArrayDeque
 class ComponentNotFoundException(private val notFoundComponent: String) : MicroconfigException() {
     private val path = ArrayDeque<String>()
 
+    internal val isDirectLookup: Boolean
+        get() = path.isEmpty()
+
     fun withParentComponent(parent: String): ComponentNotFoundException = apply {
         path.addFirst(parent)
     }

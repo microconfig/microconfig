@@ -1,9 +1,39 @@
 package io.microconfig.core.properties.io.yaml.impl
 
 import io.microconfig.core.properties.io.properties.PropertiesText
+import io.microconfig.core.properties.io.yaml.YamlScalars
 import org.yaml.snakeyaml.DumperOptions.ScalarStyle
+import org.yaml.snakeyaml.nodes.ScalarNode
+import org.yaml.snakeyaml.nodes.Tag
 
 internal object YamlPropertyPaths {
+    fun toProperties(key: String): String =
+        escapePropertiesKey(parts(key).joinToString(".", transform = ::logicalKeyPart))
+
+    private fun logicalKeyPart(text: String): String {
+        val node = SnakeYaml.parse(text)
+        require(node is ScalarNode) { "YAML property key must be a scalar: $text" }
+        return if (node.tag == Tag.STR) node.value
+        else (SnakeYaml.parse(YamlScalars.canonicalKey(node)) as ScalarNode).value
+    }
+
+    private fun escapePropertiesKey(key: String): String = buildString {
+        key.forEach { character ->
+            when (character) {
+                '\\' -> append("\\\\")
+                ' ', ':', '=', '#', '!' -> append('\\').append(character)
+                '\t' -> append("\\t")
+                '\n' -> append("\\n")
+                '\r' -> append("\\r")
+                '\u000C' -> append("\\f")
+                else ->
+                    if (character < ' ' || character > '~')
+                        append("\\u").append(character.code.toString(16).padStart(4, '0'))
+                    else append(character)
+            }
+        }
+    }
+
     fun fromProperties(key: String): String =
         propertiesParts(PropertiesText.unescape(key)).joinToString(".", transform = ::stringKey)
 

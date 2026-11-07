@@ -36,7 +36,7 @@ class DependencyInitializationTest {
     @Test
     fun useComponentFactoryBeforeInitializingEnvironments() {
         val microconfig = Microconfig.searchConfigsIn(root.toFile())
-        val component = microconfig.dependencies.componentFactory.createComponent("alias", "app", "dev")
+        val component = microconfig.dependencies().componentFactory().createComponent("alias", "app", "dev")
 
         val properties = component.getPropertiesFor { listOf(APPLICATION) }
 
@@ -47,7 +47,7 @@ class DependencyInitializationTest {
     fun useComponentGraphBeforeInitializingEnvironments() {
         val microconfig = Microconfig.searchConfigsIn(root.toFile())
 
-        val files = microconfig.dependencies.componentGraph.getConfigFilesOf("app", "dev", APPLICATION)
+        val files = microconfig.dependencies().componentGraph().getConfigFilesOf("app", "dev", APPLICATION)
 
         assertEquals(listOf("application.yaml", "application.base.yaml"), files.map { it.file.name })
     }

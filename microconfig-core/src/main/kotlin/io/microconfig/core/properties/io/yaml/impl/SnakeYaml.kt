@@ -94,6 +94,9 @@ internal object SnakeYaml {
     private fun emitter(sectionBreaks: Boolean, rootSequence: Boolean): Yaml =
         Yaml(
             DumperOptions().apply {
+                // Regenerate parsed anchors too, avoiding collisions with newly shared nodes.
+                var anchorId = 0
+                setAnchorGenerator { "id${++anchorId}" }
                 defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
                 indent = 2
                 indicatorIndent = if (rootSequence) 0 else 2

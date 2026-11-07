@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
+import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
@@ -48,14 +51,6 @@ class EnvironmentImplTest {
         `when`(group2.components).thenReturn(components2)
         `when`(components1.asList()).thenReturn(listOf(one, two))
         `when`(components2.asList()).thenReturn(listOf(three))
-    }
-
-    @Test
-    fun filterGroupsByIp() {
-        val ip: String = "127.0.0.1"
-        `when`(group2.ip).thenReturn(of(ip))
-        assertEquals(listOf(group2), env.findGroupsWithIp(ip))
-        assertEquals(emptyList<Any>(), env.findGroupsWithIp("badIp"))
     }
 
     @Test
@@ -122,6 +117,51 @@ class EnvironmentImplTest {
         assertThrows(
             ComponentNotFoundException::class.java,
             { env.findComponentsFrom(emptyList(), listOf("bad")) },
+        )
+    }
+
+    @ParameterizedTest
+    @CsvSource("false, false", "true, false", "false, true", "true, true")
+    fun rejectDuplicateComponentNames(filterGroups: Boolean, filterComponents: Boolean) {
+        `when`(one.name).thenReturn("orders")
+        `when`(three.name).thenReturn("orders")
+        val selectedGroups = if (filterGroups) listOf("group1", "group2") else emptyList()
+        val selectedComponents = if (filterComponents) listOf("orders") else emptyList()
+
+        val error = assertThrows(IllegalStateException::class.java) {
+            env.findComponentsFrom(selectedGroups, selectedComponents)
+        }
+
+        assertEquals("Duplicate component declarations in 'dev' env: [orders]", error.message)
+    }
+
+    @Test
+    fun reportAllDuplicateComponentNames() {
+        `when`(components2.asList()).thenReturn(listOf(three, one, two))
+
+        val error = assertThrows(IllegalStateException::class.java) {
+            env.findComponentsFrom(emptyList(), emptyList())
+        }
+
+        assertEquals("Duplicate component declarations in 'dev' env: [one, two]", error.message)
+    }
+
+    @Test
+    fun ignoreDuplicateComponentNamesOutsideSelectedGroups() {
+        `when`(three.name).thenReturn("one")
+
+        assertEquals(components(one, two), env.findComponentsFrom(listOf("group1"), emptyList()))
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [false, true])
+    fun ignoreRepeatedGroupFiltersAndPreserveSelectionOrder(filterComponents: Boolean) {
+        val requested = if (filterComponents) listOf("two", "three") else emptyList()
+        val expected = if (filterComponents) components(two, three) else components(three, one, two)
+
+        assertEquals(
+            expected,
+            env.findComponentsFrom(listOf("group2", "group1", "group2"), requested),
         )
     }
 

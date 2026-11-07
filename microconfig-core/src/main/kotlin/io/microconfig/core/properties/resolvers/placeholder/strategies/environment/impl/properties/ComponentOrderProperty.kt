@@ -3,13 +3,14 @@ package io.microconfig.core.properties.resolvers.placeholder.strategies.environm
 import io.microconfig.core.environments.Environment
 import io.microconfig.core.properties.resolvers.placeholder.strategies.environment.EnvProperty
 import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 
 class ComponentOrderProperty : EnvProperty {
     override fun key(): String = "order"
 
     override fun resolveFor(component: String, environment: Environment): Optional<String> =
-        environment.findGroupWithComponent(component).flatMap { group ->
+        Optional.ofNullable(environment.findGroupWithComponent(component).getOrNull()?.let { group ->
             val index = group.components.asList().indexOfFirst { it.name == component }
-            Optional.ofNullable(index.takeIf { it >= 0 }?.toString())
-        }
+            index.takeIf { it >= 0 }?.toString()
+        })
 }

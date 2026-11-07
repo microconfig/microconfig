@@ -10,6 +10,7 @@ import io.microconfig.core.properties.Property
 import io.microconfig.core.properties.PropertyImpl
 import io.microconfig.core.properties.resolvers.placeholder.strategies.environment.EnvProperty
 import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 
 class EnvironmentResolveStrategy(
     private val environments: EnvironmentRepository,
@@ -21,17 +22,23 @@ class EnvironmentResolveStrategy(
         environment: String,
         configType: String,
         root: String?,
-    ): Optional<Property> {
-        val property = properties[key] ?: return Optional.empty()
-        val context = findEnvironment(environment) ?: return Optional.empty()
-        return property.resolveFor(component, context).map { value ->
-            PropertyImpl.property(
-                key,
-                value,
-                PROPERTIES,
-                DeclaringComponentImpl(configType, component, environment),
-            )
-        }
+    ): Optional<Property> = Optional.ofNullable(resolveProperty(component, key, environment, configType))
+
+    private fun resolveProperty(
+        component: String,
+        key: String,
+        environment: String,
+        configType: String,
+    ): Property? {
+        val property = properties[key] ?: return null
+        val context = findEnvironment(environment) ?: return null
+        val value = property.resolveFor(component, context).getOrNull() ?: return null
+        return PropertyImpl.property(
+            key,
+            value,
+            PROPERTIES,
+            DeclaringComponentImpl(configType, component, environment),
+        )
     }
 
     private fun findEnvironment(name: String): Environment? =

@@ -328,7 +328,7 @@ And oracle-client contains settings for .31.
 
 Of course, you can override datasource.url in payments/application.yaml. But this overridden property will contain a copy of the rest of the JDBC URL, and you will get all the standard copy-and-paste problems. We would like to override only a part of the property. 
 
-It's also better to create dedicated configurations for the orders db and the payments db. Both will include the common db config and override the 'ip' part of the URL. After that, we will move 'datasource.maximum-pool-size' from the orders service to order-db, so the orders service will contain only links to its dependencies and service-specific configs.
+It's also better to create dedicated configurations for the orders db and the payments db. Both will include the common db config and override the host part of the URL. After that, we will move 'datasource.maximum-pool-size' from the orders service to order-db, so the orders service will contain only links to its dependencies and service-specific configs.
 
 Let's refactor.
 ```
@@ -406,16 +406,14 @@ Refactored:
 
 **service-discovery-client/application.yaml**
 ```yaml
-service-discovery.url: http://${service-discovery@ip}:${service-discovery@server.port}
+service-discovery.url: http://${service-discovery@address}:${service-discovery@server.port}
 ```
 **service-discovery/application.yaml**
 ```yaml
 server.port: 6781
-ip: 10.12.172.11 
+address: 10.12.172.11
 ```
 So if you change the service-discovery port, all dependent services will get this update.
-
-Microconfig has another way to store a service's IP. We will discuss it later. For now, it's better to set the 'ip' property in the service-discovery config file. 
 
 The Microconfig syntax for placeholders: `${componentName@propertyName}`. Microconfig forces you to specify the component name. This syntax is better than just a property name
 (like `${connectionSize}`) because it makes it obvious where to find the original placeholder value.
@@ -535,7 +533,6 @@ Microconfig has several useful special placeholders:
 * `${this@configRoot}` - returns the full path of the config repository root dir (see the `-r` build param).
 
 There are some other properties related to the environment descriptor; we will discuss them later:
-* `${...@ip}`
 * `${...@group}`
 * `${...@order}`
 
@@ -1058,26 +1055,6 @@ tests_dashboard: # added new component group 'tests_dashboard'
     - test-statistic-collector
 ``` 
 
-You can set the optional `ip` param for an environment or for component groups and then use it via `${componentName@ip}`.
-
-For instance, `${orders@ip}` will be resolved to 12.53.12.67, `${payment-ui@ip}` will be resolved to 170.53.12.80.   
-```yaml
-ip: 170.53.12.80 # default ip
-
-orders:  
-  ip: 12.53.12.67 # ip overridden for the group
-  components:  
-    - order-db-patcher
-    - orders
-    - order-ui
-
-payments:  
-  components:
-    - payment-db-patcher
-    - payments
-    - payment-ui    
-```
-
 Consider configuring your deployment tool to read the environment descriptor to know which services to deploy.
 
 ## Environment profiles
@@ -1134,6 +1111,7 @@ The required build params:
 Optional build params:
 * `-d` - full or relative build destination dir. Default = ${currentFolder}/build
 * `-stacktrace` - Show full stacktrace in case of exceptions. Values: true/false. Default: false  
+* `-color` - Enable colored console output. Values: true/false. Default: true. Use `-color false` to disable colors.
 
 To build configs not for the whole environment but only for specific services, use the following optional params:
 * `-g` - a comma-separated list of component groups to build configs. 
@@ -1142,6 +1120,12 @@ To build configs not for the whole environment but only for specific services, u
 Command line params example (Java 17+ required):
 ```
 java -jar microconfig.jar -r repo -e prod
+```
+
+Console colors are enabled by default on all operating systems, including Windows.
+To disable colors, for example when saving build logs, pass `-color false`:
+```bash
+java -jar microconfig.jar -r repo -e prod -color false
 ```
 
 To add system properties, use `-D`:

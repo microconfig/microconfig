@@ -20,18 +20,23 @@ class SystemResolveStrategy(
         environment: String,
         configType: String,
         root: String?,
-    ): Optional<Property> {
-        if (type != component) return Optional.empty()
-        return Optional.ofNullable(resolver.apply(key))
-            .map { normalizeUserHome(it, key) }
-            .map {
-                PropertyImpl.property(
-                    key,
-                    it,
-                    PROPERTIES,
-                    DeclaringComponentImpl(configType, component, environment),
-                )
-            }
+    ): Optional<Property> = Optional.ofNullable(resolveProperty(component, key, environment, configType))
+
+    private fun resolveProperty(
+        component: String,
+        key: String,
+        environment: String,
+        configType: String,
+    ): Property? {
+        if (type != component) return null
+        val value: String? = resolver.apply(key)
+        if (value == null) return null
+        return PropertyImpl.property(
+            key,
+            normalizeUserHome(value, key),
+            PROPERTIES,
+            DeclaringComponentImpl(configType, component, environment),
+        )
     }
 
     private fun normalizeUserHome(value: String, key: String): String =

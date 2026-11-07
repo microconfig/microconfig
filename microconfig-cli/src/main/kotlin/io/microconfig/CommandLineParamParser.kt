@@ -28,15 +28,37 @@ class CommandLineParamParser(private val keyToValue: Map<String, String?>) {
     fun contains(key: String): Boolean = key in keyToValue
 
     companion object {
+        /** Parses key/value pairs and the valueless `-v` flag; malformed keys throw [IllegalArgumentException]. */
         fun parse(vararg args: String): CommandLineParamParser =
-            CommandLineParamParser(parseArguments(args))
+            parse(args) {}
 
-        private fun parseArguments(args: Array<out String>): Map<String, String?> = buildMap {
-            args.indices.step(2).forEach { index ->
+        internal fun parse(
+            args: Array<out String>,
+            beforeValidation: (CommandLineParamParser) -> Unit,
+        ): CommandLineParamParser {
+            val (values, invalidKey) = parseArguments(args)
+            val parsed = CommandLineParamParser(values)
+            beforeValidation(parsed)
+            require(invalidKey == null) { "key '$invalidKey' must start with -" }
+            return parsed
+        }
+
+        private fun parseArguments(args: Array<out String>): Pair<Map<String, String?>, String?> {
+            val values = linkedMapOf<String, String?>()
+            var invalidKey: String? = null
+            var index = 0
+            while (index < args.size) {
                 val key = args[index]
-                if (!key.startsWith('-')) printErrorAndExit("key '$key' must start with -")
-                put(key.substring(1), args.getOrNull(index + 1))
+                if (key.startsWith('-')) {
+                    val flag = key == "-v"
+                    values[key.removePrefix("-")] = if (flag) null else args.getOrNull(index + 1)
+                    index += if (flag) 1 else 2
+                } else {
+                    if (invalidKey == null) invalidKey = key
+                    index++
+                }
             }
+            return values to invalidKey
         }
 
         fun printErrorAndExit(message: String): Nothing {

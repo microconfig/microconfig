@@ -2,7 +2,10 @@ package io.microconfig.core.properties.resolvers
 
 import io.microconfig.core.properties.DeclaringComponent
 import io.microconfig.core.properties.Resolver
+import io.microconfig.core.properties.ValueFormat
+import io.microconfig.core.properties.io.properties.PropertiesText
 import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 
 interface RecursiveResolver : Resolver {
     override fun resolve(
@@ -10,9 +13,12 @@ interface RecursiveResolver : Resolver {
         sourceOfValue: DeclaringComponent?,
         root: DeclaringComponent?,
     ): String {
-        val result = StringBuilder(value)
+        if (findStatementIn(value).getOrNull() == null) return value
+        // The legacy string API has no value-format parameter. Decode only at this boundary.
+        val encoded = PropertiesText.isPropertiesText(sourceOfValue)
+        val result = StringBuilder(if (encoded) PropertiesText.unescape(value) else value)
         resolveStatements(result, sourceOfValue, root)
-        return result.toString()
+        return if (encoded) PropertiesText.escape(result.toString()) else result.toString()
     }
 
     private fun resolveStatements(
@@ -21,7 +27,7 @@ interface RecursiveResolver : Resolver {
         root: DeclaringComponent?,
     ) {
         while (true) {
-            val statement = findStatementIn(value).orElse(null) ?: return
+            val statement = findStatementIn(value).getOrNull() ?: return
             value.replace(
                 statement.startIndex,
                 statement.endIndex,
@@ -39,5 +45,11 @@ interface RecursiveResolver : Resolver {
             get() = true
 
         fun resolveFor(sourceOfValue: DeclaringComponent?, root: DeclaringComponent?): String
+
+        fun resolveFor(
+            sourceOfValue: DeclaringComponent?,
+            root: DeclaringComponent?,
+            targetFormat: ValueFormat,
+        ): String = resolveFor(sourceOfValue, root)
     }
 }

@@ -11,8 +11,6 @@ interface Environment {
     val groups: List<ComponentGroup>
     val allComponents: Components
 
-    fun findGroupsWithIp(ip: String): List<ComponentGroup>
-
     fun getGroupWithName(groupName: String): ComponentGroup
 
     fun findGroupWithComponent(componentName: String): Optional<ComponentGroup>

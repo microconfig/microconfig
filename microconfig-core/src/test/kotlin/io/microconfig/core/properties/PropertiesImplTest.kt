@@ -5,11 +5,27 @@ import io.microconfig.core.properties.impl.PropertiesImpl.Companion.flat
 import java.util.Optional
 import java.util.function.Function
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
 class PropertiesImplTest {
+    @Test
+    fun invokeCallbacksInOrderOnTheCallingThread() {
+        val units = (1..32).map { mock(TypedProperties::class.java) }
+        val caller = Thread.currentThread()
+        val visited = mutableListOf<TypedProperties>()
+
+        PropertiesImpl(units).forEachComponent { unit ->
+            assertSame(caller, Thread.currentThread())
+            visited.add(unit)
+            unit
+        }
+
+        assertEquals(units, visited)
+    }
+
     val tp1: TypedProperties = mock(TypedProperties::class.java)
 
     val tp2: TypedProperties = mock(TypedProperties::class.java)

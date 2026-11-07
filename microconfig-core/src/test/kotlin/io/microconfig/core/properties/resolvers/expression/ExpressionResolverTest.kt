@@ -77,6 +77,11 @@ class ExpressionResolverTest {
                 "#{ {'a', 'b'}.listIterator().next() } | a",
                 "#{'a'.lines().iterator().next()} | a",
                 "#{ {'a': 1}.entrySet().iterator().next().getValue() } | 1",
+                "#{#{#{1 + 2} * 3} + 4} | 13",
+                "#{1 + 2}/#{3 * 4} | 3/12",
+                "#{ {'a': {'b': 2}}['a']['b'] } | 2",
+                "#{'it''s } text'} | it's } text",
+                "#{#findGroup('[a-z]{2,3}', '123abc')} | abc",
             ],
     )
     fun evaluateValueExpressions(expression: String, expected: String) {
@@ -98,6 +103,12 @@ class ExpressionResolverTest {
     fun treatBackslashBeforeDoubleQuoteAsLiteralSpelText() {
         assertEquals("4", resolve("#{\"abc\\\".length()}"))
         assertEquals("a\\\"b", resolve("#{\"a\\\"\"b\"}"))
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["literal \${", "literal \${HOME}", "literal \${this@", "literal #{"])
+    fun preserveLiteralPlaceholderPrefixesInSpelStrings(value: String) {
+        assertEquals(value, resolve("#{'$value'}"))
     }
 
     @ParameterizedTest

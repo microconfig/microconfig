@@ -1,4 +1,4 @@
-aAlias: &shared {label: '123', enabled: true}
+aAlias: &id1 {label: '123', enabled: true}
 
 folded: |-
   first second
@@ -27,7 +27,7 @@ taggedNumber: !!int '12'
 
 taggedString: "123"
 
-zAnchor: &shared {label: '123', enabled: true}
+zAnchor: &id2 {label: '123', enabled: true}
 
 defaults:
   host: localhost

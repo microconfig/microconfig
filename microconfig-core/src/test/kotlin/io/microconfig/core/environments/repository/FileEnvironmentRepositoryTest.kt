@@ -9,7 +9,6 @@ import io.microconfig.core.properties.PropertiesFactory
 import io.microconfig.io.FsReader
 import io.microconfig.io.impl.DumpedFsReader
 import java.io.File
-import java.util.Optional.ofNullable
 import java.util.stream.Collectors.toList
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -105,80 +104,74 @@ class FileEnvironmentRepositoryTest {
 
     private fun testDev(env: Environment) {
         assertFalse(env.isAbstract)
-        testGroup(env, "orders", "10.0.0.1", "order-db-patcher", "order-service", "order-ui")
+        testGroup(env, "orders", "order-db-patcher", "order-service", "order-ui")
         testGroup(
             env,
             "payments",
-            "10.0.0.1",
             "payment-db-patcher",
             "payment-service",
             "payment-ui",
             "payment-provider-mock",
         )
-        testGroup(env, "infra", "10.0.10.1", "service-discovery", "api-gateway")
-        testGroup(env, "kafka", "10.0.0.1", "zookeeper", "kafka")
+        testGroup(env, "infra", "service-discovery", "api-gateway")
+        testGroup(env, "kafka", "zookeeper", "kafka")
     }
 
     private fun testTest(env: Environment) {
         assertFalse(env.isAbstract)
-        testGroup(env, "orders", "10.0.0.1", "order-db-patcher", "order-service", "order-ui")
+        testGroup(env, "orders", "order-db-patcher", "order-service", "order-ui")
         testGroup(
             env,
             "payments",
-            "10.0.0.1",
             "payment-db-patcher",
             "payment-service",
             "payment-ui",
             "payment-provider-mock",
         )
-        testGroup(env, "infra", "10.0.10.1", "service-discovery", "api-gateway", "selenium")
-        testGroup(env, "kafka", "10.0.0.1", "zookeeper", "kafka")
+        testGroup(env, "infra", "service-discovery", "api-gateway", "selenium")
+        testGroup(env, "kafka", "zookeeper", "kafka")
     }
 
     private fun testStaging(env: Environment) {
         assertFalse(env.isAbstract)
-        testGroup(env, "orders", "10.20.0.1", "order-db-patcher", "order-service", "order-ui")
+        testGroup(env, "orders", "order-db-patcher", "order-service", "order-ui")
         testGroup(
             env,
             "payments",
-            "10.20.0.1",
             "payment-db-patcher",
             "payment-service",
             "payment-ui",
         )
-        testGroup(env, "infra", "10.20.10.1", "service-discovery", "api-gateway")
-        testGroup(env, "kafka", "10.20.0.1", "zookeeper", "kafka")
-        testGroup(env, "monitoring", "10.20.20.1", "grafana", "prometheus")
+        testGroup(env, "infra", "service-discovery", "api-gateway")
+        testGroup(env, "kafka", "zookeeper", "kafka")
+        testGroup(env, "monitoring", "grafana", "prometheus")
     }
 
     private fun testProd(env: Environment) {
         assertFalse(env.isAbstract)
-        testGroup(env, "orders", "10.20.0.1", "order-db-patcher", "order-service", "order-ui")
+        testGroup(env, "orders", "order-db-patcher", "order-service", "order-ui")
         testGroup(
             env,
             "payments",
-            "10.20.0.1",
             "payment-db-patcher",
             "payment-service",
             "payment-ui",
         )
-        testGroup(env, "infra", "10.20.10.1", "service-discovery", "api-gateway")
-        testGroup(env, "monitoring", "10.20.20.1", "grafana", "prometheus")
+        testGroup(env, "infra", "service-discovery", "api-gateway")
+        testGroup(env, "monitoring", "grafana", "prometheus")
     }
 
     private fun testAlias(env: Environment) {
         assertFalse(env.isAbstract)
-        testGroup(env, "group", null, "componentAlias1", "componentAlias2")
+        testGroup(env, "group", "componentAlias1", "componentAlias2")
     }
 
     private fun testGroup(
         environment: Environment,
         groupName: String,
-        ip: String?,
         vararg components: String,
     ) {
         val group: ComponentGroup = environment.getGroupWithName(groupName)
-        assertEquals(ofNullable(ip), group.ip)
         testComponents(environment.name, components.toList(), group.components.asList())
     }
 

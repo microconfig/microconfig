@@ -78,7 +78,9 @@ allprojects {
         }
     }
     extensions.configure<SigningExtension> {
-        sign(extensions.getByType<PublishingExtension>().publications["nexus"])
+        if (!providers.gradleProperty("signing.secretKeyRingFile").orNull.isNullOrBlank()) {
+            sign(extensions.getByType<PublishingExtension>().publications["nexus"])
+        }
     }
 
     extensions.configure<JacocoPluginExtension> {

@@ -2,14 +2,21 @@ package io.microconfig.core.properties
 
 import io.microconfig.core.exceptions.MicroconfigException
 
-class ResolveException
-@JvmOverloads
-constructor(
+class ResolveException private constructor(
     private val current: DeclaringComponent?,
     private val root: DeclaringComponent?,
     message: String,
-    cause: Throwable? = null,
+    cause: Throwable?,
+    internal val unresolvedValue: Boolean,
 ) : MicroconfigException(message, cause) {
+    @JvmOverloads
+    constructor(
+        current: DeclaringComponent?,
+        root: DeclaringComponent?,
+        message: String,
+        cause: Throwable? = null,
+    ) : this(current, root, message, cause, false)
+
     var property: Property? = null
 
     override val message: String
@@ -26,4 +33,12 @@ constructor(
             is ResolveException -> "Cause: " + cause.problemInfo()
             else -> "Cause: ${cause.message}"
         }
+
+    companion object {
+        internal fun unresolved(
+            current: DeclaringComponent?,
+            root: DeclaringComponent?,
+            message: String,
+        ): ResolveException = ResolveException(current, root, message, null, true)
+    }
 }

@@ -8,7 +8,6 @@ import io.microconfig.core.properties.PropertiesFactory
 
 internal data class ComponentGroupDefinition(
     val name: String,
-    private val ip: String?,
     val components: List<ComponentDefinition>,
     private val excludedComponents: List<ComponentDefinition>,
     private val appendedComponents: List<ComponentDefinition>,
@@ -18,7 +17,6 @@ internal data class ComponentGroupDefinition(
 
     private fun withOverrides(override: ComponentGroupDefinition): ComponentGroupDefinition =
         copy(
-            ip = override.ip ?: ip,
             components = override.components.ifEmpty { components },
             excludedComponents = override.excludedComponents,
             appendedComponents = override.appendedComponents,
@@ -47,7 +45,6 @@ internal data class ComponentGroupDefinition(
     ): ComponentGroup =
         ComponentGroupImpl(
             name,
-            ip,
             ComponentsImpl(components.map { it.toComponent(factory, environment) }, properties),
         )
 }

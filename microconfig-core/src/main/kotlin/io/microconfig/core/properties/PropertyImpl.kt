@@ -11,6 +11,10 @@ internal constructor(
     override val configFormat: ConfigFormat,
     override val declaringComponent: DeclaringComponent?,
     override val isLiteralText: Boolean = false,
+    override val valueFormat: ValueFormat =
+        if (configFormat == ConfigFormat.YAML && !isLiteralText) ValueFormat.YAML
+        else ValueFormat.TEXT,
+    override val keyFormat: ConfigFormat = configFormat,
 ) : Property {
     override fun resolveBy(resolver: Resolver, root: DeclaringComponent): Property =
         try {
@@ -54,29 +58,65 @@ internal constructor(
                 temporary,
                 format,
                 source,
+                valueFormat = sourceValueFormat(format, source),
+                keyFormat = sourceKeyFormat(format, source),
             )
         }
 
+        @JvmOverloads
         fun property(
             key: String,
             value: String,
             format: ConfigFormat,
             source: DeclaringComponent?,
-        ): Property = PropertyImpl(key, value, false, format, source)
+            valueFormat: ValueFormat = sourceValueFormat(format, source),
+            keyFormat: ConfigFormat = sourceKeyFormat(format, source),
+        ): Property =
+            PropertyImpl(key, value, false, format, source,
+                valueFormat = valueFormat, keyFormat = keyFormat)
 
+        @JvmOverloads
         fun varProperty(
             key: String,
             value: String,
             format: ConfigFormat,
             source: DeclaringComponent?,
-        ): Property = PropertyImpl(key, value, true, format, source)
+            valueFormat: ValueFormat = sourceValueFormat(format, source),
+            keyFormat: ConfigFormat = sourceKeyFormat(format, source),
+        ): Property =
+            PropertyImpl(key, value, true, format, source,
+                valueFormat = valueFormat, keyFormat = keyFormat)
 
+        @JvmOverloads
         fun literalProperty(
             key: String,
             value: String,
             format: ConfigFormat,
             source: DeclaringComponent?,
-        ): Property = PropertyImpl(key, value, false, format, source, true)
+            valueFormat: ValueFormat = sourceValueFormat(format, source, true),
+            keyFormat: ConfigFormat = sourceKeyFormat(format, source),
+        ): Property = PropertyImpl(key, value, false, format, source, true, valueFormat, keyFormat)
+
+        internal fun sourceKeyFormat(format: ConfigFormat, source: DeclaringComponent?): ConfigFormat =
+            when {
+                source is FileBasedComponent && !source.isYaml -> ConfigFormat.PROPERTIES
+                source == null && format == ConfigFormat.PROPERTIES -> ConfigFormat.PROPERTIES
+                else -> ConfigFormat.YAML
+            }
+
+        // Legacy factories accept encoded Properties without a source; use TEXT for logical strings.
+        // Readers specify the encoding explicitly.
+        internal fun sourceValueFormat(
+            format: ConfigFormat,
+            source: DeclaringComponent?,
+            literal: Boolean = false,
+        ): ValueFormat =
+            when {
+                source is FileBasedComponent && !source.isYaml -> ValueFormat.PROPERTIES
+                source == null && format == ConfigFormat.PROPERTIES && !literal -> ValueFormat.PROPERTIES
+                format == ConfigFormat.YAML && !literal -> ValueFormat.YAML
+                else -> ValueFormat.TEXT
+            }
 
         fun groupProperty(
             key: String,

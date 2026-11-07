@@ -13,7 +13,7 @@ data class ComponentsImpl(
     override fun asList(): List<Component> = components
 
     override fun getPropertiesFor(filter: ConfigTypeFilter): Properties =
-        properties.flat(components.parallelStream().map { it.getPropertiesFor(filter) }.toList())
+        properties.flat(components.map { it.getPropertiesFor(filter) })
 
     override fun toString(): String = components.toString()
 }

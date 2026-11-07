@@ -9,7 +9,7 @@ import io.microconfig.core.properties.PropertiesFactory
 import io.microconfig.io.FsReader
 import io.microconfig.utils.FileUtils.walk
 import java.io.File
-import java.util.Optional
+import java.util.concurrent.ConcurrentHashMap
 
 class FileEnvironmentRepository(
     rootDir: File,
@@ -18,21 +18,25 @@ class FileEnvironmentRepository(
     private val propertiesFactory: PropertiesFactory,
 ) : EnvironmentRepository {
     private val envDir = File(rootDir, ENV_DIR)
+    private val parsed = ConcurrentHashMap<File, Environment>()
+    private val files by lazy(::readEnvironmentFiles)
 
     init {
         require(envDir.exists()) { "'$ENV_DIR' directory doesn't exist: $envDir" }
     }
 
     override fun environments(): List<Environment> =
-        environmentFiles().map(::parse).filterNot { it.isAbstract }
+        files.map(::parse).filterNot { it.isAbstract }
 
-    private fun environmentFiles(): List<File> =
+    private fun readEnvironmentFiles(): List<File> =
         walk(envDir.toPath()).use { paths ->
             paths.map { it.toFile() }.filter { it.name.endsWith(".yaml") }.toList()
         }
 
     private fun parse(file: File): Environment =
-        parseDefinition(file, emptyList()).toEnvironment(componentFactory, propertiesFactory)
+        parsed.computeIfAbsent(file) {
+            parseDefinition(it, emptyList()).toEnvironment(componentFactory, propertiesFactory)
+        }
 
     private fun parseDefinition(file: File, visiting: List<String>): EnvironmentDefinition {
         val name = file.nameWithoutExtension
@@ -40,7 +44,7 @@ class FileEnvironmentRepository(
         val definition = EnvironmentFile(file).parseUsing(fsReader)
         return definition
             .processIncludeUsing { included ->
-                val source = envFileWith(included).orElseThrow { notFoundException(included) }
+                val source = envFileWith(included) ?: throw notFoundException(included)
                 parseDefinition(source, visiting + name)
             }
             .checkComponentNamesAreUnique()
@@ -53,21 +57,21 @@ class FileEnvironmentRepository(
             )
     }
 
-    private fun envFileWith(name: String): Optional<File> {
-        val files = environmentFiles().filter { it.nameWithoutExtension == name }
-        if (files.size > 1) throw EnvironmentException("Found several env files with name: $name")
-        return Optional.ofNullable(files.firstOrNull())
+    private fun envFileWith(name: String): File? {
+        val matching = files.filter { it.nameWithoutExtension == name }
+        if (matching.size > 1) throw EnvironmentException("Found several env files with name: $name")
+        return matching.firstOrNull()
     }
 
     private fun notFoundException(name: String): EnvironmentException =
         EnvironmentException(
-            "Can't find env '$name'. Available env files: ${environmentFiles().map { it.nameWithoutExtension }.toSortedSet()}"
+            "Can't find env '$name'. Available env files: ${files.map { it.nameWithoutExtension }.toSortedSet()}"
         )
 
     override fun environmentNames(): Set<String> = environmentNames(emptySet())
 
     override fun environmentNames(excluded: Set<String>): Set<String> =
-        environmentFiles()
+        files
             .filterNot { it.nameWithoutExtension in excluded }
             .map(::parse)
             .filterNot { it.isAbstract }
@@ -75,12 +79,12 @@ class FileEnvironmentRepository(
             .toSortedSet()
 
     override fun getByName(name: String): Environment =
-        findEnvWith(name).orElseThrow { notFoundException(name) }
+        findEnvWith(name) ?: throw notFoundException(name)
 
-    private fun findEnvWith(name: String): Optional<Environment> = envFileWith(name).map(::parse)
+    private fun findEnvWith(name: String): Environment? = envFileWith(name)?.let(::parse)
 
     override fun getOrCreateByName(name: String): Environment =
-        findEnvWith(name).orElseGet { fakeEnvironment(name) }
+        findEnvWith(name) ?: fakeEnvironment(name)
 
     private fun fakeEnvironment(name: String): Environment =
         EnvironmentImpl(

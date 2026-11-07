@@ -16,20 +16,11 @@ class ComponentGroupImplTest {
     val components: Components = mock(Components::class.java)
 
     @Test
-    fun ipOptionalWrapping() {
-        val nullableIp: ComponentGroup = ComponentGroupImpl("null", null, components)
-        assertEquals(empty<Any>(), nullableIp.ip)
-        val ip: String = "127.0.0.1"
-        val ipGroup: ComponentGroup = ComponentGroupImpl("group", ip, components)
-        assertEquals(of(ip), ipGroup.ip)
-    }
-
-    @Test
     fun findComponentByName() {
         `when`(one.name).thenReturn("one")
         `when`(two.name).thenReturn("two")
         `when`(components.asList()).thenReturn(listOf(one, two))
-        val group: ComponentGroup = ComponentGroupImpl("group", null, components)
+        val group: ComponentGroup = ComponentGroupImpl("group", components)
         assertEquals(of(two), group.findComponentWithName("two"))
         assertEquals(empty<Any>(), group.findComponentWithName("missing"))
     }
@@ -37,7 +28,7 @@ class ComponentGroupImplTest {
     @Test
     fun string() {
         `when`(components.toString()).thenReturn("[]")
-        val group: ComponentGroup = ComponentGroupImpl("groupName", null, components)
+        val group: ComponentGroup = ComponentGroupImpl("groupName", components)
         assertEquals("groupName: []", group.toString())
     }
 }

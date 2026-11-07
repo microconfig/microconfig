@@ -2,16 +2,17 @@ package io.microconfig.core.properties.io.yaml.impl
 
 import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.DeclaringComponent
-import io.microconfig.core.properties.FileBasedComponent
 import io.microconfig.core.properties.Property
+import io.microconfig.core.properties.PropertyImpl
 import io.microconfig.core.properties.PropertyImpl.Companion.literalProperty
 import io.microconfig.core.properties.PropertyImpl.Companion.property
 import io.microconfig.core.properties.Resolver
+import io.microconfig.core.properties.ValueFormat
 import io.microconfig.core.properties.io.properties.PropertiesText
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.resolvers.RecursiveResolver
 import io.microconfig.core.properties.resolvers.expression.impl.ExpressionResolver.Companion.expressionsIn
-import io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders.Companion.findPlaceholderIn
+import io.microconfig.core.properties.resolvers.expression.impl.ExpressionResolver.Companion.expressionQuoteAt
 import java.util.IdentityHashMap
 import java.util.regex.MatchResult
 import org.yaml.snakeyaml.DumperOptions.ScalarStyle
@@ -20,6 +21,8 @@ import org.yaml.snakeyaml.nodes.Node
 import org.yaml.snakeyaml.nodes.NodeTuple
 import org.yaml.snakeyaml.nodes.ScalarNode
 import org.yaml.snakeyaml.nodes.SequenceNode
+import org.yaml.snakeyaml.nodes.Tag
+import kotlin.jvm.optionals.getOrNull
 
 class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
     override fun resolve(
@@ -28,12 +31,26 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
         root: DeclaringComponent?,
     ): String = delegate.resolve(value, sourceOfValue, root)
 
-    override fun resolve(property: Property, root: DeclaringComponent): String {
-        val source = property.declaringComponent as? FileBasedComponent
-        if (source == null) return delegate.resolve(property, root)
-        if (!source.isYaml || property.configFormat != YAML || property.isLiteralText)
-            return resolveScalar(property, root)
-        return resolveYamlProperty(property, root)
+    override fun resolve(property: Property, root: DeclaringComponent): String =
+        when (property.valueFormat) {
+            ValueFormat.PROPERTIES -> resolvePropertiesText(property, root)
+            ValueFormat.YAML -> resolveYamlProperty(property, root)
+            ValueFormat.TEXT -> resolveScalar(property, root)
+        }
+
+    private fun resolvePropertiesText(property: Property, root: DeclaringComponent): String {
+        if (delegate.findStatementIn(property.value).getOrNull() == null) return property.value
+        val decoded = PropertyImpl(
+            property.key,
+            PropertiesText.unescape(property.value),
+            property.isVar,
+            property.configFormat,
+            property.declaringComponent,
+            property.isLiteralText,
+            ValueFormat.TEXT,
+            property.keyFormat,
+        )
+        return PropertiesText.escape(resolveScalar(decoded, root))
     }
 
     private fun resolveYamlProperty(property: Property, root: DeclaringComponent): String {
@@ -54,7 +71,7 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
         property: Property,
         root: DeclaringComponent,
     ): String {
-        if (delegate.findStatementIn(property.value).isEmpty) return property.value
+        if (delegate.findStatementIn(source.original).getOrNull() == null) return source.original
         return SnakeYaml.fragment(resolveNode(node, source, property, root, IdentityHashMap()))
     }
 
@@ -84,13 +101,13 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
         root: DeclaringComponent,
     ): Node {
         val value = source.restore(node.value)
-        if (delegate.findStatementIn(value).isEmpty)
+        if (delegate.findStatementIn(value).getOrNull() == null)
             return if (value == node.value) node
             else ScalarNode(node.tag, value, node.startMark, node.endMark, node.scalarStyle)
         val declaration = collection.declaringComponent
         if (node.scalarStyle == ScalarStyle.LITERAL || node.scalarStyle == ScalarStyle.FOLDED) {
             val resolvedValue =
-                resolveScalar(literalProperty(collection.key, value, YAML, declaration), root)
+                resolveScalar(literalProperty(collection.key, value, YAML, declaration, ValueFormat.TEXT), root)
             return ScalarNode(
                 node.tag,
                 resolvedValue,
@@ -108,22 +125,21 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
             else value
         val result =
             SnakeYaml.parse(
-                resolveScalar(property(collection.key, original, YAML, declaration), root)
+                resolveScalar(property(collection.key, original, YAML, declaration, ValueFormat.YAML), root)
             )
         if (!source.isSplice(node) && source.hasExplicitTag(node)) result.tag = node.tag
         return result
     }
 
     private fun resolveScalar(property: Property, root: DeclaringComponent): String {
-        val propertiesText = PropertiesText.isPropertiesText(property.declaringComponent)
-        val yamlSyntax = property.configFormat == YAML && !property.isLiteralText
+        val yamlSyntax = property.valueFormat == ValueFormat.YAML
         val quoted = yamlSyntax && YamlScalars.isQuoted(property.value)
         val result =
             StringBuilder(if (quoted) YamlScalars.unquote(property.value) else property.value)
         var plainText = false
         var stringValue = quoted
         while (true) {
-            val current = delegate.findStatementIn(result).orElse(null) ?: break
+            val current = delegate.findStatementIn(result).getOrNull() ?: break
             val expression = expressionContaining(result, current)
             if (expression != null) {
                 val value =
@@ -138,16 +154,23 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
                 plainText = true
                 continue
             }
-            var value = current.resolveFor(property.declaringComponent, root)
+            var value = current.resolveFor(
+                property.declaringComponent,
+                root,
+                if (yamlSyntax) ValueFormat.YAML else ValueFormat.TEXT,
+            )
             val wholeValue = current.startIndex == 0 && current.endIndex == result.length
+            if (yamlSyntax && !quoted && wholeValue && !current.isPlainText) {
+                resolveCollectionValue(value, property, root)?.let { return it }
+            }
             if (wholeValue) {
                 plainText = false
                 stringValue = quoted
             }
             if (
-                !propertiesText &&
+                yamlSyntax &&
                     !current.isPlainText &&
-                    (quoted || !yamlSyntax || !wholeValue) &&
+                    (quoted || !wholeValue) &&
                     YamlScalars.isQuoted(value)
             ) {
                 value = YamlScalars.unquote(value)
@@ -169,99 +192,77 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
         value: CharSequence,
         statement: RecursiveResolver.Statement,
     ): MatchResult? =
-        expressionsIn(maskPlaceholders(value))
+        expressionsIn(value)
             .filter { it.start() <= statement.startIndex && statement.endIndex <= it.end() }
             .findFirst()
-            .orElse(null)
-
-    private fun maskPlaceholders(value: CharSequence): String {
-        val masked = StringBuilder(value)
-        while (true) {
-            val placeholder = findPlaceholderIn(masked).orElse(null) ?: return masked.toString()
-            for (index in placeholder.startIndex until placeholder.endIndex) {
-                if (masked[index] != '\n' && masked[index] != '\r') masked.setCharAt(index, 'x')
-            }
-        }
-    }
+            .getOrNull()
 
     private fun resolveExpression(
         expression: String,
         property: Property,
         root: DeclaringComponent,
     ): String {
-        val propertiesText = PropertiesText.isPropertiesText(property.declaringComponent)
-        val result =
-            StringBuilder(if (propertiesText) PropertiesText.unescape(expression) else expression)
+        val result = StringBuilder(expression)
         while (true) {
             val current =
-                delegate.findStatementIn(result).orElse(null)
-                    ?: return expressionResult(result.toString(), propertiesText)
-            val statement = if (propertiesText) encodedStatement(result, current) else current
-            val resolved = statement.resolveFor(property.declaringComponent, root)
-            val value = if (propertiesText) PropertiesText.unescape(resolved) else resolved
+                delegate.findStatementIn(result).getOrNull()
+                    ?: return result.toString()
+            val value = current.resolveFor(property.declaringComponent, root, ValueFormat.YAML)
             if (current.startIndex == 0 && current.endIndex == result.length)
-                return expressionResult(value, propertiesText)
+                return value
             val quote = expressionQuoteAt(result, current.startIndex)
             result.replace(
                 current.startIndex,
                 current.endIndex,
-                expressionValue(value, statement, quote, property.declaringComponent),
+                expressionValue(value, current, quote),
             )
         }
-    }
-
-    private fun expressionResult(value: String, propertiesText: Boolean): String =
-        if (propertiesText) PropertiesText.escape(value) else value
-
-    private fun encodedStatement(
-        value: CharSequence,
-        statement: RecursiveResolver.Statement,
-    ): RecursiveResolver.Statement =
-        delegate
-            .findStatementIn(
-                PropertiesText.escape(
-                    value.subSequence(statement.startIndex, statement.endIndex).toString()
-                )
-            )
-            .orElseThrow { IllegalStateException("Can't locate expression statement") }
-
-    private fun expressionQuoteAt(expression: CharSequence, offset: Int): Char? {
-        var quote: Char? = null
-        var index = 0
-        while (index < offset) {
-            val character = expression[index]
-            if (character == '$' && index + 1 < offset && expression[index + 1] == '{') {
-                val placeholder = findPlaceholderIn(expression, index).orElse(null)
-                if (placeholder != null && placeholder.startIndex == index) {
-                    index = placeholder.endIndex
-                    continue
-                }
-            }
-            if (quote == null && (character == '\'' || character == '"')) quote = character
-            else if (character == quote) {
-                if (index + 1 < offset && expression[index + 1] == quote) index++ else quote = null
-            }
-            index++
-        }
-        return quote
     }
 
     private fun expressionValue(
         value: String,
         statement: RecursiveResolver.Statement,
         quote: Char?,
-        source: DeclaringComponent?,
     ): String {
-        val yamlString =
-            !PropertiesText.isPropertiesText(source) &&
-                !statement.isPlainText &&
-                YamlScalars.isQuoted(value)
-        val text = if (yamlString) YamlScalars.unquote(value) else value
+        val scalar =
+            if (statement.isPlainText) null
+            else runCatching { SnakeYaml.parse(value) as? ScalarNode }.getOrNull()
+        val quoted = scalar?.scalarStyle == ScalarStyle.SINGLE_QUOTED ||
+            scalar?.scalarStyle == ScalarStyle.DOUBLE_QUOTED
+        val text = if (quoted) scalar.value else value
         return when {
             quote != null -> text.replace(quote.toString(), quote.toString().repeat(2))
-            yamlString -> "'" + text.replace("'", "''") + "'"
+            else -> expressionScalarValue(
+                if (quoted) "'" + text.replace("'", "''") + "'" else value,
+                scalar,
+            )
+        }
+    }
+
+    private fun expressionScalarValue(value: String, scalar: ScalarNode?): String =
+        when (scalar?.tag) {
+            Tag.BOOL, Tag.NULL, Tag.INT -> canonicalScalarValue(scalar)
+            Tag.FLOAT -> when (val number = canonicalScalarValue(scalar)) {
+                ".inf" -> "(1.0 / 0.0)"
+                "-.inf" -> "(-1.0 / 0.0)"
+                ".NaN" -> "(0.0 / 0.0)"
+                else -> number
+            }
             else -> value
         }
+
+    private fun canonicalScalarValue(scalar: ScalarNode): String =
+        (SnakeYaml.parse(YamlScalars.canonicalKey(scalar)) as ScalarNode).value
+
+    private fun resolveCollectionValue(
+        value: String,
+        property: Property,
+        root: DeclaringComponent,
+    ): String? {
+        val source = YamlSource(value)
+        val node = source.compose()
+        if (node !is MappingNode && node !is SequenceNode) return null
+        return resolveCollection(node, source, property, root)
     }
 
     private fun resolveSequence(
@@ -294,14 +295,26 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
     ): MappingNode {
         val result = MappingNode(node.tag, mutableListOf(), node.flowStyle)
         resolved[node] = result
+        val keys = mutableSetOf<Pair<Tag, String>>()
         node.value.forEach { entry ->
+            val key = resolveNode(entry.keyNode, source, property, root, resolved)
+            require(keys.add(mappingKey(key))) {
+                "Duplicate YAML key ${SnakeYaml.fragment(key)} after resolution in ${property.declaringComponent}"
+            }
             result.value.add(
                 NodeTuple(
-                    resolveNode(entry.keyNode, source, property, root, resolved),
+                    key,
                     resolveNode(entry.valueNode, source, property, root, resolved),
                 )
             )
         }
         return result
     }
+
+    private fun mappingKey(node: Node): Pair<Tag, String> =
+        node.tag to when {
+            node !is ScalarNode -> SnakeYaml.fragment(node)
+            node.tag == Tag.STR -> node.value
+            else -> canonicalScalarValue(node)
+        }
 }

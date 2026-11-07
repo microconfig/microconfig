@@ -4,6 +4,8 @@ import io.microconfig.core.properties.DeclaringComponent
 import io.microconfig.core.properties.DeclaringComponentImpl
 import io.microconfig.core.properties.PlaceholderResolveStrategy
 import io.microconfig.core.properties.Property
+import io.microconfig.core.properties.UnresolvedValueException
+import kotlin.jvm.optionals.getOrNull
 
 class Placeholder
 internal constructor(
@@ -20,9 +22,8 @@ internal constructor(
         get() = component == "this"
 
     fun resolveUsing(strategy: PlaceholderResolveStrategy, root: DeclaringComponent): Property =
-        strategy.resolve(component, key, environment, configType, root.component).orElseThrow {
-            IllegalStateException("Can't resolve $this")
-        }
+        strategy.resolve(component, key, environment, configType, root.component).getOrNull()
+            ?: throw UnresolvedValueException("Can't resolve $this")
 
     fun referencedTo(source: DeclaringComponent): Boolean =
         component == source.component && environment == source.environment

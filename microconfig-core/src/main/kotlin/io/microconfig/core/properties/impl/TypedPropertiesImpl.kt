@@ -2,6 +2,7 @@ package io.microconfig.core.properties.impl
 
 import io.microconfig.core.configtypes.ConfigType
 import io.microconfig.core.configtypes.name
+import io.microconfig.core.properties.ConfigFormat.PROPERTIES
 import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.DeclaringComponent
 import io.microconfig.core.properties.DeclaringComponentImpl
@@ -58,7 +59,10 @@ data class TypedPropertiesImpl(
         copy(templates = templates)
 
     override fun getPropertyWithKey(key: String): Optional<Property> =
-        Optional.ofNullable(propertyByKey[key] ?: findByPrefix(key) ?: findByCanonicalKey(key))
+        Optional.ofNullable(
+            propertyByKey[key] ?: findByPrefix(key) ?: findByCanonicalKey(key)
+                ?: findByPropertiesKey(key)
+        )
 
     private fun findByCanonicalKey(key: String): Property? {
         yamlPropertyWithKey(YamlScalars.canonicalKeyText(key))?.let {
@@ -81,8 +85,7 @@ data class TypedPropertiesImpl(
         propertyByKey[key]?.takeIf(::hasYamlKey)
 
     private fun hasYamlKey(property: Property): Boolean =
-        property.configFormat == YAML &&
-            !PropertiesText.isPropertiesText(property.declaringComponent)
+        property.keyFormat == YAML
 
     private fun findByPrefix(originalKey: String): Property? {
         if (!originalKey.endsWith(".*")) return null
@@ -97,11 +100,18 @@ data class TypedPropertiesImpl(
                 )
         return prefixes.firstNotNullOfOrNull { prefix ->
             properties
-                .filter { it.key.startsWith("$prefix.") && (prefix == reference || hasYamlKey(it)) }
+                .filter { hasPrefix(it, prefix) && (prefix == reference || hasYamlKey(it)) }
                 .takeIf { it.isNotEmpty() }
                 ?.let { PropertyImpl.groupProperty(prefix, it, declaringComponent) }
         }
     }
+
+    private fun hasPrefix(property: Property, prefix: String): Boolean =
+        property.key.startsWith("$prefix.") ||
+            property.keyFormat == PROPERTIES && PropertiesText.unescape(property.key).startsWith("$prefix.")
+
+    private fun findByPropertiesKey(key: String): Property? =
+        properties.firstOrNull { it.keyFormat == PROPERTIES && PropertiesText.unescape(it.key) == key }
 
     override fun <T> save(serializer: PropertySerializer<T>): T =
         serializer.serialize(properties, templates, configType, component, environment)

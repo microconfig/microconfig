@@ -7,6 +7,7 @@ import java.lang.reflect.Proxy
 import java.util.concurrent.ConcurrentHashMap
 
 object CacheProxy {
+    /** Compatibility helper for query-only interfaces. Core repositories own their query caches. */
     @Suppress("UNCHECKED_CAST")
     fun <T : Any> cache(delegate: T): T =
         Proxy.newProxyInstance(
@@ -21,6 +22,12 @@ internal class CachingInvocationHandler(private val delegate: Any) : InvocationH
     private val values = ConcurrentHashMap<Key, Any?>()
 
     override fun invoke(proxy: Any, method: Method, arguments: Array<out Any?>?): Any? {
+        if (method.declaringClass == Any::class.java)
+            return when (method.name) {
+                "equals" -> proxy === arguments?.singleOrNull()
+                "hashCode" -> System.identityHashCode(proxy)
+                else -> delegate.toString()
+            }
         val key = Key(method, arguments?.toList().orEmpty())
         return values.computeIfAbsent(key) { invokeDelegate(method, arguments) }
     }

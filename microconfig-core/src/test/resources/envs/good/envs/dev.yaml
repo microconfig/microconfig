@@ -1,7 +1,2 @@
 include:
   env: base
-
-ip: 10.0.0.1
-
-infra:
-  ip: 10.0.10.1

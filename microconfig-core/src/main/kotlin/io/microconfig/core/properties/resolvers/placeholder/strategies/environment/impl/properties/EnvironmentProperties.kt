@@ -6,7 +6,6 @@ class EnvironmentProperties {
     fun get(): Map<String, EnvProperty> =
         listOf(
                 EnvNameProperty(),
-                IpProperty(),
                 GroupNameProperty(),
                 ComponentOrderProperty(),
             )

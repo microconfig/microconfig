@@ -14,12 +14,12 @@ class SquareBracketsNotationParser(private val pattern: TemplatePattern) :
         if (!correctNotation(property)) return emptyList()
         val (from, to) = ArrowNotation.pathsIn(property) ?: return emptyList()
         val names =
-            Regex(".*\\.\\[(.*)]").matchEntire(property.key)?.groupValues?.get(1)
+            namesPattern.matchEntire(property.key)?.groupValues?.get(1)
                 ?: return emptyList()
         val type = pattern.extractTemplateType(property.key)
         return names
             .split(',')
-            .dropLastWhile { it.isEmpty() }
+            .filter { it.isNotEmpty() }
             .map { name -> createDefinition(type, name, from, to) }
     }
 
@@ -39,4 +39,8 @@ class SquareBracketsNotationParser(private val pattern: TemplatePattern) :
             setFromFile(from)
             setToFile(to)
         }
+
+    companion object {
+        private val namesPattern = Regex(".*\\.\\[(.*)]")
+    }
 }
