@@ -8,4 +8,7 @@ import io.microconfig.core.properties.resolvers.impl.ChainedResolver
 object YamlResolvers {
     fun forValues(vararg resolvers: RecursiveResolver): Resolver =
         YamlValueResolver(ChainedResolver.recursiveChainOf(*resolvers))
+
+    internal fun withExpressionCache(cache: ExpressionValueCache, vararg resolvers: RecursiveResolver): Resolver =
+        YamlValueResolver(ChainedResolver.recursiveChainOf(*resolvers), cache)
 }

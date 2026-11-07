@@ -1,5 +1,0 @@
-runtime.service=svc26
-runtime.heap=256m
-runtime.port=9026
-runtime.enabled=true
-runtime.label=benchmark-svc26

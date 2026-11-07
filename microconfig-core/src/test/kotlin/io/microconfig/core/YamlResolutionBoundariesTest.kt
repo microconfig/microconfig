@@ -20,6 +20,38 @@ class YamlResolutionBoundariesTest {
     }
 
     @ParameterizedTest
+    @ValueSource(strings = [
+        "{port: 80, port: 81}",
+        "[{port: 80, port: 81}]",
+        "{nested: {yes: first, true: second}}",
+        "{nested: {1_0: first, 10: second}}",
+        "{nested: {1.00: first, 1.0: second}}",
+        "{nested: {~: first, null: second}}",
+    ])
+    fun rejectStaticMappingDuplicatesBeforeWriting(value: String) {
+        write("components/app/application.yaml", "result: $value\n")
+        write("output/app/application.yaml", "retained: true\n")
+
+        val error = assertThrows(RuntimeException::class.java) { build() }
+
+        assertTrue(error.message.orEmpty().contains("Duplicate YAML key"), error.message)
+        assertEquals("retained: true\n", Files.readString(root.resolve("output/app/application.yaml")))
+    }
+
+    @Test
+    fun retainDistinctStaticKeyTypesAndYamlMergeOverrides() {
+        write("components/app/application.yaml", """
+            result: {1: number, '1': text, true: boolean, 'true': text-boolean}
+            merged: {base: &base {port: 80}, copy: {<<: *base, port: 81}}
+            """.trimIndent())
+
+        val result = build()
+
+        assertEquals(mapOf(1 to "number", "1" to "text", true to "boolean", "true" to "text-boolean"), result["result"])
+        assertEquals(mapOf("base" to mapOf("port" to 80), "copy" to mapOf("port" to 81)), result["merged"])
+    }
+
+    @ParameterizedTest
     @CsvSource(
         delimiter = '|',
         quoteCharacter = '"',

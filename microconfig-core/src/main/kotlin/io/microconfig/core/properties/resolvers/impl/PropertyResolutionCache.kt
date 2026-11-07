@@ -5,6 +5,7 @@ import io.microconfig.core.properties.DeclaringComponentImpl
 import io.microconfig.core.properties.Property
 import io.microconfig.core.properties.PropertyImpl
 import io.microconfig.core.properties.ValueFormat
+import io.microconfig.core.properties.io.yaml.ExpressionValueCache
 import io.microconfig.core.properties.io.yaml.YamlResolvers
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.resolvers.RecursiveResolver
@@ -17,6 +18,7 @@ import kotlin.jvm.optionals.getOrNull
 internal class PropertyResolutionCache {
     private val values = ConcurrentHashMap<Key, String>()
     private val expressionValues = ConcurrentHashMap<Pair<Key, Int>, String>()
+    private val independentValues = ConcurrentHashMap<IndependentExpression, String>()
 
     fun resolve(
         property: Property,
@@ -32,8 +34,7 @@ internal class PropertyResolutionCache {
             return value
         val key = keyFor(property, root, referenceChain, explicitEnvironment)
         return values.getOrPut(key) {
-            val cachedExpressions = expressionsFor(key, expressions)
-            YamlResolvers.forValues(placeholders, cachedExpressions).resolve(property, root)
+            resolverFor(key, placeholders, expressions).resolve(property, root)
         }
     }
 
@@ -60,11 +61,25 @@ internal class PropertyResolutionCache {
         )
     }
 
+    private fun resolverFor(key: Key, placeholders: RecursiveResolver, expressions: RecursiveResolver) =
+        when {
+            expressions.findStatementIn(key.property.value).isEmpty ->
+                YamlResolvers.forValues(placeholders, expressions)
+            PlaceholderBorders.findPlaceholderOrNull(key.property.value) == null ->
+                YamlResolvers.forValues(placeholders, expressionsFor(key, expressions))
+            else -> YamlResolvers.withExpressionCache(independentExpressionsFor(key), placeholders, expressions)
+        }
+
+    private fun independentExpressionsFor(key: Key): ExpressionValueCache {
+        val expressionKey = key.copy(referenceChain = emptyList(), explicitEnvironment = null)
+        return ExpressionValueCache { scalarStart, expressionStart, expression, evaluate ->
+            independentValues.computeIfAbsent(
+                IndependentExpression(expressionKey, scalarStart, expressionStart, expression)
+            ) { evaluate() }
+        }
+    }
+
     private fun expressionsFor(key: Key, expressions: RecursiveResolver): RecursiveResolver {
-        if (
-            PlaceholderBorders.findPlaceholderOrNull(key.property.value) != null ||
-                expressions.findStatementIn(key.property.value).getOrNull() == null
-        ) return expressions
         val expressionKey = key.copy(referenceChain = emptyList(), explicitEnvironment = null)
         var index = 0
         var independent = true
@@ -89,6 +104,13 @@ internal class PropertyResolutionCache {
                 })
         }
     }
+
+    private data class IndependentExpression(
+        val property: Key,
+        val scalarStart: Int,
+        val expressionStart: Int,
+        val expression: String,
+    )
 
     private data class Key(
         val property: PropertyImpl,

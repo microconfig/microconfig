@@ -1,5 +1,0 @@
-runtime.service=svc15
-runtime.heap=256m
-runtime.port=9015
-runtime.enabled=true
-runtime.label=benchmark-svc15

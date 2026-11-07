@@ -137,10 +137,10 @@ internal class FilePropertySerializer(
     }
 
     private fun validateOutputs(outputs: List<Output>): Set<Path> {
-        val destinations = mutableSetOf<Path>()
+        val destinations = OutputDestinations()
         val protected = mutableSetOf<Path>()
         outputs.forEach { output ->
-            require(!isDiffFileName(output.file.name)) { "Reserved diff output '${output.file}'" }
+            destinations.checkName(output.file, output.path)
             output.templates.forEach { template ->
                 reserveOutput(template.destination, destinations)
                 protected.addAll(protectedPaths(template.destination))
@@ -154,21 +154,11 @@ internal class FilePropertySerializer(
         return protected
     }
 
-    private fun isDiffFileName(name: String): Boolean =
-        name.startsWith("diff-") && (name.endsWith(".yaml") || name.endsWith(".properties"))
-
     private fun reserveOutput(
         file: File,
-        destinations: MutableSet<Path>,
+        destinations: OutputDestinations,
         path: Path = outputPath(file),
-    ) {
-        require(!isDiffFileName(file.name) && !isDiffFileName(path.fileName.toString())) {
-            "Reserved diff output '$file'"
-        }
-        require(destinations.add(path)) {
-            "Several outputs have the same destination '$file'"
-        }
-    }
+    ) = destinations.reserve(file, path)
 
     private fun protectedPaths(file: File): Set<Path> =
         setOf(file.toPath().toAbsolutePath().normalize(), outputPath(file))

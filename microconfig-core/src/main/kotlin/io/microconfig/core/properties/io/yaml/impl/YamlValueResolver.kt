@@ -9,6 +9,7 @@ import io.microconfig.core.properties.PropertyImpl.Companion.property
 import io.microconfig.core.properties.Resolver
 import io.microconfig.core.properties.ValueFormat
 import io.microconfig.core.properties.io.properties.PropertiesText
+import io.microconfig.core.properties.io.yaml.ExpressionValueCache
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.resolvers.RecursiveResolver
 import io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders
@@ -26,7 +27,12 @@ import org.yaml.snakeyaml.nodes.SequenceNode
 import org.yaml.snakeyaml.nodes.Tag
 import kotlin.jvm.optionals.getOrNull
 
-class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
+class YamlValueResolver internal constructor(
+    private val delegate: RecursiveResolver,
+    private val expressionCache: ExpressionValueCache?,
+) : Resolver {
+    constructor(delegate: RecursiveResolver) : this(delegate, null)
+
     override fun resolve(
         value: String,
         sourceOfValue: DeclaringComponent?,
@@ -80,8 +86,26 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
         property: Property,
         root: DeclaringComponent,
     ): String {
-        if (delegate.findStatementIn(source.original).getOrNull() == null) return source.original
+        if (delegate.findStatementIn(source.original).getOrNull() == null) {
+            validateMappingKeys(node, property, java.util.Collections.newSetFromMap(IdentityHashMap()))
+            return source.original
+        }
         return SnakeYaml.fragment(resolveNode(node, source, property, root, IdentityHashMap()))
+    }
+
+    private fun validateMappingKeys(node: Node, property: Property, visited: MutableSet<Node>) {
+        if (!visited.add(node)) return
+        when (node) {
+            is MappingNode -> {
+                val keys = mutableSetOf<Pair<Tag, String>>()
+                node.value.forEach { entry ->
+                    checkMappingKey(entry.keyNode, keys, property)
+                    validateMappingKeys(entry.keyNode, property, visited)
+                    validateMappingKeys(entry.valueNode, property, visited)
+                }
+            }
+            is SequenceNode -> node.value.forEach { validateMappingKeys(it, property, visited) }
+        }
     }
 
     private fun resolveNode(
@@ -116,7 +140,8 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
         val declaration = collection.declaringComponent
         if (node.scalarStyle == ScalarStyle.LITERAL || node.scalarStyle == ScalarStyle.FOLDED) {
             val resolvedValue =
-                resolveScalar(literalProperty(collection.key, value, YAML, declaration, ValueFormat.TEXT), root)
+                resolveScalar(literalProperty(collection.key, value, YAML, declaration, ValueFormat.TEXT), root,
+                    scalarStart = node.startMark?.index ?: 0)
             return ScalarNode(
                 node.tag,
                 resolvedValue,
@@ -134,7 +159,8 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
             else value
         val result =
             SnakeYaml.parse(
-                resolveScalar(property(collection.key, original, YAML, declaration, ValueFormat.YAML), root)
+                resolveScalar(property(collection.key, original, YAML, declaration, ValueFormat.YAML), root,
+                    scalarStart = node.startMark?.index ?: 0)
             )
         if (!source.isSplice(node) && source.hasExplicitTag(node)) result.tag = node.tag
         return result
@@ -145,14 +171,17 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
         root: DeclaringComponent,
         quotedValue: String? = if (property.valueFormat == ValueFormat.YAML)
             YamlScalars.quotedTextOrNull(property.value) else null,
+        scalarStart: Int = 0,
     ): String {
         val yamlSyntax = property.valueFormat == ValueFormat.YAML
         val quoted = quotedValue != null
-        val result = StringBuilder(quotedValue ?: property.value)
+        val original = quotedValue ?: property.value
+        val expressions = expressionCache?.let { ScalarExpressions(original, scalarStart, it) }
+        val result = StringBuilder(expressions?.value ?: original)
         var plainText = false
         var stringValue = quoted
         while (true) {
-            val current = delegate.findStatementIn(result).getOrNull() ?: break
+            val current = findStatementIn(result, expressions, property, root) ?: break
             val expression = expressionContaining(result, current)
             if (expression != null) {
                 val value =
@@ -160,6 +189,7 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
                         result.substring(expression.start(), expression.end()),
                         property,
                         root,
+                        expressions,
                     )
                 if (expression.start() == 0 && expression.end() == result.length)
                     stringValue = quoted
@@ -202,6 +232,20 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
         }
     }
 
+    private fun findStatementIn(
+        value: CharSequence,
+        expressions: ScalarExpressions?,
+        property: Property,
+        root: DeclaringComponent,
+    ): RecursiveResolver.Statement? {
+        val current = delegate.findStatementIn(value).getOrNull()
+        val marked = expressions?.findStatementIn(value) { resolveExpression(it, property, root) }
+            ?: return current
+        if (current == null) return marked
+        val placeholder = value.subSequence(current.startIndex, current.endIndex).startsWith("\${")
+        return if (placeholder || current.startIndex < marked.startIndex) current else marked
+    }
+
     private fun expressionContaining(
         value: CharSequence,
         statement: RecursiveResolver.Statement,
@@ -215,11 +259,12 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
         expression: String,
         property: Property,
         root: DeclaringComponent,
+        expressions: ScalarExpressions? = null,
     ): String {
         val result = StringBuilder(expression)
         while (true) {
             val current =
-                delegate.findStatementIn(result).getOrNull()
+                findStatementIn(result, expressions, property, root)
                     ?: return result.toString()
             val value = current.resolveFor(property.declaringComponent, root, ValueFormat.YAML)
             if (current.startIndex == 0 && current.endIndex == result.length)
@@ -310,9 +355,7 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
         val keys = mutableSetOf<Pair<Tag, String>>()
         node.value.forEach { entry ->
             val key = resolveNode(entry.keyNode, source, property, root, resolved)
-            require(keys.add(mappingKey(key))) {
-                "Duplicate YAML key ${SnakeYaml.fragment(key)} after resolution in ${property.declaringComponent}"
-            }
+            checkMappingKey(key, keys, property)
             result.value.add(
                 NodeTuple(
                     key,
@@ -321,6 +364,12 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
             )
         }
         return result
+    }
+
+    private fun checkMappingKey(key: Node, keys: MutableSet<Pair<Tag, String>>, property: Property) {
+        require(keys.add(mappingKey(key))) {
+            "Duplicate YAML key ${SnakeYaml.fragment(key)} in ${property.declaringComponent}"
+        }
     }
 
     private fun mappingKey(node: Node): Pair<Tag, String> =

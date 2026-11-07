@@ -28,6 +28,12 @@ tasks.named<ProcessResources>("processResources") { from(generateVersionProperti
 
 tasks.test {
     inputs.file(rootProject.file(".github/scripts/set_gradle_properties.sh"))
+    inputs.file(rootProject.file(".github/scripts/rotate_signing_passwords.sh"))
+    inputs.file(rootProject.file(".github/scripts/native/verify-native.py"))
+    inputs.file(rootProject.file("microconfig-cli/src/test/python/test_verify_native.py"))
+    // NativeValidationScriptTest uses verify-native.py to read expression cases from this core test.
+    // Track the source so changing those cases reruns CLI tests.
+    inputs.file(rootProject.file("microconfig-core/src/test/kotlin/io/microconfig/core/properties/resolvers/expression/ExpressionResolverTest.kt"))
     val cliJar = tasks.named<ShadowJar>("shadowJar")
     dependsOn(cliJar)
     inputs.file(cliJar.flatMap { it.archiveFile })

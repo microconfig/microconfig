@@ -1,5 +1,0 @@
-runtime.service=svc17
-runtime.heap=256m
-runtime.port=9017
-runtime.enabled=true
-runtime.label=benchmark-svc17

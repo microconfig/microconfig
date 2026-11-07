@@ -1,0 +1,42 @@
+import org.gradle.api.tasks.testing.Test
+
+// Run with: ./gradlew --offline -I .github/scripts/verify-packaged.init.gradle verifyPackagedCli
+// Add -PpackagedCliMinimize=false to check the same sources without minimization.
+gradle.projectsEvaluated {
+    def root = gradle.rootProject
+    def cli = root.project(':microconfig-cli')
+    def minimized = root.providers.gradleProperty('packagedCliMinimize').getOrElse('true').toBoolean()
+    def mode = minimized ? 'minimized' : 'full'
+    def output = root.layout.buildDirectory.dir('packaged-cli-validation/' + mode).get().asFile
+    def cliJar = cli.tasks.named('shadowJar')
+    cliJar.configure {
+        minimizeJar.set(minimized)
+        destinationDirectory.set(output)
+    }
+    def packagedTests = root.subprojects.collect { module ->
+        def sourceSets = module.extensions.getByName('sourceSets')
+        module.tasks.register('testPackagedCli', Test) {
+            dependsOn(cliJar, module.tasks.named('testClasses'))
+            testClassesDirs = sourceSets.test.output.classesDirs
+            classpath = module.files(cliJar.flatMap { it.archiveFile }) + sourceSets.test.output +
+                (sourceSets.test.runtimeClasspath - sourceSets.main.runtimeClasspath)
+            systemProperty('microconfig.cli.jar', cliJar.get().archiveFile.get().asFile.absolutePath)
+            workingDir = module.projectDir
+            inputs.file(root.file('.github/scripts/set_gradle_properties.sh'))
+            inputs.file(root.file('.github/scripts/rotate_signing_passwords.sh'))
+            inputs.file(root.file('.github/scripts/native/verify-native.py'))
+            inputs.file(root.file('microconfig-cli/src/test/python/test_verify_native.py'))
+            inputs.file(root.file('microconfig-core/src/test/kotlin/io/microconfig/core/properties/resolvers/expression/ExpressionResolverTest.kt'))
+            reports.junitXml.outputLocation.set(new File(output, module.name + '/xml'))
+            reports.html.outputLocation.set(new File(output, module.name + '/html'))
+            doFirst {
+                def files = classpath.files
+                if (files.any { it.name ==~ /(?:kotlin-stdlib|spring-core|spring-expression|snakeyaml|jmustache)-.*\.jar/ }) {
+                    throw new GradleException('Production dependency leaked into packaged test classpath: ' + files)
+                }
+                new File(output, module.name + '-test-classpath.txt').text = files.join('\n') + '\n'
+            }
+        }
+    }
+    root.tasks.register('verifyPackagedCli') { dependsOn(packagedTests) }
+}

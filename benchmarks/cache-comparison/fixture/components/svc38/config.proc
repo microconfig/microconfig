@@ -1,5 +1,0 @@
-runtime.service=svc38
-runtime.heap=256m
-runtime.port=9038
-runtime.enabled=true
-runtime.label=benchmark-svc38

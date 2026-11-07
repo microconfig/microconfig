@@ -1,5 +1,0 @@
-runtime.service=svc32
-runtime.heap=256m
-runtime.port=9032
-runtime.enabled=true
-runtime.label=benchmark-svc32

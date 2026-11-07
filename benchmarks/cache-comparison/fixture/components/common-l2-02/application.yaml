@@ -1,4 +1,0 @@
-#include common-l3-020, common-l3-021, common-l3-022
-shared.l2.branch02.text: text-l2-02
-shared.l2.branch02.number: 202
-shared.l2.branch02.enabled: true

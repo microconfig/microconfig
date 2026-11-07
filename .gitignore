@@ -25,3 +25,4 @@ out/
 
 microconfig.jar
 microconfig.exe
+/benchmarks/

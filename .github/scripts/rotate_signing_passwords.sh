@@ -35,8 +35,8 @@ main() {
   encrypt_keyring
   verify_like_ci
   replace_keyring
-  update_github_secrets
   print_summary
+  update_github_secrets
 }
 
 require_tools() {
@@ -197,18 +197,6 @@ replace_keyring() {
   mv "$WORK/$KEYRING" "$KEYRING"
 }
 
-update_github_secrets() {
-  command -v gh >/dev/null && gh auth status >/dev/null 2>&1 || return 0
-  confirm "Обновить секреты в GitHub ($REPO)?" || return 0
-  printf '%s' "$NEW_PASSWORD" | gh secret set SIGNING_PASSWORD -R "$REPO"
-  passphrase_changed && printf '%s' "$NEW_PASSPHRASE" | gh secret set SECRET_PASSPHRASE -R "$REPO"
-  GITHUB_UPDATED=1
-}
-
-passphrase_changed() {
-  [[ $NEW_PASSPHRASE != "$OLD_PASSPHRASE" ]]
-}
-
 print_summary() {
   echo
   echo "Готово. $KEYRING перешифрован — закоммить его: git commit -m 'rotate signing password' $KEYRING"
@@ -223,8 +211,23 @@ print_summary() {
   echo "  SIGNING_KEYID     — не менялся"
   echo
   echo "Старый SECRET_PASSPHRASE храни в секрете и дальше: старый $KEYRING остаётся в истории git."
-  [[ -n ${GITHUB_UPDATED:-} ]] && echo "Секреты в GitHub обновлены." && return
   echo "Обнови секреты в GitHub: https://github.com/$REPO/settings/secrets/actions"
+}
+
+passphrase_changed() {
+  [[ $NEW_PASSPHRASE != "$OLD_PASSPHRASE" ]]
+}
+
+update_github_secrets() {
+  command -v gh >/dev/null && gh auth status >/dev/null 2>&1 || return 0
+  confirm "Обновить секреты в GitHub ($REPO)?" || return 0
+  printf '%s' "$NEW_PASSWORD" | gh secret set SIGNING_PASSWORD -R "$REPO" \
+    || fail "Не удалось обновить SIGNING_PASSWORD. Сохрани пароль из сводки выше и обнови секрет вручную."
+  if passphrase_changed; then
+    printf '%s' "$NEW_PASSPHRASE" | gh secret set SECRET_PASSPHRASE -R "$REPO" \
+      || fail "Не удалось обновить SECRET_PASSPHRASE. Сохрани пароли из сводки выше и обнови секрет вручную."
+  fi
+  echo "Секреты в GitHub обновлены."
 }
 
 gpg_with() {
@@ -246,4 +249,6 @@ fail() {
   exit 1
 }
 
-main "$@"
+if [[ ${BASH_SOURCE[0]} == "$0" ]]; then
+  main "$@"
+fi
