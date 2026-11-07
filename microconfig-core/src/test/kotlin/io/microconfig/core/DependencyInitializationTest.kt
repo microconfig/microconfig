@@ -1,15 +1,16 @@
 package io.microconfig.core
 
 import io.microconfig.core.configtypes.StandardConfigType.APPLICATION
-import java.nio.file.Files
-import java.nio.file.Path
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import java.nio.file.Files
+import java.nio.file.Path
 
 class DependencyInitializationTest {
-    @TempDir lateinit var root: Path
+    @TempDir
+    lateinit var root: Path
 
     @BeforeEach
     fun createRepository() {

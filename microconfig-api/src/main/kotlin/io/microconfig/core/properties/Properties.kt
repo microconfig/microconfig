@@ -1,6 +1,6 @@
 package io.microconfig.core.properties
 
-import java.util.Optional
+import java.util.*
 import java.util.function.Predicate
 import java.util.function.UnaryOperator
 

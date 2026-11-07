@@ -2,7 +2,7 @@ package io.microconfig.core.properties.resolvers.placeholder.strategies.componen
 
 import io.microconfig.core.properties.resolvers.placeholder.strategies.component.ComponentProperty
 import java.io.File
-import java.util.Optional
+import java.util.*
 
 class ResultDirProperty(private val destination: File) : ComponentProperty {
     override fun key(): String = "resultDir"

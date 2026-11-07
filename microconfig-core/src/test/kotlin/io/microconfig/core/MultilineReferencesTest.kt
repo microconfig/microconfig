@@ -1,17 +1,12 @@
 package io.microconfig.core
 
+import io.microconfig.core.properties.ConfigFormat
 import io.microconfig.core.properties.DeclaringComponentImpl
 import io.microconfig.core.properties.FileBasedComponent.Companion.fileSource
-import io.microconfig.core.properties.ConfigFormat
 import io.microconfig.core.properties.PropertyImpl
 import io.microconfig.core.properties.ValueFormat
 import io.microconfig.core.properties.io.properties.PropertiesText
 import io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo
-import java.io.StringReader
-import java.io.StringWriter
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.Properties
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -23,10 +18,16 @@ import org.junit.jupiter.params.provider.EnumSource
 import org.junit.jupiter.params.provider.MethodSource
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
+import java.io.StringReader
+import java.io.StringWriter
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MultilineReferencesTest {
-    @TempDir lateinit var root: Path
+    @TempDir
+    lateinit var root: Path
 
     @BeforeEach
     fun createEnvironment() {
@@ -87,8 +88,10 @@ class MultilineReferencesTest {
     fun preserveValuesThroughPropertiesBridge(style: String, yamlTarget: Boolean) {
         val expected = "\nO'Reilly \\\\server\\share\n\"quoted\"\n\n"
         writeSource(style, expected)
-        write("components/bridge/application.properties",
-            "value=\${source@value}\ngroup.text=\${this@value}\n")
+        write(
+            "components/bridge/application.properties",
+            "value=\${source@value}\ngroup.text=\${this@value}\n"
+        )
         writeTarget(yamlTarget, "bridge")
         val result = readTarget(buildOutput(), yamlTarget)
         assertEquals(expected, result["copy"])
@@ -101,9 +104,11 @@ class MultilineReferencesTest {
         val expected = "first\nO'Reilly \"book\"\n\n"
         writeSource(style, expected)
         val separator = if (yamlTarget) ": " else "="
-        write("components/app/application${if (yamlTarget) ".yaml" else ".properties"}",
+        write(
+            "components/app/application${if (yamlTarget) ".yaml" else ".properties"}",
             "nested$separator\${absent@value:\${source@value}}\n" +
-                "empty$separator\${source@empty:fallback}\nemptyDefault$separator\${absent@value:\${source@empty}}\n")
+                    "empty$separator\${source@empty:fallback}\nemptyDefault$separator\${absent@value:\${source@empty}}\n"
+        )
         val result = readTarget(buildOutput(), yamlTarget)
         assertEquals(expected, result["nested"])
         assertEquals("", result["empty"])
@@ -135,10 +140,13 @@ class MultilineReferencesTest {
     fun preserveCrLfThroughLegacyStringResolver() {
         val expected = "first\r\nsecond"
         writeSource("properties", expected)
-        val context = fileSource(root.resolve("components/source/application.properties").toFile(),
-            0, false, "app", "dev")
+        val context = fileSource(
+            root.resolve("components/source/application.properties").toFile(),
+            0, false, "app", "dev"
+        )
         val result = Microconfig.searchConfigsIn(root.toFile()).resolver().resolve(
-            "\${source@value}", context, DeclaringComponentImpl("app", "app", "dev"))
+            "\${source@value}", context, DeclaringComponentImpl("app", "app", "dev")
+        )
         assertEquals(expected, PropertiesText.unescape(result))
     }
 
@@ -180,8 +188,10 @@ class MultilineReferencesTest {
     private fun writeSource(style: String, value: String, crlf: Boolean = false) {
         val yaml = style != "properties"
         val content = if (yaml) yamlSource(style, value) else propertiesSource(value)
-        write("components/source/application${if (yaml) ".yaml" else ".properties"}",
-            if (crlf) content.replace("\n", "\r\n") else content)
+        write(
+            "components/source/application${if (yaml) ".yaml" else ".properties"}",
+            if (crlf) content.replace("\n", "\r\n") else content
+        )
     }
 
     private fun yamlSource(style: String, value: String): String {
@@ -193,8 +203,12 @@ class MultilineReferencesTest {
                 else -> DumperOptions.ScalarStyle.DOUBLE_QUOTED
             }
         }
-        return Yaml(options).dump(mapOf("value" to value, "empty" to "",
-            "group" to mapOf("text" to "\${this@value}")))
+        return Yaml(options).dump(
+            mapOf(
+                "value" to value, "empty" to "",
+                "group" to mapOf("text" to "\${this@value}")
+            )
+        )
     }
 
     private fun propertiesSource(value: String): String {
@@ -212,10 +226,10 @@ class MultilineReferencesTest {
         val separator = if (yaml) ": " else "="
         val reference = "\${$component@value}"
         val common = "copy$separator$reference\nchain$separator\${this@copy}\n" +
-            "composed${separator}${if (yaml) "\"before $reference after\"" else "before $reference after"}\n" +
-            "length$separator#{'$reference'.length()}\ngroup$separator\${$component@group.*}\nsibling${separator}kept\n"
+                "composed${separator}${if (yaml) "\"before $reference after\"" else "before $reference after"}\n" +
+                "length$separator#{'$reference'.length()}\ngroup$separator\${$component@group.*}\nsibling${separator}kept\n"
         val collections = if (yaml) "quoted: \"$reference\"\nblock:\n  - $reference\n" +
-            "  - text: $reference\nflow: [$reference, {text: $reference}]\n" else ""
+                "  - text: $reference\nflow: [$reference, {text: $reference}]\n" else ""
         write("components/app/application${if (yaml) ".yaml" else ".properties"}", common + collections)
     }
 
@@ -228,14 +242,14 @@ class MultilineReferencesTest {
     private fun readTarget(output: Path, yaml: Boolean): Map<*, *> {
         val content = Files.readString(output.resolve("app/application${if (yaml) ".yaml" else ".properties"}"))
         return if (yaml) Yaml().load<Map<*, *>>(content)
-            else Properties().apply { load(StringReader(content)) }
+        else Properties().apply { load(StringReader(content)) }
     }
 
     private fun blockTemplate(depth: Int): String {
         val parents = (1 until depth).map { "  ".repeat(it - 1) + "level$it:" }
         val keyIndent = "  ".repeat(depth - 1)
         return (parents + (keyIndent + "value: |-") + ("  ".repeat(depth) + "\${source@value}") +
-            (keyIndent + "sibling: kept")).joinToString("\n") + "\n"
+                (keyIndent + "sibling: kept")).joinToString("\n") + "\n"
     }
 
     private fun configValues(): List<Arguments> = styles().flatMap { style ->

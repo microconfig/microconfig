@@ -3,7 +3,7 @@ package io.microconfig.core.environments.impl
 import io.microconfig.core.environments.Component
 import io.microconfig.core.environments.ComponentGroup
 import io.microconfig.core.environments.Components
-import java.util.Optional
+import java.util.*
 
 class ComponentGroupImpl(
     override val name: String,

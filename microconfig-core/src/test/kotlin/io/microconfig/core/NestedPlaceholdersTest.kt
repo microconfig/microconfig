@@ -5,11 +5,6 @@ import io.microconfig.core.properties.ConfigFormat.PROPERTIES
 import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.io.properties.PropertiesText.escape
 import io.microconfig.core.properties.serializers.PropertySerializers.asString
-import java.io.StringReader
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.StandardOpenOption.APPEND
-import java.util.Properties
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.io.TempDir
@@ -17,10 +12,16 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.yaml.snakeyaml.Yaml
+import java.io.StringReader
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.StandardOpenOption.APPEND
+import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class NestedPlaceholdersTest {
-    @TempDir lateinit var root: Path
+    @TempDir
+    lateinit var root: Path
 
     @ParameterizedTest(name = "{0}: {1}")
     @MethodSource("nestedValues")
@@ -61,11 +62,15 @@ class NestedPlaceholdersTest {
 
     private fun writeTemplate(format: ConfigFormat, expression: String) {
         val component = root.resolve("components/app")
-        Files.writeString(component.resolve("source.txt"),
-            "\${this@templateMissing:$expression}|\${this@present}")
+        Files.writeString(
+            component.resolve("source.txt"),
+            "\${this@templateMissing:$expression}|\${this@present}"
+        )
         val separator = if (format == PROPERTIES) "=" else ": "
-        Files.writeString(component.resolve("application${format.extension()}"),
-            "mc.template.t$separator\${this@configDir}/source.txt -> rendered.txt\n", APPEND)
+        Files.writeString(
+            component.resolve("application${format.extension()}"),
+            "mc.template.t$separator\${this@configDir}/source.txt -> rendered.txt\n", APPEND
+        )
     }
 
     private fun renderTemplate(): String {

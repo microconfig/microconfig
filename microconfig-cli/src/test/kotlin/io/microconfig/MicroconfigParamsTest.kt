@@ -1,11 +1,11 @@
 package io.microconfig
 
 import io.microconfig.MicroconfigParams.Companion.parse
-import java.io.File
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import java.io.File
 
 class MicroconfigParamsTest {
     private val params =

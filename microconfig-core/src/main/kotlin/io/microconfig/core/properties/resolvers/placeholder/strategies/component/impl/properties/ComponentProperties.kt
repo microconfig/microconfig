@@ -13,10 +13,10 @@ class ComponentProperties(
 ) {
     fun get(): Map<String, ComponentProperty> =
         listOf(
-                NameProperty(),
-                ConfigDirProperty(graph, environments),
-                ResultDirProperty(destination),
-                ConfigRootDirProperty(root),
-            )
+            NameProperty(),
+            ConfigDirProperty(graph, environments),
+            ResultDirProperty(destination),
+            ConfigRootDirProperty(root),
+        )
             .associateBy { it.key() }
 }

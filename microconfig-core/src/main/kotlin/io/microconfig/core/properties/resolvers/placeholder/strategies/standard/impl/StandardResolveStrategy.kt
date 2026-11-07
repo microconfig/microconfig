@@ -5,7 +5,7 @@ import io.microconfig.core.environments.EnvironmentRepository
 import io.microconfig.core.properties.PlaceholderResolveStrategy
 import io.microconfig.core.properties.Properties
 import io.microconfig.core.properties.Property
-import java.util.Optional
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 class StandardResolveStrategy(private val environments: EnvironmentRepository) :

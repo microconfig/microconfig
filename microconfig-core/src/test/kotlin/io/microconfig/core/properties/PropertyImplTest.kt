@@ -7,11 +7,11 @@ import io.microconfig.core.properties.PropertyImpl.Companion.isComment
 import io.microconfig.core.properties.PropertyImpl.Companion.isTempProperty
 import io.microconfig.core.properties.PropertyImpl.Companion.parse
 import io.microconfig.core.properties.PropertyImpl.Companion.property
-import java.io.File
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
+import java.io.File
 
 class PropertyImplTest {
     val yamlSource: DeclaringComponent = fileSource(File("comp/config.yaml"), 0, true, "app", "dev")

@@ -1,19 +1,22 @@
 package io.microconfig.core
 
-import java.nio.file.Files
-import java.nio.file.Path
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import java.nio.file.Files
+import java.nio.file.Path
 
 class EnvironmentMetadataTest {
-    @TempDir lateinit var root: Path
+    @TempDir
+    lateinit var root: Path
 
     @Test
     fun treatIpAsAnOrdinaryGroupNameAndUseDefaultForMissingProperty() {
         write("envs/dev.yaml", "ip:\n  components: [app]\n")
-        write("components/app/application.yaml",
-            "value: \${this@ip:fallback}\ngroup: \${this@group}\norder: \${this@order}\n")
+        write(
+            "components/app/application.yaml",
+            "value: \${this@ip:fallback}\ngroup: \${this@group}\norder: \${this@order}\n"
+        )
 
         val properties = build()
 

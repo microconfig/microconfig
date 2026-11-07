@@ -9,18 +9,19 @@ import io.microconfig.core.properties.resolvers.expression.impl.ExpressionResolv
 import io.microconfig.core.properties.resolvers.impl.MemoizingResolver
 import io.microconfig.core.properties.resolvers.impl.PropertyResolutionCache
 import io.microconfig.core.properties.resolvers.placeholder.impl.PlaceholderResolver
-import java.util.Optional
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit.SECONDS
-import java.util.concurrent.atomic.AtomicInteger
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.Mockito.mock
 import org.yaml.snakeyaml.Yaml
+import java.util.*
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit.SECONDS
+import java.util.concurrent.atomic.AtomicInteger
 
 class MixedExpressionCacheTest {
     private val context = DeclaringComponentImpl("app", "app", "dev")
@@ -39,7 +40,11 @@ class MixedExpressionCacheTest {
                         return when {
                             expression == "#{next}" -> evaluations.incrementAndGet().toString()
                             expression.startsWith("#{next + ") -> delegate.resolve(
-                                expression.replaceFirst("next", evaluations.incrementAndGet().toString()), sourceOfValue, root)
+                                expression.replaceFirst("next", evaluations.incrementAndGet().toString()),
+                                sourceOfValue,
+                                root
+                            )
+
                             else -> statement.resolveFor(sourceOfValue, root)
                         }
                     }
@@ -47,9 +52,11 @@ class MixedExpressionCacheTest {
             }
     }
     private val cache = PropertyResolutionCache()
-    private val placeholders = PlaceholderResolver(mock(EnvironmentRepository::class.java),
+    private val placeholders = PlaceholderResolver(
+        mock(EnvironmentRepository::class.java),
         PlaceholderResolveStrategy { component, key, _, _, _ -> Optional.ofNullable(properties[component to key]) },
-        emptySet(), expressions, cache)
+        emptySet(), expressions, cache
+    )
     private val resolver = MemoizingResolver(placeholders, cache, expressions)
 
     @ParameterizedTest
@@ -91,11 +98,13 @@ class MixedExpressionCacheTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = [
-        "\${this@missing:[#{next}, #{next}]}",
-        "[\${this@missing:#{next}}, \${this@missing:#{next}}]",
-        "\${this@missing:[\${this@nested:#{next}}, #{next}]}",
-    ])
+    @ValueSource(
+        strings = [
+            "\${this@missing:[#{next}, #{next}]}",
+            "[\${this@missing:#{next}}, \${this@missing:#{next}}]",
+            "\${this@missing:[\${this@nested:#{next}}, #{next}]}",
+        ]
+    )
     fun keepDefaultExpressionOccurrencesDistinctInsideCollections(value: String) {
         val stamp = property("app", "stamp", value, ValueFormat.YAML)
         val expected = listOf(1, 2)
@@ -234,8 +243,10 @@ class MixedExpressionCacheTest {
 
     @Test
     fun decodeQuotedYamlBeforeEvaluatingCachedExpressions() {
-        val stamp = property("app", "stamp",
-            YamlScalars.doubleQuoted("#{next}-\${this@label}-#{'a\\b'}"), ValueFormat.YAML)
+        val stamp = property(
+            "app", "stamp",
+            YamlScalars.doubleQuoted("#{next}-\${this@label}-#{'a\\b'}"), ValueFormat.YAML
+        )
         property("app", "label", "app")
 
         assertEquals("1-app-a\\b", decoded(stamp.resolveBy(resolver, context).value, ValueFormat.YAML))
@@ -301,23 +312,27 @@ class MixedExpressionCacheTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = [
-        "#{next}-\${this@label}",
-        "\${this@missing:#{next}}-\${this@label}",
-        "\${this@missing:#{next + '-' + '\${this@label}'}}",
-        "\${this@missing:#{#{next} + '-' + '\${this@label}'}}",
-    ])
+    @ValueSource(
+        strings = [
+            "#{next}-\${this@label}",
+            "\${this@missing:#{next}}-\${this@label}",
+            "\${this@missing:#{next + '-' + '\${this@label}'}}",
+            "\${this@missing:#{#{next} + '-' + '\${this@label}'}}",
+        ]
+    )
     fun evaluateMixedPropertyExpressionsOnceUnderConcurrentCacheMisses(value: String) {
         val stamp = property("app", "stamp", value)
         property("app", "label", "app")
         val pool = Executors.newFixedThreadPool(8)
         val ready = CountDownLatch(8)
         try {
-            val tasks = (1..8).map { pool.submit<String> {
-                ready.countDown()
-                assertTrue(ready.await(5, SECONDS))
-                stamp.resolveBy(resolver, context).value
-            } }
+            val tasks = (1..8).map {
+                pool.submit<String> {
+                    ready.countDown()
+                    assertTrue(ready.await(5, SECONDS))
+                    stamp.resolveBy(resolver, context).value
+                }
+            }
             assertEquals(List(8) { "1-app" }, tasks.map { it.get(10, SECONDS) })
             assertEquals(1, evaluations.get())
         } finally {
@@ -325,9 +340,16 @@ class MixedExpressionCacheTest {
         }
     }
 
-    private fun property(component: String, key: String, value: String, format: ValueFormat = ValueFormat.TEXT): Property =
-        PropertyImpl.property(key, value, if (format == ValueFormat.YAML) ConfigFormat.YAML else ConfigFormat.PROPERTIES,
-            DeclaringComponentImpl("app", component, "dev"), format).also { properties[component to key] = it }
+    private fun property(
+        component: String,
+        key: String,
+        value: String,
+        format: ValueFormat = ValueFormat.TEXT
+    ): Property =
+        PropertyImpl.property(
+            key, value, if (format == ValueFormat.YAML) ConfigFormat.YAML else ConfigFormat.PROPERTIES,
+            DeclaringComponentImpl("app", component, "dev"), format
+        ).also { properties[component to key] = it }
 
     private fun decoded(value: String, format: ValueFormat): String = when (format) {
         ValueFormat.YAML -> Yaml().load(value)

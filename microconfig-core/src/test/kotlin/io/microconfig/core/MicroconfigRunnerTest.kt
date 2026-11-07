@@ -3,15 +3,14 @@ package io.microconfig.core
 import io.microconfig.core.ClasspathReader.Companion.classpathFile
 import io.microconfig.core.environments.repository.EnvironmentException
 import io.microconfig.utils.IoUtils.readFully
-import java.io.File
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import java.io.File
 
 class MicroconfigRunnerTest {
-    @TempDir lateinit var destinationDir: File
+    @TempDir
+    lateinit var destinationDir: File
 
     @Test
     fun testBuild() {

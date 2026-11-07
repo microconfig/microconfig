@@ -8,21 +8,23 @@ import io.microconfig.core.properties.io.selector.ConfigIoFactory.newConfigIo
 import io.microconfig.core.properties.serializers.PropertySerializers
 import io.microconfig.io.FsReader
 import io.microconfig.io.impl.DumpedFsReader
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.Optional
-import java.util.function.BiConsumer
-import java.util.function.Predicate
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.*
+import java.util.function.BiConsumer
+import java.util.function.Predicate
 
 class CustomFsReaderSerializationTest {
-    @TempDir lateinit var directory: Path
+    @TempDir
+    lateinit var directory: Path
     private val root
         get() = directory.resolve("repo")
 

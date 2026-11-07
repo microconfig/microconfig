@@ -7,13 +7,13 @@ import io.microconfig.core.properties.PropertyImpl.Companion.property
 import io.microconfig.core.properties.io.properties.PropertiesText.escape
 import io.microconfig.core.properties.io.properties.impl.PropertiesWriter
 import io.microconfig.utils.FileUtils.LINES_SEPARATOR
-import java.io.File
-import java.io.StringReader
-import java.util.Properties
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import java.io.File
+import java.io.StringReader
+import java.util.*
 
 class PropertiesWriterTest {
     val writer: PropertiesWriter = PropertiesWriter(File("unused.properties"))

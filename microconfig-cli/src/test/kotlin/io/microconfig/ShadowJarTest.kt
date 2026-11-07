@@ -1,17 +1,16 @@
 package io.microconfig
 
-import java.io.File
-import java.util.Properties
-import java.util.jar.JarFile
-import java.util.concurrent.TimeUnit.SECONDS
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import java.io.File
+import java.util.*
+import java.util.concurrent.TimeUnit.SECONDS
+import java.util.jar.JarFile
 
 class ShadowJarTest {
-    @TempDir lateinit var directory: File
+    @TempDir
+    lateinit var directory: File
 
     @Test
     fun keepFeaturesRegisteredInNativeImageMetadata() {

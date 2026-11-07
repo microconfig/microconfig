@@ -6,11 +6,11 @@ import io.microconfig.core.properties.FileBasedComponent
 import io.microconfig.core.properties.PropertyImpl
 import io.microconfig.core.properties.io.selector.ConfigIoFactory
 import io.microconfig.io.impl.DumpedFsReader
-import java.io.File
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Test
 import org.yaml.snakeyaml.Yaml
+import java.io.File
 
 class YamlConfigIoTest {
     private val io = ConfigIoFactory.newConfigIo(DumpedFsReader())

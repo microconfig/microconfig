@@ -2,10 +2,6 @@ package io.microconfig.core
 
 import io.microconfig.core.environments.repository.EnvironmentException
 import io.microconfig.core.properties.ResolveException
-import java.io.StringReader
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.Properties
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -13,9 +9,14 @@ import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import org.yaml.snakeyaml.Yaml
+import java.io.StringReader
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.*
 
 class BuildRegressionsTest {
-    @TempDir lateinit var directory: Path
+    @TempDir
+    lateinit var directory: Path
     private val root
         get() = directory.resolve("repo")
 
@@ -458,12 +459,12 @@ class BuildRegressionsTest {
         assertEquals(
             mapOf(
                 "result" to
-                    mapOf(
-                        "value" to "first",
-                        "left" to "present",
-                        "right" to "present",
-                        "local" to "present",
-                    )
+                        mapOf(
+                            "value" to "first",
+                            "left" to "present",
+                            "right" to "present",
+                            "local" to "present",
+                        )
             ),
             yaml(),
         )
@@ -547,7 +548,7 @@ class BuildRegressionsTest {
         build()
         val document =
             Yaml().compose(Files.newBufferedReader(output("application.yaml")))
-                as org.yaml.snakeyaml.nodes.MappingNode
+                    as org.yaml.snakeyaml.nodes.MappingNode
         assertEquals(org.yaml.snakeyaml.nodes.Tag("!Secret"), document.value.single().valueNode.tag)
     }
 
@@ -581,7 +582,7 @@ class BuildRegressionsTest {
         write(
             "components/app/application.yaml",
             "stamp: #{#currentTimeMillis()}\n" +
-                (0..7).joinToString("") { "ref$it: \${this@stamp}\n" },
+                    (0..7).joinToString("") { "ref$it: \${this@stamp}\n" },
         )
         build()
         val result = yaml()
@@ -592,9 +593,10 @@ class BuildRegressionsTest {
     @ValueSource(strings = ["yaml", "properties"])
     fun reuseResolvedDynamicDefaultsAcrossReferences(extension: String) {
         val separator = if (extension == "yaml") ": " else "="
-        write("components/app/application.$extension",
+        write(
+            "components/app/application.$extension",
             "stamp$separator\${this@missing:#{#currentTimeMillis()}}\n" +
-                (0..7).joinToString("") { "ref$it$separator\${this@stamp}\n" })
+                    (0..7).joinToString("") { "ref$it$separator\${this@stamp}\n" })
 
         build()
 
@@ -640,7 +642,7 @@ class BuildRegressionsTest {
         write(
             "envs/dev.yaml",
             "include:\n  env: base\ng2:\n  append: [b]\n" +
-                if (withComponents) "  components: [c]\n  exclude: [c]\n" else "",
+                    if (withComponents) "  components: [c]\n  exclude: [c]\n" else "",
         )
         build()
         assertTrue(Files.exists(destination.resolve("a/application.yaml")))
@@ -669,13 +671,16 @@ class BuildRegressionsTest {
     @Test
     fun applyReplacementExclusionAndAppendOnceAcrossAliasedEnvironmentGroups() {
         write("components/app/application.yaml", "name: \${this@name}\n")
-        write("envs/base.yaml", """
+        write(
+            "envs/base.yaml", """
             abstract: true
             group:
               components: [old:app, kept:app]
               append: [base:app]
-            """.trimIndent())
-        write("envs/middle.yaml", """
+            """.trimIndent()
+        )
+        write(
+            "envs/middle.yaml", """
             abstract: true
             include:
               env: base
@@ -683,14 +688,17 @@ class BuildRegressionsTest {
               components: [replacement:app, drop:app]
               exclude: [drop]
               append: [mid:app]
-            """.trimIndent())
-        write("envs/dev.yaml", """
+            """.trimIndent()
+        )
+        write(
+            "envs/dev.yaml", """
             include:
               env: middle
             group:
               exclude: [replacement]
               append: [final:app, drop:app]
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val components = Microconfig.searchConfigsIn(root.toFile())
             .inEnvironment("dev").allComponents.asList()
@@ -711,7 +719,8 @@ class BuildRegressionsTest {
     fun keepOnlyTheLastDuplicateYamlGroupBeforeApplyingEnvironmentChanges() {
         write("components/app/application.yaml", "name: \${this@name}\n")
         write("envs/base.yaml", "abstract: true\ngroup:\n  components: [base:app]\n")
-        write("envs/dev.yaml", """
+        write(
+            "envs/dev.yaml", """
             include:
               env: base
             group:
@@ -719,7 +728,8 @@ class BuildRegressionsTest {
               append: [discarded:app]
             "group":
               append: [kept:app]
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val environment = Microconfig.searchConfigsIn(root.toFile()).inEnvironment("dev")
         assertEquals(listOf("group"), environment.groups.map { it.name })
@@ -830,7 +840,7 @@ class BuildRegressionsTest {
         write(
             "components/app/application.yaml",
             "explicit: \${source[prod]@value}\nimplicit: \${source@value}\n" +
-                "environment: \${source[prod]@env}\n",
+                    "environment: \${source[prod]@env}\n",
         )
 
         build()

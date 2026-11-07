@@ -2,7 +2,7 @@ package io.microconfig.core.properties.resolvers.placeholder.strategies.composit
 
 import io.microconfig.core.properties.PlaceholderResolveStrategy
 import io.microconfig.core.properties.Property
-import java.util.Optional
+import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
 class CompositeResolveStrategy(private val strategies: List<PlaceholderResolveStrategy>) :

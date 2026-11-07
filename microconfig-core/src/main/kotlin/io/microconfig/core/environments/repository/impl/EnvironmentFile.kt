@@ -2,8 +2,8 @@ package io.microconfig.core.environments.repository.impl
 
 import io.microconfig.core.environments.repository.EnvironmentException
 import io.microconfig.io.FsReader
-import java.io.File
 import org.yaml.snakeyaml.Yaml
+import java.io.File
 
 internal class EnvironmentFile(private val file: File) {
     fun parseUsing(reader: FsReader): EnvironmentDefinition =

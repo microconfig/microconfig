@@ -8,7 +8,7 @@ import io.microconfig.utils.FileUtils.walk
 import io.microconfig.utils.Logger.warn
 import java.io.File
 import java.nio.file.Files
-import java.util.Optional
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 class ComponentGraphImpl
@@ -39,7 +39,7 @@ private constructor(private val foldersByComponent: Map<String, List<File>>) : C
             .filter { file ->
                 val extension = file.extension.takeIf(String::isNotEmpty)?.let { ".$it" }.orEmpty()
                 extension in type.sourceExtensions &&
-                    isForEnvironment(file, environment)
+                        isForEnvironment(file, environment)
             }
             .sortedWith(compareBy<File>(::environmentPriority).thenBy { it.name })
 

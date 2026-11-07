@@ -5,35 +5,36 @@ import io.microconfig.core.properties.ConfigFormat.PROPERTIES
 import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.Property
 import io.microconfig.core.properties.PropertyImpl.Companion.property
-import io.microconfig.core.properties.io.properties.PropertiesText.escape
 import io.microconfig.core.properties.io.ConfigIo
 import io.microconfig.core.properties.io.ConfigReader
+import io.microconfig.core.properties.io.properties.PropertiesText.escape
 import io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.serializers.impl.ConfigDiff
 import io.microconfig.io.FsReader
 import io.microconfig.io.impl.DumpedFsReader
 import io.microconfig.utils.FileUtils.LINES_SEPARATOR
-import java.io.File
-import java.io.StringReader
-import java.nio.file.Path
-import java.util.Properties
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.ForkJoinPool
-import java.util.concurrent.TimeUnit.SECONDS
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import java.util.stream.Stream
+import org.junit.jupiter.params.provider.ValueSource
 import org.yaml.snakeyaml.Yaml
+import java.io.File
+import java.io.StringReader
+import java.nio.file.Path
+import java.util.*
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.ForkJoinPool
+import java.util.concurrent.TimeUnit.SECONDS
+import java.util.stream.Stream
 
 class ConfigDiffTest {
-    @TempDir lateinit var dir: Path
+    @TempDir
+    lateinit var dir: Path
 
     @Test
     fun compareChangedYamlAgainstOneSnapshotFromTheSuppliedReader() {
@@ -48,8 +49,10 @@ class ConfigDiffTest {
         ConfigDiff.forReader(reader).prepare(file, listOf(prop("value", "current", YAML)))()
 
         assertEquals(1, reads)
-        assertEquals(mapOf("value" to "virtual-old -> current"),
-            Yaml().load<Map<String, String>>(diffFile(file).readText()))
+        assertEquals(
+            mapOf("value" to "virtual-old -> current"),
+            Yaml().load<Map<String, String>>(diffFile(file).readText())
+        )
     }
 
     @Test
@@ -65,8 +68,10 @@ class ConfigDiffTest {
 
         ConfigDiff(io).prepare(file, listOf(prop("value", "current", YAML)))()
 
-        assertEquals(mapOf("value" to "virtual-old -> current"),
-            Yaml().load<Map<String, String>>(diffFile(file).readText()))
+        assertEquals(
+            mapOf("value" to "virtual-old -> current"),
+            Yaml().load<Map<String, String>>(diffFile(file).readText())
+        )
     }
 
     @Test
@@ -116,8 +121,10 @@ class ConfigDiffTest {
             outputs.entries.forEachIndexed { index, (file, properties) ->
                 fallback.writeTo(file).write(properties)
                 notifications.getValue(file)()
-                assertEquals(mapOf("value" to "old$index -> new$index"),
-                    Yaml().load<Map<String, String>>(diffFile(file).readText()))
+                assertEquals(
+                    mapOf("value" to "old$index -> new$index"),
+                    Yaml().load<Map<String, String>>(diffFile(file).readText())
+                )
             }
         } finally {
             pool.shutdownNow()
@@ -231,20 +238,26 @@ class ConfigDiffTest {
 
     @ParameterizedTest
     @MethodSource("yamlDiffKeys")
-    fun preserveYamlKeyStructureForAddedAndRemovedValues(key: String, expectedFirstKey: String,
-        expectedRest: Map<String, Any>?) {
+    fun preserveYamlKeyStructureForAddedAndRemovedValues(
+        key: String, expectedFirstKey: String,
+        expectedRest: Map<String, Any>?
+    ) {
         val baseline = listOf(prop("retained", "baseline", YAML))
         val added = prop(key, "payload", YAML)
         val file = build("application.yaml", baseline)
         ConfigDiff().storeDiffFor(file, baseline + added)
         val expectedValue: Any = expectedRest ?: "payload"
-        assertEquals(mapOf("+$expectedFirstKey" to expectedValue),
-            Yaml().load<Map<String, Any>>(diffFile(file).readText()))
+        assertEquals(
+            mapOf("+$expectedFirstKey" to expectedValue),
+            Yaml().load<Map<String, Any>>(diffFile(file).readText())
+        )
 
         configIo().writeTo(file).write(baseline + added)
         ConfigDiff().storeDiffFor(file, baseline)
-        assertEquals(mapOf("-$expectedFirstKey" to expectedValue),
-            Yaml().load<Map<String, Any>>(diffFile(file).readText()))
+        assertEquals(
+            mapOf("-$expectedFirstKey" to expectedValue),
+            Yaml().load<Map<String, Any>>(diffFile(file).readText())
+        )
     }
 
     @Test
@@ -264,19 +277,26 @@ class ConfigDiffTest {
             if (format == YAML) YamlScalars.doubleQuoted(name) else name.replace("\\", "\\\\"),
             value, format,
         )
-        val before = listOf(keyed("+x", "oldPlus"), keyed("-y", "oldMinus"),
-            keyed("\\+x", "oldSlash"), keyed("y", "removed"))
-        val after = listOf(keyed("+x", "newPlus"), keyed("-y", "newMinus"),
-            keyed("\\+x", "newSlash"), keyed("x", "added"))
+
+        val before = listOf(
+            keyed("+x", "oldPlus"), keyed("-y", "oldMinus"),
+            keyed("\\+x", "oldSlash"), keyed("y", "removed")
+        )
+        val after = listOf(
+            keyed("+x", "newPlus"), keyed("-y", "newMinus"),
+            keyed("\\+x", "newSlash"), keyed("x", "added")
+        )
         val file = build("application.$extension", before)
 
         ConfigDiff().storeDiffFor(file, after)
 
-        val expected = mapOf("\\+x" to "oldPlus -> newPlus", "\\-y" to "oldMinus -> newMinus",
-            "\\\\+x" to "oldSlash -> newSlash", "+x" to "added", "-y" to "removed")
+        val expected = mapOf(
+            "\\+x" to "oldPlus -> newPlus", "\\-y" to "oldMinus -> newMinus",
+            "\\\\+x" to "oldSlash -> newSlash", "+x" to "added", "-y" to "removed"
+        )
         val diff = diffFile(file).readText()
         val actual = if (format == YAML) Yaml().load<Map<String, String>>(diff)
-            else Properties().apply { load(StringReader(diff)) }
+        else Properties().apply { load(StringReader(diff)) }
         assertEquals(expected, actual, diff)
         configIo().writeTo(file).write(after)
         ConfigDiff().storeDiffFor(file, after)
@@ -295,20 +315,26 @@ class ConfigDiffTest {
 
     @ParameterizedTest
     @MethodSource("typedAndStringKeys")
-    fun retainChangesForTypedAndStringYamlKeys(typedKey: String, stringKey: String,
-        typedLabel: String, stringLabel: String) {
+    fun retainChangesForTypedAndStringYamlKeys(
+        typedKey: String, stringKey: String,
+        typedLabel: String, stringLabel: String
+    ) {
         val baseline = listOf(prop("retained", "baseline", YAML))
         val changes = listOf(prop(typedKey, "typed", YAML), prop(stringKey, "string", YAML))
         val file = build("application.yaml", baseline)
 
         ConfigDiff().storeDiffFor(file, baseline + changes)
-        assertEquals(mapOf("+$typedLabel" to "typed", "+$stringLabel" to "string"),
-            Yaml().load<Map<String, String>>(diffFile(file).readText()))
+        assertEquals(
+            mapOf("+$typedLabel" to "typed", "+$stringLabel" to "string"),
+            Yaml().load<Map<String, String>>(diffFile(file).readText())
+        )
 
         configIo().writeTo(file).write(baseline + changes)
         ConfigDiff().storeDiffFor(file, baseline)
-        assertEquals(mapOf("-$typedLabel" to "typed", "-$stringLabel" to "string"),
-            Yaml().load<Map<String, String>>(diffFile(file).readText()))
+        assertEquals(
+            mapOf("-$typedLabel" to "typed", "-$stringLabel" to "string"),
+            Yaml().load<Map<String, String>>(diffFile(file).readText())
+        )
     }
 
     @Test
@@ -319,8 +345,10 @@ class ConfigDiffTest {
 
         ConfigDiff().storeDiffFor(file, baseline + changes)
 
-        assertEquals(mapOf("+1" to mapOf("child" to "typed"), "+'1'" to mapOf("child" to "string")),
-            Yaml().load<Map<String, Any>>(diffFile(file).readText()))
+        assertEquals(
+            mapOf("+1" to mapOf("child" to "typed"), "+'1'" to mapOf("child" to "string")),
+            Yaml().load<Map<String, Any>>(diffFile(file).readText())
+        )
     }
 
     private fun build(fileName: String, properties: List<Property>): File {

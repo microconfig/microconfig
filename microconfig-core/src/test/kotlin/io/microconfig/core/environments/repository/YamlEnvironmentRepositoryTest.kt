@@ -5,16 +5,17 @@ import io.microconfig.core.environments.Environment
 import io.microconfig.core.environments.repository.impl.FileEnvironmentRepository
 import io.microconfig.core.properties.PropertiesFactory
 import io.microconfig.io.impl.DumpedFsReader
-import java.nio.file.Files
-import java.nio.file.Path
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.mockito.Mockito.mock
+import java.nio.file.Files
+import java.nio.file.Path
 
 class YamlEnvironmentRepositoryTest {
-    @TempDir lateinit var root: Path
+    @TempDir
+    lateinit var root: Path
 
     lateinit var repository: FileEnvironmentRepository
 

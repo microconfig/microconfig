@@ -1,7 +1,5 @@
 package io.microconfig.core
 
-import java.nio.file.Files
-import java.nio.file.Path
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Assumptions.assumeFalse
 import org.junit.jupiter.api.Assumptions.assumeTrue
@@ -10,9 +8,12 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import java.nio.file.Files
+import java.nio.file.Path
 
 class OutputCollisionTest {
-    @TempDir lateinit var root: Path
+    @TempDir
+    lateinit var root: Path
     private val destination get() = root.resolve("output")
 
     @BeforeEach
@@ -133,9 +134,11 @@ class OutputCollisionTest {
     }
 
     private fun templates(first: String, second: String) =
-        write("components/app/application.yaml", "value: current\n" +
-            "mc.file.one: \${this@configDir}/first.txt -> $first\n" +
-            "mc.file.two: \${this@configDir}/second.txt -> $second\n")
+        write(
+            "components/app/application.yaml", "value: current\n" +
+                    "mc.file.one: \${this@configDir}/first.txt -> $first\n" +
+                    "mc.file.two: \${this@configDir}/second.txt -> $second\n"
+        )
 
     private fun write(name: String, value: String) {
         val file = root.resolve(name)

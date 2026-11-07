@@ -4,7 +4,7 @@ import io.microconfig.core.properties.DeclaringComponent
 import io.microconfig.core.properties.Resolver
 import io.microconfig.core.properties.ValueFormat
 import io.microconfig.core.properties.io.properties.PropertiesText
-import java.util.Optional
+import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
 interface RecursiveResolver : Resolver {

@@ -6,7 +6,7 @@ import io.microconfig.core.properties.resolvers.RecursiveResolver
 import io.microconfig.core.properties.resolvers.expression.functions.impl.CustomStringApi
 import io.microconfig.core.properties.resolvers.expression.functions.impl.CustomSystemApi
 import io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders
-import java.util.Optional
+import java.util.*
 import java.util.regex.MatchResult
 import java.util.regex.Pattern
 import java.util.stream.Stream
@@ -101,6 +101,7 @@ class ExpressionResolver : RecursiveResolver {
                             starts[++depth] = index
                             index++
                         }
+
                         character == '{' -> depth++
                         character == '}' -> {
                             starts.remove(depth)?.let {

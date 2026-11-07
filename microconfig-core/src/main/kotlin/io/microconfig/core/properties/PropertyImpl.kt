@@ -72,8 +72,10 @@ internal constructor(
             valueFormat: ValueFormat = sourceValueFormat(format, source),
             keyFormat: ConfigFormat = sourceKeyFormat(format, source),
         ): Property =
-            PropertyImpl(key, value, false, format, source,
-                valueFormat = valueFormat, keyFormat = keyFormat)
+            PropertyImpl(
+                key, value, false, format, source,
+                valueFormat = valueFormat, keyFormat = keyFormat
+            )
 
         @JvmOverloads
         fun varProperty(
@@ -84,8 +86,10 @@ internal constructor(
             valueFormat: ValueFormat = sourceValueFormat(format, source),
             keyFormat: ConfigFormat = sourceKeyFormat(format, source),
         ): Property =
-            PropertyImpl(key, value, true, format, source,
-                valueFormat = valueFormat, keyFormat = keyFormat)
+            PropertyImpl(
+                key, value, true, format, source,
+                valueFormat = valueFormat, keyFormat = keyFormat
+            )
 
         @JvmOverloads
         fun literalProperty(

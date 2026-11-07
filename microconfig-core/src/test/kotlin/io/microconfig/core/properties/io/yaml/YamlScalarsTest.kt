@@ -121,9 +121,11 @@ class YamlScalarsTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["", "plain", "null", "[one, two]", "{key: value}",
-        "'unterminated", "\"unterminated", "|-\n  first\n  second\n",
-        ">\n  first\n  second\n", "!!timestamp 2001-12-15", "!custom plain"])
+    @ValueSource(
+        strings = ["", "plain", "null", "[one, two]", "{key: value}",
+            "'unterminated", "\"unterminated", "|-\n  first\n  second\n",
+            ">\n  first\n  second\n", "!!timestamp 2001-12-15", "!custom plain"]
+    )
     fun preserveUnquotedMalformedAndBlockValues(value: String) {
         assertNull(YamlScalars.quotedTextOrNull(value))
         assertEquals(value, YamlScalars.unquote(value))

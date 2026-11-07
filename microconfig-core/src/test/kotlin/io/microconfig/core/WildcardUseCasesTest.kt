@@ -1,10 +1,6 @@
 package io.microconfig.core
 
 import io.microconfig.core.properties.ResolveException
-import java.io.StringReader
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.Properties
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
@@ -16,10 +12,15 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.junit.jupiter.params.provider.ValueSource
 import org.yaml.snakeyaml.Yaml
+import java.io.StringReader
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class WildcardUseCasesTest {
-    @TempDir lateinit var root: Path
+    @TempDir
+    lateinit var root: Path
 
     @BeforeEach
     fun createEnvironment() {
@@ -30,13 +31,15 @@ class WildcardUseCasesTest {
     @MethodSource("formats")
     fun transferGroupsAcrossConfigFormats(sourceYaml: Boolean, targetYaml: Boolean) {
         writeSource(sourceYaml)
-        write("components/app/application${if (targetYaml) ".yaml" else ".properties"}",
-            "value${if (targetYaml) ": " else "="}\${source@db.*}\n")
+        write(
+            "components/app/application${if (targetYaml) ".yaml" else ".properties"}",
+            "value${if (targetYaml) ": " else "="}\${source@db.*}\n"
+        )
         val output = buildOutput()
         val actual = if (targetYaml) readYaml(output.resolve("app/application.yaml"))["value"]
-            else Yaml().load<Any>(Properties().apply {
-                load(StringReader(Files.readString(output.resolve("app/application.properties"))))
-            }.getProperty("value"))
+        else Yaml().load<Any>(Properties().apply {
+            load(StringReader(Files.readString(output.resolve("app/application.properties"))))
+        }.getProperty("value"))
         assertEquals(database(), actual)
     }
 
@@ -44,9 +47,11 @@ class WildcardUseCasesTest {
     @ValueSource(booleans = [true, false])
     fun composeMultipleGroupsAndRepeatReferences(sourceYaml: Boolean) {
         writeSource(sourceYaml)
-        write("components/app/application.yaml",
+        write(
+            "components/app/application.yaml",
             "groups: [\${source@db.*}, \${source@http.*}, \${source@db.*}]\n" +
-                "fallback: \${missing@value:[\${source@db.*}, \${source@absent.*:{}}, \${source@http.*}]}\n")
+                    "fallback: \${missing@value:[\${source@db.*}, \${source@absent.*:{}}, \${source@http.*}]}\n"
+        )
         val result = buildYaml()
         assertEquals(listOf(database(), mapOf("port" to 8080), database()), result["groups"])
         assertEquals(listOf(database(), emptyMap<String, Any>(), mapOf("port" to 8080)), result["fallback"])
@@ -67,9 +72,11 @@ class WildcardUseCasesTest {
     @ParameterizedTest
     @MethodSource("canonicalPrefixes")
     fun resolveGroupsUnderEquivalentYamlKeys(prefix: String, expected: String) {
-        write("components/source/application.yaml",
+        write(
+            "components/source/application.yaml",
             "values:\n  true:\n    leaf: boolean\n  16:\n    leaf: integer\n" +
-                "  1.5:\n    leaf: float\n  1:\n    leaf: one\n")
+                    "  1.5:\n    leaf: float\n  1:\n    leaf: one\n"
+        )
         write("components/app/application.yaml", "value: \${source@$prefix.*}\n")
         assertEquals(mapOf("leaf" to expected), buildYaml()["value"])
     }
@@ -99,9 +106,11 @@ class WildcardUseCasesTest {
     @ValueSource(booleans = [true, false])
     fun preserveGroupsInsideQuotedTextAndSpel(sourceYaml: Boolean) {
         writeSource(sourceYaml)
-        write("components/app/application.yaml",
+        write(
+            "components/app/application.yaml",
             "text: \"prefix \${source@db.*} suffix\"\n" +
-                "expression: #{'\${source@db.*}'.contains('localhost')}\n")
+                    "expression: #{'\${source@db.*}'.contains('localhost')}\n"
+        )
         val result = buildYaml()
         val fragment = (result["text"] as String).removePrefix("prefix ").removeSuffix(" suffix")
         assertEquals(database(), Yaml().load<Map<*, *>>(fragment))
@@ -113,8 +122,10 @@ class WildcardUseCasesTest {
     fun preserveEscapedGroupAndResolveFollowingTemplateReference(sourceYaml: Boolean) {
         writeSource(sourceYaml)
         write("components/app/application.yaml", "mc.template.t: \${this@configDir}/template.yaml -> rendered.yaml\n")
-        write("components/app/template.yaml",
-            "literal: \\\${source@db.*}\nresolved:\n  \${source@db.*}\nsibling: kept\n")
+        write(
+            "components/app/template.yaml",
+            "literal: \\\${source@db.*}\nresolved:\n  \${source@db.*}\nsibling: kept\n"
+        )
         val result = readYaml(buildOutput().resolve("app/rendered.yaml"))
         assertEquals("\${source@db.*}", result["literal"])
         assertEquals(database(), result["resolved"])
@@ -126,15 +137,25 @@ class WildcardUseCasesTest {
         write("components/cluster/application.yaml", "service:\n  hosts: [one, two]\n  empty: []\n")
         write("components/source/application.yaml", "db:\n  cluster: \${cluster@service.*}\n  size: #{1 + 2}\n")
         write("components/app/application.yaml", "value: \${missing@value:[\${source@db.*}]}\n")
-        assertEquals(listOf(mapOf("cluster" to mapOf("hosts" to listOf("one", "two"),
-            "empty" to emptyList<Any>()), "size" to 3)), buildYaml()["value"])
+        assertEquals(
+            listOf(
+                mapOf(
+                    "cluster" to mapOf(
+                        "hosts" to listOf("one", "two"),
+                        "empty" to emptyList<Any>()
+                    ), "size" to 3
+                )
+            ), buildYaml()["value"]
+        )
     }
 
     @ParameterizedTest
     @ValueSource(booleans = [true, false])
     fun rejectBrokenGroupChildInsteadOfUsingFallback(sourceYaml: Boolean) {
-        write("components/source/application${if (sourceYaml) ".yaml" else ".properties"}",
-            if (sourceYaml) "db:\n  value: #{1 / 0}\n" else "db.value=#{1 / 0}\n")
+        write(
+            "components/source/application${if (sourceYaml) ".yaml" else ".properties"}",
+            if (sourceYaml) "db:\n  value: #{1 / 0}\n" else "db.value=#{1 / 0}\n"
+        )
         write("components/app/application.yaml", "value: \${source@db.*:{fallback: true}}\n")
         assertThrows(ResolveException::class.java) { buildYaml() }
     }
@@ -142,32 +163,46 @@ class WildcardUseCasesTest {
     @ParameterizedTest
     @ValueSource(booleans = [true, false])
     fun useWholeGroupDefaultWhenAChildIsUnresolved(sourceYaml: Boolean) {
-        write("components/source/application${if (sourceYaml) ".yaml" else ".properties"}",
+        write(
+            "components/source/application${if (sourceYaml) ".yaml" else ".properties"}",
             if (sourceYaml) "db:\n  kept: value\n  missing: \${absent@value}\n"
-            else "db.kept=value\ndb.missing=\${absent@value}\n")
+            else "db.kept=value\ndb.missing=\${absent@value}\n"
+        )
         write("components/app/application.yaml", "value: \${source@db.*:{fallback: true}}\n")
         assertEquals(mapOf("fallback" to true), buildYaml()["value"])
     }
 
     @Test
     fun selectPropertiesChildrenByDecodedPrefixWithoutDoubleDecodingKeys() {
-        write("components/source/application.properties",
+        write(
+            "components/source/application.properties",
             "db\\u002ehost=localhost\ndb.port=5432\nd\\u0062.auth.user=reader\n" +
-                "d\\u0062.literal\\\\u0041=payload\ndbOther.leak=excluded\n")
+                    "d\\u0062.literal\\\\u0041=payload\ndbOther.leak=excluded\n"
+        )
         write("components/app/application.yaml", "value: \${source@db.*}\n")
-        assertEquals(mapOf("host" to "localhost", "port" to 5432,
-            "auth" to mapOf("user" to "reader"), "literal\\u0041" to "payload"), buildYaml()["value"])
+        assertEquals(
+            mapOf(
+                "host" to "localhost", "port" to 5432,
+                "auth" to mapOf("user" to "reader"), "literal\\u0041" to "payload"
+            ), buildYaml()["value"]
+        )
     }
 
     @ParameterizedTest
     @ValueSource(strings = ["db.", "db\\u002e", "d\\u0062."])
     fun preserveEscapesAndControlCharactersInChildKeys(prefix: String) {
-        write("components/source/application.properties",
+        write(
+            "components/source/application.properties",
             "${prefix}literal\\\\u0041=one\n${prefix}line\\r\\nname=two\n" +
-                "${prefix}db\\:url=three\n${prefix}tab\\tname=four\n")
+                    "${prefix}db\\:url=three\n${prefix}tab\\tname=four\n"
+        )
         write("components/app/application.yaml", "value: \${source@db.*}\n")
-        assertEquals(mapOf("literal\\u0041" to "one", "line\r\nname" to "two",
-            "db:url" to "three", "tab\tname" to "four"), buildYaml()["value"])
+        assertEquals(
+            mapOf(
+                "literal\\u0041" to "one", "line\r\nname" to "two",
+                "db:url" to "three", "tab\tname" to "four"
+            ), buildYaml()["value"]
+        )
     }
 
     @Test
@@ -184,11 +219,15 @@ class WildcardUseCasesTest {
     }
 
     private fun writeSource(yaml: Boolean) {
-        if (yaml) write("components/source/application.yaml",
+        if (yaml) write(
+            "components/source/application.yaml",
             "db:\n  host: localhost\n  port: 5432\n  auth:\n    user: reader\n" +
-                "  label: O'Reilly \"book\"\nhttp:\n  port: 8080\n")
-        else write("components/source/application.properties",
-            "db.host=localhost\ndb.port=5432\ndb.auth.user=reader\ndb.label=O'Reilly \"book\"\nhttp.port=8080\n")
+                    "  label: O'Reilly \"book\"\nhttp:\n  port: 8080\n"
+        )
+        else write(
+            "components/source/application.properties",
+            "db.host=localhost\ndb.port=5432\ndb.auth.user=reader\ndb.label=O'Reilly \"book\"\nhttp.port=8080\n"
+        )
     }
 
     private fun buildOutput(): Path {
@@ -201,8 +240,10 @@ class WildcardUseCasesTest {
 
     private fun buildYaml(): Map<String, Any?> = readYaml(buildOutput().resolve("app/application.yaml"))
 
-    private fun database(): Map<String, Any> = mapOf("host" to "localhost", "port" to 5432,
-        "auth" to mapOf("user" to "reader"), "label" to "O'Reilly \"book\"")
+    private fun database(): Map<String, Any> = mapOf(
+        "host" to "localhost", "port" to 5432,
+        "auth" to mapOf("user" to "reader"), "label" to "O'Reilly \"book\""
+    )
 
     private fun formats(): List<Arguments> = listOf(true, false).flatMap { source ->
         listOf(true, false).map { target -> Arguments.of(source, target) }
@@ -211,7 +252,10 @@ class WildcardUseCasesTest {
     private fun dynamicReferences(): List<Arguments> = listOf(
         Arguments.of("\${source@\${missing@prefix:db}.*}", "localhost"),
         Arguments.of("\${\${missing@component:source}@db.*}", "localhost"),
-        Arguments.of("\${\${missing@type:app}::\${missing@component:source}[\${missing@targetEnv:prod}]@\${missing@prefix:db}.*}", "prod-host"),
+        Arguments.of(
+            "\${\${missing@type:app}::\${missing@component:source}[\${missing@targetEnv:prod}]@\${missing@prefix:db}.*}",
+            "prod-host"
+        ),
     )
 
     private fun canonicalPrefixes(): List<Arguments> = listOf(

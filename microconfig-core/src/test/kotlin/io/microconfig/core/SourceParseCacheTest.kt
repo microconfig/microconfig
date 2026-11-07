@@ -2,17 +2,18 @@ package io.microconfig.core
 
 import io.microconfig.io.FsReader
 import io.microconfig.io.impl.DumpedFsReader
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.concurrent.ConcurrentHashMap
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.yaml.snakeyaml.Yaml
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.concurrent.ConcurrentHashMap
 
 class SourceParseCacheTest {
-    @TempDir lateinit var directory: Path
+    @TempDir
+    lateinit var directory: Path
     private val reads = ConcurrentHashMap<File, Int>()
     private val root get() = directory.resolve("repo")
     private val destination get() = directory.resolve("output")
@@ -86,13 +87,15 @@ class SourceParseCacheTest {
     @Test
     fun retainSourceMetadataWhenTwoConfigTypesReadTheSameFile() {
         write("envs/dev.yaml", "group:\n  components: [app]\n")
-        write("microconfig.yaml", """
+        write(
+            "microconfig.yaml", """
             configTypes:
               - first:
                   sourceExtensions: [.yaml]
               - second:
                   sourceExtensions: [.yaml]
-            """.trimIndent())
+            """.trimIndent()
+        )
         write("components/app/application.yaml", "value: shared\n")
         val microconfig = Microconfig.searchConfigsIn(root.toFile()).withFsReader(reader)
 

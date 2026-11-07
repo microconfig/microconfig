@@ -8,12 +8,6 @@ import io.microconfig.core.properties.impl.TypedPropertiesImpl
 import io.microconfig.core.properties.io.properties.PropertiesText
 import io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo
 import io.microconfig.utils.FileUtils.LINES_SEPARATOR
-import java.io.StringReader
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.*
-import java.util.Optional.empty
-import java.util.Optional.of
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -24,9 +18,17 @@ import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 import org.yaml.snakeyaml.Yaml
+import java.io.StringReader
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.*
+import java.util.Optional.empty
+import java.util.Optional.of
+import java.util.Properties
 
 class TypedPropertiesImplTest {
-    @TempDir lateinit var directory: Path
+    @TempDir
+    lateinit var directory: Path
 
     val p1: Property = property("key")
 
@@ -94,8 +96,10 @@ class TypedPropertiesImplTest {
         assertEquals(of(property), properties.getPropertyWithKey(PropertiesText.unescape(key)))
         assertEquals(of(property), properties.getPropertyWithKey(key))
         assertEquals(mapOf(key to property), properties.propertiesAsMap)
-        assertEquals("$key=payload", configIo().writeTo(directory.resolve("out.properties").toFile())
-            .serialize(properties.properties))
+        assertEquals(
+            "$key=payload", configIo().writeTo(directory.resolve("out.properties").toFile())
+                .serialize(properties.properties)
+        )
     }
 
     @Test
@@ -106,8 +110,10 @@ class TypedPropertiesImplTest {
 
         val encodedNumber = PropertyImpl.property("\\u0031", "encoded", PROPERTIES, null)
         val yamlNumber = PropertyImpl.property("1", "yaml", YAML, null)
-        assertEquals(of(yamlNumber), withProperties(listOf(encodedNumber, yamlNumber))
-            .getPropertyWithKey("01"))
+        assertEquals(
+            of(yamlNumber), withProperties(listOf(encodedNumber, yamlNumber))
+                .getPropertyWithKey("01")
+        )
     }
 
     @Test
@@ -145,12 +151,16 @@ class TypedPropertiesImplTest {
 
     @Test
     fun keepEncodedSuffixesInWildcardGroups() {
-        val properties = withProperties(listOf(
-            PropertyImpl.property("db.url\\:key", "value", PROPERTIES, null),
-            PropertyImpl.property("db.literal\\\\u0041", "tail", PROPERTIES, null),
-        ))
-        assertEquals(mapOf("url:key" to "value", "literal\\u0041" to "tail"),
-            Yaml().load<Map<String, String>>(properties.getPropertyWithKey("db.*").orElseThrow().value))
+        val properties = withProperties(
+            listOf(
+                PropertyImpl.property("db.url\\:key", "value", PROPERTIES, null),
+                PropertyImpl.property("db.literal\\\\u0041", "tail", PROPERTIES, null),
+            )
+        )
+        assertEquals(
+            mapOf("url:key" to "value", "literal\\u0041" to "tail"),
+            Yaml().load<Map<String, String>>(properties.getPropertyWithKey("db.*").orElseThrow().value)
+        )
     }
 
     @Test
@@ -158,9 +168,11 @@ class TypedPropertiesImplTest {
         Files.createDirectories(directory.resolve("envs"))
         Files.writeString(directory.resolve("envs/dev.yaml"), "group:\n  components: [app]\n")
         val component = Files.createDirectories(directory.resolve("components/app"))
-        Files.writeString(component.resolve("application.properties"),
+        Files.writeString(
+            component.resolve("application.properties"),
             "a\\u002eb=x\ncopy=\${this@a.b:fallback}\n" +
-                "mc.mustache.t=\${this@configDir}/source.txt -> rendered.txt\n")
+                    "mc.mustache.t=\${this@configDir}/source.txt -> rendered.txt\n"
+        )
         Files.writeString(component.resolve("source.txt"), "{{a.b}}|\${this@a.b:fallback}")
         val output = directory.resolve("output")
 

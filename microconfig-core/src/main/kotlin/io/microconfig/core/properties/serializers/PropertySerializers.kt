@@ -4,12 +4,12 @@ import io.microconfig.core.properties.ConfigFormat
 import io.microconfig.core.properties.Property
 import io.microconfig.core.properties.PropertySerializer
 import io.microconfig.core.properties.io.ConfigIo
-import io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo as defaultConfigIo
 import io.microconfig.core.properties.serializers.impl.ConfigDiff
 import io.microconfig.core.properties.serializers.impl.FilePropertySerializer
 import io.microconfig.io.FsReader
 import java.io.File
 import java.util.function.BiConsumer
+import io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo as defaultConfigIo
 
 object PropertySerializers {
     @JvmOverloads

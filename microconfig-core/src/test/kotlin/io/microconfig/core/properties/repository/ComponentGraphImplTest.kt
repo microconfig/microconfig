@@ -5,17 +5,16 @@ import io.microconfig.core.configtypes.ConfigType
 import io.microconfig.core.configtypes.StandardConfigType.APPLICATION
 import io.microconfig.core.configtypes.StandardConfigType.PROCESS
 import io.microconfig.core.properties.repository.impl.ComponentGraphImpl
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotSame
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.io.TempDir
 
 class ComponentGraphImplTest {
-    @TempDir lateinit var root: Path
+    @TempDir
+    lateinit var root: Path
 
     @Test
     fun snapshotDirectoryEntriesAcrossTypesAndEnvironmentsWithoutCachingConfigFiles() {
@@ -95,7 +94,7 @@ class ComponentGraphImplTest {
 
         assertEquals(
             listOf(ten, twenty) + shared +
-                listOf(firstMultiEnvironment, secondMultiEnvironment, firstSpecific, secondSpecific),
+                    listOf(firstMultiEnvironment, secondMultiEnvironment, firstSpecific, secondSpecific),
             files.map { it.file },
         )
     }

@@ -2,9 +2,6 @@ package io.microconfig
 
 import io.microconfig.utils.IoUtils.readClasspathResource
 import io.microconfig.utils.IoUtils.readFully
-import java.io.File
-import java.io.StringReader
-import java.util.Properties
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.BeforeEach
@@ -12,9 +9,13 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import java.io.File
+import java.io.StringReader
+import java.util.*
 
 class MicroconfigMainTest {
-    @TempDir lateinit var destinationDir: File
+    @TempDir
+    lateinit var destinationDir: File
 
     lateinit var root: String
 

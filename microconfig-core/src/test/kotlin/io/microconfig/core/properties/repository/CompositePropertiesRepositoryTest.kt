@@ -6,15 +6,14 @@ import io.microconfig.core.properties.PropertiesRepository
 import io.microconfig.core.properties.Property
 import io.microconfig.core.properties.PropertyImpl.Companion.property
 import io.microconfig.core.properties.repository.impl.CompositePropertiesRepository.Companion.compositeOf
-import java.util.Arrays.stream
-import java.util.HashMap
-import java.util.function.Function.identity
-import java.util.stream.Collectors.toMap
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
+import java.util.Arrays.stream
+import java.util.function.Function.identity
+import java.util.stream.Collectors.toMap
 
 class CompositePropertiesRepositoryTest {
     val first: PropertiesRepository = mock(PropertiesRepository::class.java)

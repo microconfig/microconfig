@@ -4,9 +4,12 @@ import java.io.PrintWriter
 import java.io.StringWriter
 
 object Logger {
-    @Volatile private var enabled = true
-    @Volatile private var colorsEnabled = true
-    @Volatile private var errorOccurred = false
+    @Volatile
+    private var enabled = true
+    @Volatile
+    private var colorsEnabled = true
+    @Volatile
+    private var errorOccurred = false
 
     fun error(error: Throwable?) {
         if (error != null) error(null, error)

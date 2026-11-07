@@ -7,8 +7,6 @@ import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.io.properties.PropertiesText.escape
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.templates.Template
-import java.nio.file.Files
-import java.nio.file.Path
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -17,10 +15,13 @@ import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import java.nio.file.Files
+import java.nio.file.Path
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class TemplatesServiceTest {
-    @TempDir lateinit var root: Path
+    @TempDir
+    lateinit var root: Path
 
     @BeforeEach
     fun createEnvironment() {
@@ -67,7 +68,8 @@ class TemplatesServiceTest {
         return when (notation) {
             "fromTo" ->
                 declaration(format, prefix + "example.fromFile", from) +
-                    declaration(format, prefix + "example.toFile", to)
+                        declaration(format, prefix + "example.toFile", to)
+
             "arrow" -> declaration(format, prefix + "example", "$from -> $to")
             "brackets" -> declaration(format, prefix + "[first,second]", "$from -> $to")
             else -> throw IllegalArgumentException(notation)

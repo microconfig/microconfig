@@ -1,15 +1,10 @@
 package io.microconfig.core
 
-import io.microconfig.core.properties.ResolveException
-import io.microconfig.core.properties.PlaceholderResolveStrategy
 import io.microconfig.core.properties.DeclaringComponentImpl
+import io.microconfig.core.properties.PlaceholderResolveStrategy
+import io.microconfig.core.properties.ResolveException
 import io.microconfig.core.properties.templates.TemplatePattern
 import io.microconfig.core.properties.templates.impl.StringTemplate
-import java.io.File
-import java.io.IOException
-import java.io.UncheckedIOException
-import java.nio.file.Files
-import java.nio.file.Path
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
@@ -17,9 +12,15 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import java.io.File
+import java.io.IOException
+import java.io.UncheckedIOException
+import java.nio.file.Files
+import java.nio.file.Path
 
 class ResolutionFailureTest {
-    @TempDir lateinit var root: Path
+    @TempDir
+    lateinit var root: Path
 
     @BeforeEach
     fun createRepository() {
@@ -62,8 +63,10 @@ class ResolutionFailureTest {
 
     @Test
     fun reportIoFailureInShortTemplatePlaceholders() {
-        val template = StringTemplate("test", File("source"), File("destination"),
-            TemplatePattern.defaultPattern().placeholderPattern, "\${value}")
+        val template = StringTemplate(
+            "test", File("source"), File("destination"),
+            TemplatePattern.defaultPattern().placeholderPattern, "\${value}"
+        )
         val context = DeclaringComponentImpl("app", "app", "dev")
         assertThrows(ResolveException::class.java) {
             template.resolveBy(withFailingStrategy().resolver(), context)

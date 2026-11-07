@@ -1,12 +1,12 @@
 package io.microconfig.core.environments
 
 import io.microconfig.core.environments.impl.ComponentGroupImpl
-import java.util.Optional.empty
-import java.util.Optional.of
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
+import java.util.Optional.empty
+import java.util.Optional.of
 
 class ComponentGroupImplTest {
     val one: Component = mock(Component::class.java)

@@ -1,16 +1,18 @@
 package io.microconfig
 
-import java.nio.file.Path
-import java.util.concurrent.TimeUnit.SECONDS
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledOnOs
 import org.junit.jupiter.api.condition.OS
 import org.junit.jupiter.api.io.TempDir
+import java.nio.file.Path
+import java.util.concurrent.TimeUnit.SECONDS
 
 @EnabledOnOs(OS.LINUX, OS.MAC)
 class NativeValidationScriptTest {
-    @TempDir lateinit var directory: Path
+    @TempDir
+    lateinit var directory: Path
 
     @Test
     fun executeAllNegativeExpressionScenariosAndRejectUnrelatedFailures() {

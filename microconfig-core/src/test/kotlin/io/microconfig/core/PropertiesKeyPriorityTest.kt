@@ -4,10 +4,6 @@ import io.microconfig.core.configtypes.StandardConfigType.APPLICATION
 import io.microconfig.core.properties.ConfigFormat.PROPERTIES
 import io.microconfig.core.properties.PropertiesRepository
 import io.microconfig.core.properties.PropertyImpl
-import java.io.StringReader
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.Properties
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -16,9 +12,14 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
 import org.yaml.snakeyaml.Yaml
+import java.io.StringReader
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.*
 
 class PropertiesKeyPriorityTest {
-    @TempDir lateinit var root: Path
+    @TempDir
+    lateinit var root: Path
 
     @BeforeEach
     fun createEnvironment() {
@@ -30,8 +31,10 @@ class PropertiesKeyPriorityTest {
     fun useEnvironmentOverrideAcrossDifferentEncodedKeySpellings(encodedBase: Boolean) {
         val base = if (encodedBase) "a\\u002eb" else "a.b"
         val override = if (encodedBase) "a.b" else "a\\u002eb"
-        write("components/app/application.properties", "$base=base\ncopy=\${this@a.b}\n" +
-            "mc.mustache.t=\${this@configDir}/template.txt -> rendered.txt\n")
+        write(
+            "components/app/application.properties", "$base=base\ncopy=\${this@a.b}\n" +
+                    "mc.mustache.t=\${this@configDir}/template.txt -> rendered.txt\n"
+        )
         write("components/app/application.dev.properties", "$override=override\n")
         write("components/app/template.txt", "{{a.b}}|\${this@a.b}")
 
@@ -41,9 +44,11 @@ class PropertiesKeyPriorityTest {
     }
 
     @ParameterizedTest
-    @CsvSource(delimiter = '|', value = [
-        "a.b|a\\u002eb", "a\\u002eb|\\u0061.b", "\\u0061.b|a.b",
-    ])
+    @CsvSource(
+        delimiter = '|', value = [
+            "a.b|a\\u002eb", "a\\u002eb|\\u0061.b", "\\u0061.b|a.b",
+        ]
+    )
     fun useLastEncodedAliasWithinOneFile(first: String, last: String) {
         write("components/app/application.properties", "$first=first\n$last=last\ncopy=\${this@a.b}\n")
 
@@ -70,8 +75,10 @@ class PropertiesKeyPriorityTest {
         val includes = if (reverseIncludes) "second, first" else "first, second"
         write("components/first/application.properties", "a\\u002eb=first\n")
         write("components/second/application.properties", "\\u0061.b=second\n")
-        write("components/app/application.properties", "#include $includes\n" +
-            (if (withLocalValue) "a.b=local\n" else "") + "copy=\${this@a.b}\n")
+        write(
+            "components/app/application.properties", "#include $includes\n" +
+                    (if (withLocalValue) "a.b=local\n" else "") + "copy=\${this@a.b}\n"
+        )
 
         val expected = if (withLocalValue) "local" else if (reverseIncludes) "first" else "second"
         assertResolvedValue(expected, build())
@@ -99,13 +106,19 @@ class PropertiesKeyPriorityTest {
     @Test
     fun retainYamlTypedKeysAndLiteralDottedPathsAlongsidePropertiesKeys() {
         write("components/source/application.properties", "\\u0031=string\na\\u002eb=nested\n")
-        write("components/app/application.yaml", "#include source\n1: number\n\"a.b\": literal\n" +
-            "copy: \${source@a.b}\n")
+        write(
+            "components/app/application.yaml", "#include source\n1: number\n\"a.b\": literal\n" +
+                    "copy: \${source@a.b}\n"
+        )
 
         MicroconfigRunner(microconfig()).build("dev", emptyList(), emptyList())
         val output = Files.readString(root.resolve("output/app/application.yaml"))
-        assertEquals(mapOf(1 to "number", "1" to "string", "a.b" to "literal",
-            "a" to mapOf("b" to "nested"), "copy" to "nested"), Yaml().load<Map<*, *>>(output))
+        assertEquals(
+            mapOf(
+                1 to "number", "1" to "string", "a.b" to "literal",
+                "a" to mapOf("b" to "nested"), "copy" to "nested"
+            ), Yaml().load<Map<*, *>>(output)
+        )
     }
 
     @ParameterizedTest
@@ -115,14 +128,17 @@ class PropertiesKeyPriorityTest {
         write("components/second/application.yaml", "1: second\n")
         val extension = if (yaml) "yaml" else "properties"
         val separator = if (yaml) ": " else "="
-        write("components/app/application.$extension", "#include first, second\n" +
-            "1${separator}local\ncopy${separator}\${this@1}\n")
+        write(
+            "components/app/application.$extension", "#include first, second\n" +
+                    "1${separator}local\ncopy${separator}\${this@1}\n"
+        )
 
         MicroconfigRunner(microconfig()).build("dev", emptyList(), emptyList())
         val output = Files.readString(root.resolve("output/app/application.$extension"))
 
         if (yaml) assertEquals(mapOf(1 to "local", "copy" to "local"), Yaml().load<Map<*, *>>(output))
-        else assertEquals(mapOf("1" to "local", "copy" to "local"),
+        else assertEquals(
+            mapOf("1" to "local", "copy" to "local"),
             Properties().apply { load(StringReader(output)) })
     }
 
@@ -142,14 +158,18 @@ class PropertiesKeyPriorityTest {
     fun keepEncodedQueriesWorkingAfterTheirRawSpellingIsOverridden(encoded: String) {
         write("components/source/application.properties", "$encoded.value=base\n")
         write("components/source/application.dev.properties", "a.b.value=override\n")
-        write("components/app/application.yaml", "copy: \${source@$encoded.value:fallback}\n" +
-            "group: \${source@$encoded.*:fallback}\n")
+        write(
+            "components/app/application.yaml", "copy: \${source@$encoded.value:fallback}\n" +
+                    "group: \${source@$encoded.*:fallback}\n"
+        )
 
         MicroconfigRunner(microconfig()).build("dev", emptyList(), emptyList())
         val output = Files.readString(root.resolve("output/app/application.yaml"))
 
-        assertEquals(mapOf("copy" to "override", "group" to mapOf("value" to "override")),
-            Yaml().load<Map<*, *>>(output))
+        assertEquals(
+            mapOf("copy" to "override", "group" to mapOf("value" to "override")),
+            Yaml().load<Map<*, *>>(output)
+        )
     }
 
     @Test
@@ -160,8 +180,12 @@ class PropertiesKeyPriorityTest {
 
         build()
 
-        assertEquals(listOf("local=local", "shared=override", "last=last", "included=include",
-            "added=environment"), Files.readAllLines(root.resolve("output/app/application.properties")))
+        assertEquals(
+            listOf(
+                "local=local", "shared=override", "last=last", "included=include",
+                "added=environment"
+            ), Files.readAllLines(root.resolve("output/app/application.properties"))
+        )
     }
 
     @Test
@@ -175,8 +199,10 @@ class PropertiesKeyPriorityTest {
 
         build(microconfig().withAdditionalPropertiesRepositories(listOf(repository)))
 
-        assertEquals(listOf("preferred=custom", "shared=custom", "local=file"),
-            Files.readAllLines(root.resolve("output/app/application.properties")))
+        assertEquals(
+            listOf("preferred=custom", "shared=custom", "local=file"),
+            Files.readAllLines(root.resolve("output/app/application.properties"))
+        )
     }
 
     @Test

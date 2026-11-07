@@ -1,9 +1,5 @@
 package io.microconfig
 
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.Properties
-import java.util.concurrent.TimeUnit
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -13,10 +9,15 @@ import org.junit.jupiter.api.condition.OS
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 @EnabledOnOs(OS.LINUX, OS.MAC)
 class PublishingPropertiesScriptTest {
-    @TempDir lateinit var directory: Path
+    @TempDir
+    lateinit var directory: Path
     private val propertiesFile
         get() = directory.resolve("gradle.properties")
 

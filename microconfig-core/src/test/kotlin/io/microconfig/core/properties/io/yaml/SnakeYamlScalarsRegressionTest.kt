@@ -1,7 +1,6 @@
 package io.microconfig.core.properties.io.yaml
 
 import io.microconfig.core.properties.io.yaml.impl.SnakeYaml
-import java.io.StringReader
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
@@ -9,13 +8,16 @@ import org.yaml.snakeyaml.DumperOptions.ScalarStyle
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.nodes.ScalarNode
 import org.yaml.snakeyaml.nodes.Tag
+import java.io.StringReader
 
 class SnakeYamlScalarsRegressionTest {
     @ParameterizedTest
-    @ValueSource(strings = ["text", "a/b-c_d.txt", "true", "YES", "off", "null", "NULL", "0",
-        "-10", "010", "00", "0_1", "0xA", "1_000", "1.25", ".5", ".inf", "-.Inf", ".NaN",
-        "2001-12-15", "Привет", "---text", "...text", "'true'", "!!str true", "!custom value",
-        "&value text", "[one, two]", "{key: value}", "|-\n  first\n  second\n"])
+    @ValueSource(
+        strings = ["text", "a/b-c_d.txt", "true", "YES", "off", "null", "NULL", "0",
+            "-10", "010", "00", "0_1", "0xA", "1_000", "1.25", ".5", ".inf", "-.Inf", ".NaN",
+            "2001-12-15", "Привет", "---text", "...text", "'true'", "!!str true", "!custom value",
+            "&value text", "[one, two]", "{key: value}", "|-\n  first\n  second\n"]
+    )
     fun keepScalarParsingAndFragmentsEquivalentToTheFullYamlPipeline(value: String) {
         val expected = Yaml().compose(StringReader(value))
         val actual = SnakeYaml.parse(value)
@@ -27,7 +29,7 @@ class SnakeYamlScalarsRegressionTest {
         }
         val serialized = SnakeYaml.serialize(expected)
         val block = expected is ScalarNode &&
-            expected.scalarStyle in listOf(ScalarStyle.LITERAL, ScalarStyle.FOLDED)
+                expected.scalarStyle in listOf(ScalarStyle.LITERAL, ScalarStyle.FOLDED)
         assertEquals(if (block) serialized else serialized.removeSuffix("\n"), SnakeYaml.fragment(actual))
     }
 

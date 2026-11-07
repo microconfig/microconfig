@@ -3,16 +3,14 @@ package io.microconfig.core.properties.templates
 import io.microconfig.core.properties.DeclaringComponentImpl
 import io.microconfig.core.properties.Resolver
 import io.microconfig.core.properties.templates.impl.StringTemplate
-import java.io.File
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.error.YAMLException
+import java.io.File
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class TemplateGroupIndentationTest {
@@ -33,10 +31,14 @@ class TemplateGroupIndentationTest {
     }
 
     private fun render(content: String): String =
-        StringTemplate("t", File("source"), File("output"),
-            TemplatePattern.defaultPattern().placeholderPattern, content)
-            .resolveBy(Resolver { _, _, _ -> "host: localhost\nauth:\n  user: reader" },
-                DeclaringComponentImpl("app", "component", "dev"))
+        StringTemplate(
+            "t", File("source"), File("output"),
+            TemplatePattern.defaultPattern().placeholderPattern, content
+        )
+            .resolveBy(
+                Resolver { _, _, _ -> "host: localhost\nauth:\n  user: reader" },
+                DeclaringComponentImpl("app", "component", "dev")
+            )
             .content
 
     private fun template(depth: Int, indent: Int, crlf: Boolean, inline: Boolean): String {
@@ -44,7 +46,7 @@ class TemplateGroupIndentationTest {
         val parents = (1 until depth).map { " ".repeat((it - 1) * indent) + "level$it:" }
         val keyIndent = " ".repeat((depth - 1) * indent)
         val value = if (inline) " \${common@db.*}"
-            else newline + " ".repeat(depth * indent) + "\${common@db.*}"
+        else newline + " ".repeat(depth * indent) + "\${common@db.*}"
         return (parents + (keyIndent + "database:" + value) + (keyIndent + "after: kept"))
             .joinToString(newline)
     }

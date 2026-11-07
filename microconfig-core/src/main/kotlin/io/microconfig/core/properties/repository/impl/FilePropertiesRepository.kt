@@ -6,11 +6,7 @@ import io.microconfig.core.properties.PropertiesRepository
 import io.microconfig.core.properties.Property
 import io.microconfig.core.properties.io.ConfigIo
 import io.microconfig.core.properties.io.yaml.YamlScalars
-import io.microconfig.core.properties.repository.ComponentGraph
-import io.microconfig.core.properties.repository.ComponentNotFoundException
-import io.microconfig.core.properties.repository.ConfigFile
-import io.microconfig.core.properties.repository.Include
-import io.microconfig.core.properties.repository.RawConfig
+import io.microconfig.core.properties.repository.*
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
@@ -55,11 +51,11 @@ class FilePropertiesRepository(
             try {
                 if (processedIncludes.add(include))
                     OriginalComponent(
-                            include.component,
-                            include.environment,
-                            configType,
-                            processedIncludes,
-                        )
+                        include.component,
+                        include.environment,
+                        configType,
+                        processedIncludes,
+                    )
                         .properties()
                 else emptyMap()
             } catch (error: ComponentNotFoundException) {

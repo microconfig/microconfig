@@ -6,13 +6,14 @@ import io.microconfig.core.configtypes.ConfigTypeFilters.configType
 import io.microconfig.core.configtypes.StandardConfigType.APPLICATION
 import io.microconfig.core.properties.templates.impl.TemplatesService.Companion.resolveTemplatesBy
 import io.microconfig.utils.IoUtils.readFully
-import java.io.File
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import java.io.File
 
 class TemplatesTest {
-    @TempDir lateinit var destinationDir: File
+    @TempDir
+    lateinit var destinationDir: File
 
     @Test
     fun testMustache() {

@@ -1,7 +1,7 @@
 package io.microconfig.core.properties.resolvers.impl
 
 import io.microconfig.core.properties.resolvers.RecursiveResolver
-import java.util.Optional
+import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
 class ChainedResolver private constructor(val resolvers: List<RecursiveResolver>) :

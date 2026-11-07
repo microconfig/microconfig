@@ -1,11 +1,7 @@
 package io.microconfig.core.properties.impl
 
 import io.microconfig.core.configtypes.ConfigType
-import io.microconfig.core.properties.Properties
-import io.microconfig.core.properties.PropertiesFactory
-import io.microconfig.core.properties.PropertiesRepository
-import io.microconfig.core.properties.Property
-import io.microconfig.core.properties.TypedProperties
+import io.microconfig.core.properties.*
 import java.util.concurrent.ConcurrentHashMap
 
 class PropertiesFactoryImpl(private val repository: PropertiesRepository) : PropertiesFactory {

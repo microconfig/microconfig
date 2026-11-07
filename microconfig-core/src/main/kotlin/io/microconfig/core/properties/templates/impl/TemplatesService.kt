@@ -1,10 +1,6 @@
 package io.microconfig.core.properties.templates.impl
 
-import io.microconfig.core.properties.Property
-import io.microconfig.core.properties.PropertyImpl
-import io.microconfig.core.properties.Resolver
-import io.microconfig.core.properties.TypedProperties
-import io.microconfig.core.properties.ValueFormat
+import io.microconfig.core.properties.*
 import io.microconfig.core.properties.io.properties.PropertiesText
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.templates.TemplateDefinition
@@ -53,8 +49,10 @@ constructor(
         when {
             property.valueFormat == ValueFormat.PROPERTIES ->
                 PropertiesText.unescape(property.value)
+
             property.valueFormat == ValueFormat.YAML ->
                 YamlScalars.unquote(property.value)
+
             else -> property.value
         }
 
@@ -63,7 +61,8 @@ constructor(
             val service = TemplatesService()
             return UnaryOperator { properties ->
                 if (properties.templates.isEmpty() &&
-                    properties.properties.none { service.templatePattern.startsWithTemplatePrefix(it.key) }) properties
+                    properties.properties.none { service.templatePattern.startsWithTemplatePrefix(it.key) }
+                ) properties
                 else properties.withTemplates(service.resolveTemplates(properties, resolver)).without {
                     service.templatePattern.startsWithTemplatePrefix(it.key)
                 }

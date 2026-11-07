@@ -1,16 +1,12 @@
 package io.microconfig.core
 
-import io.microconfig.core.configtypes.impl.ConfigTypeImpl
 import io.microconfig.core.configtypes.StandardConfigType.APPLICATION
+import io.microconfig.core.configtypes.impl.ConfigTypeImpl
 import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.PropertyImpl
 import io.microconfig.core.properties.impl.TypedPropertiesImpl
 import io.microconfig.core.properties.serializers.PropertySerializers
 import io.microconfig.utils.Os
-import java.nio.file.Files
-import java.nio.file.LinkOption.NOFOLLOW_LINKS
-import java.nio.file.Path
-import java.util.function.BiConsumer
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Assumptions.assumeFalse
 import org.junit.jupiter.api.BeforeEach
@@ -18,6 +14,10 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import java.nio.file.Files
+import java.nio.file.LinkOption.NOFOLLOW_LINKS
+import java.nio.file.Path
+import java.util.function.BiConsumer
 
 class BuildOutputTest {
     @Test
@@ -44,7 +44,8 @@ class BuildOutputTest {
         assertFalse(Files.exists(second.resolve("application.yaml")))
     }
 
-    @TempDir lateinit var directory: Path
+    @TempDir
+    lateinit var directory: Path
     private val root
         get() = directory.resolve("repo")
 
@@ -283,10 +284,12 @@ class BuildOutputTest {
             Files.writeString(output("application.$extension"), "old")
             Files.writeString(output("diff-application.$extension"), "stale")
         }
-        write("components/app/application.yaml", """
+        write(
+            "components/app/application.yaml", """
             mc.file.yaml: ${'$'}{this@configDir}/yaml.txt -> application.yaml
             mc.file.properties: ${'$'}{this@configDir}/properties.txt -> application.properties
-            """.trimIndent())
+            """.trimIndent()
+        )
         write("components/app/yaml.txt", "value: template\n")
         write("components/app/properties.txt", "value=template\n")
 
@@ -353,7 +356,10 @@ class BuildOutputTest {
 
         listOf("app", "worker").forEach { component ->
             assertEquals("value: new\n", Files.readString(destination.resolve("$component/application.yaml")))
-            assertEquals("value: old -> new\n", Files.readString(destination.resolve("$component/diff-application.yaml")))
+            assertEquals(
+                "value: old -> new\n",
+                Files.readString(destination.resolve("$component/diff-application.yaml"))
+            )
         }
     }
 

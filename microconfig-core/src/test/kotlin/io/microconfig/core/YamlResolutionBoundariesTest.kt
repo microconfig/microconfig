@@ -1,7 +1,5 @@
 package io.microconfig.core
 
-import java.nio.file.Files
-import java.nio.file.Path
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -10,9 +8,12 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
 import org.yaml.snakeyaml.Yaml
+import java.nio.file.Files
+import java.nio.file.Path
 
 class YamlResolutionBoundariesTest {
-    @TempDir lateinit var root: Path
+    @TempDir
+    lateinit var root: Path
 
     @BeforeEach
     fun createEnvironment() {
@@ -20,14 +21,16 @@ class YamlResolutionBoundariesTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = [
-        "{port: 80, port: 81}",
-        "[{port: 80, port: 81}]",
-        "{nested: {yes: first, true: second}}",
-        "{nested: {1_0: first, 10: second}}",
-        "{nested: {1.00: first, 1.0: second}}",
-        "{nested: {~: first, null: second}}",
-    ])
+    @ValueSource(
+        strings = [
+            "{port: 80, port: 81}",
+            "[{port: 80, port: 81}]",
+            "{nested: {yes: first, true: second}}",
+            "{nested: {1_0: first, 10: second}}",
+            "{nested: {1.00: first, 1.0: second}}",
+            "{nested: {~: first, null: second}}",
+        ]
+    )
     fun rejectStaticMappingDuplicatesBeforeWriting(value: String) {
         write("components/app/application.yaml", "result: $value\n")
         write("output/app/application.yaml", "retained: true\n")
@@ -40,10 +43,12 @@ class YamlResolutionBoundariesTest {
 
     @Test
     fun retainDistinctStaticKeyTypesAndYamlMergeOverrides() {
-        write("components/app/application.yaml", """
+        write(
+            "components/app/application.yaml", """
             result: {1: number, '1': text, true: boolean, 'true': text-boolean}
             merged: {base: &base {port: 80}, copy: {<<: *base, port: 81}}
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val result = build()
 
@@ -132,9 +137,11 @@ class YamlResolutionBoundariesTest {
     }
 
     @ParameterizedTest
-    @CsvSource(delimiter = '|', quoteCharacter = '"',
+    @CsvSource(
+        delimiter = '|', quoteCharacter = '"',
         value = ["'YES' | 3", "'null' | 4", "'1_000' | 5", "!!str true | 4",
-            "!!timestamp '2001-12-15' | 10", "!!binary 'aGVsbG8=' | 8", "!custom 'abc' | 3"])
+            "!!timestamp '2001-12-15' | 10", "!!binary 'aGVsbG8=' | 8", "!custom 'abc' | 3"]
+    )
     fun keepYamlStringsAsSpelStrings(value: String, length: Int) {
         write("components/source/application.yaml", "value: $value\n")
         write("components/app/application.yaml", "result: #{\${source@value}.length()}\n")
@@ -155,24 +162,32 @@ class YamlResolutionBoundariesTest {
     fun preserveQuotedExpressionTextAndPropertiesExpressionFragments() {
         write("components/source/application.yaml", "boolean: YES\nnumber: 1_000\ntext: 'it''s true'\n")
         write("components/properties/application.properties", "fragment=1 + 2\n")
-        write("components/app/application.yaml", """
+        write(
+            "components/app/application.yaml", """
             booleanText: #{'${'$'}{source@boolean}'.toLowerCase()}
             numberText: #{'${'$'}{source@number}'}
             quoted: #{${'$'}{source@text}.toUpperCase()}
             properties: #{${'$'}{properties@fragment} * 2}
-            """.trimIndent())
+            """.trimIndent()
+        )
 
-        assertEquals(mapOf("booleanText" to "yes", "numberText" to "1_000",
-            "quoted" to "IT'S TRUE", "properties" to 5), build())
+        assertEquals(
+            mapOf(
+                "booleanText" to "yes", "numberText" to "1_000",
+                "quoted" to "IT'S TRUE", "properties" to 5
+            ), build()
+        )
     }
 
     @ParameterizedTest
     @ValueSource(strings = ["base", "id001", "id002"])
     fun keepAliasSharingAndMergePrecedenceWhileResolvingKeys(anchor: String) {
         write("components/source/application.yaml", "key: name\nvalue: first\n")
-        write("components/app/application.yaml", """
+        write(
+            "components/app/application.yaml", """
             result: [{base: &$anchor {name: ${'$'}{source@value}, keep: original}, merged: {<<: *$anchor, name: second}, alias: *$anchor, keyed: &keyed {${'$'}{source@key}: first}, keyedAlias: *keyed}]
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val result = (build()["result"] as List<*>).single() as Map<*, *>
         assertEquals(mapOf("name" to "first", "keep" to "original"), result["base"], result.toString())
@@ -185,7 +200,10 @@ class YamlResolutionBoundariesTest {
     @Test
     fun rejectCollisionsBetweenResolvedMergeKeysAndExplicitKeys() {
         write("components/source/application.yaml", "key: name\n")
-        write("components/app/application.yaml", "result: [{base: &base {\${source@key}: first}, merged: {<<: *base, name: second}}]\n")
+        write(
+            "components/app/application.yaml",
+            "result: [{base: &base {\${source@key}: first}, merged: {<<: *base, name: second}}]\n"
+        )
 
         val error = assertThrows(RuntimeException::class.java) { build() }
 

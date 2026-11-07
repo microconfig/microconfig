@@ -18,6 +18,7 @@ class FromToNotationParser(private val pattern: TemplatePattern) : TemplateDefin
             when (fieldOf(key)) {
                 "fromFile" ->
                     getOrCreate(key, definitions).setFromFile(property.value.trim { it <= ' ' })
+
                 "toFile" ->
                     getOrCreate(key, definitions).setToFile(property.value.trim { it <= ' ' })
             }

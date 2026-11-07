@@ -1,6 +1,6 @@
 package io.microconfig.core.properties.resolvers.expression.functions.impl
 
-import java.util.Base64
+import java.util.*
 import java.util.regex.Pattern
 
 object CustomStringApi {

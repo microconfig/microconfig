@@ -30,6 +30,7 @@ object PropertiesText {
                     output.append(if (lineBreak) "\\n" else "\\r")
                     if (lineBreak) index++
                 }
+
                 else -> output.append(character)
             }
             index++
@@ -79,5 +80,5 @@ object PropertiesText {
 
     private fun isUnicodeEscape(text: String, start: Int): Boolean =
         start + 4 <= text.length &&
-            (start until start + 4).all { Character.digit(text[it], 16) >= 0 }
+                (start until start + 4).all { Character.digit(text[it], 16) >= 0 }
 }

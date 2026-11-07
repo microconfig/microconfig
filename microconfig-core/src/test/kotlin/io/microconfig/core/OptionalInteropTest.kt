@@ -1,22 +1,17 @@
 package io.microconfig.core
 
-import io.microconfig.core.properties.ConfigFormat
-import io.microconfig.core.properties.DeclaringComponent
-import io.microconfig.core.properties.DeclaringComponentImpl
-import io.microconfig.core.properties.PlaceholderResolveStrategy
-import io.microconfig.core.properties.PropertyImpl
-import io.microconfig.core.properties.TypedProperties
+import io.microconfig.core.properties.*
 import io.microconfig.core.properties.impl.PropertiesImpl
+import io.microconfig.core.properties.io.yaml.YamlResolvers
 import io.microconfig.core.properties.resolvers.RecursiveResolver
 import io.microconfig.core.properties.resolvers.impl.ChainedResolver
-import io.microconfig.core.properties.io.yaml.YamlResolvers
 import io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders
 import io.microconfig.core.properties.resolvers.placeholder.strategies.composite.impl.CompositeResolveStrategy
-import java.util.Optional
-import kotlin.jvm.optionals.getOrNull
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
+import java.util.*
+import kotlin.jvm.optionals.getOrNull
 
 class OptionalInteropTest {
     @Test
@@ -64,8 +59,10 @@ class OptionalInteropTest {
             .resolve("component", "key", "dev", "app", null)
         assertSame(property, result.getOrNull())
         assertEquals(0, laterCalls)
-        assertNull(CompositeResolveStrategy(listOf(empty, present))
-            .resolve("component", "absent", "dev", "app", null).getOrNull())
+        assertNull(
+            CompositeResolveStrategy(listOf(empty, present))
+                .resolve("component", "absent", "dev", "app", null).getOrNull()
+        )
         val actual = assertThrows(IllegalArgumentException::class.java) {
             CompositeResolveStrategy(listOf(empty, throwing))
                 .resolve("component", "key", "dev", "app", null)
@@ -96,8 +93,11 @@ class OptionalInteropTest {
 
         val root = DeclaringComponentImpl("app", "component", "dev")
         val yaml = YamlResolvers.forValues(custom)
-        assertEquals("resolved", yaml.resolve(
-            PropertyImpl.property("key", "token", ConfigFormat.YAML, root), root))
+        assertEquals(
+            "resolved", yaml.resolve(
+                PropertyImpl.property("key", "token", ConfigFormat.YAML, root), root
+            )
+        )
         assertSame(failure, assertThrows(IllegalStateException::class.java) {
             yaml.resolve(PropertyImpl.property("key", "broken", ConfigFormat.YAML, root), root)
         })

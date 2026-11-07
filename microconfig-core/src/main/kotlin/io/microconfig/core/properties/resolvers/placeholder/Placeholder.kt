@@ -1,10 +1,6 @@
 package io.microconfig.core.properties.resolvers.placeholder
 
-import io.microconfig.core.properties.DeclaringComponent
-import io.microconfig.core.properties.DeclaringComponentImpl
-import io.microconfig.core.properties.PlaceholderResolveStrategy
-import io.microconfig.core.properties.Property
-import io.microconfig.core.properties.UnresolvedValueException
+import io.microconfig.core.properties.*
 import kotlin.jvm.optionals.getOrNull
 
 class Placeholder
@@ -39,10 +35,10 @@ internal constructor(
 
     override fun equals(other: Any?): Boolean =
         other is Placeholder &&
-            configType == other.configType &&
-            component == other.component &&
-            environment == other.environment &&
-            key == other.key
+                configType == other.configType &&
+                component == other.component &&
+                environment == other.environment &&
+                key == other.key
 
     override fun hashCode(): Int = listOf(configType, component, environment, key).hashCode()
 

@@ -1,8 +1,8 @@
 package io.microconfig.core
 
 import io.microconfig.core.configtypes.ConfigTypeRepository
-import io.microconfig.core.configtypes.impl.FirstNonEmptyConfigTypeRepository
 import io.microconfig.core.configtypes.impl.CustomConfigTypeRepository
+import io.microconfig.core.configtypes.impl.FirstNonEmptyConfigTypeRepository
 import io.microconfig.core.configtypes.impl.StandardConfigTypeRepository
 import io.microconfig.core.environments.ComponentFactory
 import io.microconfig.core.environments.Environment
@@ -161,13 +161,13 @@ private constructor(
             val environmentProperties = EnvironmentProperties().get()
             val strategies =
                 additionalPlaceholderResolvers +
-                    listOf(
-                        SystemResolveStrategy.systemPropertiesResolveStrategy(),
-                        SystemResolveStrategy.envVariablesResolveStrategy(),
-                        ComponentResolveStrategy(componentProperties),
-                        EnvironmentResolveStrategy(environments, environmentProperties),
-                        StandardResolveStrategy(environments),
-                    )
+                        listOf(
+                            SystemResolveStrategy.systemPropertiesResolveStrategy(),
+                            SystemResolveStrategy.envVariablesResolveStrategy(),
+                            ComponentResolveStrategy(componentProperties),
+                            EnvironmentResolveStrategy(environments, environmentProperties),
+                            StandardResolveStrategy(environments),
+                        )
             val strategy = CompositeResolveStrategy.composite(strategies)
             return PlaceholderResolver(
                 lazyEnvironments,

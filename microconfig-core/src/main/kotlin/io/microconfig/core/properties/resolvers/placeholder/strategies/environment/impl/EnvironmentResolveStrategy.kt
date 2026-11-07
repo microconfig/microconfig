@@ -9,7 +9,7 @@ import io.microconfig.core.properties.PlaceholderResolveStrategy
 import io.microconfig.core.properties.Property
 import io.microconfig.core.properties.PropertyImpl
 import io.microconfig.core.properties.resolvers.placeholder.strategies.environment.EnvProperty
-import java.util.Optional
+import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
 class EnvironmentResolveStrategy(

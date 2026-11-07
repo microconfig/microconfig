@@ -2,7 +2,6 @@ package io.microconfig.core.properties.serializers
 
 import io.microconfig.core.configtypes.StandardConfigType.APPLICATION
 import io.microconfig.core.properties.ConfigFormat
-import io.microconfig.core.properties.ConfigFormat.PROPERTIES
 import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.Property
 import io.microconfig.core.properties.PropertyImpl
@@ -14,16 +13,6 @@ import io.microconfig.core.properties.io.ConfigWriter
 import io.microconfig.core.properties.io.selector.ConfigIoFactory.newConfigIo
 import io.microconfig.core.properties.serializers.impl.ConfigDiff
 import io.microconfig.io.impl.DumpedFsReader
-import java.io.File
-import java.io.StringReader
-import java.nio.file.Path
-import java.util.Properties
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.CyclicBarrier
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit.SECONDS
-import java.util.concurrent.atomic.AtomicInteger
-import java.util.function.BiConsumer
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -31,9 +20,20 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
 import org.yaml.snakeyaml.Yaml
+import java.io.File
+import java.io.StringReader
+import java.nio.file.Path
+import java.util.*
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.CyclicBarrier
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit.SECONDS
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.function.BiConsumer
 
 class FilePropertySerializerConcurrencyTest {
-    @TempDir lateinit var directory: Path
+    @TempDir
+    lateinit var directory: Path
 
     @ParameterizedTest
     @CsvSource("YAML,true", "YAML,false", "PROPERTIES,true", "PROPERTIES,false")
@@ -90,7 +90,7 @@ class FilePropertySerializerConcurrencyTest {
         val secondDirectory = directory.resolve("second").toFile()
         val first = PropertySerializers.toFileIn(firstDirectory, BiConsumer { _, _ -> }, io)
         val second = if (sharedSerializer) first
-            else PropertySerializers.toFileIn(secondDirectory, BiConsumer { _, _ -> }, io)
+        else PropertySerializers.toFileIn(secondDirectory, BiConsumer { _, _ -> }, io)
         val executor = Executors.newFixedThreadPool(2)
         try {
             val firstSave = executor.submit { PropertiesImpl(listOf(unit("first", YAML))).save(first) }
@@ -130,7 +130,8 @@ class FilePropertySerializerConcurrencyTest {
         val serializers = arrayOfNulls<PropertySerializer<File>>(2)
         val ready = CyclicBarrier(2)
         for (index in serializers.indices) {
-            serializers[index] = PropertySerializers.toFileIn(directory.resolve("output$index").toFile(),
+            serializers[index] = PropertySerializers.toFileIn(
+                directory.resolve("output$index").toFile(),
                 BiConsumer { _, _ ->
                     ready.await(5, SECONDS)
                     serializers[1 - index]!!.prepare(emptyList())

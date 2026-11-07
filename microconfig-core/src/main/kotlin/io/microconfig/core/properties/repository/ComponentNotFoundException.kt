@@ -1,7 +1,7 @@
 package io.microconfig.core.properties.repository
 
 import io.microconfig.core.exceptions.MicroconfigException
-import java.util.ArrayDeque
+import java.util.*
 
 class ComponentNotFoundException(private val notFoundComponent: String) : MicroconfigException() {
     private val path = ArrayDeque<String>()

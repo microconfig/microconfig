@@ -60,12 +60,12 @@ internal class OutputDestinations {
 
     private fun isSameEntry(path: Path, alternative: Path): Boolean =
         !Files.isSymbolicLink(alternative) && Files.exists(alternative, NOFOLLOW_LINKS) &&
-            Files.isSameFile(path, alternative)
+                Files.isSameFile(path, alternative)
 
     private fun isDiffName(name: String, caseSensitive: Boolean): Boolean {
         val compared = if (caseSensitive) name else name.lowercase(ROOT)
         return compared.startsWith("diff-") &&
-            (compared.endsWith(".yaml") || compared.endsWith(".properties"))
+                (compared.endsWith(".yaml") || compared.endsWith(".properties"))
     }
 
     fun reserve(file: File, path: Path) {

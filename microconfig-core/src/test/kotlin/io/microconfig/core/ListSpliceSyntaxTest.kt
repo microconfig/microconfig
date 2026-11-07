@@ -1,7 +1,5 @@
 package io.microconfig.core
 
-import java.nio.file.Files
-import java.nio.file.Path
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
@@ -9,9 +7,12 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.junit.jupiter.params.provider.ValueSource
 import org.yaml.snakeyaml.Yaml
+import java.nio.file.Files
+import java.nio.file.Path
 
 class ListSpliceSyntaxTest {
-    @TempDir lateinit var directory: Path
+    @TempDir
+    lateinit var directory: Path
 
     @ParameterizedTest(name = "{0}, empty={1}, last={2}, crlf={3}")
     @MethodSource("blockScalarSplices")
@@ -26,10 +27,12 @@ class ListSpliceSyntaxTest {
         Files.createDirectories(root.resolve("components/app"))
         Files.writeString(root.resolve("envs/dev.yaml"), "group:\n  components: [app]\n")
         val content = "label: emoji😀\nbase: [one, two]\nlist:\n  - $style\n" +
-            (if (empty) "" else "    hello\n    world\n") +
-            "  \${this@base}\n" + (if (last) "" else "  - after\n")
-        Files.writeString(root.resolve("components/app/application.yaml"),
-            if (crlf) content.replace("\n", "\r\n") else content)
+                (if (empty) "" else "    hello\n    world\n") +
+                "  \${this@base}\n" + (if (last) "" else "  - after\n")
+        Files.writeString(
+            root.resolve("components/app/application.yaml"),
+            if (crlf) content.replace("\n", "\r\n") else content
+        )
         val output = directory.resolve("output")
 
         MicroconfigRunner(root.toFile(), output.toFile()).build("dev", emptyList(), emptyList())
@@ -47,9 +50,11 @@ class ListSpliceSyntaxTest {
         Files.createDirectories(root.resolve("envs"))
         Files.createDirectories(root.resolve("components/app"))
         Files.writeString(root.resolve("envs/dev.yaml"), "group:\n  components: [app]\n")
-        Files.writeString(root.resolve("components/app/application.yaml"),
+        Files.writeString(
+            root.resolve("components/app/application.yaml"),
             "base: [one, two]\n$prefix\n  \${this@base}\n  - literal\n" +
-                "list:\n  - before\n  \${this@base}\n  - next\n")
+                    "list:\n  - before\n  \${this@base}\n  - next\n"
+        )
         val output = directory.resolve("output")
 
         MicroconfigRunner(root.toFile(), output.toFile()).build("dev", emptyList(), emptyList())

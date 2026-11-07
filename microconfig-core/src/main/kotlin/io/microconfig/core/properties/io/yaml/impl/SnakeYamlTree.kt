@@ -1,16 +1,12 @@
 package io.microconfig.core.properties.io.yaml.impl
 
 import io.microconfig.core.properties.io.yaml.YamlTree
-import java.io.StringReader
-import java.util.IdentityHashMap
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.comments.CommentLine
 import org.yaml.snakeyaml.comments.CommentType
-import org.yaml.snakeyaml.nodes.MappingNode
-import org.yaml.snakeyaml.nodes.Node
-import org.yaml.snakeyaml.nodes.NodeTuple
-import org.yaml.snakeyaml.nodes.ScalarNode
-import org.yaml.snakeyaml.nodes.Tag
+import org.yaml.snakeyaml.nodes.*
+import java.io.StringReader
+import java.util.*
 
 class SnakeYamlTree(private val sectionBreaks: Boolean) : YamlTree {
     override fun toYaml(flatProperties: Map<String, String>): String {

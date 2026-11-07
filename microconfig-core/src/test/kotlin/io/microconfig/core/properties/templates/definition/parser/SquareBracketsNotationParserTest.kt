@@ -7,14 +7,15 @@ import io.microconfig.core.properties.PropertyImpl.Companion.property
 import io.microconfig.core.properties.templates.TemplateDefinition
 import io.microconfig.core.properties.templates.TemplatePattern.Companion.defaultPattern
 import io.microconfig.core.properties.templates.definition.parser.impl.SquareBracketsNotationParser
-import java.io.File
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.mockito.Mockito.mock
+import java.io.File
 
 class SquareBracketsNotationParserTest {
-    @TempDir lateinit var tempDir: File
+    @TempDir
+    lateinit var tempDir: File
 
     @Test
     fun multipleTemplateNames() {

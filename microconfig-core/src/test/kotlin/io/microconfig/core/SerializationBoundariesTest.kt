@@ -12,20 +12,21 @@ import io.microconfig.core.properties.serializers.PropertySerializers
 import io.microconfig.core.properties.templates.TemplatePattern
 import io.microconfig.core.properties.templates.impl.BinaryTemplate
 import io.microconfig.core.properties.templates.impl.StringTemplate
-import java.io.StringReader
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.Properties
-import java.util.function.BiConsumer
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import org.yaml.snakeyaml.Yaml
+import java.io.StringReader
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.*
+import java.util.function.BiConsumer
 
 class SerializationBoundariesTest {
-    @TempDir lateinit var directory: Path
+    @TempDir
+    lateinit var directory: Path
 
     @ParameterizedTest
     @ValueSource(strings = ["C:\\temp\\new", "\\u0041", "\\\\server\\share", "first\nsecond", "a\\\nb", " \tleading", "'quoted'", "a\rb\u000C"])
@@ -68,9 +69,9 @@ class SerializationBoundariesTest {
         val bytes = if (binary) byteArrayOf(0, -1, 1) else "text".toByteArray()
         Files.write(source.toPath(), bytes)
         val template = if (binary) BinaryTemplate("t", source, destination, bytes)
-            else StringTemplate("t", source, destination, TemplatePattern.defaultPattern().placeholderPattern, "text")
+        else StringTemplate("t", source, destination, TemplatePattern.defaultPattern().placeholderPattern, "text")
         val equivalent = if (binary) BinaryTemplate("t", source, destination, bytes.copyOf())
-            else StringTemplate("t", source, destination, TemplatePattern.defaultPattern().placeholderPattern, "text")
+        else StringTemplate("t", source, destination, TemplatePattern.defaultPattern().placeholderPattern, "text")
         val values = TypedPropertiesImpl(APPLICATION, "app", "dev", emptyMap(), listOf(template))
         val serializer = PropertySerializers.toFileIn(directory.toFile(), BiConsumer { _, _ -> })
             .prepare(listOf(values))

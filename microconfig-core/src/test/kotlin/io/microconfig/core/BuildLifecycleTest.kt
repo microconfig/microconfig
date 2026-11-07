@@ -1,24 +1,25 @@
 package io.microconfig.core
 
+import io.microconfig.core.properties.ConfigFormat
 import io.microconfig.core.properties.PlaceholderResolveStrategy
 import io.microconfig.core.properties.PropertyImpl
-import io.microconfig.core.properties.ConfigFormat
 import io.microconfig.core.properties.ResolveException
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.Optional
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit.SECONDS
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.*
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit.SECONDS
 
 class BuildLifecycleTest {
-    @TempDir lateinit var root: Path
+    @TempDir
+    lateinit var root: Path
 
     @BeforeEach
     fun createRepository() {
@@ -86,7 +87,7 @@ class BuildLifecycleTest {
         Files.writeString(root.resolve("components/app/application.common.yaml"), "fromCommon: added\n")
         Files.writeString(root.resolve("components/app/config.process"), "heap=512m\n")
         val next = if (copyInstance) initial.withDestinationDir(root.resolve("next-output").toFile())
-            else microconfig()
+        else microconfig()
 
         val second = MicroconfigRunner(next).buildProperties("dev", emptyList(), emptyList())
 

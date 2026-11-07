@@ -2,7 +2,7 @@ package io.microconfig.core.properties
 
 import io.microconfig.core.configtypes.ConfigType
 import io.microconfig.core.templates.Template
-import java.util.Optional
+import java.util.*
 import java.util.function.Predicate
 
 interface TypedProperties {

@@ -1,7 +1,5 @@
 package io.microconfig.core.properties.resolvers.expression.impl
 
-import java.lang.reflect.Method
-import java.lang.reflect.Modifier
 import org.springframework.core.convert.TypeDescriptor
 import org.springframework.expression.EvaluationContext
 import org.springframework.expression.ExpressionParser
@@ -11,6 +9,8 @@ import org.springframework.expression.spel.SpelMessage
 import org.springframework.expression.spel.standard.SpelExpressionParser
 import org.springframework.expression.spel.support.SimpleEvaluationContext
 import org.springframework.expression.spel.support.StandardTypeConverter
+import java.lang.reflect.Method
+import java.lang.reflect.Modifier
 
 internal class ExpressionEvaluator(
     private val parser: ExpressionParser,
@@ -34,11 +34,13 @@ internal class ExpressionEvaluator(
                     "${error.message}. Java types can't be used in expressions: T(...) and new aren't supported",
                     error,
                 )
+
             SpelMessage.FUNCTION_NOT_DEFINED ->
                 IllegalArgumentException(
                     "${error.message}. ${replacementOf(error.inserts?.getOrNull(0))}Available functions: $functionNames",
                     error,
                 )
+
             else -> error
         }
 
@@ -79,7 +81,8 @@ internal class ExpressionEvaluator(
 
             override fun convertValue(value: Any?, sourceType: TypeDescriptor?, targetType: TypeDescriptor): Any? =
                 if (targetType.type == String::class.java &&
-                    (value is String || value is Number || value is Boolean || value is Char)) value.toString()
+                    (value is String || value is Number || value is Boolean || value is Char)
+                ) value.toString()
                 else delegate.convertValue(value, sourceType, targetType)
         }
     }

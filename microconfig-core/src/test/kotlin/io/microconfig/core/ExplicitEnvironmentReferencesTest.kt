@@ -1,7 +1,5 @@
 package io.microconfig.core
 
-import java.nio.file.Files
-import java.nio.file.Path
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -9,9 +7,12 @@ import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import org.yaml.snakeyaml.Yaml
+import java.nio.file.Files
+import java.nio.file.Path
 
 class ExplicitEnvironmentReferencesTest {
-    @TempDir lateinit var root: Path
+    @TempDir
+    lateinit var root: Path
 
     @BeforeEach
     fun createEnvironments() {
@@ -28,8 +29,8 @@ class ExplicitEnvironmentReferencesTest {
         write(
             "components/app/application.yaml",
             "self: \${this[prod]@value}\nother: \${source[prod]@value}\n" +
-                "implicit: \${source@value}\ncurrent: \${this@value}\n" +
-                "environment: \${this[prod]@env}\n",
+                    "implicit: \${source@value}\ncurrent: \${this@value}\n" +
+                    "environment: \${this[prod]@env}\n",
         )
         write("components/app/application.dev.yaml", "value: app-dev\n")
         write("components/app/application.prod.yaml", "value: app-prod\n")

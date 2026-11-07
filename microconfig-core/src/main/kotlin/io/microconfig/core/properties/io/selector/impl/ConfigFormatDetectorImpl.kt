@@ -16,6 +16,7 @@ class ConfigFormatDetectorImpl(private val reader: FsReader) : ConfigFormatDetec
             "properties" -> PROPERTIES
             "yaml",
             "yml" -> YAML
+
             else -> detectContent(file)
         }
 
@@ -25,14 +26,14 @@ class ConfigFormatDetectorImpl(private val reader: FsReader) : ConfigFormatDetec
             reader
                 .firstLineOf(file) {
                     it.isNotBlank() &&
-                        !isDirective(it.trim()) &&
-                        (!it.trimStart().startsWith('!') || separatorIn(it) >= 0)
+                            !isDirective(it.trim()) &&
+                            (!it.trimStart().startsWith('!') || separatorIn(it) >= 0)
                 }
                 .getOrNull() ?: return PROPERTIES
         if (
             first.trim() == "---" ||
-                first.trim().startsWith("%YAML ") ||
-                first.trim().startsWith("%TAG ")
+            first.trim().startsWith("%YAML ") ||
+            first.trim().startsWith("%TAG ")
         )
             return YAML
         val separator = separatorIn(first)
@@ -41,7 +42,7 @@ class ConfigFormatDetectorImpl(private val reader: FsReader) : ConfigFormatDetec
         // A YAML tag can also be an ordinary Properties comment.
         if (
             first.trimStart().startsWith('!') &&
-                !YamlScalars.isMappingSource(reader.readFully(file))
+            !YamlScalars.isMappingSource(reader.readFully(file))
         )
             return PROPERTIES
         return YAML
@@ -65,8 +66,8 @@ class ConfigFormatDetectorImpl(private val reader: FsReader) : ConfigFormatDetec
                     else quote = null
                 } else if (
                     quote == null &&
-                        (character == '\'' || character == '"') &&
-                        (index == keyStart || text[index - 1] == '.')
+                    (character == '\'' || character == '"') &&
+                    (index == keyStart || text[index - 1] == '.')
                 )
                     quote = character
             }

@@ -3,7 +3,7 @@ package io.microconfig.core.properties.resolvers.placeholder.strategies.componen
 import io.microconfig.core.environments.EnvironmentRepository
 import io.microconfig.core.properties.repository.ComponentGraph
 import io.microconfig.core.properties.resolvers.placeholder.strategies.component.ComponentProperty
-import java.util.Optional
+import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
 class ConfigDirProperty(

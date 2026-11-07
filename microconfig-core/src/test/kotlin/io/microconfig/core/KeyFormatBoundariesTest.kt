@@ -7,12 +7,6 @@ import io.microconfig.core.properties.ValueFormat
 import io.microconfig.core.properties.impl.TypedPropertiesImpl
 import io.microconfig.core.properties.io.properties.PropertiesText
 import io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo
-import java.io.ByteArrayInputStream
-import java.io.StringReader
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.Properties
-import java.util.stream.Stream
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -21,15 +15,24 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.junit.jupiter.params.provider.ValueSource
 import org.yaml.snakeyaml.Yaml
+import java.io.ByteArrayInputStream
+import java.io.StringReader
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.*
+import java.util.stream.Stream
 
 class KeyFormatBoundariesTest {
-    @TempDir lateinit var directory: Path
+    @TempDir
+    lateinit var directory: Path
 
     @ParameterizedTest
     @MethodSource("yamlKeys")
     fun writeYamlKeySyntaxAsTheLogicalPropertiesKey(key: String, expected: String) {
-        val property = PropertyImpl.property(key, "payload", ConfigFormat.PROPERTIES, null,
-            ValueFormat.TEXT, ConfigFormat.YAML)
+        val property = PropertyImpl.property(
+            key, "payload", ConfigFormat.PROPERTIES, null,
+            ValueFormat.TEXT, ConfigFormat.YAML
+        )
         val serialized = configIo().writeTo(directory.resolve("result.properties").toFile())
             .serialize(listOf(property))
 
@@ -44,13 +47,16 @@ class KeyFormatBoundariesTest {
     @ValueSource(strings = ["a\\ b", "a\\:b", "a\\=b", "slash\\\\tail", "a\\u002eb", "\\#name", "multi\\\n  line"])
     fun preserveAlreadyEncodedPropertiesKeysAndContinuedValues(key: String) {
         val value = "first\\\n  second"
-        val property = PropertyImpl.property(key, value, ConfigFormat.PROPERTIES, null,
-            ValueFormat.PROPERTIES, ConfigFormat.PROPERTIES)
+        val property = PropertyImpl.property(
+            key, value, ConfigFormat.PROPERTIES, null,
+            ValueFormat.PROPERTIES, ConfigFormat.PROPERTIES
+        )
         val serialized = configIo().writeTo(directory.resolve("result.properties").toFile())
             .serialize(listOf(property))
 
         assertEquals("$key=$value", serialized)
-        assertEquals(mapOf(PropertiesText.unescape(key) to "firstsecond"),
+        assertEquals(
+            mapOf(PropertiesText.unescape(key) to "firstsecond"),
             Properties().apply { load(StringReader(serialized)) })
     }
 
@@ -78,8 +84,10 @@ class KeyFormatBoundariesTest {
         val properties = typed(read.map { it.copy(configFormat = ConfigFormat.PROPERTIES) })
 
         assertTrue(yaml.getPropertyWithKey(query).isPresent, query)
-        assertEquals(yaml.getPropertyWithKey(query).orElseThrow().value,
-            properties.getPropertyWithKey(query).orElseThrow().value, query)
+        assertEquals(
+            yaml.getPropertyWithKey(query).orElseThrow().value,
+            properties.getPropertyWithKey(query).orElseThrow().value, query
+        )
     }
 
     @Test
@@ -97,10 +105,14 @@ class KeyFormatBoundariesTest {
     @ParameterizedTest
     @MethodSource("collidingYamlKeys")
     fun rejectYamlKeysThatCollapseToTheSamePropertiesKey(firstKey: String, secondKey: String) {
-        val first = PropertyImpl.property(firstKey, "first", ConfigFormat.PROPERTIES, null,
-            ValueFormat.TEXT, ConfigFormat.YAML)
-        val second = PropertyImpl.property(secondKey, "second", ConfigFormat.PROPERTIES, null,
-            ValueFormat.TEXT, ConfigFormat.YAML)
+        val first = PropertyImpl.property(
+            firstKey, "first", ConfigFormat.PROPERTIES, null,
+            ValueFormat.TEXT, ConfigFormat.YAML
+        )
+        val second = PropertyImpl.property(
+            secondKey, "second", ConfigFormat.PROPERTIES, null,
+            ValueFormat.TEXT, ConfigFormat.YAML
+        )
         val target = directory.resolve("result.properties")
         Files.writeString(target, "retained")
 
@@ -116,8 +128,10 @@ class KeyFormatBoundariesTest {
     @ValueSource(booleans = [true, false])
     fun rejectMixedEncodedAndYamlKeysThatProduceTheSamePropertiesKey(yamlFirst: Boolean) {
         val raw = PropertyImpl.property("a\\u0041", "first", ConfigFormat.PROPERTIES, null)
-        val yaml = PropertyImpl.property("aA", "second", ConfigFormat.PROPERTIES, null,
-            ValueFormat.TEXT, ConfigFormat.YAML)
+        val yaml = PropertyImpl.property(
+            "aA", "second", ConfigFormat.PROPERTIES, null,
+            ValueFormat.TEXT, ConfigFormat.YAML
+        )
         val properties = if (yamlFirst) listOf(yaml, raw) else listOf(raw, yaml)
 
         assertThrows(IllegalArgumentException::class.java) {

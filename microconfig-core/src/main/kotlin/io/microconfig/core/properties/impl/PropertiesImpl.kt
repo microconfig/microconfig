@@ -1,11 +1,8 @@
 package io.microconfig.core.properties.impl
 
+import io.microconfig.core.properties.*
 import io.microconfig.core.properties.Properties
-import io.microconfig.core.properties.Property
-import io.microconfig.core.properties.PropertySerializer
-import io.microconfig.core.properties.Resolver
-import io.microconfig.core.properties.TypedProperties
-import java.util.Optional
+import java.util.*
 import java.util.function.Predicate
 import java.util.function.UnaryOperator
 import kotlin.jvm.optionals.getOrNull

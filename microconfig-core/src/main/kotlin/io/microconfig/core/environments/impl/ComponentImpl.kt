@@ -23,9 +23,9 @@ class ComponentImpl(
 
     override fun equals(other: Any?): Boolean =
         other is ComponentImpl &&
-            name == other.name &&
-            originalName == other.originalName &&
-            environment == other.environment
+                name == other.name &&
+                originalName == other.originalName &&
+                environment == other.environment
 
     override fun hashCode(): Int = listOf(name, originalName, environment).hashCode()
 

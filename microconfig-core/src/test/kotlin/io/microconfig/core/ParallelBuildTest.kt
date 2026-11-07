@@ -1,40 +1,42 @@
 package io.microconfig.core
 
-import io.microconfig.io.FsReader
-import io.microconfig.io.impl.DumpedFsReader
+import io.microconfig.core.properties.ConfigFormat
 import io.microconfig.core.properties.PlaceholderResolveStrategy
 import io.microconfig.core.properties.PropertiesRepository
-import io.microconfig.core.properties.ConfigFormat
 import io.microconfig.core.properties.PropertyImpl
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.Optional
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.ForkJoinPool
-import java.util.concurrent.TimeUnit.SECONDS
+import io.microconfig.io.FsReader
+import io.microconfig.io.impl.DumpedFsReader
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import org.yaml.snakeyaml.Yaml
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.*
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.ForkJoinPool
+import java.util.concurrent.TimeUnit.SECONDS
 
 class ParallelBuildTest {
-    @TempDir lateinit var root: Path
+    @TempDir
+    lateinit var root: Path
 
     @Test
     fun keepDynamicDefaultsConsistentAndIsolatedInParallelStreams() {
         val names = (0..31).map { "service$it" }
         write("envs/dev.yaml", "group:\n  components: [${names.joinToString(", ") { "$it:original" }}]\n")
-        write("components/original/application.yaml", """
+        write(
+            "components/original/application.yaml", """
             gate: ${'$'}{gate@value}
             stamp: ${'$'}{this@missing:#{#currentTimeMillis()}}-${'$'}{this@name}
             items: ${'$'}{this@missingItems:[${'$'}{this@stamp}, ${'$'}{this@stamp}]}
             """.trimIndent() + "\n" +
-            (0..7).joinToString("") { "ref$it: \${this@stamp}\n" })
+                    (0..7).joinToString("") { "ref$it: \${this@stamp}\n" })
         val threads = ConcurrentHashMap.newKeySet<Thread>()
         val arrived = CountDownLatch(2)
         val strategy = PlaceholderResolveStrategy { component, key, _, _, _ ->
@@ -71,25 +73,31 @@ class ParallelBuildTest {
     @Test
     fun preserveSharedIncludesProfilesAliasesCrossEnvironmentReferencesAndRebuildDiffs() {
         val names = (0..15).map { "service$it" }
-        write("envs/dev.yaml", "profiles: [base]\ngroup:\n  components: [" +
-            names.mapIndexed { index, name -> "$name:original$index" }.joinToString(", ") + "]\n")
+        write(
+            "envs/dev.yaml", "profiles: [base]\ngroup:\n  components: [" +
+                names.mapIndexed { index, name -> "$name:original$index" }.joinToString(", ") + "]\n"
+        )
         write("envs/base.yaml", "{}\n")
         write("envs/prod.yaml", "{}\n")
-        write("components/shared/application.yaml", """
+        write(
+            "components/shared/application.yaml", """
             shared: ${'$'}{this@local}
             items: &items [true, 'true', {port: 80}]
             alias: *items
-            """.trimIndent())
+            """.trimIndent()
+        )
         write("components/shared/application.base.yaml", "profile: inherited\n")
         write("components/source/application.prod.yaml", "value: production\n")
-        for (index in names.indices) write("components/original$index/application.yaml", """
+        for (index in names.indices) write(
+            "components/original$index/application.yaml", """
             #include shared
             name: ${'$'}{this@name}
             local: root-$index
             copy: ${'$'}{this@shared}
             explicit: ${'$'}{source[prod]@value}
             calculated: #{6 * 7}
-            """.trimIndent())
+            """.trimIndent()
+        )
         val reads = ConcurrentHashMap<File, Int>()
         val fallback = DumpedFsReader()
         val reader = object : FsReader by fallback {
@@ -120,15 +128,22 @@ class ParallelBuildTest {
                     assertEquals(values["items"], values["alias"])
                     assertFalse(Files.exists(destination.resolve("$name/diff-application.yaml")))
                 }
-                if (round == 1) assertEquals(1,
-                    reads[root.resolve("components/shared/application.yaml").toFile().canonicalFile])
+                if (round == 1) assertEquals(
+                    1,
+                    reads[root.resolve("components/shared/application.yaml").toFile().canonicalFile]
+                )
             }
             write("components/source/application.prod.yaml", "value: changed\n")
-            pool.submit { MicroconfigRunner(root.toFile(), destination.toFile())
-                .build("dev", emptyList(), emptyList()) }.get(20, SECONDS)
+            pool.submit {
+                MicroconfigRunner(root.toFile(), destination.toFile())
+                    .build("dev", emptyList(), emptyList())
+            }.get(20, SECONDS)
             for (name in names) {
-                val diff = Yaml().load<Map<String, Any?>>(Files.readString(
-                    destination.resolve("$name/diff-application.yaml")))
+                val diff = Yaml().load<Map<String, Any?>>(
+                    Files.readString(
+                        destination.resolve("$name/diff-application.yaml")
+                    )
+                )
                 assertEquals(mapOf("explicit" to "production -> changed"), diff)
             }
         } finally {
@@ -151,6 +166,7 @@ class ParallelBuildTest {
             arrived.countDown()
             assertTrue(arrived.await(5, SECONDS), "Extensions must run in parallel too")
         }
+
         val base = Microconfig.searchConfigsIn(root.toFile())
         val microconfig = when (extension) {
             "reader" -> {
@@ -162,10 +178,12 @@ class ParallelBuildTest {
                     }
                 })
             }
+
             "repository" -> base.withAdditionalPropertiesRepositories(listOf(PropertiesRepository { name, _, type ->
                 if (type.typeName == "app") visit(name)
                 emptyMap()
             }))
+
             else -> base.withAdditionalPlaceholderResolvers(listOf(PlaceholderResolveStrategy { name, key, _, _, _ ->
                 if (key == "name") visit(name)
                 Optional.empty()

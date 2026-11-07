@@ -1,23 +1,11 @@
 package io.microconfig.core
 
 import io.microconfig.core.environments.EnvironmentRepository
-import io.microconfig.core.properties.ConfigFormat
-import io.microconfig.core.properties.DeclaringComponent
-import io.microconfig.core.properties.DeclaringComponentImpl
-import io.microconfig.core.properties.PlaceholderResolveStrategy
-import io.microconfig.core.properties.PropertyImpl
+import io.microconfig.core.properties.*
 import io.microconfig.core.properties.resolvers.RecursiveResolver
 import io.microconfig.core.properties.resolvers.impl.MemoizingResolver
 import io.microconfig.core.properties.resolvers.impl.PropertyResolutionCache
 import io.microconfig.core.properties.resolvers.placeholder.impl.PlaceholderResolver
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.Optional
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.CyclicBarrier
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit.SECONDS
-import java.util.concurrent.atomic.AtomicInteger
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -26,9 +14,18 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.Mockito.mock
 import org.yaml.snakeyaml.Yaml
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.*
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CyclicBarrier
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit.SECONDS
+import java.util.concurrent.atomic.AtomicInteger
 
 class DynamicReferenceCacheTest {
-    @TempDir lateinit var root: Path
+    @TempDir
+    lateinit var root: Path
 
     @Test
     fun evaluateAnExpressionOnceWhenConcurrentResolutionsMissTheSameCacheEntry() {
@@ -45,14 +42,19 @@ class DynamicReferenceCacheTest {
                         return Optional.of(object : RecursiveResolver.Statement {
                             override val startIndex = 0
                             override val endIndex = line.length
-                            override fun resolveFor(sourceOfValue: DeclaringComponent?, root: DeclaringComponent?): String =
+                            override fun resolveFor(
+                                sourceOfValue: DeclaringComponent?,
+                                root: DeclaringComponent?
+                            ): String =
                                 evaluations.incrementAndGet().toString()
                         })
                     }
                 }
                 val cache = PropertyResolutionCache()
-                val placeholders = PlaceholderResolver(mock(EnvironmentRepository::class.java),
-                    PlaceholderResolveStrategy { _, _, _, _, _ -> Optional.empty() }, emptySet(), expressions, cache)
+                val placeholders = PlaceholderResolver(
+                    mock(EnvironmentRepository::class.java),
+                    PlaceholderResolveStrategy { _, _, _, _, _ -> Optional.empty() }, emptySet(), expressions, cache
+                )
                 val resolver = MemoizingResolver(placeholders, cache, expressions)
                 val context = DeclaringComponentImpl("app", "component", "dev")
                 val property = PropertyImpl.property("stamp", "#{next}", ConfigFormat.YAML, context)
@@ -182,11 +184,13 @@ class DynamicReferenceCacheTest {
     @Test
     fun spliceListsAfterGeneratedPlaceholders() {
         write("components/source/application.yaml", "items: [one, two]\n")
-        write("components/app/application.yaml", """
+        write(
+            "components/app/application.yaml", """
             items:
               #{'$' + '{source@items}'}
               - after
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         assertEquals(mapOf("items" to listOf("one", "two", "after")), build())
     }
@@ -194,20 +198,26 @@ class DynamicReferenceCacheTest {
     @Test
     fun spliceGeneratedListsThroughReferencesAndTemplates() {
         write("components/base/application.yaml", "items: [one, two]\n")
-        write("components/source/application.yaml", """
+        write(
+            "components/source/application.yaml", """
             items:
               #{'$' + '{base@items}'}
               - after
-            """.trimIndent())
-        write("components/app/application.yaml", """
+            """.trimIndent()
+        )
+        write(
+            "components/app/application.yaml", """
             copy: ${'$'}{source@items}
             mc.template.list: ${'$'}{this@configDir}/list.txt -> rendered.yaml
-            """.trimIndent())
+            """.trimIndent()
+        )
         write("components/app/list.txt", "\${source@items}")
 
         assertEquals(mapOf("copy" to listOf("one", "two", "after")), build())
-        assertEquals(listOf("one", "two", "after"),
-            Yaml().load<List<String>>(Files.readString(root.resolve("output/app/rendered.yaml"))))
+        assertEquals(
+            listOf("one", "two", "after"),
+            Yaml().load<List<String>>(Files.readString(root.resolve("output/app/rendered.yaml")))
+        )
     }
 
     @Test
@@ -226,10 +236,12 @@ class DynamicReferenceCacheTest {
                 })
             }
         }
+
         fun property(component: String, key: String, value: String) =
             PropertyImpl.property(
                 key, value, ConfigFormat.YAML, DeclaringComponentImpl("app", component, "dev"),
             )
+
         val stamp = property("app", "stamp", "#{next}")
         val independent = property("app", "other", "#{next}-#{next}")
         val collection = property("app", "collection", "[#{next}, #{next}]")

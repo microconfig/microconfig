@@ -4,14 +4,11 @@ import io.microconfig.core.configtypes.StandardConfigType.APPLICATION
 import io.microconfig.core.environments.Environment
 import io.microconfig.core.environments.EnvironmentRepository
 import io.microconfig.core.properties.repository.impl.EnvProfilesComponentGraph
-import java.io.File
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito.*
+import java.io.File
 
 class EnvProfilesComponentGraphTest {
     val delegate: ComponentGraph = mock(ComponentGraph::class.java)

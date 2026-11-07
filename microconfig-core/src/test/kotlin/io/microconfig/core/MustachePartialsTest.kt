@@ -1,25 +1,24 @@
 package io.microconfig.core
 
-import java.nio.file.Files
-import java.nio.file.Path
 import io.microconfig.core.configtypes.ConfigTypeFilters.configType
 import io.microconfig.core.configtypes.StandardConfigType.APPLICATION
 import io.microconfig.core.properties.templates.TemplateDefinition
 import io.microconfig.core.properties.templates.TemplatePattern
 import io.microconfig.core.properties.templates.impl.MustacheTemplateProcessor
 import io.microconfig.core.properties.templates.impl.StringTemplate
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
+import java.nio.file.Files
+import java.nio.file.Path
 
 class MustachePartialsTest {
-    @TempDir lateinit var directory: Path
+    @TempDir
+    lateinit var directory: Path
     private val root
         get() = directory.resolve("repo")
 
@@ -42,7 +41,7 @@ class MustachePartialsTest {
         write(
             "components/app/partial.txt",
             "\${this@value}|\${value}|\${this@name}|\${this@templateName}|" +
-                "\${this@missing:fallback}|\\\${this@value}|{{value}}|{{>nested.txt}}|\${UNKNOWN}",
+                    "\${this@missing:fallback}|\\\${this@value}|{{value}}|{{>nested.txt}}|\${UNKNOWN}",
         )
         write("components/app/nested.txt", "\${this@value}")
 
@@ -79,7 +78,12 @@ class MustachePartialsTest {
         val properties = microconfig.inEnvironment("dev").getComponentWithName("app")
             .getPropertiesFor(configType(APPLICATION)).resolveBy(microconfig.resolver()).first()
         val definition =
-            if (explicit) TemplateDefinition("mustache", "t", TemplatePattern.defaultPattern(), MustacheTemplateProcessor())
+            if (explicit) TemplateDefinition(
+                "mustache",
+                "t",
+                TemplatePattern.defaultPattern(),
+                MustacheTemplateProcessor()
+            )
             else TemplateDefinition("mustache", "t", TemplatePattern.defaultPattern())
         definition.setFromFile(root.resolve("components/app/main.txt").toString())
         definition.setToFile("rendered.txt")
@@ -91,8 +95,10 @@ class MustachePartialsTest {
     fun letCustomPartialProcessorResolvePlaceholdersExactlyOnce() {
         write("components/app/application.yaml", "value: world\n")
         write("components/app/main.txt", "hello {{>partial.txt}}|{{>second.txt}}")
-        write("components/app/partial.txt",
-            "\\\${this@value}|\${this@value}|\${this@templateName}|{{value}}|{{>nested.txt}}")
+        write(
+            "components/app/partial.txt",
+            "\\\${this@value}|\${this@value}|\${this@templateName}|{{value}}|{{>nested.txt}}"
+        )
         write("components/app/nested.txt", "\\\${this@value}|\${this@value}")
         write("components/app/second.txt", "\${this@value}")
         val microconfig = Microconfig.searchConfigsIn(root.toFile())
@@ -130,7 +136,10 @@ class MustachePartialsTest {
         definition.setFromFile(root.resolve("components/app/main.txt").toString())
         definition.setToFile(destination.resolve("rendered.txt").toString())
 
-        assertEquals("hello custom \${this@value}|world", definition.resolve(microconfig.resolver(), properties).content)
+        assertEquals(
+            "hello custom \${this@value}|world",
+            definition.resolve(microconfig.resolver(), properties).content
+        )
     }
 
     private fun build() =

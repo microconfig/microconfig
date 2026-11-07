@@ -41,10 +41,10 @@ class ArrowNotationParser(private val pattern: TemplatePattern) : TemplateDefini
 
     private fun createTemplate(key: String, from: String, to: String): TemplateDefinition =
         TemplateDefinition(
-                pattern.extractTemplateType(key),
-                pattern.extractTemplateName(key),
-                pattern,
-            )
+            pattern.extractTemplateType(key),
+            pattern.extractTemplateName(key),
+            pattern,
+        )
             .apply {
                 setFromFile(from)
                 setToFile(to)

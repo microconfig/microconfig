@@ -7,16 +7,16 @@ import io.microconfig.core.configtypes.StandardConfigType.APPLICATION
 import io.microconfig.core.properties.serializers.PropertySerializers.asString
 import io.microconfig.utils.FileUtils.walk
 import io.microconfig.utils.IoUtils.readFully
-import java.io.File
-import java.lang.Math.min
-import java.nio.file.Path
-import java.util.stream.Collectors.toList
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
+import java.io.File
+import java.lang.Math.min
+import java.nio.file.Path
+import java.util.stream.Collectors.toList
 
 class MicroconfigTest {
     val root: File = classpathFile("repo")
@@ -42,9 +42,9 @@ class MicroconfigTest {
     private fun isExpectation(file: File): Boolean {
         val name: String = file.name
         return overriddenTest(file) &&
-            (name.startsWith("expect.") ||
-                name.startsWith("truncate.") ||
-                name.startsWith("exception."))
+                (name.startsWith("expect.") ||
+                        name.startsWith("truncate.") ||
+                        name.startsWith("exception."))
     }
 
     private fun overriddenTest(file: File): Boolean {

@@ -1,11 +1,6 @@
 package io.microconfig.core.properties.io.yaml.impl
 
 import io.microconfig.core.properties.io.yaml.YamlScalars
-import java.io.Reader
-import java.io.StringReader
-import java.io.StringWriter
-import java.util.Collections
-import java.util.IdentityHashMap
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
@@ -13,18 +8,17 @@ import org.yaml.snakeyaml.composer.Composer
 import org.yaml.snakeyaml.emitter.Emitter
 import org.yaml.snakeyaml.events.CommentEvent
 import org.yaml.snakeyaml.events.Event
-import org.yaml.snakeyaml.nodes.MappingNode
-import org.yaml.snakeyaml.nodes.Node
-import org.yaml.snakeyaml.nodes.NodeId
-import org.yaml.snakeyaml.nodes.ScalarNode
-import org.yaml.snakeyaml.nodes.SequenceNode
-import org.yaml.snakeyaml.nodes.Tag
+import org.yaml.snakeyaml.nodes.*
 import org.yaml.snakeyaml.parser.Parser
 import org.yaml.snakeyaml.parser.ParserImpl
 import org.yaml.snakeyaml.reader.StreamReader
 import org.yaml.snakeyaml.resolver.Resolver
 import org.yaml.snakeyaml.serializer.Serializer
 import org.yaml.snakeyaml.util.MergeUtils
+import java.io.Reader
+import java.io.StringReader
+import java.io.StringWriter
+import java.util.*
 
 internal object SnakeYaml {
     private val scalarResolver = Resolver()
@@ -32,8 +26,10 @@ internal object SnakeYaml {
 
     fun plainScalar(text: String): ScalarNode? =
         if (YamlScalars.isPlainScalar(text))
-            ScalarNode(scalarResolver.resolve(NodeId.scalar, text, true), text,
-                null, null, DumperOptions.ScalarStyle.PLAIN)
+            ScalarNode(
+                scalarResolver.resolve(NodeId.scalar, text, true), text,
+                null, null, DumperOptions.ScalarStyle.PLAIN
+            )
         else null
 
     fun compose(text: String, events: MutableList<Event>): Node? {
@@ -168,13 +164,14 @@ internal object SnakeYaml {
     fun plainFragmentOrNull(node: Node): String? =
         if (node is ScalarNode && node.scalarStyle == DumperOptions.ScalarStyle.PLAIN &&
             node.anchor == null && plainFragment.matches(node.value) &&
-            scalarResolver.resolve(NodeId.scalar, node.value, true) == node.tag) node.value
+            scalarResolver.resolve(NodeId.scalar, node.value, true) == node.tag
+        ) node.value
         else null
 
     private fun lastBlockScalar(node: Node): ScalarNode? =
         lastScalar(node)?.takeIf {
             it.scalarStyle == DumperOptions.ScalarStyle.LITERAL ||
-                it.scalarStyle == DumperOptions.ScalarStyle.FOLDED
+                    it.scalarStyle == DumperOptions.ScalarStyle.FOLDED
         }
 
     private fun lastScalar(

@@ -1,25 +1,27 @@
 package io.microconfig
 
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.concurrent.TimeUnit.SECONDS
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.condition.EnabledOnOs
 import org.junit.jupiter.api.condition.OS
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.concurrent.TimeUnit.SECONDS
 
 @EnabledOnOs(OS.LINUX, OS.MAC)
 class SigningPasswordRotationTest {
-    @TempDir lateinit var directory: Path
+    @TempDir
+    lateinit var directory: Path
 
     @ParameterizedTest
     @ValueSource(strings = ["SIGNING_PASSWORD", "SECRET_PASSPHRASE", ""])
     fun reportGeneratedPasswordsBeforeUpdatingGitHub(failedSecret: String) {
         Files.writeString(directory.resolve("secring.gpg.gpg"), "old-keyring")
         val probe = directory.resolve("rotation-probe.sh")
-        Files.writeString(probe, """
+        Files.writeString(
+            probe, """
             source "${'$'}1"
             require_tools() { :; }
             read_passwords() {
@@ -49,7 +51,8 @@ class SigningPasswordRotationTest {
               [[ ${'$'}3 != "${'$'}FAIL_SECRET" ]]
             }
             main
-            """.trimIndent())
+            """.trimIndent()
+        )
         val output = directory.resolve("output.log")
         val script = Path.of("../.github/scripts/rotate_signing_passwords.sh").toAbsolutePath()
         val process = ProcessBuilder("bash", probe.toString(), script.toString())

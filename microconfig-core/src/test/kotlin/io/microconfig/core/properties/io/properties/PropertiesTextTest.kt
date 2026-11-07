@@ -5,15 +5,13 @@ import io.microconfig.core.properties.FileBasedComponent.Companion.fileSource
 import io.microconfig.core.properties.io.properties.PropertiesText.escape
 import io.microconfig.core.properties.io.properties.PropertiesText.isPropertiesText
 import io.microconfig.core.properties.io.properties.PropertiesText.unescape
-import java.io.File
-import java.io.StringReader
-import java.util.Properties
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import java.io.File
+import java.io.StringReader
+import java.util.*
 
 class PropertiesTextTest {
     @ParameterizedTest

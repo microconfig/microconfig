@@ -12,8 +12,6 @@ import io.microconfig.core.properties.templates.definition.parser.impl.FromToNot
 import io.microconfig.core.properties.templates.definition.parser.impl.SquareBracketsNotationParser
 import io.microconfig.core.properties.templates.impl.TemplatesService
 import io.microconfig.utils.Os
-import java.nio.file.Files
-import java.nio.file.Path
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Assumptions.assumeFalse
 import org.junit.jupiter.api.BeforeEach
@@ -23,10 +21,13 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.junit.jupiter.params.provider.ValueSource
+import java.nio.file.Files
+import java.nio.file.Path
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class TemplateDeclarationsTest {
-    @TempDir lateinit var directory: Path
+    @TempDir
+    lateinit var directory: Path
     private val root
         get() = directory.resolve("repo")
 
@@ -56,8 +57,8 @@ class TemplateDeclarationsTest {
         write(
             "components/app/$fileName",
             declaration(format, "value", "new") +
-                declaration(format, "mc.file.valid", "\${this@configDir}/source.txt -> valid.txt") +
-                declaration(format, "mc.file.$name", value),
+                    declaration(format, "mc.file.valid", "\${this@configDir}/source.txt -> valid.txt") +
+                    declaration(format, "mc.file.$name", value),
         )
 
         val error = assertThrows(IllegalArgumentException::class.java) { build() }
@@ -82,7 +83,8 @@ class TemplateDeclarationsTest {
             when (notation) {
                 "fromTo" ->
                     declaration(format, "mc.file.$name.fromFile", source) +
-                        declaration(format, "mc.file.$name.toFile", "rendered.txt")
+                            declaration(format, "mc.file.$name.toFile", "rendered.txt")
+
                 "arrow" -> declaration(format, "mc.file.$name", "$source -> rendered.txt")
                 else -> declaration(format, "mc.file.[$name]", "$source -> rendered.txt")
             }
@@ -109,9 +111,9 @@ class TemplateDeclarationsTest {
                 "mc.file.$name.fromFile",
                 "\${this@configDir}/source -> value.txt",
             ) +
-                if (explicitTarget)
-                    declaration(format, "mc.file.$name.toFile", "rendered -> value.txt")
-                else "",
+                    if (explicitTarget)
+                        declaration(format, "mc.file.$name.toFile", "rendered -> value.txt")
+                    else "",
         )
 
         build()
@@ -127,7 +129,7 @@ class TemplateDeclarationsTest {
         write(
             "components/app/application.$extension",
             declaration(format, "mc.file.t.paths.fromFile", "\${this@configDir}/source.txt") +
-                declaration(format, "mc.file.t.paths.toFile", "rendered.txt"),
+                    declaration(format, "mc.file.t.paths.toFile", "rendered.txt"),
         )
 
         build()
@@ -219,12 +221,12 @@ class TemplateDeclarationsTest {
         listOf(YAML, PROPERTIES).flatMap { format ->
             listOf("t", "[one,two]").flatMap { name ->
                 listOf(
-                        "\${this@configDir}/source.txt ->" to "Missing template destination path",
-                        "-> rendered.txt" to "Missing template source path",
-                        "->" to "Missing template source path",
-                        "\${this@configDir}/source.txt -> one -> two" to
+                    "\${this@configDir}/source.txt ->" to "Missing template destination path",
+                    "-> rendered.txt" to "Missing template source path",
+                    "->" to "Missing template source path",
+                    "\${this@configDir}/source.txt -> one -> two" to
                             "Expected one ' -> ' separator",
-                    )
+                )
                     .map { (value, problem) -> Arguments.of(format, name, value, problem) }
             }
         }

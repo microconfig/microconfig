@@ -4,10 +4,6 @@ import io.microconfig.core.properties.ConfigFormat
 import io.microconfig.core.properties.ConfigFormat.PROPERTIES
 import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.ResolveException
-import java.io.StringReader
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.Properties
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
@@ -16,9 +12,14 @@ import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import org.yaml.snakeyaml.Yaml
+import java.io.StringReader
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.*
 
 class PropertiesYamlBoundariesTest {
-    @TempDir lateinit var root: Path
+    @TempDir
+    lateinit var root: Path
 
     @BeforeEach
     fun createEnvironment() {
@@ -32,8 +33,8 @@ class PropertiesYamlBoundariesTest {
             "source",
             PROPERTIES,
             "db.value=#{\"abc\"}\n" +
-                "db.regex=#{#findGroup('\\\\d+', 'a123')}\n" +
-                "db.path=#{'C:\\\\temp'}\n",
+                    "db.regex=#{#findGroup('\\\\d+', 'a123')}\n" +
+                    "db.path=#{'C:\\\\temp'}\n",
         )
         writeComponent("target", PROPERTIES, "value=\${source@db.*}\n")
 
@@ -113,8 +114,8 @@ class PropertiesYamlBoundariesTest {
             "target",
             PROPERTIES,
             "direct=#{${quote}\${source@value}${quote}.length()}\n" +
-                "bridge=#{${quote}\${bridge@value}${quote}.length()}\n" +
-                "nested=#{#{${quote}\${source@value}${quote}.length()} + 1}\n",
+                    "bridge=#{${quote}\${bridge@value}${quote}.length()}\n" +
+                    "nested=#{#{${quote}\${source@value}${quote}.length()} + 1}\n",
         )
 
         val result = readProperties(build("target"))
@@ -148,9 +149,9 @@ class PropertiesYamlBoundariesTest {
             "target",
             PROPERTIES,
             "single=#{'\${source@value}'.length()}\n" +
-                "double=#{\"\${source@value}\".length()}\n" +
-                "nested=#{#{'\${source@value}'.length()} + 1}\n" +
-                "plain=\${source@value}\n",
+                    "double=#{\"\${source@value}\".length()}\n" +
+                    "nested=#{#{'\${source@value}'.length()} + 1}\n" +
+                    "plain=\${source@value}\n",
         )
 
         val expected = readProperties("value=$encoded").getProperty("value")
@@ -169,8 +170,8 @@ class PropertiesYamlBoundariesTest {
             "target",
             YAML,
             "direct: #{\"abc\\\".length()}\n" +
-                "placeholder: #{\"\${source@value}\".length()}\n" +
-                "items: [{count: #{\"\${source@value}\".length()}}]\n",
+                    "placeholder: #{\"\${source@value}\".length()}\n" +
+                    "items: [{count: #{\"\${source@value}\".length()}}]\n",
         )
 
         assertEquals(
@@ -210,10 +211,10 @@ class PropertiesYamlBoundariesTest {
             "target",
             YAML,
             "number: #{\${source@value}.length()}\n" +
-                "flag: #{\${source@value} == '123'}\n" +
-                "text: \"#{\${source@value}.length()}\"\n" +
-                "composed: prefix #{\${source@value}.length()} #{2 + 3}\n" +
-                "second: #{2 + 3} #{\${source@value}.length()}\n",
+                    "flag: #{\${source@value} == '123'}\n" +
+                    "text: \"#{\${source@value}.length()}\"\n" +
+                    "composed: prefix #{\${source@value}.length()} #{2 + 3}\n" +
+                    "second: #{2 + 3} #{\${source@value}.length()}\n",
         )
 
         assertEquals(
@@ -364,7 +365,7 @@ class PropertiesYamlBoundariesTest {
             "target",
             YAML,
             "block:\n  - \${source@color}\n  - \${source@number}\n  - \${source@flag}\n  - \${source@text}\n" +
-                "flow: [\${source@color}, \${source@number}, \${source@flag}, \${source@text}]\n",
+                    "flow: [\${source@color}, \${source@number}, \${source@flag}, \${source@text}]\n",
         )
 
         val expected = listOf("#tag", "123", "true", "a: b")
@@ -451,7 +452,7 @@ class PropertiesYamlBoundariesTest {
             "target",
             YAML,
             "list: \${missing@value:[a, b]}\nmap: \${missing@value:{a: b}}\n" +
-                "text: \"\${missing@value:[a, b]}\"\nnumber: \${missing@value:'123'}\n",
+                    "text: \"\${missing@value:[a, b]}\"\nnumber: \${missing@value:'123'}\n",
         )
 
         assertEquals(
@@ -485,7 +486,7 @@ class PropertiesYamlBoundariesTest {
             "target",
             YAML,
             "flow: [\"\${source@value}\"]\nblock:\n  - \"\${source@value}\"\n" +
-                "single: ['\${source@value}']\n",
+                    "single: ['\${source@value}']\n",
         )
 
         val expected = readProperties("value=" + value).getProperty("value")
@@ -550,7 +551,7 @@ class PropertiesYamlBoundariesTest {
             "target",
             YAML,
             "values:\n  - |-\n    first \${source@value}\n    second\n" +
-                "  - >-\n    first \${source@value}\n    second\n  - last\n",
+                    "  - >-\n    first \${source@value}\n    second\n  - last\n",
         )
 
         assertEquals(
@@ -605,7 +606,7 @@ class PropertiesYamlBoundariesTest {
             "target",
             YAML,
             "shared: &shared [base]\nvalues: [*shared, \${source@value}]\n" +
-                "spliced:\n  - *shared\n  \${this@shared}\n  - \${source@value}\n",
+                    "spliced:\n  - *shared\n  \${this@shared}\n  - \${source@value}\n",
         )
 
         val result = readYaml(build("target"))

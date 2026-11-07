@@ -4,9 +4,9 @@ import io.microconfig.core.properties.ConfigFormat
 import io.microconfig.core.properties.ConfigFormat.PROPERTIES
 import io.microconfig.core.properties.FileBasedComponent.Companion.fileSource
 import io.microconfig.core.properties.Property
-import io.microconfig.core.properties.ValueFormat
 import io.microconfig.core.properties.PropertyImpl.Companion.isDirective
 import io.microconfig.core.properties.PropertyImpl.Companion.property
+import io.microconfig.core.properties.ValueFormat
 import io.microconfig.core.properties.io.impl.AbstractConfigReader
 import io.microconfig.core.properties.io.properties.impl.PropertiesSyntax.endsWithContinuation
 import io.microconfig.io.FsReader
@@ -82,8 +82,8 @@ class PropertiesReader(file: File, reader: FsReader) : AbstractConfigReader(file
         var end = text.length
         while (
             end > 0 &&
-                PropertiesSyntax.isSkippedBeforeValue(text[end - 1]) &&
-                !endsWithContinuation(text.substring(0, end - 1))
+            PropertiesSyntax.isSkippedBeforeValue(text[end - 1]) &&
+            !endsWithContinuation(text.substring(0, end - 1))
         ) end--
         return text.substring(0, end).trimStart { PropertiesSyntax.isSkippedBeforeValue(it) }
     }

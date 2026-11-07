@@ -8,10 +8,6 @@ import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.TypedProperties
 import io.microconfig.core.properties.serializers.PropertySerializers.asString
 import io.microconfig.utils.FileUtils.LINES_SEPARATOR
-import java.io.StringReader
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.Properties
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -21,10 +17,15 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.junit.jupiter.params.provider.ValueSource
 import org.yaml.snakeyaml.Yaml
+import java.io.StringReader
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DirectiveValueBoundariesTest {
-    @TempDir lateinit var root: Path
+    @TempDir
+    lateinit var root: Path
 
     @ParameterizedTest(name = "{0}, {1}")
     @MethodSource("yamlScalarHeaders")
@@ -33,31 +34,31 @@ class DirectiveValueBoundariesTest {
         val indent = if (key.isEmpty()) "    " else "      "
         val content =
             "items:\n$header\n" +
-                indent +
-                ".var host: literal\n" +
-                indent +
-                ".var without-delimiter\n" +
-                indent +
-                "#var legacy: literal\n" +
-                indent +
-                "#include missing-literal-component\n" +
-                indent +
-                "#@Ignore\n" +
-                indent +
-                "echo done\n.var outside: real\n" +
-                "result: \${this@host:none}\nactual: \${this@outside:none}\n"
+                    indent +
+                    ".var host: literal\n" +
+                    indent +
+                    ".var without-delimiter\n" +
+                    indent +
+                    "#var legacy: literal\n" +
+                    indent +
+                    "#include missing-literal-component\n" +
+                    indent +
+                    "#@Ignore\n" +
+                    indent +
+                    "echo done\n.var outside: real\n" +
+                    "result: \${this@host:none}\nactual: \${this@outside:none}\n"
         val properties = build(content, YAML)
         assertEquals("none", properties.propertiesAsKeyValue["result"])
         assertEquals("real", properties.propertiesAsKeyValue["actual"])
         val item = (output(properties)["items"] as List<*>).first()
         val text = (if (key.isEmpty()) item else (item as Map<*, *>).values.first()) as String
         listOf(
-                ".var host: literal",
-                ".var without-delimiter",
-                "#include missing-literal-component",
-                "#@Ignore",
-                "echo done",
-            )
+            ".var host: literal",
+            ".var without-delimiter",
+            "#include missing-literal-component",
+            "#@Ignore",
+            "echo done",
+        )
             .forEach { assertTrue(text.contains(it)) }
     }
 
@@ -101,7 +102,7 @@ class DirectiveValueBoundariesTest {
     fun detectTheEndOfAnAutoIndentedLiteral() {
         val content =
             "template: |\n    .var host: literal\n    echo done\n  .var outside: real\n" +
-                "result: \${this@host:none}\nactual: \${this@outside:none}\n"
+                    "result: \${this@host:none}\nactual: \${this@outside:none}\n"
         val properties = build(content, YAML)
         assertEquals("none", properties.propertiesAsKeyValue["result"])
         assertEquals("real", properties.propertiesAsKeyValue["actual"])
@@ -127,7 +128,7 @@ class DirectiveValueBoundariesTest {
     fun readMappingScalarsUsingTheSameHeadersAsSequenceScalars(header: String) {
         val content =
             "template: $header\n  .var host: literal\n  #var legacy: literal\n  echo done\n.var outside: real\n" +
-                "result: \${this@host:none}\nactual: \${this@outside:none}\n"
+                    "result: \${this@host:none}\nactual: \${this@outside:none}\n"
         val properties = build(content, YAML)
         assertEquals("none", properties.propertiesAsKeyValue["result"])
         assertEquals("real", properties.propertiesAsKeyValue["actual"])
@@ -164,8 +165,8 @@ class DirectiveValueBoundariesTest {
     fun readScalarHeadersWithLongCommentsAndUnicodeSeparators() {
         val content =
             "template: | #" +
-                " ".repeat(10000) +
-                "\u2028\n  .var host: literal\n  echo done\nresult: \${this@host:none}\n"
+                    " ".repeat(10000) +
+                    "\u2028\n  .var host: literal\n  echo done\nresult: \${this@host:none}\n"
         assertEquals("none", build(content, YAML).propertiesAsKeyValue["result"])
     }
 
@@ -200,9 +201,9 @@ class DirectiveValueBoundariesTest {
         val escaped = if (quote == "\"") "escaped \\\"quote\\\"" else "it''s quoted"
         val scalar =
             quote +
-                "😀first\u2028continued\n$escaped\n.var host: literal\n.var without-delimiter\n#var legacy: literal\n" +
-                "#include missing-quoted-component\n#@Ignore\n.var tail: closing" +
-                quote
+                    "😀first\u2028continued\n$escaped\n.var host: literal\n.var without-delimiter\n#var legacy: literal\n" +
+                    "#include missing-quoted-component\n#@Ignore\n.var tail: closing" +
+                    quote
         val node =
             when (layout) {
                 "flow sequence" -> "[" + scalar.replace("\n", "\n  ") + "]"
@@ -213,7 +214,7 @@ class DirectiveValueBoundariesTest {
         val block = "text:\n" + indent(node, 2) + ".var outside: real\n"
         val content =
             "result: \${this@host:none}\ntail: \${this@tail:none}\nlegacy: \${this@legacy:none}\nactual: \${this@outside:none}\n" +
-                if (envBlock) ".var outside: base\n+dev:\n" + indent(block, 2) else block
+                    if (envBlock) ".var outside: base\n+dev:\n" + indent(block, 2) else block
         val properties = build(content, YAML)
         listOf("result", "tail", "legacy").forEach {
             assertEquals("none", properties.propertiesAsKeyValue[it])
@@ -223,12 +224,12 @@ class DirectiveValueBoundariesTest {
         val item = if (parsed is Map<*, *>) parsed else (parsed as List<*>).first()
         val text = (if (item is Map<*, *>) item["message"] else item) as String
         listOf(
-                ".var host: literal",
-                ".var without-delimiter",
-                "#include missing-quoted-component",
-                "#@Ignore",
-                ".var tail: closing",
-            )
+            ".var host: literal",
+            ".var without-delimiter",
+            "#include missing-quoted-component",
+            "#@Ignore",
+            ".var tail: closing",
+        )
             .forEach { assertTrue(text.contains(it)) }
         if (envBlock) {
             val production = build(content, YAML, "prod").propertiesAsKeyValue
@@ -250,7 +251,7 @@ class DirectiveValueBoundariesTest {
             "text:\n  - ${quote}first\n$prefix$text\n${prefix}last$quote\n.var outside: real\n"
         val content =
             "result: \${this@host:none}\nactual: \${this@outside:none}\n" +
-                if (envBlock) "+dev:\n" + indent(block, 2) else block
+                    if (envBlock) "+dev:\n" + indent(block, 2) else block
         val input = Yaml().load<Map<String, Any?>>(block)
         val properties = build(content, YAML)
         assertEquals(input["text"], output(properties)["text"])
@@ -264,7 +265,7 @@ class DirectiveValueBoundariesTest {
         val block = "text: $quote$text$quote\n.var outside: real\n"
         val content =
             "result: \${this@host:none}\nactual: \${this@outside:none}\n" +
-                if (envBlock) "+dev:\n" + indent(block, 2) else block
+                    if (envBlock) "+dev:\n" + indent(block, 2) else block
         val input = Yaml().load<Map<String, Any?>>(block.replace("\${this@missing:tail}", "tail"))
         val properties = build(content, YAML)
         assertEquals(input["text"], output(properties)["text"])
@@ -282,8 +283,8 @@ class DirectiveValueBoundariesTest {
     fun keepQuotesInsideBlockScalarsSeparateFromQuotedScalars() {
         val content =
             "items:\n  - |\n    \"unclosed literal quote\n    .var host: literal\n" +
-                "  - \"next\n    fake: |\n      literal text\n    .var quoted: literal\n    last\"\n" +
-                ".var outside: real\nresult: \${this@host:none}\nquoted: \${this@quoted:none}\nactual: \${this@outside:none}\n"
+                    "  - \"next\n    fake: |\n      literal text\n    .var quoted: literal\n    last\"\n" +
+                    ".var outside: real\nresult: \${this@host:none}\nquoted: \${this@quoted:none}\nactual: \${this@outside:none}\n"
         val properties = build(content, YAML)
         assertEquals("none", properties.propertiesAsKeyValue["result"])
         assertEquals("none", properties.propertiesAsKeyValue["quoted"])
@@ -298,7 +299,7 @@ class DirectiveValueBoundariesTest {
     fun keepScalarHeaderLookalikesInsideFlowQuotes(sequence: String) {
         val content =
             "text:\n  $sequence[\"first: |\n      .var host: literal\n      last\"]\n" +
-                ".var outside: real\nresult: \${this@host:none}\nactual: \${this@outside:none}\n"
+                    ".var outside: real\nresult: \${this@host:none}\nactual: \${this@outside:none}\n"
         val properties = build(content, YAML)
         assertEquals("none", properties.propertiesAsKeyValue["result"])
         assertEquals("real", properties.propertiesAsKeyValue["actual"])
@@ -313,8 +314,8 @@ class DirectiveValueBoundariesTest {
     fun keepQuotedDirectivesAfterUnresolvedFlowPlaceholders() {
         val content =
             "text:\n  [\${this@missing:\${this@alsoMissing:first}}, \"next\n" +
-                "    .var host: literal\n    #include missing-quoted-component\n    last\"]\n" +
-                ".var outside: real\nresult: \${this@host:none}\nactual: \${this@outside:none}\n"
+                    "    .var host: literal\n    #include missing-quoted-component\n    last\"]\n" +
+                    ".var outside: real\nresult: \${this@host:none}\nactual: \${this@outside:none}\n"
         val properties = build(content, YAML)
         assertEquals("none", properties.propertiesAsKeyValue["result"])
         assertEquals("real", properties.propertiesAsKeyValue["actual"])
@@ -387,8 +388,8 @@ class DirectiveValueBoundariesTest {
         )
         val path =
             (if (alreadyContinued) "first\\${LINES_SEPARATOR}next" else "C:") +
-                "\\".repeat(slashes) +
-                if (continued) LINES_SEPARATOR + directive + " host=outside" else ""
+                    "\\".repeat(slashes) +
+                    if (continued) LINES_SEPARATOR + directive + " host=outside" else ""
         assertEquals(path, properties.propertiesAsKeyValue["path"])
     }
 
@@ -415,23 +416,23 @@ class DirectiveValueBoundariesTest {
 
     fun yamlScalarHeaders(): List<Arguments> =
         listOf(
-                "|",
-                "|-",
-                "|+",
-                ">",
-                ">-",
-                ">+",
-                "|2",
-                "|2-",
-                "|-2",
-                ">2+",
-                ">+2",
-                "| # literal",
-                "&script |",
-                "!!str |",
-                "&script !!str |",
-                "!!str &script >-",
-            )
+            "|",
+            "|-",
+            "|+",
+            ">",
+            ">-",
+            ">+",
+            "|2",
+            "|2-",
+            "|-2",
+            ">2+",
+            ">+2",
+            "| # literal",
+            "&script |",
+            "!!str |",
+            "&script !!str |",
+            "!!str &script >-",
+        )
             .flatMap { marker ->
                 listOf("", "text", "\"text:key\"", "&key text", "!!str text").map { key ->
                     Arguments.of(marker, key)
@@ -440,17 +441,17 @@ class DirectiveValueBoundariesTest {
 
     fun flowCollections(): List<Arguments> =
         listOf(
-                "[one, two]" to listOf("one", "two"),
-                "[one,\n  two]" to listOf("one", "two"),
-                "[one,\n# comment\n  two]" to listOf("one", "two"),
-                "[it's, okay]" to listOf("it's", "okay"),
-                "[\"😀😀😀😀\", two]" to listOf("😀😀😀😀", "two"),
-                "[\"first\n  .var literalOnly: text\n  last\"]" to
+            "[one, two]" to listOf("one", "two"),
+            "[one,\n  two]" to listOf("one", "two"),
+            "[one,\n# comment\n  two]" to listOf("one", "two"),
+            "[it's, okay]" to listOf("it's", "okay"),
+            "[\"😀😀😀😀\", two]" to listOf("😀😀😀😀", "two"),
+            "[\"first\n  .var literalOnly: text\n  last\"]" to
                     listOf("first .var literalOnly: text last"),
-                "{one: 1, two: 2}" to mapOf("one" to 1, "two" to 2),
-                "{one: 1,\n  two: 2}" to mapOf("one" to 1, "two" to 2),
-                "[\"\${this@missing:one}\", # comment\n  two]" to listOf("one", "two"),
-            )
+            "{one: 1, two: 2}" to mapOf("one" to 1, "two" to 2),
+            "{one: 1,\n  two: 2}" to mapOf("one" to 1, "two" to 2),
+            "[\"\${this@missing:one}\", # comment\n  two]" to listOf("one", "two"),
+        )
             .flatMap { (value, expected) ->
                 listOf(".var", "#var").flatMap { directive ->
                     listOf(false, true).map { envBlock ->
@@ -460,8 +461,7 @@ class DirectiveValueBoundariesTest {
             }
 
     fun quotedValueLayouts(): List<Arguments> =
-        listOf("flow sequence", "block sequence", "mapping in sequence", "flow mapping").flatMap {
-            layout ->
+        listOf("flow sequence", "block sequence", "mapping in sequence", "flow mapping").flatMap { layout ->
             listOf("\"", "'").flatMap { quote ->
                 listOf(false, true).map { env -> Arguments.of(layout, quote, env) }
             }
@@ -482,13 +482,13 @@ class DirectiveValueBoundariesTest {
         listOf("\"", "'").flatMap { quote ->
             listOf(false, true).flatMap { env ->
                 listOf(
-                        "first\n  .var host: literal",
-                        "first\n  #include missing-quoted-component\n  #@Ignore\n  last",
-                        "first\n\n  last: value",
-                        "first\n  \${this@missing:tail}\n  last",
-                        "😀first\u2028continued\n  " +
+                    "first\n  .var host: literal",
+                    "first\n  #include missing-quoted-component\n  #@Ignore\n  last",
+                    "first\n\n  last: value",
+                    "first\n  \${this@missing:tail}\n  last",
+                    "😀first\u2028continued\n  " +
                             if (quote == "\"") "escaped \\\"quote\\\"" else "it''s quoted",
-                    )
+                )
                     .map { text -> Arguments.of(quote, env, text) }
             }
         }

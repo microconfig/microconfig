@@ -1,7 +1,7 @@
 package io.microconfig.core.properties.resolvers.placeholder.strategies.component.impl.properties
 
 import io.microconfig.core.properties.resolvers.placeholder.strategies.component.ComponentProperty
-import java.util.Optional
+import java.util.*
 
 class NameProperty : ComponentProperty {
     override fun key(): String = "name"

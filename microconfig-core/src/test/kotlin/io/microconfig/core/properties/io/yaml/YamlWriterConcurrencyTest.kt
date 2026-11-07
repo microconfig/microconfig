@@ -13,23 +13,24 @@ import io.microconfig.core.properties.io.ConfigWriter
 import io.microconfig.core.properties.io.selector.ConfigIoFactory.newConfigIo
 import io.microconfig.core.properties.serializers.PropertySerializers
 import io.microconfig.io.impl.DumpedFsReader
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.concurrent.ForkJoinPool
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit.SECONDS
-import java.util.function.BiConsumer
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import org.yaml.snakeyaml.Yaml
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.ForkJoinPool
+import java.util.concurrent.TimeUnit.SECONDS
+import java.util.function.BiConsumer
 
 class YamlWriterConcurrencyTest {
-    @TempDir lateinit var directory: Path
+    @TempDir
+    lateinit var directory: Path
 
     @Test
     fun serializeDistinctPreparedOutputsConcurrentlyAndNotifyEachOnce() {
@@ -52,8 +53,10 @@ class YamlWriterConcurrencyTest {
             val property = PropertyImpl.property("value", "complete-$index", YAML, null)
             TypedPropertiesImpl(APPLICATION, "app$index", "dev", mapOf("value" to property), emptyList())
         }
-        val prepared = PropertySerializers.toFileIn(directory.toFile(),
-            BiConsumer { file, _ -> notified.merge(file, 1, Int::plus) }, io).prepare(units)
+        val prepared = PropertySerializers.toFileIn(
+            directory.toFile(),
+            BiConsumer { file, _ -> notified.merge(file, 1, Int::plus) }, io
+        ).prepare(units)
         val pool = ForkJoinPool(4)
         try {
             pool.submit { units.parallelStream().forEach { it.save(prepared) } }.get(20, SECONDS)
@@ -105,9 +108,12 @@ class YamlWriterConcurrencyTest {
             repeat(4) {
                 val rendered = pool.submit<List<Pair<Int, String>>> {
                     (0..127).toList().parallelStream().map { index ->
-                        index to writer.serialize(listOf(
-                            PropertyImpl.property("label", "item-$index", YAML, null),
-                            PropertyImpl.property("number", index.toString(), YAML, null)))
+                        index to writer.serialize(
+                            listOf(
+                                PropertyImpl.property("label", "item-$index", YAML, null),
+                                PropertyImpl.property("number", index.toString(), YAML, null)
+                            )
+                        )
                     }.toList()
                 }.get(20, SECONDS)
                 rendered.forEach { (index, text) ->
@@ -149,6 +155,7 @@ class YamlWriterConcurrencyTest {
                 written.add(properties)
             }
         }
+
         val io = if (delegated) object : ConfigIo by base {
             override fun writeTo(file: File): ConfigWriter = writer(file)
         } else object : ConfigIo {

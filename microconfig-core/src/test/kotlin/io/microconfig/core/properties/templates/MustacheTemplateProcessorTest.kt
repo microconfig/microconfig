@@ -7,16 +7,17 @@ import io.microconfig.core.properties.ConfigFormat
 import io.microconfig.core.properties.ConfigFormat.PROPERTIES
 import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.templates.impl.MustacheTemplateProcessor
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.Path
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
 
 class MustacheTemplateProcessorTest {
-    @TempDir lateinit var root: Path
+    @TempDir
+    lateinit var root: Path
 
     @BeforeEach
     fun createEnvironment() {

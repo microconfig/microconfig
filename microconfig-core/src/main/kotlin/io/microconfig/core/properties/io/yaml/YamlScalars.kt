@@ -1,24 +1,24 @@
 package io.microconfig.core.properties.io.yaml
 
-import io.microconfig.core.properties.Property
 import io.microconfig.core.properties.ConfigFormat
+import io.microconfig.core.properties.Property
 import io.microconfig.core.properties.ValueFormat
 import io.microconfig.core.properties.io.properties.PropertiesText
 import io.microconfig.core.properties.io.yaml.impl.SnakeYaml
 import io.microconfig.core.properties.io.yaml.impl.YamlPropertyPaths
 import io.microconfig.core.properties.io.yaml.impl.YamlSource
-import java.util.Objects
 import org.yaml.snakeyaml.DumperOptions.ScalarStyle
 import org.yaml.snakeyaml.error.YAMLException
 import org.yaml.snakeyaml.nodes.MappingNode
 import org.yaml.snakeyaml.nodes.ScalarNode
 import org.yaml.snakeyaml.nodes.Tag
+import java.util.*
 
 object YamlScalars {
     // A conservative subset that stays one plain scalar in block and flow YAML.
     internal fun isPlainScalar(text: String): Boolean =
         text.isNotEmpty() && text != "-" && text != "---" && text != "..." &&
-            text.all { it.isLetterOrDigit() || it in "_./-" }
+                text.all { it.isLetterOrDigit() || it in "_./-" }
 
     internal fun canonicalKeyText(text: String): String {
         val node = runCatching { SnakeYaml.parse(text) as? ScalarNode }.getOrNull() ?: return text
@@ -80,8 +80,8 @@ object YamlScalars {
             if (part == canonicalKeyText(referenceParts[index])) index++
             else if (
                 index + 1 < referenceParts.size &&
-                    part ==
-                        canonicalKeyText(referenceParts[index] + "." + referenceParts[index + 1])
+                part ==
+                canonicalKeyText(referenceParts[index] + "." + referenceParts[index + 1])
             )
                 index += 2
             else return null
@@ -105,20 +105,20 @@ object YamlScalars {
         val scalar = SnakeYaml.plainScalar(text)
         if (scalar?.tag == Tag.STR) return text
         return runCatching {
-                val yaml = SnakeYaml.parser()
-                if (scalar != null) return@runCatching yaml.load<Any?>(text)
-                val mapping = yaml.load<Map<String, Any?>>("value: $text")
-                val value = mapping["value"]
-                val flow = yaml.load<List<Any?>>("[$text]")
-                if (
-                    value is Map<*, *> ||
-                        value is Iterable<*> ||
-                        flow.size != 1 ||
-                        !Objects.equals(value, flow[0])
-                )
-                    notScalar
-                else value
-            }
+            val yaml = SnakeYaml.parser()
+            if (scalar != null) return@runCatching yaml.load<Any?>(text)
+            val mapping = yaml.load<Map<String, Any?>>("value: $text")
+            val value = mapping["value"]
+            val flow = yaml.load<List<Any?>>("[$text]")
+            if (
+                value is Map<*, *> ||
+                value is Iterable<*> ||
+                flow.size != 1 ||
+                !Objects.equals(value, flow[0])
+            )
+                notScalar
+            else value
+        }
             .getOrDefault(notScalar)
     }
 
@@ -172,6 +172,7 @@ object YamlScalars {
         when {
             property.valueFormat == ValueFormat.PROPERTIES ->
                 fromPropertiesText(property.value)
+
             property.isLiteralText -> literalFragment(property.value)
             property.valueFormat == ValueFormat.TEXT -> fromPlainText(property.value)
             else -> property.value

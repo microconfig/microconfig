@@ -2,21 +2,22 @@ package io.microconfig.core.environments.repository
 
 import io.microconfig.core.ClasspathReader.Companion.classpathFile
 import io.microconfig.core.configtypes.ConfigTypeRepository
-import io.microconfig.core.environments.*
+import io.microconfig.core.environments.Component
+import io.microconfig.core.environments.ComponentFactory
+import io.microconfig.core.environments.ComponentGroup
+import io.microconfig.core.environments.Environment
 import io.microconfig.core.environments.impl.ComponentFactoryImpl
 import io.microconfig.core.environments.repository.impl.FileEnvironmentRepository
 import io.microconfig.core.properties.PropertiesFactory
 import io.microconfig.io.FsReader
 import io.microconfig.io.impl.DumpedFsReader
-import java.io.File
-import java.util.stream.Collectors.toList
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
+import java.io.File
+import java.util.stream.Collectors.toList
 
 class FileEnvironmentRepositoryTest {
     val dir: File = classpathFile("envs/good")

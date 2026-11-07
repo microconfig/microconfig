@@ -6,7 +6,7 @@ import io.microconfig.core.properties.PlaceholderResolveStrategy
 import io.microconfig.core.properties.Property
 import io.microconfig.core.properties.PropertyImpl
 import io.microconfig.utils.Os
-import java.util.Optional
+import java.util.*
 import java.util.function.UnaryOperator
 
 class SystemResolveStrategy(

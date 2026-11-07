@@ -3,11 +3,6 @@ package io.microconfig.core
 import io.microconfig.core.properties.*
 import io.microconfig.core.properties.io.selector.ConfigIoFactory
 import io.microconfig.io.impl.DumpedFsReader
-import java.io.StringReader
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.Optional
-import java.util.Properties
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -17,9 +12,15 @@ import org.junit.jupiter.params.provider.ValueSource
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.nodes.MappingNode
 import org.yaml.snakeyaml.nodes.ScalarNode
+import java.io.StringReader
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.*
+import java.util.Properties
 
 class BuildInputValidationTest {
-    @TempDir lateinit var directory: Path
+    @TempDir
+    lateinit var directory: Path
     private val root
         get() = directory.resolve("repo")
 
@@ -152,7 +153,7 @@ class BuildInputValidationTest {
         build()
         val document =
             Yaml().compose(StringReader(Files.readString(output("application.yaml"))))
-                as MappingNode
+                    as MappingNode
         assertEquals("literal\n", (document.value.single().keyNode as ScalarNode).value)
     }
 

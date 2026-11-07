@@ -1,31 +1,22 @@
 package io.microconfig.core.properties.io.yaml.impl
 
+import io.microconfig.core.properties.*
 import io.microconfig.core.properties.ConfigFormat.YAML
-import io.microconfig.core.properties.DeclaringComponent
-import io.microconfig.core.properties.Property
-import io.microconfig.core.properties.PropertyImpl
 import io.microconfig.core.properties.PropertyImpl.Companion.literalProperty
 import io.microconfig.core.properties.PropertyImpl.Companion.property
-import io.microconfig.core.properties.Resolver
-import io.microconfig.core.properties.ValueFormat
 import io.microconfig.core.properties.io.properties.PropertiesText
 import io.microconfig.core.properties.io.yaml.ExpressionResultCache
 import io.microconfig.core.properties.io.yaml.ExpressionValueCache
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.resolvers.RecursiveResolver
-import io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders
-import io.microconfig.core.properties.resolvers.expression.impl.ExpressionResolver.Companion.expressionsIn
 import io.microconfig.core.properties.resolvers.expression.impl.ExpressionResolver.Companion.expressionEnd
 import io.microconfig.core.properties.resolvers.expression.impl.ExpressionResolver.Companion.expressionQuoteAt
-import java.util.IdentityHashMap
-import java.util.regex.MatchResult
+import io.microconfig.core.properties.resolvers.expression.impl.ExpressionResolver.Companion.expressionsIn
+import io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders
 import org.yaml.snakeyaml.DumperOptions.ScalarStyle
-import org.yaml.snakeyaml.nodes.MappingNode
-import org.yaml.snakeyaml.nodes.Node
-import org.yaml.snakeyaml.nodes.NodeTuple
-import org.yaml.snakeyaml.nodes.ScalarNode
-import org.yaml.snakeyaml.nodes.SequenceNode
-import org.yaml.snakeyaml.nodes.Tag
+import org.yaml.snakeyaml.nodes.*
+import java.util.*
+import java.util.regex.MatchResult
 import kotlin.jvm.optionals.getOrNull
 
 class YamlValueResolver internal constructor(
@@ -71,15 +62,17 @@ class YamlValueResolver internal constructor(
         return when {
             node is MappingNode || node is SequenceNode ->
                 resolveCollection(node, source, property, root)
+
             node is ScalarNode && source.hasExplicitTag(node) ->
                 SnakeYaml.fragment(resolveScalarNode(node, source, property, root))
+
             else -> resolveScalar(property, root)
         }
     }
 
     private fun isWholeStatement(value: String): Boolean =
         value.startsWith("\${") && PlaceholderBorders.endOfPlaceholder(value, 0) == value.length ||
-            value.startsWith("#{") && expressionEnd(value, 0) == value.length
+                value.startsWith("#{") && expressionEnd(value, 0) == value.length
 
     private fun resolveCollection(
         node: Node,
@@ -106,6 +99,7 @@ class YamlValueResolver internal constructor(
                     validateMappingKeys(entry.valueNode, property, visited)
                 }
             }
+
             is SequenceNode -> node.value.forEach { validateMappingKeys(it, property, visited) }
         }
     }
@@ -124,6 +118,7 @@ class YamlValueResolver internal constructor(
         return when (node) {
             is ScalarNode ->
                 resolveScalarNode(node, source, property, root, expressions).also { resolved[node] = it }
+
             is SequenceNode -> resolveSequence(node, source, property, root, resolved, expressions)
             is MappingNode -> resolveMapping(node, source, property, root, resolved, expressions)
             else -> error("Unsupported YAML node ${node.nodeId}")
@@ -144,8 +139,10 @@ class YamlValueResolver internal constructor(
         val declaration = collection.declaringComponent
         if (node.scalarStyle == ScalarStyle.LITERAL || node.scalarStyle == ScalarStyle.FOLDED) {
             val resolvedValue =
-                resolveScalar(literalProperty(collection.key, value, YAML, declaration, ValueFormat.TEXT), root,
-                    scalarStart = node.startMark?.index ?: 0, inheritedExpressions = expressions)
+                resolveScalar(
+                    literalProperty(collection.key, value, YAML, declaration, ValueFormat.TEXT), root,
+                    scalarStart = node.startMark?.index ?: 0, inheritedExpressions = expressions
+                )
             return ScalarNode(
                 node.tag,
                 resolvedValue,
@@ -156,15 +153,17 @@ class YamlValueResolver internal constructor(
         }
         val quoted =
             !source.isSplice(node) &&
-                (node.scalarStyle == ScalarStyle.SINGLE_QUOTED ||
-                    node.scalarStyle == ScalarStyle.DOUBLE_QUOTED)
+                    (node.scalarStyle == ScalarStyle.SINGLE_QUOTED ||
+                            node.scalarStyle == ScalarStyle.DOUBLE_QUOTED)
         val original =
             if (quoted) SnakeYaml.scalar(SnakeYaml.parse(source.fragment(node)) as ScalarNode)
             else value
         val result =
             SnakeYaml.parse(
-                resolveScalar(property(collection.key, original, YAML, declaration, ValueFormat.YAML), root,
-                    scalarStart = node.startMark?.index ?: 0, inheritedExpressions = expressions)
+                resolveScalar(
+                    property(collection.key, original, YAML, declaration, ValueFormat.YAML), root,
+                    scalarStart = node.startMark?.index ?: 0, inheritedExpressions = expressions
+                )
             )
         if (!source.isSplice(node) && source.hasExplicitTag(node)) result.tag = node.tag
         return result
@@ -217,8 +216,8 @@ class YamlValueResolver internal constructor(
             }
             if (
                 yamlSyntax &&
-                    !current.isPlainText &&
-                    (quoted || !wholeValue)
+                !current.isPlainText &&
+                (quoted || !wholeValue)
             ) {
                 YamlScalars.quotedTextOrNull(value)?.let {
                     value = it
@@ -309,7 +308,7 @@ class YamlValueResolver internal constructor(
             if (statement.isPlainText) null
             else runCatching { SnakeYaml.parse(value) as? ScalarNode }.getOrNull()
         val quoted = scalar?.scalarStyle == ScalarStyle.SINGLE_QUOTED ||
-            scalar?.scalarStyle == ScalarStyle.DOUBLE_QUOTED
+                scalar?.scalarStyle == ScalarStyle.DOUBLE_QUOTED
         val text = if (quoted) scalar.value else value
         return when {
             quote != null -> text.replace(quote.toString(), quote.toString().repeat(2))
@@ -329,6 +328,7 @@ class YamlValueResolver internal constructor(
                 ".NaN" -> "(0.0 / 0.0)"
                 else -> number
             }
+
             else -> value
         }
 

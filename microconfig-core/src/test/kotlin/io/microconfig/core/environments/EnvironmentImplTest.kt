@@ -4,11 +4,7 @@ import io.microconfig.core.environments.impl.ComponentsImpl
 import io.microconfig.core.environments.impl.EnvironmentImpl
 import io.microconfig.core.properties.PropertiesFactory
 import io.microconfig.core.properties.repository.ComponentNotFoundException
-import java.util.Optional.empty
-import java.util.Optional.of
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertSame
-import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -16,6 +12,8 @@ import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
+import java.util.Optional.empty
+import java.util.Optional.of
 
 class EnvironmentImplTest {
     val one: Component = mock(Component::class.java)
@@ -94,7 +92,7 @@ class EnvironmentImplTest {
         `when`(group2.findComponentWithName("three")).thenReturn(of(three), empty())
 
         val component = if (createMissing) env.findComponentWithName("three")
-            else env.getComponentWithName("three")
+        else env.getComponentWithName("three")
 
         assertSame(three, component)
     }

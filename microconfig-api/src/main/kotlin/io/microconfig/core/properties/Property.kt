@@ -3,6 +3,7 @@ package io.microconfig.core.properties
 interface Property {
     val key: String
     val value: String
+
     /** Syntax of [key], independent from the representation of [value]. */
     val keyFormat: ConfigFormat
         get() = configFormat

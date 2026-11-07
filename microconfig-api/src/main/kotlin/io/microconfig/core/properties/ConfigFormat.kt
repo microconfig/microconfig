@@ -1,6 +1,5 @@
 package io.microconfig.core.properties
 
-import java.util.Locale
 import java.util.Locale.ROOT
 
 enum class ConfigFormat {

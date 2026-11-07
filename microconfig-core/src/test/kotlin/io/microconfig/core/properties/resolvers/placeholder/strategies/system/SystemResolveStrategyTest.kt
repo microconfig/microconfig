@@ -8,14 +8,14 @@ import io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo
 import io.microconfig.core.properties.resolvers.placeholder.impl.PlaceholderResolver
 import io.microconfig.core.properties.resolvers.placeholder.strategies.system.impl.SystemResolveStrategy
 import io.microconfig.core.properties.resolvers.placeholder.strategies.system.impl.SystemResolveStrategy.Companion.SYSTEM_SOURCE
-import java.io.File
-import java.io.StringReader
-import java.util.Properties
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.mockito.Mockito.mock
+import java.io.File
+import java.io.StringReader
+import java.util.*
 
 class SystemResolveStrategyTest {
     @ParameterizedTest

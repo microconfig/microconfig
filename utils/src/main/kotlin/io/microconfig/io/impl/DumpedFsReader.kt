@@ -6,7 +6,7 @@ import java.io.File
 import java.io.IOException
 import java.io.UncheckedIOException
 import java.nio.file.Files
-import java.util.Optional
+import java.util.*
 import java.util.function.Predicate
 
 class DumpedFsReader : FsReader {

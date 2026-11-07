@@ -2,7 +2,7 @@ package io.microconfig.core.properties.repository
 
 import io.microconfig.core.configtypes.ConfigType
 import java.io.File
-import java.util.Optional
+import java.util.*
 
 interface ComponentGraph {
     /** Files are ordered from the lowest to the highest override priority. */

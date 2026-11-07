@@ -13,7 +13,8 @@ import io.microconfig.core.properties.impl.PropertiesFactoryImpl
 import io.microconfig.core.properties.resolvers.placeholder.strategies.standard.impl.StandardResolveStrategy
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 
 class StandardResolveStrategyTest {
     @Test

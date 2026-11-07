@@ -1,10 +1,10 @@
 package io.microconfig.core.properties
 
 import io.microconfig.core.properties.FileBasedComponent.Companion.fileSource
-import java.io.File
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import java.io.File
 
 class FileBasedComponentTest {
     val file: File = File("root/components/comp/config.yaml")

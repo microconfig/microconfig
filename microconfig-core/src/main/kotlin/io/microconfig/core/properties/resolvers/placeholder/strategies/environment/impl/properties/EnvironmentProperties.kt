@@ -5,9 +5,9 @@ import io.microconfig.core.properties.resolvers.placeholder.strategies.environme
 class EnvironmentProperties {
     fun get(): Map<String, EnvProperty> =
         listOf(
-                EnvNameProperty(),
-                GroupNameProperty(),
-                ComponentOrderProperty(),
-            )
+            EnvNameProperty(),
+            GroupNameProperty(),
+            ComponentOrderProperty(),
+        )
             .associateBy { it.key() }
 }

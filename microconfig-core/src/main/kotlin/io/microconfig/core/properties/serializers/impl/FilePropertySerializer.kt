@@ -47,8 +47,10 @@ internal class FilePropertySerializer(
     }
 
     private fun output(unit: TypedProperties, prefixes: MutableMap<Path, Path>): Output =
-        output(unit.properties, unit.templates, unit.configType,
-            unit.declaringComponent.component, unit.declaringComponent.environment, prefixes)
+        output(
+            unit.properties, unit.templates, unit.configType,
+            unit.declaringComponent.component, unit.declaringComponent.environment, prefixes
+        )
 
     private fun output(
         properties: Collection<Property>,
@@ -202,7 +204,7 @@ internal class FilePropertySerializer(
                 val output =
                     byScope[Triple(componentName, environment, configType.typeName)]?.firstOrNull {
                         it.type.resultFileName == configType.resultFileName &&
-                            sameProperties(it, properties) && sameTemplates(it.templates, templates)
+                                sameProperties(it, properties) && sameTemplates(it.templates, templates)
                     }
                 requireNotNull(output) { "Output was not prepared for $componentName[$environment]" }
                 val notify = notificationFor(output, protected, notifications, completed)
@@ -216,7 +218,7 @@ internal class FilePropertySerializer(
 
     private fun sameProperties(output: Output, properties: Collection<Property>): Boolean =
         output.properties == properties.toList() ||
-            resultFormat(output.properties) == resultFormat(properties) &&
+                resultFormat(output.properties) == resultFormat(properties) &&
                 configContent(output.file, output.properties).contentEquals(configContent(output.file, properties))
 
     private fun configContent(file: File, properties: Collection<Property>): ByteArray =
@@ -228,7 +230,7 @@ internal class FilePropertySerializer(
     private fun sameTemplates(first: List<Template>, second: List<Template>): Boolean =
         first.size == second.size && first.zip(second).all { (left, right) ->
             left === right || left.source == right.source && left.destination == right.destination &&
-                left.contentAsBytes.contentEquals(right.contentAsBytes)
+                    left.contentAsBytes.contentEquals(right.contentAsBytes)
         }
 
     private fun notificationFor(
@@ -238,7 +240,8 @@ internal class FilePropertySerializer(
         completed: MutableSet<Path>,
     ): () -> Unit {
         if (output.visible.isEmpty() && isProtected(output.file, protected) ||
-            !completed.add(output.path)) return {}
+            !completed.add(output.path)
+        ) return {}
         notifications[output.path]?.let { return it }
         listener.accept(output.file, output.properties)
         return {}
@@ -266,11 +269,13 @@ internal class FilePropertySerializer(
 
     private fun deleteObsoleteConfigs(result: File, empty: Boolean, protected: Set<Path>) {
         if (empty && !Files.notExists(result.toPath(), NOFOLLOW_LINKS) &&
-            !isProtected(result, protected)) deleteConfig(result)
+            !isProtected(result, protected)
+        ) deleteConfig(result)
         val obsolete = oppositeConfig(result)
         val diff = File(result.parentFile, "diff-${obsolete.name}")
         if (Files.notExists(obsolete.toPath(), NOFOLLOW_LINKS) &&
-            Files.notExists(diff.toPath(), NOFOLLOW_LINKS)) return
+            Files.notExists(diff.toPath(), NOFOLLOW_LINKS)
+        ) return
         if (isProtected(obsolete, protected)) return
         deleteConfig(obsolete)
         deleteConfig(diff)

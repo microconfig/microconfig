@@ -2,15 +2,13 @@ package io.microconfig.core.properties
 
 import io.microconfig.core.properties.impl.PropertiesImpl
 import io.microconfig.core.properties.impl.PropertiesImpl.Companion.flat
-import java.util.Optional
-import java.util.concurrent.atomic.AtomicInteger
-import java.util.function.Function
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertSame
-import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
+import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.function.Function
 
 class PropertiesImplTest {
     @Test

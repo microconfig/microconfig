@@ -25,8 +25,8 @@ internal class ValueMethodResolver : MethodResolver {
 
     private fun isReflection(target: Any): Boolean =
         target is Class<*> ||
-            target is ClassLoader ||
-            target is Module ||
-            target.javaClass.name.startsWith("java.lang.reflect.") ||
-            target.javaClass.name.startsWith("java.lang.invoke.")
+                target is ClassLoader ||
+                target is Module ||
+                target.javaClass.name.startsWith("java.lang.reflect.") ||
+                target.javaClass.name.startsWith("java.lang.invoke.")
 }

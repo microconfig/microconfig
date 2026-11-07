@@ -82,14 +82,14 @@ class MicroconfigMain(
 
         private fun buildFrom(params: MicroconfigParams) {
             MicroconfigMain(
-                    params.rootDir(),
-                    params.destinationDir(),
-                    params.environments(),
-                    params.groups(),
-                    params.services(),
-                    params.stacktrace(),
-                    params.isSingleEnvBuild(),
-                )
+                params.rootDir(),
+                params.destinationDir(),
+                params.environments(),
+                params.groups(),
+                params.services(),
+                params.stacktrace(),
+                params.isSingleEnvBuild(),
+            )
                 .build()
         }
     }

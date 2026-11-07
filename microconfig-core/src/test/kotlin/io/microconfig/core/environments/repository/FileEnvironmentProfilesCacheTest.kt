@@ -4,8 +4,6 @@ import io.microconfig.core.environments.ComponentFactory
 import io.microconfig.core.environments.repository.impl.FileEnvironmentRepository
 import io.microconfig.core.properties.PropertiesFactory
 import io.microconfig.io.impl.DumpedFsReader
-import java.nio.file.Files
-import java.nio.file.Path
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
@@ -13,13 +11,13 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.spy
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
+import java.nio.file.Files
+import java.nio.file.Path
 
 class FileEnvironmentProfilesCacheTest {
-    @TempDir lateinit var root: Path
+    @TempDir
+    lateinit var root: Path
 
     @BeforeEach
     fun createEnvironmentDirectory() {
@@ -110,11 +108,17 @@ class FileEnvironmentProfilesCacheTest {
     }
 
     private fun writeProfiles(name: String, vararg profiles: String) {
-        Files.writeString(root.resolve("envs/$name.yaml"),
-            if (profiles.isEmpty()) "{}\n" else "profiles: [${profiles.joinToString(", ")}]\n")
+        Files.writeString(
+            root.resolve("envs/$name.yaml"),
+            if (profiles.isEmpty()) "{}\n" else "profiles: [${profiles.joinToString(", ")}]\n"
+        )
     }
 
     private fun repository(): FileEnvironmentRepository =
-        spy(FileEnvironmentRepository(root.toFile(), DumpedFsReader(),
-            mock(ComponentFactory::class.java), mock(PropertiesFactory::class.java)))
+        spy(
+            FileEnvironmentRepository(
+                root.toFile(), DumpedFsReader(),
+                mock(ComponentFactory::class.java), mock(PropertiesFactory::class.java)
+            )
+        )
 }

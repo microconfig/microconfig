@@ -1,9 +1,5 @@
 package io.microconfig
 
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.concurrent.TimeUnit.SECONDS
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.io.TempDir
@@ -11,9 +7,14 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.junit.jupiter.params.provider.ValueSource
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.concurrent.TimeUnit.SECONDS
 
 class MissingFilterValueTest {
-    @TempDir lateinit var directory: Path
+    @TempDir
+    lateinit var directory: Path
     private val root get() = directory.resolve("repo")
     private val destination get() = directory.resolve("output")
 
@@ -30,8 +31,10 @@ class MissingFilterValueTest {
     @ParameterizedTest
     @MethodSource("emptyFilters")
     fun rejectEmptyFiltersBeforeTouchingAnyOutput(option: String, value: String?) {
-        val arguments = listOf("-r", root.toString(), "-d", destination.toString(), "-e", "dev",
-            "-color", "false", option) + listOfNotNull(value)
+        val arguments = listOf(
+            "-r", root.toString(), "-d", destination.toString(), "-e", "dev",
+            "-color", "false", option
+        ) + listOfNotNull(value)
         val process = cli(arguments)
         try {
             assertTrue(process.waitFor(10, SECONDS), "CLI did not reject an empty filter")
@@ -54,8 +57,12 @@ class MissingFilterValueTest {
     @ValueSource(strings = ["-s", "-g"])
     fun retainValidFilters(option: String) {
         val selected = if (option == "-s") "first" else "group"
-        val process = cli(listOf("-r", root.toString(), "-d", destination.toString(), "-e", "dev",
-            "-color", "false", option, selected))
+        val process = cli(
+            listOf(
+                "-r", root.toString(), "-d", destination.toString(), "-e", "dev",
+                "-color", "false", option, selected
+            )
+        )
         try {
             assertTrue(process.waitFor(10, SECONDS), "CLI did not finish")
             val text = process.inputStream.bufferedReader().use { it.readText() }
@@ -70,8 +77,12 @@ class MissingFilterValueTest {
     }
 
     private fun cli(arguments: List<String>): Process =
-        ProcessBuilder(listOf(File(System.getProperty("java.home"), "bin/java").path,
-            "-jar", requireNotNull(System.getProperty("microconfig.cli.jar"))) + arguments)
+        ProcessBuilder(
+            listOf(
+                File(System.getProperty("java.home"), "bin/java").path,
+                "-jar", requireNotNull(System.getProperty("microconfig.cli.jar"))
+            ) + arguments
+        )
             .redirectErrorStream(true).start()
 
     private fun write(file: Path, text: String) {

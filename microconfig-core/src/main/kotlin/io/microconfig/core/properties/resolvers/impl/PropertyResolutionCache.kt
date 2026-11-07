@@ -1,17 +1,13 @@
 package io.microconfig.core.properties.resolvers.impl
 
-import io.microconfig.core.properties.DeclaringComponent
-import io.microconfig.core.properties.DeclaringComponentImpl
-import io.microconfig.core.properties.Property
-import io.microconfig.core.properties.PropertyImpl
-import io.microconfig.core.properties.ValueFormat
+import io.microconfig.core.properties.*
 import io.microconfig.core.properties.io.yaml.ExpressionValueCache
 import io.microconfig.core.properties.io.yaml.YamlResolvers
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.resolvers.RecursiveResolver
 import io.microconfig.core.properties.resolvers.placeholder.Placeholder
 import io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders
-import java.util.Optional
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.jvm.optionals.getOrNull
 
@@ -30,7 +26,8 @@ internal class PropertyResolutionCache {
     ): String {
         val value = property.value
         if ((property.valueFormat != ValueFormat.YAML || YamlScalars.isPlainScalar(value)) &&
-            placeholders.findStatementIn(value).isEmpty && expressions.findStatementIn(value).isEmpty)
+            placeholders.findStatementIn(value).isEmpty && expressions.findStatementIn(value).isEmpty
+        )
             return value
         val key = keyFor(property, root, referenceChain, explicitEnvironment)
         return values.getOrPut(key) {
@@ -65,8 +62,10 @@ internal class PropertyResolutionCache {
         when {
             expressions.findStatementIn(key.property.value).isEmpty ->
                 YamlResolvers.forValues(placeholders, expressions)
+
             PlaceholderBorders.findPlaceholderOrNull(key.property.value) == null ->
                 YamlResolvers.forValues(placeholders, expressionsFor(key, expressions))
+
             else -> YamlResolvers.withExpressionCache(independentExpressionsFor(key), placeholders, expressions)
         }
 

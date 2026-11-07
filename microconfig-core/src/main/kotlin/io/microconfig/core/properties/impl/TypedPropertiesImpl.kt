@@ -1,19 +1,13 @@
 package io.microconfig.core.properties.impl
 
 import io.microconfig.core.configtypes.ConfigType
+import io.microconfig.core.properties.*
 import io.microconfig.core.properties.ConfigFormat.PROPERTIES
 import io.microconfig.core.properties.ConfigFormat.YAML
-import io.microconfig.core.properties.DeclaringComponent
-import io.microconfig.core.properties.DeclaringComponentImpl
-import io.microconfig.core.properties.Property
-import io.microconfig.core.properties.PropertyImpl
-import io.microconfig.core.properties.PropertySerializer
-import io.microconfig.core.properties.Resolver
-import io.microconfig.core.properties.TypedProperties
 import io.microconfig.core.properties.io.properties.PropertiesText
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.templates.Template
-import java.util.Optional
+import java.util.*
 import java.util.function.Predicate
 
 data class TypedPropertiesImpl(
@@ -58,7 +52,7 @@ data class TypedPropertiesImpl(
 
     private fun keyStartsWith(property: Property, prefix: String): Boolean =
         property.key.startsWith(prefix) ||
-            property.keyFormat == PROPERTIES && PropertiesText.unescape(property.key).startsWith(prefix)
+                property.keyFormat == PROPERTIES && PropertiesText.unescape(property.key).startsWith(prefix)
 
     override fun withTemplates(templates: List<Template>): TypedProperties =
         copy(templates = templates)
@@ -66,7 +60,7 @@ data class TypedPropertiesImpl(
     override fun getPropertyWithKey(key: String): Optional<Property> =
         Optional.ofNullable(
             uniquePropertiesByKey[key] ?: findByPrefix(key) ?: findByCanonicalKey(key)
-                ?: findByPropertiesKey(key) ?: findByEncodedPropertiesKey(key)
+            ?: findByPropertiesKey(key) ?: findByEncodedPropertiesKey(key)
         )
 
     private fun findByCanonicalKey(key: String): Property? {
@@ -80,8 +74,8 @@ data class TypedPropertiesImpl(
         return uniquePropertiesByKey.entries
             .firstOrNull {
                 hasYamlKey(it.value) &&
-                    "!!float " in it.key &&
-                    YamlScalars.matchingKeyPrefix(it.key, key) == it.key
+                        "!!float " in it.key &&
+                        YamlScalars.matchingKeyPrefix(it.key, key) == it.key
             }
             ?.value
     }

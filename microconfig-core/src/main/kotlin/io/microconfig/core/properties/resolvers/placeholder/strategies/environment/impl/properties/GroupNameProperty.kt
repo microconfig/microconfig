@@ -2,7 +2,7 @@ package io.microconfig.core.properties.resolvers.placeholder.strategies.environm
 
 import io.microconfig.core.environments.Environment
 import io.microconfig.core.properties.resolvers.placeholder.strategies.environment.EnvProperty
-import java.util.Optional
+import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
 class GroupNameProperty : EnvProperty {

@@ -7,15 +7,15 @@ import io.microconfig.core.properties.DeclaringComponentImpl
 import io.microconfig.core.properties.Resolver
 import io.microconfig.core.properties.templates.TemplatePattern.Companion.defaultPattern
 import io.microconfig.core.properties.templates.impl.StringTemplate
-import java.io.File
-import java.util.function.UnaryOperator
-import java.util.regex.Pattern
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.junit.jupiter.params.provider.ValueSource
+import java.io.File
+import java.util.function.UnaryOperator
+import java.util.regex.Pattern
 
 class StringTemplateTest {
     val root: DeclaringComponent = DeclaringComponentImpl("app", "th-server", "uat")
@@ -107,8 +107,10 @@ class StringTemplateTest {
         val pattern = if (customPattern)
             Pattern.compile("(?<escaped>\\\\)?(?<placeholder>\\$\\{.*?})", Pattern.DOTALL)
         else templatePattern
-        val template = StringTemplate("name", source, destination, pattern,
-            "prefix \\$placeholder|\${this@next}")
+        val template = StringTemplate(
+            "name", source, destination, pattern,
+            "prefix \\$placeholder|\${this@next}"
+        )
         val resolver = Resolver { value, _, _ ->
             assertEquals("\${this@next}", value)
             "resolved"
@@ -182,21 +184,25 @@ class StringTemplateTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = [
-        "\${this@\${this@missingKey:name}:fallback}",
-        "\${\${this@missingComponent:this}@name:fallback}",
-        "\${this@\${this@missingKey:\${this@anotherMissingKey:name}}:#{'a}b'}}",
-        "\${\${this@missingKey:name}:fallback}",
-    ])
+    @ValueSource(
+        strings = [
+            "\${this@\${this@missingKey:name}:fallback}",
+            "\${\${this@missingComponent:this}@name:fallback}",
+            "\${this@\${this@missingKey:\${this@anotherMissingKey:name}}:#{'a}b'}}",
+            "\${\${this@missingKey:name}:fallback}",
+        ]
+    )
     fun resolvePlaceholdersInsidePlaceholderHeaders(placeholder: String) {
         resolve("$placeholder|\${this@name}", "th-server|th-server")
     }
 
     @ParameterizedTest
-    @ValueSource(strings = [
-        "\${this@missing:#{'\${this@alsoMissing:'a}b'}'.length()}}",
-        "\${this@missing:#{\"\${this@alsoMissing:\"a}b\"}\".length()}}",
-    ])
+    @ValueSource(
+        strings = [
+            "\${this@missing:#{'\${this@alsoMissing:'a}b'}'.length()}}",
+            "\${this@missing:#{\"\${this@alsoMissing:\"a}b\"}\".length()}}",
+        ]
+    )
     fun resolveQuotedPlaceholderDefaultsInsideSpel(placeholder: String) {
         resolve("$placeholder|\${this@name}", "3|th-server")
     }
@@ -230,12 +236,12 @@ class StringTemplateTest {
         val entry = System.getenv().entries.first()
         val result: String =
             StringTemplate(
-                    "name",
-                    source,
-                    destination,
-                    templatePattern,
-                    "\${env@" + entry.key + "}",
-                )
+                "name",
+                source,
+                destination,
+                templatePattern,
+                "\${env@" + entry.key + "}",
+            )
                 .resolveBy(resolver(), root)
                 .content
         val escape: UnaryOperator<String> =
@@ -252,11 +258,11 @@ class StringTemplateTest {
     fun insertPlainTextOfPropertiesValues() {
         val result: String =
             StringTemplate(
-                    "name",
-                    classpathFile("templates/templateWithPropertiesValues.txt"),
-                    destination,
-                    templatePattern,
-                )
+                "name",
+                classpathFile("templates/templateWithPropertiesValues.txt"),
+                destination,
+                templatePattern,
+            )
                 .resolveBy(resolver(), DeclaringComponentImpl("app", "propertiesYamlTarget", "dev"))
                 .content
         assertEquals("win=C:\\temp\\new\nraw=x\\y", result.replace("\r\n", "\n").trim())
@@ -266,11 +272,11 @@ class StringTemplateTest {
     fun testMultiLinePlaceholderInTemplate() {
         val result: String =
             StringTemplate(
-                    "name",
-                    classpathFile("templates/templateWithMultiLines.yaml"),
-                    destination,
-                    templatePattern,
-                )
+                "name",
+                classpathFile("templates/templateWithMultiLines.yaml"),
+                destination,
+                templatePattern,
+            )
                 .resolveBy(resolver(), DeclaringComponentImpl("app", "mergeLists", "some"))
                 .content
         assertEquals(

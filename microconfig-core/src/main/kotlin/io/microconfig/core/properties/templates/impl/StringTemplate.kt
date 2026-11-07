@@ -1,19 +1,15 @@
 package io.microconfig.core.properties.templates.impl
 
-import io.microconfig.core.properties.DeclaringComponent
+import io.microconfig.core.properties.*
 import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.core.properties.PropertyImpl.Companion.literalProperty
-import io.microconfig.core.properties.Resolver
-import io.microconfig.core.properties.TypedProperties
-import io.microconfig.core.properties.ValueFormat
-import io.microconfig.core.properties.isUnresolvedValue
 import io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders
 import io.microconfig.core.properties.templates.TemplateContentPostProcessor
 import io.microconfig.core.templates.Template
 import io.microconfig.utils.IoUtils.readFully
 import java.io.File
-import java.util.regex.Pattern
 import java.util.function.UnaryOperator
+import java.util.regex.Pattern
 
 class StringTemplate
 @JvmOverloads

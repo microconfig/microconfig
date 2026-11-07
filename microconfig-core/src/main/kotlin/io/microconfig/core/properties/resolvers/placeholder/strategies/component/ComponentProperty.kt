@@ -1,6 +1,6 @@
 package io.microconfig.core.properties.resolvers.placeholder.strategies.component
 
-import java.util.Optional
+import java.util.*
 
 interface ComponentProperty {
     fun key(): String

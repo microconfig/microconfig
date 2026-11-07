@@ -1,26 +1,14 @@
 package io.microconfig.core.properties.io.yaml.impl
 
-import io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders
 import io.microconfig.core.properties.resolvers.expression.impl.ExpressionResolver.Companion.expressionEnd
-import java.io.StringReader
-import java.util.IdentityHashMap
+import io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders
 import org.yaml.snakeyaml.DumperOptions.ScalarStyle
 import org.yaml.snakeyaml.error.Mark
 import org.yaml.snakeyaml.error.MarkedYAMLException
-import org.yaml.snakeyaml.events.AliasEvent
-import org.yaml.snakeyaml.events.CommentEvent
-import org.yaml.snakeyaml.events.Event
-import org.yaml.snakeyaml.events.MappingEndEvent
-import org.yaml.snakeyaml.events.MappingStartEvent
-import org.yaml.snakeyaml.events.ScalarEvent
-import org.yaml.snakeyaml.events.SequenceEndEvent
-import org.yaml.snakeyaml.events.SequenceStartEvent
-import org.yaml.snakeyaml.nodes.MappingNode
-import org.yaml.snakeyaml.nodes.Node
-import org.yaml.snakeyaml.nodes.NodeTuple
-import org.yaml.snakeyaml.nodes.ScalarNode
-import org.yaml.snakeyaml.nodes.SequenceNode
-import org.yaml.snakeyaml.nodes.Tag
+import org.yaml.snakeyaml.events.*
+import org.yaml.snakeyaml.nodes.*
+import java.io.StringReader
+import java.util.*
 
 /** Adapts Microconfig statements to YAML while retaining offsets in the original file. */
 internal class YamlSource(val original: String) {
@@ -53,7 +41,7 @@ internal class YamlSource(val original: String) {
         while (position + 1 < original.length) {
             if (
                 (original[position] == '$' || original[position] == '#') &&
-                    original[position + 1] == '{'
+                original[position + 1] == '{'
             ) {
                 val end = statementEnd(position)
                 if (end > position) {
@@ -133,7 +121,7 @@ internal class YamlSource(val original: String) {
                 }
             if (
                 start > match.range.first &&
-                    !mappingSeparator.containsMatchIn(prepared.substring(start, lineEnd))
+                !mappingSeparator.containsMatchIn(prepared.substring(start, lineEnd))
             )
                 possibleContinuations[start] = line
             prepared.setCharAt(start, '#')
@@ -153,12 +141,15 @@ internal class YamlSource(val original: String) {
                         consumePosition(scopes.lastOrNull())
                         scopes.add(MappingPosition())
                     }
+
                     is SequenceStartEvent -> {
                         consumePosition(scopes.lastOrNull())
                         scopes.add(null)
                     }
+
                     is MappingEndEvent,
                     is SequenceEndEvent -> scopes.removeAt(scopes.lastIndex)
+
                     is AliasEvent -> consumePosition(scopes.lastOrNull())
                     is ScalarEvent -> {
                         val position = scopes.lastOrNull()
@@ -168,7 +159,7 @@ internal class YamlSource(val original: String) {
                         } else {
                             if (
                                 scopes.isNotEmpty() && !isVariableScope(scopes) &&
-                                    event.scalarStyle == ScalarStyle.PLAIN
+                                event.scalarStyle == ScalarStyle.PLAIN
                             )
                                 protected.addAll(scalarLines(event, preparedLines))
                             consumePosition(position)
@@ -193,10 +184,10 @@ internal class YamlSource(val original: String) {
         if (key.scalarStyle != ScalarStyle.PLAIN) return false
         if (scopes.size == 1) return key.value == ".var" || key.value.startsWith('+')
         return scopes.size == 2 &&
-            key.value == ".var" &&
-            scopes.first()?.key?.let {
-                it.scalarStyle == ScalarStyle.PLAIN && it.value.startsWith('+')
-            } == true
+                key.value == ".var" &&
+                scopes.first()?.key?.let {
+                    it.scalarStyle == ScalarStyle.PLAIN && it.value.startsWith('+')
+                } == true
     }
 
     private fun scalarLines(
@@ -223,10 +214,10 @@ internal class YamlSource(val original: String) {
                 val node = SnakeYaml.compose(prepared.toString(), parsedEvents)
                 if (
                     node != null &&
-                        adaptFoldedSplice(
-                            node,
-                            java.util.Collections.newSetFromMap(IdentityHashMap()),
-                        )
+                    adaptFoldedSplice(
+                        node,
+                        java.util.Collections.newSetFromMap(IdentityHashMap()),
+                    )
                 )
                     continue
                 events = parsedEvents
@@ -255,10 +246,12 @@ internal class YamlSource(val original: String) {
         return when (node) {
             is MappingNode ->
                 node.flowStyle == org.yaml.snakeyaml.DumperOptions.FlowStyle.BLOCK &&
-                    node.value.any { adaptFoldedSplice(it.valueNode, visited) }
+                        node.value.any { adaptFoldedSplice(it.valueNode, visited) }
+
             is SequenceNode ->
                 node.flowStyle == org.yaml.snakeyaml.DumperOptions.FlowStyle.BLOCK &&
-                    node.value.any { adaptFoldedSplice(it, visited) }
+                        node.value.any { adaptFoldedSplice(it, visited) }
+
             is ScalarNode -> adaptFoldedSplice(node)
             else -> false
         }
@@ -277,8 +270,8 @@ internal class YamlSource(val original: String) {
         if (
             following.none {
                 it.startsWith("$indentation- ") ||
-                    it == "$indentation-" ||
-                    it.takeWhile(Char::isWhitespace) == indentation && standaloneMarker(it) != null
+                        it == "$indentation-" ||
+                        it.takeWhile(Char::isWhitespace) == indentation && standaloneMarker(it) != null
             }
         )
             return false
@@ -295,9 +288,9 @@ internal class YamlSource(val original: String) {
                 if (originalIndex(node.startMark) in splices) node.tag = spliceTag
                 if (
                     node.tag == Tag.STR &&
-                        node.scalarStyle == ScalarStyle.PLAIN &&
-                        hasExplicitTag(node) &&
-                        node.value.windowedSequence(2).any(statements::containsKey)
+                    node.scalarStyle == ScalarStyle.PLAIN &&
+                    hasExplicitTag(node) &&
+                    node.value.windowedSequence(2).any(statements::containsKey)
                 ) {
                     val quoted =
                         ScalarNode(
@@ -312,6 +305,7 @@ internal class YamlSource(val original: String) {
                     return quoted
                 }
             }
+
             is SequenceNode -> node.value.replaceAll { prepareStatements(it, preparedNodes) }
             is MappingNode ->
                 node.value.replaceAll {
@@ -362,7 +356,8 @@ internal class YamlSource(val original: String) {
         val starts = listOf(0) + lineBreak.findAll(prepared).map { it.range.last + 1 }.toList()
         currentLines.forEachIndexed { index, line ->
             if (index !in protected && standaloneMarker(line) != null &&
-                hasSequenceNeighbor(currentLines, index)) return adaptSpliceAt(starts[index])
+                hasSequenceNeighbor(currentLines, index)
+            ) return adaptSpliceAt(starts[index])
         }
         return false
     }
@@ -380,7 +375,7 @@ internal class YamlSource(val original: String) {
                     is ScalarEvent ->
                         if (
                             flowDepth > 0 || event.scalarStyle != ScalarStyle.PLAIN ||
-                                standaloneMarker(lines[event.startMark.line]) == null
+                            standaloneMarker(lines[event.startMark.line]) == null
                         )
                             protected.addAll(scalarLines(event, lines))
                 }
@@ -397,11 +392,11 @@ internal class YamlSource(val original: String) {
             val neighbor = direction.firstOrNull {
                 val line = lines[it]
                 line.isNotBlank() && !line.trimStart().startsWith('#') &&
-                    line.takeWhile(Char::isWhitespace).length <= indent
+                        line.takeWhile(Char::isWhitespace).length <= indent
             } ?: return@any false
             val line = lines[neighbor]
             line.takeWhile(Char::isWhitespace).length == indent &&
-                (line.trimStart().let { it == "-" || it.startsWith("- ") } || standaloneMarker(line) != null)
+                    (line.trimStart().let { it == "-" || it.startsWith("- ") } || standaloneMarker(line) != null)
         }
     }
 

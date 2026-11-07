@@ -4,8 +4,8 @@ import io.microconfig.core.configtypes.ConfigType
 import io.microconfig.core.configtypes.ConfigTypeRepository
 import io.microconfig.io.FsReader
 import io.microconfig.utils.Logger.announce
-import java.io.File
 import org.yaml.snakeyaml.Yaml
+import java.io.File
 
 class CustomConfigTypeRepository(private val fsReader: FsReader, private val descriptorFile: File) :
     ConfigTypeRepository {

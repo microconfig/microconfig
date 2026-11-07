@@ -1,14 +1,7 @@
 package io.microconfig.core.properties.resolvers.placeholder.impl
 
 import io.microconfig.core.environments.EnvironmentRepository
-import io.microconfig.core.properties.DeclaringComponent
-import io.microconfig.core.properties.DeclaringComponentImpl
-import io.microconfig.core.properties.PlaceholderResolveStrategy
-import io.microconfig.core.properties.Property
-import io.microconfig.core.properties.ResolveException
-import io.microconfig.core.properties.ValueFormat
-import io.microconfig.core.properties.UnresolvedValueException
-import io.microconfig.core.properties.isUnresolvedValue
+import io.microconfig.core.properties.*
 import io.microconfig.core.properties.io.properties.PropertiesText
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.resolvers.RecursiveResolver
@@ -17,7 +10,7 @@ import io.microconfig.core.properties.resolvers.impl.MemoizingResolver
 import io.microconfig.core.properties.resolvers.impl.PropertyResolutionCache
 import io.microconfig.core.properties.resolvers.placeholder.Placeholder
 import io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders
-import java.util.Optional
+import java.util.*
 
 class PlaceholderResolver
 private constructor(
@@ -98,7 +91,7 @@ private constructor(
             if (explicitEnvironment != null) return placeholder.withEnvironment(explicitEnvironment)
             return if (
                 placeholder.environment != root.environment &&
-                    placeholder.environment in environments.profilesOf(root.environment)
+                placeholder.environment in environments.profilesOf(root.environment)
             )
                 placeholder.withEnvironment(root.environment)
             else placeholder
@@ -133,7 +126,7 @@ private constructor(
 
         private fun canBeOverridden(placeholder: Placeholder, source: DeclaringComponent): Boolean =
             placeholder.isSelfReferenced ||
-                placeholder.referencedTo(source) && placeholder.key !in nonOverridableKeys
+                    placeholder.referencedTo(source) && placeholder.key !in nonOverridableKeys
 
         private fun overrideByParents(
             placeholder: Placeholder,

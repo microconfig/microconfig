@@ -1,24 +1,20 @@
 package io.microconfig.core.properties.io.yaml.impl
 
-import io.microconfig.core.properties.ConfigFormat
+import io.microconfig.core.properties.*
 import io.microconfig.core.properties.FileBasedComponent.Companion.fileSource
-import io.microconfig.core.properties.OverrideProperty
-import io.microconfig.core.properties.Property
-import io.microconfig.core.properties.ValueFormat
-import io.microconfig.core.properties.PropertyImpl
 import io.microconfig.core.properties.io.ConfigReader
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.resolvers.expression.impl.ExpressionResolver
 import io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders
 import io.microconfig.io.FsReader
-import java.io.File
-import java.util.IdentityHashMap
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.error.MarkedYAMLException
 import org.yaml.snakeyaml.nodes.MappingNode
 import org.yaml.snakeyaml.nodes.Node
 import org.yaml.snakeyaml.nodes.ScalarNode
 import org.yaml.snakeyaml.nodes.Tag
+import java.io.File
+import java.util.*
 
 class SnakeYamlReader(private val file: File, reader: FsReader) : ConfigReader {
     private val source = YamlSource(if (file.exists()) reader.readFully(file) else "")
@@ -46,7 +42,15 @@ class SnakeYamlReader(private val file: File, reader: FsReader) : ConfigReader {
     private fun flattenDocument(configType: String, environment: String): List<Property> {
         val root = document ?: return emptyList()
         require(root is MappingNode && root.tag == Tag.MAP) {
-            "YAML configuration must contain a mapping in '${fileSource(file, root.startMark.line, true, configType, environment)}'"
+            "YAML configuration must contain a mapping in '${
+                fileSource(
+                    file,
+                    root.startMark.line,
+                    true,
+                    configType,
+                    environment
+                )
+            }'"
         }
         return flatten(
             root,
@@ -77,7 +81,7 @@ class SnakeYamlReader(private val file: File, reader: FsReader) : ConfigReader {
                 val name = source.restore(key.value)
                 if (
                     key.scalarStyle == DumperOptions.ScalarStyle.PLAIN &&
-                        PropertyImpl.isTempProperty(name)
+                    PropertyImpl.isTempProperty(name)
                 )
                     emptyList()
                 else
@@ -98,17 +102,18 @@ class SnakeYamlReader(private val file: File, reader: FsReader) : ConfigReader {
         val name = source.restore(key.value)
         if (
             key.scalarStyle == DumperOptions.ScalarStyle.PLAIN &&
-                OverrideProperty.isOverrideProperty(name)
+            OverrideProperty.isOverrideProperty(name)
         )
             return name
         if (key.tag != Tag.STR) return source.restore(YamlScalars.canonicalKey(key))
         if (key.scalarStyle == DumperOptions.ScalarStyle.PLAIN &&
-            simpleKey.matches(name) && !source.hasExplicitTag(key)) return name
+            simpleKey.matches(name) && !source.hasExplicitTag(key)
+        ) return name
         val protected =
             key.scalarStyle != DumperOptions.ScalarStyle.PLAIN &&
-                ('.' in name ||
-                    OverrideProperty.isOverrideProperty(name) ||
-                    PropertyImpl.isTempProperty(name))
+                    ('.' in name ||
+                            OverrideProperty.isOverrideProperty(name) ||
+                            PropertyImpl.isTempProperty(name))
         val style =
             if (protected) DumperOptions.ScalarStyle.DOUBLE_QUOTED
             else DumperOptions.ScalarStyle.PLAIN
@@ -125,9 +130,9 @@ class SnakeYamlReader(private val file: File, reader: FsReader) : ConfigReader {
     ): List<Property> {
         if (
             value is MappingNode &&
-                value.flowStyle == DumperOptions.FlowStyle.BLOCK &&
-                value.tag == Tag.MAP &&
-                value.value.isNotEmpty()
+            value.flowStyle == DumperOptions.FlowStyle.BLOCK &&
+            value.tag == Tag.MAP &&
+            value.value.isNotEmpty()
         ) {
             return flatten(value, "$name.", configType, environment, path)
         }
@@ -144,8 +149,8 @@ class SnakeYamlReader(private val file: File, reader: FsReader) : ConfigReader {
         val declaredIn = fileSource(file, key.startMark.line, true, configType, environment)
         val literal =
             node is ScalarNode &&
-                node.tag == Tag.STR &&
-                node.scalarStyle in
+                    node.tag == Tag.STR &&
+                    node.scalarStyle in
                     setOf(DumperOptions.ScalarStyle.LITERAL, DumperOptions.ScalarStyle.FOLDED)
         val value = valueOf(node)
         OverrideProperty.checkMultilineVarPosition(name, declaredIn)
@@ -172,7 +177,7 @@ class SnakeYamlReader(private val file: File, reader: FsReader) : ConfigReader {
             val value = source.restore(node.value)
             return if (
                 node.tag == Tag.STR &&
-                    (source.hasExplicitTag(node) ||
+                (source.hasExplicitTag(node) ||
                         value.contains('\n') && !isWholeStatement(value))
             )
                 YamlScalars.stringValue(value)
@@ -180,7 +185,7 @@ class SnakeYamlReader(private val file: File, reader: FsReader) : ConfigReader {
         }
         if (
             node.scalarStyle == DumperOptions.ScalarStyle.LITERAL ||
-                node.scalarStyle == DumperOptions.ScalarStyle.FOLDED
+            node.scalarStyle == DumperOptions.ScalarStyle.FOLDED
         ) {
             return source.restore(node.value)
         }
@@ -217,7 +222,7 @@ class SnakeYamlReader(private val file: File, reader: FsReader) : ConfigReader {
             val name = source.restore(key.value)
             if (
                 key.scalarStyle != DumperOptions.ScalarStyle.PLAIN ||
-                    !OverrideProperty.isEnvBlock(name)
+                !OverrideProperty.isEnvBlock(name)
             )
                 return@forEach
             val first = key.startMark.line
@@ -232,9 +237,9 @@ class SnakeYamlReader(private val file: File, reader: FsReader) : ConfigReader {
             directives.forEach { (line, directive) ->
                 if (
                     line > first &&
-                        line < next &&
-                        source.indentation(line) > key.startMark.column &&
-                        PropertyImpl.isTempProperty(directive)
+                    line < next &&
+                    source.indentation(line) > key.startMark.column &&
+                    PropertyImpl.isTempProperty(directive)
                 )
                     headers[line] = name
             }

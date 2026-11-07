@@ -90,8 +90,10 @@ internal object YamlPropertyPaths {
                         if (index == contentStart) {
                             tag = true
                         }
+
                     '"',
                     '\'' -> if (index == contentStart) quote = character
+
                     '[' -> brackets++
                     ']' -> brackets = (brackets - 1).coerceAtLeast(0)
                     '.' ->

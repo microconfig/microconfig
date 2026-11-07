@@ -59,8 +59,10 @@ class CustomStringApiTest {
     @ParameterizedTest
     @ValueSource(strings = ["\$1\\tail", "\\", "\${literal}", "\r\n"])
     fun insertReplacementLiterallyWithoutRescanningIt(replacement: String) {
-        assertEquals("first${replacement}second${replacement}",
-            replaceLineSeparators("first\r\nsecond\r", replacement))
+        assertEquals(
+            "first${replacement}second${replacement}",
+            replaceLineSeparators("first\r\nsecond\r", replacement)
+        )
     }
 
     companion object {

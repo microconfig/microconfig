@@ -3,18 +3,17 @@ package io.microconfig.core.properties.io.selector
 import io.microconfig.core.properties.ConfigFormat.PROPERTIES
 import io.microconfig.core.properties.ConfigFormat.YAML
 import io.microconfig.io.impl.DumpedFsReader
-import java.nio.file.Files
-import java.nio.file.Path
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import java.nio.file.Files
+import java.nio.file.Path
 
 class ConfigFormatDetectorImplTest {
-    @TempDir lateinit var directory: Path
+    @TempDir
+    lateinit var directory: Path
     private val io = ConfigIoFactory.newConfigIo(DumpedFsReader())
 
     @ParameterizedTest
@@ -24,8 +23,8 @@ class ConfigFormatDetectorImplTest {
         Files.writeString(
             file,
             "\n# header: ignored\n.var ignored: yaml\n" +
-                "  ! JVM settings: used by launcher\n! options = ignored\n!\tMore: ignored\n" +
-                "!withoutSeparator\nheap=256m\n",
+                    "  ! JVM settings: used by launcher\n! options = ignored\n!\tMore: ignored\n" +
+                    "!withoutSeparator\nheap=256m\n",
         )
 
         val reader = io.readFrom(file.toFile())

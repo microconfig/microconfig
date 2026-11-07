@@ -1,12 +1,7 @@
 package io.microconfig.core.properties.impl
 
-import io.microconfig.core.properties.ConfigFormat
+import io.microconfig.core.properties.*
 import io.microconfig.core.properties.ConfigFormat.PROPERTIES
-import io.microconfig.core.properties.DeclaringComponent
-import io.microconfig.core.properties.Property
-import io.microconfig.core.properties.PropertyImpl
-import io.microconfig.core.properties.Resolver
-import io.microconfig.core.properties.ValueFormat
 import io.microconfig.core.properties.io.properties.PropertiesText
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.io.yaml.YamlTree
@@ -24,7 +19,7 @@ class GroupedProperty(
             .toYaml(
                 properties.associate {
                     relativeKey(it) to
-                        YamlScalars.serializedValue(it)
+                            YamlScalars.serializedValue(it)
                 }
             )
 
@@ -44,7 +39,9 @@ class GroupedProperty(
 
     override fun resolveBy(resolver: Resolver, root: DeclaringComponent): Property {
         val resolved = children.map { it.resolveBy(resolver, root) }
-        return PropertyImpl.property(key, toYaml(resolved), ConfigFormat.YAML, declaringComponent,
-            ValueFormat.YAML, keyFormat)
+        return PropertyImpl.property(
+            key, toYaml(resolved), ConfigFormat.YAML, declaringComponent,
+            ValueFormat.YAML, keyFormat
+        )
     }
 }

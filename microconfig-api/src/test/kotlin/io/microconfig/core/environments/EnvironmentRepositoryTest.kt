@@ -11,7 +11,7 @@ class EnvironmentRepositoryTest {
         val parents =
             (0 until 25).associate { index ->
                 "p$index" to
-                    if (index < 2) emptyList() else listOf("p${index - 1}", "p${index - 2}")
+                        if (index < 2) emptyList() else listOf("p${index - 1}", "p${index - 2}")
             }
         val lookups = mutableMapOf<String, Int>()
         val repository = repository(parents, lookups)

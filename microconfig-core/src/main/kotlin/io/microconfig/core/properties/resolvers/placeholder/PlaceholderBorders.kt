@@ -1,6 +1,6 @@
 package io.microconfig.core.properties.resolvers.placeholder
 
-import java.util.Optional
+import java.util.*
 
 class PlaceholderBorders
 private constructor(
@@ -85,6 +85,7 @@ private constructor(
                         '"' ->
                             if (scope.expression || startsQuotedValue(text, index, start))
                                 scope.quote = character
+
                         '{' ->
                             scopes.add(
                                 DefaultScope(
@@ -95,6 +96,7 @@ private constructor(
                                     }
                                 )
                             )
+
                         '}' -> {
                             lastClosing = index
                             scopes.removeAt(scopes.lastIndex)
@@ -121,7 +123,7 @@ private constructor(
 
         private fun startsQuotedValue(text: String, index: Int, start: Int): Boolean =
             (index == start || !text[index - 1].isLetterOrDigit()) &&
-                text.indexOf(text[index], index + 1) >= 0
+                    text.indexOf(text[index], index + 1) >= 0
 
         private class DefaultScope(val expression: Boolean, var quote: Char? = null)
     }

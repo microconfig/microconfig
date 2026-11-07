@@ -1,15 +1,11 @@
 package io.microconfig.core.environments.impl
 
-import io.microconfig.core.environments.Component
-import io.microconfig.core.environments.ComponentFactory
-import io.microconfig.core.environments.ComponentGroup
-import io.microconfig.core.environments.Components
-import io.microconfig.core.environments.Environment
+import io.microconfig.core.environments.*
 import io.microconfig.core.properties.PropertiesFactory
 import io.microconfig.core.properties.repository.ComponentNotFoundException
 import io.microconfig.utils.Logger.info
 import java.io.File
-import java.util.Optional
+import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
 class EnvironmentImpl(

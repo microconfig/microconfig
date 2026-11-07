@@ -1,7 +1,7 @@
 package io.microconfig.io
 
 import java.io.File
-import java.util.Optional
+import java.util.*
 import java.util.function.Predicate
 
 interface FsReader {

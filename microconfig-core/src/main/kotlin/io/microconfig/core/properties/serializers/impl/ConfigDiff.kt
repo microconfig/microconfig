@@ -5,7 +5,6 @@ import io.microconfig.core.properties.Property
 import io.microconfig.core.properties.io.ConfigIo
 import io.microconfig.core.properties.io.ConfigReader
 import io.microconfig.core.properties.io.properties.PropertiesText
-import io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo as defaultConfigIo
 import io.microconfig.core.properties.io.selector.ConfigIoFactory.newConfigIo
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.serializers.ConfigChangeListener
@@ -15,8 +14,9 @@ import io.microconfig.utils.Logger.warn
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
-import java.util.Optional
+import java.util.*
 import java.util.function.Predicate
+import io.microconfig.core.properties.io.selector.ConfigIoFactory.configIo as defaultConfigIo
 
 class ConfigDiff(private val configIo: ConfigIo = defaultConfigIo()) : ConfigChangeListener {
     private var sourceReader: FsReader? = null

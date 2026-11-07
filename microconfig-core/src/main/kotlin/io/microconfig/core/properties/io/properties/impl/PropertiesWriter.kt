@@ -39,7 +39,7 @@ class PropertiesWriter(private val file: File) : ConfigWriter {
         val previous = keys.putIfAbsent(logicalKey, property)
         require(
             previous == null ||
-                previous.keyFormat == ConfigFormat.PROPERTIES && property.keyFormat == ConfigFormat.PROPERTIES
+                    previous.keyFormat == ConfigFormat.PROPERTIES && property.keyFormat == ConfigFormat.PROPERTIES
         ) {
             "Several properties produce the same Properties key '$logicalKey': '${previous?.key}' and '${property.key}'"
         }

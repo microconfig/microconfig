@@ -1,13 +1,7 @@
 package io.microconfig
 
-import io.microconfig.utils.Logger
 import io.microconfig.utils.IoUtils.readClasspathResource
-import java.io.ByteArrayOutputStream
-import java.io.PrintStream
-import java.nio.charset.StandardCharsets.UTF_8
-import java.io.File
-import java.net.URLClassLoader
-import java.util.concurrent.TimeUnit.SECONDS
+import io.microconfig.utils.Logger
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -17,6 +11,12 @@ import org.junit.jupiter.api.parallel.Resources
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.PrintStream
+import java.net.URLClassLoader
+import java.nio.charset.StandardCharsets.UTF_8
+import java.util.concurrent.TimeUnit.SECONDS
 
 @ResourceLock(Resources.SYSTEM_OUT)
 class ConsoleColorOptionTest {
@@ -30,8 +30,8 @@ class ConsoleColorOptionTest {
         assertEquals("warning\nsuccess\nfailure\n", logMessages("-color", "false", "-v"))
         assertEquals(
             "\u001B[33mwarning\u001B[0m\n" +
-                "\u001B[32msuccess\u001B[0m\n" +
-                "\u001B[31mfailure\u001B[0m\n",
+                    "\u001B[32msuccess\u001B[0m\n" +
+                    "\u001B[31mfailure\u001B[0m\n",
             logMessages("-v"),
         )
     }
@@ -68,8 +68,10 @@ class ConsoleColorOptionTest {
 
     private fun startCli(arguments: Array<String>): Process =
         ProcessBuilder(
-            listOf(File(System.getProperty("java.home"), "bin/java").path,
-                "-cp", runtimeClasspath(), "io.microconfig.MicroconfigMainKt") + arguments
+            listOf(
+                File(System.getProperty("java.home"), "bin/java").path,
+                "-cp", runtimeClasspath(), "io.microconfig.MicroconfigMainKt"
+            ) + arguments
         ).redirectErrorStream(true).start()
 
     private fun runtimeClasspath(): String {
