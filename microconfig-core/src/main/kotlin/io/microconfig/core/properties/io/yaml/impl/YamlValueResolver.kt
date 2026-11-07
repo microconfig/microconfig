@@ -9,6 +9,7 @@ import io.microconfig.core.properties.PropertyImpl.Companion.property
 import io.microconfig.core.properties.Resolver
 import io.microconfig.core.properties.ValueFormat
 import io.microconfig.core.properties.io.properties.PropertiesText
+import io.microconfig.core.properties.io.yaml.ExpressionResultCache
 import io.microconfig.core.properties.io.yaml.ExpressionValueCache
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.resolvers.RecursiveResolver
@@ -85,12 +86,13 @@ class YamlValueResolver internal constructor(
         source: YamlSource,
         property: Property,
         root: DeclaringComponent,
+        expressions: ScalarExpressions? = null,
     ): String {
-        if (delegate.findStatementIn(source.original).getOrNull() == null) {
+        if (findStatementIn(source.original, expressions, property, root) == null) {
             validateMappingKeys(node, property, java.util.Collections.newSetFromMap(IdentityHashMap()))
             return source.original
         }
-        return SnakeYaml.fragment(resolveNode(node, source, property, root, IdentityHashMap()))
+        return SnakeYaml.fragment(resolveNode(node, source, property, root, IdentityHashMap(), expressions))
     }
 
     private fun validateMappingKeys(node: Node, property: Property, visited: MutableSet<Node>) {
@@ -114,15 +116,16 @@ class YamlValueResolver internal constructor(
         property: Property,
         root: DeclaringComponent,
         resolved: MutableMap<Node, Node>,
+        expressions: ScalarExpressions?,
     ): Node {
         resolved[node]?.let {
             return it
         }
         return when (node) {
             is ScalarNode ->
-                resolveScalarNode(node, source, property, root).also { resolved[node] = it }
-            is SequenceNode -> resolveSequence(node, source, property, root, resolved)
-            is MappingNode -> resolveMapping(node, source, property, root, resolved)
+                resolveScalarNode(node, source, property, root, expressions).also { resolved[node] = it }
+            is SequenceNode -> resolveSequence(node, source, property, root, resolved, expressions)
+            is MappingNode -> resolveMapping(node, source, property, root, resolved, expressions)
             else -> error("Unsupported YAML node ${node.nodeId}")
         }
     }
@@ -132,16 +135,17 @@ class YamlValueResolver internal constructor(
         source: YamlSource,
         collection: Property,
         root: DeclaringComponent,
+        expressions: ScalarExpressions? = null,
     ): Node {
         val value = source.restore(node.value)
-        if (delegate.findStatementIn(value).getOrNull() == null)
+        if (findStatementIn(value, expressions, collection, root) == null)
             return if (value == node.value) node
             else ScalarNode(node.tag, value, node.startMark, node.endMark, node.scalarStyle)
         val declaration = collection.declaringComponent
         if (node.scalarStyle == ScalarStyle.LITERAL || node.scalarStyle == ScalarStyle.FOLDED) {
             val resolvedValue =
                 resolveScalar(literalProperty(collection.key, value, YAML, declaration, ValueFormat.TEXT), root,
-                    scalarStart = node.startMark?.index ?: 0)
+                    scalarStart = node.startMark?.index ?: 0, inheritedExpressions = expressions)
             return ScalarNode(
                 node.tag,
                 resolvedValue,
@@ -160,7 +164,7 @@ class YamlValueResolver internal constructor(
         val result =
             SnakeYaml.parse(
                 resolveScalar(property(collection.key, original, YAML, declaration, ValueFormat.YAML), root,
-                    scalarStart = node.startMark?.index ?: 0)
+                    scalarStart = node.startMark?.index ?: 0, inheritedExpressions = expressions)
             )
         if (!source.isSplice(node) && source.hasExplicitTag(node)) result.tag = node.tag
         return result
@@ -172,12 +176,13 @@ class YamlValueResolver internal constructor(
         quotedValue: String? = if (property.valueFormat == ValueFormat.YAML)
             YamlScalars.quotedTextOrNull(property.value) else null,
         scalarStart: Int = 0,
+        inheritedExpressions: ScalarExpressions? = null,
     ): String {
         val yamlSyntax = property.valueFormat == ValueFormat.YAML
         val quoted = quotedValue != null
         val original = quotedValue ?: property.value
-        val expressions = expressionCache?.let { ScalarExpressions(original, scalarStart, it) }
-        val result = StringBuilder(expressions?.value ?: original)
+        val expressions = inheritedExpressions ?: expressionCache?.let { ScalarExpressions(original, scalarStart, it) }
+        val result = StringBuilder(if (inheritedExpressions == null) expressions?.value ?: original else original)
         var plainText = false
         var stringValue = quoted
         while (true) {
@@ -204,7 +209,7 @@ class YamlValueResolver internal constructor(
             )
             val wholeValue = current.startIndex == 0 && current.endIndex == result.length
             if (yamlSyntax && !quoted && wholeValue && !current.isPlainText) {
-                resolveCollectionValue(value, property, root)?.let { return it }
+                resolveCollectionValue(value, property, root, expressions)?.let { return it }
             }
             if (wholeValue) {
                 plainText = false
@@ -239,7 +244,9 @@ class YamlValueResolver internal constructor(
         root: DeclaringComponent,
     ): RecursiveResolver.Statement? {
         val current = delegate.findStatementIn(value).getOrNull()
-        val marked = expressions?.findStatementIn(value) { resolveExpression(it, property, root) }
+        val marked = expressions?.findStatementIn(value) { expression, cacheResult ->
+            resolveExpression(expression, property, root, expressions, cacheResult)
+        }
             ?: return current
         if (current == null) return marked
         val placeholder = value.subSequence(current.startIndex, current.endIndex).startsWith("\${")
@@ -260,15 +267,19 @@ class YamlValueResolver internal constructor(
         property: Property,
         root: DeclaringComponent,
         expressions: ScalarExpressions? = null,
+        cacheResult: ExpressionResultCache? = null,
     ): String {
         val result = StringBuilder(expression)
         while (true) {
             val current =
                 findStatementIn(result, expressions, property, root)
                     ?: return result.toString()
-            val value = current.resolveFor(property.declaringComponent, root, ValueFormat.YAML)
-            if (current.startIndex == 0 && current.endIndex == result.length)
-                return value
+            if (current.startIndex == 0 && current.endIndex == result.length) {
+                val evaluate = { current.resolveFor(property.declaringComponent, root, ValueFormat.YAML) }
+                return cacheResult?.invoke(result.toString(), evaluate) ?: evaluate()
+            }
+            val resolved = current.resolveFor(property.declaringComponent, root, ValueFormat.YAML)
+            val value = resolveCachedExpressionsInArgument(resolved, property, root, expressions)
             val quote = expressionQuoteAt(result, current.startIndex)
             result.replace(
                 current.startIndex,
@@ -276,6 +287,17 @@ class YamlValueResolver internal constructor(
                 expressionValue(value, current, quote),
             )
         }
+    }
+
+    private fun resolveCachedExpressionsInArgument(
+        value: String,
+        property: Property,
+        root: DeclaringComponent,
+        expressions: ScalarExpressions?,
+    ): String {
+        if (expressions?.containsMarkedExpression(value) != true) return value
+        val text = literalProperty(property.key, value, YAML, property.declaringComponent, ValueFormat.TEXT)
+        return resolveScalar(text, root, inheritedExpressions = expressions)
     }
 
     private fun expressionValue(
@@ -314,12 +336,13 @@ class YamlValueResolver internal constructor(
         value: String,
         property: Property,
         root: DeclaringComponent,
+        expressions: ScalarExpressions?,
     ): String? {
         if (YamlScalars.isPlainScalar(value)) return null
         val source = YamlSource(value)
         val node = source.compose()
         if (node !is MappingNode && node !is SequenceNode) return null
-        return resolveCollection(node, source, property, root)
+        return resolveCollection(node, source, property, root, expressions)
     }
 
     private fun resolveSequence(
@@ -328,11 +351,12 @@ class YamlValueResolver internal constructor(
         property: Property,
         root: DeclaringComponent,
         resolved: MutableMap<Node, Node>,
+        expressions: ScalarExpressions?,
     ): SequenceNode {
         val result = SequenceNode(node.tag, mutableListOf(), node.flowStyle)
         resolved[node] = result
         node.value.forEach { child ->
-            val value = resolveNode(child, source, property, root, resolved)
+            val value = resolveNode(child, source, property, root, resolved, expressions)
             if (source.isSplice(child)) {
                 require(value is SequenceNode) {
                     "List splice must resolve to a YAML sequence in ${property.declaringComponent}"
@@ -349,17 +373,18 @@ class YamlValueResolver internal constructor(
         property: Property,
         root: DeclaringComponent,
         resolved: MutableMap<Node, Node>,
+        expressions: ScalarExpressions?,
     ): MappingNode {
         val result = MappingNode(node.tag, mutableListOf(), node.flowStyle)
         resolved[node] = result
         val keys = mutableSetOf<Pair<Tag, String>>()
         node.value.forEach { entry ->
-            val key = resolveNode(entry.keyNode, source, property, root, resolved)
+            val key = resolveNode(entry.keyNode, source, property, root, resolved, expressions)
             checkMappingKey(key, keys, property)
             result.value.add(
                 NodeTuple(
                     key,
-                    resolveNode(entry.valueNode, source, property, root, resolved),
+                    resolveNode(entry.valueNode, source, property, root, resolved, expressions),
                 )
             )
         }

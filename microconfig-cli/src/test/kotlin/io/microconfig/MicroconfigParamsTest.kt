@@ -4,6 +4,8 @@ import io.microconfig.MicroconfigParams.Companion.parse
 import java.io.File
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 
 class MicroconfigParamsTest {
     private val params =
@@ -55,6 +57,14 @@ class MicroconfigParamsTest {
     fun services() {
         assertEquals(listOf("s1", "s2"), params.services())
         assertEquals(emptyList<String>(), empty.services())
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["-s", "-g"])
+    fun rejectFilterWithoutAValue(option: String) {
+        val error = assertThrows(IllegalArgumentException::class.java) { parse("-e", "dev", option) }
+
+        assertEquals("$option requires at least one name", error.message)
     }
 
     @Test

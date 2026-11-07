@@ -4,6 +4,8 @@ import io.microconfig.io.FsReader
 import io.microconfig.io.impl.DumpedFsReader
 import io.microconfig.core.properties.PlaceholderResolveStrategy
 import io.microconfig.core.properties.PropertiesRepository
+import io.microconfig.core.properties.ConfigFormat
+import io.microconfig.core.properties.PropertyImpl
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
@@ -22,6 +24,49 @@ import org.yaml.snakeyaml.Yaml
 
 class ParallelBuildTest {
     @TempDir lateinit var root: Path
+
+    @Test
+    fun keepDynamicDefaultsConsistentAndIsolatedInParallelStreams() {
+        val names = (0..31).map { "service$it" }
+        write("envs/dev.yaml", "group:\n  components: [${names.joinToString(", ") { "$it:original" }}]\n")
+        write("components/original/application.yaml", """
+            gate: ${'$'}{gate@value}
+            stamp: ${'$'}{this@missing:#{#currentTimeMillis()}}-${'$'}{this@name}
+            items: ${'$'}{this@missingItems:[${'$'}{this@stamp}, ${'$'}{this@stamp}]}
+            """.trimIndent() + "\n" +
+            (0..7).joinToString("") { "ref$it: \${this@stamp}\n" })
+        val threads = ConcurrentHashMap.newKeySet<Thread>()
+        val arrived = CountDownLatch(2)
+        val strategy = PlaceholderResolveStrategy { component, key, _, _, _ ->
+            if (component != "gate") Optional.empty()
+            else {
+                threads.add(Thread.currentThread())
+                arrived.countDown()
+                check(arrived.await(5, SECONDS)) { "Expected parallel component resolution" }
+                Optional.of(PropertyImpl.property(key, "ready", ConfigFormat.PROPERTIES, null))
+            }
+        }
+        val configured = Microconfig.searchConfigsIn(root.toFile()).withAdditionalPlaceholderResolvers(listOf(strategy))
+        val pool = ForkJoinPool(4)
+        try {
+            val built = pool.submit<io.microconfig.core.properties.Properties> {
+                MicroconfigRunner(configured).buildProperties("dev", emptyList(), emptyList())
+            }.get(20, SECONDS)
+            val applications = built.asTypedProperties().filter { it.configType.typeName == "app" }
+
+            assertTrue(threads.size > 1)
+            assertEquals(names, applications.map { it.declaringComponent.component })
+            applications.forEach { properties ->
+                val values = properties.propertiesAsKeyValue
+                val stamp = Yaml().load<String>(values.getValue("stamp"))
+                assertTrue(stamp.endsWith("-${properties.declaringComponent.component}"), stamp)
+                (0..7).forEach { assertEquals(stamp, Yaml().load<String>(values.getValue("ref$it"))) }
+                assertEquals(listOf(stamp, stamp), Yaml().load<List<String>>(values.getValue("items")))
+            }
+        } finally {
+            pool.shutdownNow()
+        }
+    }
 
     @Test
     fun preserveSharedIncludesProfilesAliasesCrossEnvironmentReferencesAndRebuildDiffs() {

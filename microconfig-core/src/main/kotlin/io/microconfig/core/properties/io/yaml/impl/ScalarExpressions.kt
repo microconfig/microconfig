@@ -1,58 +1,61 @@
 package io.microconfig.core.properties.io.yaml.impl
 
 import io.microconfig.core.properties.DeclaringComponent
+import io.microconfig.core.properties.io.yaml.ExpressionResultCache
 import io.microconfig.core.properties.io.yaml.ExpressionValueCache
 import io.microconfig.core.properties.resolvers.RecursiveResolver
 import io.microconfig.core.properties.resolvers.expression.impl.ExpressionResolver
 import io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders
 import java.util.regex.MatchResult
 
-/** Keeps the identity of independent expressions while placeholders change scalar offsets. */
+/** Keeps expression identities while placeholders change scalar offsets and choose defaults. */
 internal class ScalarExpressions(
     original: String,
     private val scalarStart: Int,
     private val cache: ExpressionValueCache,
 ) {
-    private val expressions = linkedMapOf<String, Pair<Int, String>>()
-    val value: String = markIndependentExpressions(original)
+    private val expressions = linkedMapOf<String, MarkedExpression>()
+    val value: String = markExpressions(original)
 
-    private fun markIndependentExpressions(original: String): String {
+    fun findStatementIn(
+        value: CharSequence,
+        evaluate: (String, ExpressionResultCache?) -> String,
+    ): RecursiveResolver.Statement? {
+        val marker = findMarker(value) ?: return null
+        return cachedStatement(marker, evaluate)
+    }
+
+    fun containsMarkedExpression(value: String): Boolean = expressions.keys.any(value::contains)
+
+    private fun markExpressions(original: String): String {
         if ("#{" !in original) return original
-        val statements = independentExpressions(original)
-        if (statements.isEmpty()) return original
+        val ranges = expressionRanges(original)
+        if (ranges.isEmpty()) return original
         val prefix = markerPrefix(original)
-        val result = StringBuilder(original)
-        statements.asReversed().forEach { statement ->
-            val marker = "$prefix${statement.start()}}"
-            expressions[marker] = statement.start() to statement.group()
-            result.replace(statement.start(), statement.end(), marker)
+        ranges.forEach { range ->
+            val raw = original.substring(range.first, range.last + 1)
+            val independent = PlaceholderBorders.findPlaceholderOrNull(raw) == null
+            val children = outermost(ranges.filter { it != range && it.first >= range.first && it.last <= range.last })
+            val prepared = if (independent) raw else replaceExpressions(raw, children, prefix, range.first)
+            expressions["$prefix${range.first}}"] = MarkedExpression(range.first, prepared, independent)
         }
-        return result.toString()
+        return replaceExpressions(original, outermost(ranges), prefix, 0)
     }
 
-    private fun independentExpressions(value: String): List<MatchResult> {
-        val placeholders = placeholderRanges(value)
-        val candidates = ExpressionResolver.expressionsIn(value).toList()
-            .filter { expression ->
-                placeholders.none { it.first < expression.end() && expression.start() <= it.last }
-            }
-            .sortedWith(compareBy<MatchResult> { it.start() }.thenByDescending { it.end() })
-        val selected = mutableListOf<MatchResult>()
-        candidates.forEach { expression ->
-            if (selected.isEmpty() || expression.start() >= selected.last().end()) selected.add(expression)
-        }
-        return selected
-    }
-
-    private fun placeholderRanges(value: String): List<IntRange> {
-        val ranges = mutableListOf<IntRange>()
+    private fun expressionRanges(value: String): List<IntRange> {
+        val ranges = linkedSetOf<IntRange>()
+        addExpressions(value, 0, ranges)
         var start = value.indexOf("\${")
         while (start >= 0) {
             val end = PlaceholderBorders.endOfPlaceholder(value, start)
-            if (end > start) ranges.add(start until end)
-            start = value.indexOf("\${", if (end > start) end else start + 2)
+            if (end > start) addExpressions(value.substring(start, end), start, ranges)
+            start = value.indexOf("\${", start + 2)
         }
-        return ranges
+        return ranges.toList()
+    }
+
+    private fun addExpressions(value: String, offset: Int, ranges: MutableSet<IntRange>) {
+        ExpressionResolver.expressionsIn(value).forEach { ranges.add(offset + it.start() until offset + it.end()) }
     }
 
     private fun markerPrefix(value: String): String {
@@ -61,17 +64,39 @@ internal class ScalarExpressions(
         return prefix
     }
 
-    fun findStatementIn(value: CharSequence, evaluate: (String) -> String): RecursiveResolver.Statement? {
-        if (expressions.isEmpty()) return null
-        val marker = ExpressionResolver.expressionsIn(value).filter { it.group() in expressions }
-            .findFirst().orElse(null) ?: return null
-        val (position, expression) = expressions.getValue(marker.group())
+    private fun outermost(ranges: List<IntRange>): List<IntRange> =
+        ranges.filter { range ->
+            ranges.none { it != range && it.first <= range.first && it.last >= range.last }
+        }.sortedBy { it.first }
+
+    private fun replaceExpressions(value: String, ranges: List<IntRange>, prefix: String, offset: Int): String {
+        val result = StringBuilder(value)
+        ranges.asReversed().forEach { range ->
+            result.replace(range.first - offset, range.last + 1 - offset, "$prefix${range.first}}")
+        }
+        return result.toString()
+    }
+
+    private fun findMarker(value: CharSequence): MatchResult? =
+        ExpressionResolver.expressionsIn(value).filter { it.group() in expressions }.findFirst().orElse(null)
+
+    private fun cachedStatement(
+        marker: MatchResult,
+        evaluate: (String, ExpressionResultCache?) -> String,
+    ): RecursiveResolver.Statement {
+        val expression = expressions.getValue(marker.group())
+        val cacheResult: ExpressionResultCache = { expanded, calculate ->
+            cache.resolve(scalarStart, expression.position, expanded, calculate)
+        }
         return object : RecursiveResolver.Statement {
             override val startIndex = marker.start()
             override val endIndex = marker.end()
 
             override fun resolveFor(sourceOfValue: DeclaringComponent?, root: DeclaringComponent?): String =
-                cache.resolve(scalarStart, position, expression) { evaluate(expression) }
+                if (expression.independent) cacheResult(expression.value) { evaluate(expression.value, null) }
+                else evaluate(expression.value, cacheResult)
         }
     }
+
+    private data class MarkedExpression(val position: Int, val value: String, val independent: Boolean)
 }

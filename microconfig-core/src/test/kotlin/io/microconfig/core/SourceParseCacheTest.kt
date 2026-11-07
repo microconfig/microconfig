@@ -40,6 +40,22 @@ class SourceParseCacheTest {
     }
 
     @Test
+    fun resolveSharedIncludeComponentNameForEachRoot() {
+        write("envs/dev.yaml", "group:\n  components: [first, second, third]\n")
+        write("components/first/application.yaml", "#include shared\n")
+        write("components/second/application.yaml", "#include shared\n")
+        write("components/third/application.yaml", "#include shared\n")
+        write("components/shared/application.yaml", "name: \${this@name}\n")
+
+        build()
+
+        assertEquals(mapOf("name" to "first"), output("first"))
+        assertEquals(mapOf("name" to "second"), output("second"))
+        assertEquals(mapOf("name" to "third"), output("third"))
+        assertEquals(1, reads[root.resolve("components/shared/application.yaml").toFile().canonicalFile])
+    }
+
+    @Test
     fun keepIncludeTraversalSeparateForEachRoot() {
         write("envs/dev.yaml", "group:\n  components: [warmup, app]\n")
         write("components/warmup/application.yaml", "#include right\n")

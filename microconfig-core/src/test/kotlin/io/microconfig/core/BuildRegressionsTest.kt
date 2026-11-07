@@ -589,6 +589,21 @@ class BuildRegressionsTest {
     }
 
     @ParameterizedTest
+    @ValueSource(strings = ["yaml", "properties"])
+    fun reuseResolvedDynamicDefaultsAcrossReferences(extension: String) {
+        val separator = if (extension == "yaml") ": " else "="
+        write("components/app/application.$extension",
+            "stamp$separator\${this@missing:#{#currentTimeMillis()}}\n" +
+                (0..7).joinToString("") { "ref$it$separator\${this@stamp}\n" })
+
+        build()
+
+        val text = Files.readString(output("application.$extension"))
+        val result: Map<*, *> = if (extension == "yaml") Yaml().load(text) else properties(text)
+        (0..7).forEach { assertEquals(result["stamp"], result["ref$it"]) }
+    }
+
+    @ParameterizedTest
     @ValueSource(strings = ["this", "c"])
     fun resolveSelfPlaceholdersUsingEachReferenceChain(component: String) {
         write("components/app/application.yaml", "p1: \${a@v}\np2: \${b@v}\n")

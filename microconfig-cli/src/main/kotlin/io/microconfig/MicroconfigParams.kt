@@ -8,9 +8,15 @@ class MicroconfigParams(private val parser: CommandLineParamParser) {
 
     fun destinationDir(): String = parser.value("d") ?: "build"
 
-    fun groups(): List<String> = parser.listValue("g")
+    fun groups(): List<String> = filterValue("g")
 
-    fun services(): List<String> = parser.listValue("s")
+    fun services(): List<String> = filterValue("s")
+
+    private fun filterValue(key: String): List<String> {
+        val names = parser.listValue(key)
+        require(!parser.contains(key) || names.isNotEmpty()) { "-$key requires at least one name" }
+        return names
+    }
 
     fun stacktrace(): Boolean = parser.booleanValue("stacktrace")
 
@@ -40,12 +46,17 @@ class MicroconfigParams(private val parser: CommandLineParamParser) {
 
     companion object {
         fun parse(vararg args: String): MicroconfigParams =
-            MicroconfigParams(CommandLineParamParser.parse(*args))
+            parse(args) {}
 
         internal fun parse(
             args: Array<out String>,
             beforeValidation: (MicroconfigParams) -> Unit,
-        ): MicroconfigParams =
-            MicroconfigParams(CommandLineParamParser.parse(args) { beforeValidation(MicroconfigParams(it)) })
+        ): MicroconfigParams {
+            val parser = CommandLineParamParser.parse(args) { beforeValidation(MicroconfigParams(it)) }
+            val params = MicroconfigParams(parser)
+            params.groups()
+            params.services()
+            return params
+        }
     }
 }

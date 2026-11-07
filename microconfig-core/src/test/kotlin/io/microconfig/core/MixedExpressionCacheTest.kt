@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
+import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.Mockito.mock
 import org.yaml.snakeyaml.Yaml
 
@@ -33,10 +34,15 @@ class MixedExpressionCacheTest {
                 object : RecursiveResolver.Statement {
                     override val startIndex = statement.startIndex
                     override val endIndex = statement.endIndex
-                    override fun resolveFor(sourceOfValue: DeclaringComponent?, root: DeclaringComponent?): String =
-                        if (line.subSequence(startIndex, endIndex).toString() == "#{next}")
-                            evaluations.incrementAndGet().toString()
-                        else statement.resolveFor(sourceOfValue, root)
+                    override fun resolveFor(sourceOfValue: DeclaringComponent?, root: DeclaringComponent?): String {
+                        val expression = line.subSequence(startIndex, endIndex).toString()
+                        return when {
+                            expression == "#{next}" -> evaluations.incrementAndGet().toString()
+                            expression.startsWith("#{next + ") -> delegate.resolve(
+                                expression.replaceFirst("next", evaluations.incrementAndGet().toString()), sourceOfValue, root)
+                            else -> statement.resolveFor(sourceOfValue, root)
+                        }
+                    }
                 }
             }
     }
@@ -59,6 +65,157 @@ class MixedExpressionCacheTest {
         assertEquals("1-app", decoded(direct, format))
         assertEquals("1-app", reference("second", "value"))
         assertEquals("1-app", reference("app", "stamp"))
+        assertEquals(1, evaluations.get())
+    }
+
+    @ParameterizedTest
+    @EnumSource(ValueFormat::class)
+    fun reuseDefaultExpressionsAcrossDirectAndNestedReferences(format: ValueFormat) {
+        val stamp = property("app", "stamp", "\${this@missing:#{next}}-stamp", format)
+        property("first", "value", "\${app@stamp}")
+        property("second", "value", "\${first@value}")
+
+        assertEquals("1-stamp", decoded(stamp.resolveBy(resolver, context).value, format))
+        assertEquals("1-stamp", reference("second", "value"))
+        assertEquals("1-stamp", reference("app", "stamp"))
+        assertEquals(1, evaluations.get())
+    }
+
+    @Test
+    fun reuseExpressionsInsideNestedDefaults() {
+        val stamp = property("app", "stamp", "\${this@missing:\${this@alsoMissing:#{next}}}")
+
+        assertEquals("1", stamp.resolveBy(resolver, context).value)
+        assertEquals("1", reference("app", "stamp"))
+        assertEquals(1, evaluations.get())
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = [
+        "\${this@missing:[#{next}, #{next}]}",
+        "[\${this@missing:#{next}}, \${this@missing:#{next}}]",
+        "\${this@missing:[\${this@nested:#{next}}, #{next}]}",
+    ])
+    fun keepDefaultExpressionOccurrencesDistinctInsideCollections(value: String) {
+        val stamp = property("app", "stamp", value, ValueFormat.YAML)
+        val expected = listOf(1, 2)
+
+        assertEquals(expected, Yaml().load<List<Any>>(stamp.resolveBy(resolver, context).value))
+        assertEquals(expected, Yaml().load<List<Any>>(reference("app", "stamp")))
+        assertEquals(2, evaluations.get())
+    }
+
+    @Test
+    fun reuseExpressionsInsideAMappingDefault() {
+        val stamp = property("app", "stamp", "\${this@missing:{first: #{next}, second: #{next}}}", ValueFormat.YAML)
+        val expected = mapOf("first" to 1, "second" to 2)
+
+        assertEquals(expected, Yaml().load<Map<String, Any>>(stamp.resolveBy(resolver, context).value))
+        assertEquals(expected, Yaml().load<Map<String, Any>>(reference("app", "stamp")))
+        assertEquals(2, evaluations.get())
+    }
+
+    @Test
+    fun keepDefaultsLazyAfterAnEarlierReferenceDidNotUseThem() {
+        property("shared", "stamp", "\${this@label:#{next}}")
+        property("first", "value", "\${shared@stamp}")
+        property("first", "label", "present")
+        property("second", "value", "\${shared@stamp}")
+        property("third", "value", "\${shared@stamp}")
+
+        assertEquals("present", reference("first", "value"))
+        assertEquals(0, evaluations.get())
+        assertEquals("1", reference("second", "value"))
+        assertEquals("1", reference("third", "value"))
+        assertEquals(1, evaluations.get())
+    }
+
+    @Test
+    fun preserveContextualPlaceholdersInsideCachedDefaults() {
+        property("shared", "stamp", "\${this@missing:#{next}-\${this@label}}")
+        property("first", "value", "\${shared@stamp}")
+        property("second", "value", "\${shared@stamp}")
+        property("first", "label", "A")
+        property("second", "label", "B")
+
+        assertEquals("1-A", reference("first", "value"))
+        assertEquals("1-B", reference("second", "value"))
+        assertEquals(1, evaluations.get())
+    }
+
+    @Test
+    fun preserveContextDependentExpressionsInsideDefaults() {
+        property("shared", "stamp", "\${this@missing:#{'\${this@label}'.toUpperCase()}}")
+        property("first", "value", "\${shared@stamp}")
+        property("second", "value", "\${shared@stamp}")
+        property("first", "label", "a")
+        property("second", "label", "b")
+
+        assertEquals("A", reference("first", "value"))
+        assertEquals("B", reference("second", "value"))
+    }
+
+    @Test
+    fun cacheDefaultExpressionsByTheirResolvedArguments() {
+        property("shared", "stamp", "\${this@missing:#{next + '-' + '\${this@label}'}}")
+        property("first", "value", "\${shared@stamp}")
+        property("second", "value", "\${shared@stamp}")
+        property("third", "value", "\${shared@stamp}")
+        property("first", "label", "A")
+        property("second", "label", "B")
+        property("third", "label", "A")
+
+        assertEquals("1-A", reference("first", "value"))
+        assertEquals("2-B", reference("second", "value"))
+        assertEquals("1-A", reference("third", "value"))
+        assertEquals(2, evaluations.get())
+    }
+
+    @Test
+    fun cacheNestedDefaultExpressionsWithoutMixingContextualArguments() {
+        property("shared", "stamp", "\${this@missing:#{#{next} + '-' + '\${this@label}'}}")
+        property("first", "value", "\${shared@stamp}")
+        property("second", "value", "\${shared@stamp}")
+        property("first", "label", "A")
+        property("second", "label", "B")
+
+        assertEquals("1-A", reference("first", "value"))
+        assertEquals("1-B", reference("second", "value"))
+        assertEquals(1, evaluations.get())
+    }
+
+    @Test
+    fun cacheExpressionsInsideDefaultsNestedInOtherExpressions() {
+        property("shared", "stamp", "\${this@missing:#{\${this@alsoMissing:#{next}} + '-' + '\${this@label}'}}")
+        property("first", "value", "\${shared@stamp}")
+        property("second", "value", "\${shared@stamp}")
+        property("first", "label", "A")
+        property("second", "label", "B")
+
+        assertEquals("1-A", reference("first", "value"))
+        assertEquals("1-B", reference("second", "value"))
+        assertEquals(1, evaluations.get())
+    }
+
+    @Test
+    fun resolveDefaultExpressionsBeforeUsingThemAsQuotedArguments() {
+        val stamp = property("app", "stamp", "#{'\${this@missing:#{next}}'.length()}")
+
+        assertEquals("1", stamp.resolveBy(resolver, context).value)
+        assertEquals("1", reference("app", "stamp"))
+        assertEquals(1, evaluations.get())
+    }
+
+    @Test
+    fun preserveGeneratedPlaceholdersInsideDefaults() {
+        property("shared", "stamp", "\${this@missing:#{next}-#{'$' + '{this@label}'}}")
+        property("first", "value", "\${shared@stamp}")
+        property("second", "value", "\${shared@stamp}")
+        property("first", "label", "A")
+        property("second", "label", "B")
+
+        assertEquals("1-A", reference("first", "value"))
+        assertEquals("1-B", reference("second", "value"))
         assertEquals(1, evaluations.get())
     }
 
@@ -143,9 +300,15 @@ class MixedExpressionCacheTest {
         assertEquals(2, evaluations.get())
     }
 
-    @Test
-    fun evaluateMixedPropertyExpressionsOnceUnderConcurrentCacheMisses() {
-        val stamp = property("app", "stamp", "#{next}-\${this@label}")
+    @ParameterizedTest
+    @ValueSource(strings = [
+        "#{next}-\${this@label}",
+        "\${this@missing:#{next}}-\${this@label}",
+        "\${this@missing:#{next + '-' + '\${this@label}'}}",
+        "\${this@missing:#{#{next} + '-' + '\${this@label}'}}",
+    ])
+    fun evaluateMixedPropertyExpressionsOnceUnderConcurrentCacheMisses(value: String) {
+        val stamp = property("app", "stamp", value)
         property("app", "label", "app")
         val pool = Executors.newFixedThreadPool(8)
         val ready = CountDownLatch(8)
