@@ -88,7 +88,8 @@ class BuildOutputTest {
     }
 
     @Test
-    fun allowIdenticalTemplateContentsFromDifferentSources() {
+    fun rejectDuplicateTemplateDestinationsEvenWhenContentsMatch() {
+        previousConfig()
         write(
             "components/app/application.yaml",
             "mc.file.t: \${this@configDir}/one.txt -> shared.txt\n",
@@ -99,8 +100,9 @@ class BuildOutputTest {
         )
         write("components/app/one.txt", "identical")
         write("components/app/two.txt", "identical")
-        build()
-        assertEquals("identical", Files.readString(output("shared.txt")))
+        assertThrows(IllegalArgumentException::class.java) { build() }
+        assertEquals("value: old\n", Files.readString(output("application.yaml")))
+        assertFalse(Files.exists(output("shared.txt")))
     }
 
     @Test
@@ -131,7 +133,8 @@ class BuildOutputTest {
     }
 
     @Test
-    fun compareSharedConfigDestinationOncePerBuild() {
+    fun rejectSharedConfigDestinationsBeforeWriting() {
+        previousConfig()
         write(
             "microconfig.yaml",
             """
@@ -144,18 +147,12 @@ class BuildOutputTest {
                   resultFileName: application
             """.trimIndent(),
         )
-        val serializer = runner().toFiles()
-        listOf("old" to null, "new" to "old -> new", "latest" to "new -> latest", "latest" to null)
-            .forEach { (value, change) ->
-                write("components/app/config.one", "value: $value\n")
-                write("components/app/config.two", "value: $value\n")
+        write("components/app/config.one", "value: same\n")
+        write("components/app/config.two", "value: same\n")
 
-                runner().buildProperties("dev", emptyList(), emptyList()).save(serializer)
-
-                assertEquals("value: $value\n", Files.readString(output("application.yaml")))
-                if (change == null) assertFalse(Files.exists(output("diff-application.yaml")))
-                else assertEquals("value: $change\n", Files.readString(output("diff-application.yaml")))
-            }
+        assertThrows(IllegalArgumentException::class.java) { build() }
+        assertEquals("value: old\n", Files.readString(output("application.yaml")))
+        assertFalse(Files.exists(output("diff-application.yaml")))
     }
 
     @Test
@@ -175,42 +172,37 @@ class BuildOutputTest {
 
     @ParameterizedTest
     @ValueSource(strings = ["yaml", "properties"])
-    fun capturePreviousConfigBeforeAnotherTypeCopiesAnIdenticalTemplate(extension: String) {
+    fun rejectTemplateAndGeneratedConfigSharingADestination(extension: String) {
         val separator = if (extension == "yaml") ": " else "="
         write(
             "components/app/application.yaml",
             "mc.file.t: \${this@configDir}/payload.txt -> process.$extension\n",
         )
-        val serializer = runner().toFiles()
-        listOf("old" to null, "new" to "old -> new", "new" to null).forEach { (value, change) ->
-            write("components/app/payload.txt", "value$separator$value" + if (extension == "yaml") "\n" else "")
-            write("components/app/config.proc", "value$separator$value")
+        Files.createDirectories(output("process.$extension").parent)
+        Files.writeString(output("process.$extension"), "value${separator}old\n")
+        write("components/app/payload.txt", "value${separator}new" + if (extension == "yaml") "\n" else "")
+        write("components/app/config.proc", "value${separator}new")
 
-            runner().buildProperties("dev", emptyList(), emptyList()).save(serializer)
-
-            assertEquals("value$separator$value", Files.readString(output("process.$extension")).trim())
-            val diff = output("diff-process.$extension")
-            if (change == null) assertFalse(Files.exists(diff))
-            else assertEquals("value$separator$change", Files.readString(diff).trim())
-        }
+        assertThrows(IllegalArgumentException::class.java) { build() }
+        assertEquals("value${separator}old\n", Files.readString(output("process.$extension")))
+        assertFalse(Files.exists(output("diff-process.$extension")))
     }
 
     @Test
-    fun capturePreviousConfigBeforeAnotherComponentCopiesAnIdenticalTemplate() {
+    fun rejectTemplateAndAnotherComponentSharingADestination() {
         write("envs/dev.yaml", "group:\n  components: [app, worker]\n")
         write(
             "components/app/application.yaml",
             "mc.file.t: \${this@configDir}/payload.txt -> \${worker@resultDir}/application.yaml\n",
         )
-        write("components/app/payload.txt", "value: old\n")
-        write("components/worker/application.yaml", "value: old\n")
-        build()
+        Files.createDirectories(destination.resolve("worker"))
+        Files.writeString(destination.resolve("worker/application.yaml"), "value: old\n")
         write("components/app/payload.txt", "value: new\n")
         write("components/worker/application.yaml", "value: new\n")
 
-        build()
-
-        assertEquals("value: old -> new\n", Files.readString(destination.resolve("worker/diff-application.yaml")))
+        assertThrows(IllegalArgumentException::class.java) { build() }
+        assertEquals("value: old\n", Files.readString(destination.resolve("worker/application.yaml")))
+        assertFalse(Files.exists(destination.resolve("worker/diff-application.yaml")))
     }
 
     @Test
@@ -308,21 +300,21 @@ class BuildOutputTest {
 
     @ParameterizedTest
     @ValueSource(booleans = [false, true])
-    fun preserveCurrentDiffWhenATemplateAndAnotherTypeShareTheConfig(reverse: Boolean) {
+    fun rejectDuplicateConfigAndTemplateDestinationsInEitherOrder(reverse: Boolean) {
         val types = listOf("first", "second").let { if (reverse) it.reversed() else it }
         write("microconfig.yaml", "configTypes:\n" + types.joinToString("") { type ->
             "  - $type:\n      sourceExtensions: [.$type]\n      resultFileName: settings\n"
         })
         write("components/app/config.second", "mc.file.t: \${this@configDir}/template.txt -> settings.yaml\n")
-        write("components/app/config.first", "value: old\n")
-        write("components/app/template.txt", "value: old\n")
-        build()
+        Files.createDirectories(output("settings.yaml").parent)
+        Files.writeString(output("settings.yaml"), "value: old\n")
+        Files.writeString(output("diff-settings.yaml"), "previous diff")
         write("components/app/config.first", "value: new\n")
         write("components/app/template.txt", "value: new\n")
 
-        build()
-
-        assertEquals("value: old -> new\n", Files.readString(output("diff-settings.yaml")))
+        assertThrows(IllegalArgumentException::class.java) { build() }
+        assertEquals("value: old\n", Files.readString(output("settings.yaml")))
+        assertEquals("previous diff", Files.readString(output("diff-settings.yaml")))
     }
 
     @Test

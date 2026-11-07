@@ -17,8 +17,9 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.ForkJoinPool
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit.SECONDS
-import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.BiConsumer
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -31,34 +32,40 @@ class YamlWriterConcurrencyTest {
     @TempDir lateinit var directory: Path
 
     @Test
-    fun serializePreparedOutputsSafelyAndNotifyOnceWhenCalledConcurrently() {
+    fun serializeDistinctPreparedOutputsConcurrentlyAndNotifyEachOnce() {
         val base = newConfigIo(DumpedFsReader())
-        val active = AtomicInteger()
-        val notified = AtomicInteger()
+        val entered = CountDownLatch(2)
+        val notified = ConcurrentHashMap<File, Int>()
         val io = object : ConfigIo by base {
             override fun writeTo(file: File): ConfigWriter {
                 val writer = base.writeTo(file)
                 return object : ConfigWriter by writer {
                     override fun write(properties: Collection<Property>) {
-                        assertEquals(1, active.incrementAndGet(), "Writes on one prepared serializer must not overlap")
-                        try { writer.write(properties) } finally { active.decrementAndGet() }
+                        entered.countDown()
+                        assertTrue(entered.await(5, SECONDS), "Distinct files must write concurrently")
+                        writer.write(properties)
                     }
                 }
             }
         }
-        val property = PropertyImpl.property("value", "complete", YAML, null)
-        val unit = TypedPropertiesImpl(APPLICATION, "app", "dev", mapOf("value" to property), emptyList())
+        val units = (0..31).map { index ->
+            val property = PropertyImpl.property("value", "complete-$index", YAML, null)
+            TypedPropertiesImpl(APPLICATION, "app$index", "dev", mapOf("value" to property), emptyList())
+        }
         val prepared = PropertySerializers.toFileIn(directory.toFile(),
-            BiConsumer { _, _ -> notified.incrementAndGet() }, io).prepare(listOf(unit))
+            BiConsumer { file, _ -> notified.merge(file, 1, Int::plus) }, io).prepare(units)
         val pool = ForkJoinPool(4)
         try {
-            pool.submit { (0..63).toList().parallelStream().forEach { unit.save(prepared) } }.get(20, SECONDS)
+            pool.submit { units.parallelStream().forEach { it.save(prepared) } }.get(20, SECONDS)
         } finally {
             pool.shutdownNow()
         }
-        assertEquals(1, notified.get())
-        assertEquals(mapOf("value" to "complete"), Yaml().load<Map<*, *>>(
-            directory.resolve("app/application.yaml").toFile().readText()))
+        assertEquals(32, notified.size)
+        units.forEachIndexed { index, _ ->
+            val file = directory.resolve("app$index/application.yaml").toFile()
+            assertEquals(1, notified[file])
+            assertEquals(mapOf("value" to "complete-$index"), Yaml().load<Map<*, *>>(file.readText()))
+        }
     }
 
     @Test

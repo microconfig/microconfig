@@ -1,0 +1,1676 @@
+{
+  "method": "Fresh JVM for each actual java -jar invocation; no warm-up, no JVM flags, default logging; separate destination; alternating order",
+  "output_mode": "existing",
+  "existing_output": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-b5rj9s95/00-old",
+  "existing_output_sha256": {
+    "svc00/application.yaml": "a253d63a797967f2890133bd0c6bd8d0a2f40b51dadc43d22da345fa1bcd1832",
+    "svc00/process.properties": "c5c06a0d710e09d72d80763461946e292202d4a2fde70327d4f65fdcf11accb3",
+    "svc01/application.yaml": "22f7868fac66d49e35794493b2962e6fda7d2a473035e3b4702dbf891bdc41cb",
+    "svc01/process.properties": "a99b863336fc3aa7cbb7aeb9897260437f5e5afedc2a0e3f2f9960f95d6c48b6",
+    "svc02/application.yaml": "9d6c7fc4fc9fa0e88b7f74ed14b97052377ef95e892612ccc11362c22ea53753",
+    "svc02/process.properties": "bfb83999a5cd8944a5c1e59cd22d5465247fef2af03b4ee94745c6a92ec53a99",
+    "svc03/application.yaml": "65ea09741a06d17dec6dc9411e1dd42b192569108c7970144f82d2d367335efc",
+    "svc03/process.properties": "34f89f6a6ee00a082846ff6a9723b3311ca0791c14d3d78b5b7360a06594636e",
+    "svc04/application.yaml": "d80ef10b661450ffc3c6a1e648f3b7668174fa3378f13ff89b6f90e9da030a43",
+    "svc04/process.properties": "53e623acf65337154e9471762213cc3216582e992ac06929031932adc50e7bb1",
+    "svc05/application.yaml": "fe137cce6b8df9e59b7a20ec0cc105ecd2a633a171598c3823c01b4fa300d8ee",
+    "svc05/process.properties": "537a81acdc1c761eb045cbb013572980e828a788fe11a84351a0c91bcb9b0658",
+    "svc06/application.yaml": "e5862301862014051e0840a9da1990a3d0595e86b8185acd8af0a778b9aa29c5",
+    "svc06/process.properties": "2fafc63eff95f0e5edf4c86bb6ca4817bce060de5e931905850a888ace20ec69",
+    "svc07/application.yaml": "9b8d639b4d67650e51a35b4ffdf4c8a26e5accd5c012db262297d6de60c16e5e",
+    "svc07/process.properties": "2ab6bc475aea730ee6b82f04f2218e6c2870df5b21e7bef356bcba7ed4e448ed",
+    "svc08/application.yaml": "476f5aa32dc4da67c06e39da02abc36474a86d135be1190f5f9530ade177c92d",
+    "svc08/process.properties": "ab204f3b8f49703b80143cdf00dc503c08086d653db237ae40f107e57c17cbb6",
+    "svc09/application.yaml": "a093543dfed3eae44c8bd2e2b6db3c2050b7adfefbee0d9cc2f39fdab0b681b2",
+    "svc09/process.properties": "c5f4ff202fe15e1cd654fc67384a21e5e85304a215d6b25e11401718946dd4c9",
+    "svc10/application.yaml": "dfb102258d939e16c97593bd4fddb3953cce2b8acfb1bd74d3309af450e1a994",
+    "svc10/process.properties": "9512b8c4ba9a9d7ce9ec9f675fb181a9d14e7b98b9eea28cb681fa3b99506d98",
+    "svc11/application.yaml": "2b9ec75eb94e6f15ab961b58de82b5d2d67d134530674fbe56810dbd0084fce9",
+    "svc11/process.properties": "09cce5ecc439a3a01e43406a9ae1f2ef3e760f4c916fb1fa17e203f3821666be",
+    "svc12/application.yaml": "78d2fe39c66afd6af804b837556b0061b964f1bd7119e732be990da3e1a585fa",
+    "svc12/process.properties": "240b7f759bcdb732a291e3ecedb673267ed13346bfa25dd915ce68d13eef1d07",
+    "svc13/application.yaml": "c39aa511b774b4bfbb98da205c896db3433afe0ed64c2d4087cf4ccd1c77db51",
+    "svc13/process.properties": "f11c82171b4aacbbf7a86d08bf999a2d63f6e9ab30ead5518293f8f10d00d5a4",
+    "svc14/application.yaml": "d6d4871371067bf28e6728d68bdfb874283683db6f166de125d62cb359e0444f",
+    "svc14/process.properties": "38e097e39acd6c95729d57f2acc825944b0f1191a353bef22a8e2cf958eb8e11",
+    "svc15/application.yaml": "ceebd904bab18e62143039a57900002cfe5c50457ff8e25c9ed45a4c0ea29b57",
+    "svc15/process.properties": "52264c16db87db58c87d48f7553e75a4051cfe2e26e6445c0b775b6f29aefe8c",
+    "svc16/application.yaml": "cda54555015612732e88a477900e44ee00bc3ada8537ea8cccd9fc7b3c54fcc0",
+    "svc16/process.properties": "8d840dbe919ff0540ceafa1c2f48aaef2733607e4ea94a90dc65119516709396",
+    "svc17/application.yaml": "a8bde98c043f3acf3c5a5c0b2a1df37acd069c0c0d4c7464a17d72fea3198938",
+    "svc17/process.properties": "d7f8b5fd18909337cc170a42ccd8a85de4e1e8e9c4e15d20a98311ba4692ab91",
+    "svc18/application.yaml": "06ea3c9c0025afcd27143a2e2ef4abfd2cd398d6ba37485b256755c34a5ebc31",
+    "svc18/process.properties": "4838b0fa8e6cff530e3c54fe572b7bff84e71542d9a7e5d82d672ecbb4e6a5e1",
+    "svc19/application.yaml": "85c1e0ce41ae1d3717300e1b822cefaac4020125978ee292bb80d46f1b7db3ad",
+    "svc19/process.properties": "d2cae046b744a4acb5e36eb99e31b59143ce1ae0b704ad571f7767c01127f8a8",
+    "svc20/application.yaml": "4a352b9ff485f469482031045ede5332d0b48f2720bba144cff62291749cc14f",
+    "svc20/process.properties": "a280eec08048cc12a57e4428ccd96299350e5682665e96078d964d556eca4eb6",
+    "svc21/application.yaml": "a9729db6e2c4ee73af5c2ccc1d41b943748682436747a289d2b071b08eac92e4",
+    "svc21/process.properties": "e569ea73e829ef64418b3e18e2d3ec80bdc332ff6a3b62ece7e7dec333765c34",
+    "svc22/application.yaml": "1ed917adec0c43e701461c2a7f6ab597dddab872c963364816891dc8465acbfe",
+    "svc22/process.properties": "edbefb169983cdce86d51d20740109e26919823d89c505253b12b143c344576e",
+    "svc23/application.yaml": "b6306515c99ca07cb8f1a8c15abb67a9a3580e179fb12fac0a49518864d7e505",
+    "svc23/process.properties": "2bb6b55292de6299def45dd693d507e3bb245f0561e69b97766f178a986d3566",
+    "svc24/application.yaml": "3fffd8e37fb3f1d08d491f234faafd718b9676ba606a08b94756eb0c919299b9",
+    "svc24/process.properties": "485cd7be149910adc4417acd3eb84bc10c2447c6a04e50a48d6709cf6e36b70e",
+    "svc25/application.yaml": "b7891189bc1aae1934d620e52a5d866cae2763745c41568eece9bda2e585302a",
+    "svc25/process.properties": "cb297276d80367efc9d4f5f70fc1a07bdf8dd9aaa1daf9d1b0c4878638882503",
+    "svc26/application.yaml": "9af62b11b6355f884bc8e547ad2ecb151789211cc0a8b8896c65657c55f08ac4",
+    "svc26/process.properties": "3ef8b950117a9127077ab2a5fff6185e00229281930a7f885a1f84d7f3b42150",
+    "svc27/application.yaml": "c92d508fe9b80509121d7226adc15ed504308e99f57237867a12d47ea77da556",
+    "svc27/process.properties": "d4a9897c6d1f569553708b291c1dda13476bfecfb3862a02c48e2ac3fc337c02",
+    "svc28/application.yaml": "86bbd94a9159922f34b6b0eb2e04eba6153059b3c889d527ed9c3933bd6877d2",
+    "svc28/process.properties": "c424c861f69f5cc073f4fe80c9c758172db6478351ef7758c4e2e074cba412f3",
+    "svc29/application.yaml": "ab3bdb7210dfec9170c912f96e8b9f82439e76e6c88e92a5d6a7952360dfac68",
+    "svc29/process.properties": "f032cdd165f71f0e205d8cfd2db449f664bd68732bd063070cdce3d260c61bd9",
+    "svc30/application.yaml": "c34eb159c3d3a4c47005e8e327728e03a874b9998f801511890073c845a99239",
+    "svc30/process.properties": "9ae43bfc2c217a9f3b2705c709980fcd1732f80aabc85135e643bc55e53482e2",
+    "svc31/application.yaml": "81e2d71f76b0f53cd9fd2f57c2baf048861c067f33bd1a6c44b1f6dcf3cc2111",
+    "svc31/process.properties": "539290518d11be14ebfbf62f9bdd0438a171d1c91fcea2d765c58f994683cfa6",
+    "svc32/application.yaml": "23a85eecefbb11c4fc414757b594cebc4961a01f67122ea4da57d319cab33b84",
+    "svc32/process.properties": "521b68cba2aefacbac5694ab3772ed7119ddc9d5929bf8abd004444c0030c212",
+    "svc33/application.yaml": "fe719990f3123cbb21cee38076e24b60a7fafbade0aff60022bcb8556e56c3d2",
+    "svc33/process.properties": "dbe67e9d2ae98273eebad271c88c40332922a731b1c2f0f1cb7ba1c9d0b60d7d",
+    "svc34/application.yaml": "97ec96bbbf3460900302719cd8d1c574a85cfcb96499984fa575ddbb7550ab99",
+    "svc34/process.properties": "64b7c73a3bc7dd42cd20d2300fe5a2168886b02d7ba21c28a89fc7e1d9981cd0",
+    "svc35/application.yaml": "470f89f8091c3696064a109535260e497abb984b668a890af8d9c85d60a8c478",
+    "svc35/process.properties": "142253500d934a7b9633c46ef4606762b7edff03c21c9ad859ae9660fc0f496b",
+    "svc36/application.yaml": "d413a7111e33fa61d68b7d1a9186df77c835d91c8b321049279330bc20b812e3",
+    "svc36/process.properties": "e3dfdb24046a9647ba8c776126ac9635d97ff0ae2f418a21d17bc1a5060082bd",
+    "svc37/application.yaml": "c77540aef24d71e6c72bbe96511dc5911d3d101c44510c0a8221abf2a37312f3",
+    "svc37/process.properties": "927094a73813b985c9018b98fe6f5e537c7bca78a85ce7bd649fe7b09aa7a61e",
+    "svc38/application.yaml": "d479e669616cc3efabdfe5e38ffef450712c282e049d11d806d2696bafd96eaf",
+    "svc38/process.properties": "c21622d0033dddd9897b916294c5f1fcb44c1ac92fdbaf3a279c419024e5f105",
+    "svc39/application.yaml": "b2452761d8f75973172b4f59f4685c867ce70b24a72be70e636ff6296c578cff",
+    "svc39/process.properties": "77e9456f512715c287e7add24e39bfddae5c5cf046cb48de469ee8cae4457560",
+    "svc40/application.yaml": "85a3d56c32d87fd77069f5595dace731ddce5fac1560b9fa55bdbbd9f9ecf2ae",
+    "svc40/process.properties": "46f9faf0af3ab6b66293464e668c128df09d7995768c322c30225976ef729d2e",
+    "svc41/application.yaml": "332c8612c677430ffd11136a2a95c4cfa8e5a3ad94fd12e52d94125338bd498c",
+    "svc41/process.properties": "5f3d480490726bb2933a400fa6f446a99ff1678eaa890b48746f42da1712d85c",
+    "svc42/application.yaml": "785140c1c16ee03e392729e684ed00ff2bb7b5c30ec28aa6063d5b100193b19b",
+    "svc42/process.properties": "de15a605550fe3be95ded165f73da8c3c08553151aa0386dd7467a647471668f",
+    "svc43/application.yaml": "fa39283188a0d9df1d9b434446b624fc90b6247ba7850028d26c0c9cc1023bfa",
+    "svc43/process.properties": "4fbcac3ff11212aaf80128ef52004e46d3db52a539acb61918592be7f1f7442a",
+    "svc44/application.yaml": "d82294dee5c628f77582fbeab606af5678c8106bfb00de6fa9b59c9daa3de5d2",
+    "svc44/process.properties": "4dc34254c2624f1a81dd2162dca18453485c0e1e29ec15892066ecc7a87866b7",
+    "svc45/application.yaml": "2ffdeb328ec955119b3e6198beb64ab4b810a52259413f160d9aa7dec0222583",
+    "svc45/process.properties": "34c014bfafcad668a9e2ee1d839f0d71992718e097d7a25634f23f325e4805fa",
+    "svc46/application.yaml": "d6dd1d369ae0d83951d82930ee391527d051729557836cb437f42608ed37b4e8",
+    "svc46/process.properties": "b9fa097970ac2f4f7b39e9300ef2165488ab3b0d2a4f07976f19a41c7307f3ae",
+    "svc47/application.yaml": "b5f8352838cefc2b1be23fec2d0c68c12cdbd25117134e28513bf6e0e93dc8bc",
+    "svc47/process.properties": "d3105e4e6eb1b7f6db58d193008eb465a8103283dacfe16767cd51a6c03a54ff",
+    "svc48/application.yaml": "1ba12738a9cdac26c69b89535afd7de2eeb61ec40c2875a7509d79dccdf099ad",
+    "svc48/process.properties": "a0251b44f7a1bcfef1ef3f38bff45318fa7231b76c1afb35cca91f889f987d4a",
+    "svc49/application.yaml": "93bbc9881f0d1f0a1655c56ea22f95c7f9a787eeada37a8b4c4bbd238b5c944c",
+    "svc49/process.properties": "0fda097acb47bd38d3ef9f5b4c0ba2ea21d56e026ae85ca814e2a22646a874dd"
+  },
+  "filesystem_cache": "OS page cache is not flushed",
+  "machine": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "java": "/usr/bin/java",
+  "java_version": "openjdk version \"25.0.2\" 2026-01-20\nOpenJDK Runtime Environment (build 25.0.2+10-69)\nOpenJDK 64-Bit Server VM (build 25.0.2+10-69, mixed mode, sharing)",
+  "fixture": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+  "fixture_manifest": {
+    "builtComponentNames": [
+      "svc00",
+      "svc01",
+      "svc02",
+      "svc03",
+      "svc04",
+      "svc05",
+      "svc06",
+      "svc07",
+      "svc08",
+      "svc09",
+      "svc10",
+      "svc11",
+      "svc12",
+      "svc13",
+      "svc14",
+      "svc15",
+      "svc16",
+      "svc17",
+      "svc18",
+      "svc19",
+      "svc20",
+      "svc21",
+      "svc22",
+      "svc23",
+      "svc24",
+      "svc25",
+      "svc26",
+      "svc27",
+      "svc28",
+      "svc29",
+      "svc30",
+      "svc31",
+      "svc32",
+      "svc33",
+      "svc34",
+      "svc35",
+      "svc36",
+      "svc37",
+      "svc38",
+      "svc39",
+      "svc40",
+      "svc41",
+      "svc42",
+      "svc43",
+      "svc44",
+      "svc45",
+      "svc46",
+      "svc47",
+      "svc48",
+      "svc49"
+    ],
+    "counts": {
+      "applicationFiles": 89,
+      "applicationPropertiesPerService": 172,
+      "branchingFactor": 3,
+      "buildComponents": 50,
+      "componentDirectories": 89,
+      "environmentFiles": 1,
+      "expectedOutputFiles": 100,
+      "expectedOutputProperties": 8850,
+      "includeDirectiveLines": 62,
+      "includeEdges": 186,
+      "includeOnlyComponents": 39,
+      "maxIncludeDepthEdges": 3,
+      "processFiles": 50,
+      "processPropertiesPerService": 5,
+      "rootExpressionsPerService": 3,
+      "rootScalarReferencesPerService": 50,
+      "sharedPropertiesPerService": 117,
+      "sourceFiles": 140,
+      "totalPropertiesPerService": 177
+    },
+    "environment": "dev",
+    "fixtureSourcesSha256": "22597c8333065117b5a92cb00efc12071cca12ac8a74ae3c66229ae42d3e4597",
+    "generatorSha256": "99c60b322f5ae5707992bc62923cb3649b6d5982ccd0bf79830dde73939e23b5",
+    "includeLevels": {
+      "l1": 3,
+      "l2": 9,
+      "l3": 27
+    },
+    "schemaVersion": 1,
+    "sourceHashEncoding": "sorted relative POSIX path + NUL + UTF-8 content + NUL",
+    "sources": [
+      {
+        "bytes": 146,
+        "path": "components/common-l1-0/application.yaml",
+        "sha256": "d2dd5eb4efbf84f0832184581ff689e23630dfd63c3445d4182770acde515409"
+      },
+      {
+        "bytes": 147,
+        "path": "components/common-l1-1/application.yaml",
+        "sha256": "27b98bac8bb482c7226cb6e31ef7426cca9388919ffbb2b1174846c13f793da0"
+      },
+      {
+        "bytes": 146,
+        "path": "components/common-l1-2/application.yaml",
+        "sha256": "84c11b4afda138be12b917a0b9734ef1b0549504f646a1f4ad9fdb882a3e3335"
+      },
+      {
+        "bytes": 153,
+        "path": "components/common-l2-00/application.yaml",
+        "sha256": "008df57a3b6a1f54de83e77cc147b61536875b7afbcdead14c23f7943ca60989"
+      },
+      {
+        "bytes": 154,
+        "path": "components/common-l2-01/application.yaml",
+        "sha256": "89583f2da39dff23d4aa79c05b043cdb37d5b1614e3b969b79e913140ad8d629"
+      },
+      {
+        "bytes": 153,
+        "path": "components/common-l2-02/application.yaml",
+        "sha256": "c948437b7907dcc16c39f9b1807f0657b6758010b24feae1592c0255d8f3708b"
+      },
+      {
+        "bytes": 154,
+        "path": "components/common-l2-10/application.yaml",
+        "sha256": "c8b0b3d79eee23b6fc71579a405f0b245bd5fd666a10f835e1f8d1fd6fcd452a"
+      },
+      {
+        "bytes": 153,
+        "path": "components/common-l2-11/application.yaml",
+        "sha256": "33964159557ce4da7253b9db6c96205a8ba94cf0097a3e047f870e8b6f22a22a"
+      },
+      {
+        "bytes": 154,
+        "path": "components/common-l2-12/application.yaml",
+        "sha256": "09664ea8bc18ba50a88a72f3de79cd2691fbca4c1755cda1e110f7997de98b1b"
+      },
+      {
+        "bytes": 153,
+        "path": "components/common-l2-20/application.yaml",
+        "sha256": "3a951ab1e004c8a7613eeb666a931156310633a9e90292c3b29136ea81c99211"
+      },
+      {
+        "bytes": 154,
+        "path": "components/common-l2-21/application.yaml",
+        "sha256": "466bbca2a7c18c7fcc7282b575454d476d181dc4d3dddd5bede5a99229f556bb"
+      },
+      {
+        "bytes": 153,
+        "path": "components/common-l2-22/application.yaml",
+        "sha256": "b1012a57c32c2056f082cb4f2347412ad32fabdb4f6f56860761a268f36d47e3"
+      },
+      {
+        "bytes": 104,
+        "path": "components/common-l3-000/application.yaml",
+        "sha256": "b47dd023f21e887f695648db60f4ca50f6de037a019df0b8dbc366123cd1b2f1"
+      },
+      {
+        "bytes": 105,
+        "path": "components/common-l3-001/application.yaml",
+        "sha256": "dfbc37e6b2bf6c4a7a973a56efa1274748451f978c885e105e67753e1e313dff"
+      },
+      {
+        "bytes": 104,
+        "path": "components/common-l3-002/application.yaml",
+        "sha256": "80b853e74700f63b70fd63d40904c8df6f0547e18728013da8710980751e32e9"
+      },
+      {
+        "bytes": 105,
+        "path": "components/common-l3-010/application.yaml",
+        "sha256": "dda8df502a7200bdc55380cf00b5c3a810f9bc9443e4363f8306f3831b422fe3"
+      },
+      {
+        "bytes": 104,
+        "path": "components/common-l3-011/application.yaml",
+        "sha256": "e382f68f361ccb54c86c68046157ba9ece9838ff0881eabff29090541fd14e0b"
+      },
+      {
+        "bytes": 105,
+        "path": "components/common-l3-012/application.yaml",
+        "sha256": "b0f38b8d883d8bf66f296cacf9659b04def381a9717f578b133f1368c7b0a991"
+      },
+      {
+        "bytes": 104,
+        "path": "components/common-l3-020/application.yaml",
+        "sha256": "10fd0b59cd749eb35f7f3baef7d1a4dc32a6136f4c1802bff36160e0ba4693ba"
+      },
+      {
+        "bytes": 105,
+        "path": "components/common-l3-021/application.yaml",
+        "sha256": "10a31c9f537ad53a92c13b4bb45cba163d2a835c7a837273c4e4ad22b54ab17d"
+      },
+      {
+        "bytes": 104,
+        "path": "components/common-l3-022/application.yaml",
+        "sha256": "3eba53e993ae1289a85f1f49ba70878ebf8b94e1d383a5a4cde1f0c33b03e3b2"
+      },
+      {
+        "bytes": 105,
+        "path": "components/common-l3-100/application.yaml",
+        "sha256": "12c7f5eb3cec38fc9c2b3e1f07b68699ac4b2f8474611a74dc016276fb12dc49"
+      },
+      {
+        "bytes": 104,
+        "path": "components/common-l3-101/application.yaml",
+        "sha256": "3c12cd8eeaf5473e8cb16ac70c0162ab854561221aa3f0df2d412af128122562"
+      },
+      {
+        "bytes": 105,
+        "path": "components/common-l3-102/application.yaml",
+        "sha256": "cb832b174af8ab181e3ce800a9ed0af5f2a4ed6976cc2c6ed2abdf3dba382e4c"
+      },
+      {
+        "bytes": 104,
+        "path": "components/common-l3-110/application.yaml",
+        "sha256": "3cc12e2a8c9977c2c15eadfb09bd4405651104144411b5c52db6ad7d9e5b5c3f"
+      },
+      {
+        "bytes": 105,
+        "path": "components/common-l3-111/application.yaml",
+        "sha256": "a88fdee38aa7fd9984a95fa3f12ec436a664cbd4a7ae9877a57c72ba87825ffe"
+      },
+      {
+        "bytes": 104,
+        "path": "components/common-l3-112/application.yaml",
+        "sha256": "81364a2d257bec0123c2489afd1a94b9dd71e730ed79ff98bb2e6816401ae77f"
+      },
+      {
+        "bytes": 105,
+        "path": "components/common-l3-120/application.yaml",
+        "sha256": "a5eb5c0a20383ee1974a58803ceb65395985d0dc32ddbfc2315a91ffc09571dc"
+      },
+      {
+        "bytes": 104,
+        "path": "components/common-l3-121/application.yaml",
+        "sha256": "0f0066810bd92b6b120d757f68b44dc45490fe6a8c81bbd1319ffca0e44ea037"
+      },
+      {
+        "bytes": 105,
+        "path": "components/common-l3-122/application.yaml",
+        "sha256": "b5c987f56f956eb932fe331beed434802daa06cbc1d2fa7811b911d5bcb0744d"
+      },
+      {
+        "bytes": 104,
+        "path": "components/common-l3-200/application.yaml",
+        "sha256": "1fa8ea884b7deb360f189ec3ea517d24b2fff9032cc3dd26c3e8f0f90cb81acc"
+      },
+      {
+        "bytes": 105,
+        "path": "components/common-l3-201/application.yaml",
+        "sha256": "01194d40c60b582a59a172cd4a592526f8404648af210703ce31bdb7e969619b"
+      },
+      {
+        "bytes": 104,
+        "path": "components/common-l3-202/application.yaml",
+        "sha256": "56cbba5cd0f86b2154a3ddc96da798cddc4055e2aff15b8adfd8f3f8634fcaf4"
+      },
+      {
+        "bytes": 105,
+        "path": "components/common-l3-210/application.yaml",
+        "sha256": "c23167200945d43d9f28aad9b7f26d09500e3a584fec8d44aae93d07d2a9749e"
+      },
+      {
+        "bytes": 104,
+        "path": "components/common-l3-211/application.yaml",
+        "sha256": "f364b89c91f55ab8c02cfa942f07f887b4e599cedc732eccefc2a831165fb275"
+      },
+      {
+        "bytes": 105,
+        "path": "components/common-l3-212/application.yaml",
+        "sha256": "fd2c66e1720eb328bb4c5fd97d0714b3fc7391bfc0999d6ad9eec4576169a134"
+      },
+      {
+        "bytes": 104,
+        "path": "components/common-l3-220/application.yaml",
+        "sha256": "4fcddc0721f8128a5df857ac449c69a61392fd2c069b18564d268fad388e896f"
+      },
+      {
+        "bytes": 105,
+        "path": "components/common-l3-221/application.yaml",
+        "sha256": "3fce6723130442b683e366ed6d1e55ab98837482b25e155e4229224b6d610a27"
+      },
+      {
+        "bytes": 104,
+        "path": "components/common-l3-222/application.yaml",
+        "sha256": "bf987030af40dae0e756fc9afb76ed8faac307f8e5603a195c40835a4f93a73a"
+      },
+      {
+        "bytes": 2661,
+        "path": "components/svc00/application.yaml",
+        "sha256": "cca66b914c50821b9133dd47de88a4f2c9825bd28b45af0b663d0419f48156ad"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc00/config.proc",
+        "sha256": "f09bb389ea64ce5ae62ce3f5f0ad1830da725eda83addfe4f0cbaf2937376dd3"
+      },
+      {
+        "bytes": 2688,
+        "path": "components/svc01/application.yaml",
+        "sha256": "693d3101297530d6cd32ccc7126411305f480897a055e67687ca8074f057615b"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc01/config.proc",
+        "sha256": "76882118fd6e7a09ca1f6b53e3deb462badc3e25476b586f7b1e82d052e876bb"
+      },
+      {
+        "bytes": 2707,
+        "path": "components/svc02/application.yaml",
+        "sha256": "8d5f622e391f6619213eb792b3ed9c4df02b7f3d39794579278172e1ac66f314"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc02/config.proc",
+        "sha256": "8d6af66ff0b0ca8380d570866373617a96df946fab993892ea26d6d118bf1061"
+      },
+      {
+        "bytes": 2706,
+        "path": "components/svc03/application.yaml",
+        "sha256": "565bfd4244d2d9fd98c4dcdd5ba7192d513989bd7a58cf60223d86e4dd5d7751"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc03/config.proc",
+        "sha256": "f4d6446637c204850f8768c6abc1980724cfb113b24f69892d4c2cf925ed3c0d"
+      },
+      {
+        "bytes": 2705,
+        "path": "components/svc04/application.yaml",
+        "sha256": "eb3c2a1009c0a2326c111caf36e283f4d725950c244ad748e088b1135d86b6a1"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc04/config.proc",
+        "sha256": "a2013ccaa46708f61795c1d8fc0498e58d0a1eabf546b1b737afefffd6115b3a"
+      },
+      {
+        "bytes": 2682,
+        "path": "components/svc05/application.yaml",
+        "sha256": "69048bfc7c8adc5b2124f7132e0fc045b2c86d77b1153307aa1f8e79d591cfff"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc05/config.proc",
+        "sha256": "d730ede86826d4dfee8442260d634b3bb2a43590d210c22ddb78d8b99b70e94b"
+      },
+      {
+        "bytes": 2662,
+        "path": "components/svc06/application.yaml",
+        "sha256": "fc5878b0b667dd4d50df6de9551bd472353da65772e410e2e37d084389a6b922"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc06/config.proc",
+        "sha256": "7f8b64909f3b0d2386ffbfa82299c5ccae984ad003ea303ea37cfc579601f52a"
+      },
+      {
+        "bytes": 2666,
+        "path": "components/svc07/application.yaml",
+        "sha256": "0525cf5260e574befe35012cf9d73ec415201421646cef8083b7726a1c389c20"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc07/config.proc",
+        "sha256": "126514ec218db5a7534c552a44aac9717a7d19bfa0fb94d8ef09320af038e50f"
+      },
+      {
+        "bytes": 2692,
+        "path": "components/svc08/application.yaml",
+        "sha256": "d6140b943b7ea14f8ca261ef7a8064be1492003b2b122a5bdf948bcf7ffa5fe4"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc08/config.proc",
+        "sha256": "4a0b7a91e5abc51ce518bdd9eabad987262a5ce48374bc702634e7e30907e9dc"
+      },
+      {
+        "bytes": 2706,
+        "path": "components/svc09/application.yaml",
+        "sha256": "3eaff0ed240b441c620695ea3dcdf9fe9a006d1f32a42abbd2c023e49893fbeb"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc09/config.proc",
+        "sha256": "f3068cd60d47d0384f19d61b03c9384de7450fa863744873a631cd5c7b118adc"
+      },
+      {
+        "bytes": 2708,
+        "path": "components/svc10/application.yaml",
+        "sha256": "d14214e26e4445dd0fb9f3207cb28fd5840cbc5b3894c471f33fafc956b2f2f0"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc10/config.proc",
+        "sha256": "ebbea2f8f2f56c082aaf457d62a16d76e4012f690ab4ad303d9eb79cdc7dd773"
+      },
+      {
+        "bytes": 2704,
+        "path": "components/svc11/application.yaml",
+        "sha256": "1461fe1252878abf13c2614b6680dfed0ddbe6ad21cb586c8c235d20004223c8"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc11/config.proc",
+        "sha256": "87e87972ff96af837eb8b249b820bbe55eec46638fa5ffaeb5c63071c6030563"
+      },
+      {
+        "bytes": 2678,
+        "path": "components/svc12/application.yaml",
+        "sha256": "e8e0d603ed749a0dbc51608d4e9551cb3b0543d0936dd9b17db2b5fac47d6b1c"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc12/config.proc",
+        "sha256": "678fab182bd7a0325a46672ba4b7a936b571fc22240c1cc253e1c2dc4e69a46c"
+      },
+      {
+        "bytes": 2663,
+        "path": "components/svc13/application.yaml",
+        "sha256": "dc559aba01e7374cd4003c9841a193cd6abf4375a01ac561e95e3ab9692fec24"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc13/config.proc",
+        "sha256": "0cdf0fb120a4d08f67f9b8fdb8e69796b130ccfca2d8567e83c43e5bfe4654dc"
+      },
+      {
+        "bytes": 2673,
+        "path": "components/svc14/application.yaml",
+        "sha256": "b355c1f2f2ab6ba489b780efa79a2683fe2c17e6d8fa568d4797f0d0792ffa8b"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc14/config.proc",
+        "sha256": "d772f4f2b1214dbffcd30fb4059bade25e1d5cf0d9bfcb50ee3cdfb5a162fdc9"
+      },
+      {
+        "bytes": 2692,
+        "path": "components/svc15/application.yaml",
+        "sha256": "598e831e644cb3a9ab1533e9934908b12ace71893483b04d2b9d0205aaf513a2"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc15/config.proc",
+        "sha256": "5036ef2f4ef9566638ec9dc1c3df7384614a07052a017ad1c4d2120571ee3dad"
+      },
+      {
+        "bytes": 2708,
+        "path": "components/svc16/application.yaml",
+        "sha256": "95997bca3ef10521000c2ace15c758fe42ffd84f39ce84fa8c61ac7b0a6b8ad6"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc16/config.proc",
+        "sha256": "52fce398cf1ef630d9b10596f1853c07aa5c827daf564c85fc80a2a1104fdbd9"
+      },
+      {
+        "bytes": 2710,
+        "path": "components/svc17/application.yaml",
+        "sha256": "7c4c5ac075eef88fe6ec14dbf01d914b74b481e64c5806f614509dce34fbd0e6"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc17/config.proc",
+        "sha256": "ea793ea55f76ae4702763afa8968f4363ed4a4f92c574d6d2980a26d9fe3b552"
+      },
+      {
+        "bytes": 2697,
+        "path": "components/svc18/application.yaml",
+        "sha256": "fd461f1befd7754cc20668b5ef69eed9bcfbf4adf200571b4455524f87f7fa53"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc18/config.proc",
+        "sha256": "ae5846b18f978fc079bcf5817e487ff059f1011bd1f354898b496721c63a4af9"
+      },
+      {
+        "bytes": 2677,
+        "path": "components/svc19/application.yaml",
+        "sha256": "aa0cf7136d6bcf7dcbc840de4e9ff2727e8661cbffee5387090a52218410909b"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc19/config.proc",
+        "sha256": "d1c4dff6fd962561bbec7fef87e0f3dbc6eca5bd9a7f2ab05d3088c3ad1f9383"
+      },
+      {
+        "bytes": 2665,
+        "path": "components/svc20/application.yaml",
+        "sha256": "a7fe9d084e151b46d8006986e0018071a5ff096f770f08c0f5b51ec5a1643a50"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc20/config.proc",
+        "sha256": "cfb3f8e2a1def2cd86556692488314e0fb8f7d959db740ce010141d6966773d4"
+      },
+      {
+        "bytes": 2674,
+        "path": "components/svc21/application.yaml",
+        "sha256": "c7b6ff244864237084b94ff8bd2d9eae713012de014153bd3884a826cce8b761"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc21/config.proc",
+        "sha256": "36e637a3904ae61c493098064eea650082028949c29f0a022c312f0f77fc3ac6"
+      },
+      {
+        "bytes": 2695,
+        "path": "components/svc22/application.yaml",
+        "sha256": "36dace53b4ce558d70e44a395228b72e07fe0abb650db7d8fcc5e62cc09a25a1"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc22/config.proc",
+        "sha256": "0d52f2c8b186512d32820f6b5c01119b77872ca811853aa12228450a5b0a846b"
+      },
+      {
+        "bytes": 2710,
+        "path": "components/svc23/application.yaml",
+        "sha256": "75f4495e798cde05ff34529771f76a0881399e8184cc53e33835e5c7dbf25ffb"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc23/config.proc",
+        "sha256": "11bf7470f4d574a56a9c945e83a5673375acec249efda7aa066990bcb6eeee7e"
+      },
+      {
+        "bytes": 2707,
+        "path": "components/svc24/application.yaml",
+        "sha256": "eb9e641079cb18985eab9da6f099f05b25de3ccc593e1fea9848185a7f85fb39"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc24/config.proc",
+        "sha256": "e168f0c8744bea2ad750e5c3534430456cffbad92c609ffdf7f893f89630de47"
+      },
+      {
+        "bytes": 2694,
+        "path": "components/svc25/application.yaml",
+        "sha256": "40a7f8bd5894068ac04411752a88bdf8a1a0f83930afdc72218eeaa9c6f50665"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc25/config.proc",
+        "sha256": "9983266d0dbae0feded1743c5862cf3a329c2be512f71f5fbc53af57b4ee1438"
+      },
+      {
+        "bytes": 2677,
+        "path": "components/svc26/application.yaml",
+        "sha256": "3713bdabf4096ca950e7241728d34d7c6e87693740679d741f347f161ced448c"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc26/config.proc",
+        "sha256": "36b5fd4a6c6d96415d37465574c6e66a16163a295c3b69ca77f7561d57bda6b4"
+      },
+      {
+        "bytes": 2662,
+        "path": "components/svc27/application.yaml",
+        "sha256": "0208d88dc3b63aa206de6388edb59fa2b9c270769b70cbbb7da2568102915181"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc27/config.proc",
+        "sha256": "a79dc9de81a6bd9c6820f8f2829ccf25fbb6077c657f10510f8c63213548bbb6"
+      },
+      {
+        "bytes": 2679,
+        "path": "components/svc28/application.yaml",
+        "sha256": "b1e0787b4fc0123e2e209daed989fbbe1e310ca68289e18b377cd0e193032258"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc28/config.proc",
+        "sha256": "be03301efaa3600e3835e3f61a03c55c5e99661e36d8dc919ac24363c249a8be"
+      },
+      {
+        "bytes": 2699,
+        "path": "components/svc29/application.yaml",
+        "sha256": "28f629148daf950adefa336897d98f225d83881777888bae043a434220c8c81b"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc29/config.proc",
+        "sha256": "e4ed815fee36e690a2b0310280d37ccbc763941b3ecfd270110e27d81a0b7fe6"
+      },
+      {
+        "bytes": 2707,
+        "path": "components/svc30/application.yaml",
+        "sha256": "231666a02e3c30e6a5618c5611a4ea8157a084fbd9071f3d18a9bde5cd3f375b"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc30/config.proc",
+        "sha256": "c630755b247b48e4ae2dedacc9ca06dca244b0b6f8d63d1fb87c2e8a4428bbc5"
+      },
+      {
+        "bytes": 2708,
+        "path": "components/svc31/application.yaml",
+        "sha256": "b5d0fb935b97fe2f105590eb0786d23ab91754390ff07c9a4d8ffa6fb7695e59"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc31/config.proc",
+        "sha256": "6c8f346747f52b99f6020a60f584fcc7f0ffc6786e95951e789bffd1f1758b3d"
+      },
+      {
+        "bytes": 2692,
+        "path": "components/svc32/application.yaml",
+        "sha256": "1068eb482e83134844c5fe54b178e0d8e7f8b08592b0ceab71c0a0bc8aa5ce73"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc32/config.proc",
+        "sha256": "d7254513ebf0002f776785c37f415c5543e0d0d4d780a116fe98208443f913bc"
+      },
+      {
+        "bytes": 2672,
+        "path": "components/svc33/application.yaml",
+        "sha256": "48baa2b249549d28f940213809d178b9386048f127c26e15b25104b595f15218"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc33/config.proc",
+        "sha256": "3481a48a60a913f88add8b7eec4befd6b39fefc3f0b1365c6d1599bb782e403a"
+      },
+      {
+        "bytes": 2663,
+        "path": "components/svc34/application.yaml",
+        "sha256": "66193d4b0c31a21f78fcba81526524e1452fdccea5efa7720ec8d953f7cc2bae"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc34/config.proc",
+        "sha256": "f81efebe0e29b6c4734de859d6a6158770dacd81e33e3545ae2c78d609dcc62a"
+      },
+      {
+        "bytes": 2684,
+        "path": "components/svc35/application.yaml",
+        "sha256": "8de4936506aaf2491b13bcd7c7ab63b476aa8063a9ed33f0fc26cabfcc9eb64f"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc35/config.proc",
+        "sha256": "a262e2f26f72cf42162037b2fe8876a335e3041cd1aa90357af43d25265134d2"
+      },
+      {
+        "bytes": 2698,
+        "path": "components/svc36/application.yaml",
+        "sha256": "f5c2a311924145492391c4d15aded4713ecfcc60fb2e147c1c8c88d2324fe222"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc36/config.proc",
+        "sha256": "bede1d29e05393e64ecdca7b4a2b2cfb7333c6618d6ce5db3a23c3e7fc95aff6"
+      },
+      {
+        "bytes": 2708,
+        "path": "components/svc37/application.yaml",
+        "sha256": "916e72685a33c0cac6427a5826b9ecaac7982117c01b257f169fd96005590238"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc37/config.proc",
+        "sha256": "dcf8f4cb78dd5213b6e9121399a13e9d661e30f8bb62cc4ae80bd6149e071fbd"
+      },
+      {
+        "bytes": 2710,
+        "path": "components/svc38/application.yaml",
+        "sha256": "a2171e93b0216b00556fa5730d30f4a52b14bd4b8709044b74fca9d4d779970e"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc38/config.proc",
+        "sha256": "7059a8f9df1c3c94eb042fe4d52e6ee342fe9a6e615155d063881fee0ca1a733"
+      },
+      {
+        "bytes": 2687,
+        "path": "components/svc39/application.yaml",
+        "sha256": "7eda685f6f2f5dd37b024463e6c35acc121760cc9241bb2ad1b8a9e88cc7dd60"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc39/config.proc",
+        "sha256": "033e7b46b7e0d82997332707d711122300360adac27f9b2e3085f5a91f053762"
+      },
+      {
+        "bytes": 2671,
+        "path": "components/svc40/application.yaml",
+        "sha256": "af7cc1fdfc462f48adda92c223e0b755c337b56ddcabee96713f69de7191f9c5"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc40/config.proc",
+        "sha256": "8a0455b18d3e4046c3c9ddfa9a0093504da58088bb290adb1363a8282f227803"
+      },
+      {
+        "bytes": 2665,
+        "path": "components/svc41/application.yaml",
+        "sha256": "692faac8fae0d0cb9d550f59d0c3792f42d3a57590f80861464ba58bef8d8364"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc41/config.proc",
+        "sha256": "36c391a771bea4c0fc21d507bcb09080afb5a25016f5878550e071fb31bbd9aa"
+      },
+      {
+        "bytes": 2683,
+        "path": "components/svc42/application.yaml",
+        "sha256": "7c8ce377bb3409257bfce4abf03f0f932aa977200b64060986cbdc4e9c457714"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc42/config.proc",
+        "sha256": "ca02124e01c728325eab19949bc48353953f9d8d9353d6308d8b35489f8ad728"
+      },
+      {
+        "bytes": 2701,
+        "path": "components/svc43/application.yaml",
+        "sha256": "ad82635fdde58eae039e85d76e91bf44fcd344e70c2c2ef9e23becf9fac532a7"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc43/config.proc",
+        "sha256": "44ea1ec77a46f19e2253d659024f123b1d70079698b2a51db4d5d2e13f0f9609"
+      },
+      {
+        "bytes": 2710,
+        "path": "components/svc44/application.yaml",
+        "sha256": "44afb9af5d35a7c072be7aa5f4c1b474baecd255218073713047910f84e45c6c"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc44/config.proc",
+        "sha256": "ccda2e2e5d778c993c146290222ac131d2f999d5bd6a6dac21b0a47dd71c13b4"
+      },
+      {
+        "bytes": 2707,
+        "path": "components/svc45/application.yaml",
+        "sha256": "8ca9b7bc3805d6c4192c96f66a9011faa5422e625959a25f71d5db76a2618385"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc45/config.proc",
+        "sha256": "0dc02bd672d098f5c2cf5bd736ba43c2baa05f57b679a16d1d5a790f53d71d4b"
+      },
+      {
+        "bytes": 2686,
+        "path": "components/svc46/application.yaml",
+        "sha256": "7890b5a7817455f23bd2d12d9df46657d9511416141d42953272f26afe5c171b"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc46/config.proc",
+        "sha256": "07725281e05c5dc9e9e32776d045bd034ea8e5a7ab01419d769680993b22bf18"
+      },
+      {
+        "bytes": 2671,
+        "path": "components/svc47/application.yaml",
+        "sha256": "9e4148b92f7d69a43e294b263c146680f1fa44b7c9284969c9a02511b930cefb"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc47/config.proc",
+        "sha256": "fa15d3e15fd7f04466189460a34eb8b87e6fad33d5fc9c09d998b3729c83d27f"
+      },
+      {
+        "bytes": 2662,
+        "path": "components/svc48/application.yaml",
+        "sha256": "e9d4cfd2bb71ccc73a1a35489619e908850100249d536f27560bcec23524c638"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc48/config.proc",
+        "sha256": "74de56a136d9b4c27ffb26c357db1f79354734cd801e935d26434a29f4906d61"
+      },
+      {
+        "bytes": 2686,
+        "path": "components/svc49/application.yaml",
+        "sha256": "084ec2f57b7e85b9acc3ee4a372fb7ab285aa425df73ddc204e4eb21a8b51aed"
+      },
+      {
+        "bytes": 109,
+        "path": "components/svc49/config.proc",
+        "sha256": "f85dc9310774a6e14cee365a191a2281884fff2d11d78430c94cf93b485f6877"
+      },
+      {
+        "bytes": 625,
+        "path": "envs/dev.yaml",
+        "sha256": "aea9f278db020bf88764901514c8318f8f6056554f9a4353af72331e7af20b6d"
+      }
+    ]
+  },
+  "jar_sha256": {
+    "old": "d13728c8ac0aadd9dfb5d36bf6e7a3e36f806f9fec580daea0a2d2964e38dab5",
+    "new": "d4c3ca6ca24f56710845a1f8b4522df5d9a439a4bea461383722645bcbddb513"
+  },
+  "jar_paths": {
+    "old": "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/full/microconfig-cli-5.0.0.jar",
+    "new": "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/minimized/microconfig-cli-5.0.0.jar"
+  },
+  "work": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3",
+  "samples": {
+    "old": [
+      {
+        "wall_ms": 362.917542,
+        "cli_reported_ms": 312,
+        "user_ms": 2216.6820000000002,
+        "system_ms": 153.51099999999997,
+        "peak_rss_bytes": 209354752,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/full/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/00-old"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/00-old.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/00-old",
+        "round": 1,
+        "order": 1
+      },
+      {
+        "wall_ms": 397.162083,
+        "cli_reported_ms": 347,
+        "user_ms": 2572.413,
+        "system_ms": 160.15699999999998,
+        "peak_rss_bytes": 206012416,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/full/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/01-old"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/01-old.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/01-old",
+        "round": 2,
+        "order": 2
+      },
+      {
+        "wall_ms": 369.508792,
+        "cli_reported_ms": 323,
+        "user_ms": 2215.772,
+        "system_ms": 141.862,
+        "peak_rss_bytes": 204881920,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/full/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/02-old"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/02-old.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/02-old",
+        "round": 3,
+        "order": 1
+      },
+      {
+        "wall_ms": 365.748667,
+        "cli_reported_ms": 319,
+        "user_ms": 2443.573,
+        "system_ms": 151.59699999999998,
+        "peak_rss_bytes": 217481216,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/full/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/03-old"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/03-old.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/03-old",
+        "round": 4,
+        "order": 2
+      },
+      {
+        "wall_ms": 338.556417,
+        "cli_reported_ms": 291,
+        "user_ms": 2078.9990000000003,
+        "system_ms": 149.307,
+        "peak_rss_bytes": 202932224,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/full/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/04-old"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/04-old.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/04-old",
+        "round": 5,
+        "order": 1
+      },
+      {
+        "wall_ms": 328.519084,
+        "cli_reported_ms": 282,
+        "user_ms": 1948.61,
+        "system_ms": 150.51299999999998,
+        "peak_rss_bytes": 208896000,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/full/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/05-old"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/05-old.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/05-old",
+        "round": 6,
+        "order": 2
+      },
+      {
+        "wall_ms": 335.703583,
+        "cli_reported_ms": 289,
+        "user_ms": 1982.286,
+        "system_ms": 152.941,
+        "peak_rss_bytes": 204849152,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/full/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/06-old"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/06-old.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/06-old",
+        "round": 7,
+        "order": 1
+      },
+      {
+        "wall_ms": 354.141042,
+        "cli_reported_ms": 302,
+        "user_ms": 2164.4480000000003,
+        "system_ms": 186.861,
+        "peak_rss_bytes": 208781312,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/full/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/07-old"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/07-old.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/07-old",
+        "round": 8,
+        "order": 2
+      },
+      {
+        "wall_ms": 345.86125,
+        "cli_reported_ms": 297,
+        "user_ms": 2136.357,
+        "system_ms": 156.78799999999998,
+        "peak_rss_bytes": 212975616,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/full/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/08-old"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/08-old.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/08-old",
+        "round": 9,
+        "order": 1
+      },
+      {
+        "wall_ms": 343.174083,
+        "cli_reported_ms": 295,
+        "user_ms": 2066.981,
+        "system_ms": 146.868,
+        "peak_rss_bytes": 206962688,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/full/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/09-old"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/09-old.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/09-old",
+        "round": 10,
+        "order": 2
+      },
+      {
+        "wall_ms": 372.664833,
+        "cli_reported_ms": 325,
+        "user_ms": 2296.438,
+        "system_ms": 145.708,
+        "peak_rss_bytes": 205930496,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/full/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/10-old"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/10-old.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/10-old",
+        "round": 11,
+        "order": 1
+      },
+      {
+        "wall_ms": 367.980875,
+        "cli_reported_ms": 320,
+        "user_ms": 2280.43,
+        "system_ms": 142.256,
+        "peak_rss_bytes": 203702272,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/full/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/11-old"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/11-old.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/11-old",
+        "round": 12,
+        "order": 2
+      },
+      {
+        "wall_ms": 388.073,
+        "cli_reported_ms": 340,
+        "user_ms": 2301.334,
+        "system_ms": 142.43,
+        "peak_rss_bytes": 208076800,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/full/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/12-old"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/12-old.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/12-old",
+        "round": 13,
+        "order": 1
+      },
+      {
+        "wall_ms": 476.836291,
+        "cli_reported_ms": 362,
+        "user_ms": 2113.995,
+        "system_ms": 141.15999999999997,
+        "peak_rss_bytes": 188317696,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/full/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/13-old"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/13-old.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/13-old",
+        "round": 14,
+        "order": 2
+      },
+      {
+        "wall_ms": 376.408167,
+        "cli_reported_ms": 329,
+        "user_ms": 2303.321,
+        "system_ms": 157.495,
+        "peak_rss_bytes": 203128832,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/full/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/14-old"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/14-old.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/14-old",
+        "round": 15,
+        "order": 1
+      }
+    ],
+    "new": [
+      {
+        "wall_ms": 351.137667,
+        "cli_reported_ms": 303,
+        "user_ms": 2113.187,
+        "system_ms": 151.63199999999998,
+        "peak_rss_bytes": 213319680,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/minimized/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/00-new"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/00-new.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/00-new",
+        "round": 1,
+        "order": 2
+      },
+      {
+        "wall_ms": 356.977125,
+        "cli_reported_ms": 308,
+        "user_ms": 2168.9379999999996,
+        "system_ms": 158.19,
+        "peak_rss_bytes": 212484096,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/minimized/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/01-new"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/01-new.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/01-new",
+        "round": 2,
+        "order": 1
+      },
+      {
+        "wall_ms": 345.961792,
+        "cli_reported_ms": 299,
+        "user_ms": 2173.714,
+        "system_ms": 144.796,
+        "peak_rss_bytes": 209895424,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/minimized/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/02-new"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/02-new.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/02-new",
+        "round": 3,
+        "order": 2
+      },
+      {
+        "wall_ms": 340.252208,
+        "cli_reported_ms": 293,
+        "user_ms": 2037.6699999999998,
+        "system_ms": 150.173,
+        "peak_rss_bytes": 199573504,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/minimized/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/03-new"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/03-new.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/03-new",
+        "round": 4,
+        "order": 1
+      },
+      {
+        "wall_ms": 350.029875,
+        "cli_reported_ms": 303,
+        "user_ms": 2220.885,
+        "system_ms": 145.94099999999997,
+        "peak_rss_bytes": 213188608,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/minimized/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/04-new"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/04-new.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/04-new",
+        "round": 5,
+        "order": 2
+      },
+      {
+        "wall_ms": 340.92175,
+        "cli_reported_ms": 294,
+        "user_ms": 2136.397,
+        "system_ms": 152.175,
+        "peak_rss_bytes": 204800000,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/minimized/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/05-new"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/05-new.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/05-new",
+        "round": 6,
+        "order": 1
+      },
+      {
+        "wall_ms": 359.361959,
+        "cli_reported_ms": 309,
+        "user_ms": 2058.265,
+        "system_ms": 157.898,
+        "peak_rss_bytes": 203390976,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/minimized/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/06-new"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/06-new.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/06-new",
+        "round": 7,
+        "order": 2
+      },
+      {
+        "wall_ms": 337.34175,
+        "cli_reported_ms": 289,
+        "user_ms": 2071.762,
+        "system_ms": 145.261,
+        "peak_rss_bytes": 211222528,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/minimized/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/07-new"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/07-new.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/07-new",
+        "round": 8,
+        "order": 1
+      },
+      {
+        "wall_ms": 324.502625,
+        "cli_reported_ms": 277,
+        "user_ms": 1852.021,
+        "system_ms": 138.012,
+        "peak_rss_bytes": 206618624,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/minimized/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/08-new"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/08-new.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/08-new",
+        "round": 9,
+        "order": 2
+      },
+      {
+        "wall_ms": 353.191042,
+        "cli_reported_ms": 306,
+        "user_ms": 2160.99,
+        "system_ms": 150.95899999999997,
+        "peak_rss_bytes": 203636736,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/minimized/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/09-new"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/09-new.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/09-new",
+        "round": 10,
+        "order": 1
+      },
+      {
+        "wall_ms": 360.107166,
+        "cli_reported_ms": 313,
+        "user_ms": 2110.679,
+        "system_ms": 135.43,
+        "peak_rss_bytes": 204636160,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/minimized/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/10-new"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/10-new.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/10-new",
+        "round": 11,
+        "order": 2
+      },
+      {
+        "wall_ms": 363.184833,
+        "cli_reported_ms": 316,
+        "user_ms": 2213.888,
+        "system_ms": 142.311,
+        "peak_rss_bytes": 204947456,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/minimized/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/11-new"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/11-new.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/11-new",
+        "round": 12,
+        "order": 1
+      },
+      {
+        "wall_ms": 380.1005,
+        "cli_reported_ms": 332,
+        "user_ms": 2445.909,
+        "system_ms": 159.75300000000001,
+        "peak_rss_bytes": 205422592,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/minimized/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/12-new"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/12-new.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/12-new",
+        "round": 13,
+        "order": 2
+      },
+      {
+        "wall_ms": 444.78425,
+        "cli_reported_ms": 392,
+        "user_ms": 2044.5769999999998,
+        "system_ms": 171.58499999999998,
+        "peak_rss_bytes": 204111872,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/minimized/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/13-new"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/13-new.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/13-new",
+        "round": 14,
+        "order": 1
+      },
+      {
+        "wall_ms": 393.321333,
+        "cli_reported_ms": 346,
+        "user_ms": 2384.283,
+        "system_ms": 142.386,
+        "peak_rss_bytes": 202702848,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/build/packaged-cli-validation/minimized/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/14-new"
+        ],
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/14-new.log",
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/minimize/cold-1x2oktm3/14-new",
+        "round": 15,
+        "order": 2
+      }
+    ]
+  },
+  "output_validation": [
+    {
+      "round": 1,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 2,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 3,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 4,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 5,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 6,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 7,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 8,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 9,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 10,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 11,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 12,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 13,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 14,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 15,
+      "files": 100,
+      "byte_identical": true
+    }
+  ],
+  "summary": {
+    "old": {
+      "runs": 15,
+      "median_wall_ms": 365.748667,
+      "min_wall_ms": 328.519084,
+      "max_wall_ms": 476.836291,
+      "median_peak_rss_bytes": 206012416,
+      "max_peak_rss_bytes": 217481216,
+      "median_cli_reported_ms": 319,
+      "min_cli_reported_ms": 282,
+      "max_cli_reported_ms": 362
+    },
+    "new": {
+      "runs": 15,
+      "median_wall_ms": 353.191042,
+      "min_wall_ms": 324.502625,
+      "max_wall_ms": 444.78425,
+      "median_peak_rss_bytes": 204947456,
+      "max_peak_rss_bytes": 213319680,
+      "median_cli_reported_ms": 306,
+      "min_cli_reported_ms": 277,
+      "max_cli_reported_ms": 392
+    }
+  },
+  "new_to_old_wall_ratio": 0.9656659719282038
+}

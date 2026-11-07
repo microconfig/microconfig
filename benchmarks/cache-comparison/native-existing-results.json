@@ -1,0 +1,370 @@
+{
+  "method": "Alternating fresh JVM/native processes, 7 runs each, default flags and logging, same fixture, OS cache not flushed; prepare destinations outside timing",
+  "mode": "existing",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "java_version": "openjdk version \"25.0.2\" 2026-01-20\nOpenJDK Runtime Environment (build 25.0.2+10-69)\nOpenJDK 64-Bit Server VM (build 25.0.2+10-69, mixed mode, sharing)",
+  "jar_sha256": "d4c3ca6ca24f56710845a1f8b4522df5d9a439a4bea461383722645bcbddb513",
+  "native_sha256": "17e68e6b136842cf792c69c4aad6eeff4642b69f82bb3453b6129d791879e57a",
+  "samples": {
+    "jvm": [
+      {
+        "round": 1,
+        "order": 1,
+        "wall_ms": 392.953958,
+        "cli_reported_ms": 340,
+        "user_ms": 2167.339,
+        "system_ms": 153.59499999999997,
+        "peak_rss_bytes": 201736192,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/libs/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/00-jvm"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/00-jvm",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/00-jvm.log"
+      },
+      {
+        "round": 2,
+        "order": 2,
+        "wall_ms": 390.639167,
+        "cli_reported_ms": 339,
+        "user_ms": 2053.445,
+        "system_ms": 163.346,
+        "peak_rss_bytes": 191447040,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/libs/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/01-jvm"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/01-jvm",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/01-jvm.log"
+      },
+      {
+        "round": 3,
+        "order": 1,
+        "wall_ms": 410.807709,
+        "cli_reported_ms": 357,
+        "user_ms": 2278.1029999999996,
+        "system_ms": 184.289,
+        "peak_rss_bytes": 204406784,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/libs/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/02-jvm"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/02-jvm",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/02-jvm.log"
+      },
+      {
+        "round": 4,
+        "order": 2,
+        "wall_ms": 386.819958,
+        "cli_reported_ms": 335,
+        "user_ms": 2079.3759999999997,
+        "system_ms": 185.523,
+        "peak_rss_bytes": 191266816,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/libs/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/03-jvm"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/03-jvm",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/03-jvm.log"
+      },
+      {
+        "round": 5,
+        "order": 1,
+        "wall_ms": 390.02525,
+        "cli_reported_ms": 336,
+        "user_ms": 2110.102,
+        "system_ms": 183.166,
+        "peak_rss_bytes": 208175104,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/libs/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/04-jvm"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/04-jvm",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/04-jvm.log"
+      },
+      {
+        "round": 6,
+        "order": 2,
+        "wall_ms": 405.74175,
+        "cli_reported_ms": 353,
+        "user_ms": 2181.437,
+        "system_ms": 181.066,
+        "peak_rss_bytes": 192675840,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/libs/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/05-jvm"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/05-jvm",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/05-jvm.log"
+      },
+      {
+        "round": 7,
+        "order": 1,
+        "wall_ms": 407.441833,
+        "cli_reported_ms": 354,
+        "user_ms": 2334.645,
+        "system_ms": 164.386,
+        "peak_rss_bytes": 206209024,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/libs/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/06-jvm"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/06-jvm",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/06-jvm.log"
+      }
+    ],
+    "native": [
+      {
+        "round": 1,
+        "order": 2,
+        "wall_ms": 97.342208,
+        "cli_reported_ms": 90,
+        "user_ms": 99.63799999999999,
+        "system_ms": 72.487,
+        "peak_rss_bytes": 70533120,
+        "command": [
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/native/microconfig",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/00-native"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/00-native",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/00-native.log"
+      },
+      {
+        "round": 2,
+        "order": 1,
+        "wall_ms": 83.996792,
+        "cli_reported_ms": 77,
+        "user_ms": 99.225,
+        "system_ms": 71.71600000000001,
+        "peak_rss_bytes": 70500352,
+        "command": [
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/native/microconfig",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/01-native"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/01-native",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/01-native.log"
+      },
+      {
+        "round": 3,
+        "order": 2,
+        "wall_ms": 87.511959,
+        "cli_reported_ms": 80,
+        "user_ms": 101.996,
+        "system_ms": 77.368,
+        "peak_rss_bytes": 70598656,
+        "command": [
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/native/microconfig",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/02-native"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/02-native",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/02-native.log"
+      },
+      {
+        "round": 4,
+        "order": 1,
+        "wall_ms": 85.124084,
+        "cli_reported_ms": 78,
+        "user_ms": 100.16,
+        "system_ms": 69.76599999999999,
+        "peak_rss_bytes": 70500352,
+        "command": [
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/native/microconfig",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/03-native"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/03-native",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/03-native.log"
+      },
+      {
+        "round": 5,
+        "order": 2,
+        "wall_ms": 94.920208,
+        "cli_reported_ms": 88,
+        "user_ms": 100.469,
+        "system_ms": 73.24300000000001,
+        "peak_rss_bytes": 70975488,
+        "command": [
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/native/microconfig",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/04-native"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/04-native",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/04-native.log"
+      },
+      {
+        "round": 6,
+        "order": 1,
+        "wall_ms": 84.6615,
+        "cli_reported_ms": 77,
+        "user_ms": 98.737,
+        "system_ms": 78.738,
+        "peak_rss_bytes": 70533120,
+        "command": [
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/native/microconfig",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/05-native"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/05-native",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/05-native.log"
+      },
+      {
+        "round": 7,
+        "order": 2,
+        "wall_ms": 91.554917,
+        "cli_reported_ms": 83,
+        "user_ms": 100.286,
+        "system_ms": 73.838,
+        "peak_rss_bytes": 70385664,
+        "command": [
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/native/microconfig",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/06-native"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/06-native",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/existing-pc_q5l03/06-native.log"
+      }
+    ]
+  },
+  "output_validation": [
+    {
+      "round": 1,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 2,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 3,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 4,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 5,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 6,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 7,
+      "files": 100,
+      "byte_identical": true
+    }
+  ],
+  "summary": {
+    "jvm": {
+      "runs": 7,
+      "median_wall_ms": 392.953958,
+      "min_wall_ms": 386.819958,
+      "max_wall_ms": 410.807709,
+      "median_peak_rss_bytes": 201736192,
+      "max_peak_rss_bytes": 208175104,
+      "median_cli_reported_ms": 340,
+      "min_cli_reported_ms": 335,
+      "max_cli_reported_ms": 357
+    },
+    "native": {
+      "runs": 7,
+      "median_wall_ms": 87.511959,
+      "min_wall_ms": 83.996792,
+      "max_wall_ms": 97.342208,
+      "median_peak_rss_bytes": 70533120,
+      "max_peak_rss_bytes": 70975488,
+      "median_cli_reported_ms": 80,
+      "min_cli_reported_ms": 77,
+      "max_cli_reported_ms": 90
+    }
+  },
+  "native_to_jvm_wall_ratio": 0.2227028312563784
+}

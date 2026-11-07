@@ -1,0 +1,29 @@
+{
+  "platform": "macOS arm64",
+  "graalvm_version": "native-image 25.0.5.0.3 2026-10-24\nGraalVM Runtime Environment GraalVM CE 25.5.5.0.3+1.1 (build 25.0.5.0.3+1-jvmci-25.5-b26)\nSubstrate VM GraalVM CE 25.5.5.0.3+1.1 (build 25.0.5.0.3+1, serial gc, compressed references)",
+  "graalvm_release": "https://github.com/graalvm/graalvm-ce-builds/releases/tag/graal-25.5.5.0.3",
+  "graalvm_archive_sha256": "54369d4a5931a5a2101c7c52444a4e7e6647a3a4e041335053cda6fd22295e0c",
+  "installation": "/Users/amatorin/Desktop/projects/microconfig/.graalvm",
+  "binary": "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/native/microconfig",
+  "binary_bytes": 17384584,
+  "binary_sha256": "17e68e6b136842cf792c69c4aad6eeff4642b69f82bb3453b6129d791879e57a",
+  "zip_bytes": 6828975,
+  "jar_bytes": 3382302,
+  "jar_sha256": "d4c3ca6ca24f56710845a1f8b4522df5d9a439a4bea461383722645bcbddb513",
+  "command": [
+    ".graalvm/bin/native-image",
+    "--parallelism=4",
+    "-J-Xmx6g",
+    "-jar",
+    "microconfig-cli/build/libs/microconfig-cli-5.0.0.jar",
+    "microconfig-cli/build/native/microconfig"
+  ],
+  "build_log": "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/native/build.log",
+  "native_image_elapsed_seconds": 26.8,
+  "validation_summary": {
+    "cases": 238,
+    "matched": 238,
+    "jvm_successes": 174,
+    "mismatches": []
+  }
+}

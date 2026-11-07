@@ -159,14 +159,16 @@ class TemplateDeclarationsTest {
         target: String,
     ) {
         assumeFalse(Os.isWindows())
+        val targetPath = if (name.startsWith('[')) "\${templateName}/$target" else target
         write(
             "components/app/application${format.extension()}",
-            declaration(format, "mc.file.$name", "\${this@configDir}/source.txt -> $target"),
+            declaration(format, "mc.file.$name", "\${this@configDir}/source.txt -> $targetPath"),
         )
 
         build()
 
-        assertEquals("payload", Files.readString(destination.resolve("app/$target")))
+        val paths = if (name.startsWith('[')) listOf("one/$target", "two/$target") else listOf(target)
+        paths.forEach { assertEquals("payload", Files.readString(destination.resolve("app/$it"))) }
     }
 
     @ParameterizedTest

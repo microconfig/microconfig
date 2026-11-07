@@ -1,6 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.component.AdhocComponentWithVariants
 import org.gradle.language.jvm.tasks.ProcessResources
+import org.gradle.api.tasks.Sync
 
 plugins {
     application
@@ -25,14 +26,30 @@ val generateVersionProperties =
 
 tasks.named<ProcessResources>("processResources") { from(generateVersionProperties) }
 
-tasks.test { inputs.file(rootProject.file(".github/scripts/set_gradle_properties.sh")) }
+tasks.test {
+    inputs.file(rootProject.file(".github/scripts/set_gradle_properties.sh"))
+    val cliJar = tasks.named<ShadowJar>("shadowJar")
+    dependsOn(cliJar)
+    inputs.file(cliJar.flatMap { it.archiveFile })
+    systemProperty("microconfig.cli.jar", cliJar.get().archiveFile.get().asFile.absolutePath)
+}
 
 listOf("jar", "startScripts", "distZip", "distTar", "installDist").forEach { name ->
     tasks.named(name) { enabled = false }
 }
 
+val nativeImageFeatureClasses = tasks.register<Sync>("nativeImageFeatureClasses") {
+    from({ zipTree(configurations.runtimeClasspath.get().single { it.name.startsWith("spring-core-") }) }) {
+        include("org/springframework/aot/nativex/feature/**")
+    }
+    into(layout.buildDirectory.dir("native-image-feature-classes"))
+}
+
 tasks.named<ShadowJar>("shadowJar") {
     archiveClassifier.set("")
+    minimize()
+    // Spring registers these classes by name in native-image.properties.
+    sourceSetsClassesDirs.from(nativeImageFeatureClasses)
     filesMatching("META-INF/*.kotlin_module") { duplicatesStrategy = DuplicatesStrategy.INCLUDE }
 }
 

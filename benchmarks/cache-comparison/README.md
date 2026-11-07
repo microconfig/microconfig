@@ -3,7 +3,12 @@
 This fixture and runner compare complete, real CLI builds in **fresh JVM processes**.
 There are no JVM warm-up runs or wrapper entry points.
 
-**Latest comparison with parallel component resolution and existing-output builds:**
+**Latest concurrency review and cold-launch comparison after removing serializer locks:**
+see [lock-review.md](lock-review.md),
+[single-write-current-empty-results.json](single-write-current-empty-results.json), and
+[single-write-current-existing-results.json](single-write-current-existing-results.json).
+
+**Preceding comparison with parallel component resolution and existing-output builds:**
 see [parallel-optimization.md](parallel-optimization.md),
 [parallel-results.json](parallel-results.json), and
 [parallel-existing-results.json](parallel-existing-results.json).

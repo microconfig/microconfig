@@ -69,7 +69,7 @@ class CompositePropertiesRepositoryTest {
     }
 
     private fun propsMap(vararg props: Property): Map<String, Property> {
-        return stream(props).collect(toMap(Property::key, identity()))
+        return stream(props).collect(toMap({ it.key }, identity()))
     }
 
     private fun second(): Map<String, Property> {

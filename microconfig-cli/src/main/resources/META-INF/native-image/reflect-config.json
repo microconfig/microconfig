@@ -1,10 +1,10 @@
 [
   {
-    "name": "io.microconfig.core.properties.resolvers.expression.functions.CustomStringApiKt",
+    "name": "io.microconfig.core.properties.resolvers.expression.functions.impl.CustomStringApi",
     "allPublicMethods": true
   },
   {
-    "name": "io.microconfig.core.properties.resolvers.expression.functions.CustomSystemApiKt",
+    "name": "io.microconfig.core.properties.resolvers.expression.functions.impl.CustomSystemApi",
     "allPublicMethods": true
   },
   {

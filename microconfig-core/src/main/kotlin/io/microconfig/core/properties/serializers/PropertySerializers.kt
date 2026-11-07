@@ -20,6 +20,7 @@ object PropertySerializers {
     internal fun withConfigDiffFor(configIo: ConfigIo, reader: FsReader): BiConsumer<File, Collection<Property>> =
         ConfigDiff.forReader(reader, configIo)
 
+    /** Prepare the complete output list for a build, then save each unit once. Concurrent writes to one file are invalid. */
     @JvmOverloads
     fun toFileIn(
         dir: File,

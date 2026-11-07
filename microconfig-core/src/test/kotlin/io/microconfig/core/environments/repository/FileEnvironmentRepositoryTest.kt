@@ -176,7 +176,7 @@ class FileEnvironmentRepositoryTest {
     }
 
     private fun testComponents(env: String, expected: List<String>, actual: List<Component>) {
-        assertEquals(expected, actual.stream().map(Component::name).collect(toList()))
+        assertEquals(expected, actual.stream().map { it.name }.collect(toList()))
         actual.forEach({ c -> assertEquals(env, c.environment) })
     }
 

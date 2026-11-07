@@ -34,7 +34,6 @@ internal class FilePropertySerializer(
         return prepareOutputs(outputs)
     }
 
-    @Synchronized
     override fun serialize(
         properties: Collection<Property>,
         templates: List<Template>,
@@ -138,16 +137,16 @@ internal class FilePropertySerializer(
     }
 
     private fun validateOutputs(outputs: List<Output>): Set<Path> {
-        val destinations = linkedMapOf<Path, () -> ByteArray>()
+        val destinations = mutableSetOf<Path>()
         val protected = mutableSetOf<Path>()
         outputs.forEach { output ->
             require(!isDiffFileName(output.file.name)) { "Reserved diff output '${output.file}'" }
             output.templates.forEach { template ->
-                reserveOutput(template.destination, { template.contentAsBytes }, destinations)
+                reserveOutput(template.destination, destinations)
                 protected.addAll(protectedPaths(template.destination))
             }
             if (output.visible.isNotEmpty()) {
-                reserveOutput(output.file, { configContent(output.file, output.visible) }, destinations, output.path)
+                reserveOutput(output.file, destinations, output.path)
                 protected.add(output.file.toPath().toAbsolutePath().normalize())
                 protected.add(output.path)
             }
@@ -160,24 +159,16 @@ internal class FilePropertySerializer(
 
     private fun reserveOutput(
         file: File,
-        content: () -> ByteArray,
-        destinations: MutableMap<Path, () -> ByteArray>,
+        destinations: MutableSet<Path>,
         path: Path = outputPath(file),
     ) {
         require(!isDiffFileName(file.name) && !isDiffFileName(path.fileName.toString())) {
             "Reserved diff output '$file'"
         }
-        val previous = destinations.putIfAbsent(path, content)
-        require(previous == null || previous().contentEquals(content())) {
+        require(destinations.add(path)) {
             "Several outputs have the same destination '$file'"
         }
     }
-
-    private fun configContent(file: File, properties: Collection<Property>): ByteArray =
-        configIo
-            .writeTo(file)
-            .serialize(properties.filterNot { it.isVar })
-            .toByteArray(Charsets.UTF_8)
 
     private fun protectedPaths(file: File): Set<Path> =
         setOf(file.toPath().toAbsolutePath().normalize(), outputPath(file))
@@ -206,12 +197,11 @@ internal class FilePropertySerializer(
             if (outputs.none { it.templates.isNotEmpty() }) emptyMap()
             else outputs.flatMap { listOf(it.file, oppositeConfig(it.file)) }
                 .groupBy(::outputPath).filterKeys { it !in generated }
-        val completed = mutableSetOf<Path>()
+        val completed = ConcurrentHashMap.newKeySet<Path>()
         return object : PropertySerializer<File> {
             override fun prepare(properties: List<TypedProperties>): PropertySerializer<File> =
                 this@FilePropertySerializer.prepare(properties)
 
-            @Synchronized
             override fun serialize(
                 properties: Collection<Property>,
                 templates: List<Template>,
@@ -239,6 +229,12 @@ internal class FilePropertySerializer(
             resultFormat(output.properties) == resultFormat(properties) &&
                 configContent(output.file, output.properties).contentEquals(configContent(output.file, properties))
 
+    private fun configContent(file: File, properties: Collection<Property>): ByteArray =
+        configIo
+            .writeTo(file)
+            .serialize(properties.filterNot { it.isVar })
+            .toByteArray(Charsets.UTF_8)
+
     private fun sameTemplates(first: List<Template>, second: List<Template>): Boolean =
         first.size == second.size && first.zip(second).all { (left, right) ->
             left === right || left.source == right.source && left.destination == right.destination &&
@@ -251,17 +247,11 @@ internal class FilePropertySerializer(
         notifications: Map<Path, () -> Unit>,
         completed: MutableSet<Path>,
     ): () -> Unit {
-        if (output.path in completed ||
-            output.visible.isEmpty() && isProtected(output.file, protected)) return {}
-        val notify = notifications[output.path] ?: run {
-            listener.accept(output.file, output.properties)
-            fun() {}
-        }
-        return {
-            notify()
-            completed.add(output.path)
-            Unit
-        }
+        if (output.visible.isEmpty() && isProtected(output.file, protected) ||
+            !completed.add(output.path)) return {}
+        notifications[output.path]?.let { return it }
+        listener.accept(output.file, output.properties)
+        return {}
     }
 
     private fun writeOutput(output: Output, protected: Set<Path>) {

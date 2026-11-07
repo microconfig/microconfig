@@ -1,0 +1,370 @@
+{
+  "method": "Alternating fresh JVM/native processes, 7 runs each, default flags and logging, same fixture, OS cache not flushed; prepare destinations outside timing",
+  "mode": "empty",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "java_version": "openjdk version \"25.0.2\" 2026-01-20\nOpenJDK Runtime Environment (build 25.0.2+10-69)\nOpenJDK 64-Bit Server VM (build 25.0.2+10-69, mixed mode, sharing)",
+  "jar_sha256": "d4c3ca6ca24f56710845a1f8b4522df5d9a439a4bea461383722645bcbddb513",
+  "native_sha256": "17e68e6b136842cf792c69c4aad6eeff4642b69f82bb3453b6129d791879e57a",
+  "samples": {
+    "jvm": [
+      {
+        "round": 1,
+        "order": 1,
+        "wall_ms": 356.999666,
+        "cli_reported_ms": 302,
+        "user_ms": 1607.367,
+        "system_ms": 148.73,
+        "peak_rss_bytes": 173342720,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/libs/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/00-jvm"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/00-jvm",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/00-jvm.log"
+      },
+      {
+        "round": 2,
+        "order": 2,
+        "wall_ms": 356.66125,
+        "cli_reported_ms": 302,
+        "user_ms": 1484.599,
+        "system_ms": 143.283,
+        "peak_rss_bytes": 170950656,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/libs/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/01-jvm"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/01-jvm",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/01-jvm.log"
+      },
+      {
+        "round": 3,
+        "order": 1,
+        "wall_ms": 375.366375,
+        "cli_reported_ms": 320,
+        "user_ms": 1456.982,
+        "system_ms": 139.636,
+        "peak_rss_bytes": 159432704,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/libs/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/02-jvm"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/02-jvm",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/02-jvm.log"
+      },
+      {
+        "round": 4,
+        "order": 2,
+        "wall_ms": 349.537625,
+        "cli_reported_ms": 297,
+        "user_ms": 1393.298,
+        "system_ms": 131.78099999999998,
+        "peak_rss_bytes": 167067648,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/libs/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/03-jvm"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/03-jvm",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/03-jvm.log"
+      },
+      {
+        "round": 5,
+        "order": 1,
+        "wall_ms": 361.284834,
+        "cli_reported_ms": 308,
+        "user_ms": 1548.192,
+        "system_ms": 156.79,
+        "peak_rss_bytes": 171655168,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/libs/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/04-jvm"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/04-jvm",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/04-jvm.log"
+      },
+      {
+        "round": 6,
+        "order": 2,
+        "wall_ms": 380.424,
+        "cli_reported_ms": 327,
+        "user_ms": 1508.335,
+        "system_ms": 164.028,
+        "peak_rss_bytes": 174080000,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/libs/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/05-jvm"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/05-jvm",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/05-jvm.log"
+      },
+      {
+        "round": 7,
+        "order": 1,
+        "wall_ms": 362.362917,
+        "cli_reported_ms": 307,
+        "user_ms": 1587.119,
+        "system_ms": 151.40499999999997,
+        "peak_rss_bytes": 172408832,
+        "command": [
+          "/usr/bin/java",
+          "-jar",
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/libs/microconfig-cli-5.0.0.jar",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/06-jvm"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/06-jvm",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/06-jvm.log"
+      }
+    ],
+    "native": [
+      {
+        "round": 1,
+        "order": 2,
+        "wall_ms": 88.937125,
+        "cli_reported_ms": 80,
+        "user_ms": 75.54899999999999,
+        "system_ms": 72.865,
+        "peak_rss_bytes": 67813376,
+        "command": [
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/native/microconfig",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/00-native"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/00-native",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/00-native.log"
+      },
+      {
+        "round": 2,
+        "order": 1,
+        "wall_ms": 85.504292,
+        "cli_reported_ms": 78,
+        "user_ms": 74.99,
+        "system_ms": 67.36,
+        "peak_rss_bytes": 67796992,
+        "command": [
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/native/microconfig",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/01-native"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/01-native",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/01-native.log"
+      },
+      {
+        "round": 3,
+        "order": 2,
+        "wall_ms": 98.478917,
+        "cli_reported_ms": 91,
+        "user_ms": 76.792,
+        "system_ms": 69.562,
+        "peak_rss_bytes": 67911680,
+        "command": [
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/native/microconfig",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/02-native"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/02-native",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/02-native.log"
+      },
+      {
+        "round": 4,
+        "order": 1,
+        "wall_ms": 84.281625,
+        "cli_reported_ms": 77,
+        "user_ms": 74.814,
+        "system_ms": 59.13699999999999,
+        "peak_rss_bytes": 67911680,
+        "command": [
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/native/microconfig",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/03-native"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/03-native",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/03-native.log"
+      },
+      {
+        "round": 5,
+        "order": 2,
+        "wall_ms": 88.034833,
+        "cli_reported_ms": 81,
+        "user_ms": 76.64599999999999,
+        "system_ms": 69.28099999999999,
+        "peak_rss_bytes": 67829760,
+        "command": [
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/native/microconfig",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/04-native"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/04-native",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/04-native.log"
+      },
+      {
+        "round": 6,
+        "order": 1,
+        "wall_ms": 85.796125,
+        "cli_reported_ms": 79,
+        "user_ms": 75.269,
+        "system_ms": 71.728,
+        "peak_rss_bytes": 67878912,
+        "command": [
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/native/microconfig",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/05-native"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/05-native",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/05-native.log"
+      },
+      {
+        "round": 7,
+        "order": 2,
+        "wall_ms": 88.169125,
+        "cli_reported_ms": 81,
+        "user_ms": 75.156,
+        "system_ms": 71.588,
+        "peak_rss_bytes": 67813376,
+        "command": [
+          "/Users/amatorin/Desktop/projects/microconfig/microconfig-cli/build/native/microconfig",
+          "-r",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/fixture",
+          "-e",
+          "dev",
+          "-d",
+          "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/06-native"
+        ],
+        "destination": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/06-native",
+        "log": "/Users/amatorin/Desktop/projects/microconfig/benchmarks/cache-comparison/work/native/empty-bwmf8sq8/06-native.log"
+      }
+    ]
+  },
+  "output_validation": [
+    {
+      "round": 1,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 2,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 3,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 4,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 5,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 6,
+      "files": 100,
+      "byte_identical": true
+    },
+    {
+      "round": 7,
+      "files": 100,
+      "byte_identical": true
+    }
+  ],
+  "summary": {
+    "jvm": {
+      "runs": 7,
+      "median_wall_ms": 361.284834,
+      "min_wall_ms": 349.537625,
+      "max_wall_ms": 380.424,
+      "median_peak_rss_bytes": 171655168,
+      "max_peak_rss_bytes": 174080000,
+      "median_cli_reported_ms": 307,
+      "min_cli_reported_ms": 297,
+      "max_cli_reported_ms": 327
+    },
+    "native": {
+      "runs": 7,
+      "median_wall_ms": 88.034833,
+      "min_wall_ms": 84.281625,
+      "max_wall_ms": 98.478917,
+      "median_peak_rss_bytes": 67829760,
+      "max_peak_rss_bytes": 67911680,
+      "median_cli_reported_ms": 80,
+      "min_cli_reported_ms": 77,
+      "max_cli_reported_ms": 91
+    }
+  },
+  "native_to_jvm_wall_ratio": 0.24367154310164044
+}

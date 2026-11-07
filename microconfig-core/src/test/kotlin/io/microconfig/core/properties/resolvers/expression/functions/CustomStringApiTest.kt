@@ -1,5 +1,15 @@
 package io.microconfig.core.properties.resolvers.expression.functions
 
+import io.microconfig.core.properties.resolvers.expression.functions.impl.CustomStringApi
+import io.microconfig.core.properties.resolvers.expression.functions.impl.CustomStringApi.base64
+import io.microconfig.core.properties.resolvers.expression.functions.impl.CustomStringApi.bytesBase64
+import io.microconfig.core.properties.resolvers.expression.functions.impl.CustomStringApi.delete
+import io.microconfig.core.properties.resolvers.expression.functions.impl.CustomStringApi.findGroup
+import io.microconfig.core.properties.resolvers.expression.functions.impl.CustomStringApi.findGroupOrDefault
+import io.microconfig.core.properties.resolvers.expression.functions.impl.CustomStringApi.removeLineSeparators
+import io.microconfig.core.properties.resolvers.expression.functions.impl.CustomStringApi.replaceLineSeparators
+import io.microconfig.core.properties.resolvers.expression.functions.impl.CustomStringApi.substringAfterFirst
+import io.microconfig.core.properties.resolvers.expression.functions.impl.CustomStringApi.substringAfterLast
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
@@ -25,13 +35,7 @@ class CustomStringApiTest {
 
     @Test
     fun removeUuidFromTheFunctionApi() {
-        assertFalse(
-            Class.forName(
-                    "io.microconfig.core.properties.resolvers.expression.functions.CustomStringApiKt"
-                )
-                .methods
-                .any { it.name == "uuid4" }
-        )
+        assertFalse(CustomStringApi::class.java.methods.any { it.name == "uuid4" })
     }
 
     @Test

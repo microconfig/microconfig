@@ -3,6 +3,8 @@ package io.microconfig.core.properties.resolvers.expression.impl
 import io.microconfig.core.properties.DeclaringComponent
 import io.microconfig.core.properties.ResolveException
 import io.microconfig.core.properties.resolvers.RecursiveResolver
+import io.microconfig.core.properties.resolvers.expression.functions.impl.CustomStringApi
+import io.microconfig.core.properties.resolvers.expression.functions.impl.CustomSystemApi
 import io.microconfig.core.properties.resolvers.placeholder.PlaceholderBorders
 import java.util.Optional
 import java.util.regex.MatchResult
@@ -12,12 +14,8 @@ import java.util.stream.Stream
 class ExpressionResolver : RecursiveResolver {
     private val evaluator =
         ExpressionEvaluator.withFunctionsFrom(
-            Class.forName(
-                "io.microconfig.core.properties.resolvers.expression.functions.CustomStringApiKt"
-            ),
-            Class.forName(
-                "io.microconfig.core.properties.resolvers.expression.functions.CustomSystemApiKt"
-            ),
+            CustomStringApi::class.java,
+            CustomSystemApi::class.java,
         )
 
     override fun findStatementIn(line: CharSequence): Optional<RecursiveResolver.Statement> =

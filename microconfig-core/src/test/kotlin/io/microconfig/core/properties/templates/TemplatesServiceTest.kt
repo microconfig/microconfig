@@ -36,20 +36,21 @@ class TemplatesServiceTest {
         Files.createDirectories(source.parent)
         Files.writeString(source, "hello")
         val sourcePath = "\${this@configRoot}/" + sourceText(directory, format) + "/template.txt"
-        val destinationPath = "output " + sourceText(directory, format) + "/\${this@name}.txt"
+        val destinationPath = "output " + sourceText(directory, format) + "/\${this@name}-\${templateName}.txt"
         writeComponent(
             format,
             templateDefinition(format, notation, type, sourcePath, destinationPath),
         )
         val templates = buildTemplates()
         assertEquals(if (notation == "brackets") 2 else 1, templates.size)
-        val destination = destinationFile("output $directory/target.txt").toFile()
-        templates.forEach { template ->
+        val names = if (notation == "brackets") listOf("first", "second") else listOf("example")
+        templates.zip(names).forEach { (template, name) ->
+            val destination = destinationFile("output $directory/target-$name.txt").toFile()
             assertEquals(source.toFile().canonicalFile, template.source.canonicalFile)
             assertEquals(destination.canonicalFile, template.destination.canonicalFile)
             assertEquals("hello", template.content)
+            assertEquals("hello", destination.readText())
         }
-        assertEquals("hello", destination.readText())
     }
 
     private fun sourceText(text: String, format: ConfigFormat): String =

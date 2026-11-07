@@ -37,7 +37,7 @@ class YamlEnvironmentRepositoryTest {
         assertEquals(setOf("dev"), repository.environmentNames())
         assertEquals(
             listOf("dev"),
-            repository.environments().stream().map(Environment::name).toList(),
+            repository.environments().stream().map { it.name }.toList(),
         )
     }
 

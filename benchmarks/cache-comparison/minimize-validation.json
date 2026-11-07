@@ -1,0 +1,89 @@
+{
+  "full": {
+    "modules": {
+      "microconfig-core": {
+        "tests": 2192,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "microconfig-api": {
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "microconfig-cli": {
+        "tests": 63,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "utils": {
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "total_tests": 2275,
+    "jar_bytes": 5278114,
+    "jar_sha256": "d13728c8ac0aadd9dfb5d36bf6e7a3e36f806f9fec580daea0a2d2964e38dab5"
+  },
+  "minimized": {
+    "modules": {
+      "microconfig-core": {
+        "tests": 2192,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "microconfig-api": {
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "microconfig-cli": {
+        "tests": 63,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "utils": {
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "total_tests": 2275,
+    "jar_bytes": 3382302,
+    "jar_sha256": "d4c3ca6ca24f56710845a1f8b4522df5d9a439a4bea461383722645bcbddb513"
+  },
+  "common_entries": 1979,
+  "different_common_entries": [],
+  "removed_entries": 1277,
+  "empty_timing": {
+    "full_median_ms": 315.254125,
+    "minimized_median_ms": 321.018666,
+    "median_wall_ratio": 1.0182853785021846,
+    "paired_geometric_mean_ratio": 1.0034215193557392,
+    "paired_bootstrap_95_percent_interval": [
+      0.9821934391913602,
+      1.024303333449693
+    ],
+    "byte_identical_rounds": 15
+  },
+  "existing_timing": {
+    "full_median_ms": 365.748667,
+    "minimized_median_ms": 353.191042,
+    "median_wall_ratio": 0.9656659719282038,
+    "paired_geometric_mean_ratio": 0.9791115559354336,
+    "paired_bootstrap_95_percent_interval": [
+      0.9544717800779072,
+      1.0041337814646834
+    ],
+    "byte_identical_rounds": 15
+  }
+}
