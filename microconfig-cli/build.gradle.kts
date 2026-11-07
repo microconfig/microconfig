@@ -25,6 +25,8 @@ val generateVersionProperties =
 
 tasks.named<ProcessResources>("processResources") { from(generateVersionProperties) }
 
+tasks.test { inputs.file(rootProject.file(".github/scripts/set_gradle_properties.sh")) }
+
 listOf("jar", "startScripts", "distZip", "distTar", "installDist").forEach { name ->
     tasks.named(name) { enabled = false }
 }

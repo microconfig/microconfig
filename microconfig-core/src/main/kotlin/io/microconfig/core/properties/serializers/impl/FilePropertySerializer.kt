@@ -24,10 +24,15 @@ internal class FilePropertySerializer(
     private val listener: BiConsumer<File, Collection<Property>>,
     private val configIo: ConfigIo,
     private val protectedOutputs: Set<Path> = emptySet(),
+    private val notifiedOutputs: MutableSet<Path>? = null,
+    private val preparedNotifications: Map<Path, () -> Unit> = emptyMap(),
 ) : PropertySerializer<File> {
     override fun prepare(properties: List<TypedProperties>): PropertySerializer<File> {
         val outputs = collectOutputs(properties)
-        return FilePropertySerializer(directory, listener, configIo, outputs)
+        val notifications = prepareNotifications(properties, outputs)
+        return FilePropertySerializer(
+            directory, listener, configIo, outputs, mutableSetOf(), notifications
+        )
     }
 
     private fun collectOutputs(properties: List<TypedProperties>): Set<Path> {
@@ -52,6 +57,22 @@ internal class FilePropertySerializer(
             }
         }
         return protected
+    }
+
+    private fun prepareNotifications(
+        properties: List<TypedProperties>,
+        protected: Set<Path>,
+    ): Map<Path, () -> Unit> {
+        if (listener !is ConfigChangeListener) return emptyMap()
+        val notifications = linkedMapOf<Path, () -> Unit>()
+        properties.forEach { unit ->
+            val empty = unit.properties.none { !it.isVar }
+            val file =
+                resultFile(unit.declaringComponent.component, unit.configType, unit.properties, empty)
+            if (!empty || !isProtected(file, protected))
+                notifications.getOrPut(outputPath(file)) { listener.prepare(file, unit.properties) }
+        }
+        return notifications
     }
 
     private fun reserveOutput(
@@ -170,7 +191,18 @@ internal class FilePropertySerializer(
         protected: Set<Path>,
     ): () -> Unit {
         if (empty && isProtected(file, protected)) return {}
-        if (listener is ConfigChangeListener) return listener.prepare(file, properties)
+        val path = outputPath(file)
+        if (notifiedOutputs?.contains(path) == true) return {}
+        val notify = prepareListenerNotification(file, properties)
+        return {
+            notify()
+            notifiedOutputs?.add(path)
+        }
+    }
+
+    private fun prepareListenerNotification(file: File, properties: Collection<Property>): () -> Unit {
+        if (listener is ConfigChangeListener)
+            return preparedNotifications[outputPath(file)] ?: listener.prepare(file, properties)
         listener.accept(file, properties)
         return {}
     }

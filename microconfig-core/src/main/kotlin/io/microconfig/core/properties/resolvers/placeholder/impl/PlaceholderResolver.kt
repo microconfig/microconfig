@@ -27,6 +27,7 @@ private constructor(
     private val expressions: RecursiveResolver,
     private val cache: PropertyResolutionCache,
     private val visited: Set<Placeholder>,
+    private val explicitEnvironment: String?,
 ) : RecursiveResolver {
     constructor(
         environments: EnvironmentRepository,
@@ -39,6 +40,7 @@ private constructor(
         ExpressionResolver(),
         PropertyResolutionCache(),
         emptySet(),
+        null,
     )
 
     internal constructor(
@@ -47,7 +49,7 @@ private constructor(
         nonOverridableKeys: Set<String>,
         expressions: RecursiveResolver,
         cache: PropertyResolutionCache,
-    ) : this(environments, strategy, nonOverridableKeys, expressions, cache, emptySet())
+    ) : this(environments, strategy, nonOverridableKeys, expressions, cache, emptySet(), null)
 
     override fun findStatementIn(line: CharSequence): Optional<RecursiveResolver.Statement> =
         PlaceholderBorders.findPlaceholderIn(line).map(::PlaceholderStatement)
@@ -71,7 +73,7 @@ private constructor(
             val source = requireNotNull(sourceOfValue)
             val context = requireNotNull(root)
             val placeholder = contextualPlaceholder(source, context)
-            return resolveOrDefault(placeholder, source, context)
+            return resolveOrDefault(placeholder, source, rootFor(placeholder, context))
         }
 
         private fun contextualPlaceholder(
@@ -79,6 +81,8 @@ private constructor(
             root: DeclaringComponent,
         ): Placeholder {
             val placeholder = borders.toPlaceholder(source.configType, source.environment)
+            if (borders.hasExplicitEnvironment) return placeholder
+            if (explicitEnvironment != null) return placeholder.withEnvironment(explicitEnvironment)
             return if (
                 placeholder.environment != root.environment &&
                     placeholder.environment in environments.profilesOf(root.environment)
@@ -86,6 +90,14 @@ private constructor(
                 placeholder.withEnvironment(root.environment)
             else placeholder
         }
+
+        private fun rootFor(placeholder: Placeholder, root: DeclaringComponent): DeclaringComponent {
+            val environment = explicitEnvironmentFor(placeholder) ?: return root
+            return DeclaringComponentImpl(root.configType, root.component, environment)
+        }
+
+        private fun explicitEnvironmentFor(placeholder: Placeholder): String? =
+            if (borders.hasExplicitEnvironment) placeholder.environment else explicitEnvironment
 
         private fun resolveOrDefault(
             placeholder: Placeholder,
@@ -113,9 +125,13 @@ private constructor(
             source: DeclaringComponent,
             root: DeclaringComponent,
         ): String {
+            val environment = explicitEnvironmentFor(placeholder)
             val candidates =
                 (listOf(root) + visited.map { it.referencedComponent } + source)
-                    .map(DeclaringComponentImpl::copyOf)
+                    .map {
+                        if (environment == null) DeclaringComponentImpl.copyOf(it)
+                        else DeclaringComponentImpl(it.configType, it.component, environment)
+                    }
                     .distinct()
             return candidates.firstNotNullOfOrNull {
                 tryResolve(placeholder.overrideBy(it), source, root)
@@ -144,6 +160,7 @@ private constructor(
                     YamlResolvers.forValues(resolverWithVisited(placeholder), expressions),
                     cache,
                     visited.toList() + placeholder,
+                    explicitEnvironmentFor(placeholder),
                 )
             val value = property.resolveBy(resolver, root).value
             plainText = property.configFormat != YAML
@@ -161,6 +178,7 @@ private constructor(
                 expressions,
                 cache,
                 visited + placeholder,
+                explicitEnvironmentFor(placeholder),
             )
         }
 

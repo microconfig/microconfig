@@ -7,6 +7,7 @@ import io.microconfig.core.properties.Property
 import io.microconfig.core.properties.PropertyImpl.Companion.literalProperty
 import io.microconfig.core.properties.PropertyImpl.Companion.property
 import io.microconfig.core.properties.Resolver
+import io.microconfig.core.properties.io.properties.PropertiesText
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.resolvers.RecursiveResolver
 import io.microconfig.core.properties.resolvers.expression.impl.ExpressionResolver.Companion.expressionsIn
@@ -28,9 +29,9 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
     ): String = delegate.resolve(value, sourceOfValue, root)
 
     override fun resolve(property: Property, root: DeclaringComponent): String {
-        if ((property.declaringComponent as? FileBasedComponent)?.isYaml != true)
-            return delegate.resolve(property, root)
-        if (property.configFormat != YAML || property.isLiteralText)
+        val source = property.declaringComponent as? FileBasedComponent
+        if (source == null) return delegate.resolve(property, root)
+        if (!source.isYaml || property.configFormat != YAML || property.isLiteralText)
             return resolveScalar(property, root)
         return resolveYamlProperty(property, root)
     }
@@ -114,6 +115,7 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
     }
 
     private fun resolveScalar(property: Property, root: DeclaringComponent): String {
+        val propertiesText = PropertiesText.isPropertiesText(property.declaringComponent)
         val yamlSyntax = property.configFormat == YAML && !property.isLiteralText
         val quoted = yamlSyntax && YamlScalars.isQuoted(property.value)
         val result =
@@ -143,7 +145,8 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
                 stringValue = quoted
             }
             if (
-                !current.isPlainText &&
+                !propertiesText &&
+                    !current.isPlainText &&
                     (quoted || !yamlSyntax || !wholeValue) &&
                     YamlScalars.isQuoted(value)
             ) {
@@ -186,19 +189,41 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
         property: Property,
         root: DeclaringComponent,
     ): String {
-        val result = StringBuilder(expression)
+        val propertiesText = PropertiesText.isPropertiesText(property.declaringComponent)
+        val result =
+            StringBuilder(if (propertiesText) PropertiesText.unescape(expression) else expression)
         while (true) {
-            val current = delegate.findStatementIn(result).orElse(null) ?: return result.toString()
-            val value = current.resolveFor(property.declaringComponent, root)
-            if (current.startIndex == 0 && current.endIndex == result.length) return value
+            val current =
+                delegate.findStatementIn(result).orElse(null)
+                    ?: return expressionResult(result.toString(), propertiesText)
+            val statement = if (propertiesText) encodedStatement(result, current) else current
+            val resolved = statement.resolveFor(property.declaringComponent, root)
+            val value = if (propertiesText) PropertiesText.unescape(resolved) else resolved
+            if (current.startIndex == 0 && current.endIndex == result.length)
+                return expressionResult(value, propertiesText)
             val quote = expressionQuoteAt(result, current.startIndex)
             result.replace(
                 current.startIndex,
                 current.endIndex,
-                expressionValue(value, current, quote),
+                expressionValue(value, statement, quote, property.declaringComponent),
             )
         }
     }
+
+    private fun expressionResult(value: String, propertiesText: Boolean): String =
+        if (propertiesText) PropertiesText.escape(value) else value
+
+    private fun encodedStatement(
+        value: CharSequence,
+        statement: RecursiveResolver.Statement,
+    ): RecursiveResolver.Statement =
+        delegate
+            .findStatementIn(
+                PropertiesText.escape(
+                    value.subSequence(statement.startIndex, statement.endIndex).toString()
+                )
+            )
+            .orElseThrow { IllegalStateException("Can't locate expression statement") }
 
     private fun expressionQuoteAt(expression: CharSequence, offset: Int): Char? {
         var quote: Char? = null
@@ -225,8 +250,12 @@ class YamlValueResolver(private val delegate: RecursiveResolver) : Resolver {
         value: String,
         statement: RecursiveResolver.Statement,
         quote: Char?,
+        source: DeclaringComponent?,
     ): String {
-        val yamlString = !statement.isPlainText && YamlScalars.isQuoted(value)
+        val yamlString =
+            !PropertiesText.isPropertiesText(source) &&
+                !statement.isPlainText &&
+                YamlScalars.isQuoted(value)
         val text = if (yamlString) YamlScalars.unquote(value) else value
         return when {
             quote != null -> text.replace(quote.toString(), quote.toString().repeat(2))

@@ -76,8 +76,7 @@ internal class YamlSource(val original: String) {
         while (position < original.length) {
             val character = original[position]
             if (quote != null) {
-                if (character == '\\' && quote == '"') position++
-                else if (character == quote) {
+                if (character == quote) {
                     if (position + 1 < original.length && original[position + 1] == quote)
                         position++
                     else quote = null

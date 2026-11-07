@@ -9,6 +9,9 @@ private constructor(
     val endIndex: Int,
     private val header: MatchResult,
 ) {
+    val hasExplicitEnvironment: Boolean
+        get() = header.groups["environment"] != null
+
     fun toPlaceholder(contextConfigType: String, contextEnv: String): Placeholder =
         Placeholder(
             header.groups["type"]?.value ?: contextConfigType,

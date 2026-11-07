@@ -1,5 +1,5 @@
 context: dev
 
-prop1: dev#todo
+prop1: prod
 
 prop2: dev

@@ -5,12 +5,17 @@ import io.microconfig.core.properties.TypedProperties
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.io.yaml.YamlTree
 import io.microconfig.core.properties.templates.TemplateContentPostProcessor
+import io.microconfig.utils.IoUtils.readFully
 import io.microconfig.utils.Logger
 import java.io.File
-import java.io.FileReader
+import java.io.Reader
+import java.util.function.UnaryOperator
 import org.yaml.snakeyaml.Yaml
 
-class MustacheTemplateProcessor : TemplateContentPostProcessor {
+class MustacheTemplateProcessor
+@JvmOverloads
+constructor(private val partialProcessor: UnaryOperator<String> = UnaryOperator.identity()) :
+    TemplateContentPostProcessor {
     override fun process(
         templateType: String,
         source: File,
@@ -26,8 +31,11 @@ class MustacheTemplateProcessor : TemplateContentPostProcessor {
 
     private fun compile(source: File, content: String): com.samskivert.mustache.Template =
         Mustache.compiler()
-            .withLoader { name -> FileReader(resolvePartial(source, name), Charsets.UTF_8) }
+            .withLoader { name -> readPartial(source, name) }
             .compile(content)
+
+    private fun readPartial(source: File, name: String): Reader =
+        partialProcessor.apply(readFully(resolvePartial(source, name))).reader()
 
     private fun resolvePartial(source: File, name: String): File =
         File(name).let {

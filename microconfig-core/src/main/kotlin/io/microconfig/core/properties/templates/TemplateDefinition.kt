@@ -15,7 +15,7 @@ constructor(
     private val templateType: String,
     val templateName: String,
     private val templatePattern: TemplatePattern,
-    private val postProcessor: TemplateContentPostProcessor = MustacheTemplateProcessor(),
+    private val postProcessor: TemplateContentPostProcessor? = null,
 ) {
     var fromFile: File? = null
         private set
@@ -43,9 +43,14 @@ constructor(
         val source = templateFile()
         val destination = destinationFile(component, resolver)
         if (templateType == "file") return BinaryTemplate(templateName, source, destination)
-        return StringTemplate(templateName, source, destination, templatePattern.placeholderPattern)
-            .resolveBy(resolver, component)
-            .postProcessContent(postProcessor, templateType, properties)
+        val template =
+            StringTemplate(templateName, source, destination, templatePattern.placeholderPattern)
+                .resolveBy(resolver, component)
+        val processor =
+            postProcessor ?: MustacheTemplateProcessor { content ->
+                template.withContent(content).resolveBy(resolver, component).content
+            }
+        return template.postProcessContent(processor, templateType, properties)
     }
 
     private fun templateFile(): File {

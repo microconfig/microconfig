@@ -26,12 +26,17 @@ jobs:
           SECRET_PASSPHRASE: ${{ secrets.SECRET_PASSPHRASE }}
 
       - name: Fill gradle properties
+        env:
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          SIGNING_KEYID: ${{ secrets.SIGNING_KEYID }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
         run: |
-          ./.github/scripts/set_gradle_properties.sh ossrhUsername ${{ secrets.SONATYPE_USERNAME }}
-          ./.github/scripts/set_gradle_properties.sh ossrhPassword '${{ secrets.SONATYPE_PASSWORD }}'
-          ./.github/scripts/set_gradle_properties.sh signing.keyId ${{ secrets.SIGNING_KEYID }}
-          ./.github/scripts/set_gradle_properties.sh signing.password ${{ secrets.SIGNING_PASSWORD }}
-          ./.github/scripts/set_gradle_properties.sh signing.secretKeyRingFile $HOME/secrets/secring.pgp
+          ./.github/scripts/set_gradle_properties.sh ossrhUsername "$SONATYPE_USERNAME"
+          ./.github/scripts/set_gradle_properties.sh ossrhPassword "$SONATYPE_PASSWORD"
+          ./.github/scripts/set_gradle_properties.sh signing.keyId "$SIGNING_KEYID"
+          ./.github/scripts/set_gradle_properties.sh signing.password "$SIGNING_PASSWORD"
+          ./.github/scripts/set_gradle_properties.sh signing.secretKeyRingFile "$HOME/secrets/secring.pgp"
 
       - name: Publish to Maven Central
         run: |

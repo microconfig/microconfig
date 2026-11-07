@@ -108,7 +108,7 @@ private constructor(
     fun logger(enabled: Boolean) = Logger.enableLogger(enabled)
 
     inner class Dependencies {
-        private val lazyEnvironments = LazyInitEnvRepository()
+        private val lazyEnvironments = LazyInitEnvRepository { environments }
         val environments: EnvironmentRepository by lazy(::initEnvironments)
         val componentFactory: ComponentFactory by lazy(::initComponentFactory)
         val configTypeRepository: ConfigTypeRepository by lazy(::initConfigTypeRepository)

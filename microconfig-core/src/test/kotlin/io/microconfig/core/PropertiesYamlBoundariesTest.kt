@@ -104,6 +104,82 @@ class PropertiesYamlBoundariesTest {
     }
 
     @ParameterizedTest
+    @ValueSource(strings = ["'", "\""])
+    fun escapeQuotesInPropertiesExpressionArguments(quote: String) {
+        val text = "O'Reilly \"book\" C:\\temp"
+        writeComponent("source", YAML, "value: 'O''Reilly \"book\" C:\\temp'\n")
+        writeComponent("bridge", PROPERTIES, "value=\${source@value}\n")
+        writeComponent(
+            "target",
+            PROPERTIES,
+            "direct=#{${quote}\${source@value}${quote}.length()}\n" +
+                "bridge=#{${quote}\${bridge@value}${quote}.length()}\n" +
+                "nested=#{#{${quote}\${source@value}${quote}.length()} + 1}\n",
+        )
+
+        val result = readProperties(build("target"))
+
+        assertEquals(text.length.toString(), result.getProperty("direct"))
+        assertEquals(text.length.toString(), result.getProperty("bridge"))
+        assertEquals((text.length + 1).toString(), result.getProperty("nested"))
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["'abc'", "\"abc\""])
+    fun keepLiteralQuotesWhenResolvingPropertiesValues(text: String) {
+        writeComponent("source", YAML, "value: |\n  $text\n")
+        writeComponent(
+            "target",
+            PROPERTIES,
+            "plain=\${source@value}\nlength=#{'\${source@value}'.length()}\n",
+        )
+
+        val result = readProperties(build("target"))
+
+        assertEquals("$text\n", result.getProperty("plain"))
+        assertEquals((text.length + 1).toString(), result.getProperty("length"))
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["O\\u0027Reilly", "say \\u0022hello\\u0022", "literal \\\\u0027", "C:\\\\temp\\\\"])
+    fun decodePropertiesArgumentsBeforeEscapingForExpressions(encoded: String) {
+        writeComponent("source", PROPERTIES, "value=$encoded\n")
+        writeComponent(
+            "target",
+            PROPERTIES,
+            "single=#{'\${source@value}'.length()}\n" +
+                "double=#{\"\${source@value}\".length()}\n" +
+                "nested=#{#{'\${source@value}'.length()} + 1}\n" +
+                "plain=\${source@value}\n",
+        )
+
+        val expected = readProperties("value=$encoded").getProperty("value")
+        val result = readProperties(build("target"))
+
+        assertEquals(expected.length.toString(), result.getProperty("single"))
+        assertEquals(expected.length.toString(), result.getProperty("double"))
+        assertEquals((expected.length + 1).toString(), result.getProperty("nested"))
+        assertEquals(expected, result.getProperty("plain"))
+    }
+
+    @Test
+    fun evaluateDoubleQuotedExpressionArgumentsEndingWithBackslashInYaml() {
+        writeComponent("source", YAML, "value: 'abc\\'\n")
+        writeComponent(
+            "target",
+            YAML,
+            "direct: #{\"abc\\\".length()}\n" +
+                "placeholder: #{\"\${source@value}\".length()}\n" +
+                "items: [{count: #{\"\${source@value}\".length()}}]\n",
+        )
+
+        assertEquals(
+            mapOf("direct" to 4, "placeholder" to 4, "items" to listOf(mapOf("count" to 4))),
+            readYaml(build("target")),
+        )
+    }
+
+    @ParameterizedTest
     @ValueSource(
         strings =
             [

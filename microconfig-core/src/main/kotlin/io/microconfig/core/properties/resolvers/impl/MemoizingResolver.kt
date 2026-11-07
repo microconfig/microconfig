@@ -9,6 +9,7 @@ internal class MemoizingResolver(
     private val delegate: Resolver,
     private val cache: PropertyResolutionCache,
     private val referenceChain: List<Placeholder> = emptyList(),
+    private val explicitEnvironment: String? = null,
 ) : Resolver {
     override fun resolve(
         value: String,
@@ -17,5 +18,5 @@ internal class MemoizingResolver(
     ): String = delegate.resolve(value, sourceOfValue, root)
 
     override fun resolve(property: Property, root: DeclaringComponent): String =
-        cache.resolve(property, root, delegate, referenceChain)
+        cache.resolve(property, root, delegate, referenceChain, explicitEnvironment)
 }

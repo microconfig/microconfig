@@ -2,4 +2,4 @@ direct: prod
 
 ref: prod
 
-ref2: dev#todo
+ref2: prod

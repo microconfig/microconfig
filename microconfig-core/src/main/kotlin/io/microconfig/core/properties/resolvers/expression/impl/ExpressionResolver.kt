@@ -83,8 +83,7 @@ class ExpressionResolver : RecursiveResolver {
             while (index < text.length) {
                 val character = text[index]
                 if (quote != null) {
-                    if (character == '\\' && quote == '"') index++
-                    else if (character == quote) {
+                    if (character == quote) {
                         if (index + 1 < text.length && text[index + 1] == quote) index++
                         else quote = null
                     }

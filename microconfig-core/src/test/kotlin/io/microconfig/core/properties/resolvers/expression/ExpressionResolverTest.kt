@@ -94,6 +94,12 @@ class ExpressionResolverTest {
         assertEquals("a${System.lineSeparator()}b", resolve("#{'a' + #lineSeparator() + 'b'}"))
     }
 
+    @Test
+    fun treatBackslashBeforeDoubleQuoteAsLiteralSpelText() {
+        assertEquals("4", resolve("#{\"abc\\\".length()}"))
+        assertEquals("a\\\"b", resolve("#{\"a\\\"\"b\"}"))
+    }
+
     @ParameterizedTest
     @ValueSource(
         strings =

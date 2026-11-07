@@ -48,20 +48,25 @@ class SnakeYamlTree(private val sectionBreaks: Boolean) : YamlTree {
             } else if (entry.valueNode in sections) {
                 insert(entry.valueNode as MappingNode, parts.drop(1), value)
             } else {
-                insert(parent, listOf(parts[0] + "." + parts[1]) + parts.drop(2), value)
+                insert(parent, listOf(combinedKey(parts[0], parts[1])) + parts.drop(2), value)
             }
         }
 
+        private fun combinedKey(first: String, second: String): String =
+            SnakeYaml.scalar(SnakeYaml.text(keyNode(first).value + "." + keyNode(second).value))
+
+        private fun keyNode(name: String): ScalarNode =
+            SnakeYaml.parse(name) as? ScalarNode ?: SnakeYaml.text(name)
+
         private fun put(parent: MappingNode, name: String, value: Node) {
-            val key = SnakeYaml.parse(name) as? ScalarNode ?: SnakeYaml.text(name)
+            val key = keyNode(name)
             find(parent, name)?.let(parent.value::remove)
             parent.value.add(NodeTuple(key, value))
         }
 
         private fun find(parent: MappingNode, name: String): NodeTuple? {
             val key =
-                runCatching { SnakeYaml.parse(name) }.getOrNull() as? ScalarNode
-                    ?: SnakeYaml.text(name)
+                runCatching { keyNode(name) }.getOrElse { SnakeYaml.text(name) }
             return parent.value.find {
                 (it.keyNode as ScalarNode).let { existing ->
                     existing.tag == key.tag && existing.value == key.value

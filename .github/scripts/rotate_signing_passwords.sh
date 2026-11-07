@@ -77,11 +77,10 @@ generate_password() {
   openssl rand -hex 20
 }
 
-# gradlepublish.yml передаёт SIGNING_PASSWORD в shell без кавычек, а set_gradle_properties.sh
-# подставляет его через sed с разделителем '+'. Любой спецсимвол сломает подстановку.
+# Для ручного ввода пароля оставляем ограничение на длину и набор символов.
 require_safe_chars() {
   [[ $1 =~ ^[A-Za-z0-9._-]{12,}$ ]] \
-    || fail "Нужно не меньше 12 символов из A-Z a-z 0-9 . _ - (иначе сломается подстановка в gradlepublish.yml)"
+    || fail "Нужно не меньше 12 символов из A-Z a-z 0-9 . _ -"
 }
 
 # Старый secring.gpg.gpg остаётся в истории git под старым SECRET_PASSPHRASE,

@@ -103,6 +103,34 @@ class BuildOutputTest {
     }
 
     @Test
+    fun compareSharedConfigDestinationOncePerBuild() {
+        write(
+            "microconfig.yaml",
+            """
+            configTypes:
+              - first:
+                  sourceExtensions: [.one]
+                  resultFileName: application
+              - second:
+                  sourceExtensions: [.two]
+                  resultFileName: application
+            """.trimIndent(),
+        )
+        val serializer = runner().toFiles()
+        listOf("old" to null, "new" to "old -> new", "latest" to "new -> latest", "latest" to null)
+            .forEach { (value, change) ->
+                write("components/app/config.one", "value: $value\n")
+                write("components/app/config.two", "value: $value\n")
+
+                runner().buildProperties("dev", emptyList(), emptyList()).save(serializer)
+
+                assertEquals("value: $value\n", Files.readString(output("application.yaml")))
+                if (change == null) assertFalse(Files.exists(output("diff-application.yaml")))
+                else assertEquals("value: $change\n", Files.readString(output("diff-application.yaml")))
+            }
+    }
+
+    @Test
     fun rejectCollisionThroughDirectorySymlinkAndParentSegment() {
         assumeFalse(Os.isWindows())
         previousConfig()
@@ -115,6 +143,46 @@ class BuildOutputTest {
         write("components/app/source.txt", "replacement")
         assertThrows(IllegalArgumentException::class.java) { build() }
         assertEquals("value: old\n", Files.readString(output("application.yaml")))
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["yaml", "properties"])
+    fun capturePreviousConfigBeforeAnotherTypeCopiesAnIdenticalTemplate(extension: String) {
+        val separator = if (extension == "yaml") ": " else "="
+        write(
+            "components/app/application.yaml",
+            "mc.file.t: \${this@configDir}/payload.txt -> process.$extension\n",
+        )
+        val serializer = runner().toFiles()
+        listOf("old" to null, "new" to "old -> new", "new" to null).forEach { (value, change) ->
+            write("components/app/payload.txt", "value$separator$value" + if (extension == "yaml") "\n" else "")
+            write("components/app/config.proc", "value$separator$value")
+
+            runner().buildProperties("dev", emptyList(), emptyList()).save(serializer)
+
+            assertEquals("value$separator$value", Files.readString(output("process.$extension")).trim())
+            val diff = output("diff-process.$extension")
+            if (change == null) assertFalse(Files.exists(diff))
+            else assertEquals("value$separator$change", Files.readString(diff).trim())
+        }
+    }
+
+    @Test
+    fun capturePreviousConfigBeforeAnotherComponentCopiesAnIdenticalTemplate() {
+        write("envs/dev.yaml", "group:\n  components: [app, worker]\n")
+        write(
+            "components/app/application.yaml",
+            "mc.file.t: \${this@configDir}/payload.txt -> \${worker@resultDir}/application.yaml\n",
+        )
+        write("components/app/payload.txt", "value: old\n")
+        write("components/worker/application.yaml", "value: old\n")
+        build()
+        write("components/app/payload.txt", "value: new\n")
+        write("components/worker/application.yaml", "value: new\n")
+
+        build()
+
+        assertEquals("value: old -> new\n", Files.readString(destination.resolve("worker/diff-application.yaml")))
     }
 
     @Test

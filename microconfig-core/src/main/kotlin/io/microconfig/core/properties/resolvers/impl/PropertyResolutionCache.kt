@@ -17,8 +17,9 @@ internal class PropertyResolutionCache {
         root: DeclaringComponent,
         resolver: Resolver,
         referenceChain: List<Placeholder> = emptyList(),
+        explicitEnvironment: String? = null,
     ): String =
-        values.getOrPut(keyFor(property, root, referenceChain)) {
+        values.getOrPut(keyFor(property, root, referenceChain, explicitEnvironment)) {
             resolver.resolve(property, root)
         }
 
@@ -26,8 +27,10 @@ internal class PropertyResolutionCache {
         property: Property,
         root: DeclaringComponent,
         referenceChain: List<Placeholder>,
-    ): Key =
-        Key(
+        explicitEnvironment: String?,
+    ): Key {
+        val hasPlaceholders = PlaceholderBorders.findPlaceholderIn(property.value).isPresent
+        return Key(
             PropertyImpl(
                 property.key,
                 property.value,
@@ -37,13 +40,15 @@ internal class PropertyResolutionCache {
                 property.isLiteralText,
             ),
             DeclaringComponentImpl.copyOf(root),
-            if (PlaceholderBorders.findPlaceholderIn(property.value).isPresent) referenceChain
-            else emptyList(),
+            if (hasPlaceholders) referenceChain else emptyList(),
+            if (hasPlaceholders) explicitEnvironment else null,
         )
+    }
 
     private data class Key(
         val property: Property,
         val root: DeclaringComponent,
         val referenceChain: List<Placeholder>,
+        val explicitEnvironment: String?,
     )
 }

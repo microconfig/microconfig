@@ -731,6 +731,35 @@ class BuildRegressionsTest {
         assertEquals("t one\n  two\n", Files.readString(output("rendered.txt")))
     }
 
+    @Test
+    fun preserveExplicitProfileInPlaceholderReferences() {
+        write("envs/dev.yaml", "profiles: [prod]\ngroup:\n  components: [app]\n")
+        write("envs/prod.yaml", "{}\n")
+        write("components/source/application.prod.yaml", "value: prod\n")
+        write("components/source/application.dev.yaml", "value: dev\n")
+        write(
+            "components/app/application.yaml",
+            "explicit: \${source[prod]@value}\nimplicit: \${source@value}\n" +
+                "environment: \${source[prod]@env}\n",
+        )
+
+        build()
+
+        assertEquals(mapOf("explicit" to "prod", "implicit" to "dev", "environment" to "prod"), yaml())
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["'1'", "'true'", "1.5", "'a.b'", "'a''b'"])
+    fun serializeAtomicAndDescendantConflictsWithQuotedOrTypedKeys(key: String) {
+        write("components/app/application.yaml", "$key: {}\n")
+        write("components/app/application.dev.yaml", "$key:\n  child: present\n")
+
+        build()
+
+        val originalKey = Yaml().load<Any>(key)
+        assertEquals(mapOf(originalKey to emptyMap<Any, Any>(), "$originalKey.child" to "present"), yaml())
+    }
+
     private fun write(path: String, content: String) {
         val file = root.resolve(path)
         Files.createDirectories(file.parent)

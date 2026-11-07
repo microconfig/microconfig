@@ -1,5 +1,5 @@
 context: default
 
-prop1: default#todo
+prop1: prod
 
 prop2: default
