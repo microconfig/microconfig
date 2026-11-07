@@ -21,6 +21,7 @@ out/
 .DS_Store
 .claude
 .codex
+.kotlin
 
 microconfig.jar
 microconfig.exe
