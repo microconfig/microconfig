@@ -9,6 +9,8 @@ import io.microconfig.core.properties.PropertyImpl.Companion.parse
 import io.microconfig.core.properties.PropertyImpl.Companion.property
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 import java.io.File
@@ -49,6 +51,43 @@ class PropertyImplTest {
         assertEquals("value", tempProp.value)
         assertEquals(propSource, tempProp.declaringComponent)
         assertTrue(tempProp.isVar)
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["a\\:b", "a\\=b", "a\\\\\\:b", "a\\\\\\=b"])
+    fun preserveEscapedDelimitersInTemporaryPropertiesKeys(key: String) {
+        for (prefix in listOf("#var ", ".var ")) {
+            val parsed = parse("$prefix$key=\\tvalue:tail=more", PROPERTIES, propSource)
+
+            assertEquals(key, parsed.key)
+            assertEquals("\\tvalue:tail=more", parsed.value)
+            assertEquals(ValueFormat.PROPERTIES, parsed.valueFormat)
+            assertEquals(PROPERTIES, parsed.keyFormat)
+            assertTrue(parsed.isVar)
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["a\\\\", "a\\\\\\\\"])
+    fun recognizeDelimitersAfterLiteralBackslashes(key: String) {
+        for (separator in listOf(':', '=')) {
+            val parsed = parse("#var $key${separator}value", PROPERTIES, propSource)
+
+            assertEquals(key, parsed.key)
+            assertEquals("value", parsed.value)
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["#var ", ".var "])
+    fun preserveYamlTemporaryKeyBackslashes(prefix: String) {
+        val parsed = parse("${prefix}path\\: C:\\temp", PROPERTIES, yamlSource)
+
+        assertEquals("path\\", parsed.key)
+        assertEquals("C:\\temp", parsed.value)
+        assertEquals(ValueFormat.TEXT, parsed.valueFormat)
+        assertEquals(ConfigFormat.YAML, parsed.keyFormat)
+        assertTrue(parsed.isVar)
     }
 
     @Test

@@ -215,6 +215,25 @@ class PropertiesKeyPriorityTest {
         assertEquals("", result.getProperty("copy"))
     }
 
+    @ParameterizedTest
+    @CsvSource(
+        delimiter = '|', value = [
+            "#var|a\\:b|a\\\\u003ab", ".var|a\\:b|a\\\\u003ab",
+            "#var|a\\=b|a\\\\u003db", ".var|a\\=b|a\\\\u003db",
+        ]
+    )
+    fun hideIncludedPropertiesWithEscapedTemporaryKeys(directive: String, key: String, query: String) {
+        write("components/source/application.properties", "$key=secret\nretained=stable\n")
+        write(
+            "components/app/application.properties",
+            "#include source\n$directive $key=temporary\ncopy=\${this@$query}\n",
+        )
+
+        val result = build()
+
+        assertEquals(mapOf("retained" to "stable", "copy" to "temporary"), result)
+    }
+
     @Test
     fun keepRejectingIdenticalRawKeysWithinOneFile() {
         write("components/app/application.properties", "a.b=first\na.b=second\n")

@@ -14,6 +14,7 @@ import kotlin.jvm.optionals.getOrNull
 internal class PropertyResolutionCache {
     private val values = ConcurrentHashMap<Key, String>()
     private val expressionValues = ConcurrentHashMap<Pair<Key, Int>, String>()
+    private val contextualExpressionValues = ConcurrentHashMap<ContextualExpression, String>()
     private val independentValues = ConcurrentHashMap<IndependentExpression, String>()
 
     fun resolve(
@@ -64,21 +65,47 @@ internal class PropertyResolutionCache {
                 YamlResolvers.forValues(placeholders, expressions)
 
             PlaceholderBorders.findPlaceholderOrNull(key.property.value) == null ->
-                YamlResolvers.forValues(placeholders, expressionsFor(key, expressions))
+                expressionOnlyResolver(key, placeholders, expressions)
 
             else -> YamlResolvers.withExpressionCache(independentExpressionsFor(key), placeholders, expressions)
         }
 
-    private fun independentExpressionsFor(key: Key): ExpressionValueCache {
-        val expressionKey = key.copy(referenceChain = emptyList(), explicitEnvironment = null)
-        return ExpressionValueCache { scalarStart, expressionStart, expression, evaluate ->
-            independentValues.computeIfAbsent(
-                IndependentExpression(expressionKey, scalarStart, expressionStart, expression)
-            ) { evaluate() }
-        }
+    private fun expressionOnlyResolver(
+        key: Key,
+        placeholders: RecursiveResolver,
+        expressions: RecursiveResolver,
+    ): Resolver {
+        val resolvedPlaceholders = mutableListOf<Pair<String, String>>()
+        return YamlResolvers.forValues(
+            trackingPlaceholders(placeholders, resolvedPlaceholders),
+            expressionsFor(key, expressions, resolvedPlaceholders),
+        )
     }
 
-    private fun expressionsFor(key: Key, expressions: RecursiveResolver): RecursiveResolver {
+    private fun trackingPlaceholders(
+        placeholders: RecursiveResolver,
+        resolved: MutableList<Pair<String, String>>,
+    ): RecursiveResolver = object : RecursiveResolver {
+        override fun findStatementIn(line: CharSequence): Optional<RecursiveResolver.Statement> =
+            placeholders.findStatementIn(line).map { statement ->
+                val placeholder = line.subSequence(statement.startIndex, statement.endIndex).toString()
+                object : RecursiveResolver.Statement by statement {
+                    override fun resolveFor(
+                        sourceOfValue: DeclaringComponent?,
+                        root: DeclaringComponent?,
+                        targetFormat: ValueFormat,
+                    ): String = statement.resolveFor(sourceOfValue, root, targetFormat).also {
+                        resolved.add(placeholder to it)
+                    }
+                }
+            }
+    }
+
+    private fun expressionsFor(
+        key: Key,
+        expressions: RecursiveResolver,
+        resolvedPlaceholders: List<Pair<String, String>>,
+    ): RecursiveResolver {
         val expressionKey = key.copy(referenceChain = emptyList(), explicitEnvironment = null)
         var index = 0
         var independent = true
@@ -91,11 +118,14 @@ internal class PropertyResolutionCache {
                             root: DeclaringComponent?,
                             targetFormat: ValueFormat,
                         ): String {
-                            if (!independent) return statement.resolveFor(sourceOfValue, root, targetFormat)
-                            val value = expressionValues.computeIfAbsent(expressionKey to index++) {
-                                statement.resolveFor(sourceOfValue, root, targetFormat)
-                            }
-                            // Later expressions may depend on the generated placeholder's context.
+                            val position = index++
+                            val evaluate = { statement.resolveFor(sourceOfValue, root, targetFormat) }
+                            val value =
+                                if (independent) expressionValues.computeIfAbsent(expressionKey to position) { evaluate() }
+                                else contextualExpressionValues.computeIfAbsent(
+                                    ContextualExpression(expressionKey, position, line.toString(), resolvedPlaceholders.toList())
+                                ) { evaluate() }
+                            // Share later evaluations only when generated placeholders resolved to the same values.
                             if (PlaceholderBorders.findPlaceholderOrNull(value) != null) independent = false
                             return value
                         }
@@ -103,6 +133,22 @@ internal class PropertyResolutionCache {
                 })
         }
     }
+
+    private fun independentExpressionsFor(key: Key): ExpressionValueCache {
+        val expressionKey = key.copy(referenceChain = emptyList(), explicitEnvironment = null)
+        return ExpressionValueCache { scalarStart, expressionStart, expression, evaluate ->
+            independentValues.computeIfAbsent(
+                IndependentExpression(expressionKey, scalarStart, expressionStart, expression)
+            ) { evaluate() }
+        }
+    }
+
+    private data class ContextualExpression(
+        val property: Key,
+        val position: Int,
+        val expandedValue: String,
+        val resolvedPlaceholders: List<Pair<String, String>>,
+    )
 
     private data class IndependentExpression(
         val property: Key,

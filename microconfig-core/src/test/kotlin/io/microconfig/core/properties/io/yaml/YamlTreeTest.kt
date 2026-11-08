@@ -8,6 +8,7 @@ import io.microconfig.io.impl.DumpedFsReader
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
@@ -98,6 +99,75 @@ class YamlTreeTest {
                     )
                 )
             ),
+        )
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [false, true])
+    fun rejectScalarDescendantCollisionWithLiteralDottedKey(reverse: Boolean) {
+        val entries = listOf("a" to "root", "a.b" to "nested", "'a.b'" to "literal")
+        val properties = (if (reverse) entries.reversed() else entries).toMap()
+
+        val error = assertThrows(IllegalArgumentException::class.java) { tree.toYaml(properties) }
+
+        assertTrue(error.message.orEmpty().contains("same YAML key"), error.message)
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["", "section."])
+    fun rejectCollapsedPathsCollidingWithLiteralKeySections(prefix: String) {
+        for (descendant in listOf("a.b", "a.b.child")) {
+            val properties = mapOf(
+                "${prefix}a" to "root",
+                "$prefix$descendant" to "nested",
+                "${prefix}'a.b'.child" to "literal",
+            )
+
+            val error = assertThrows(IllegalArgumentException::class.java) { tree.toYaml(properties) }
+
+            assertTrue(error.message.orEmpty().contains("same YAML key"), error.message)
+        }
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+        delimiter = '|', quoteCharacter = '"', value = [
+            "'a.b'.c|'a.b.c'", "'a.b'.c.d|'a.b.c'", "'a.b'.c.d|'a.b.c'.d",
+        ]
+    )
+    fun rejectLiteralKeysOverwritingPreviouslyCollapsedPaths(descendant: String, literal: String) {
+        val properties = mapOf("'a.b'" to "root", descendant to "nested", literal to "literal")
+
+        val error = assertThrows(IllegalArgumentException::class.java) { tree.toYaml(properties) }
+
+        assertTrue(error.message.orEmpty().contains("same YAML key"), error.message)
+    }
+
+    @Test
+    fun preserveLiteralKeysWhileFlatteningLongerDescendants() {
+        val properties = mapOf("a" to "root", "'a.b'" to "literal", "a.b.c" to "nested")
+
+        assertEquals(
+            mapOf("a" to "root", "a.b" to "literal", "a.b.c" to "nested"),
+            parse(tree.toYaml(properties)),
+        )
+    }
+
+    @Test
+    fun preserveDistinctChildrenWhileFlatteningIntoLiteralKeySections() {
+        val properties = mapOf("a" to "root", "'a.b'.child" to "literal", "a.b.other" to "nested")
+
+        assertEquals(
+            mapOf("a" to "root", "a.b" to mapOf("child" to "literal", "other" to "nested")),
+            parse(tree.toYaml(properties)),
+        )
+    }
+
+    @Test
+    fun preserveCanonicalKeyAliasOverridesWithoutScalarFallback() {
+        assertEquals(
+            mapOf("key" to "last"),
+            parse(tree.toYaml(mapOf("'key'" to "first", "key" to "last"))),
         )
     }
 

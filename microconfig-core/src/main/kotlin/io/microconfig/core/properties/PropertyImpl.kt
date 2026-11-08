@@ -35,11 +35,21 @@ internal constructor(
             configFormat: ConfigFormat,
             source: DeclaringComponent?,
         ): Property {
-            val separator = findSeparatorIndexIn(keyValue)
+            val separator = separatorIndexIn(keyValue, sourceKeyFormat(configFormat, source))
             require(separator >= 0) {
                 "Incorrect delimiter in '$keyValue' in '$source'\nProperty must contain ':' or '=' as delimiter."
             }
             return parsedProperty(keyValue, separator, configFormat, source)
+        }
+
+        private fun separatorIndexIn(text: String, keyFormat: ConfigFormat): Int {
+            if (keyFormat != ConfigFormat.PROPERTIES) return findSeparatorIndexIn(text)
+            var escaped = false
+            text.forEachIndexed { index, character ->
+                if (!escaped && (character == ':' || character == '=')) return index
+                escaped = !escaped && character == '\\'
+            }
+            return -1
         }
 
         private fun parsedProperty(

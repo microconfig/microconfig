@@ -22,6 +22,7 @@ class SnakeYamlTree(private val sectionBreaks: Boolean) : YamlTree {
     private class PropertyTree {
         private val parser by lazy { SnakeYaml.parser() }
         private val sections = newSetFromMap(IdentityHashMap<MappingNode, Boolean>())
+        private val collapsedEntries = newSetFromMap(IdentityHashMap<NodeTuple, Boolean>())
 
         fun build(properties: Map<String, String>): MappingNode {
             val root = section()
@@ -43,20 +44,20 @@ class SnakeYamlTree(private val sectionBreaks: Boolean) : YamlTree {
         private fun parse(text: String): Node =
             SnakeYaml.plainScalar(text) ?: parser.compose(StringReader(text)) ?: SnakeYaml.emptyValue()
 
-        private fun insert(parent: MappingNode, parts: List<String>, value: Node) {
+        private fun insert(parent: MappingNode, parts: List<String>, value: Node, collapsed: Boolean = false) {
             if (parts.size == 1) {
-                put(parent, parts.first(), value)
+                put(parent, parts.first(), value, collapsed)
                 return
             }
             val entry = find(parent, parts.first())
             if (entry == null) {
                 val child = section()
                 put(parent, parts.first(), child)
-                insert(child, parts.drop(1), value)
+                insert(child, parts.drop(1), value, collapsed)
             } else if (entry.valueNode in sections) {
-                insert(entry.valueNode as MappingNode, parts.drop(1), value)
+                insert(entry.valueNode as MappingNode, parts.drop(1), value, collapsed)
             } else {
-                insert(parent, listOf(combinedKey(parts[0], parts[1])) + parts.drop(2), value)
+                insert(parent, listOf(combinedKey(parts[0], parts[1])) + parts.drop(2), value, true)
             }
         }
 
@@ -66,10 +67,22 @@ class SnakeYamlTree(private val sectionBreaks: Boolean) : YamlTree {
         private fun keyNode(name: String): ScalarNode =
             parse(name) as? ScalarNode ?: SnakeYaml.text(name)
 
-        private fun put(parent: MappingNode, name: String, value: Node) {
+        private fun put(parent: MappingNode, name: String, value: Node, collapsed: Boolean = false) {
             val key = keyNode(name)
-            find(parent, name)?.let(parent.value::remove)
-            parent.value.add(NodeTuple(key, value))
+            val previous = find(parent, name)
+            require(previous == null || !collapsed && !containsCollapsedEntry(previous)) {
+                "Several properties produce the same YAML key '${key.value}'"
+            }
+            previous?.let(parent.value::remove)
+            val entry = NodeTuple(key, value)
+            if (collapsed) collapsedEntries.add(entry)
+            parent.value.add(entry)
+        }
+
+        private fun containsCollapsedEntry(entry: NodeTuple): Boolean {
+            if (entry in collapsedEntries) return true
+            val value = entry.valueNode
+            return value in sections && (value as MappingNode).value.any(::containsCollapsedEntry)
         }
 
         private fun find(parent: MappingNode, name: String): NodeTuple? {

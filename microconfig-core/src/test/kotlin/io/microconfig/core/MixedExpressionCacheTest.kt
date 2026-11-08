@@ -77,6 +77,71 @@ class MixedExpressionCacheTest {
 
     @ParameterizedTest
     @EnumSource(ValueFormat::class)
+    fun reuseExpressionsAfterGeneratedPlaceholdersAcrossDirectAndNestedReferences(format: ValueFormat) {
+        val stamp = property("app", "stamp", "#{'$' + '{this@label}'}-#{next}-#{next}", format)
+        property("app", "label", "app")
+        property("first", "value", "\${app@stamp}")
+        property("second", "value", "\${first@value}")
+
+        assertEquals("app-1-2", decoded(stamp.resolveBy(resolver, context).value, format))
+        assertEquals("app-1-2", reference("second", "value"))
+        assertEquals("app-1-2", reference("app", "stamp"))
+        assertEquals(2, evaluations.get())
+    }
+
+    @ParameterizedTest
+    @EnumSource(ValueFormat::class)
+    fun reuseExpressionsInGeneratedDefaultsAcrossDirectAndNestedReferences(format: ValueFormat) {
+        val stamp = property("app", "stamp", "#{'$' + '{this@missing:#{next}}'}-stamp", format)
+        property("first", "value", "\${app@stamp}")
+        property("second", "value", "\${first@value}")
+
+        assertEquals("1-stamp", decoded(stamp.resolveBy(resolver, context).value, format))
+        assertEquals("1-stamp", reference("second", "value"))
+        assertEquals("1-stamp", reference("app", "stamp"))
+        assertEquals(1, evaluations.get())
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["#{'$' + '{this@label}'}-#{next}", "#{'$' + '{this@missing:#{next}}'}-app"])
+    fun reuseGeneratedPlaceholderExpressionsUnderConcurrentCacheMisses(value: String) {
+        val stamp = property("app", "stamp", value)
+        property("app", "label", "app")
+        val expected = if (value.contains("this@label")) "app-1" else "1-app"
+        val pool = Executors.newFixedThreadPool(8)
+        val ready = CountDownLatch(8)
+        try {
+            val tasks = (1..8).map {
+                pool.submit<String> {
+                    ready.countDown()
+                    assertTrue(ready.await(5, SECONDS))
+                    stamp.resolveBy(resolver, context).value
+                }
+            }
+
+            assertEquals(List(8) { expected }, tasks.map { it.get(10, SECONDS) })
+            assertEquals(1, evaluations.get())
+        } finally {
+            pool.shutdownNow()
+        }
+    }
+
+    @Test
+    fun distinguishGeneratedDefaultsFromLaterExpressionsWhenAnEarlierReferenceSkipsTheDefault() {
+        property("shared", "stamp", "#{'$' + '{this@label:#{next}}'}-#{next}")
+        property("first", "value", "\${shared@stamp}")
+        property("second", "value", "\${shared@stamp}")
+        property("third", "value", "\${shared@stamp}")
+        property("first", "label", "present")
+
+        assertEquals("present-1", reference("first", "value"))
+        assertEquals("2-3", reference("second", "value"))
+        assertEquals("2-3", reference("third", "value"))
+        assertEquals(3, evaluations.get())
+    }
+
+    @ParameterizedTest
+    @EnumSource(ValueFormat::class)
     fun reuseDefaultExpressionsAcrossDirectAndNestedReferences(format: ValueFormat) {
         val stamp = property("app", "stamp", "\${this@missing:#{next}}-stamp", format)
         property("first", "value", "\${app@stamp}")
