@@ -9,8 +9,7 @@ import io.microconfig.core.properties.TypedProperties
 import io.microconfig.core.properties.io.ConfigIo
 import io.microconfig.core.properties.serializers.ConfigChangeListener
 import io.microconfig.core.templates.Template
-import io.microconfig.utils.FileUtils.copyPermissions
-import io.microconfig.utils.FileUtils.write
+import io.microconfig.utils.FileUtils.writeWithPermissions
 import io.microconfig.utils.Logger.info
 import java.io.File
 import java.io.IOException
@@ -254,8 +253,7 @@ internal class FilePropertySerializer(
     }
 
     private fun copyTemplate(template: Template, component: String) {
-        write(template.destination.toPath(), template.contentAsBytes)
-        copyPermissions(template.source.toPath(), template.destination.toPath())
+        writeWithPermissions(template.destination.toPath(), template.contentAsBytes, template.source.toPath())
         info(
             "Copied '$component' template ../${template.source.parentFile.name}/${template.source.name} -> ${template.fileName}"
         )

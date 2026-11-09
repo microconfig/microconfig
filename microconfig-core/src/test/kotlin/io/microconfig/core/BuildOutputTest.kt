@@ -9,6 +9,7 @@ import io.microconfig.core.properties.serializers.PropertySerializers
 import io.microconfig.utils.Os
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Assumptions.assumeFalse
+import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -17,6 +18,7 @@ import org.junit.jupiter.params.provider.ValueSource
 import java.nio.file.Files
 import java.nio.file.LinkOption.NOFOLLOW_LINKS
 import java.nio.file.Path
+import java.nio.file.attribute.PosixFilePermissions
 import java.util.function.BiConsumer
 
 class BuildOutputTest {
@@ -253,6 +255,26 @@ class BuildOutputTest {
         write("components/app/application.yaml", "value: config\n")
         runner().buildProperties("dev", emptyList(), emptyList()).save(serializer)
         assertEquals("value: config\n", Files.readString(output("application.yaml")))
+    }
+
+    @Test
+    fun preserveTemplatePermissionsWithoutAComponentOutputDirectory() {
+        assumeTrue(Files.getFileStore(directory).supportsFileAttributeView("posix"))
+        write("components/app/application.yaml", "#var value: current\n")
+        write(
+            "components/app/config.helm",
+            "mc.template.script: \${this@configDir}/start.sh -> ../../charts/app/start.sh\n",
+        )
+        write("components/app/start.sh", "echo started\n")
+        val permissions = PosixFilePermissions.fromString("rwx------")
+        Files.setPosixFilePermissions(root.resolve("components/app/start.sh"), permissions)
+
+        build()
+
+        val script = directory.resolve("charts/app/start.sh")
+        assertEquals("echo started\n", Files.readString(script))
+        assertEquals(permissions, Files.getPosixFilePermissions(script))
+        assertFalse(Files.exists(destination.resolve("app")))
     }
 
     @ParameterizedTest

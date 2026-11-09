@@ -26,10 +26,20 @@ object FileUtils {
         write(file, content.toByteArray(Charsets.UTF_8), *options)
 
     fun write(file: Path, content: ByteArray, vararg options: OpenOption) {
+        writeContent(file, content, options)
+    }
+
+    fun writeWithPermissions(file: Path, content: ByteArray, permissionsFrom: Path) {
+        val target = writeContent(file, content, emptyArray())
+        copyPermissions(permissionsFrom, target)
+    }
+
+    private fun writeContent(file: Path, content: ByteArray, options: Array<out OpenOption>): Path {
         try {
             val target = normalizedPath(file)
             createParentDirectories(target)
             Files.write(target, content, *options)
+            return target
         } catch (error: IOException) {
             throw UncheckedIOException(error)
         }
