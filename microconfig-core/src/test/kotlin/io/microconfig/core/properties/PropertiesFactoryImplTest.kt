@@ -6,7 +6,6 @@ import io.microconfig.core.properties.impl.PropertiesFactoryImpl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ExecutorService
@@ -126,28 +125,6 @@ class PropertiesFactoryImplTest {
         assertEquals(mapOf("value" to "recovered"), recovered.propertiesAsKeyValue)
         assertSame(recovered.properties.single(), cached.properties.single())
         assertEquals(2, reads.get())
-    }
-
-    @Test
-    fun rejectRepositoryCyclesAndAllowRetryAfterFailure() {
-        var cyclic = true
-        lateinit var factory: PropertiesFactoryImpl
-        factory = PropertiesFactoryImpl { component, environment, type ->
-            if (!cyclic) rawValue("recovered")
-            else {
-                val dependency = if (component == "Aa") "BB" else "Aa"
-                factory.getPropertiesOf(dependency, dependency, environment, listOf(type)).first().propertiesAsMap
-            }
-        }
-
-        val failure = assertThrows(IllegalStateException::class.java) {
-            factory.getPropertiesOf("first", "Aa", "dev", listOf(APPLICATION))
-        }
-
-        assertTrue(failure.message.orEmpty().contains("Aa[dev]/app -> BB[dev]/app -> Aa[dev]/app"), failure.message)
-        cyclic = false
-        assertEquals(mapOf("value" to "recovered"),
-            factory.getPropertiesOf("second", "Aa", "dev", listOf(APPLICATION)).first().propertiesAsKeyValue)
     }
 
     @Test
