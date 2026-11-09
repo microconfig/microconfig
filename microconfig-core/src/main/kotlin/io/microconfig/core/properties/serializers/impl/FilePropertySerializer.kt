@@ -15,7 +15,6 @@ import java.io.File
 import java.io.IOException
 import java.io.UncheckedIOException
 import java.nio.file.Files
-import java.nio.file.LinkOption.NOFOLLOW_LINKS
 import java.nio.file.Path
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.BiConsumer
@@ -88,10 +87,7 @@ internal class FilePropertySerializer(
 
     private fun outputPath(file: File, prefixes: MutableMap<Path, Path>? = null): Path =
         try {
-            val path = file.toPath().toAbsolutePath()
-            if (path.any { it.toString() == "." || it.toString() == ".." })
-                resolveLinks(path, mutableSetOf())
-            else resolveExistingPrefix(path, prefixes)
+            resolveExistingPrefix(file.toPath().toAbsolutePath().normalize(), prefixes)
         } catch (error: IOException) {
             throw UncheckedIOException("Can't resolve output '$file'", error)
         }
@@ -99,88 +95,83 @@ internal class FilePropertySerializer(
     private fun resolveExistingPrefix(path: Path, prefixes: MutableMap<Path, Path>?): Path {
         var existing = path
         val suffix = ArrayDeque<Path>()
-        while (existing.parent != null && !Files.exists(existing, NOFOLLOW_LINKS)) {
+        while (existing.parent != null && !Files.exists(existing)) {
             suffix.addFirst(existing.fileName)
             existing = existing.parent
         }
-        // A dangling or cyclic final symlink still needs the segment-wise checks.
-        if (Files.isSymbolicLink(existing)) return resolveLinks(path, mutableSetOf())
         var resolved = prefixes?.computeIfAbsent(existing) { it.toRealPath() } ?: existing.toRealPath()
         for (part in suffix) resolved = resolved.resolve(part)
         return resolved
     }
 
-    private fun resolveLinks(path: Path, visiting: MutableSet<Path>): Path {
-        var result = path.root
-        for (part in path) {
-            result = result.resolve(part).normalize()
-            if (Files.isSymbolicLink(result)) {
-                val link = result
-                require(visiting.add(link)) { "Cyclic output symlink '$link'" }
-                val target = Files.readSymbolicLink(link)
-                result =
-                    resolveLinks(
-                        if (target.isAbsolute) target else link.parent.resolve(target),
-                        visiting,
-                    )
-                visiting.remove(link)
-            } else if (Files.exists(result)) {
-                result = result.toRealPath()
-            }
-        }
-        return result
-    }
-
     private fun prepareOutputs(outputs: List<Output>): PropertySerializer<File> {
-        val protected = validateOutputs(outputs)
-        val notifications = prepareNotifications(outputs, protected)
-        return preparedSerializer(outputs, protected, notifications)
+        val componentDirectories = outputs.map { it.component }.distinct().map(::componentDirectory)
+            .associateWith { outputPath(it) }
+        val protected = validateOutputs(outputs, componentDirectories)
+        val notifications = prepareNotifications(outputs, protected, componentDirectories)
+        return preparedSerializer(outputs, protected, notifications, componentDirectories)
     }
 
-    private fun validateOutputs(outputs: List<Output>): Set<Path> {
+    private fun componentDirectory(component: String): File = File(directory, component)
+
+    private fun validateOutputs(outputs: List<Output>, componentDirectories: Map<File, Path>): Set<Path> {
         val destinations = OutputDestinations()
         val protected = mutableSetOf<Path>()
+        componentDirectories.values.forEach { path ->
+            destinations.reserveDirectory(path)
+            protected.addAll(generateSequence(path) { it.parent })
+        }
+        if (protected.any { it.fileName?.toString()?.startsWith("diff-", ignoreCase = true) == true }) {
+            checkDiffDirectories(outputs, componentDirectories, destinations)
+        }
         outputs.forEach { output ->
             destinations.checkName(output.file, output.path)
             output.templates.forEach { template ->
-                reserveOutput(template.destination, destinations)
-                protected.addAll(protectedPaths(template.destination))
+                val path = outputPath(template.destination)
+                destinations.reserve(template.destination, path)
+                protected.add(path)
             }
             if (output.visible.isNotEmpty()) {
-                reserveOutput(output.file, destinations, output.path)
-                protected.add(output.file.toPath().toAbsolutePath().normalize())
+                destinations.reserve(output.file, output.path)
                 protected.add(output.path)
             }
         }
         return protected
     }
 
-    private fun reserveOutput(
-        file: File,
+    private fun checkDiffDirectories(
+        outputs: List<Output>,
+        componentDirectories: Map<File, Path>,
         destinations: OutputDestinations,
-        path: Path = outputPath(file),
-    ) = destinations.reserve(file, path)
-
-    private fun protectedPaths(file: File): Set<Path> =
-        setOf(file.toPath().toAbsolutePath().normalize(), outputPath(file))
-
-    private fun prepareNotifications(outputs: List<Output>, protected: Set<Path>): Map<Path, () -> Unit> {
-        if (listener !is ConfigChangeListener) return emptyMap()
-        val selected = outputs.filter { it.visible.isNotEmpty() || !isProtected(it.file, protected, it.path) }
-            .distinctBy { it.path }
-        val notifications = listener.prepareAll(selected.associate { it.file to it.properties })
-        return selected.associate { it.path to notifications.getValue(it.file) }
+    ) {
+        outputs.forEach { output ->
+            val parent = output.file.parentFile
+            val resolved = componentDirectories[parent] ?: outputPath(parent)
+            destinations.checkDiff(output.file, resolved)
+            destinations.checkDiff(oppositeConfig(output.file), resolved)
+        }
     }
 
-    private fun isProtected(file: File, protected: Set<Path>, resolved: Path? = null): Boolean =
-        if (Files.isSymbolicLink(file.toPath()))
-            file.toPath().toAbsolutePath().normalize() in protected
-        else (resolved ?: outputPath(file)) in protected
+    private fun prepareNotifications(
+        outputs: List<Output>,
+        protected: Set<Path>,
+        componentDirectories: Map<File, Path>,
+    ): Map<Path, () -> Unit> {
+        if (listener !is ConfigChangeListener) return emptyMap()
+        val selected = outputs.filter { it.visible.isNotEmpty() || it.path !in protected }
+            .distinctBy { it.path }
+        val notifications = listener.prepareAll(
+            selected.associate { it.file to it.properties },
+            selected.associate { it.file to componentDirectories.getValue(componentDirectory(it.component)).toFile() },
+        )
+        return selected.associate { it.path to notifications.getValue(it.file) }
+    }
 
     private fun preparedSerializer(
         outputs: List<Output>,
         protected: Set<Path>,
         notifications: Map<Path, () -> Unit>,
+        componentDirectories: Map<File, Path>,
     ): PropertySerializer<File> {
         val byScope = outputs.groupBy { Triple(it.component, it.environment, it.type.typeName) }
         val generated = outputs.filter { it.visible.isNotEmpty() }.map { it.path }.toSet()
@@ -189,6 +180,7 @@ internal class FilePropertySerializer(
             else outputs.flatMap { listOf(it.file, oppositeConfig(it.file)) }
                 .groupBy(::outputPath).filterKeys { it !in generated }
         val completed = ConcurrentHashMap.newKeySet<Path>()
+        val createdDirectories = ConcurrentHashMap<Path, Path>()
         return object : PropertySerializer<File> {
             override fun prepare(properties: List<TypedProperties>): PropertySerializer<File> =
                 this@FilePropertySerializer.prepare(properties)
@@ -207,6 +199,8 @@ internal class FilePropertySerializer(
                     }
                 requireNotNull(output) { "Output was not prepared for $componentName[$environment]" }
                 val notify = notificationFor(output, protected, notifications, completed)
+                val path = componentDirectories.getValue(componentDirectory(componentName))
+                createdDirectories.computeIfAbsent(path, ::createComponentDirectory)
                 writeOutput(output, protected)
                 deleteStaleTemplateDiffs(output.templates, templateConfigs)
                 notify()
@@ -238,13 +232,20 @@ internal class FilePropertySerializer(
         notifications: Map<Path, () -> Unit>,
         completed: MutableSet<Path>,
     ): () -> Unit {
-        if (output.visible.isEmpty() && isProtected(output.file, protected) ||
+        if (output.visible.isEmpty() && output.path in protected ||
             !completed.add(output.path)
         ) return {}
         notifications[output.path]?.let { return it }
         listener.accept(output.file, output.properties)
         return {}
     }
+
+    private fun createComponentDirectory(path: Path): Path =
+        try {
+            Files.createDirectories(path)
+        } catch (error: IOException) {
+            throw UncheckedIOException("Can't create component output directory '$path'", error)
+        }
 
     private fun writeOutput(output: Output, protected: Set<Path>) {
         output.templates.forEach { copyTemplate(it, output.component) }
@@ -266,15 +267,15 @@ internal class FilePropertySerializer(
     }
 
     private fun deleteObsoleteConfigs(result: File, empty: Boolean, protected: Set<Path>) {
-        if (empty && !Files.notExists(result.toPath(), NOFOLLOW_LINKS) &&
-            !isProtected(result, protected)
+        if (empty && !Files.notExists(result.toPath()) &&
+            outputPath(result) !in protected
         ) deleteConfig(result)
         val obsolete = oppositeConfig(result)
         val diff = File(result.parentFile, "diff-${obsolete.name}")
-        if (Files.notExists(obsolete.toPath(), NOFOLLOW_LINKS) &&
-            Files.notExists(diff.toPath(), NOFOLLOW_LINKS)
+        if (Files.notExists(obsolete.toPath()) &&
+            Files.notExists(diff.toPath())
         ) return
-        if (isProtected(obsolete, protected)) return
+        if (outputPath(obsolete) in protected) return
         deleteConfig(obsolete)
         deleteConfig(diff)
     }

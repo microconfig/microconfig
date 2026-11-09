@@ -4,7 +4,6 @@ import java.io.File
 import java.io.IOException
 import java.io.UncheckedIOException
 import java.nio.file.Files
-import java.nio.file.LinkOption.NOFOLLOW_LINKS
 import java.nio.file.Path
 import java.util.Locale.ROOT
 
@@ -38,7 +37,6 @@ internal class OutputDestinations {
                 }
                 Files.newDirectoryStream(directory).use { entries ->
                     for (entry in entries) {
-                        if (Files.isSymbolicLink(entry)) continue
                         val alternative = alternativeCase(entry) ?: continue
                         return@getOrPut !isSameEntry(entry, alternative)
                     }
@@ -59,8 +57,7 @@ internal class OutputDestinations {
     }
 
     private fun isSameEntry(path: Path, alternative: Path): Boolean =
-        !Files.isSymbolicLink(alternative) && Files.exists(alternative, NOFOLLOW_LINKS) &&
-                Files.isSameFile(path, alternative)
+        Files.exists(alternative) && Files.isSameFile(path, alternative)
 
     private fun isDiffName(name: String, caseSensitive: Boolean): Boolean {
         val compared = if (caseSensitive) name else name.lowercase(ROOT)
@@ -75,7 +72,25 @@ internal class OutputDestinations {
         remember(identities)
     }
 
+    fun reserveDirectory(path: Path) {
+        require(Files.notExists(path) || Files.isDirectory(path)) {
+            "Component output directory conflicts with an existing file '$path'"
+        }
+        setOf(path, comparisonPath(path)).forEach { entry ->
+            parents.add(entry)
+            parents.addAll(ancestors(entry))
+        }
+    }
+
+    fun checkDiff(config: File, directory: Path) {
+        val path = directory.resolve("diff-${config.name}")
+        require(path !in parents && comparisonPath(path) !in parents) {
+            "Diff file conflicts with a component output directory '$path'"
+        }
+    }
+
     private fun comparisonPath(path: Path): Path {
+        if (path.parent == null) return path
         val directory = existingDirectory(path)
         if (isCaseSensitive(directory)) return path
         return directory.resolve(directory.relativize(path).toString().lowercase(ROOT))

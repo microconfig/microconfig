@@ -64,7 +64,7 @@ object FileUtils {
     }
 
     private fun deleteTree(path: Path) {
-        if (!Files.exists(path, LinkOption.NOFOLLOW_LINKS)) return
+        if (!Files.exists(path)) return
         Files.walkFileTree(
             path,
             object : SimpleFileVisitor<Path>() {

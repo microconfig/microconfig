@@ -10,5 +10,10 @@ interface ConfigChangeListener : BiConsumer<File, Collection<Property>> {
     fun prepareAll(outputs: Map<File, Collection<Property>>): Map<File, () -> Unit> =
         outputs.mapValues { (file, properties) -> prepare(file, properties) }
 
+    fun prepareAll(
+        outputs: Map<File, Collection<Property>>,
+        componentDirectories: Map<File, File>,
+    ): Map<File, () -> Unit> = prepareAll(outputs)
+
     override fun accept(file: File, properties: Collection<Property>) = prepare(file, properties)()
 }

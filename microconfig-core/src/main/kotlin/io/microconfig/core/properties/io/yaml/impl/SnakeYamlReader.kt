@@ -17,8 +17,10 @@ import java.io.File
 import java.util.*
 import java.util.Collections.newSetFromMap
 
-class SnakeYamlReader(private val file: File, reader: FsReader) : ConfigReader {
-    private val source = YamlSource(if (file.exists()) reader.readFully(file) else "")
+class SnakeYamlReader internal constructor(private val file: File, text: String) : ConfigReader {
+    constructor(file: File, reader: FsReader) : this(file, if (file.exists()) reader.readFully(file) else "")
+
+    private val source = YamlSource(text)
     private val document = composeDocument()
 
     private fun composeDocument(): Node? =

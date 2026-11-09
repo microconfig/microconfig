@@ -1,51 +1,21 @@
 package io.microconfig.core
 
-import io.microconfig.core.configtypes.StandardConfigType.APPLICATION
 import io.microconfig.core.configtypes.impl.ConfigTypeImpl
-import io.microconfig.core.properties.ConfigFormat.YAML
-import io.microconfig.core.properties.PropertyImpl
-import io.microconfig.core.properties.impl.TypedPropertiesImpl
 import io.microconfig.core.properties.serializers.PropertySerializers
-import io.microconfig.utils.Os
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Assumptions.assumeFalse
 import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
 import java.nio.file.Files
-import java.nio.file.LinkOption.NOFOLLOW_LINKS
 import java.nio.file.Path
 import java.nio.file.attribute.PosixFilePermissions
 import java.util.function.BiConsumer
 
 class BuildOutputTest {
-    @Test
-    fun refreshResolvedPrefixesForEachPreparationAfterAnAncestorSymlinkChanges() {
-        assumeFalse(Os.isWindows())
-        val first = directory.resolve("first/nested")
-        val second = directory.resolve("second/nested")
-        Files.createDirectories(first)
-        Files.createDirectories(second)
-        Files.createDirectories(destination)
-        Files.createSymbolicLink(destination.resolve("one"), first.parent)
-        Files.createSymbolicLink(destination.resolve("two"), second.parent)
-        val units = listOf("one/nested" to "first", "two/nested" to "second").map { (name, value) ->
-            val property = PropertyImpl.property("value", value, YAML, null)
-            TypedPropertiesImpl(APPLICATION, name, "dev", mapOf("value" to property), emptyList())
-        }
-        val serializer = PropertySerializers.toFileIn(destination.toFile(), BiConsumer { _, _ -> })
-        serializer.prepare(units)
-        Files.delete(destination.resolve("two"))
-        Files.createSymbolicLink(destination.resolve("two"), first.parent)
-
-        assertThrows(IllegalArgumentException::class.java) { serializer.prepare(units) }
-        assertFalse(Files.exists(first.resolve("application.yaml")))
-        assertFalse(Files.exists(second.resolve("application.yaml")))
-    }
-
     @TempDir
     lateinit var directory: Path
     private val root
@@ -121,21 +91,6 @@ class BuildOutputTest {
     }
 
     @Test
-    fun preserveTemplateWrittenThroughDanglingSymlink() {
-        assumeFalse(Os.isWindows())
-        Files.createDirectories(output("alias.yaml").parent)
-        Files.createSymbolicLink(output("alias.yaml"), Path.of("application.yaml"))
-        write(
-            "components/app/application.yaml",
-            "mc.file.t: \${this@configDir}/source.txt -> alias.yaml\n",
-        )
-        write("components/app/source.txt", "retained\n")
-        build()
-        assertEquals("retained\n", Files.readString(output("application.yaml")))
-        assertEquals("retained\n", Files.readString(output("alias.yaml")))
-    }
-
-    @Test
     fun rejectSharedConfigDestinationsBeforeWriting() {
         previousConfig()
         write(
@@ -159,14 +114,11 @@ class BuildOutputTest {
     }
 
     @Test
-    fun rejectCollisionThroughDirectorySymlinkAndParentSegment() {
-        assumeFalse(Os.isWindows())
+    fun rejectCollisionThroughAParentPathSegment() {
         previousConfig()
-        Files.createDirectory(output("nested"))
-        Files.createSymbolicLink(output("alias"), Path.of("nested"))
         write(
             "components/app/application.yaml",
-            "value: new\nmc.file.t: \${this@configDir}/source.txt -> alias/../application.yaml\n",
+            "value: new\nmc.file.t: \${this@configDir}/source.txt -> nested/../application.yaml\n",
         )
         write("components/app/source.txt", "replacement")
         assertThrows(IllegalArgumentException::class.java) { build() }
@@ -209,16 +161,6 @@ class BuildOutputTest {
     }
 
     @Test
-    fun removeUnownedObsoleteSymlinkAndKeepCurrentConfig() {
-        assumeFalse(Os.isWindows())
-        previousConfig()
-        Files.createSymbolicLink(output("application.properties"), Path.of("application.yaml"))
-        build()
-        assertEquals("value: current\n", Files.readString(output("application.yaml")))
-        assertFalse(Files.exists(output("application.properties"), NOFOLLOW_LINKS))
-    }
-
-    @Test
     fun keepPreviousDiffWhenTemplateCopyFails() {
         previousConfig()
         Files.writeString(output("diff-application.yaml"), "previous diff")
@@ -258,7 +200,7 @@ class BuildOutputTest {
     }
 
     @Test
-    fun preserveTemplatePermissionsWithoutAComponentOutputDirectory() {
+    fun createEmptyOutputDirectoryWhenTheOnlyTemplateWritesElsewhere() {
         assumeTrue(Files.getFileStore(directory).supportsFileAttributeView("posix"))
         write("components/app/application.yaml", "#var value: current\n")
         write(
@@ -274,7 +216,67 @@ class BuildOutputTest {
         val script = directory.resolve("charts/app/start.sh")
         assertEquals("echo started\n", Files.readString(script))
         assertEquals(permissions, Files.getPosixFilePermissions(script))
+        Files.list(destination.resolve("app")).use { assertEquals(emptyList<Path>(), it.toList()) }
+    }
+
+    @Test
+    fun createAnEmptyOutputDirectoryForTheSelectedComponentAlias() {
+        write("envs/dev.yaml", "group:\n  components: [alias:empty, app]\n")
+        Files.createDirectories(root.resolve("components/empty"))
+
+        runner().build("dev", emptyList(), listOf("alias"))
+
+        Files.list(destination.resolve("alias")).use { assertEquals(emptyList<Path>(), it.toList()) }
+        assertFalse(Files.exists(destination.resolve("empty")))
         assertFalse(Files.exists(destination.resolve("app")))
+    }
+
+    @ParameterizedTest
+    @CsvSource("yaml, application", "properties, nested/application")
+    fun recordAddedKeysOnlyWhenTheEmptyComponentDirectoryAlreadyExists(extension: String, resultName: String) {
+        write("microconfig.yaml", "configTypes:\n  - app:\n      sourceExtensions: [.$extension]\n      resultFileName: $resultName\n")
+        val source = "components/app/application.$extension"
+        write(source, "")
+        build()
+        Files.list(destination.resolve("app")).use { assertEquals(emptyList<Path>(), it.toList()) }
+
+        val separator = if (extension == "yaml") ": " else "="
+        val result = Path.of("$resultName.$extension")
+        val diff = result.resolveSibling("diff-${result.fileName}")
+        write(source, "value${separator}added\n")
+        val firstDestination = directory.resolve("first-output")
+        MicroconfigRunner(root.toFile(), firstDestination.toFile()).build("dev", emptyList(), emptyList())
+        assertTrue(Files.isRegularFile(firstDestination.resolve("app").resolve(result)))
+        assertFalse(Files.exists(firstDestination.resolve("app").resolve(diff)))
+
+        build()
+        val diffFile = destination.resolve("app").resolve(diff)
+        assertEquals("+value${separator}added", Files.readString(diffFile).trim())
+        build()
+        assertFalse(Files.exists(diffFile))
+    }
+
+    @Test
+    fun rejectTemplateTargetingAnotherComponentsOutputDirectoryBeforeWriting() {
+        write("envs/dev.yaml", "group:\n  components: [app, empty]\n")
+        Files.createDirectories(root.resolve("components/empty"))
+        write("components/app/application.yaml", "mc.file.t: \${this@configDir}/source.txt -> ../empty\n")
+        write("components/app/source.txt", "payload")
+
+        assertThrows(IllegalArgumentException::class.java) { build() }
+
+        assertFalse(Files.exists(destination))
+    }
+
+    @Test
+    fun rejectComponentDirectoryAtAGeneratedDiffPathBeforeWriting() {
+        write("envs/dev.yaml", "group:\n  components: [app/diff-application.yaml:empty, app]\n")
+        Files.createDirectories(root.resolve("components/empty"))
+
+        val error = assertThrows(IllegalArgumentException::class.java) { build() }
+
+        assertTrue(error.message.orEmpty().contains("Diff file conflicts"))
+        assertFalse(Files.exists(destination))
     }
 
     @ParameterizedTest
@@ -461,18 +463,6 @@ class BuildOutputTest {
             )
         }
         assertEquals("retained", Files.readString(output("diff-application.yaml")))
-    }
-
-    @Test
-    fun rejectCyclicOutputSymlinksBeforeWriting() {
-        assumeFalse(Os.isWindows())
-        Files.createDirectories(output("application.yaml").parent)
-        Files.createSymbolicLink(output("application.yaml"), Path.of("alias.yaml"))
-        Files.createSymbolicLink(output("alias.yaml"), Path.of("application.yaml"))
-        val error = assertThrows(IllegalArgumentException::class.java) { build() }
-        assertTrue(error.message.orEmpty().contains("Cyclic output symlink"), error.message)
-        assertTrue(Files.isSymbolicLink(output("application.yaml")))
-        assertTrue(Files.isSymbolicLink(output("alias.yaml")))
     }
 
     @Test

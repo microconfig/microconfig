@@ -6,6 +6,7 @@ import io.microconfig.core.properties.io.ConfigIo
 import io.microconfig.core.properties.io.ConfigReader
 import io.microconfig.core.properties.io.properties.PropertiesText
 import io.microconfig.core.properties.io.selector.ConfigIoFactory.newConfigIo
+import io.microconfig.core.properties.io.selector.ConfigIoFactory.readYamlText
 import io.microconfig.core.properties.io.yaml.YamlScalars
 import io.microconfig.core.properties.serializers.ConfigChangeListener
 import io.microconfig.io.FsReader
@@ -24,9 +25,17 @@ class ConfigDiff(private val configIo: ConfigIo = defaultConfigIo()) : ConfigCha
     fun storeDiffFor(previousConfigFile: File, newProperties: Collection<Property>) =
         accept(previousConfigFile, newProperties)
 
-    override fun prepareAll(outputs: Map<File, Collection<Property>>): Map<File, () -> Unit> {
+    override fun prepareAll(outputs: Map<File, Collection<Property>>): Map<File, () -> Unit> =
+        prepareAll(outputs, emptyMap())
+
+    override fun prepareAll(
+        outputs: Map<File, Collection<Property>>,
+        componentDirectories: Map<File, File>,
+    ): Map<File, () -> Unit> {
         val prepared = outputs.entries.parallelStream().map { (file, properties) ->
-            runCatching { file to prepare(file, properties) }
+            runCatching {
+                file to prepare(file, properties, componentDirectories[file] ?: file.absoluteFile.parentFile)
+            }
         }.toList()
         return prepared.map { it.getOrThrow() }.toMap()
     }
@@ -34,20 +43,34 @@ class ConfigDiff(private val configIo: ConfigIo = defaultConfigIo()) : ConfigCha
     override fun prepare(
         file: File,
         properties: Collection<Property>,
+    ): () -> Unit = prepare(file, properties, file.absoluteFile.parentFile)
+
+    private fun prepare(
+        file: File,
+        properties: Collection<Property>,
+        componentDirectory: File?,
     ): () -> Unit {
+        val hasPreviousFile = file.isFile
         val changes =
-            if (file.isFile) compare(properties, file)
-            else emptyMap()
+            if (hasPreviousFile || hasEmptyBaseline(properties, componentDirectory)) {
+                compare(properties, file, hasPreviousFile)
+            } else emptyMap()
         return { storeDiff(file, changes) }
     }
+
+    private fun hasEmptyBaseline(properties: Collection<Property>, componentDirectory: File?): Boolean =
+        properties.any { !it.isVar } && componentDirectory?.list()?.isEmpty() == true
 
     // Compare the serialized forms because the old values have been read back from disk.
     private fun compare(
         current: Collection<Property>,
         file: File,
+        hasPreviousFile: Boolean,
     ): Map<String, String> {
         val text = configIo.writeTo(file).serialize(current)
-        val previous = readChangedPreviousConfig(file, text)?.toMutableMap() ?: return emptyMap()
+        val previous =
+            if (!hasPreviousFile) mutableMapOf()
+            else readChangedPreviousConfig(file, text)?.toMutableMap() ?: return emptyMap()
         val reader = readSerializedConfig(file, text)
         val yaml = reader.format() == YAML
         val changes = sortedMapOf<String, String>()
@@ -74,6 +97,7 @@ class ConfigDiff(private val configIo: ConfigIo = defaultConfigIo()) : ConfigCha
         }
 
     private fun readSerializedConfig(file: File, text: String): ConfigReader {
+        if (file.extension in setOf("yaml", "yml")) return readYamlText(file, text)
         val contentReader =
             object : FsReader {
                 override fun readFully(file: File): String = text

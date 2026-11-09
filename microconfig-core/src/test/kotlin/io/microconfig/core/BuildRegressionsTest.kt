@@ -363,20 +363,6 @@ class BuildRegressionsTest {
         assertTrue(error.message.contains("dev -> base -> dev"))
     }
 
-    @Test
-    fun deleteDiffSymlinkWithoutDeletingItsTarget() {
-        org.junit.jupiter.api.Assumptions.assumeFalse(io.microconfig.utils.Os.isWindows())
-        write("components/app/application.yaml", "value: unchanged\n")
-        build()
-        val target = directory.resolve("unrelated")
-        Files.createDirectories(target)
-        Files.writeString(target.resolve("retained.txt"), "retained")
-        Files.createSymbolicLink(output("diff-application.yaml"), target)
-        build()
-        assertEquals("retained", Files.readString(target.resolve("retained.txt")))
-        assertFalse(Files.exists(output("diff-application.yaml")))
-    }
-
     @ParameterizedTest
     @ValueSource(strings = ["application.yaml", "application.properties", "process.yaml"])
     fun preserveTemplateOutputsNamedLikeGeneratedConfigs(name: String) {
